@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "codeutilities",
+  "version": "1.1",
+
+  "name": "CodeUtilities",
+  "description": "A",
+  "authors": [
+    "Reasonless", "Lolpop (MeeksHD)"
+  ],
+
+
+  "license": "CC0-1.0",
+  "icon": "assets/modid/icon.png",
+
+  "environment": "*",
+  "entrypoints": {	
+  	"cotton-client-commands": ["me.reasonless.codeutilities.commands.Commands"],
+    "main": [
+      "me.reasonless.codeutilities.Main"
+    ]
+  },
+
+  "depends": {
+    "cotton-client-commands": ">=0.4.2",
+    "fabricloader": ">=0.4.0"
+  },
+  "suggests": {
+    "flamingo": "*"
+  }
+}

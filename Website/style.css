@@ -1,0 +1,110 @@
+* {
+    font-family: 'Lato', sans-serif;
+}
+
+.header {
+    padding: 10px;
+    margin: 0px;
+    font-size: 35px;
+    font-weight: 10px;
+    float: left;
+}
+
+.nav {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display:block;
+    float: right;
+}
+
+.stuff {
+    font-size: 45px;
+    font-weight: 10px;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+.substuff {
+    font-size: 25px;
+    font-weight: 10px;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+.stuffcontent {
+    font-size: 15px;
+    font-weight: 10px;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+.downloadstuff {
+    font-size: 20px;
+    font-weight: 10px;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+.mt {
+    margin-top: 25px;
+}
+
+.card {
+    background-color: white;
+    color: black;
+    box-shadow: black;
+    width: 50%;
+    display:inline-block;
+    text-align: center;
+}
+
+.content-nogap {
+    padding-top: 100px;
+    text-align: center;
+}
+
+.content {
+    padding-top: 20%;
+}
+
+.navitem {
+    display: block;
+    float: left;
+    padding: 21.5px;
+    font-size: 20px;
+}
+
+ul {
+    text-decoration: none;
+}
+
+
+
+a {
+    list-style: none;
+    color: white;
+    text-decoration: none;
+}
+
+.download {
+    border-style: solid;
+    border-color: white;
+    border-radius: 25px;
+    padding-left:15px;
+    padding-right:15px;
+    padding-top:5px;
+    padding-bottom:5px;
+}
+
+
+
+body {
+    color: white;
+    background: rgb(226,0,255);
+    background: -moz-linear-gradient(90deg, #fd746c, #ff9068);
+    background: -webkit-linear-gradient(90deg, #fd746c, #ff9068);
+    background: linear-gradient(90deg, #fd746c, #ff9068);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#e200ff",endColorstr="#8400ff",GradientType=1);
+}
