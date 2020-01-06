@@ -80,9 +80,9 @@ public class NBSDecoder {
                 byte note = dataInputStream.readByte();
                 byte velocity = dataInputStream.readByte();
                 byte panning = dataInputStream.readByte();
-                dataInputStream.readShort();
+                short finepitch = readShort(dataInputStream);
 
-                stringBuilder.append("=" + Instrument.values()[instrument].getDF() + ";" + (tick + 1) + ";" + Pitch.getNBSPitch(note).getDFPitch() + ";" + velocity + ";" + panning);
+                stringBuilder.append("=" + Instrument.values()[instrument].getDF() + ";" + (tick + 1) + ";" + Pitch.getNBSPitch(note).getDFPitch() + ";" + velocity + ";" + panning + ";" + finepitch);
             }
         }
 
