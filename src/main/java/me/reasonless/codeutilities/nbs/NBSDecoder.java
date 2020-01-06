@@ -85,10 +85,6 @@ public class NBSDecoder {
                 byte velocity = dataInputStream.readByte();
                 byte panning = dataInputStream.readByte();
                 short finepitch = readShort(dataInputStream);
-                
-                System.out.println("Note: " + note);
-                System.out.println("FinePitch: " + (double)finepitch/100d);
-                System.out.println("MC Pitch: " + getMinecraftPitch(note + (double)finepitch/100d));
 
                 stringBuilder.append("=" + (instrument + 1) + ";" + (tick + 1) + ";" + getMinecraftPitch(note + (double)finepitch/100d) + ";" + velocity + ";" + panning);
             }
