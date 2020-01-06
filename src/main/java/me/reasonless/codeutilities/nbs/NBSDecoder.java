@@ -1,10 +1,14 @@
 package me.reasonless.codeutilities.nbs;
 
-import me.reasonless.codeutilities.nbs.enums.Instrument;
-import me.reasonless.codeutilities.nbs.enums.Pitch;
-import me.reasonless.codeutilities.nbs.exception.OutdatedNBSException;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
 
-import java.io.*;
+import me.reasonless.codeutilities.nbs.exception.OutdatedNBSException;
 
 // Credit to https://github.com/koca2000/NoteBlockAPI/blob/master/src/main/java/com/xxmicloxx/NoteBlockAPI/NBSDecoder.java
 public class NBSDecoder {
@@ -82,7 +86,7 @@ public class NBSDecoder {
                 byte panning = dataInputStream.readByte();
                 short finepitch = readShort(dataInputStream);
 
-                stringBuilder.append("=" + Instrument.values()[instrument].getDF() + ";" + (tick + 1) + ";" + Pitch.getNBSPitch(note).getDFPitch() + ";" + velocity + ";" + panning + ";" + finepitch);
+                stringBuilder.append("=" + (instrument + 1) + ";" + (tick + 1) + ";" + getMinecraftPitch(note + (double)finepitch/100d) + ";" + velocity + ";" + panning);
             }
         }
 
@@ -137,5 +141,15 @@ public class NBSDecoder {
 		}
 		return builder.toString();
 	}
-
+	
+	private static BigDecimal getMinecraftPitch(double key) {
+		
+		if (key < 33) key -= 9;
+		else if (key > 57) key -= 57;
+		else key -= 33;
+		
+		BigDecimal pitch = new BigDecimal(0.5 * (Math.pow(2,(key/12))));
+		
+		return pitch.setScale(3,BigDecimal.ROUND_FLOOR);
+	}
 }
