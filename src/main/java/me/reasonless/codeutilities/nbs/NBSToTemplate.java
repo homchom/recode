@@ -6,19 +6,26 @@ public class NBSToTemplate {
 	String author;
 	String filename;
 	String layers;
+	String version;
 	int speed;
-
+	int length;
+	
 	public NBSToTemplate(SongData song) {
 		System.out.println(song.getName());
 		System.out.println(song.getNotes());
 		System.out.println(song.getAuthor());
 		System.out.println(song.getFileName());
+		
+		//EDIT THIS WHEN YOU DID SOME BIG CHANGES TO THE TEMPLATE
+		//Format: v[TEMPLATE VERSION]-v[NBS VERSION]
+		this.version = "v2.0-v4";
 
 		this.song = song.getNotes();
 		this.author = song.getAuthor();
 		this.name = song.getName();
 		this.filename = song.getFileName();
 		this.layers = song.getLayers();
+		this.length = song.getLength();
 		
 		int speedCalc = (int) song.getSpeed();
 		this.speed = Math.round(20 / speedCalc);
@@ -62,7 +69,7 @@ public class NBSToTemplate {
 		}
 
 		code.append(String.format("{\"id\":\"block\",\"block\":\"set_var\",\"args\":{\"items\":[{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"notes\",\"scope\":\"local\"}},\"slot\":0}%s]},\"action\":\"AppendValue\"}, ", currentBlock.toString()));
-		code.append(String.format("{\"id\":\"block\",\"block\":\"set_var\",\"args\":{\"items\":[{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"songData\",\"scope\":\"local\"}},\"slot\":0},{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"%s\"}},\"slot\":1},{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"%s\"}},\"slot\":2},{\"item\":{\"id\":\"num\",\"data\":{\"name\":\"%d\"}},\"slot\":3}, {\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"%s\"}},\"slot\":4}]},\"action\":\"CreateList\"}", name, author, speed, layers));
+		code.append(String.format("{\"id\":\"block\",\"block\":\"set_var\",\"args\":{\"items\":[{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"songData\",\"scope\":\"local\"}},\"slot\":0},{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"%s\"}},\"slot\":1},{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"%s\"}},\"slot\":2},{\"item\":{\"id\":\"num\",\"data\":{\"name\":\"%d\"}},\"slot\":3}, {\"item\":{\"id\":\"num\",\"data\":{\"name\":\"%d\"}},\"slot\":4}, {\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"%s\"}},\"slot\":5}, {\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"%s\"}},\"slot\":6}]},\"action\":\"CreateList\"}", name, author, speed, length, layers, version));
 		
 		return "{\"blocks\": [" + code + "]}";
 	}

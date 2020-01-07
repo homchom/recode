@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.util.Arrays;
 
 import me.reasonless.codeutilities.nbs.exception.OutdatedNBSException;
 
@@ -45,7 +46,7 @@ public class NBSDecoder {
         }
         if (length == 0) {
             dataInputStream.readByte();
-            readShort(dataInputStream);
+            length = readShort(dataInputStream);
         }
         short layers = readShort(dataInputStream);
         title = readString(dataInputStream);
@@ -66,6 +67,9 @@ public class NBSDecoder {
         dataInputStream.readByte();
         readShort(dataInputStream);
         short tick = -1;
+        String[][] stringList = new String[layers][length + 1];
+        int[][] velocityList = new int[layers][length + 1];
+        int[][] panningList = new int[layers][length + 1];
         while (true) {
             short t = readShort(dataInputStream);
             if (t == 0) {
@@ -83,10 +87,12 @@ public class NBSDecoder {
                 byte instrument = dataInputStream.readByte();
                 byte note = dataInputStream.readByte();
                 byte velocity = dataInputStream.readByte();
-                byte panning = dataInputStream.readByte();
+                int panning = Byte.toUnsignedInt(dataInputStream.readByte());
                 short finepitch = readShort(dataInputStream);
-
-                stringBuilder.append("=" + (instrument + 1) + ";" + (tick + 1) + ";" + getMinecraftPitch(note + (double)finepitch/100d) + ";" + velocity + ";" + panning);
+                
+                stringList[layer][tick] = "=" + (instrument + 1) + ";" + (tick + 1) + ";" + getMinecraftPitch(note + (double)finepitch/100d);
+                velocityList[layer][tick] = velocity;
+                panningList[layer][tick] = panning;
             }
         }
 
@@ -97,18 +103,30 @@ public class NBSDecoder {
 
 
             byte volume = dataInputStream.readByte();
-            byte panning = dataInputStream.readByte();
+            int panning = Byte.toUnsignedInt(dataInputStream.readByte());
+            
+            for(int currentTick = 0; currentTick < length; currentTick++) {
+            	String noteString = stringList[i][currentTick];
+            	if (noteString != null) {
+            		
+            		int noteVelocity = velocityList[i][currentTick];
+                	int notePanning = panningList[i][currentTick];
+                	
+                	double averageVelocity = noteVelocity * (volume/100d);
+                	double averagePanning = (notePanning + panning)/2d;
+
+                	String finalString = noteString + ";" + averageVelocity + ";" + ((averagePanning - 100)/50);
+                	stringBuilder.append(finalString);
+            	}
+            }
 
             layerStringBuilder.append("=" + volume + ";" + panning);
         }
 
-
-
-        System.out.println(title + ";" + author + ";" + description + ";" + speed);
         dataInputStream.close();
 			
 
-        return new SongData(title, author, speed, stringBuilder.toString(), file, layerStringBuilder.toString());
+        return new SongData(title, author, speed, (int)length+2 , stringBuilder.toString(), file, layerStringBuilder.toString());
 	}
 
 

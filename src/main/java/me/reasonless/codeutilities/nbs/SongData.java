@@ -4,14 +4,16 @@ public class SongData {
 	String name;
 	String author;
 	float speed;
+	int length;
 	String fileName;
 	String notes;
 	String layers;
 	
-	public SongData(String name, String author, float speed, String notes, String fileName, String layers) {
+	public SongData(String name, String author, float speed, int length, String notes, String fileName, String layers) {
 		this.name = name;
 		this.author = author;
 		this.speed = speed;
+		this.length = length;
 		this.notes = notes;
 		this.fileName = fileName;
 		this.layers = layers;
@@ -37,6 +39,10 @@ public class SongData {
 		return speed;
 	}
 
+	public int getLength() {
+		return length;
+	}
+	
 	public void setSpeed(float speed) {
 		this.speed = speed;
 	}
