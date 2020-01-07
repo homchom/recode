@@ -7,7 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.util.Arrays;
 
 import me.reasonless.codeutilities.nbs.exception.OutdatedNBSException;
 

@@ -20,6 +20,7 @@ public class NBSLoadCommand {
 		File f = new File("CodeUtilities/NBS Files/" + StringArgumentType.getString(ctx, "location") + (StringArgumentType.getString(ctx, "location").endsWith(".nbs") ? "" : ".nbs"));
 
 		if(f.exists()) {
+			mc.player.sendMessage(new LiteralText(ChatFormatting.DARK_GREEN + " - " + ChatFormatting.GREEN + "Loading a nbs file, this may take long..."));
 			SongData d = NBSDecoder.parse(f);
 			String code = new NBSToTemplate(d).convert();
 			ItemStack stack = new ItemStack(Items.NOTE_BLOCK);
