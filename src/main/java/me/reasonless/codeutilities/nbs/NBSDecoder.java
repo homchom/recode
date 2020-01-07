@@ -104,7 +104,7 @@ public class NBSDecoder {
             byte volume = dataInputStream.readByte();
             int panning = Byte.toUnsignedInt(dataInputStream.readByte());
             
-            for(int currentTick = 0; currentTick < length; currentTick++) {
+            for(int currentTick = 0; currentTick < length + 1; currentTick++) {
             	String noteString = stringList[i][currentTick];
             	if (noteString != null) {
             		
@@ -125,7 +125,7 @@ public class NBSDecoder {
         dataInputStream.close();
 			
 
-        return new SongData(title, author, speed, (int)length+2 , stringBuilder.toString(), file, layerStringBuilder.toString());
+        return new SongData(title, author, speed, (int)length+1 , stringBuilder.toString(), file, layerStringBuilder.toString());
 	}
 
 
