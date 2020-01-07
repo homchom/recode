@@ -1,5 +1,7 @@
 package me.reasonless.codeutilities.nbs;
 
+import me.reasonless.codeutilities.Main;
+
 public class NBSToTemplate {
 	String song;
 	String name;
@@ -16,9 +18,7 @@ public class NBSToTemplate {
 		System.out.println(song.getAuthor());
 		System.out.println(song.getFileName());
 		
-		//EDIT THIS WHEN YOU DID SOME BIG CHANGES TO THE TEMPLATE
-		//Format: v[TEMPLATE VERSION]-v[NBS VERSION]
-		this.version = "v2.0-v4";
+		this.version = "v" + Main.MOD_VERSION + "-v" + Main.NBS_FORMAT_VERSION;
 
 		this.song = song.getNotes();
 		this.author = song.getAuthor();

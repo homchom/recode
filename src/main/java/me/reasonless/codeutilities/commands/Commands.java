@@ -3,9 +3,11 @@ package me.reasonless.codeutilities.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.realmsclient.gui.ChatFormatting;
+
 import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.ClientCommandPlugin;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
+import me.reasonless.codeutilities.commands.help.HelpCommand;
 import me.reasonless.codeutilities.commands.image.ImageCommand;
 import me.reasonless.codeutilities.commands.image.ImageLoadCommand;
 import me.reasonless.codeutilities.commands.nbs.NBSCommand;
@@ -60,6 +62,16 @@ public class Commands implements ClientCommandPlugin {
 
 		dispatcher.register(ArgumentBuilders.literal("webview")
 			.executes(ctx -> WebViewCommand.execute(mc, ctx)));
+		dispatcher.register(ArgumentBuilders.literal("codeutilities")
+				.then(ArgumentBuilders.literal("music")
+						.executes(ctx -> {
+							return NBSCommand.execute(mc, ctx);
+						}))
+				.then(ArgumentBuilders.literal("image")
+						.executes(ctx -> {
+							return ImageCommand.execute(mc, ctx);
+						}))
+		.executes(ctx -> HelpCommand.execute(mc, ctx)));
 	}
 	
 
