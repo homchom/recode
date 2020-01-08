@@ -8,5 +8,6 @@
             <img src="https://img.shields.io/discord/660239763479068713?logo=discord&style=flat-square" /></a>
     <img src="https://github.com/Reasonlesss/CodeUtilities/workflows/Build/badge.svg" />
     <img src="https://img.shields.io/badge/Made%20With-Java-brightgreen?style=flat-square&logo=java" />
-    
 </div>
+
+This is the github repository for CodeUtilities which is a mod developed by Reasonless, KabanFriends and LolpopHD.
