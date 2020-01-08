@@ -20,7 +20,7 @@ This is the Github repository for CodeUtilities which is a mod developed by Reas
 4. Start the game and the mod should be loaded you can check this by running the `/codeutilities` command.
 
 ## Compiling Jar from source
-To compile jar from source you need JDK8, Maven and an internet connection.
+To compile jar from source you need JDK 8, Maven and an internet connection.
 
-Then run `./gradlew build` the jar file should appear in `/build/libs`.
+Then run `./gradlew build` the jar file should appear in `build/libs`.
 
