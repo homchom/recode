@@ -12,15 +12,13 @@
 <br>
 This is the Github repository for CodeUtilities which is a mod developed by Reasonless, KabanFriends and LolpopHD the mod is developed for Fabric and Forge, you can view the Forge branch <a href="https://github.com/Reasonlesss/CodeUtilities/tree/forge">here</a>.
 
-# Installation
-```
+## Installation
 1. Install Fabric or Forge
 2. Download the correct version of the mod from the releases page
 3. Copy the mod into your mods folder that should be generated after launching Fabric or Forge
 4. Start the game and the mod should be loaded you can check this by running /codeutilities
-```
 
-# Compiling Jar from source
+## Compiling Jar from source
 To compile jar from source you need JDK8, Maven and an internet connection.
 
 Then run `./gradlew build` the jar file should appear in `/build/libs`
