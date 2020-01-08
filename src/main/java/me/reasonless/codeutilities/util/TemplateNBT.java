@@ -3,10 +3,12 @@ package me.reasonless.codeutilities.util;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 
+import java.nio.charset.StandardCharsets;
+
 public class TemplateNBT {
     public static void setTemplateNBT(ItemStack stack, String name, String author, String template) {
         try {
-            byte[] b64 = GzFormat.encryptBase64(GzFormat.compress(template.getBytes()));
+            byte[] b64 = GzFormat.encryptBase64(GzFormat.compress(template.getBytes(StandardCharsets.UTF_8)));
             String exported = new String(b64);
             final CompoundTag nbt = new CompoundTag();
 

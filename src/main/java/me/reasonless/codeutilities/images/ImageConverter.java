@@ -24,12 +24,12 @@ public class ImageConverter {
                 int width = image.getWidth();
                 int height = image.getHeight();
 
-                if(width > 128 || height > 128) {
-                    height = 128;
-                    width = 128;
-                    BufferedImage newImage = new BufferedImage(128, 128, image.getType());
+                if(width > 64 || height > 64) {
+                    height = 64;
+                    width = 64;
+                    BufferedImage newImage = new BufferedImage(64, 64, image.getType());
                     Graphics2D graphics2D = (Graphics2D) newImage.getGraphics();
-                    graphics2D.drawImage(image.getScaledInstance(128, 128, SCALE_SMOOTH), 0, 0, null);
+                    graphics2D.drawImage(image.getScaledInstance(64, 64, SCALE_SMOOTH), 0, 0, null);
                     graphics2D.dispose();
                     image = newImage;
                 }
@@ -37,7 +37,7 @@ public class ImageConverter {
                 for (int i = 0; i < height; i++) {
                     String layer = "";
                     for (int j = 0; j < width; j++) {
-                        int rgb = image.getRGB(i, j);
+                        int rgb = image.getRGB(j, i);
                         Color color = new Color(rgb, true);
 
                         List<MinecraftColors> colors = new ArrayList<>();
@@ -61,7 +61,19 @@ public class ImageConverter {
                         }
 
                     }
-                    layers.add(layer);
+
+                    while(layer.startsWith("  ")) {
+                        layer = layer.substring(2);
+                    }
+                    while(layer.endsWith("  ")) {
+                        layer = layer.substring(0, layer.length() - 2);
+                    }
+                    if(layer.length() == 0) {
+                        layers.add(" ");
+                    }else {
+                        layers.add(layer);
+                    }
+
                 }
 
             } catch (IOException e) {
