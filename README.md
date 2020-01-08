@@ -19,3 +19,8 @@ This is the Github repository for CodeUtilities which is a mod developed by Reas
 3. Copy the mod into your mods folder that should be generated after launching Fabric or Forge
 4. Start the game and the mod should be loaded you can check this by running /codeutilities
 ```
+
+# Compiling Jar from source
+To compile jar from source you need JDK8, Maven and an internet connection.
+
+Then run `./gradlew build` the jar file should appear in `/build/libs`
