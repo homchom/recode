@@ -17,5 +17,5 @@ This is the Github repository for CodeUtilities which is a mod developed by Reas
 1. Install Fabric or Forge
 2. Download the correct version of the mod from the releases page
 3. Copy the mod into your mods folder that should be generated after launching Fabric or Forge
-4. Start the game and the mod should be loaded
+4. Start the game and the mod should be loaded you can check this by running /codeutlities
 ```
