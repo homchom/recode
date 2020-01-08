@@ -21,4 +21,5 @@ This is the Github repository for CodeUtilities which is a mod developed by Reas
 ## Compiling Jar from source
 To compile jar from source you need JDK8, Maven and an internet connection.
 
-Then run `./gradlew build` the jar file should appear in `/build/libs`
+Then run `./gradlew build` the jar file should appear in `/build/libs`.
+
