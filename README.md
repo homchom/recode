@@ -10,4 +10,4 @@
     <img src="https://img.shields.io/badge/Made%20With-Java-brightgreen?style=flat-square&logo=java" />
 </div>
 <br>
-This is the github repository for CodeUtilities which is a mod developed by Reasonless, KabanFriends and LolpopHD the mod is developed for fabric and forge you can view the forge branch [here](https://github.com/Reasonlesss/CodeUtilities/tree/forge)
+This is the github repository for CodeUtilities which is a mod developed by Reasonless, KabanFriends and LolpopHD the mod is developed for fabric and forge.
