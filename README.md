@@ -1,6 +1,6 @@
 
 <div align="center">
-    <img src="codeutilities.png" height=512 width=256/></a>
+    <img src="codeutilities.png" width=512 height=256/></a>
 </div>
 
 <div align="center">
