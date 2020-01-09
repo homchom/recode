@@ -11,6 +11,8 @@
     <img src="https://img.shields.io/badge/Made%20With-Java-brightgreen?style=flat-square&logo=java" />
     <a href="https://github.com/Reasonlesss/CodeUtilities/releases" alt="Downloads">
             <img src="https://img.shields.io/github/downloads/Reasonlesss/CodeUtilities/total?style=flat-square" /></a>
+    <img src="https://img.shields.io/github/issues/Reasonlesss/CodeUtilities?style=flat-square" />
+    
     
 </div>
 <br>
