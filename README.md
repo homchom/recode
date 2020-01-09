@@ -9,7 +9,7 @@
             <img src="https://img.shields.io/discord/660239763479068713?logo=discord&style=flat-square" /></a>
     <img src="https://img.shields.io/github/workflow/status/Reasonlesss/CodeUtilities/Build?logo=github&style=flat-square" />
     <img src="https://img.shields.io/badge/Made%20With-Java-brightgreen?style=flat-square&logo=java" />
-    <a href="https://github.com/Reasonlesss/CodeUtilities/releases" alt="Discord">
+    <a href="https://github.com/Reasonlesss/CodeUtilities/releases" alt="Downloads">
             <img src="https://img.shields.io/github/downloads/Reasonlesss/CodeUtilities/total?style=flat-square" /></a>
     
 </div>
