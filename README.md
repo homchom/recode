@@ -7,7 +7,7 @@
 <div align="center">
     <a href="https://discord.gg/q2VzU4G" alt="Discord">
             <img src="https://img.shields.io/discord/660239763479068713?logo=discord&style=flat-square" /></a>
-    <img src="https://github.com/Reasonlesss/CodeUtilities/workflows/Build/badge.svg" />
+    <img src="https://img.shields.io/github/workflow/status/Reasonlesss/CodeUtilities/Build?logo=github&style=flat-square" />
     <img src="https://img.shields.io/badge/Made%20With-Java-brightgreen?style=flat-square&logo=java" />
 </div>
 <br>
