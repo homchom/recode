@@ -1,5 +1,7 @@
 package me.reasonless.codeutilities;
 
+import me.reasonless.codeutilities.templates.Template;
+import me.reasonless.codeutilities.templates.variables.TextVariable;
 import net.fabricmc.api.ModInitializer;
 
 import java.io.File;
@@ -26,6 +28,10 @@ public class Main implements ModInitializer {
 		if(!imagesFolder.exists()) {
 			imagesFolder.mkdir();
 		}
+
+		Template template = new Template("Testing", "Reasonless");
+		new TextVariable("test");
+
 
 	}
 }
