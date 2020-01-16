@@ -55,19 +55,14 @@ public class ImageConverter {
                         colors.sort(comparator);
 
                         if (color.getAlpha() < 255) {
-                            layer = layer + "  ";
+                            layer = layer + MinecraftColors.GRAY.getMc() + "▁";
                         }else {
                             layer = layer + colors.get(0).getMc() + "█";
                         }
 
                     }
 
-                    while(layer.startsWith("  ")) {
-                        layer = layer.substring(2);
-                    }
-                    while(layer.endsWith("  ")) {
-                        layer = layer.substring(0, layer.length() - 2);
-                    }
+
                     if(layer.length() == 0) {
                         layers.add(" ");
                     }else {

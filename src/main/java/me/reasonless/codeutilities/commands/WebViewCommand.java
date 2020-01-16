@@ -21,7 +21,7 @@ public class WebViewCommand {
 			String template = publicBukkitNBT.getString("hypercube:codetemplatedata");
 			TemplateJson templateJson = new Gson().fromJson(template, TemplateJson.class);
 			LiteralText text = new LiteralText(ChatFormatting.DARK_GREEN + " - " + ChatFormatting.GREEN + "To open this template in web-view click this message!");
-			text.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.field_11749, String.format("https://derpystuff.gitlab.io/code/?template=%s", templateJson.code)));
+			text.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.values()[0], String.format("https://derpystuff.gitlab.io/code/?template=%s", templateJson.code)));
 			mc.player.sendMessage(text);
 
 		}catch(NullPointerException e) {
