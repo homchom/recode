@@ -23,3 +23,5 @@ bin/
 
 run/
 build/
+src/main/resources/fabric.mod.json
+src/main/resources/fabric.mod.json

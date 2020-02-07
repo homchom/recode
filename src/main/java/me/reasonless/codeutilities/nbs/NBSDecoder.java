@@ -31,6 +31,7 @@ public class NBSDecoder {
 		String author = "";
 		String file = songFile.getName();
 		float speed = 0f;
+		float actualSpeed = 0f;
 
 		StringBuilder stringBuilder = new StringBuilder();
 		StringBuilder layerStringBuilder = new StringBuilder();
@@ -52,7 +53,11 @@ public class NBSDecoder {
         author = readString(dataInputStream);
         readString(dataInputStream);
         String description = readString(dataInputStream);
-        speed = readShort(dataInputStream) / 100f;
+        actualSpeed = readShort(dataInputStream);
+        if (actualSpeed > 2000) {
+        	actualSpeed = 2000;
+        }
+        speed = actualSpeed / 100f;
         dataInputStream.readBoolean();
         dataInputStream.readByte();
         dataInputStream.readByte();
