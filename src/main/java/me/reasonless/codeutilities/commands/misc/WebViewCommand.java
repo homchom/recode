@@ -1,4 +1,4 @@
-package me.reasonless.codeutilities.commands;
+package me.reasonless.codeutilities.commands.misc;
 
 import com.google.gson.Gson;
 import com.mojang.brigadier.context.CommandContext;

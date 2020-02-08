@@ -3,13 +3,14 @@ package me.reasonless.codeutilities.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.realmsclient.gui.ChatFormatting;
-
 import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.ClientCommandPlugin;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import me.reasonless.codeutilities.commands.help.HelpCommand;
 import me.reasonless.codeutilities.commands.image.ImageCommand;
 import me.reasonless.codeutilities.commands.image.ImageLoadCommand;
+import me.reasonless.codeutilities.commands.misc.UnpackCommand;
+import me.reasonless.codeutilities.commands.misc.WebViewCommand;
 import me.reasonless.codeutilities.commands.nbs.NBSCommand;
 import me.reasonless.codeutilities.commands.nbs.NBSLoadCommand;
 import me.reasonless.codeutilities.commands.nbs.NBSPlayerCommand;
@@ -62,6 +63,8 @@ public class Commands implements ClientCommandPlugin {
 
 		dispatcher.register(ArgumentBuilders.literal("webview")
 			.executes(ctx -> WebViewCommand.execute(mc, ctx)));
+		dispatcher.register(ArgumentBuilders.literal("unpack")
+				.executes(ctx -> UnpackCommand.execute(mc, ctx)));
 		dispatcher.register(ArgumentBuilders.literal("codeutilities")
 				.then(ArgumentBuilders.literal("music")
 						.executes(ctx -> {

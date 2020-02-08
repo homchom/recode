@@ -29,6 +29,8 @@ public class ImageLoadCommand {
             ItemStack stack = new ItemStack(Items.NOTE_BLOCK);
             TemplateNBT.setTemplateNBT(stack, StringArgumentType.getString(ctx, "location"), mc.player.getName().asString(), toTemplate.convert());
             mc.interactionManager.clickCreativeStack(stack, 36 + mc.player.inventory.selectedSlot);
+
+            mc.player.sendMessage(new LiteralText(ChatFormatting.DARK_GREEN + " - " + ChatFormatting.GREEN + "Image loaded! Change the first Set Variable to the location!"));
         }else {
             mc.player.sendMessage(new LiteralText(ChatFormatting.DARK_RED + " - " + ChatFormatting.RED + "That image doesn't exist."));
         }

@@ -5,7 +5,7 @@ import java.util.List;
 
 // used stackoverflow bcz i suck
 public class Lexer {
-    public static String getAtom(String s, int i) {
+    public static String getToken(String s, int i) {
         int j = i;
         for( ; j < s.length(); ) {
             if(isToken(s, j)) {
@@ -44,9 +44,9 @@ public class Lexer {
                 if(Character.isWhitespace(code.charAt(i))) {
                     i++;
                 } else {
-                    String atom = getAtom(code, i);
-                    i += atom.length();
-                    toReturn.add(new Token(TokenType.TOKEN, atom));
+                    String token = getToken(code, i);
+                    i += token.length();
+                    toReturn.add(new Token(TokenType.TOKEN, token));
                 }
             }else {
                 toReturn.add(new Token(type, character.toString()));

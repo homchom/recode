@@ -1,8 +1,12 @@
 package scripting;
 
 public enum TokenType {
-    BRACKET_LEFT("{"),
-    BRACKET_RIGHT("}"),
+    BRACKET_LEFT("("),
+    BRACKET_RIGHT(")"),
+    CURLY_BRACKET_LEFT("{"),
+    CURLY_BRACKET_RIGHT("}"),
+    SEMI_COLON(";"),
+    DOT("."),
     STRING("\""),
     TOKEN("");
 
