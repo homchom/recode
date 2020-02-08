@@ -32,7 +32,9 @@ public class NBSDecoder {
 		String file = songFile.getName();
 		float speed = 0f;
 		float actualSpeed = 0f;
-		int timeSignature = 4;
+		short timeSignature = 4;
+		int loopTick = 0;
+		int loopCount = 0;
 
 		StringBuilder stringBuilder = new StringBuilder();
 		StringBuilder layerStringBuilder = new StringBuilder();
@@ -61,7 +63,7 @@ public class NBSDecoder {
         speed = actualSpeed / 100f;
         dataInputStream.readBoolean();
         dataInputStream.readByte();
-        timeSignature = dataInputStream.readByte();
+        timeSignature = (short) dataInputStream.readByte();
         readInt(dataInputStream);
         readInt(dataInputStream);
         readInt(dataInputStream);
@@ -69,8 +71,8 @@ public class NBSDecoder {
         readInt(dataInputStream);
         readString(dataInputStream);
         dataInputStream.readByte();
-        dataInputStream.readByte();
-        readShort(dataInputStream);
+        loopCount = dataInputStream.readByte();
+        loopTick = readShort(dataInputStream);
         short tick = -1;
         String[][] stringList = new String[layers][length + 1];
         int[][] velocityList = new int[layers][length + 1];
@@ -130,8 +132,7 @@ public class NBSDecoder {
 
         dataInputStream.close();
 			
-
-        return new SongData(title, author, speed, (int) Math.ceil(length+1 / timeSignature) * timeSignature, stringBuilder.toString(), file, layerStringBuilder.toString());
+        return new SongData(title, author, speed, (int)((Math.ceil((length+1) / timeSignature) + 1) * timeSignature), stringBuilder.toString(), file, layerStringBuilder.toString(), loopTick, loopCount);
 	}
 
 

@@ -11,12 +11,16 @@ public class NBSToTemplate {
 	String version;
 	float speed;
 	int length;
+	int loopTick;
+	int loopCount;
 	
 	public NBSToTemplate(SongData song) {
-		System.out.println(song.getName());
-		System.out.println(song.getNotes());
-		System.out.println(song.getAuthor());
-		System.out.println(song.getFileName());
+		
+		//These codes are spamming my console!! :(
+		//System.out.println(song.getName());
+		//System.out.println(song.getNotes());
+		//System.out.println(song.getAuthor());
+		//System.out.println(song.getFileName());
 		
 		this.version = "v" + Main.PARSER_VERSION + "-nbs" + Main.NBS_FORMAT_VERSION;
 
@@ -27,8 +31,8 @@ public class NBSToTemplate {
 		this.layers = song.getLayers();
 		this.length = song.getLength();
 		this.speed = song.getSpeed();
-		
-		System.out.println(speed);
+		this.loopTick = song.getLoopTick();
+		this.loopCount = song.getLoopCount();
 	}
 
 	public String convert() {
@@ -67,7 +71,7 @@ public class NBSToTemplate {
 		}
 
 		code.append(String.format("{\"id\":\"block\",\"block\":\"set_var\",\"args\":{\"items\":[{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"notes\",\"scope\":\"local\"}},\"slot\":0}%s]},\"action\":\"AppendValue\"}, ", currentBlock.toString()));
-		code.append(String.format("{\"id\":\"block\",\"block\":\"set_var\",\"args\":{\"items\":[{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"songData\",\"scope\":\"local\"}},\"slot\":0},{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"%s\"}},\"slot\":1},{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"%s\"}},\"slot\":2},{\"item\":{\"id\":\"num\",\"data\":{\"name\":\"%f\"}},\"slot\":3}, {\"item\":{\"id\":\"num\",\"data\":{\"name\":\"%d\"}},\"slot\":4}, {\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"%s\"}},\"slot\":5}, {\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"%s\"}},\"slot\":6}]},\"action\":\"CreateList\"}", name, author, speed, length, layers, version));
+		code.append(String.format("{\"id\":\"block\",\"block\":\"set_var\",\"args\":{\"items\":[{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"songData\",\"scope\":\"local\"}},\"slot\":0},{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"%s\"}},\"slot\":1},{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"%s\"}},\"slot\":2},{\"item\":{\"id\":\"num\",\"data\":{\"name\":\"%f\"}},\"slot\":3}, {\"item\":{\"id\":\"num\",\"data\":{\"name\":\"%d\"}},\"slot\":4}, {\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"%s\"}},\"slot\":5}, {\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"%s\"}},\"slot\":6},{\"item\":{\"id\":\"num\",\"data\":{\"name\":\"%d\"}},\"slot\":7},{\"item\":{\"id\":\"num\",\"data\":{\"name\":\"%d\"}},\"slot\":8}]},\"action\":\"CreateList\"}", name, author, speed, length, layers, version, loopTick, loopCount));
 		
 		return "{\"blocks\": [" + code + "]}";
 	}
