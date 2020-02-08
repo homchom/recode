@@ -1,5 +1,6 @@
 package me.reasonless.codeutilities;
 
+import me.reasonless.codeutilities.schematic.SchematicLoader;
 import net.fabricmc.api.ModInitializer;
 
 import java.io.File;
@@ -28,6 +29,8 @@ public class Main implements ModInitializer {
 		if(!imagesFolder.exists()) {
 			imagesFolder.mkdir();
 		}
+
+		new SchematicLoader();
 
 
 
