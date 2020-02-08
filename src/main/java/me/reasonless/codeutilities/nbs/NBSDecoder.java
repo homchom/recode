@@ -132,7 +132,7 @@ public class NBSDecoder {
 
         dataInputStream.close();
 			
-        return new SongData(title, author, speed, (int)((Math.ceil((length+1) / timeSignature) + 1) * timeSignature), stringBuilder.toString(), file, layerStringBuilder.toString(), loopTick, loopCount);
+        return new SongData(title, author, speed, (int)((Math.ceil((length+1) / timeSignature) + 1) * timeSignature), stringBuilder.toString(), file, layerStringBuilder.toString(), (loopTick + 1), loopCount);
 	}
 
 
