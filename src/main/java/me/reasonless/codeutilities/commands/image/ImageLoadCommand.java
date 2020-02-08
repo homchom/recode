@@ -2,10 +2,10 @@ package me.reasonless.codeutilities.commands.image;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.realmsclient.gui.ChatFormatting;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import me.reasonless.codeutilities.images.ImageConverter;
 import me.reasonless.codeutilities.images.ImageToTemplate;
+import me.reasonless.codeutilities.util.MinecraftColors;
 import me.reasonless.codeutilities.util.TemplateNBT;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
@@ -30,9 +30,9 @@ public class ImageLoadCommand {
             TemplateNBT.setTemplateNBT(stack, StringArgumentType.getString(ctx, "location"), mc.player.getName().asString(), toTemplate.convert());
             mc.interactionManager.clickCreativeStack(stack, 36 + mc.player.inventory.selectedSlot);
 
-            mc.player.sendMessage(new LiteralText(ChatFormatting.DARK_GREEN + " - " + ChatFormatting.GREEN + "Image loaded! Change the first Set Variable to the location!"));
+            mc.player.sendMessage(new LiteralText(MinecraftColors.DARK_GREEN + " - " + MinecraftColors.GREEN + "Image loaded! Change the first Set Variable to the location!"));
         }else {
-            mc.player.sendMessage(new LiteralText(ChatFormatting.DARK_RED + " - " + ChatFormatting.RED + "That image doesn't exist."));
+            mc.player.sendMessage(new LiteralText(MinecraftColors.DARK_RED + " - " + MinecraftColors.RED + "That image doesn't exist."));
         }
         return 1;
     }

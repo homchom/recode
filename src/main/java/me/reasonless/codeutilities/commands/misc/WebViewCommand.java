@@ -2,8 +2,8 @@ package me.reasonless.codeutilities.commands.misc;
 
 import com.google.gson.Gson;
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.realmsclient.gui.ChatFormatting;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
+import me.reasonless.codeutilities.util.MinecraftColors;
 import me.reasonless.codeutilities.util.TemplateJson;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
@@ -20,12 +20,12 @@ public class WebViewCommand {
 			CompoundTag publicBukkitNBT = tag.getCompound("PublicBukkitValues");
 			String template = publicBukkitNBT.getString("hypercube:codetemplatedata");
 			TemplateJson templateJson = new Gson().fromJson(template, TemplateJson.class);
-			LiteralText text = new LiteralText(ChatFormatting.DARK_GREEN + " - " + ChatFormatting.GREEN + "To open this template in web-view click this message!");
+			LiteralText text = new LiteralText(MinecraftColors.DARK_GREEN + " - " + MinecraftColors.GREEN + "To open this template in web-view click this message!");
 			text.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.values()[0], String.format("https://derpystuff.gitlab.io/code/?template=%s", templateJson.code)));
 			mc.player.sendMessage(text);
 
 		}catch(NullPointerException e) {
-			mc.player.sendMessage(new LiteralText(ChatFormatting.DARK_RED + " - " + ChatFormatting.RED + "The item you are holding is not a valid template."));
+			mc.player.sendMessage(new LiteralText(MinecraftColors.DARK_RED + " - " + MinecraftColors.RED + "The item you are holding is not a valid template."));
 			return 1;
 		}
 		return 1;

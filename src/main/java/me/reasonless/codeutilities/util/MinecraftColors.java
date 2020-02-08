@@ -16,7 +16,13 @@ public enum MinecraftColors {
     RED(255, 85, 85, "§c"),
     LIGHT_PURPLE(255, 85, 255, "§d"),
     YELLOW(255, 255, 85, "§e"),
-    WHITE(255, 255, 255, "§f");
+    WHITE(255, 255, 255, "§f"),
+    OBFUSCATED(-1, -1, -1, "§k"),
+    BOLD(-1, -1, -1, "§l"),
+    STRIKETHROUGH(-1, -1, -1, "§m"),
+    UNDERLINE(-1, -1, -1, "§n"),
+    ITALIC(-1, -1, -1, "§o"),
+    RESET(-1, -1, -1, "§r");
 
 
     int r, g, b;
@@ -42,6 +48,10 @@ public enum MinecraftColors {
 
     public String getMc() {
         return mc;
+    }
+
+    public String toString() {
+     return mc;
     }
 }
 

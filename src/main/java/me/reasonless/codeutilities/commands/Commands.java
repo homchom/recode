@@ -2,7 +2,6 @@ package me.reasonless.codeutilities.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import com.mojang.realmsclient.gui.ChatFormatting;
 import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.ClientCommandPlugin;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
@@ -14,6 +13,7 @@ import me.reasonless.codeutilities.commands.misc.WebViewCommand;
 import me.reasonless.codeutilities.commands.nbs.NBSCommand;
 import me.reasonless.codeutilities.commands.nbs.NBSLoadCommand;
 import me.reasonless.codeutilities.commands.nbs.NBSPlayerCommand;
+import me.reasonless.codeutilities.util.MinecraftColors;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.LiteralText;
 
@@ -38,9 +38,9 @@ public class Commands implements ClientCommandPlugin {
 							try {
 								return NBSLoadCommand.execute(mc, ctx);
 							} catch (Exception e) {
-								mc.player.sendMessage(new LiteralText(ChatFormatting.DARK_RED + " - " + ChatFormatting.RED + "There was an error loading this nbs file."));
-								mc.player.sendMessage(new LiteralText(ChatFormatting.DARK_RED + " - " + ChatFormatting.RED + "Maybe the nbs is made using an older Noteblock Studio Version."));
-								mc.player.sendMessage(new LiteralText(ChatFormatting.GOLD + " - " + ChatFormatting.YELLOW + "The NBS function uses NBS File Format v4"));
+								mc.player.sendMessage(new LiteralText(MinecraftColors.DARK_RED + " - " + MinecraftColors.RED + "There was an error loading this nbs file."));
+								mc.player.sendMessage(new LiteralText(MinecraftColors.DARK_RED + " - " + MinecraftColors.RED + "Maybe the nbs is made using an older Noteblock Studio Version."));
+								mc.player.sendMessage(new LiteralText(MinecraftColors.GOLD + " - " + MinecraftColors.YELLOW + "The NBS function uses NBS File Format v4"));
 								e.printStackTrace();
 							}
 							return 1;
@@ -54,7 +54,7 @@ public class Commands implements ClientCommandPlugin {
 									try {
 										return ImageLoadCommand.execute(mc, ctx);
 									} catch (Exception e) {
-										mc.player.sendMessage(new LiteralText(ChatFormatting.DARK_RED + " - " + ChatFormatting.RED + "There was an error loading this image."));
+										mc.player.sendMessage(new LiteralText(MinecraftColors.DARK_RED + " - " + MinecraftColors.RED + "There was an error loading this image."));
 										e.printStackTrace();
 									}
 									return 1;
