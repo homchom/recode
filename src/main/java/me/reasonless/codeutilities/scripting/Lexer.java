@@ -1,4 +1,4 @@
-package scripting;
+package me.reasonless.codeutilities.scripting;
 
 import java.util.ArrayList;
 import java.util.List;

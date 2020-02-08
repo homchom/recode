@@ -1,4 +1,4 @@
-package scripting;
+package me.reasonless.codeutilities.scripting;
 
 public class Token {
     TokenType tokenType;
