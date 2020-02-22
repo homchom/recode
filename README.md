@@ -16,7 +16,7 @@
     
 </div>
 <br>
-This is the Github repository for CodeUtilities which is a mod developed by Reasonless, KabanFriends and LolpopHD the mod is developed for Fabric and Forge, you can view the Forge branch <a href="https://github.com/Reasonlesss/CodeUtilities/tree/forge">here</a>.
+This is the Github repository for CodeUtilities which is a mod developed by Reasonless, KabanFriends and LolpopHD. The mod is developed for Fabric and Forge, you can view the Forge branch <a href="https://github.com/Reasonlesss/CodeUtilities/tree/forge">here</a>.
 
 ## Installation
 1. Install Fabric or Forge.

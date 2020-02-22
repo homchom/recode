@@ -57,9 +57,6 @@ public class NBSDecoder {
         readString(dataInputStream);
         String description = readString(dataInputStream);
         actualSpeed = readShort(dataInputStream);
-        if (actualSpeed > 2000) {
-        	actualSpeed = 2000;
-        }
         speed = actualSpeed / 100f;
         dataInputStream.readBoolean();
         dataInputStream.readByte();

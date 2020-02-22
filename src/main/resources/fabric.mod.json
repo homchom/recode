@@ -4,14 +4,18 @@
   "version": "1.3",
 
   "name": "CodeUtilities",
-  "description": "Useful stuff for coding in DiamondFire! This mod can generate code templates from music NBS files, or image files for holograms!",
-  "authors": [
-    "Reasonless", "Lolpop (MeeksHD)", "KabanFriends"
-  ],
+  "description": "Useful stuff for coding in DiamondFire!\nThis mod can generate code templates from music NBS files, or image files for holograms!\nDeveloped by: Reasonless, Lolpop (MeeksHD), KabanFriends",
 
 
   "license": "CC0-1.0",
-  "icon": "assets/modid/icon.png",
+  "icon": "assets/codeutilities/icon.png",
+  "environment": "client",
+
+  "contact": {
+    "homepage": "http://reasonless.gq/codeutilities",
+    "sources": "https://github.com/Reasonlesss/CodeUtilities",
+    "issues": "https://discord.gg/pWfSBJ4"
+  },
 
   "environment": "*",
   "entrypoints": {	
@@ -28,5 +32,8 @@
   },
   "suggests": {
     "flamingo": "*"
+  },
+  "custom": {
+    "modmenu:clientsideOnly": true
   }
 }
