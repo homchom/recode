@@ -42,6 +42,7 @@ public class Keybinds {
         KeyBindingRegistry.INSTANCE.register(buildKeybind);
         KeyBindingRegistry.INSTANCE.register(playKeybind);
 
+
         ClientTickCallback.EVENT.register(e ->
         {
             if(minecraftClient != null) {
@@ -53,8 +54,6 @@ public class Keybinds {
                     }
                 }
             }
-
-
         });
     }
 }
