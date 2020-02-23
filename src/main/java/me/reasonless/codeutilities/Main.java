@@ -1,6 +1,7 @@
 package me.reasonless.codeutilities;
 
 import me.reasonless.codeutilities.schematic.SchematicLoader;
+import me.reasonless.codeutilities.util.Keybinds;
 import net.fabricmc.api.ModInitializer;
 
 import java.io.File;
@@ -11,6 +12,8 @@ public class Main implements ModInitializer {
 	
 	public static final String PARSER_VERSION = "2"; //NBS parser version
 	public static final String NBS_FORMAT_VERSION = "4"; //NBS format version
+
+	private Keybinds keybinds;
 	
 	@Override 
 	public void onInitialize() {
@@ -32,7 +35,6 @@ public class Main implements ModInitializer {
 
 		new SchematicLoader();
 
-
-
+		this.keybinds = new Keybinds();
 	}
 }

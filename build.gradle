@@ -31,7 +31,7 @@ dependencies {
 
 	//Commands
     modCompile "io.github.cottonmc:cotton-client-commands:0.4.2+1.14.3-SNAPSHOT"
-    
+
     include "io.github.cottonmc:cotton-client-commands:0.4.2+1.14.3-SNAPSHOT"
 }
 
