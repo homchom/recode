@@ -35,6 +35,7 @@ public class NBSDecoder {
 		short timeSignature = 4;
 		int loopTick = 0;
 		int loopCount = 0;
+		int vanillaInstruments = 0;
 
 		StringBuilder stringBuilder = new StringBuilder();
 		StringBuilder layerStringBuilder = new StringBuilder();
@@ -47,8 +48,8 @@ public class NBSDecoder {
         if(nbsversion != 4) {
             throw new OutdatedNBSException();
         }
+        vanillaInstruments = dataInputStream.readByte();
         if (length == 0) {
-            dataInputStream.readByte();
             length = readShort(dataInputStream);
         }
         short layers = readShort(dataInputStream);
@@ -72,9 +73,13 @@ public class NBSDecoder {
         loopTick = readShort(dataInputStream);
         short tick = -1;
         String[][] stringList = new String[layers][length + 1];
+        String[][] addStringList = new String[layers][length + 1];
+        int[][] instrumentList = new int[layers][length + 1];
+        int[][] pitchList = new int[layers][length + 1];
+        int[][] finepitchList = new int[layers][length + 1];
         int[][] velocityList = new int[layers][length + 1];
         int[][] panningList = new int[layers][length + 1];
-        while (true) {
+        while (true) { //Read notes
             short t = readShort(dataInputStream);
             if (t == 0) {
                 break;
@@ -94,13 +99,16 @@ public class NBSDecoder {
                 int panning = Byte.toUnsignedInt(dataInputStream.readByte());
                 short finepitch = readShort(dataInputStream);
                 
-                stringList[layer][tick] = "=" + (instrument + 1) + ";" + (tick + 1) + ";" + getMinecraftPitch(note + (double)finepitch/100d);
+                stringList[layer][tick] = "=" + (instrument + 1) + ";" + (tick + 1);
+                instrumentList[layer][tick] = instrument;
+                pitchList[layer][tick] = note;
+                finepitchList[layer][tick] = finepitch;
                 velocityList[layer][tick] = velocity;
                 panningList[layer][tick] = panning;
             }
         }
 
-        for (int i = 0; i < layers; i++) {
+        for (int i = 0; i < layers; i++) { //Read layer data
 
             String name = readString(dataInputStream);
             dataInputStream.readByte();
@@ -119,12 +127,55 @@ public class NBSDecoder {
                 	double averageVelocity = noteVelocity * (volume/100d);
                 	double averagePanning = (notePanning + panning)/2d;
 
-                	String finalString = noteString + ";" + averageVelocity + ";" + ((averagePanning - 100)/50);
-                	stringBuilder.append(finalString);
+                	String finalString = ";" + averageVelocity + ";" + ((averagePanning - 100)/50);
+                	addStringList[i][currentTick] = finalString;
             	}
             }
 
             layerStringBuilder.append("=" + volume + ";" + panning);
+        }
+        
+        int customInstruments = 0;
+        customInstruments = dataInputStream.readByte();
+        
+        int[] customPitchList = new int[customInstruments];
+        
+        if (customInstruments >= 1) {
+        	for (int i = 0; i < customInstruments; i++) {
+        		int instrumentOffset = vanillaInstruments + customInstruments;
+        		int instrumentPitch = 0;
+        		
+        		readString(dataInputStream); //Instrument name
+        		readString(dataInputStream); //Sound file
+        		
+        		instrumentPitch = dataInputStream.readByte(); //Sound pitch
+        		
+        		customPitchList[i] = instrumentPitch;
+        		
+        		dataInputStream.readByte();	//Press key
+        	}
+        }
+        
+        for (int i = 0; i < layers; i++) {
+        	for(int currentTick = 0; currentTick < length + 1; currentTick++) {
+        		String noteString = stringList[i][currentTick];
+        		if (noteString != null) {
+        			String laterNoteString = addStringList[i][currentTick];
+                 		
+        			int noteInstrument = instrumentList[i][currentTick];
+        			int noteKey = pitchList[i][currentTick];
+        			int noteFinePitch = finepitchList[i][currentTick];
+                
+        			if (noteInstrument > vanillaInstruments) {
+        				int instrumentId = noteInstrument - vanillaInstruments;
+        				int noteKeyOffset = customPitchList[instrumentId];
+
+        				noteKey += (noteKey - noteKeyOffset); 
+        			}
+        			String finalString = noteString + ";" + getMinecraftPitch(noteKey + (double)noteFinePitch/100d) + laterNoteString;
+        			stringBuilder.append(finalString);
+        		}
+        	}
         }
 
         dataInputStream.close();
