@@ -43,8 +43,7 @@ public class NBSToTemplate {
 		StringBuilder code = new StringBuilder();
 		StringBuilder currentBlock = new StringBuilder();
 		
-		BigDecimal tempoBD = new BigDecimal(String.valueOf(this.speed));  
-		String songTempo = tempoBD.stripTrailingZeros().toPlainString();
+		String songTempo = new BigDecimal(this.speed).stripTrailingZeros().toPlainString(); 
 		
 		if(name.length() == 0) name = filename;
 		if(author.length() == 0) author = "N/A";

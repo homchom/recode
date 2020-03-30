@@ -126,13 +126,19 @@ public class NBSDecoder {
                 	
                 	double averageVelocity = noteVelocity * (volume/100d);
                 	double averagePanning = (notePanning + panning)/2d;
+                	
+                	String finalVelocity = new BigDecimal(averageVelocity).stripTrailingZeros().toPlainString();
+                	String finalPanning = new BigDecimal((averagePanning - 100)/50).stripTrailingZeros().toPlainString();
 
-                	String finalString = ";" + averageVelocity + ";" + ((averagePanning - 100)/50);
+                	String finalString = ";" + finalVelocity + ";" + finalPanning;
                 	addStringList[i][currentTick] = finalString;
             	}
             }
-
-            layerStringBuilder.append("=" + volume + ";" + panning);
+            
+            String finalLayerVolume = new BigDecimal(volume).stripTrailingZeros().toPlainString();
+            String finalLayerPanning = new BigDecimal(panning).stripTrailingZeros().toPlainString();
+            
+            layerStringBuilder.append("=" + finalLayerVolume + ";" + finalLayerPanning);
         }
         
         int customInstruments = 0;
@@ -179,7 +185,10 @@ public class NBSDecoder {
         }
 
         dataInputStream.close();
-			
+        
+        //System.out.println(stringBuilder.toString()); //COOL DEBUG CODE
+        //System.out.println(layerStringBuilder.toString()); //COOL DEBUG CODE
+        
         return new SongData(title, author, speed, (int)((Math.ceil((length+1) / timeSignature) + 1) * timeSignature), stringBuilder.toString(), file, layerStringBuilder.toString(), (loopTick + 1), loopCount);
 	}
 
@@ -214,7 +223,7 @@ public class NBSDecoder {
 		return builder.toString();
 	}
 	
-	private static BigDecimal getMinecraftPitch(double key) {
+	private static String getMinecraftPitch(double key) {
 		
 		if (key < 33) key -= 9;
 		else if (key > 57) key -= 57;
@@ -222,6 +231,6 @@ public class NBSDecoder {
 		
 		BigDecimal pitch = new BigDecimal(0.5 * (Math.pow(2,(key/12))));
 		
-		return pitch.setScale(3,BigDecimal.ROUND_FLOOR);
+		return pitch.setScale(3,BigDecimal.ROUND_FLOOR).stripTrailingZeros().toPlainString();
 	}
 }
