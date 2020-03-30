@@ -60,7 +60,7 @@ public class NBSToTemplate {
 				slot = 1;
 			}
 
-			if(!(currentNotes.length() < 9990)) {
+			if(!(currentNotes.length() < 1900)) {
 				currentBlock.append(String.format(", {\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"%s\"}},\"slot\":%d}", currentNotes.toString(), slot));
 				currentNotes.delete(0, currentNotes.length());
 				slot++;
