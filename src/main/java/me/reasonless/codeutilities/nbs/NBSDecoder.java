@@ -127,16 +127,16 @@ public class NBSDecoder {
                 	double averageVelocity = noteVelocity * (volume/100d);
                 	double averagePanning = (notePanning + panning)/2d;
                 	
-                	String finalVelocity = new BigDecimal(averageVelocity).stripTrailingZeros().toPlainString();
-                	String finalPanning = new BigDecimal((averagePanning - 100)/50).stripTrailingZeros().toPlainString();
+                	String finalVelocity = new BigDecimal(averageVelocity).setScale(3,BigDecimal.ROUND_FLOOR).stripTrailingZeros().toPlainString();
+                	String finalPanning = new BigDecimal((averagePanning - 100)/50).setScale(3,BigDecimal.ROUND_FLOOR).stripTrailingZeros().toPlainString();
 
                 	String finalString = ";" + finalVelocity + ";" + finalPanning;
                 	addStringList[i][currentTick] = finalString;
             	}
             }
             
-            String finalLayerVolume = new BigDecimal(volume).stripTrailingZeros().toPlainString();
-            String finalLayerPanning = new BigDecimal(panning).stripTrailingZeros().toPlainString();
+            String finalLayerVolume = new BigDecimal(volume).setScale(3,BigDecimal.ROUND_FLOOR).stripTrailingZeros().toPlainString();
+            String finalLayerPanning = new BigDecimal(panning).setScale(3,BigDecimal.ROUND_FLOOR).stripTrailingZeros().toPlainString();
             
             layerStringBuilder.append("=" + finalLayerVolume + ";" + finalLayerPanning);
         }
