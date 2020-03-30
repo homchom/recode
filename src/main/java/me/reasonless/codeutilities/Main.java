@@ -10,7 +10,7 @@ public class Main implements ModInitializer {
 	
 	public static final String MOD_VERSION = "1.3"; //CodeUtilities mod version
 	
-	public static final String PARSER_VERSION = "2"; //NBS parser version
+	public static final String PARSER_VERSION = "3"; //NBS parser version
 	public static final String NBS_FORMAT_VERSION = "4"; //NBS format version
 
 	//private Keybinds keybinds;
