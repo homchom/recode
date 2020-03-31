@@ -42,7 +42,13 @@ public class NBSLoadCommand {
 		TemplateNBT.setTemplateNBT(stack, d.getName(), d.getAuthor(), code);
 		
 		if(d.getName().length() == 0) {
-			stack.setCustomName(new LiteralText(MinecraftColors.DARK_PURPLE + "SONG " + MinecraftColors.GRAY + " - " + MinecraftColors.WHITE + " " + d.getFileName()));
+			String name;
+			if (d.getFileName().indexOf(".") > 0) {
+				name = d.getFileName().substring(0, d.getFileName().lastIndexOf("."));
+			}else {
+				name = d.getFileName();
+			}
+			stack.setCustomName(new LiteralText(MinecraftColors.DARK_PURPLE + "SONG " + MinecraftColors.GRAY + " - " + MinecraftColors.WHITE + " " + name));
 		}else {
 			stack.setCustomName(new LiteralText(MinecraftColors.DARK_PURPLE + "SONG " + MinecraftColors.GRAY + " - " + MinecraftColors.WHITE + " " + d.getName()));
 		}

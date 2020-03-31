@@ -45,10 +45,16 @@ public class NBSToTemplate {
 		
 		String songTempo = new BigDecimal(this.speed).stripTrailingZeros().toPlainString(); 
 		
-		if(name.length() == 0) name = filename;
+		if(name.length() == 0) {
+			if (filename.indexOf(".") > 0) {
+				name = filename.substring(0, filename.lastIndexOf("."));
+			} else {
+				name = filename;
+			}
+		}
 		if(author.length() == 0) author = "N/A";
 
-		code.append(String.format("{\"id\":\"block\",\"block\":\"func\",\"args\":{\"items\":[{\"item\":{\"id\":\"bl_tag\",\"data\":{\"option\":\"False\",\"tag\":\"Is Hidden\",\"action\":\"dynamic\",\"block\":\"func\"}},\"slot\":26}]},\"data\":\"%s\"},", ((name.length() > 12) ? name.substring(0, 12) : name)));
+		code.append(String.format("{\"id\":\"block\",\"block\":\"func\",\"args\":{\"items\":[{\"item\":{\"id\":\"bl_tag\",\"data\":{\"option\":\"False\",\"tag\":\"Is Hidden\",\"action\":\"dynamic\",\"block\":\"func\"}},\"slot\":26}]},\"data\":\"%s\"},", name));
 		
 		int slot = 1;
 		code.append("{\"id\":\"block\",\"block\":\"set_var\",\"args\":{\"items\":[{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"notes\",\"scope\":\"local\"}},\"slot\":0}]},\"action\":\"CreateList\"},");
