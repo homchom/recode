@@ -10,8 +10,9 @@ public class SongData {
 	String layers;
 	int loopTick;
 	int loopCount;
+	int customInstrumentCount;
 	
-	public SongData(String name, String author, float speed, int length, String notes, String fileName, String layers, int loopTick, int loopCount) {
+	public SongData(String name, String author, float speed, int length, String notes, String fileName, String layers, int loopTick, int loopCount, int customInstrumentCount) {
 		this.name = name;
 		this.author = author;
 		this.speed = speed;
@@ -21,6 +22,7 @@ public class SongData {
 		this.layers = layers;
 		this.loopTick = loopTick;
 		this.loopCount = loopCount;
+		this.customInstrumentCount = customInstrumentCount;
 	}
 
 	public String getName() {
@@ -77,5 +79,9 @@ public class SongData {
 	
 	public int getLoopCount() {
 		return loopCount;
+	}
+	
+	public int getCustomInstrumentCount() {
+		return customInstrumentCount;
 	}
 }

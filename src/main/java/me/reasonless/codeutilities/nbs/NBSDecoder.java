@@ -7,6 +7,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import me.reasonless.codeutilities.nbs.exception.OutdatedNBSException;
 
@@ -72,13 +74,15 @@ public class NBSDecoder {
         loopCount = dataInputStream.readByte();
         loopTick = readShort(dataInputStream);
         short tick = -1;
-        String[][] stringList = new String[layers][length + 1];
         String[][] addStringList = new String[layers][length + 1];
         int[][] instrumentList = new int[layers][length + 1];
         int[][] pitchList = new int[layers][length + 1];
         int[][] finepitchList = new int[layers][length + 1];
         int[][] velocityList = new int[layers][length + 1];
         int[][] panningList = new int[layers][length + 1];
+        boolean[] columnExistence = new boolean[length + 1];
+        boolean[][] noteExistence = new boolean[layers][length + 1];
+        boolean firstNoted = false;
         while (true) { //Read notes
             short t = readShort(dataInputStream);
             if (t == 0) {
@@ -86,6 +90,8 @@ public class NBSDecoder {
             }
             tick += t;
 
+            columnExistence[tick] = true;
+            
             short layer = -1;
             while (true) {
                 short jumpLayers = readShort(dataInputStream);
@@ -97,14 +103,20 @@ public class NBSDecoder {
                 byte note = dataInputStream.readByte();
                 byte velocity = dataInputStream.readByte();
                 int panning = Byte.toUnsignedInt(dataInputStream.readByte());
-                short finepitch = readShort(dataInputStream);
+                short finepitch = readShort(dataInputStream);   
                 
-                stringList[layer][tick] = "=" + (instrument + 1) + ";" + (tick + 1);
+                //System.out.println("==NOTE #" + debugNoteCount + "==");
+                //System.out.println("  Tick: " + tick);
+                //System.out.println("  Instrument ID: " + instrument);
+                //System.out.println("  Jump to the next tick: " + tCopy);
+                //System.out.println("  Jump to the next layer: " + jumpLayers);
+                
                 instrumentList[layer][tick] = instrument;
                 pitchList[layer][tick] = note;
                 finepitchList[layer][tick] = finepitch;
                 velocityList[layer][tick] = velocity;
                 panningList[layer][tick] = panning;
+                noteExistence[layer][tick] = true;
             }
         }
 
@@ -118,8 +130,8 @@ public class NBSDecoder {
             int panning = Byte.toUnsignedInt(dataInputStream.readByte());
             
             for(int currentTick = 0; currentTick < length + 1; currentTick++) {
-            	String noteString = stringList[i][currentTick];
-            	if (noteString != null) {
+            	boolean noteExists = noteExistence[i][currentTick];
+            	if (noteExists == true) {
             		
             		int noteVelocity = velocityList[i][currentTick];
                 	int notePanning = panningList[i][currentTick];
@@ -127,10 +139,22 @@ public class NBSDecoder {
                 	double averageVelocity = noteVelocity * (volume/100d);
                 	double averagePanning = (notePanning + panning)/2d;
                 	
+                	double preFinalPanning = (averagePanning - 100)/50;
+                	
                 	String finalVelocity = new BigDecimal(averageVelocity).setScale(3,BigDecimal.ROUND_FLOOR).stripTrailingZeros().toPlainString();
-                	String finalPanning = new BigDecimal((averagePanning - 100)/50).setScale(3,BigDecimal.ROUND_FLOOR).stripTrailingZeros().toPlainString();
+                	String finalPanning = new BigDecimal(preFinalPanning).setScale(3,BigDecimal.ROUND_FLOOR).stripTrailingZeros().toPlainString();
 
-                	String finalString = ";" + finalVelocity + ";" + finalPanning;
+                	//COOL DEBUG CODE STARTS FROM HERE
+                		//System.out.println("Pre-Final Panning: " + preFinalPanning);
+                		//System.out.println("Final Panning: " + finalPanning);
+                	//COOL DEBUG CODE ENDS HERE
+                	
+                	String finalString;
+                	if (preFinalPanning == 0) {
+                		finalString = "," + finalVelocity;
+                	}else {
+                		finalString = "," + finalVelocity + "," + finalPanning;
+                	}
                 	addStringList[i][currentTick] = finalString;
             	}
             }
@@ -138,7 +162,7 @@ public class NBSDecoder {
             String finalLayerVolume = new BigDecimal(volume).setScale(3,BigDecimal.ROUND_FLOOR).stripTrailingZeros().toPlainString();
             String finalLayerPanning = new BigDecimal(panning).setScale(3,BigDecimal.ROUND_FLOOR).stripTrailingZeros().toPlainString();
             
-            layerStringBuilder.append("=" + finalLayerVolume + ";" + finalLayerPanning);
+            layerStringBuilder.append("=" + finalLayerVolume + "," + finalLayerPanning);
         }
         
         int customInstruments = 0;
@@ -162,34 +186,61 @@ public class NBSDecoder {
         	}
         }
         
-        for (int i = 0; i < layers; i++) {
-        	for(int currentTick = 0; currentTick < length + 1; currentTick++) {
-        		String noteString = stringList[i][currentTick];
-        		if (noteString != null) {
-        			String laterNoteString = addStringList[i][currentTick];
-                 		
-        			int noteInstrument = instrumentList[i][currentTick];
-        			int noteKey = pitchList[i][currentTick];
-        			int noteFinePitch = finepitchList[i][currentTick];
-                
-        			if (noteInstrument > vanillaInstruments) {
-        				int instrumentId = noteInstrument - vanillaInstruments;
-        				int noteKeyOffset = customPitchList[instrumentId];
-
-        				noteKey += (noteKey - noteKeyOffset); 
-        			}
-        			String finalString = noteString + ";" + getMinecraftPitch(noteKey + (double)noteFinePitch/100d) + laterNoteString;
-        			stringBuilder.append(finalString);
-        		}
-        	}
-        }
+        //EPIC DEBUG CODE STARTS FROM HERE
+        	//System.out.println("List length: " + jumpTickList.size());
+        	//System.out.println("Array length: " + jumpTickArray.length);
+        //EPIC DEBUG CODE ENDS HERE
 
         dataInputStream.close();
         
-        //System.out.println(stringBuilder.toString()); //COOL DEBUG CODE
-        //System.out.println(layerStringBuilder.toString()); //COOL DEBUG CODE
+        for (int currentTick = 0; currentTick < length + 1; currentTick++) {
+        	boolean columnExists = columnExistence[currentTick];
+        	if (columnExists == true) {
+        		StringBuilder columnStringBuilder = new StringBuilder();
+        		if (!firstNoted) {
+                	columnStringBuilder.append(currentTick + 1);
+                	firstNoted = true;
+                }else {
+                	columnStringBuilder.append("=" + (currentTick + 1));
+                }
+        		boolean firstAppend = true;
+        		for (int i = 0; i < layers ; i++) {
+        			boolean noteExists = noteExistence[i][currentTick];
+            		if (noteExists == true) {
+            			String laterNoteString = addStringList[i][currentTick];
+                     		
+            			int noteInstrument = instrumentList[i][currentTick];
+            			int noteKey = pitchList[i][currentTick];
+            			int noteFinePitch = finepitchList[i][currentTick];
+            			
+            			//ANOTHER EPIC DEBUG CODE STARTS FROM HERE
+            				//System.out.println("Note ID: " + noteID);
+            			//ANOTHER EPIC DEBUG CODE ENDS HERE
+                    
+            			if (noteInstrument > vanillaInstruments) {
+            				int instrumentId = noteInstrument - vanillaInstruments;
+            				int noteKeyOffset = customPitchList[instrumentId];
+
+            				noteKey += (noteKey - noteKeyOffset); 
+            			}
+            			if (firstAppend == true) {
+            				columnStringBuilder.append(":" + (noteInstrument + 1 ) + "," + getMinecraftPitch(noteKey + (double)noteFinePitch/100d) + laterNoteString);
+            				firstAppend = false;
+            			}else {
+            				columnStringBuilder.append(";" + (noteInstrument + 1 ) + "," + getMinecraftPitch(noteKey + (double)noteFinePitch/100d) + laterNoteString);
+            			}
+            		}
+        		}
+        		stringBuilder.append(columnStringBuilder.toString());
+        	}
+        }
         
-        return new SongData(title, author, speed, (int)((Math.ceil((length+1) / timeSignature) + 1) * timeSignature), stringBuilder.toString(), file, layerStringBuilder.toString(), (loopTick + 1), loopCount);
+        //YET ANOTHER EPIC DEBUG CODE STARTS FROM HERE
+        	//System.out.println("Note Data: " + stringBuilder.toString());
+        	//System.out.println("Layer Data: " + layerStringBuilder.toString());
+        //YET ANOTHER EPIC DEBUG CODE ENDS HERE
+        
+        return new SongData(title, author, speed, (int)((Math.ceil((length+1) / timeSignature) + 1) * timeSignature), stringBuilder.toString(), file, layerStringBuilder.toString(), (loopTick + 1), loopCount, customInstruments);
 	}
 
 
@@ -223,14 +274,14 @@ public class NBSDecoder {
 		return builder.toString();
 	}
 	
-	private static String getMinecraftPitch(double key) {
+	private static int getMinecraftPitch(double key) {
 		
 		if (key < 33) key -= 9;
 		else if (key > 57) key -= 57;
 		else key -= 33;
 		
-		BigDecimal pitch = new BigDecimal(0.5 * (Math.pow(2,(key/12))));
+		double finalValue = (0.5 * (Math.pow(2,(key/12)))) * 1000;
 		
-		return pitch.setScale(3,BigDecimal.ROUND_FLOOR).stripTrailingZeros().toPlainString();
+		return (int) finalValue;
 	}
 }
