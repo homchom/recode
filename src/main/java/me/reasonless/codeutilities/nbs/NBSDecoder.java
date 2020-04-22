@@ -221,7 +221,7 @@ public class NBSDecoder {
             				int instrumentId = noteInstrument - vanillaInstruments;
             				int noteKeyOffset = customPitchList[instrumentId];
 
-            				noteKey += (noteKey - noteKeyOffset); 
+            				noteKey = noteKey - noteKeyOffset; 
             			}
             			if (firstAppend == true) {
             				columnStringBuilder.append(":" + (noteInstrument + 1 ) + "," + getMinecraftPitch(noteKey + (double)noteFinePitch/100d) + laterNoteString);
