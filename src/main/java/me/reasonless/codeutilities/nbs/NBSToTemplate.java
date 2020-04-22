@@ -55,13 +55,12 @@ public class NBSToTemplate {
 		code.append(String.format("{\"id\":\"block\",\"block\":\"func\",\"args\":{\"items\":[{\"item\":{\"id\":\"bl_tag\",\"data\":{\"option\":\"False\",\"tag\":\"Is Hidden\",\"action\":\"dynamic\",\"block\":\"func\"}},\"slot\":26}]},\"data\":\"%s\"},", name));
 		
 		int slot = 1;
-		int index = 1;
 		int chestCount = 1;
 		boolean chestInited = false;
 		int noteCount = 0;
 		boolean finalNote = false;
 		
-		for(String s:songData) {
+		for(int i=0;i < songData.length;i++) {
 			boolean closeChest = false;
 			if (slot==1) {
 				if (!chestInited) {
@@ -75,22 +74,28 @@ public class NBSToTemplate {
 			}
 			
 			if (!closeChest) {
+				String currentNote = songData[i];
+				String revertString = currentNotes.toString();				
+				
 				if (noteCount==0) {
-					currentNotes.append(s);
+					currentNotes.append(currentNote);
 				}else {
-					currentNotes.append("=" + s);
+					currentNotes.append("=" + currentNote);
 				}
 				noteCount++;
 				
-				if(currentNotes.length() > 1900) {
+				if(currentNotes.length() > 1930) {
+					currentNotes = new StringBuilder(revertString);
 					currentBlock.append(String.format(",{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"%s\"}},\"slot\":%d}", currentNotes.toString(), slot));
+					System.out.println("reverting to " + (i-1));
 					currentNotes.setLength(0);
 					noteCount = 0;
 					finalNote = true;
+					i -= 1;
 					slot++;
 				}
 				
-				if (index >= songData.length) {
+				if (i >= songData.length - 1) {
 					if (!finalNote) {
 						currentBlock.append(String.format(",{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"%s\"}},\"slot\":%d}", currentNotes.toString(), slot));
 						currentNotes.setLength(0);
@@ -102,14 +107,11 @@ public class NBSToTemplate {
 			if (closeChest) {
 				String varActionType;
 				if (chestCount==1) {
-					//System.out.println("This is the first chest. Setting var type to CreateList...");
 					varActionType = "CreateList";
 				}else {
-					//System.out.println("This is not the first chest. Setting var type to AppendValue...");
 					varActionType = "AppendValue";
 				}
 				
-				//System.out.println("Closing the Chest #" + chestCount + " with vartype " + varActionType + ".");
 				currentBlock.append(String.format("]},\"action\":\"%s\"},", varActionType));
 				code.append(currentBlock.toString());
 				currentBlock.setLength(0);
@@ -122,8 +124,6 @@ public class NBSToTemplate {
 				closeChest = false;
 				slot = 1;
 			}
-			
-			index++;
 		}
 		
 		//CreateList: instrumentNames
