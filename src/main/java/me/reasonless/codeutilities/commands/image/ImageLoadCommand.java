@@ -16,7 +16,7 @@ import java.io.File;
 
 public class ImageLoadCommand {
     public static int execute(MinecraftClient mc, CommandContext<CottonClientCommandSource> ctx) throws Exception {
-        File f = new File("CodeUtilities/Images/" + StringArgumentType.getString(ctx, "location") + (StringArgumentType.getString(ctx, "location").endsWith(".png") ? "" : ".nbs"));
+        File f = new File("CodeUtilities/Images/" + StringArgumentType.getString(ctx, "location") + (StringArgumentType.getString(ctx, "location").endsWith(".png") ? "" : ".png"));
 
         if(f.exists()) {
             String[] strings = ImageConverter.convert(f);
