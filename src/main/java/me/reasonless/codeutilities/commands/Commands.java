@@ -38,9 +38,9 @@ public class Commands implements ClientCommandPlugin {
 							try {
 								return NBSLoadCommand.execute(mc, ctx);
 							} catch (Exception e) {
-								mc.player.sendMessage(new LiteralText(MinecraftColors.DARK_RED + " - " + MinecraftColors.RED + "There was an error loading this nbs file."));
-								mc.player.sendMessage(new LiteralText(MinecraftColors.DARK_RED + " - " + MinecraftColors.RED + "Maybe the nbs is made using an older Noteblock Studio Version."));
-								mc.player.sendMessage(new LiteralText(MinecraftColors.GOLD + " - " + MinecraftColors.YELLOW + "The NBS function uses NBS File Format v4"));
+								mc.player.sendMessage(new LiteralText(MinecraftColors.DARK_RED + " - " + MinecraftColors.RED + "There was an error loading this nbs file."), false);
+								mc.player.sendMessage(new LiteralText(MinecraftColors.DARK_RED + " - " + MinecraftColors.RED + "Maybe the nbs is made using an older Noteblock Studio Version."), false);
+								mc.player.sendMessage(new LiteralText(MinecraftColors.GOLD + " - " + MinecraftColors.YELLOW + "The NBS function uses NBS File Format v4"), false);
 								e.printStackTrace();
 							}
 							return 1;
@@ -54,7 +54,7 @@ public class Commands implements ClientCommandPlugin {
 									try {
 										return ImageLoadCommand.execute(mc, ctx);
 									} catch (Exception e) {
-										mc.player.sendMessage(new LiteralText(MinecraftColors.DARK_RED + " - " + MinecraftColors.RED + "There was an error loading this image."));
+										mc.player.sendMessage(new LiteralText(MinecraftColors.DARK_RED + " - " + MinecraftColors.RED + "There was an error loading this image."), false);
 										e.printStackTrace();
 									}
 									return 1;
