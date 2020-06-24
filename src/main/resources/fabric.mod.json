@@ -28,7 +28,7 @@
   "depends": {
     "cotton-client-commands": ">=0.4.2",
     "fabricloader": ">=0.4.0",
-    "minecraft": "1.15.x"
+    "minecraft": "1.16.x"
   },
   "suggests": {
     "flamingo": "*"
