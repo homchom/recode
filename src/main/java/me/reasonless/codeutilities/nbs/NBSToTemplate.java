@@ -2,7 +2,7 @@ package me.reasonless.codeutilities.nbs;
 
 import java.math.BigDecimal;
 
-import me.reasonless.codeutilities.Main;
+import me.reasonless.codeutilities.CodeUtilities;
 
 public class NBSToTemplate {
 	String song;
@@ -20,7 +20,7 @@ public class NBSToTemplate {
 	
 	public NBSToTemplate(SongData song) {
 		
-		this.version = "v" + Main.PARSER_VERSION + "-nbs" + Main.NBS_FORMAT_VERSION;
+		this.version = "v" + CodeUtilities.PARSER_VERSION + "-nbs" + CodeUtilities.NBS_FORMAT_VERSION;
 
 		this.song = song.getNotes();
 		this.author = song.getAuthor();
