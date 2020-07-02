@@ -43,7 +43,7 @@ public class CodeUtilities implements ModInitializer {
 	public void onInitialize() {
 		if (FabricLoader.getInstance().isModLoaded("blazingutilities")) {
 			hasblazing = true;
-			System.out.println("[CodeUtilities] BlazingUtilities has detected! This mod will not activate merged BlazingUtilities features.");
+			System.out.println("[CodeUtilities] BlazingUtilities has been detected! This mod will not activate merged BlazingUtilities features.");
 		}
 		
 		File codeUtilities = new File("CodeUtilities");
