@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "package": "me.reasonless.codeutilities.events.mixins",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [],
+  "client": [
+    "ClientChatListenerMixin",
+    "WorldRendererMixin",
+    "ChatHudMixin",
+    "ClientPlayerEntityMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "refmap": "CodeUtilities-refmap.json"
+}

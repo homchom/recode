@@ -17,11 +17,15 @@
     "issues": "https://discord.gg/pWfSBJ4"
   },
 
+  "mixins": [
+    "codeutilities.mixins.json"
+  ],
+
   "environment": "*",
   "entrypoints": {	
   	"cotton-client-commands": ["me.reasonless.codeutilities.commands.Commands"],
     "main": [
-      "me.reasonless.codeutilities.Main"
+      "me.reasonless.codeutilities.CodeUtilities"
     ]
   },
 
