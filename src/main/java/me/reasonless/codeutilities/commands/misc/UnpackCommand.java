@@ -17,14 +17,14 @@ public class UnpackCommand {
         CompoundTag tag = stack.getTag();
 
         if(tag == null) {
-            mc.player.sendMessage(new LiteralText(MinecraftColors.DARK_RED + " - " + MinecraftColors.RED + "The item you are holding is not a valid item!"), false);
+            mc.player.sendMessage(new LiteralText(MinecraftColors.DARK_RED + " - " + MinecraftColors.RED + "The item you are holding is not a valid item!"));
             return 1;
         }
 
         CompoundTag shulkerTag = tag.getCompound("BlockEntityTag");
 
         if(shulkerTag == null) {
-            mc.player.sendMessage(new LiteralText(MinecraftColors.DARK_RED + " - " + MinecraftColors.RED + "The item you are holding is not a valid item!"), false);
+            mc.player.sendMessage(new LiteralText(MinecraftColors.DARK_RED + " - " + MinecraftColors.RED + "The item you are holding is not a valid item!"));
             return 1;
         }
 

@@ -18,10 +18,10 @@ public class NBSPlayerCommand {
 
 		mc.interactionManager.clickCreativeStack(stack, 36 + mc.player.inventory.selectedSlot);
 		
-		mc.player.sendMessage(new LiteralText(MinecraftColors.GOLD + " - " + MinecraftColors.YELLOW + "You have been given a music player pack!"), false);
-		mc.player.sendMessage(new LiteralText(MinecraftColors.GOLD + " - " + MinecraftColors.YELLOW + "Place this in your codespace and open the chest to get music functions!"), false);
-		mc.player.sendMessage(new LiteralText(MinecraftColors.DARK_PURPLE + " - " + MinecraftColors.LIGHT_PURPLE + "If you don't know how to use, check our discord!"), false);
-		mc.player.sendMessage(new LiteralText(MinecraftColors.DARK_AQUA + " - " + MinecraftColors.AQUA + "" + MinecraftColors.UNDERLINE + "https://discord.gg/QBmXaGb"), false);
+		mc.player.sendMessage(new LiteralText(MinecraftColors.GOLD + " - " + MinecraftColors.YELLOW + "You have been given a music player pack!"));
+		mc.player.sendMessage(new LiteralText(MinecraftColors.GOLD + " - " + MinecraftColors.YELLOW + "Place this in your codespace and open the chest to get music functions!"));
+		mc.player.sendMessage(new LiteralText(MinecraftColors.DARK_PURPLE + " - " + MinecraftColors.LIGHT_PURPLE + "If you don't know how to use, check our discord!"));
+		mc.player.sendMessage(new LiteralText(MinecraftColors.DARK_AQUA + " - " + MinecraftColors.AQUA + "" + MinecraftColors.UNDERLINE + "https://discord.gg/QBmXaGb"));
 
 		return 1;
 	}

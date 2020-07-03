@@ -25,7 +25,7 @@ public class NBSLoadCommand {
 			if(f2.exists()) {
 				loadNbs(f2);
 			}else {
-				mc.player.sendMessage(new LiteralText(MinecraftColors.DARK_RED + " - " + MinecraftColors.RED + "That nbs file doesn't exist."), false);
+				mc.player.sendMessage(new LiteralText(MinecraftColors.DARK_RED + " - " + MinecraftColors.RED + "That nbs file doesn't exist."));
 			}	
 		}
 		return 1;
@@ -35,7 +35,7 @@ public class NBSLoadCommand {
 		
 		MinecraftClient mc = MinecraftClient.getInstance();
 		
-		mc.player.sendMessage(new LiteralText(MinecraftColors.DARK_GREEN + " - " + MinecraftColors.GREEN + "Loading a nbs file, this may take long..."), false);
+		mc.player.sendMessage(new LiteralText(MinecraftColors.DARK_GREEN + " - " + MinecraftColors.GREEN + "Loading a nbs file, this may take long..."));
 		SongData d = NBSDecoder.parse(file);
 		String code = new NBSToTemplate(d).convert();
 		ItemStack stack = new ItemStack(Items.NOTE_BLOCK);
@@ -55,7 +55,7 @@ public class NBSLoadCommand {
 
 		mc.interactionManager.clickCreativeStack(stack, 36 + mc.player.inventory.selectedSlot);
 
-		mc.player.sendMessage(new LiteralText(MinecraftColors.GOLD + " - " + MinecraftColors.YELLOW + "Loaded nbs! Check your inventory."), false);
-		mc.player.sendMessage(new LiteralText(MinecraftColors.DARK_AQUA + " - " + MinecraftColors.AQUA + "If you need a nbs player do /nbs player to get one!"), false);
+		mc.player.sendMessage(new LiteralText(MinecraftColors.GOLD + " - " + MinecraftColors.YELLOW + "Loaded nbs! Check your inventory."));
+		mc.player.sendMessage(new LiteralText(MinecraftColors.DARK_AQUA + " - " + MinecraftColors.AQUA + "If you need a nbs player do /nbs player to get one!"));
 	}
 }
