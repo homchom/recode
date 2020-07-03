@@ -87,7 +87,6 @@ public class NBSToTemplate {
 				if(currentNotes.length() > 1930) {
 					currentNotes = new StringBuilder(revertString);
 					currentBlock.append(String.format(",{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"%s\"}},\"slot\":%d}", currentNotes.toString(), slot));
-					System.out.println("reverting to " + (i-1));
 					currentNotes.setLength(0);
 					noteCount = 0;
 					finalNote = true;
