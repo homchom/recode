@@ -152,11 +152,11 @@ public class LoreCommand {
     int index = 0;
     CodeUtilities.infoMsgYellow("New lore text:");
     for (Tag line : lore) {
-      String text = Objects.requireNonNull(Serializer.fromJson(line.asString())).asFormattedString();
+      String text = Objects.requireNonNull(Serializer.fromJson(line.asString())).asString();
       index++;
       text = "§b" + index + ". §5§o" + text;
       assert MinecraftClient.getInstance().player != null;
-      MinecraftClient.getInstance().player.sendMessage(new LiteralText(text));
+      MinecraftClient.getInstance().player.sendMessage(new LiteralText(text), false);
     }
   }
 

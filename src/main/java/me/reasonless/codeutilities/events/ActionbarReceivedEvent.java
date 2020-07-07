@@ -15,7 +15,7 @@ public class ActionbarReceivedEvent {
 
     if (CodeUtilities.hasblazing) return;
     //AutoFly
-    if (message.asFormattedString()
+    if (message.asString()
         .matches(".3DiamondFire .8 - .+ .+ CP.8 - .6. .+ Credits")) {
       autofly++;
       assert mc.player != null;

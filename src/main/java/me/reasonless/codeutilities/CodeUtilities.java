@@ -99,27 +99,27 @@ public class CodeUtilities implements ModInitializer {
 	
 	public static void successMsg(String msg) {
 	    assert mc.player != null;
-	    mc.player.sendMessage(new LiteralText("§l§l§2 - §a" + msg));
+	    mc.player.sendMessage(new LiteralText("§l§l§2 - §a" + msg), false);
 	}
 	
 	public static void errorMsg(String msg) {
 	    assert mc.player != null;
-	    mc.player.sendMessage(new LiteralText("§l§l§4 - §c" + msg));
+	    mc.player.sendMessage(new LiteralText("§l§l§4 - §c" + msg), false);
 	}
 	
 	public static void infoMsgYellow(String msg) {
 	    assert mc.player != null;
-	    mc.player.sendMessage(new LiteralText("§l§l§6 - §e" + msg));
+	    mc.player.sendMessage(new LiteralText("§l§l§6 - §e" + msg), false);
 	}
 	
 	public static void infoMsgBlue(String msg) {
 	    assert mc.player != null;
-	    mc.player.sendMessage(new LiteralText("§l§l§3 - §b" + msg));
+	    mc.player.sendMessage(new LiteralText("§l§l§3 - §b" + msg), false);
 	}
 	
 	public static void infoMsgPink(String msg) {
 	    assert mc.player != null;
-	    mc.player.sendMessage(new LiteralText("§l§l§5 - §d" + msg));
+	    mc.player.sendMessage(new LiteralText("§l§l§5 - §d" + msg), false);
 	}
 	
 	public static void giveCreativeItem(ItemStack item) {

@@ -2,6 +2,7 @@ package me.reasonless.codeutilities.events;
 
 import java.util.Date;
 
+import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import me.reasonless.codeutilities.CodeUtilities;
@@ -19,16 +20,16 @@ public class ChatReceivedEvent {
 
 	  if (CodeUtilities.hasblazing) return;
 	  
-	  if (message.asFormattedString().startsWith("§l§l§2 - §a")) {
+	  if (message.getString().startsWith("§l§l§2 - §a")) {
 		  return;
 	  }
-	  if (message.asFormattedString().startsWith("§l§l§4 - §c")) {
+	  if (message.getString().startsWith("§l§l§4 - §c")) {
 		  return;
 	  }
-	  if (message.asFormattedString().startsWith("§l§l§6 - §e")) {
+	  if (message.getString().startsWith("§l§l§6 - §e")) {
 		  return;
 	  }
-	  if (message.asFormattedString().startsWith("§l§l§3 - §b")) {
+	  if (message.getString().startsWith("§l§l§3 - §b")) {
 		  return;
 	  }
     
@@ -38,8 +39,8 @@ public class ChatReceivedEvent {
 
     //Afk Reply
     if (CodeUtilities.afk) {
-      if (message.asFormattedString().matches("..\\[.r.b.+.r.. -> .r.bYou.r..\\] .r.7.+")) {
-        String user = message.asFormattedString().split("..\\[.r.b")[1].split(".r.. -> .r.bYou.r..\\] .r.7")[0];
+      if (message.getString().matches("..\\[.r.b.+.r.. -> .r.bYou.r..\\] .r.7.+")) {
+        String user = message.getString().split("..\\[.r.b")[1].split(".r.. -> .r.bYou.r..\\] .r.7")[0];
         assert mc.player != null;
         mc.player.sendChatMessage("/msg " + user + " " + AfkCommand.msg);
         AfkCommand.msgs.add(new AfkMessage(message));
@@ -48,12 +49,12 @@ public class ChatReceivedEvent {
 
     //AutoTip
     if (CodeUtilities.p.getProperty("autotip").equalsIgnoreCase("true")) {
-      if (message.asFormattedString().contains("You have already tipped this player!")) {
+      if (message.getString().contains("You have already tipped this player!")) {
         cancel = true;
-      } else if (message.asFormattedString().length() > 30) {
-        if (message.asFormattedString().substring(8).matches(
+      } else if (message.getString().length() > 30) {
+        if (message.getString().substring(8).matches(
             "Use §r§6/tip \\w+§r§7 to show your appreciation and get [0-9]+ credits!§r")) {
-          String[] msg = message.asFormattedString().split(" ");
+          String[] msg = message.getString().split(" ");
           assert mc.player != null;
           String player = msg[3].split("§r§7")[0];
           try {
@@ -66,12 +67,11 @@ public class ChatReceivedEvent {
     //PlayerJoin
     if (CodeUtilities.playerjoin > 0) {
       cancel = true;
-      if (message.asFormattedString().contains("          ")) {
+      if (message.getString().contains("          ")) {
         CodeUtilities.playerjoin--;
       } else if (CodeUtilities.playerjoin == 1) {
         try {
-          String cmd = "/join " + (message.asFormattedString()
-              .substring(message.asFormattedString().indexOf("ID: ") + 4).split("]")[0]);
+          String cmd = "/join " + (StringUtils.substringBetween(message.getString(), "[ID: ", "]"));
           cmd = cmd.substring(0, cmd.length() - 2);
           if (cmd.matches("/join [0-9]+")) {
             assert mc.player != null;
@@ -90,15 +90,13 @@ public class ChatReceivedEvent {
     //Rejoin
     if (CodeUtilities.rejoin > 0) {
       cancel = true;
-      if (message.asFormattedString().contains("          ")) {
+      if (message.getString().contains("          ")) {
         CodeUtilities.rejoin--;
       } else if (CodeUtilities.rejoin == 1) {
-        if (message.asFormattedString().contains("ID:")) {
-          String id = (message.asFormattedString()
-              .substring(message.asFormattedString().indexOf("ID: ") + 4).split("]")[0]);
-          id = id.substring(0, id.length() - 4);
-          String finalId = id;
-          if (id.matches("[0-9]+")) {
+        if (message.getString().contains("ID:")) {
+          String finalId = StringUtils.substringBetween(message.getString(), "[ID: ", "]");
+          System.out.println("ID: " + finalId);
+          if (finalId.matches("[0-9]+")) {
             new Thread(() -> {
               try {
                 Thread.sleep(500);
@@ -119,16 +117,16 @@ public class ChatReceivedEvent {
 
     //Proxy and Server Ping
     if (CodeUtilities.sping != 0 || CodeUtilities.pping != 0) {
-      if (message.asFormattedString().contains("Use /plot help for plot commands.")) {
+      if (message.getString().contains("Use /plot help for plot commands.")) {
         CodeUtilities
             .infoMsgYellow("Server Ping: " + (new Date().getTime() - CodeUtilities.sping) + "ms");
         cancel = true;
         CodeUtilities.sping = 0;
-      } else if (message.asFormattedString().contains("You are currently connected to")) {
+      } else if (message.getString().contains("You are currently connected to")) {
         CodeUtilities
             .infoMsgYellow("Proxy Ping: " + (new Date().getTime() - CodeUtilities.pping) + "ms");
         cancel = true;
-      } else if (message.asFormattedString()
+      } else if (message.getString()
           .contains("You may connect to the following servers at this time:")) {
         cancel = true;
         CodeUtilities.pping = 0;
@@ -136,7 +134,7 @@ public class ChatReceivedEvent {
     }
 
     //Location Highlighter / Relative plot coords
-    if (message.asFormattedString().matches(".a.l. .r.7You are now in dev mode..r")) {
+    if (message.getString().matches(".a.l. .r.7You are now in dev mode..r")) {
       CodeUtilities.playMode = PlayMode.DEV;
       assert mc.player != null;
       BlockPos pos = mc.player.getBlockPos();
@@ -148,40 +146,40 @@ public class ChatReceivedEvent {
 
     //FriendList
     if (FriendCommand.listFriends > 0) {
-      if (message.asFormattedString().matches(".cError: .r.7Could not find that player..r")
-          || message.asFormattedString()
+      if (message.getString().matches(".cError: .r.7Could not find that player..r")
+          || message.getString()
           .matches(".cAn internal error occurred while attempting to perform this command.r")) {
         FriendCommand.listFriends -= 2;
         cancel = true;
         CodeUtilities.infoMsgYellow("§e" + FriendCommand.friends.get(0) + "§7 - §cOffline");
         FriendCommand.friends.remove(0);
       }
-      if (message.asFormattedString().contains("                                     ")) {
+      if (message.getString().contains("                                     ")) {
         FriendCommand.listFriends--;
         cancel = true;
       } else if (Math.round((FriendCommand.listFriends - 1) / 2) * 2
           == FriendCommand.listFriends - 1) {
         try {
           String msg = "§6Unknown Response";
-          if (message.asFormattedString().contains("is currently at")) {
+          if (message.getString().contains("is currently at")) {
             msg =
-                "At " + message.asFormattedString().split("Server: ")[1].substring(2)
+                "At " + message.getString().split("Server: ")[1].substring(2)
                     + " Spawn";
           }
-          if (message.asFormattedString()
+          if (message.getString()
               .contains("is currently §6coding")) {
-            msg = "Coding on " + message.asFormattedString().split(".8 \\[.7ID: ")[0]
+            msg = "Coding on " + message.getString().split(".8 \\[.7ID: ")[0]
                 .split(".6.l..r ")[1];
           }
-          if (message.asFormattedString()
+          if (message.getString()
               .contains("is currently §6building")) {
             msg =
-                "Building on " + message.asFormattedString().split(".8 \\[.7ID: ")[0]
+                "Building on " + message.getString().split(".8 \\[.7ID: ")[0]
                     .split(".6.l..r ")[1];
           }
-          if (message.asFormattedString()
+          if (message.getString()
               .contains("is currently §6playing")) {
-            msg = "Playing on " + message.asFormattedString().split(".8 \\[.7ID: ")[0]
+            msg = "Playing on " + message.getString().split(".8 \\[.7ID: ")[0]
                 .split(".6.l..r ")[1];
           }
 
@@ -196,7 +194,7 @@ public class ChatReceivedEvent {
     }
 
     if (cancel) {
-      System.out.println("[Cancelled] " + message.asFormattedString());
+      System.out.println("[Cancelled] " + message.getString());
         info.cancel();
     }
 

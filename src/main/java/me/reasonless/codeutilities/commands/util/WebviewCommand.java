@@ -26,9 +26,9 @@ public class WebviewCommand {
          Text msg = Text.Serializer.fromJson(
             "{\"text\":\"§6[§eBU§6]:§e Click §nHere§e to open the template in the webview.\"}");
         assert msg != null;
-        msg.getStyle().setClickEvent(new ClickEvent(Action.OPEN_URL,
-            "https://derpystuff.gitlab.io/code/?template=" + nbt.getString("code")));
-        mc.player.sendMessage(msg);
+        //msg.getStyle().setClickEvent(new ClickEvent(Action.OPEN_URL,
+        //    "https://derpystuff.gitlab.io/code/?template=" + nbt.getString("code")));
+        mc.player.sendMessage(msg, false);
         return 1;
       } else {
         CodeUtilities.errorMsg("§cYou need to hold the code template in your main hand!");

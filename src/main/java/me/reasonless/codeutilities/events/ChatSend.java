@@ -2,7 +2,6 @@ package me.reasonless.codeutilities.events;
 
 import me.reasonless.codeutilities.CodeUtilities;
 import me.reasonless.codeutilities.CodeUtilities.PlayMode;
-import me.reasonless.codeutilities.commands.teamchat.Teamchat;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 public class ChatSend {
@@ -22,11 +21,6 @@ public class ChatSend {
     }
     if (msg.startsWith("/spawn") || msg.startsWith("/leave") || msg.startsWith("/server")) {
       CodeUtilities.playMode = PlayMode.SPAWN;
-    }
-
-    if (Teamchat.autoMsg && !msg.startsWith("/") && !Teamchat.room.equals("")) {
-      Teamchat.socket.emit("sendMsg", msg);
-      info.cancel();
     }
 
   }

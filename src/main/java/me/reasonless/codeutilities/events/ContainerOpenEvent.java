@@ -112,7 +112,7 @@ public class ContainerOpenEvent {
     if (cancel) {
       ci.cancel();
       assert MinecraftClient.getInstance().player != null;
-      MinecraftClient.getInstance().player.closeContainer();
+      MinecraftClient.getInstance().player.closeScreen();
     }
   }
 

@@ -19,11 +19,11 @@ public class AfkMessage {
     long mins = (new Date().getTime() - date.getTime())/60000;
     assert mc.player != null;
     if (mins == 0) {
-      mc.player.sendMessage(new LiteralText("§aJust now: ").append(msg));
+      mc.player.sendMessage(new LiteralText("§aJust now: ").append(msg), false);
     } else if (mins == 1) {
-      mc.player.sendMessage(new LiteralText("§a1min ago: ").append(msg));
+      mc.player.sendMessage(new LiteralText("§a1min ago: ").append(msg), false);
     } else {
-      mc.player.sendMessage(new LiteralText("§a" + mins + "mins ago: ").append(msg));
+      mc.player.sendMessage(new LiteralText("§a" + mins + "mins ago: ").append(msg), false);
     }
 
   }

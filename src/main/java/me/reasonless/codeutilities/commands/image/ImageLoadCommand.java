@@ -21,7 +21,7 @@ public class ImageLoadCommand {
         if(f.exists()) {
             String[] strings = ImageConverter.convert(f);
             for (String string : strings) {
-                mc.player.sendMessage(new LiteralText(string));
+                mc.player.sendMessage(new LiteralText(string), false);
             }
 
             ImageToTemplate toTemplate = new ImageToTemplate(ImageConverter.convert(f), StringArgumentType.getString(ctx, "location"));
@@ -30,9 +30,9 @@ public class ImageLoadCommand {
             TemplateNBT.setTemplateNBT(stack, StringArgumentType.getString(ctx, "location"), mc.player.getName().asString(), toTemplate.convert());
             mc.interactionManager.clickCreativeStack(stack, 36 + mc.player.inventory.selectedSlot);
 
-            mc.player.sendMessage(new LiteralText(MinecraftColors.DARK_GREEN + " - " + MinecraftColors.GREEN + "Image loaded! Change the first Set Variable to the location!"));
+            mc.player.sendMessage(new LiteralText(MinecraftColors.DARK_GREEN + " - " + MinecraftColors.GREEN + "Image loaded! Change the first Set Variable to the location!"), false);
         }else {
-            mc.player.sendMessage(new LiteralText(MinecraftColors.DARK_RED + " - " + MinecraftColors.RED + "That image doesn't exist."));
+            mc.player.sendMessage(new LiteralText(MinecraftColors.DARK_RED + " - " + MinecraftColors.RED + "That image doesn't exist."), false);
         }
         return 1;
     }

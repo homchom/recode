@@ -27,7 +27,6 @@ import me.reasonless.codeutilities.commands.misc.WebViewCommand;
 import me.reasonless.codeutilities.commands.nbs.NBSCommand;
 import me.reasonless.codeutilities.commands.nbs.NBSLoadCommand;
 import me.reasonless.codeutilities.commands.nbs.NBSPlayerCommand;
-import me.reasonless.codeutilities.commands.teamchat.TcCommand;
 import me.reasonless.codeutilities.commands.util.AfkCommand;
 import me.reasonless.codeutilities.commands.util.FriendCommand;
 import me.reasonless.codeutilities.commands.util.PJoinCommand;
@@ -62,9 +61,9 @@ public class Commands implements ClientCommandPlugin {
 							try {
 								return NBSLoadCommand.execute(mc, ctx);
 							} catch (Exception e) {
-								mc.player.sendMessage(new LiteralText(MinecraftColors.DARK_RED + " - " + MinecraftColors.RED + "There was an error loading this nbs file."));
-								mc.player.sendMessage(new LiteralText(MinecraftColors.DARK_RED + " - " + MinecraftColors.RED + "Maybe the nbs is made using an older Noteblock Studio Version."));
-								mc.player.sendMessage(new LiteralText(MinecraftColors.GOLD + " - " + MinecraftColors.YELLOW + "The NBS function uses NBS File Format v4"));
+								mc.player.sendMessage(new LiteralText(MinecraftColors.DARK_RED + " - " + MinecraftColors.RED + "There was an error loading this nbs file."), false);
+								mc.player.sendMessage(new LiteralText(MinecraftColors.DARK_RED + " - " + MinecraftColors.RED + "Maybe the nbs is made using an older Noteblock Studio Version."), false);
+								mc.player.sendMessage(new LiteralText(MinecraftColors.GOLD + " - " + MinecraftColors.YELLOW + "The NBS function uses NBS File Format v4"), false);
 								e.printStackTrace();
 							}
 							return 1;
@@ -78,7 +77,7 @@ public class Commands implements ClientCommandPlugin {
 									try {
 										return ImageLoadCommand.execute(mc, ctx);
 									} catch (Exception e) {
-										mc.player.sendMessage(new LiteralText(MinecraftColors.DARK_RED + " - " + MinecraftColors.RED + "There was an error loading this image."));
+										mc.player.sendMessage(new LiteralText(MinecraftColors.DARK_RED + " - " + MinecraftColors.RED + "There was an error loading this image."), false);
 										e.printStackTrace();
 									}
 									return 1;
@@ -118,7 +117,6 @@ public class Commands implements ClientCommandPlugin {
 		    customhead(dispatcher); //registers the /customhead <value> command
 		    afk(dispatcher); //registers the /afk <message> command
 		    friend(dispatcher); //registers the /friend <add/remove/list> cmd
-		    tc(dispatcher); //registers the /tc <message> /teamchat <create/invite/accept/leave> /teamchat on/off
 		    //autocomplete(dispatcher); //registers the autocompletion for /var
 		    uuid(dispatcher); //registers the /uuid <player> command
 		}
@@ -137,111 +135,6 @@ public class Commands implements ClientCommandPlugin {
 	                  return 0;
 	                }
 	            )
-	        )
-	    );
-	  }
-
-	  private void autocomplete(CommandDispatcher<CottonClientCommandSource> dispatcher) {
-	    dispatcher.register(ArgumentBuilders.literal("var")
-	        .then(ArgumentBuilders.argument("name", AutoCompleteArgType.arg())
-	            .executes(ctx -> {
-	              return 0;
-	            })
-	        )
-	    );
-	  }
-
-	  private void tc(CommandDispatcher<CottonClientCommandSource> dispatcher) {
-	    dispatcher.register(ArgumentBuilders.literal("tc")
-	        .then(ArgumentBuilders.argument("msg", StringArgumentType.greedyString())
-	            .executes(ctx -> {
-	              try {
-	                return TcCommand.send(MinecraftClient.getInstance(), ctx);
-	              } catch (Exception e) {
-	                e.printStackTrace();
-	              }
-	              return 0;
-	            })
-	        )
-	    );
-	    dispatcher.register(ArgumentBuilders.literal("teamchat")
-	        .then(ArgumentBuilders.literal("create")
-	            .executes(ctx -> {
-	              try {
-	                return TcCommand.create(MinecraftClient.getInstance(), ctx);
-	              } catch (Exception e) {
-	                e.printStackTrace();
-	              }
-	              return 0;
-	            })
-	        )
-	        .then(ArgumentBuilders.literal("invite")
-	            .then(ArgumentBuilders.argument("player", EntityArgumentType.player()
-	                ).executes(ctx -> {
-	                  try {
-	                    return TcCommand.invite(MinecraftClient.getInstance(), ctx);
-	                  } catch (Exception e) {
-	                    e.printStackTrace();
-	                  }
-	                  return 0;
-	                })
-
-	            )
-	        )
-	        .then(ArgumentBuilders.literal("kick")
-	            .then(ArgumentBuilders.argument("player", EntityArgumentType.player()
-	                ).executes(ctx -> {
-	                  try {
-	                    return TcCommand.kick(MinecraftClient.getInstance(), ctx);
-	                  } catch (Exception e) {
-	                    e.printStackTrace();
-	                  }
-	                  return 0;
-	                })
-
-	            )
-	        )
-	        .then(ArgumentBuilders.literal("accept")
-	            .then(ArgumentBuilders.argument("group", StringArgumentType.string()
-	                ).executes(ctx -> {
-	                  try {
-	                    return TcCommand.accept(MinecraftClient.getInstance(), ctx);
-	                  } catch (Exception e) {
-	                    e.printStackTrace();
-	                  }
-	                  return 0;
-	                })
-	            )
-	        )
-	        .then(ArgumentBuilders.literal("leave")
-	            .executes(ctx -> {
-	              try {
-	                return TcCommand.leave(MinecraftClient.getInstance(), ctx);
-	              } catch (Exception e) {
-	                e.printStackTrace();
-	              }
-	              return 0;
-	            })
-	        )
-	        .then(ArgumentBuilders.literal("reconnect")
-	            .executes(ctx -> {
-	              try {
-	                return TcCommand.reconnect(MinecraftClient.getInstance(), ctx);
-	              } catch (Exception e) {
-	                e.printStackTrace();
-	              }
-	              return 0;
-	            })
-	        )
-	        .then(ArgumentBuilders.literal("auto")
-	            .executes(ctx -> {
-	              try {
-	                return TcCommand.auto(MinecraftClient.getInstance(), ctx);
-	              } catch (Exception e) {
-	                e.printStackTrace();
-	              }
-	              return 0;
-	            })
 	        )
 	    );
 	  }

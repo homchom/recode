@@ -21,11 +21,11 @@ public class WebViewCommand {
 			String template = publicBukkitNBT.getString("hypercube:codetemplatedata");
 			TemplateJson templateJson = new Gson().fromJson(template, TemplateJson.class);
 			LiteralText text = new LiteralText(MinecraftColors.DARK_GREEN + " - " + MinecraftColors.GREEN + "To open this template in web-view click this message!");
-			text.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.values()[0], String.format("https://derpystuff.gitlab.io/code/?template=%s", templateJson.code)));
-			mc.player.sendMessage(text);
+			//text.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.values()[0], String.format("https://derpystuff.gitlab.io/code/?template=%s", templateJson.code)));
+			mc.player.sendMessage(text, false);
 
 		}catch(NullPointerException e) {
-			mc.player.sendMessage(new LiteralText(MinecraftColors.DARK_RED + " - " + MinecraftColors.RED + "The item you are holding is not a valid template."));
+			mc.player.sendMessage(new LiteralText(MinecraftColors.DARK_RED + " - " + MinecraftColors.RED + "The item you are holding is not a valid template."), false);
 			return 1;
 		}
 		return 1;
