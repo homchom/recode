@@ -71,8 +71,8 @@ public class ChatReceivedEvent {
         CodeUtilities.playerjoin--;
       } else if (CodeUtilities.playerjoin == 1) {
         try {
-          String cmd = "/join " + (StringUtils.substringBetween(message.getString(), "[ID: ", "]"));
-          cmd = cmd.substring(0, cmd.length() - 2);
+          String cmd = "/join " + (StringUtils.substringBetween(message.getString(), "[§7ID: ", "§8]"));
+          System.out.println(cmd);
           if (cmd.matches("/join [0-9]+")) {
             assert mc.player != null;
             mc.player.sendChatMessage(cmd);
@@ -134,7 +134,7 @@ public class ChatReceivedEvent {
     }
 
     //Location Highlighter / Relative plot coords
-    if (message.getString().matches(".a.l. .r.7You are now in dev mode..r")) {
+    if (message.getString().matches("You are now in dev mode\\.")) {
       CodeUtilities.playMode = PlayMode.DEV;
       assert mc.player != null;
       BlockPos pos = mc.player.getBlockPos();
@@ -146,9 +146,9 @@ public class ChatReceivedEvent {
 
     //FriendList
     if (FriendCommand.listFriends > 0) {
-      if (message.getString().matches(".cError: .r.7Could not find that player..r")
+      if (message.getString().matches("Error: Could not find that player\\.")
           || message.getString()
-          .matches(".cAn internal error occurred while attempting to perform this command.r")) {
+          .matches("An internal error occurred while attempting to perform this command\\.")) {
         FriendCommand.listFriends -= 2;
         cancel = true;
         CodeUtilities.infoMsgYellow("§e" + FriendCommand.friends.get(0) + "§7 - §cOffline");
@@ -168,26 +168,24 @@ public class ChatReceivedEvent {
           }
           if (message.getString()
               .contains("is currently §6coding")) {
-            msg = "Coding on " + message.getString().split(".8 \\[.7ID: ")[0]
-                .split(".6.l..r ")[1];
+            msg = "Coding on " + StringUtils.substringBetween(message.getString(), "§6§l≫§r ", "§8 [§7ID: ");
           }
           if (message.getString()
               .contains("is currently §6building")) {
-            msg =
-                "Building on " + message.getString().split(".8 \\[.7ID: ")[0]
-                    .split(".6.l..r ")[1];
+        	  msg = "Building on " + StringUtils.substringBetween(message.getString(), "§6§l≫§r ", "§8 [§7ID: ");
           }
           if (message.getString()
               .contains("is currently §6playing")) {
-            msg = "Playing on " + message.getString().split(".8 \\[.7ID: ")[0]
-                .split(".6.l..r ")[1];
+        	  msg = "Playing on " + StringUtils.substringBetween(message.getString(), "§6§l≫§r ", "§8 [§7ID: ");
           }
 
           cancel = true;
           CodeUtilities.infoMsgYellow("§e" + FriendCommand.friends.get(0) + "§7 - §a" + msg);
           FriendCommand.friends.remove(0);
         } catch (Exception err) {
-          CodeUtilities.errorMsg("§cError: Critical error");
+          CodeUtilities.errorMsg("§cError: Something failed :(");
+          FriendCommand.friends.clear();
+          FriendCommand.listFriends = 0;
           err.printStackTrace();
         }
       }
