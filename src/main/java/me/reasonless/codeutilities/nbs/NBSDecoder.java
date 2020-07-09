@@ -219,9 +219,9 @@ public class NBSDecoder {
                     
             			if (noteInstrument > vanillaInstruments) {
             				int instrumentId = noteInstrument - vanillaInstruments;
-            				int noteKeyOffset = customPitchList[instrumentId];
+            				int noteKeyOffset = customPitchList[instrumentId] - 45;
 
-            				noteKey = noteKey - noteKeyOffset; 
+            				noteKey += noteKeyOffset; 
             			}
             			if (firstAppend == true) {
             				columnStringBuilder.append(":" + (noteInstrument + 1 ) + "," + getMinecraftPitch(noteKey + (double)noteFinePitch/100d) + laterNoteString);
