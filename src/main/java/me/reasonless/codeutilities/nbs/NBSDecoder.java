@@ -217,7 +217,7 @@ public class NBSDecoder {
             				//System.out.println("Note ID: " + noteID);
             			//ANOTHER EPIC DEBUG CODE ENDS HERE
                     
-            			if (noteInstrument > vanillaInstruments) {
+            			if (noteInstrument >= vanillaInstruments) {
             				int instrumentId = noteInstrument - vanillaInstruments;
             				int noteKeyOffset = customPitchList[instrumentId] - 45;
 
