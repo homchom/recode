@@ -13,6 +13,9 @@ public class CodeUtilities implements ModInitializer {
     public static final String MOD_ID = "codeutilities";
     public static final String MOD_NAME = "CodeUtilities";
 
+    public static final String SONG_PARSER_VERSION = "4"; //NBS parser version
+	public static final String SONG_NBS_FORMAT_VERSION = "4"; //NBS format version
+    
     @Override
     public void onInitialize() {
         log(Level.INFO, "Initializing");
