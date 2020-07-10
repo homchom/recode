@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "me.reasonless.codeutilities.mixin",
+  "package": "io.github.codeutilities.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MixinOptionsScreen"

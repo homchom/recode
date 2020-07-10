@@ -17,7 +17,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "me.reasonless.codeutilities.CodeUtilities"
+      "io.github.codeutilities.CodeUtilities"
     ],
     "client": [],
     "server": []
