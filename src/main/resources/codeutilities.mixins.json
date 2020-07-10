@@ -1,13 +1,9 @@
 {
   "required": true,
-  "package": "me.reasonless.codeutilities.events.mixins",
+  "package": "me.reasonless.codeutilities.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [],
-  "client": [
-    "ClientChatListenerMixin",
-    "ChatHudMixin",
-    "ClientPlayerEntityMixin"
-  ],
+  "client": [],
   "injectors": {
     "defaultRequire": 1
   },
