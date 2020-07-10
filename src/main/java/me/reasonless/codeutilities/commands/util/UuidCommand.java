@@ -4,10 +4,8 @@ import com.mojang.brigadier.context.CommandContext;
 import me.reasonless.codeutilities.CodeUtilities;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.UUID;
 import net.minecraft.client.MinecraftClient;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
@@ -23,6 +21,7 @@ public class UuidCommand {
         CodeUtilities.errorMsg("§cUnknown player!");
         return -1;
       }
+      
       JSONObject json = new JSONObject(UUIDJson);
       String uuid = json.getString("id");
       mc.player.sendChatMessage("/txt " + fromTrimmed(uuid));
@@ -32,7 +31,6 @@ public class UuidCommand {
     }
     return -1;
   }
-
 
   //Credit: https://www.spigotmc.org/threads/free-code-easily-convert-between-trimmed-and-full-uuids.165615/
   public static String fromTrimmed(String trimmedUUID) throws IllegalArgumentException{

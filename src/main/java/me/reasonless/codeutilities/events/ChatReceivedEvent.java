@@ -168,15 +168,18 @@ public class ChatReceivedEvent {
           }
           if (message.getString()
               .contains("is currently §6coding")) {
-            msg = "Coding on " + StringUtils.substringBetween(message.getString(), "§6§l≫§r ", "§8 [§7ID: ");
+        	  msg = "Coding on " + message.getString().split(".8 \\[.7ID: ")[0]
+                      .split(".6.l..r ")[1];
           }
           if (message.getString()
               .contains("is currently §6building")) {
-        	  msg = "Building on " + StringUtils.substringBetween(message.getString(), "§6§l≫§r ", "§8 [§7ID: ");
+        	  msg = "Building on " + message.getString().split(".8 \\[.7ID: ")[0]
+                      .split(".6.l..r ")[1];
           }
           if (message.getString()
               .contains("is currently §6playing")) {
-        	  msg = "Playing on " + StringUtils.substringBetween(message.getString(), "§6§l≫§r ", "§8 [§7ID: ");
+        	  msg = "Playing on " + message.getString().split(".8 \\[.7ID: ")[0]
+                      .split(".6.l..r ")[1];
           }
 
           cancel = true;

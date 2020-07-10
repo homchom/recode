@@ -8,7 +8,6 @@ import java.util.Properties;
 
 import me.reasonless.codeutilities.events.KeyInputEvent;
 import me.reasonless.codeutilities.events.TickEvent;
-import me.reasonless.codeutilities.schematic.SchematicLoader;
 //import me.reasonless.codeutilities.util.Keybinds;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
@@ -61,8 +60,6 @@ public class CodeUtilities implements ModInitializer {
 		if(!imagesFolder.exists()) {
 			imagesFolder.mkdir();
 		}
-
-		new SchematicLoader();
 
 		//this.keybinds = new Keybinds();
 		if (!hasblazing) {

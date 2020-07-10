@@ -25,7 +25,7 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
 	modCompile "io.socket:socket.io-client:1.0.0"
-	implementation 'com.google.code.gson:gson:2.8.6'
+	implementation "com.google.code.gson:gson:2.8.6"
             
     //Fabric api
 	modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
@@ -34,6 +34,7 @@ dependencies {
     modCompile "io.github.cottonmc:cotton-client-commands:1.0.1+1.16-rc1"
 
     include "io.github.cottonmc:cotton-client-commands:1.0.1+1.16-rc1"
+	include "org.json:json:20200518"
 }
 
 processResources {
