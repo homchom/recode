@@ -6,8 +6,8 @@
     "MixinOptionsScreen"
   ],
   "client": [],
+  "server": [],
   "injectors": {
     "defaultRequire": 1
-  },
-  "refmap": "CodeUtilities-refmap.json"
+  }
 }
