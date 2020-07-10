@@ -2,7 +2,9 @@
   "required": true,
   "package": "me.reasonless.codeutilities.mixin",
   "compatibilityLevel": "JAVA_8",
-  "mixins": [],
+  "mixins": [
+    "MixinOptionsScreen"
+  ],
   "client": [],
   "injectors": {
     "defaultRequire": 1

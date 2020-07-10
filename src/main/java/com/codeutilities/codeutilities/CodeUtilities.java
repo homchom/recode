@@ -1,4 +1,4 @@
-package me.reasonless.codeutilities;
+package com.codeutilities.codeutilities;
 
 import net.fabricmc.api.ModInitializer;
 

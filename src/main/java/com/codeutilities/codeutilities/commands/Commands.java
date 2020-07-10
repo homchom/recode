@@ -1,4 +1,4 @@
-package me.reasonless.codeutilities.commands;
+package com.codeutilities.codeutilities.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.cottonmc.clientcommands.ClientCommandPlugin;
