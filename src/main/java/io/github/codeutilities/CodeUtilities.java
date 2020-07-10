@@ -1,4 +1,4 @@
-package com.codeutilities.codeutilities;
+package io.github.codeutilities;
 
 import net.fabricmc.api.ModInitializer;
 

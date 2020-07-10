@@ -1,4 +1,4 @@
-package com.codeutilities.codeutilities.mixin;
+package io.github.codeutilities.mixin;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.options.OptionsScreen;
