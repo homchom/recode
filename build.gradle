@@ -4,6 +4,7 @@ plugins {
 }
 
 repositories {
+	jcenter()
 	maven {
 		name = 'CottonMC'
 		url = 'https://server.bbkr.space/artifactory/libs-release'
