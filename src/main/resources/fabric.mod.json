@@ -18,6 +18,7 @@
   "icon": "assets/codeutilities/icon.png",
   "environment": "*",
   "entrypoints": {
+    "cotton-client-commands": ["io.github.codeutilities.commands.Commands"],
     "main": [
       "io.github.codeutilities.CodeUtilities"
     ],
