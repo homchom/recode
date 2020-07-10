@@ -1,5 +1,8 @@
 package io.github.codeutilities;
 
+import io.github.codeutilities.config.ModConfig;
+import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
+import me.sargunvohra.mcmods.autoconfig1u.serializer.Toml4jConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 
 import org.apache.logging.log4j.Level;
@@ -13,10 +16,21 @@ public class CodeUtilities implements ModInitializer {
     public static final String MOD_ID = "codeutilities";
     public static final String MOD_NAME = "CodeUtilities";
 
+    public static final int UPDATE = 2;
+
+
     @Override
     public void onInitialize() {
         log(Level.INFO, "Initializing");
-        //TODO: Initializer
+        AutoConfig.register(ModConfig.class, Toml4jConfigSerializer::new);
+    }
+
+    public static ModConfig getConfig() {
+        return AutoConfig.getConfigHolder(ModConfig.class).getConfig();
+    }
+
+    private void updateRichPresence() {
+
     }
 
     public static void log(Level level, String message){
