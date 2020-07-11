@@ -13,6 +13,7 @@ import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -27,18 +28,22 @@ public class LoreCommand {
 	      assert mc.player != null;
 	      if (mc.player.isCreative()) {
 	        ItemStack item = mc.player.getMainHandStack();
-	        CompoundTag nbt = item.getOrCreateTag();
-	        CompoundTag display = nbt.getCompound("display");
-	        ListTag lore = display.getList("Lore", 8);
-	        lore.add(StringTag.of(StringTag.escape(ctx.getArgument("lore", String.class)).replaceAll("&", "§")));
-	        display.put("Lore", lore);
-	        nbt.put("display", display);
-	        item.setTag(nbt);
-	        mc.interactionManager.clickCreativeStack(item, 36 + mc.player.inventory.selectedSlot);
-	        CodeUtilities.chat(
-	            "§aAdded §5§o" + ctx.getArgument("lore", String.class).replaceAll("&", "§") + "§e!");
-	        showLore(lore);
-	        return 1;
+	        if (item.getItem() != Items.AIR) {
+	        	CompoundTag nbt = item.getOrCreateTag();
+		        CompoundTag display = nbt.getCompound("display");
+		        ListTag lore = display.getList("Lore", 8);
+		        lore.add(StringTag.of(StringTag.escape(ctx.getArgument("lore", String.class)).replaceAll("&", "§")));
+		        display.put("Lore", lore);
+		        nbt.put("display", display);
+		        item.setTag(nbt);
+		        mc.interactionManager.clickCreativeStack(item, 36 + mc.player.inventory.selectedSlot);
+		        CodeUtilities.chat(
+		            "§aAdded §5§o" + ctx.getArgument("lore", String.class).replaceAll("&", "§") + "§a!");
+		        showLore(lore);
+		        return 1;
+	        }else {
+	        	CodeUtilities.chat("§cYou need to hold an item in your main hand!");
+	        }
 	      } else {
 	        CodeUtilities.chat("§cYou need to be in creative for this command to work!");
 	      }
@@ -54,16 +59,21 @@ public class LoreCommand {
 	      assert mc.player != null;
 	      if (mc.player.isCreative()) {
 	        ItemStack item = mc.player.getMainHandStack();
-	        CompoundTag nbt = item.getOrCreateTag();
-	        CompoundTag display = nbt.getCompound("display");
-	        ListTag lore = display.getList("Lore", 8);
-	        lore.clear();
-	        display.put("Lore", lore);
-	        nbt.put("display", display);
-	        item.setTag(nbt);
-	        mc.interactionManager.clickCreativeStack(item, 36 + mc.player.inventory.selectedSlot);
-	        CodeUtilities.chat("§aCleared!");
-	        return 1;
+	        if (item.getItem() != Items.AIR) {
+	        	CompoundTag nbt = item.getOrCreateTag();
+		        CompoundTag display = nbt.getCompound("display");
+		        ListTag lore = display.getList("Lore", 8);
+		        lore.clear();
+		        display.put("Lore", lore);
+		        nbt.put("display", display);
+		        item.setTag(nbt);
+		        mc.interactionManager.clickCreativeStack(item, 36 + mc.player.inventory.selectedSlot);
+		        CodeUtilities.chat("§aCleared!");
+		        return 1;
+	        }else {
+	        	CodeUtilities.chat("§cYou need to hold an item in your main hand!");
+	        }
+	        
 	      } else {
 	        CodeUtilities.chat("§cYou need to be in creative for this command to work!");
 	      }
@@ -79,20 +89,24 @@ public class LoreCommand {
 	      assert mc.player != null;
 	      if (mc.player.isCreative()) {
 	        ItemStack item = mc.player.getMainHandStack();
-	        CompoundTag nbt = item.getOrCreateTag();
-	        CompoundTag display = nbt.getCompound("display");
-	        ListTag lore = display.getList("Lore", 8);
-	        lore.add(ctx.getArgument("line", Integer.class) - 1,
-	            StringTag.of(StringTag.escape(ctx.getArgument("lore", String.class))));
-	        display.put("Lore", lore);
-	        nbt.put("display", display);
-	        item.setTag(nbt);
-	        mc.interactionManager.clickCreativeStack(item, 36 + mc.player.inventory.selectedSlot);
-	        CodeUtilities.chat(
-	            "§aInserted §5§o" + ctx.getArgument("lore", String.class).replaceAll("&", "§") + " §eat "
-	                + ctx.getArgument("line", Integer.class) + "!");
-	        showLore(lore);
-	        return 1;
+	        if (item.getItem() != Items.AIR) {
+		        CompoundTag nbt = item.getOrCreateTag();
+		        CompoundTag display = nbt.getCompound("display");
+		        ListTag lore = display.getList("Lore", 8);
+		        lore.add(ctx.getArgument("line", Integer.class) - 1,
+		            StringTag.of(StringTag.escape(ctx.getArgument("lore", String.class))));
+		        display.put("Lore", lore);
+		        nbt.put("display", display);
+		        item.setTag(nbt);
+		        mc.interactionManager.clickCreativeStack(item, 36 + mc.player.inventory.selectedSlot);
+		        CodeUtilities.chat(
+		            "§aInserted §5§o" + ctx.getArgument("lore", String.class).replaceAll("&", "§") + " §aat "
+		                + ctx.getArgument("line", Integer.class) + "§a!");
+		        showLore(lore);
+		        return 1;
+	        }else {
+	        	CodeUtilities.chat("§cYou need to hold an item in your main hand!");
+	        }
 	      } else {
 	        CodeUtilities.chat("§cYou need to be in creative for this command to work!");
 	      }
@@ -108,18 +122,22 @@ public class LoreCommand {
 	      assert mc.player != null;
 	      if (mc.player.isCreative()) {
 	        ItemStack item = mc.player.getMainHandStack();
-	        CompoundTag nbt = item.getOrCreateTag();
-	        CompoundTag display = nbt.getCompound("display");
-	        ListTag lore = display.getList("Lore", 8);
-	        lore.remove(ctx.getArgument("line", Integer.class) - 1);
-	        display.put("Lore", lore);
-	        nbt.put("display", display);
-	        item.setTag(nbt);
-	        mc.interactionManager.clickCreativeStack(item, 36 + mc.player.inventory.selectedSlot);
-	        CodeUtilities.chat("§aRemoved line " + ctx.getArgument("line", Integer.class) + "!");
-	        showLore(lore);
-	        return 1;
-	      } else {
+	        if (item.getItem() != Items.AIR) {
+		        CompoundTag nbt = item.getOrCreateTag();
+		        CompoundTag display = nbt.getCompound("display");
+		        ListTag lore = display.getList("Lore", 8);
+		        lore.remove(ctx.getArgument("line", Integer.class) - 1);
+		        display.put("Lore", lore);
+		        nbt.put("display", display);
+		        item.setTag(nbt);
+		        mc.interactionManager.clickCreativeStack(item, 36 + mc.player.inventory.selectedSlot);
+		        CodeUtilities.chat("§aRemoved line " + ctx.getArgument("line", Integer.class) + "§a!");
+		        showLore(lore);
+		        return 1;
+	        }else {
+	        	CodeUtilities.chat("§cYou need to hold an item in your main hand!");
+	        }	      
+	        } else {
 	        CodeUtilities.chat("§cYou need to be in creative for this command to work!");
 	      }
 	    } catch (Exception e) {
@@ -134,20 +152,24 @@ public class LoreCommand {
 	      assert mc.player != null;
 	      if (mc.player.isCreative()) {
 	        ItemStack item = mc.player.getMainHandStack();
-	        CompoundTag nbt = item.getOrCreateTag();
-	        CompoundTag display = nbt.getCompound("display");
-	        ListTag lore = display.getList("Lore", 8);
-	        lore.set(ctx.getArgument("line", Integer.class) - 1,
-	            StringTag.of(StringTag.escape(ctx.getArgument("lore", String.class)).replaceAll("&", "§")));
-	        display.put("Lore", lore);
-	        nbt.put("display", display);
-	        item.setTag(nbt);
-	        mc.interactionManager.clickCreativeStack(item, 36 + mc.player.inventory.selectedSlot);
-	        CodeUtilities.chat(
-	            "§aChanged line " + ctx.getArgument("line", Integer.class) + " to §5§o" + ctx
-	                .getArgument("lore", String.class).replaceAll("&", "§") + "§e!");
-	        showLore(lore);
-	        return 1;
+	        if (item.getItem() != Items.AIR) {
+		        CompoundTag nbt = item.getOrCreateTag();
+		        CompoundTag display = nbt.getCompound("display");
+		        ListTag lore = display.getList("Lore", 8);
+		        lore.set(ctx.getArgument("line", Integer.class) - 1,
+		            StringTag.of(StringTag.escape(ctx.getArgument("lore", String.class)).replaceAll("&", "§")));
+		        display.put("Lore", lore);
+		        nbt.put("display", display);
+		        item.setTag(nbt);
+		        mc.interactionManager.clickCreativeStack(item, 36 + mc.player.inventory.selectedSlot);
+		        CodeUtilities.chat(
+		            "§aChanged line " + ctx.getArgument("line", Integer.class) + " to §5§o" + ctx
+		                .getArgument("lore", String.class).replaceAll("&", "§") + "§a!");
+		        showLore(lore);
+		        return 1;
+	        }else {
+	        	CodeUtilities.chat("§cYou need to hold an item in your main hand!");
+	        }
 	      } else {
 	        CodeUtilities.chat("§cYou need to be in creative for this command to work!");
 	      }
@@ -177,6 +199,7 @@ public class LoreCommand {
 		                  try {
 		                    return LoreCommand.add(MinecraftClient.getInstance(), ctx);
 		                  } catch (Exception e) {
+		                	  CodeUtilities.chat("§cError while executing command.");
 		                    e.printStackTrace();
 		                  }
 		                  return 0;
@@ -188,6 +211,7 @@ public class LoreCommand {
 		              try {
 		                return LoreCommand.clear(MinecraftClient.getInstance(), ctx);
 		              } catch (Exception e) {
+		            	  CodeUtilities.chat("§cError while executing command.");
 		                e.printStackTrace();
 		              }
 		              return 0;
@@ -199,6 +223,7 @@ public class LoreCommand {
 		                  try {
 		                    return LoreCommand.remove(MinecraftClient.getInstance(), ctx);
 		                  } catch (Exception e) {
+		                	  CodeUtilities.chat("§cError while executing command.");
 		                    e.printStackTrace();
 		                  }
 		                  return 0;
@@ -212,6 +237,7 @@ public class LoreCommand {
 		                      try {
 		                        return LoreCommand.set(MinecraftClient.getInstance(), ctx);
 		                      } catch (Exception e) {
+		                    	  CodeUtilities.chat("§cError while executing command.");
 		                        e.printStackTrace();
 		                      }
 		                      return 0;
@@ -226,6 +252,7 @@ public class LoreCommand {
 		                      try {
 		                        return LoreCommand.insert(MinecraftClient.getInstance(), ctx);
 		                      } catch (Exception e) {
+		                    	  CodeUtilities.chat("§cError while executing command.");
 		                        e.printStackTrace();
 		                      }
 		                      return 0;

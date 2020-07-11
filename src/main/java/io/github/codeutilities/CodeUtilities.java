@@ -26,10 +26,7 @@ public class CodeUtilities implements ModInitializer {
   public void onInitialize() {
     log(Level.INFO, "Initializing");
 
-    ConfigHolder<ModConfig> holder = AutoConfig.register(
-    	ModConfig.class,
-    	DummyConfigSerializer::new
-    );
+    ConfigHolder<ModConfig> holder = AutoConfig.register(ModConfig.class, DummyConfigSerializer::new);
   }
 
   public static void giveCreativeItem(ItemStack item) {
