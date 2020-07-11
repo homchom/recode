@@ -1,10 +1,13 @@
 package io.github.codeutilities.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
+
 import io.github.codeutilities.CodeUtilities;
+import io.github.codeutilities.commands.item.BreakableCommand;
 import io.github.codeutilities.commands.item.CustomHeadCommand;
 import io.github.codeutilities.commands.item.GiveCommand;
 import io.github.codeutilities.commands.item.LoreCommand;
+import io.github.codeutilities.commands.item.ShulkerCommand;
 import io.github.codeutilities.commands.nbs.NBSCommand;
 import io.github.codeutilities.gui.ExampleGui;
 import io.github.cottonmc.clientcommands.ArgumentBuilders;
@@ -17,6 +20,8 @@ public class Commands implements ClientCommandPlugin {
    public void registerCommands(CommandDispatcher<CottonClientCommandSource> cd) {
       GiveCommand.register(cd);
       LoreCommand.register(cd);
+      BreakableCommand.register(cd);
+      ShulkerCommand.register(cd);
       NBSCommand.register(cd);
       CustomHeadCommand.register(cd);
 
