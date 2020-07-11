@@ -9,6 +9,7 @@ import me.sargunvohra.mcmods.autoconfig1u.serializer.DummyConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.text.LiteralText;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -40,10 +41,25 @@ public class CodeUtilities implements ModInitializer {
    }
 
    public static void giveCreativeItem(ItemStack item) {
-      assert mc.interactionManager != null;
-      assert mc.player != null;
-      mc.interactionManager
-          .clickCreativeStack(item, 36 + mc.player.inventory.getSwappableHotbarSlot());
+	   assert MinecraftClient.getInstance().player != null;
+	    for (int index = 0; index < MinecraftClient.getInstance().player.inventory.main.size(); index++) {
+	      ItemStack i = MinecraftClient.getInstance().player.inventory.main.get(index);
+	      ItemStack compareItem = i.copy();
+	      compareItem.setCount(item.getCount());
+	      if (item == compareItem) {
+	        while (i.getCount() < i.getMaxCount() && item.getCount() > 0) {
+	          i.setCount(i.getCount() + 1);
+	          item.setCount(item.getCount() - 1);
+	        }
+	      } else {
+	        if (i.getItem() == Items.AIR) {
+	          assert MinecraftClient.getInstance().interactionManager != null;
+	          if (index < 9) MinecraftClient.getInstance().interactionManager.clickCreativeStack(item, index + 36);
+	          MinecraftClient.getInstance().player.inventory.main.set(index, item);
+	          return;
+	        }
+	      }
+	    }
    }
 
    public static void log(Level level, String message) {
