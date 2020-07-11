@@ -2,7 +2,6 @@ package io.github.codeutilities.commands.item;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-
 import io.github.codeutilities.CodeUtilities;
 import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
@@ -13,91 +12,96 @@ import net.minecraft.item.ItemStack;
 
 public class GiveCommand {
 
-  static MinecraftClient mc = MinecraftClient.getInstance();
+   static MinecraftClient mc = MinecraftClient.getInstance();
 
-  public static void run(ItemStack item, int count) {
-    item.setCount(count);
-    assert mc.player != null;
-    if (mc.player.isCreative()) {
-      if (count >= 1) {
-        if (count <= item.getMaxCount()) {
-          CodeUtilities.giveCreativeItem(item);
-        } else {
-          CodeUtilities.chat("§cMaximum item count for " + item.getName() + "is " + item.getMaxCount() + "!");
-        }
+   public static void run(ItemStack item, int count) {
+      item.setCount(count);
+      assert mc.player != null;
+      if (mc.player.isCreative()) {
+         if (count >= 1) {
+            if (count <= item.getMaxCount()) {
+               CodeUtilities.giveCreativeItem(item);
+            } else {
+               CodeUtilities.chat(
+                   "§cMaximum item count for " + item.getName() + "is " + item.getMaxCount() + "!");
+            }
+         } else {
+            CodeUtilities.chat("§cMinimum item count is 1!");
+         }
       } else {
-        CodeUtilities.chat("§cMinimum item count is 1!");
+         CodeUtilities.chat("§cYou need to be in creative for this command to work.");
       }
-    } else {
-      CodeUtilities.chat("§cYou need to be in creative for this command to work.");
-    }
-  }
+   }
 
-  public static void clipboard() {
-    String clipboard;
-    try {
-      clipboard = mc.keyboard.getClipboard();
-    } catch (Exception e) {
-      CodeUtilities.chat("§cUnable to get Clipboard");
-      return;
-    }
-    if (clipboard.startsWith("/")) {
-      clipboard = clipboard.substring(1);
-    }
+   public static void clipboard() {
+      String clipboard;
+      try {
+         clipboard = mc.keyboard.getClipboard();
+      } catch (Exception e) {
+         CodeUtilities.chat("§cUnable to get Clipboard");
+         return;
+      }
+      if (clipboard.startsWith("/")) {
+         clipboard = clipboard.substring(1);
+      }
 
-    if (clipboard.startsWith("give ")) {
-      clipboard = clipboard.substring(5);
-    }
+      if (clipboard.startsWith("give ")) {
+         clipboard = clipboard.substring(5);
+      }
 
-    if (clipboard.startsWith("@p ") || clipboard.startsWith("@s ")) {
-      clipboard = clipboard.substring(3);
-    }
+      if (clipboard.startsWith("@p ") || clipboard.startsWith("@s ")) {
+         clipboard = clipboard.substring(3);
+      }
 
-    assert mc.player != null;
-    mc.player.sendChatMessage("/give " + clipboard);
+      assert mc.player != null;
+      mc.player.sendChatMessage("/give " + clipboard);
 
-  }
+   }
 
-  public static void register(CommandDispatcher<CottonClientCommandSource> cd) {
-	  cd.register(ArgumentBuilders.literal("give")
-		    .then(ArgumentBuilders.argument("item", ItemStackArgumentType.itemStack())
-		        .then(ArgumentBuilders.argument("count", IntegerArgumentType.integer(1, 127))
-		            .executes(ctx -> {
-		              try {
-		                GiveCommand.run(ctx.getArgument("item", ItemStackArgument.class).createStack(1,false),
-		                    ctx.getArgument("count", Integer.class));
-		                return 1;
-		              } catch (Exception err) {
-		                CodeUtilities.chat("§cError while executing command.");
-		                err.printStackTrace();
-		                return -1;
-		              }
-		            })
-		        )
-		        .executes(ctx -> {
-		          try {
-		            GiveCommand.run(ctx.getArgument("item", ItemStackArgument.class).createStack(1,false),
-		                1);
-		            return 1;
-		          } catch (Exception err) {
-		            CodeUtilities.chat("§cError while executing command.");
-		            err.printStackTrace();
-		            return -1;
-		          }
-		        })
-		    )
-		    .then(ArgumentBuilders.literal("clipboard")
-		        .executes(ctx -> {
-		          try {
-		            GiveCommand.clipboard();
-		            return 1;
-		          } catch (Exception err) {
-		            CodeUtilities.chat("§cError while executing command.");
-		            err.printStackTrace();
-		            return -1;
-		          }
-		        })
-		    )
-		);
-  }
+   public static void register(CommandDispatcher<CottonClientCommandSource> cd) {
+      cd.register(ArgumentBuilders.literal("give")
+          .then(ArgumentBuilders.argument("item", ItemStackArgumentType.itemStack())
+              .then(ArgumentBuilders.argument("count", IntegerArgumentType.integer(1, 127))
+                  .executes(ctx -> {
+                     try {
+                        GiveCommand
+                            .run(ctx.getArgument("item", ItemStackArgument.class)
+                                    .createStack(1, false),
+                                ctx.getArgument("count", Integer.class));
+                        return 1;
+                     } catch (Exception err) {
+                        CodeUtilities.chat("§cError while executing command.");
+                        err.printStackTrace();
+                        return -1;
+                     }
+                  })
+              )
+              .executes(ctx -> {
+                 try {
+                    GiveCommand
+                        .run(ctx.getArgument("item", ItemStackArgument.class).createStack(1, false),
+                            1);
+                    return 1;
+                 } catch (Exception err) {
+                    CodeUtilities.chat("§cError while executing command.");
+                    err.printStackTrace();
+                    return -1;
+                 }
+              })
+          )
+          .then(ArgumentBuilders.literal("clipboard")
+              .executes(ctx -> {
+                 try {
+                    GiveCommand.clipboard();
+                    return 1;
+                 } catch (Exception err) {
+                    CodeUtilities.chat("§cError while executing command.");
+                    err.printStackTrace();
+                    return -1;
+                 }
+              })
+          )
+      );
+   }
+
 }
