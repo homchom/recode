@@ -5,6 +5,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.github.codeutilities.config.ModConfig;
+import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
+import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.ConfigHolder;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.DummyConfigSerializer;
@@ -29,17 +31,35 @@ public class CodeUtilities implements ModInitializer {
     ConfigHolder<ModConfig> holder = AutoConfig.register(ModConfig.class, DummyConfigSerializer::new);
   }
 
-  public static void giveCreativeItem(ItemStack item) {
-    assert mc.interactionManager != null;
-    assert mc.player != null;
-    mc.interactionManager.clickCreativeStack(item, 36 + mc.player.inventory.getSwappableHotbarSlot());
-  }
-  
-  public static void log(Level level, String message) {
-	    LOGGER.log(level, "[" + MOD_NAME + "] " + message);}
-  
-  public static void chat(String text) {
-	    mc.player.sendMessage(new LiteralText(text), false);
-	  }
+   public static void openGuiAsync(LightweightGuiDescription gui) {
+      new Thread(() -> {
+         try {
+            Thread.sleep(0);
+         } catch (InterruptedException e) {
+            e.printStackTrace();
+         }
+         openGuiSync(gui);
+      }).start();
+   }
 
+   public static void openGuiSync(LightweightGuiDescription gui) {
+      MinecraftClient.getInstance().openScreen(new CottonClientScreen(gui));
+   }
+
+   public static void giveCreativeItem(ItemStack item) {
+      assert mc.interactionManager != null;
+      assert mc.player != null;
+      mc.interactionManager
+          .clickCreativeStack(item, 36 + mc.player.inventory.getSwappableHotbarSlot());
+   }
+
+   public static void log(Level level, String message) {
+      LOGGER.log(level, "[" + MOD_NAME + "] " + message);
+   }
+
+   public static void chat(String text) {
+     assert mc.player != null;
+     mc.player.sendMessage(new LiteralText(text), false);
+   }
+   
 }
