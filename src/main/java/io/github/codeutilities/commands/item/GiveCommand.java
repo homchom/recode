@@ -1,7 +1,14 @@
 package io.github.codeutilities.commands.item;
 
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+
 import io.github.codeutilities.CodeUtilities;
+import io.github.cottonmc.clientcommands.ArgumentBuilders;
+import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.command.arguments.ItemStackArgument;
+import net.minecraft.command.arguments.ItemStackArgumentType;
 import net.minecraft.item.ItemStack;
 
 public class GiveCommand {
@@ -51,4 +58,46 @@ public class GiveCommand {
 
   }
 
+  public static void register(CommandDispatcher<CottonClientCommandSource> cd) {
+	  cd.register(ArgumentBuilders.literal("give")
+		    .then(ArgumentBuilders.argument("item", ItemStackArgumentType.itemStack())
+		        .then(ArgumentBuilders.argument("count", IntegerArgumentType.integer(1, 127))
+		            .executes(ctx -> {
+		              try {
+		                GiveCommand.run(ctx.getArgument("item", ItemStackArgument.class).createStack(1,false),
+		                    ctx.getArgument("count", Integer.class));
+		                return 1;
+		              } catch (Exception err) {
+		                CodeUtilities.chat("§cError while executing command.");
+		                err.printStackTrace();
+		                return -1;
+		              }
+		            })
+		        )
+		        .executes(ctx -> {
+		          try {
+		            GiveCommand.run(ctx.getArgument("item", ItemStackArgument.class).createStack(1,false),
+		                1);
+		            return 1;
+		          } catch (Exception err) {
+		            CodeUtilities.chat("§cError while executing command.");
+		            err.printStackTrace();
+		            return -1;
+		          }
+		        })
+		    )
+		    .then(ArgumentBuilders.literal("clipboard")
+		        .executes(ctx -> {
+		          try {
+		            GiveCommand.clipboard();
+		            return 1;
+		          } catch (Exception err) {
+		            CodeUtilities.chat("§cError while executing command.");
+		            err.printStackTrace();
+		            return -1;
+		          }
+		        })
+		    )
+		);
+  }
 }
