@@ -6,7 +6,8 @@ import org.apache.logging.log4j.Logger;
 
 import io.github.codeutilities.config.ModConfig;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
-import me.sargunvohra.mcmods.autoconfig1u.serializer.GsonConfigSerializer;
+import me.sargunvohra.mcmods.autoconfig1u.ConfigHolder;
+import me.sargunvohra.mcmods.autoconfig1u.serializer.DummyConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
@@ -24,8 +25,11 @@ public class CodeUtilities implements ModInitializer {
   @Override
   public void onInitialize() {
     log(Level.INFO, "Initializing");
-    
-    AutoConfig.register(ModConfig.class, GsonConfigSerializer::new);
+
+    ConfigHolder<ModConfig> holder = AutoConfig.register(
+    	ModConfig.class,
+    	DummyConfigSerializer::new
+    );
   }
 
   public static void giveCreativeItem(ItemStack item) {
@@ -35,11 +39,10 @@ public class CodeUtilities implements ModInitializer {
   }
   
   public static void log(Level level, String message) {
-	LOGGER.log(level, "[" + MOD_NAME + "] " + message);
-  }
+	    LOGGER.log(level, "[" + MOD_NAME + "] " + message);}
   
   public static void chat(String text) {
-	mc.player.sendMessage(new LiteralText(text), false);
-  }
+	    mc.player.sendMessage(new LiteralText(text), false);
+	  }
 
 }
