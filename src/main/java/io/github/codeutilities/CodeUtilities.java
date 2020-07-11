@@ -4,6 +4,9 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import io.github.codeutilities.config.ModConfig;
+import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
+import me.sargunvohra.mcmods.autoconfig1u.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
@@ -17,25 +20,26 @@ public class CodeUtilities implements ModInitializer {
   public static final String SONG_NBS_FORMAT_VERSION = "4"; //NBS format version
   public static Logger LOGGER = LogManager.getLogger();
   public static MinecraftClient mc = MinecraftClient.getInstance();
-  
-  public static void log(Level level, String message) {
-    LOGGER.log(level, "[" + MOD_NAME + "] " + message);
-  }
-
-  public static void chat(String text) {
-    mc.player.sendMessage(new LiteralText(text), false);
-  }
 
   @Override
   public void onInitialize() {
     log(Level.INFO, "Initializing");
-    //TODO: Initializer
+    
+    AutoConfig.register(ModConfig.class, GsonConfigSerializer::new);
   }
 
   public static void giveCreativeItem(ItemStack item) {
     assert mc.interactionManager != null;
     assert mc.player != null;
     mc.interactionManager.clickCreativeStack(item, 36 + mc.player.inventory.getSwappableHotbarSlot());
+  }
+  
+  public static void log(Level level, String message) {
+	LOGGER.log(level, "[" + MOD_NAME + "] " + message);
+  }
+  
+  public static void chat(String text) {
+	mc.player.sendMessage(new LiteralText(text), false);
   }
 
 }
