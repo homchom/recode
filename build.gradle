@@ -28,6 +28,13 @@ repositories {
     }
 }
 
+repositories {
+	maven {
+		name = "CottonMC"
+		url = "https://server.bbkr.space/artifactory/libs-release"
+	}
+}
+
 dependencies {
 	//to change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
@@ -37,6 +44,7 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 	modImplementation "io.github.cottonmc:cotton-client-commands:1.0.1+1.16-rc1"
 	modImplementation "io.github.prospector:modmenu:1.12.2+build.17"
+	modImplementation "io.github.cottonmc:LibGui:2.2.0+1.16.1"
 
 	modApi "me.shedaniel.cloth:config-2:4.5.6"
 	modApi "me.sargunvohra.mcmods:autoconfig1u:3.2.0-unstable"
