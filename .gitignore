@@ -3,6 +3,7 @@
 build/
 out/
 classes/
+gradle.properties
 
 #IDEA
 .idea/
