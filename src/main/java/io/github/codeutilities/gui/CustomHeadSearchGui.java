@@ -231,7 +231,7 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                root.add(scrollPanel, 0, 25, 256, 220);
             });
             if (!searchbox.getText().isEmpty()) {
-               searchbox.setText(searchbox.getText()); //Trigger onChanged Listener
+               searchbox.setText(searchbox.getText());
             }
          } catch (Exception e) {
             loading.setText(new LiteralText("§cFailed to load!"));
