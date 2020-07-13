@@ -10,6 +10,8 @@ import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.LiteralText;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -77,6 +79,11 @@ public class CodeUtilities implements ModInitializer {
    public static void chat(String text, ChatType prefixType) {
         if (mc.player != null) {
             mc.player.sendMessage(new LiteralText(prefixType.getString() + text), false);
+            if (ModConfig.getConfig().errorSound) {
+                if (prefixType == ChatType.FAIL) {
+                    MinecraftClient.getInstance().player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_DIDGERIDOO, SoundCategory.PLAYERS, 2, 0);
+                }
+            }
         }
    }
 

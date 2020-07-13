@@ -14,6 +14,8 @@ public class ModConfig implements ConfigData {
     public boolean discordRPC = false;
     @ConfigEntry.Category("commands")
     public boolean improvedLoreCmd = true;
+    @ConfigEntry.Category("commands")
+    public boolean errorSound = true;
 
     public static ModConfig getConfig() {
     	return AutoConfig.getConfigHolder(ModConfig.class).getConfig();
