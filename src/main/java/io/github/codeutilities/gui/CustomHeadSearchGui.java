@@ -5,12 +5,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.commands.item.CustomHeadCommand;
 import io.github.codeutilities.util.Webutil;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WButton;
 import io.github.cottonmc.cotton.gui.widget.WGridPanel;
-import io.github.cottonmc.cotton.gui.widget.WItem;
 import io.github.cottonmc.cotton.gui.widget.WPanel;
 import io.github.cottonmc.cotton.gui.widget.WScrollBar;
 import io.github.cottonmc.cotton.gui.widget.WScrollPanel;
@@ -38,6 +38,7 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
 
       CTextField searchbox = new CTextField(new LiteralText("Search..."));
       searchbox.setMaxLength(100);
+      searchbox.setEditable(false);
 
       root.add(searchbox, 0, 0, 15, 10);
 
@@ -68,6 +69,7 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
             heads = new ArrayList<>(allheads);
 
             root.remove(loading);
+            searchbox.setEditable(true);
 
             WGridPanel panel = new WGridPanel(1);
             WScrollPanel scrollPanel = new WScrollPanel(panel);
@@ -83,7 +85,8 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                    "{display:{Name:\"{\\\"text\\\":\\\"" + name + "\\\"}\"},SkullOwner:{Id:"
                        + CustomHeadCommand.genId()
                        + ",Properties:{textures:[{Value:\"" + value + "\"}]}}}"));
-               WItem i = new WItem(item);
+               CItem i = new CItem(item);
+               i.setClickListener(() -> CodeUtilities.giveCreativeItem(item));
                panel.add(i, headIndex % 14 * 18, headIndex / 14 * 18, 18, 18);
                headIndex++;
                if (headIndex > 153) {
@@ -111,12 +114,13 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                   } catch (CommandSyntaxException e) {
                      e.printStackTrace();
                   }
-                  WItem i = new WItem(item);
+                  CItem i = new CItem(item);
+                  i.setClickListener(() -> CodeUtilities.giveCreativeItem(item));
                   panel.add(i, headIndex % 14 * 18, headIndex / 14 * 18, 18, 18);
                   headIndex++;
                } while (headIndex <= 41 + oldIndex);
                panel.remove(button);
-               if (headIndex <= heads.size()) {
+               if (headIndex < heads.size()) {
                   panel.add(button, 75, (int) (Math.ceil(((double) headIndex) / 14) * 18), 100, 18);
                }
 
@@ -138,7 +142,7 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                }
 
             });
-            if (headIndex <= heads.size()) {
+            if (headIndex < heads.size()) {
                panel.add(button, 75, (int) (Math.ceil(((double) headIndex) / 14) * 18), 100, 18);
             }
             root.add(scrollPanel, 0, 2, 15, 12);
@@ -186,7 +190,8 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                   } catch (CommandSyntaxException e) {
                      e.printStackTrace();
                   }
-                  WItem i = new WItem(item);
+                  CItem i = new CItem(item);
+                  i.setClickListener(() -> CodeUtilities.giveCreativeItem(item));
                   panel.add(i, headIndex % 14 * 18, headIndex / 14 * 18, 18, 18);
                   headIndex++;
                   if (headIndex > 153) {
@@ -194,7 +199,7 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                   }
                }
                panel.remove(button);
-               if (headIndex <= heads.size()) {
+               if (headIndex < heads.size()) {
                   panel.add(button, 75, (int) (Math.ceil(((double) headIndex) / 14) * 18), 100, 18);
                }
 
