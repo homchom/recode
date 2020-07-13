@@ -1,9 +1,9 @@
 package io.github.codeutilities;
 
 import io.github.codeutilities.config.ModConfig;
+import io.github.codeutilities.util.ChatType;
 import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
-import java.util.Random;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.DummyConfigSerializer;
 import net.fabricmc.api.ModInitializer;
@@ -14,6 +14,8 @@ import net.minecraft.text.LiteralText;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.Random;
 
 public class CodeUtilities implements ModInitializer {
 
@@ -67,8 +69,15 @@ public class CodeUtilities implements ModInitializer {
    }
 
    public static void chat(String text) {
-     assert mc.player != null;
-     mc.player.sendMessage(new LiteralText(text), false);
+       if (mc.player != null) {
+           mc.player.sendMessage(new LiteralText(text), false);
+       }
+   }
+
+   public static void chat(String text, ChatType prefixType) {
+        if (mc.player != null) {
+            mc.player.sendMessage(new LiteralText(prefixType.getString() + text), false);
+        }
    }
 
    @Override

@@ -5,16 +5,18 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.gui.CustomHeadSearchGui;
+import io.github.codeutilities.util.ChatType;
 import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringNbtReader;
+
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 public class CustomHeadCommand {
 
@@ -39,7 +41,7 @@ public class CustomHeadCommand {
          item.setTag(nbt);
          CodeUtilities.giveCreativeItem(item);
       } else {
-         CodeUtilities.chat("§cYou need to be in creative for this command to work!");
+         CodeUtilities.chat("You need to be in creative for this command to work!", ChatType.FAIL);
       }
    }
 
@@ -51,7 +53,7 @@ public class CustomHeadCommand {
                     CodeUtilities.openGuiAsync(new CustomHeadSearchGui());
                     return 1;
                  } catch (Exception err) {
-                    CodeUtilities.chat("§cError while executing command.");
+                    CodeUtilities.chat("Error while executing command.", ChatType.FAIL);
                     err.printStackTrace();
                     return -1;
                  }
@@ -63,7 +65,7 @@ public class CustomHeadCommand {
                     run(ctx.getArgument("value", String.class));
                     return 1;
                  } catch (Exception err) {
-                    CodeUtilities.chat("§cError while executing command.");
+                    CodeUtilities.chat("Error while executing command.", ChatType.FAIL);
                     err.printStackTrace();
                     return -1;
                  }

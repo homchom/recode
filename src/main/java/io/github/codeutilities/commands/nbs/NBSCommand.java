@@ -1,14 +1,11 @@
 package io.github.codeutilities.commands.nbs;
 
-import java.io.File;
-import java.io.IOException;
-
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.commands.nbs.exceptions.OutdatedNBSException;
+import io.github.codeutilities.util.ChatType;
 import io.github.codeutilities.util.TemplateNBT;
 import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
@@ -16,6 +13,9 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.LiteralText;
+
+import java.io.File;
+import java.io.IOException;
 
 public class NBSCommand {
 	
@@ -31,15 +31,15 @@ public class NBSCommand {
 			else {
 				file = new File("nbsFiles/" + StringArgumentType.getString(ctx, "filename") + (StringArgumentType.getString(ctx, "filename").endsWith(".nbs") ? "" : ".nbs"));
 				if (file.exists()) {
-					CodeUtilities.chat("§c§lWARNING&7: §rThe §enbsFiles§r folder will be unsupported in near future! Please move your NBS files into the new §eCodeUtilities/NBS Files§r folder.");
+					CodeUtilities.chat("The §bnbsFiles§e folder will be unsupported in near future! Please move your NBS files into the new §bCodeUtilities/NBS Files§e folder.", ChatType.INFO_YELLOW);
 					loadNbs(file, StringArgumentType.getString(ctx, "filename") + (StringArgumentType.getString(ctx, "filename").endsWith(".nbs") ? "" : ".nbs"));
 				}
 				else {
-					CodeUtilities.chat("§cThe file §6" + StringArgumentType.getString(ctx, "filename") + (StringArgumentType.getString(ctx, "filename").endsWith(".nbs") ? "" : ".nbs") + "§c was not found.");
+					CodeUtilities.chat("The file §6" + StringArgumentType.getString(ctx, "filename") + (StringArgumentType.getString(ctx, "filename").endsWith(".nbs") ? "" : ".nbs") + "§c was not found.", ChatType.FAIL);
 				}
 			}
 		}else {
-			CodeUtilities.chat("§cYou need to be in creative mode to use this command!");
+			CodeUtilities.chat("You need to be in creative mode to use this command!", ChatType.FAIL);
 		}
 	}
 	
@@ -53,10 +53,10 @@ public class NBSCommand {
 			
 			CodeUtilities.giveCreativeItem(stack);
 			
-			CodeUtilities.chat("§aYou received the §bMusic Player§a! Place it down in your codespace and open the chest to get functions!");
+			CodeUtilities.chat("You received the §dMusic Player§a! Place it down in your codespace and open the chest to get functions!", ChatType.INFO_BLUE);
 		}
 		else {
-			CodeUtilities.chat("§cYou need to be in creative mode to use this command!");
+			CodeUtilities.chat("You need to be in creative mode to use this command!", ChatType.FAIL);
 		}
 	}
 	
@@ -80,12 +80,12 @@ public class NBSCommand {
 				stack.setCustomName(new LiteralText("§5SONG§7 -§f " + d.getName()));
 			}
 			
-			CodeUtilities.chat("§aThe NBS file §b" + fileName + "§a has successfully been loaded!");
+			CodeUtilities.chat("The NBS file §b" + fileName + "§a has successfully been loaded!", ChatType.SUCCESS);
 			CodeUtilities.giveCreativeItem(stack);
 		}catch (OutdatedNBSException e) {
-			CodeUtilities.chat("§c§lERROR§7: §rSorry! Due to how importing system works, this NBS file cannot be imported! Please open this file in the latest version of §bOpen Note Block Studio§r and save it once!");
+			CodeUtilities.chat("Sorry! Due to how importing system works, this NBS file cannot be imported! Please open this file in the latest version of §bOpen Note Block Studio§r and save it once!", ChatType.FAIL);
 		}catch (IOException e) {
-			CodeUtilities.chat("§c§lERROR§7: §rCouldn't read data inside this file! This file may be corrupted :(");
+			CodeUtilities.chat("Couldn't read data inside this file! This file may be corrupted :(", ChatType.FAIL);
 		}
 	}
 	
@@ -98,6 +98,7 @@ public class NBSCommand {
 							runLoad(ctx);
 							return 1;
 						}catch (Exception err) {
+							CodeUtilities.chat("Error while executing command.", ChatType.FAIL);
 							err.printStackTrace();
 							return -1;
 						}
@@ -110,6 +111,7 @@ public class NBSCommand {
 						runPlayer(ctx);
 						return 1;
 					}catch (Exception err) {
+						CodeUtilities.chat("Error while executing command.", ChatType.FAIL);
 						err.printStackTrace();
 						return -1;
 					}

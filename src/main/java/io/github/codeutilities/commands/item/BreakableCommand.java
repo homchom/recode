@@ -1,8 +1,8 @@
 package io.github.codeutilities.commands.item;
 
 import com.mojang.brigadier.CommandDispatcher;
-
 import io.github.codeutilities.CodeUtilities;
+import io.github.codeutilities.util.ChatType;
 import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
@@ -21,12 +21,12 @@ public class BreakableCommand {
 				nbt.putBoolean("Unbreakable", false);
 				item.setTag(nbt);
 				mc.interactionManager.clickCreativeStack(item, 36 + mc.player.inventory.selectedSlot);
-				CodeUtilities.chat("§aThe item you're holding is now breakable!");
+				CodeUtilities.chat("The item you're holding is now breakable!", ChatType.SUCCESS);
 			}else {
-				CodeUtilities.chat("§cYou need to hold an item in your main hand!");
+				CodeUtilities.chat("You need to hold an item in your main hand!", ChatType.FAIL);
 			}
 		}else {
-			CodeUtilities.chat("§cYou need to be in creative mode to use this command!");
+			CodeUtilities.chat("You need to be in creative mode to use this command!", ChatType.FAIL);
 		}
 	}
 	
@@ -37,7 +37,7 @@ public class BreakableCommand {
 					run();
 					return 1;
 				}catch (Exception err) {
-					CodeUtilities.chat("§cError while executing command.");
+					CodeUtilities.chat("Error while executing command.", ChatType.FAIL);
 					err.printStackTrace();
 					return -1;
 				}

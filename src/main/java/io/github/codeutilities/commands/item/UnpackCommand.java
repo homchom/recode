@@ -1,8 +1,8 @@
 package io.github.codeutilities.commands.item;
 
 import com.mojang.brigadier.CommandDispatcher;
-
 import io.github.codeutilities.CodeUtilities;
+import io.github.codeutilities.util.ChatType;
 import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
@@ -30,19 +30,19 @@ public class UnpackCommand {
 				          CodeUtilities.giveCreativeItem(item);
 				        }
 				        if (items == 0) {
-				          CodeUtilities.chat("§cThere are no items stored in this container!");
+				          CodeUtilities.chat("There are no items stored in this container!", ChatType.FAIL);
 				        } else {
-				          if (items == 1) CodeUtilities.chat("§aUnpacked §b" + items + "§a item!");
-				          else CodeUtilities.chat("§aUnpacked §b" + items + "§a items!");
+				          if (items == 1) CodeUtilities.chat("Unpacked §b" + items + "§a item!");
+				          else CodeUtilities.chat("§aUnpacked §b" + items + "§a items!", ChatType.SUCCESS);
 				        }
 				}else {
-					CodeUtilities.chat("§cCannot find any items inside! :(");
+					CodeUtilities.chat("Cannot find any items inside! :(", ChatType.FAIL);
 				}
 			}else {
-				CodeUtilities.chat("§cYou need to hold an item in your hand!");
+				CodeUtilities.chat("You need to hold an item in your hand!", ChatType.FAIL);
 			}
 		}else {
-			CodeUtilities.chat("§cYou need to be in creative mode to use this command!");
+			CodeUtilities.chat("You need to be in creative mode to use this command!", ChatType.FAIL);
 		}
 	}
 	
@@ -53,7 +53,7 @@ public class UnpackCommand {
 					run();
 					return 1;
 				}catch (Exception err) {
-					CodeUtilities.chat("§cError while executing command.");
+					CodeUtilities.chat("Error while executing command.", ChatType.FAIL);
 					err.printStackTrace();
 					return -1;
 				}

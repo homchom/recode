@@ -11,9 +11,6 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -36,14 +33,7 @@ public class UuidCommand {
             CodeUtilities.chat("§eUUID of §b" + username + "§e is §d" + fromTrimmed(uuid) + "§e!");
             if (copy) {
                 CodeUtilities.chat("§aThe UUID has been copied to the clipboard!");
-                try {
-                    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                    StringSelection selection = new StringSelection(fromTrimmed(uuid));
-                    clipboard.setContents(selection, null);
-                }catch (Exception e) {
-                    e.printStackTrace();
-                    CodeUtilities.chat("§cAn internal error occurred while attempting to copy the string to the clipboard");
-                }
+                mc.keyboard.setClipboard(fromTrimmed(uuid));
             }
             else mc.player.sendChatMessage("/txt " + fromTrimmed(uuid));
         } catch (IOException | JSONException e) {

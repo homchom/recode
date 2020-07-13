@@ -3,6 +3,7 @@ package io.github.codeutilities.commands.item;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import io.github.codeutilities.CodeUtilities;
+import io.github.codeutilities.util.ChatType;
 import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
@@ -23,13 +24,13 @@ public class GiveCommand {
                CodeUtilities.giveCreativeItem(item);
             } else {
                CodeUtilities.chat(
-                   "§cMaximum item count for " + item.getName() + "is " + item.getMaxCount() + "!");
+                   "Maximum item count for " + item.getName() + "is " + item.getMaxCount() + "!", ChatType.FAIL);
             }
          } else {
-            CodeUtilities.chat("§cMinimum item count is 1!");
+            CodeUtilities.chat("Minimum item count is 1!", ChatType.FAIL);
          }
       } else {
-         CodeUtilities.chat("§cYou need to be in creative for this command to work.");
+         CodeUtilities.chat("You need to be in creative for this command to work.", ChatType.FAIL);
       }
    }
 
@@ -38,7 +39,7 @@ public class GiveCommand {
       try {
          clipboard = mc.keyboard.getClipboard();
       } catch (Exception e) {
-         CodeUtilities.chat("§cUnable to get Clipboard");
+         CodeUtilities.chat("Unable to get Clipboard", ChatType.FAIL);
          return;
       }
       if (clipboard.startsWith("/")) {
@@ -70,7 +71,7 @@ public class GiveCommand {
                                 ctx.getArgument("count", Integer.class));
                         return 1;
                      } catch (Exception err) {
-                        CodeUtilities.chat("§cError while executing command.");
+                        CodeUtilities.chat("Error while executing command.", ChatType.FAIL);
                         err.printStackTrace();
                         return -1;
                      }
@@ -83,7 +84,7 @@ public class GiveCommand {
                             1);
                     return 1;
                  } catch (Exception err) {
-                    CodeUtilities.chat("§cError while executing command.");
+                    CodeUtilities.chat("Error while executing command.", ChatType.FAIL);
                     err.printStackTrace();
                     return -1;
                  }
@@ -95,7 +96,7 @@ public class GiveCommand {
                     GiveCommand.clipboard();
                     return 1;
                  } catch (Exception err) {
-                    CodeUtilities.chat("§cError while executing command.");
+                    CodeUtilities.chat("Error while executing command.", ChatType.FAIL);
                     err.printStackTrace();
                     return -1;
                  }

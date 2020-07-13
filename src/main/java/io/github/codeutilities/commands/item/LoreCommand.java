@@ -1,14 +1,12 @@
 package io.github.codeutilities.commands.item;
 
-import java.util.Objects;
-
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.ModConfig;
+import io.github.codeutilities.util.ChatType;
 import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
@@ -19,6 +17,8 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.text.Text.Serializer;
+
+import java.util.Objects;
 
 public class LoreCommand {
 
@@ -42,10 +42,10 @@ public class LoreCommand {
 		        showLore(lore);
 		        return 1;
 	        }else {
-	        	CodeUtilities.chat("§cYou need to hold an item in your main hand!");
+	        	CodeUtilities.chat("You need to hold an item in your main hand!", ChatType.FAIL);
 	        }
 	      } else {
-	        CodeUtilities.chat("§cYou need to be in creative for this command to work!");
+	        CodeUtilities.chat("You need to be in creative for this command to work!", ChatType.FAIL);
 	      }
 	    } catch (Exception e) {
 	      e.printStackTrace();
@@ -68,14 +68,14 @@ public class LoreCommand {
 		        nbt.put("display", display);
 		        item.setTag(nbt);
 		        mc.interactionManager.clickCreativeStack(item, 36 + mc.player.inventory.selectedSlot);
-		        CodeUtilities.chat("§aCleared!");
+		        CodeUtilities.chat("Cleared!", ChatType.SUCCESS);
 		        return 1;
 	        }else {
-	        	CodeUtilities.chat("§cYou need to hold an item in your main hand!");
+	        	CodeUtilities.chat("You need to hold an item in your main hand!", ChatType.FAIL);
 	        }
 	        
 	      } else {
-	        CodeUtilities.chat("§cYou need to be in creative for this command to work!");
+	        CodeUtilities.chat("You need to be in creative for this command to work!", ChatType.FAIL);
 	      }
 	    } catch (Exception e) {
 	      e.printStackTrace();
@@ -100,15 +100,15 @@ public class LoreCommand {
 		        item.setTag(nbt);
 		        mc.interactionManager.clickCreativeStack(item, 36 + mc.player.inventory.selectedSlot);
 		        CodeUtilities.chat(
-		            "§aInserted §5§o" + ctx.getArgument("lore", String.class).replaceAll("&", "§") + " §aat "
-		                + ctx.getArgument("line", Integer.class) + "§a!");
+		            "Inserted §5§o" + ctx.getArgument("lore", String.class).replaceAll("&", "§") + " §aat "
+		                + ctx.getArgument("line", Integer.class) + "§a!", ChatType.SUCCESS);
 		        showLore(lore);
 		        return 1;
 	        }else {
-	        	CodeUtilities.chat("§cYou need to hold an item in your main hand!");
+	        	CodeUtilities.chat("You need to hold an item in your main hand!", ChatType.FAIL);
 	        }
 	      } else {
-	        CodeUtilities.chat("§cYou need to be in creative for this command to work!");
+	        CodeUtilities.chat("You need to be in creative for this command to work!", ChatType.FAIL);
 	      }
 	    } catch (Exception e) {
 	      e.printStackTrace();
@@ -131,14 +131,14 @@ public class LoreCommand {
 		        nbt.put("display", display);
 		        item.setTag(nbt);
 		        mc.interactionManager.clickCreativeStack(item, 36 + mc.player.inventory.selectedSlot);
-		        CodeUtilities.chat("§aRemoved line " + ctx.getArgument("line", Integer.class) + "§a!");
+		        CodeUtilities.chat("Removed line " + ctx.getArgument("line", Integer.class) + "§a!", ChatType.SUCCESS);
 		        showLore(lore);
 		        return 1;
 	        }else {
-	        	CodeUtilities.chat("§cYou need to hold an item in your main hand!");
+	        	CodeUtilities.chat("You need to hold an item in your main hand!", ChatType.FAIL);
 	        }	      
 	        } else {
-	        CodeUtilities.chat("§cYou need to be in creative for this command to work!");
+	        CodeUtilities.chat("You need to be in creative for this command to work!", ChatType.FAIL);
 	      }
 	    } catch (Exception e) {
 	      e.printStackTrace();
@@ -163,15 +163,15 @@ public class LoreCommand {
 		        item.setTag(nbt);
 		        mc.interactionManager.clickCreativeStack(item, 36 + mc.player.inventory.selectedSlot);
 		        CodeUtilities.chat(
-		            "§aChanged line " + ctx.getArgument("line", Integer.class) + " to §5§o" + ctx
-		                .getArgument("lore", String.class).replaceAll("&", "§") + "§a!");
+		            "Changed line " + ctx.getArgument("line", Integer.class) + " to §5§o" + ctx
+		                .getArgument("lore", String.class).replaceAll("&", "§") + "§a!", ChatType.SUCCESS);
 		        showLore(lore);
 		        return 1;
 	        }else {
-	        	CodeUtilities.chat("§cYou need to hold an item in your main hand!");
+	        	CodeUtilities.chat("You need to hold an item in your main hand!", ChatType.FAIL);
 	        }
 	      } else {
-	        CodeUtilities.chat("§cYou need to be in creative for this command to work!");
+	        CodeUtilities.chat("You need to be in creative for this command to work!", ChatType.FAIL);
 	      }
 	    } catch (Exception e) {
 	      e.printStackTrace();
@@ -181,7 +181,7 @@ public class LoreCommand {
 
 	  private static void showLore(ListTag lore) {
 	    int index = 0;
-	    CodeUtilities.chat("§eNew lore text:");
+	    CodeUtilities.chat("New lore text:", ChatType.INFO_YELLOW);
 	    for (Tag line : lore) {
 	      String text = Objects.requireNonNull(Serializer.fromJson(line.asString())).asString();
 	      index++;
