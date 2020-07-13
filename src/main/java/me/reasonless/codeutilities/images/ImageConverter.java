@@ -46,8 +46,8 @@ public class ImageConverter {
 
 
                         Comparator<MinecraftColors> comparator = (o1, o2) -> {
-                            Color color1 = new Color(o1.getR(), o1.getG(), o1.getB());
-                            Color color2 = new Color(o2.getR(), o2.getG(), o2.getB());
+                            Color color1 = new Color((int) o1.getR(), (int) o1.getG(), (int) o1.getB());
+                            Color color2 = new Color((int) o2.getR(), (int) o2.getG(), (int) o2.getB());
 
                             return (int) (colorDistance(color, color1) - colorDistance(color, color2));
                         };
