@@ -57,6 +57,8 @@ dependencies {
 	include "me.shedaniel.cloth:config-2:4.5.6"
 	include "me.sargunvohra.mcmods:autoconfig1u:3.2.0-unstable"
 	include "io.github.cottonmc:cotton-client-commands:1.0.1+1.16-rc1"
+	include "io.github.cottonmc:LibGui:2.2.0+1.16.1"
+	include "org.json:json:20200518"
 
 	compile 'club.minnced:java-discord-rpc:2.0.2'
 }
