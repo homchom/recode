@@ -1,14 +1,11 @@
 package io.github.codeutilities.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-
 import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.commands.item.BreakableCommand;
-import io.github.codeutilities.commands.item.CustomHeadCommand;
-import io.github.codeutilities.commands.item.GiveCommand;
-import io.github.codeutilities.commands.item.LoreCommand;
-import io.github.codeutilities.commands.item.UnpackCommand;
+import io.github.codeutilities.commands.item.*;
 import io.github.codeutilities.commands.nbs.NBSCommand;
+import io.github.codeutilities.commands.util.UuidCommand;
+import io.github.codeutilities.commands.util.WebviewCommand;
 import io.github.codeutilities.gui.ExampleGui;
 import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.ClientCommandPlugin;
@@ -23,6 +20,8 @@ public class Commands implements ClientCommandPlugin {
       BreakableCommand.register(cd);
       UnpackCommand.register(cd);
       NBSCommand.register(cd);
+      WebviewCommand.register(cd);
+      UuidCommand.register(cd);
       CustomHeadCommand.register(cd);
 
       cd.register(ArgumentBuilders.literal("guitest").executes(ctx -> {

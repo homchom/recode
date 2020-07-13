@@ -36,7 +36,7 @@ public class UnpackCommand {
 				          else CodeUtilities.chat("§aUnpacked §b" + items + "§a items!");
 				        }
 				}else {
-					CodeUtilities.chat("§cThis item is not a container!");
+					CodeUtilities.chat("§cCannot find any items inside! :(");
 				}
 			}else {
 				CodeUtilities.chat("§cYou need to hold an item in your hand!");
