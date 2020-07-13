@@ -4,14 +4,19 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.codeutilities.commands.item.CustomHeadCommand;
 import io.github.codeutilities.util.Webutil;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
+import io.github.cottonmc.cotton.gui.widget.WButton;
 import io.github.cottonmc.cotton.gui.widget.WGridPanel;
 import io.github.cottonmc.cotton.gui.widget.WItem;
+import io.github.cottonmc.cotton.gui.widget.WPanel;
+import io.github.cottonmc.cotton.gui.widget.WScrollBar;
 import io.github.cottonmc.cotton.gui.widget.WScrollPanel;
 import io.github.cottonmc.cotton.gui.widget.WText;
-import io.github.cottonmc.cotton.gui.widget.WTextField;
+import io.github.cottonmc.cotton.gui.widget.WWidget;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import net.fabricmc.fabric.api.util.TriState;
@@ -22,26 +27,27 @@ import net.minecraft.text.LiteralText;
 
 public class CustomHeadSearchGui extends LightweightGuiDescription {
 
-   static List<JsonObject> heads = new ArrayList<>();
+   static List<JsonObject> allheads = new ArrayList<>();
+   List<JsonObject> heads = new ArrayList<>();
+   int headIndex = 0;
 
    public CustomHeadSearchGui() {
       WGridPanel root = new WGridPanel();
       setRootPanel(root);
       root.setSize(256, 240);
 
-      WTextField searchbox = new WTextField(new LiteralText("Search..."));
-      searchbox.setChangedListener(query -> {
-         System.out.println(query);
-      });
+      CTextField searchbox = new CTextField(new LiteralText("Search..."));
+      searchbox.setMaxLength(100);
+
       root.add(searchbox, 0, 0, 15, 10);
 
       WText loading = new WText(new LiteralText("Loading... (0%)"));
-      root.add(loading, 5, 2, 10,1);
+      root.add(loading, 5, 2, 10, 1);
 
       new Thread(() -> {
          try {
-            if (heads.size() < 30000) {
-               heads.clear();
+            if (allheads.size() < 30000) {
+               allheads.clear();
                String[] categories = {"alphabet", "animals", "blocks", "decoration", "humans",
                    "humanoid", "miscellaneous", "monsters", "plants", "food-drinks"};
                int progress = 0;
@@ -50,42 +56,150 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                       .getString("https://minecraft-heads.com/scripts/api.php?cat=" + cat);
                   JsonArray headlist = new Gson().fromJson(response, JsonArray.class);
                   for (JsonElement head : headlist) {
-                     heads.add((JsonObject) head);
+                     allheads.add((JsonObject) head);
                   }
 
                   progress++;
                   loading.setText(new LiteralText(
-                      "Loading... (" + (progress* 100/categories.length) + "%)"));
+                      "Loading... (" + (progress * 100 / categories.length) + "%)"));
                }
             }
+
+            heads = new ArrayList<>(allheads);
 
             root.remove(loading);
 
             WGridPanel panel = new WGridPanel(1);
             WScrollPanel scrollPanel = new WScrollPanel(panel);
-//            scrollPanel.setSize(256,300);
             scrollPanel.setScrollingVertically(TriState.TRUE);
             scrollPanel.setScrollingHorizontally(TriState.FALSE);
-            root.add(scrollPanel, 0, 2, 15, 12);
 
-            System.out.println("Heads: " + heads.size());
-
-            int pos = 0;
             for (JsonObject head : heads) {
-               //head -> name, uuid, value
                ItemStack item = new ItemStack(Items.PLAYER_HEAD);
 
                String name = head.get("name").getAsString();
                String value = head.get("value").getAsString();
-               item.setTag(StringNbtReader.parse("{display:{Name:\"{\\\"text\\\":\\\"" + name + "\\\"}\"},SkullOwner:{Id:" + CustomHeadCommand.genId()
-                   + ",Properties:{textures:[{Value:\"" + value + "\"}]}}}"));
+               item.setTag(StringNbtReader.parse(
+                   "{display:{Name:\"{\\\"text\\\":\\\"" + name + "\\\"}\"},SkullOwner:{Id:"
+                       + CustomHeadCommand.genId()
+                       + ",Properties:{textures:[{Value:\"" + value + "\"}]}}}"));
                WItem i = new WItem(item);
-               panel.add(i,pos%14*18,pos/14*18,18,18);
-               pos++;
-               if (pos/100*100 == pos) {
-                  Thread.sleep(5000);
+               panel.add(i, headIndex % 14 * 18, headIndex / 14 * 18, 18, 18);
+               headIndex++;
+               if (headIndex > 153) {
+                  break;
                }
             }
+
+            WButton button = new WButton(new LiteralText("Load more"));
+            button.setOnClick(() -> {
+               int oldIndex = headIndex;
+               do {
+                  if (headIndex >= heads.size()) {
+                     break;
+                  }
+                  JsonObject head = heads.get(headIndex);
+                  ItemStack item = new ItemStack(Items.PLAYER_HEAD);
+
+                  String name = head.get("name").getAsString();
+                  String value = head.get("value").getAsString();
+                  try {
+                     item.setTag(StringNbtReader.parse(
+                         "{display:{Name:\"{\\\"text\\\":\\\"" + name
+                             + "\\\"}\"},SkullOwner:{Id:" + CustomHeadCommand.genId()
+                             + ",Properties:{textures:[{Value:\"" + value + "\"}]}}}"));
+                  } catch (CommandSyntaxException e) {
+                     e.printStackTrace();
+                  }
+                  WItem i = new WItem(item);
+                  panel.add(i, headIndex % 14 * 18, headIndex / 14 * 18, 18, 18);
+                  headIndex++;
+               } while (headIndex <= 41 + oldIndex);
+               panel.remove(button);
+               if (headIndex <= heads.size()) {
+                  panel.add(button, 75, (int) (Math.ceil(((double) headIndex) / 14) * 18), 100, 18);
+               }
+
+               Field f = null;
+               try {
+                  f = scrollPanel.getClass().getDeclaredField("verticalScrollBar");
+               } catch (NoSuchFieldException e) {
+                  e.printStackTrace();
+               }
+               assert f != null;
+               f.setAccessible(true);
+               try {
+                  WScrollBar bar = ((WScrollBar) f.get(scrollPanel));
+                  bar.onMouseDrag(0, 0, 0);
+                  scrollPanel.layout();
+                  bar.onMouseDrag(0, 999, 0);
+               } catch (IllegalAccessException e) {
+                  e.printStackTrace();
+               }
+
+            });
+            if (headIndex <= heads.size()) {
+               panel.add(button, 75, (int) (Math.ceil(((double) headIndex) / 14) * 18), 100, 18);
+            }
+            root.add(scrollPanel, 0, 2, 15, 12);
+
+            searchbox.setChangedListener(query -> {
+               root.remove(scrollPanel);
+
+               if (query.isEmpty()) {
+                  heads = new ArrayList<>(allheads);
+               } else {
+                  heads.clear();
+
+                  for (JsonObject head : allheads) {
+                     if (head.get("name").getAsString().contains(query)) heads.add(head);
+                  }
+
+               }
+
+               Field f = null;
+               try {
+                  f = WPanel.class.getDeclaredField("children");
+               } catch (NoSuchFieldException e) {
+                  e.printStackTrace();
+               }
+               assert f != null;
+               f.setAccessible(true);
+               try {
+                  List<WWidget> children = ((List) f.get(panel));
+                  children.clear();
+               } catch (IllegalAccessException e) {
+                  e.printStackTrace();
+               }
+               headIndex = 0;
+
+               for (JsonObject head : heads) {
+                  ItemStack item = new ItemStack(Items.PLAYER_HEAD);
+
+                  String name = head.get("name").getAsString();
+                  String value = head.get("value").getAsString();
+                  try {
+                     item.setTag(StringNbtReader.parse(
+                         "{display:{Name:\"{\\\"text\\\":\\\"" + name + "\\\"}\"},SkullOwner:{Id:"
+                             + CustomHeadCommand.genId()
+                             + ",Properties:{textures:[{Value:\"" + value + "\"}]}}}"));
+                  } catch (CommandSyntaxException e) {
+                     e.printStackTrace();
+                  }
+                  WItem i = new WItem(item);
+                  panel.add(i, headIndex % 14 * 18, headIndex / 14 * 18, 18, 18);
+                  headIndex++;
+                  if (headIndex > 153) {
+                     break;
+                  }
+               }
+               panel.remove(button);
+               if (headIndex <= heads.size()) {
+                  panel.add(button, 75, (int) (Math.ceil(((double) headIndex) / 14) * 18), 100, 18);
+               }
+
+               root.add(scrollPanel, 0, 2, 15, 12);
+            });
          } catch (Exception e) {
             loading.setText(new LiteralText("§cFailed to load!"));
             e.printStackTrace();
