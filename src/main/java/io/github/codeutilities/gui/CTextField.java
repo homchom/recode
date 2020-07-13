@@ -12,7 +12,13 @@ public class CTextField extends WTextField {
    @Override
    public void onKeyPressed(int ch, int key, int modifiers) {
       super.onKeyPressed(ch,key,modifiers);
-      onChanged.accept(text);
+      if (onChanged != null) onChanged.accept(text);
+   }
+
+   @Override
+   public void onCharTyped(char ch) {
+      super.onCharTyped(ch);
+      if (onChanged != null) onChanged.accept(text);
    }
 
 }

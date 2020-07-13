@@ -18,6 +18,7 @@ import io.github.cottonmc.cotton.gui.widget.WText;
 import io.github.cottonmc.cotton.gui.widget.WWidget;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.item.ItemStack;
@@ -38,7 +39,6 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
 
       CTextField searchbox = new CTextField(new LiteralText("Search..."));
       searchbox.setMaxLength(100);
-      searchbox.setEditable(false);
 
       root.add(searchbox, 0, 0, 15, 10);
 
@@ -66,10 +66,11 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                }
             }
 
+            allheads.sort(Comparator.comparing(x -> x.get("name").getAsString()));
+
             heads = new ArrayList<>(allheads);
 
             root.remove(loading);
-            searchbox.setEditable(true);
 
             WGridPanel panel = new WGridPanel(1);
             WScrollPanel scrollPanel = new WScrollPanel(panel);
@@ -86,6 +87,7 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                        + CustomHeadCommand.genId()
                        + ",Properties:{textures:[{Value:\"" + value + "\"}]}}}"));
                CItem i = new CItem(item);
+               i.hover = name;
                i.setClickListener(() -> CodeUtilities.giveCreativeItem(item));
                panel.add(i, headIndex % 14 * 18, headIndex / 14 * 18, 18, 18);
                headIndex++;
@@ -115,6 +117,7 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                      e.printStackTrace();
                   }
                   CItem i = new CItem(item);
+                  i.hover = name;
                   i.setClickListener(() -> CodeUtilities.giveCreativeItem(item));
                   panel.add(i, headIndex % 14 * 18, headIndex / 14 * 18, 18, 18);
                   headIndex++;
@@ -155,8 +158,13 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                } else {
                   heads.clear();
 
+                  query = query.toLowerCase();
                   for (JsonObject head : allheads) {
-                     if (head.get("name").getAsString().contains(query)) heads.add(head);
+                     String name = head.get("name").getAsString();
+                     name = name.toLowerCase();
+
+
+                     if (name.contains(query)) heads.add(head);
                   }
 
                }
@@ -191,6 +199,7 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                      e.printStackTrace();
                   }
                   CItem i = new CItem(item);
+                  i.hover = name;
                   i.setClickListener(() -> CodeUtilities.giveCreativeItem(item));
                   panel.add(i, headIndex % 14 * 18, headIndex / 14 * 18, 18, 18);
                   headIndex++;
@@ -205,6 +214,7 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
 
                root.add(scrollPanel, 0, 2, 15, 12);
             });
+            if (!searchbox.getText().isEmpty()) searchbox.setText(searchbox.getText()); //Trigger onChanged Listener
          } catch (Exception e) {
             loading.setText(new LiteralText("§cFailed to load!"));
             e.printStackTrace();
