@@ -21,9 +21,12 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import net.fabricmc.fabric.api.util.TriState;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.StringNbtReader;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.LiteralText;
 
 public class CustomHeadSearchGui extends LightweightGuiDescription {
@@ -33,17 +36,17 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
    int headIndex = 0;
 
    public CustomHeadSearchGui() {
-      WGridPanel root = new WGridPanel();
+      WGridPanel root = new WGridPanel(1);
       setRootPanel(root);
       root.setSize(256, 240);
 
       CTextField searchbox = new CTextField(new LiteralText("Search..."));
       searchbox.setMaxLength(100);
 
-      root.add(searchbox, 0, 0, 15, 10);
+      root.add(searchbox, 0, 0, 256, 0);
 
       WText loading = new WText(new LiteralText("Loading... (0%)"));
-      root.add(loading, 5, 2, 10, 1);
+      root.add(loading, 100, 25, 100, 1);
 
       new Thread(() -> {
          try {
@@ -88,8 +91,12 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                        + ",Properties:{textures:[{Value:\"" + value + "\"}]}}}"));
                CItem i = new CItem(item);
                i.hover = name;
-               i.setClickListener(() -> CodeUtilities.giveCreativeItem(item));
-               panel.add(i, headIndex % 14 * 18, headIndex / 14 * 18, 18, 18);
+               i.setClickListener(() -> {
+                  CodeUtilities.giveCreativeItem(item);
+                  assert MinecraftClient.getInstance().player != null;
+                  MinecraftClient.getInstance().player.playSound(SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 2, 1);
+               });
+               panel.add(i, (int) (headIndex % 14 * 17.8), headIndex / 14 * 18, 17, 18);
                headIndex++;
                if (headIndex > 153) {
                   break;
@@ -118,8 +125,12 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                   }
                   CItem i = new CItem(item);
                   i.hover = name;
-                  i.setClickListener(() -> CodeUtilities.giveCreativeItem(item));
-                  panel.add(i, headIndex % 14 * 18, headIndex / 14 * 18, 18, 18);
+                  i.setClickListener(() -> {
+                     CodeUtilities.giveCreativeItem(item);
+                     assert MinecraftClient.getInstance().player != null;
+                     MinecraftClient.getInstance().player.playSound(SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 2, 1);
+                  });
+                  panel.add(i, (int) (headIndex % 14 * 17.8), headIndex / 14 * 18, 17, 18);
                   headIndex++;
                } while (headIndex <= 41 + oldIndex);
                panel.remove(button);
@@ -148,7 +159,7 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
             if (headIndex < heads.size()) {
                panel.add(button, 75, (int) (Math.ceil(((double) headIndex) / 14) * 18), 100, 18);
             }
-            root.add(scrollPanel, 0, 2, 15, 12);
+            root.add(scrollPanel, 0, 25, 256, 220);
 
             searchbox.setChangedListener(query -> {
                root.remove(scrollPanel);
@@ -163,8 +174,9 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                      String name = head.get("name").getAsString();
                      name = name.toLowerCase();
 
-
-                     if (name.contains(query)) heads.add(head);
+                     if (name.contains(query)) {
+                        heads.add(head);
+                     }
                   }
 
                }
@@ -200,8 +212,12 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                   }
                   CItem i = new CItem(item);
                   i.hover = name;
-                  i.setClickListener(() -> CodeUtilities.giveCreativeItem(item));
-                  panel.add(i, headIndex % 14 * 18, headIndex / 14 * 18, 18, 18);
+                  i.setClickListener(() -> {
+                     CodeUtilities.giveCreativeItem(item);
+                     assert MinecraftClient.getInstance().player != null;
+                     MinecraftClient.getInstance().player.playSound(SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 2, 1);
+                  });
+                  panel.add(i, (int) (headIndex % 14 * 17.8), headIndex / 14 * 18, 17, 18);
                   headIndex++;
                   if (headIndex > 153) {
                      break;
@@ -212,9 +228,11 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                   panel.add(button, 75, (int) (Math.ceil(((double) headIndex) / 14) * 18), 100, 18);
                }
 
-               root.add(scrollPanel, 0, 2, 15, 12);
+               root.add(scrollPanel, 0, 25, 256, 220);
             });
-            if (!searchbox.getText().isEmpty()) searchbox.setText(searchbox.getText()); //Trigger onChanged Listener
+            if (!searchbox.getText().isEmpty()) {
+               searchbox.setText(searchbox.getText()); //Trigger onChanged Listener
+            }
          } catch (Exception e) {
             loading.setText(new LiteralText("§cFailed to load!"));
             e.printStackTrace();

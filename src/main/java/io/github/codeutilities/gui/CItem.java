@@ -1,7 +1,6 @@
 package io.github.codeutilities.gui;
 
 import io.github.cottonmc.cotton.gui.widget.WItem;
-import java.util.Arrays;
 import java.util.Collections;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -32,7 +31,11 @@ public class CItem extends WItem {
       if (mouseX >= 0 && mouseY >= 0 && mouseX < this.getWidth() && mouseY < this.getHeight()) {
          Screen screen = MinecraftClient.getInstance().currentScreen;
          assert screen != null;
+         int oldWidth = screen.width;
+         assert parent != null;
+         screen.width = (int) (parent.getWidth()*1.85);
          screen.renderTooltip(matrices, Collections.singletonList(new LiteralText(hover)), mouseX + x, mouseY + y);
+         screen.width = oldWidth;
       }
    }
 }
