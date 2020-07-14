@@ -45,6 +45,8 @@ public class CodeUtilities implements ModInitializer {
 
     public static void giveCreativeItem(ItemStack item) {
         assert MinecraftClient.getInstance().player != null;
+        assert mc.player != null;
+        if (!mc.player.isCreative()) return;
         for (int index = 0; index < MinecraftClient.getInstance().player.inventory.main.size();
             index++) {
             ItemStack i = MinecraftClient.getInstance().player.inventory.main.get(index);
