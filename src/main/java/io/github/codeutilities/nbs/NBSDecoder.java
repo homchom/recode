@@ -9,7 +9,8 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 
 import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.commands.nbs.exceptions.OutdatedNBSException;
+import io.github.codeutilities.nbs.SongData;
+import io.github.codeutilities.nbs.exceptions.OutdatedNBSException;
 
 // Credit to https://github.com/koca2000/NoteBlockAPI/blob/master/src/main/java/com/xxmicloxx/NoteBlockAPI/NBSDecoder.java
 public class NBSDecoder {

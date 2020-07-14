@@ -5,7 +5,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class Webutil {
+public class WebUtil {
    //Code from https://stackoverflow.com/questions/1485708/how-do-i-do-a-http-get-in-java/1485730#1485730
    public static String getString(String urlToRead) throws Exception {
       StringBuilder result = new StringBuilder();

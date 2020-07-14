@@ -4,7 +4,9 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.commands.nbs.exceptions.OutdatedNBSException;
+import io.github.codeutilities.nbs.NBSToTemplate;
+import io.github.codeutilities.nbs.SongData;
+import io.github.codeutilities.nbs.exceptions.OutdatedNBSException;
 import io.github.codeutilities.util.ChatType;
 import io.github.codeutilities.util.TemplateNBT;
 import io.github.cottonmc.clientcommands.ArgumentBuilders;
@@ -56,14 +58,14 @@ public class NBSCommand {
 			CodeUtilities.chat("You received the §dMusic Player§a! Place it down in your codespace and open the chest to get functions!", ChatType.INFO_BLUE);
 		}
 		else {
-			CodeUtilities.chat("You need to be in creative mode to use this command!", ChatType.FAIL);
+			CodeUtilities.chat("You need to be in build or dev mode to use this command!", ChatType.FAIL);
 		}
 	}
 	
 	public static void loadNbs(File file, String fileName) throws Exception {
 		
 		try {
-			SongData d = NBSDecoder.parse(file);
+			SongData d = io.github.codeutilities.commands.nbs.NBSDecoder.parse(file);
 			String code = new NBSToTemplate(d).convert();
 			ItemStack stack = new ItemStack(Items.NOTE_BLOCK);
 			TemplateNBT.setTemplateNBT(stack, d.getName(), d.getAuthor(), code);

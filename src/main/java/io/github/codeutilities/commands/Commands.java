@@ -6,7 +6,7 @@ import io.github.codeutilities.commands.item.*;
 import io.github.codeutilities.commands.nbs.NBSCommand;
 import io.github.codeutilities.commands.util.UuidCommand;
 import io.github.codeutilities.commands.util.WebviewCommand;
-import io.github.codeutilities.gui.ExampleGui;
+import io.github.codeutilities.gui.CustomHeadSearchGui;
 import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.ClientCommandPlugin;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
@@ -24,8 +24,8 @@ public class Commands implements ClientCommandPlugin {
       UuidCommand.register(cd);
       CustomHeadCommand.register(cd);
 
-      cd.register(ArgumentBuilders.literal("guitest").executes(ctx -> {
-         CodeUtilities.openGuiAsync(new ExampleGui());
+      cd.register(ArgumentBuilders.literal("heads").executes(ctx -> {
+         CodeUtilities.openGuiAsync(new CustomHeadSearchGui());
          return 1;
       }));
    }

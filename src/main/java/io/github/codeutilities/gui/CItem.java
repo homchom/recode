@@ -1,6 +1,8 @@
 package io.github.codeutilities.gui;
 
 import io.github.cottonmc.cotton.gui.widget.WItem;
+
+import java.util.Arrays;
 import java.util.Collections;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;

@@ -1,4 +1,4 @@
-package io.github.codeutilities.misc;
+package io.github.codeutilities.util;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
