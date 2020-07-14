@@ -11,9 +11,11 @@ import io.github.codeutilities.commands.nbs.NBSCommand;
 import io.github.codeutilities.commands.util.UuidCommand;
 import io.github.codeutilities.commands.util.WebviewCommand;
 import io.github.codeutilities.gui.CustomHeadSearchGui;
+import io.github.codeutilities.util.ChatType;
 import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.ClientCommandPlugin;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
+import net.minecraft.client.MinecraftClient;
 
 public class Commands implements ClientCommandPlugin {
 
@@ -30,6 +32,8 @@ public class Commands implements ClientCommandPlugin {
 
         cd.register(ArgumentBuilders.literal("heads").executes(ctx -> {
             CodeUtilities.openGuiAsync(new CustomHeadSearchGui());
+            assert MinecraftClient.getInstance().player != null;
+            if (!MinecraftClient.getInstance().player.isCreative()) CodeUtilities.chat("You need to be in creative to get heads.", ChatType.FAIL);
             return 1;
         }));
     }
