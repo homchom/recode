@@ -51,6 +51,9 @@ public class CustomHeadCommand {
                 .executes(ctx -> {
                     try {
                         CodeUtilities.openGuiAsync(new CustomHeadSearchGui());
+                        assert MinecraftClient.getInstance().player != null;
+                        if (!MinecraftClient.getInstance().player.isCreative()) CodeUtilities.chat("You need to be in creative to get heads.", ChatType.FAIL);
+                        CodeUtilities.chat("Tip: Do /heads instead. Its shorter!", ChatType.INFO_YELLOW);
                         return 1;
                     } catch (Exception err) {
                         CodeUtilities.chat("Error while executing command.", ChatType.FAIL);
