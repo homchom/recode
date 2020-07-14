@@ -1,4 +1,4 @@
-package io.github.codeutilities.nbs;
+package io.github.codeutilities.commands.nbs;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -8,7 +8,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 
-import io.github.codeutilities.nbs.exceptions.OutdatedNBSException;
+import io.github.codeutilities.CodeUtilities;
+import io.github.codeutilities.commands.nbs.exceptions.OutdatedNBSException;
 
 // Credit to https://github.com/koca2000/NoteBlockAPI/blob/master/src/main/java/com/xxmicloxx/NoteBlockAPI/NBSDecoder.java
 public class NBSDecoder {
@@ -35,7 +36,7 @@ public class NBSDecoder {
 		short timeSignature = 4;
 		int loopTick = 0;
 		int loopCount = 0;
-		int vanillaInstruments = 0;
+		int vanillaInstruments = 9;
 
 		StringBuilder stringBuilder = new StringBuilder();
 		StringBuilder layerStringBuilder = new StringBuilder();
@@ -43,34 +44,40 @@ public class NBSDecoder {
         DataInputStream dataInputStream = new DataInputStream(inputStream);
         short length = readShort(dataInputStream);
         int nbsversion = 0;
-        nbsversion = dataInputStream.readByte();
-
-        if(nbsversion != 4) {
-            throw new OutdatedNBSException();
-        }
-        vanillaInstruments = dataInputStream.readByte();
         if (length == 0) {
-            length = readShort(dataInputStream);
+        	nbsversion = dataInputStream.readByte();
+        	vanillaInstruments = dataInputStream.readByte();
+        	if (nbsversion >= 3) {
+        		length = readShort(dataInputStream);
+        	}
+        	else if (nbsversion == 1 || nbsversion == 2) {
+        		throw new OutdatedNBSException();
+        	}
+        }else {
+        	CodeUtilities.chat("§a§lHEY!§r Looks like you are using original Note Block Studio. I recommend you to use §bOpen Note Block Studio§r, which is an unofficial continuation of Note Block Studio!");
         }
-        short layers = readShort(dataInputStream);
-        title = readString(dataInputStream);
-        author = readString(dataInputStream);
-        readString(dataInputStream);
-        String description = readString(dataInputStream);
-        actualSpeed = readShort(dataInputStream);
-        speed = actualSpeed / 100f;
-        dataInputStream.readBoolean();
-        dataInputStream.readByte();
-        timeSignature = (short) dataInputStream.readByte();
-        readInt(dataInputStream);
-        readInt(dataInputStream);
-        readInt(dataInputStream);
-        readInt(dataInputStream);
-        readInt(dataInputStream);
-        readString(dataInputStream);
-        dataInputStream.readByte();
-        loopCount = dataInputStream.readByte();
-        loopTick = readShort(dataInputStream);
+        short layers = readShort(dataInputStream); //song height
+        title = readString(dataInputStream); //title
+        author = readString(dataInputStream); //author
+        readString(dataInputStream); //original author
+        String description = readString(dataInputStream); //description
+        actualSpeed = readShort(dataInputStream); //speed
+        speed = actualSpeed / 100f; //speed
+        dataInputStream.readBoolean(); //autosave
+        dataInputStream.readByte(); //autosave duration
+        timeSignature = (short) dataInputStream.readByte(); //time signature
+        readInt(dataInputStream); //minutes spent
+        readInt(dataInputStream); //left clicks
+        readInt(dataInputStream); //right clicks
+        readInt(dataInputStream); //blocks added
+        readInt(dataInputStream); //nlocks removed
+        readString(dataInputStream); // mid or schematic filename
+        if (nbsversion >= 4) {
+        	dataInputStream.readByte(); //loop on/off
+            loopCount = dataInputStream.readByte(); //loop count
+            loopTick = readShort(dataInputStream); //loop start tick
+        }
+        
         short tick = -1;
         String[][] addStringList = new String[layers][length + 1];
         int[][] instrumentList = new int[layers][length + 1];
@@ -81,6 +88,7 @@ public class NBSDecoder {
         boolean[] columnExistence = new boolean[length + 1];
         boolean[][] noteExistence = new boolean[layers][length + 1];
         boolean firstNoted = false;
+        
         while (true) { //Read notes
             short t = readShort(dataInputStream);
             if (t == 0) {
@@ -99,9 +107,14 @@ public class NBSDecoder {
                 layer += jumpLayers;
                 byte instrument = dataInputStream.readByte();
                 byte note = dataInputStream.readByte();
-                byte velocity = dataInputStream.readByte();
-                int panning = Byte.toUnsignedInt(dataInputStream.readByte());
-                short finepitch = readShort(dataInputStream);   
+                byte velocity = 100;
+                int panning = 100;
+                short finepitch = 0;
+                if (nbsversion >= 4) {
+                	velocity = dataInputStream.readByte();
+                	panning = Byte.toUnsignedInt(dataInputStream.readByte());
+                	finepitch = readShort(dataInputStream);  
+                }
                 
                 //System.out.println("==NOTE #" + debugNoteCount + "==");
                 //System.out.println("  Tick: " + tick);
@@ -121,11 +134,17 @@ public class NBSDecoder {
         for (int i = 0; i < layers; i++) { //Read layer data
 
             String name = readString(dataInputStream);
-            dataInputStream.readByte();
-
+            
+            if (nbsversion >= 4) {
+            	dataInputStream.readByte();
+            }
 
             byte volume = dataInputStream.readByte();
-            int panning = Byte.toUnsignedInt(dataInputStream.readByte());
+            int panning = 100;
+            
+            if (nbsversion >= 2) {
+            	panning = Byte.toUnsignedInt(dataInputStream.readByte());
+            }
             
             for(int currentTick = 0; currentTick < length + 1; currentTick++) {
             	boolean noteExists = noteExistence[i][currentTick];

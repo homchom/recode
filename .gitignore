@@ -3,6 +3,7 @@
 build/
 out/
 classes/
+gradle/wrapper/gradle-wrapper.properties
 
 #IDEA
 .idea/

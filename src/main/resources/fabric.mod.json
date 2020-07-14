@@ -3,24 +3,23 @@
   "id": "codeutilities",
   "version": "${version}",
   "name": "CodeUtilities",
-  "description": "A set of utilities for coding in DiamondFire server.",
-  "authors": [
-    "Reasonless",
-    "KabanFriends",
-    "BlazeMCworld"
-  ],
+  "description": "A set of utilities for coding in DiamondFire server.\n\nDeveloped by: Reasonless, BlazeMCworld, KabanFriends",
   "contributors": [],
   "contact": {
     "homepage": "https://codeutilities.github.io/",
-    "sources": "https://github.com/CodeUtilities/CodeUtilities"
+    "sources": "https://github.com/CodeUtilities/CodeUtilities",
+    "issues": "https://discord.gg/pWfSBJ4"
   },
+  "environment": "client",
   "license": "MIT",
   "icon": "assets/codeutilities/icon.png",
-  "environment": "*",
   "entrypoints": {
     "cotton-client-commands": ["io.github.codeutilities.commands.Commands"],
     "main": [
       "io.github.codeutilities.CodeUtilities"
+    ],
+    "modmenu": [
+        "io.github.codeutilities.config.ModMenuIntegration"
     ],
     "client": [],
     "server": []
@@ -31,5 +30,8 @@
   "depends": {
     "fabricloader": ">=0.8.9",
     "fabric": "*"
+  },
+  "custom": {
+    "modmenu:clientsideOnly": true
   }
 }
