@@ -161,8 +161,9 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                     panel.remove(button);
                     if (headIndex < heads.size()) {
                         panel
-                            .add(button, 75, (int) (Math.ceil(((double) headIndex) / 14) * 18), 100,
+                            .add(button, 50, (int) (Math.ceil(((double) headIndex) / 14) * 18), 150,
                                 18);
+                        button.setLabel(new LiteralText("Load More (" + (heads.size() - headIndex) + ")"));
                     }
 
                     Field f = null;
@@ -184,8 +185,10 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
 
                 });
                 if (headIndex < heads.size()) {
-                    panel.add(button, 75, (int) (Math.ceil(((double) headIndex) / 14) * 18), 100,
-                        18);
+                    panel
+                        .add(button, 50, (int) (Math.ceil(((double) headIndex) / 14) * 18), 150,
+                            18);
+                    button.setLabel(new LiteralText("Load More (" + (heads.size() - headIndex) + ")"));
                 }
                 root.add(scrollPanel, 0, 25, 256, 220);
 
@@ -257,8 +260,9 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                     panel.remove(button);
                     if (headIndex < heads.size()) {
                         panel
-                            .add(button, 75, (int) (Math.ceil(((double) headIndex) / 14) * 18), 100,
+                            .add(button, 50, (int) (Math.ceil(((double) headIndex) / 14) * 18), 150,
                                 18);
+                        button.setLabel(new LiteralText("Load More (" + (heads.size() - headIndex) + ")"));
                     }
 
                     root.add(scrollPanel, 0, 25, 256, 220);
