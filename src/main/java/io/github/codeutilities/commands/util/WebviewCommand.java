@@ -20,7 +20,6 @@ public class WebviewCommand {
 
     public static void run() {
         assert mc.player != null;
-        if (mc.player.isCreative()) {
             ItemStack item = mc.player.getMainHandStack();
             if (item.getItem() != Items.AIR) {
                 try {
@@ -43,10 +42,6 @@ public class WebviewCommand {
             } else {
                 CodeUtilities.chat("You have to hold an item in your hand!", ChatType.FAIL);
             }
-        } else {
-            CodeUtilities
-                .chat("You need to be in creative mode to use this command!", ChatType.FAIL);
-        }
     }
 
     public static void register(CommandDispatcher<CottonClientCommandSource> cd) {
