@@ -18,6 +18,6 @@ public class ModConfig implements ConfigData {
     public boolean errorSound = true;
 
     public static ModConfig getConfig() {
-    	return AutoConfig.getConfigHolder(ModConfig.class).getConfig();
+        return AutoConfig.getConfigHolder(ModConfig.class).getConfig();
     }
 }

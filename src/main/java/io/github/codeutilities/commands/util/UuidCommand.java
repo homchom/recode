@@ -6,14 +6,13 @@ import com.mojang.brigadier.context.CommandContext;
 import io.github.codeutilities.CodeUtilities;
 import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import net.minecraft.client.MinecraftClient;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.IOException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 
 public class UuidCommand {
 
@@ -24,7 +23,7 @@ public class UuidCommand {
         if (ctx.getArgument("username", String.class).contains(" copy")) {
             copy = true;
         }
-        String username = ctx.getArgument("username", String.class).replace(" copy","");
+        String username = ctx.getArgument("username", String.class).replace(" copy", "");
         String url = "https://api.mojang.com/users/profiles/minecraft/" + username;
         try {
             String UUIDJson = IOUtils.toString(new URL(url), StandardCharsets.UTF_8);
@@ -34,23 +33,27 @@ public class UuidCommand {
             if (copy) {
                 CodeUtilities.chat("§aThe UUID has been copied to the clipboard!");
                 mc.keyboard.setClipboard(fromTrimmed(uuid));
+            } else {
+                assert mc.player != null;
+                mc.player.sendChatMessage("/txt " + fromTrimmed(uuid));
             }
-            else mc.player.sendChatMessage("/txt " + fromTrimmed(uuid));
         } catch (IOException | JSONException e) {
             CodeUtilities.chat("§cUser §6" + username + "§c was not found.");
             e.printStackTrace();
         }
     }
 
-    public static String fromTrimmed(String trimmedUUID) throws IllegalArgumentException{
-        if(trimmedUUID == null) throw new IllegalArgumentException();
+    public static String fromTrimmed(String trimmedUUID) throws IllegalArgumentException {
+        if (trimmedUUID == null) {
+            throw new IllegalArgumentException();
+        }
         StringBuilder builder = new StringBuilder(trimmedUUID.trim());
         try {
             builder.insert(20, "-");
             builder.insert(16, "-");
             builder.insert(12, "-");
             builder.insert(8, "-");
-        } catch (StringIndexOutOfBoundsException e){
+        } catch (StringIndexOutOfBoundsException e) {
             throw new IllegalArgumentException();
         }
         return builder.toString();
@@ -63,7 +66,7 @@ public class UuidCommand {
                     try {
                         run(ctx);
                         return 1;
-                    }catch (Exception err) {
+                    } catch (Exception err) {
                         CodeUtilities.chat("§cError while executing command.");
                         return -1;
                     }

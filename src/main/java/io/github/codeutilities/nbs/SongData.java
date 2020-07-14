@@ -11,7 +11,7 @@ public class SongData {
 	int loopTick;
 	int loopCount;
 	int customInstrumentCount;
-	
+
 	public SongData(String name, String author, float speed, int length, String notes, String fileName, String layers, int loopTick, int loopCount, int customInstrumentCount) {
 		this.name = name;
 		this.author = author;
@@ -31,7 +31,7 @@ public class SongData {
 
 	public void setName(String name) {
 		this.name = name;
-	} 
+	}
 
 	public String getAuthor() {
 		return author;
@@ -48,7 +48,7 @@ public class SongData {
 	public int getLength() {
 		return length;
 	}
-	
+
 	public void setSpeed(float speed) {
 		this.speed = speed;
 	}
@@ -72,15 +72,15 @@ public class SongData {
 	public String getLayers() {
 		return layers;
 	}
-	
+
 	public int getLoopTick() {
 		return loopTick;
 	}
-	
+
 	public int getLoopCount() {
 		return loopCount;
 	}
-	
+
 	public int getCustomInstrumentCount() {
 		return customInstrumentCount;
 	}

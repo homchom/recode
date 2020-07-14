@@ -8,7 +8,7 @@ public enum ChatType {
 
     private final String prefix;
 
-    private ChatType(final String prefix) {
+    ChatType(final String prefix) {
         this.prefix = prefix;
     }
 

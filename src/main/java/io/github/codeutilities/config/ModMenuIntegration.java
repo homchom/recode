@@ -7,15 +7,16 @@ import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import net.minecraft.client.MinecraftClient;
 
 public class ModMenuIntegration implements ModMenuApi {
-	@Override
+
+    @Override
     public String getModId() {
         return CodeUtilities.MOD_ID; // Return your modid here
     }
-	
-	@Override
+
+    @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
-        return parent -> {
-        	return AutoConfig.getConfigScreen(ModConfig.class, MinecraftClient.getInstance().currentScreen).get();
-        };
+        return parent -> AutoConfig
+            .getConfigScreen(ModConfig.class, MinecraftClient.getInstance().currentScreen)
+            .get();
     }
 }
