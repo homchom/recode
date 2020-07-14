@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.commands.item.CustomHeadCommand;
+import io.github.codeutilities.util.ChatType;
 import io.github.codeutilities.util.WebUtil;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WButton;
@@ -92,10 +93,15 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                     CItem i = new CItem(item);
                     i.hover = name;
                     i.setClickListener(() -> {
-                        CodeUtilities.giveCreativeItem(item);
-                        assert MinecraftClient.getInstance().player != null;
-                        MinecraftClient.getInstance().player
-                            .playSound(SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 2, 1);
+                        MinecraftClient mc = MinecraftClient.getInstance();
+                        assert mc.player != null;
+                        if (mc.player.isCreative()) {
+                            CodeUtilities.giveCreativeItem(item);
+                            mc.player
+                                .playSound(SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 2, 1);
+                        } else {
+                            CodeUtilities.chat("You need to be in creative to get heads.", ChatType.FAIL);
+                        }
                     });
                     panel.add(i, (int) (headIndex % 14 * 17.8), headIndex / 14 * 18, 17, 18);
                     headIndex++;
