@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.commands.item.CustomHeadCommand;
+import io.github.codeutilities.util.ChatType;
 import io.github.codeutilities.util.WebUtil;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WButton;
@@ -32,6 +33,7 @@ import net.minecraft.text.LiteralText;
 public class CustomHeadSearchGui extends LightweightGuiDescription {
 
     static List<JsonObject> allheads = new ArrayList<>();
+    static boolean loaded = false;
     List<JsonObject> heads = new ArrayList<>();
     int headIndex = 0;
 
@@ -40,7 +42,7 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
         setRootPanel(root);
         root.setSize(256, 240);
 
-        CTextField searchbox = new CTextField(new LiteralText("Search..."));
+        CTextField searchbox = new CTextField(new LiteralText("Search... (0 Heads)"));
         searchbox.setMaxLength(100);
 
         root.add(searchbox, 0, 0, 256, 0);
@@ -50,26 +52,39 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
 
         new Thread(() -> {
             try {
-                if (allheads.size() < 30000) {
+                if (!loaded) {
                     allheads.clear();
-                    String[] categories = {"alphabet", "animals", "blocks", "decoration", "humans",
-                            "humanoid", "miscellaneous", "monsters", "plants", "food-drinks"};
+                    String[] sources = {
+                        "https://minecraft-heads.com/scripts/api.php?cat=alphabet",
+                        "https://minecraft-heads.com/scripts/api.php?cat=animals",
+                        "https://minecraft-heads.com/scripts/api.php?cat=blocks",
+                        "https://minecraft-heads.com/scripts/api.php?cat=decoration",
+                        "https://minecraft-heads.com/scripts/api.php?cat=humans",
+                        "https://minecraft-heads.com/scripts/api.php?cat=humanoid",
+                        "https://minecraft-heads.com/scripts/api.php?cat=miscellaneous",
+                        "https://minecraft-heads.com/scripts/api.php?cat=monsters",
+                        "https://minecraft-heads.com/scripts/api.php?cat=plants",
+                        "https://minecraft-heads.com/scripts/api.php?cat=food-drinks",
+                        "https://blaze.is-inside.me/fGnAHIz1.json" //actual source: https://headdb.org/api/category/all, had to host it myself to make the json format match
+                    };
                     int progress = 0;
-                    for (String cat : categories) {
+                    for (String cat : sources) {
                         String response = WebUtil
-                                .getString("https://minecraft-heads.com/scripts/api.php?cat=" + cat);
+                            .getString("" + cat);
                         JsonArray headlist = new Gson().fromJson(response, JsonArray.class);
                         for (JsonElement head : headlist) {
                             allheads.add((JsonObject) head);
                         }
-
+                        searchbox.setSuggestion("Search... (" + allheads.size() + " Heads)");
                         progress++;
                         loading.setText(new LiteralText(
-                                "Loading... (" + (progress * 100 / categories.length) + "%)"));
+                            "Loading... (" + (progress * 100 / sources.length) + "%)"));
                     }
+                    allheads.sort(Comparator.comparing(x -> x.get("name").getAsString()));
+                    loaded = true;
                 }
 
-                allheads.sort(Comparator.comparing(x -> x.get("name").getAsString()));
+                searchbox.setSuggestion("Search... (" + allheads.size() + " Heads)");
 
                 heads = new ArrayList<>(allheads);
 
@@ -86,15 +101,23 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                     String name = head.get("name").getAsString();
                     String value = head.get("value").getAsString();
                     item.setTag(StringNbtReader.parse(
-                            "{display:{Name:\"{\\\"text\\\":\\\"" + name + "\\\"}\"},SkullOwner:{Id:"
-                                    + CustomHeadCommand.genId()
-                                    + ",Properties:{textures:[{Value:\"" + value + "\"}]}}}"));
+                        "{display:{Name:\"{\\\"text\\\":\\\"" + name + "\\\"}\"},SkullOwner:{Id:"
+                            + CustomHeadCommand.genId()
+                            + ",Properties:{textures:[{Value:\"" + value + "\"}]}}}"));
                     CItem i = new CItem(item);
                     i.hover = name;
                     i.setClickListener(() -> {
-                        CodeUtilities.giveCreativeItem(item);
-                        assert MinecraftClient.getInstance().player != null;
-                        MinecraftClient.getInstance().player.playSound(SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 2, 1);
+                        MinecraftClient mc = MinecraftClient.getInstance();
+                        assert mc.player != null;
+                        if (mc.player.isCreative()) {
+                            CodeUtilities.giveCreativeItem(item);
+                            mc.player
+                                .playSound(SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 2,
+                                    1);
+                        } else {
+                            CodeUtilities
+                                .chat("You need to be in creative to get heads.", ChatType.FAIL);
+                        }
                     });
                     panel.add(i, (int) (headIndex % 14 * 17.8), headIndex / 14 * 18, 17, 18);
                     headIndex++;
@@ -117,9 +140,9 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                         String value = head.get("value").getAsString();
                         try {
                             item.setTag(StringNbtReader.parse(
-                                    "{display:{Name:\"{\\\"text\\\":\\\"" + name
-                                            + "\\\"}\"},SkullOwner:{Id:" + CustomHeadCommand.genId()
-                                            + ",Properties:{textures:[{Value:\"" + value + "\"}]}}}"));
+                                "{display:{Name:\"{\\\"text\\\":\\\"" + name
+                                    + "\\\"}\"},SkullOwner:{Id:" + CustomHeadCommand.genId()
+                                    + ",Properties:{textures:[{Value:\"" + value + "\"}]}}}"));
                         } catch (CommandSyntaxException e) {
                             e.printStackTrace();
                         }
@@ -128,14 +151,19 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                         i.setClickListener(() -> {
                             CodeUtilities.giveCreativeItem(item);
                             assert MinecraftClient.getInstance().player != null;
-                            MinecraftClient.getInstance().player.playSound(SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 2, 1);
+                            MinecraftClient.getInstance().player
+                                .playSound(SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 2,
+                                    1);
                         });
                         panel.add(i, (int) (headIndex % 14 * 17.8), headIndex / 14 * 18, 17, 18);
                         headIndex++;
                     } while (headIndex <= 41 + oldIndex);
                     panel.remove(button);
                     if (headIndex < heads.size()) {
-                        panel.add(button, 75, (int) (Math.ceil(((double) headIndex) / 14) * 18), 100, 18);
+                        panel
+                            .add(button, 50, (int) (Math.ceil(((double) headIndex) / 14) * 18), 150,
+                                18);
+                        button.setLabel(new LiteralText("Load More (" + (heads.size() - headIndex) + ")"));
                     }
 
                     Field f = null;
@@ -157,7 +185,10 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
 
                 });
                 if (headIndex < heads.size()) {
-                    panel.add(button, 75, (int) (Math.ceil(((double) headIndex) / 14) * 18), 100, 18);
+                    panel
+                        .add(button, 50, (int) (Math.ceil(((double) headIndex) / 14) * 18), 150,
+                            18);
+                    button.setLabel(new LiteralText("Load More (" + (heads.size() - headIndex) + ")"));
                 }
                 root.add(scrollPanel, 0, 25, 256, 220);
 
@@ -204,9 +235,10 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                         String value = head.get("value").getAsString();
                         try {
                             item.setTag(StringNbtReader.parse(
-                                    "{display:{Name:\"{\\\"text\\\":\\\"" + name + "\\\"}\"},SkullOwner:{Id:"
-                                            + CustomHeadCommand.genId()
-                                            + ",Properties:{textures:[{Value:\"" + value + "\"}]}}}"));
+                                "{display:{Name:\"{\\\"text\\\":\\\"" + name
+                                    + "\\\"}\"},SkullOwner:{Id:"
+                                    + CustomHeadCommand.genId()
+                                    + ",Properties:{textures:[{Value:\"" + value + "\"}]}}}"));
                         } catch (CommandSyntaxException e) {
                             e.printStackTrace();
                         }
@@ -215,7 +247,9 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                         i.setClickListener(() -> {
                             CodeUtilities.giveCreativeItem(item);
                             assert MinecraftClient.getInstance().player != null;
-                            MinecraftClient.getInstance().player.playSound(SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 2, 1);
+                            MinecraftClient.getInstance().player
+                                .playSound(SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 2,
+                                    1);
                         });
                         panel.add(i, (int) (headIndex % 14 * 17.8), headIndex / 14 * 18, 17, 18);
                         headIndex++;
@@ -225,7 +259,10 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                     }
                     panel.remove(button);
                     if (headIndex < heads.size()) {
-                        panel.add(button, 75, (int) (Math.ceil(((double) headIndex) / 14) * 18), 100, 18);
+                        panel
+                            .add(button, 50, (int) (Math.ceil(((double) headIndex) / 14) * 18), 150,
+                                18);
+                        button.setLabel(new LiteralText("Load More (" + (heads.size() - headIndex) + ")"));
                     }
 
                     root.add(scrollPanel, 0, 25, 256, 220);

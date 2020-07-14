@@ -21,6 +21,6 @@ public class ModConfig implements ConfigData {
 
 
     public static ModConfig getConfig() {
-    	return AutoConfig.getConfigHolder(ModConfig.class).getConfig();
+        return AutoConfig.getConfigHolder(ModConfig.class).getConfig();
     }
 }
