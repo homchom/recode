@@ -35,7 +35,9 @@ public class UuidCommand {
                 CodeUtilities.chat("§aThe UUID has been copied to the clipboard!");
                 mc.keyboard.setClipboard(fromTrimmed(uuid));
             }
-            else mc.player.sendChatMessage("/txt " + fromTrimmed(uuid));
+            else if(CodeUtilities.isOnDF()) {
+                mc.player.sendChatMessage("/txt " + fromTrimmed(uuid));
+            }
         } catch (IOException | JSONException e) {
             CodeUtilities.chat("§cUser §6" + username + "§c was not found.");
             e.printStackTrace();

@@ -6,6 +6,7 @@ import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.DummyConfigSerializer;
+import me.sargunvohra.mcmods.autoconfig1u.serializer.Toml4jConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
@@ -23,8 +24,6 @@ public class CodeUtilities implements ModInitializer {
 
    public static final String MOD_ID = "codeutilities";
    public static final String MOD_NAME = "CodeUtilities";
-   public static final String SONG_PARSER_VERSION = "4"; //NBS parser version
-   public static final String SONG_NBS_FORMAT_VERSION = "4"; //NBS format version
    public static Logger LOGGER = LogManager.getLogger();
    public static MinecraftClient mc = MinecraftClient.getInstance();
    public static Random rng = new Random();
@@ -66,6 +65,11 @@ public class CodeUtilities implements ModInitializer {
 	    }
    }
 
+   public static boolean isOnDF() {
+       if(mc.getCurrentServerEntry() == null) return false;
+       return mc.getCurrentServerEntry().address.contains("mcdiamondfire.com");
+   }
+
    public static void log(Level level, String message) {
       LOGGER.log(level, "[" + MOD_NAME + "] " + message);
    }
@@ -91,7 +95,7 @@ public class CodeUtilities implements ModInitializer {
    public void onInitialize() {
       log(Level.INFO, "Initializing");
 
-      AutoConfig.register(ModConfig.class, DummyConfigSerializer::new);
+      AutoConfig.register(ModConfig.class, Toml4jConfigSerializer::new);
    }
 
 }

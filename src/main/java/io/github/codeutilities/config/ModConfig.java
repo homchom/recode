@@ -11,11 +11,14 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Category("features")
     public boolean playDiamondFire = true;
     @ConfigEntry.Category("features")
-    public boolean discordRPC = false;
+    public boolean adBlock = false;
+
+
     @ConfigEntry.Category("commands")
     public boolean improvedLoreCmd = true;
     @ConfigEntry.Category("commands")
     public boolean errorSound = true;
+
 
     public static ModConfig getConfig() {
     	return AutoConfig.getConfigHolder(ModConfig.class).getConfig();

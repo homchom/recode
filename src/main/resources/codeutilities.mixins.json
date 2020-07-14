@@ -3,7 +3,8 @@
   "package": "io.github.codeutilities.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "MixinOptionsScreen"
+    "MixinOptionsScreen",
+    "MixinTitleScreen"
   ],
   "client": [],
   "server": [],
