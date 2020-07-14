@@ -33,6 +33,7 @@ import net.minecraft.text.LiteralText;
 public class CustomHeadSearchGui extends LightweightGuiDescription {
 
     static List<JsonObject> allheads = new ArrayList<>();
+    static boolean loaded = false;
     List<JsonObject> heads = new ArrayList<>();
     int headIndex = 0;
 
@@ -51,14 +52,25 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
 
         new Thread(() -> {
             try {
-                if (allheads.size() < 30000) {
+                if (!loaded) {
                     allheads.clear();
-                    String[] categories = {"alphabet", "animals", "blocks", "decoration", "humans",
-                        "humanoid", "miscellaneous", "monsters", "plants", "food-drinks"};
+                    String[] sources = {
+                        "https://minecraft-heads.com/scripts/api.php?cat=alphabet",
+                        "https://minecraft-heads.com/scripts/api.php?cat=animals",
+                        "https://minecraft-heads.com/scripts/api.php?cat=blocks",
+                        "https://minecraft-heads.com/scripts/api.php?cat=decoration",
+                        "https://minecraft-heads.com/scripts/api.php?cat=humans",
+                        "https://minecraft-heads.com/scripts/api.php?cat=humanoid",
+                        "https://minecraft-heads.com/scripts/api.php?cat=miscellaneous",
+                        "https://minecraft-heads.com/scripts/api.php?cat=monsters",
+                        "https://minecraft-heads.com/scripts/api.php?cat=plants",
+                        "https://minecraft-heads.com/scripts/api.php?cat=food-drinks",
+                        "https://blaze.is-inside.me/fGnAHIz1.json" //actual source: https://headdb.org/api/category/all, had to host it myself to make the json format match
+                    };
                     int progress = 0;
-                    for (String cat : categories) {
+                    for (String cat : sources) {
                         String response = WebUtil
-                            .getString("https://minecraft-heads.com/scripts/api.php?cat=" + cat);
+                            .getString("" + cat);
                         JsonArray headlist = new Gson().fromJson(response, JsonArray.class);
                         for (JsonElement head : headlist) {
                             allheads.add((JsonObject) head);
@@ -66,11 +78,11 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
 
                         progress++;
                         loading.setText(new LiteralText(
-                            "Loading... (" + (progress * 100 / categories.length) + "%)"));
+                            "Loading... (" + (progress * 100 / sources.length) + "%)"));
                     }
+                    allheads.sort(Comparator.comparing(x -> x.get("name").getAsString()));
+                    loaded = true;
                 }
-
-                allheads.sort(Comparator.comparing(x -> x.get("name").getAsString()));
 
                 heads = new ArrayList<>(allheads);
 
@@ -98,9 +110,11 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                         if (mc.player.isCreative()) {
                             CodeUtilities.giveCreativeItem(item);
                             mc.player
-                                .playSound(SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 2, 1);
+                                .playSound(SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 2,
+                                    1);
                         } else {
-                            CodeUtilities.chat("You need to be in creative to get heads.", ChatType.FAIL);
+                            CodeUtilities
+                                .chat("You need to be in creative to get heads.", ChatType.FAIL);
                         }
                     });
                     panel.add(i, (int) (headIndex % 14 * 17.8), headIndex / 14 * 18, 17, 18);
