@@ -1,10 +1,11 @@
-package io.github.codeutilities.commands.nbs;
+package io.github.codeutilities.nbs;
 
 import java.math.BigDecimal;
 
-import io.github.codeutilities.CodeUtilities;
-
 public class NBSToTemplate {
+	private static final String SONG_PARSER_VERSION = "4";
+	private static final String SONG_NBS_FORMAT_VERSION = "4";
+
 	String song;
 	String name;
 	String author;
@@ -20,7 +21,7 @@ public class NBSToTemplate {
 	
 	public NBSToTemplate(SongData song) {
 		
-		this.version = "v" + CodeUtilities.SONG_PARSER_VERSION + "-nbs" + CodeUtilities.SONG_NBS_FORMAT_VERSION;
+		this.version = "v" + SONG_PARSER_VERSION + "-nbs" + SONG_NBS_FORMAT_VERSION;
 
 		this.song = song.getNotes();
 		this.author = song.getAuthor();

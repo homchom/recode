@@ -12,5 +12,4 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Category("features")
     public boolean discordRPC = false;
 
-
 }

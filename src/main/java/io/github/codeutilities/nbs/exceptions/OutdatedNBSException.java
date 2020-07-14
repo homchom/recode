@@ -1,4 +1,4 @@
-package io.github.codeutilities.commands.nbs.exceptions;
+package io.github.codeutilities.nbs.exceptions;
 
 public class OutdatedNBSException extends Exception {
 

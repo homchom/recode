@@ -1,4 +1,4 @@
-package io.github.codeutilities.util;
+package io.github.codeutilities.misc;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;

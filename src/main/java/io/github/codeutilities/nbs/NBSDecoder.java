@@ -1,4 +1,4 @@
-package io.github.codeutilities.commands.nbs;
+package io.github.codeutilities.nbs;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 
-import io.github.codeutilities.commands.nbs.exceptions.OutdatedNBSException;
+import io.github.codeutilities.nbs.exceptions.OutdatedNBSException;
 
 // Credit to https://github.com/koca2000/NoteBlockAPI/blob/master/src/main/java/com/xxmicloxx/NoteBlockAPI/NBSDecoder.java
 public class NBSDecoder {

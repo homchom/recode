@@ -1,4 +1,4 @@
-package io.github.codeutilities.commands.nbs;
+package io.github.codeutilities.nbs;
 
 public class SongData {
 	String name;
