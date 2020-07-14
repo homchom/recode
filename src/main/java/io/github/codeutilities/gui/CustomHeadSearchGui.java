@@ -42,7 +42,7 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
         setRootPanel(root);
         root.setSize(256, 240);
 
-        CTextField searchbox = new CTextField(new LiteralText("Search..."));
+        CTextField searchbox = new CTextField(new LiteralText("Search... (0 Heads)"));
         searchbox.setMaxLength(100);
 
         root.add(searchbox, 0, 0, 256, 0);
@@ -75,7 +75,7 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                         for (JsonElement head : headlist) {
                             allheads.add((JsonObject) head);
                         }
-
+                        searchbox.setSuggestion("Search... (" + allheads.size() + " Heads)");
                         progress++;
                         loading.setText(new LiteralText(
                             "Loading... (" + (progress * 100 / sources.length) + "%)"));
@@ -83,6 +83,8 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                     allheads.sort(Comparator.comparing(x -> x.get("name").getAsString()));
                     loaded = true;
                 }
+
+                searchbox.setSuggestion("Search... (" + allheads.size() + " Heads)");
 
                 heads = new ArrayList<>(allheads);
 
