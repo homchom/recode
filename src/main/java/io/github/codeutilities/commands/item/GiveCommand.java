@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.util.ChatType;
+import io.github.codeutilities.util.ItemUtil;
 import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
@@ -21,7 +22,7 @@ public class GiveCommand {
         if (mc.player.isCreative()) {
             if (count >= 1) {
                 if (count <= item.getMaxCount()) {
-                    CodeUtilities.giveCreativeItem(item);
+                    ItemUtil.giveCreativeItem(item);
                 } else {
                     CodeUtilities.chat(
                         "Maximum item count for " + item.getName() + "is " + item.getMaxCount()

@@ -3,6 +3,7 @@ package io.github.codeutilities.commands.item;
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.util.ChatType;
+import io.github.codeutilities.util.ItemUtil;
 import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
@@ -29,7 +30,7 @@ public class UnpackCommand {
                         if (item.getItem() != Items.AIR) {
                             items++;
                         }
-                        CodeUtilities.giveCreativeItem(item);
+                        ItemUtil.giveCreativeItem(item);
                     }
                     if (items == 0) {
                         CodeUtilities

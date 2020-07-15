@@ -8,6 +8,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.commands.item.CustomHeadCommand;
 import io.github.codeutilities.util.ChatType;
+import io.github.codeutilities.util.ItemUtil;
 import io.github.codeutilities.util.WebUtil;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WButton;
@@ -110,7 +111,7 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                         MinecraftClient mc = MinecraftClient.getInstance();
                         assert mc.player != null;
                         if (mc.player.isCreative()) {
-                            CodeUtilities.giveCreativeItem(item);
+                            ItemUtil.giveCreativeItem(item);
                             mc.player
                                 .playSound(SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 2,
                                     1);
@@ -149,7 +150,7 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                         CItem i = new CItem(item);
                         i.hover = name;
                         i.setClickListener(() -> {
-                            CodeUtilities.giveCreativeItem(item);
+                            ItemUtil.giveCreativeItem(item);
                             assert MinecraftClient.getInstance().player != null;
                             MinecraftClient.getInstance().player
                                 .playSound(SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 2,
@@ -245,7 +246,7 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                         CItem i = new CItem(item);
                         i.hover = name;
                         i.setClickListener(() -> {
-                            CodeUtilities.giveCreativeItem(item);
+                            ItemUtil.giveCreativeItem(item);
                             assert MinecraftClient.getInstance().player != null;
                             MinecraftClient.getInstance().player
                                 .playSound(SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 2,

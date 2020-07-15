@@ -24,7 +24,7 @@ public class ItemUtil {
                 if (i.getItem() == Items.AIR) {
                     if (index < 9)
                         MinecraftClient.getInstance().interactionManager.clickCreativeStack(item, index + 36);
-                    MinecraftClient.getInstance().player.inventory.main.set(index, item);
+                    mainInventory.set(index, item);
                     return;
                 }
             }

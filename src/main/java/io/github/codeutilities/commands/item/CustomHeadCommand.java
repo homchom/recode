@@ -6,6 +6,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.gui.CustomHeadSearchGui;
 import io.github.codeutilities.util.ChatType;
+import io.github.codeutilities.util.ItemUtil;
 import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import java.nio.charset.Charset;
@@ -38,7 +39,7 @@ public class CustomHeadCommand {
                 .parse("{SkullOwner:{Id:" + genId() + ",Properties:{textures:[{Value:\"" + value
                     + "\"}]}}}");
             item.setTag(nbt);
-            CodeUtilities.giveCreativeItem(item);
+            ItemUtil.giveCreativeItem(item);
         } else {
             CodeUtilities
                 .chat("You need to be in creative for this command to work!", ChatType.FAIL);
