@@ -109,7 +109,6 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                     i.hover = name;
                     i.setClickListener(() -> {
                         MinecraftClient mc = MinecraftClient.getInstance();
-                        assert mc.player != null;
                         if (mc.player.isCreative()) {
                             ItemUtil.giveCreativeItem(item);
                             mc.player
@@ -173,7 +172,6 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                     } catch (NoSuchFieldException e) {
                         e.printStackTrace();
                     }
-                    assert f != null;
                     f.setAccessible(true);
                     try {
                         WScrollBar bar = ((WScrollBar) f.get(scrollPanel));
@@ -247,7 +245,6 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                         i.hover = name;
                         i.setClickListener(() -> {
                             ItemUtil.giveCreativeItem(item);
-                            assert MinecraftClient.getInstance().player != null;
                             MinecraftClient.getInstance().player
                                 .playSound(SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 2,
                                     1);

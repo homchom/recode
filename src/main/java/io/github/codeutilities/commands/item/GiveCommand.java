@@ -18,22 +18,20 @@ public class GiveCommand {
 
     public static void run(ItemStack item, int count) {
         item.setCount(count);
-        assert mc.player != null;
         if (mc.player.isCreative()) {
             if (count >= 1) {
                 if (count <= item.getMaxCount()) {
                     ItemUtil.giveCreativeItem(item);
                 } else {
                     CodeUtilities.chat(
-                        "Maximum item count for " + item.getName() + "is " + item.getMaxCount()
-                            + "!", ChatType.FAIL);
+                            "Maximum item count for " + item.getName() + "is " + item.getMaxCount()
+                                    + "!", ChatType.FAIL);
                 }
             } else {
                 CodeUtilities.chat("Minimum item count is 1!", ChatType.FAIL);
             }
         } else {
-            CodeUtilities
-                .chat("You need to be in creative for this command to work.", ChatType.FAIL);
+            CodeUtilities.chat("You need to be in creative for this command to work.", ChatType.FAIL);
         }
     }
 
@@ -57,55 +55,53 @@ public class GiveCommand {
             clipboard = clipboard.substring(3);
         }
 
-        assert mc.player != null;
         mc.player.sendChatMessage("/give " + clipboard);
-
     }
 
     public static void register(CommandDispatcher<CottonClientCommandSource> cd) {
         cd.register(ArgumentBuilders.literal("give")
-            .then(ArgumentBuilders.argument("item", ItemStackArgumentType.itemStack())
-                .then(ArgumentBuilders.argument("count", IntegerArgumentType.integer(1, 127))
-                    .executes(ctx -> {
-                        try {
-                            GiveCommand
-                                .run(ctx.getArgument("item", ItemStackArgument.class)
-                                        .createStack(1, false),
-                                    ctx.getArgument("count", Integer.class));
-                            return 1;
-                        } catch (Exception err) {
-                            CodeUtilities.chat("Error while executing command.", ChatType.FAIL);
-                            err.printStackTrace();
-                            return -1;
-                        }
-                    })
+                .then(ArgumentBuilders.argument("item", ItemStackArgumentType.itemStack())
+                        .then(ArgumentBuilders.argument("count", IntegerArgumentType.integer(1, 127))
+                                .executes(ctx -> {
+                                    try {
+                                        GiveCommand
+                                                .run(ctx.getArgument("item", ItemStackArgument.class)
+                                                                .createStack(1, false),
+                                                        ctx.getArgument("count", Integer.class));
+                                        return 1;
+                                    } catch (Exception err) {
+                                        CodeUtilities.chat("Error while executing command.", ChatType.FAIL);
+                                        err.printStackTrace();
+                                        return -1;
+                                    }
+                                })
+                        )
+                        .executes(ctx -> {
+                            try {
+                                GiveCommand
+                                        .run(ctx.getArgument("item", ItemStackArgument.class)
+                                                        .createStack(1, false),
+                                                1);
+                                return 1;
+                            } catch (Exception err) {
+                                CodeUtilities.chat("Error while executing command.", ChatType.FAIL);
+                                err.printStackTrace();
+                                return -1;
+                            }
+                        })
                 )
-                .executes(ctx -> {
-                    try {
-                        GiveCommand
-                            .run(ctx.getArgument("item", ItemStackArgument.class)
-                                    .createStack(1, false),
-                                1);
-                        return 1;
-                    } catch (Exception err) {
-                        CodeUtilities.chat("Error while executing command.", ChatType.FAIL);
-                        err.printStackTrace();
-                        return -1;
-                    }
-                })
-            )
-            .then(ArgumentBuilders.literal("clipboard")
-                .executes(ctx -> {
-                    try {
-                        GiveCommand.clipboard();
-                        return 1;
-                    } catch (Exception err) {
-                        CodeUtilities.chat("Error while executing command.", ChatType.FAIL);
-                        err.printStackTrace();
-                        return -1;
-                    }
-                })
-            )
+                .then(ArgumentBuilders.literal("clipboard")
+                        .executes(ctx -> {
+                            try {
+                                GiveCommand.clipboard();
+                                return 1;
+                            } catch (Exception err) {
+                                CodeUtilities.chat("Error while executing command.", ChatType.FAIL);
+                                err.printStackTrace();
+                                return -1;
+                            }
+                        })
+                )
         );
     }
 

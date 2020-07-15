@@ -3,6 +3,8 @@ package io.github.codeutilities.util;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.internal.$Gson$Preconditions;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -38,6 +40,12 @@ public class TemplateUtils {
             e.printStackTrace();
         }
 
+    }
+    public static JsonObject fromItemStack(ItemStack stack) {
+        CompoundTag tag = stack.getTag();
+        CompoundTag publicBukkitNBT = tag.getCompound("PublicBukkitValues");
+        String template = publicBukkitNBT.getString("hypercube:codetemplatedata");
+        return JsonParser.parseString(template).getAsJsonObject();
     }
 
 }

@@ -25,7 +25,6 @@ public class NBSCommand {
 
     // nbs load <filename>
     public static void runLoad(CommandContext<CottonClientCommandSource> ctx) throws Exception {
-        assert mc.player != null;
         if (mc.player.isCreative()) {
             File file = new File(
                 "CodeUtilities/NBS Files/" + StringArgumentType.getString(ctx, "filename") + (
@@ -58,7 +57,6 @@ public class NBSCommand {
 
     // nbs player
     public static void runPlayer(CommandContext<CottonClientCommandSource> ctx) throws Exception {
-        assert mc.player != null;
         if (mc.player.isCreative()) {
             ItemStack stack = new ItemStack(Items.JUKEBOX);
 
@@ -81,7 +79,6 @@ public class NBSCommand {
 
         try {
             SongData d = io.github.codeutilities.commands.nbs.NBSDecoder.parse(file);
-            assert d != null;
             String code = new NBSToTemplate(d).convert();
             ItemStack stack = new ItemStack(Items.NOTE_BLOCK);
             TemplateUtils.applyCompressedTemplateNBT(stack, d.getName(), d.getAuthor(), code);

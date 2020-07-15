@@ -9,21 +9,21 @@ import io.github.codeutilities.util.ChatType;
 import io.github.codeutilities.util.ItemUtil;
 import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringNbtReader;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+
 public class CustomHeadCommand {
 
     static MinecraftClient mc = MinecraftClient.getInstance();
 
     public static void run(String value) throws CommandSyntaxException {
-        assert mc.player != null;
         if (mc.player.isCreative()) {
             ItemStack item = new ItemStack(Items.PLAYER_HEAD);
 
@@ -35,51 +35,50 @@ public class CustomHeadCommand {
                 value = new String(a, charset);
             }
 
-            CompoundTag nbt = StringNbtReader
-                .parse("{SkullOwner:{Id:" + genId() + ",Properties:{textures:[{Value:\"" + value
-                    + "\"}]}}}");
+            CompoundTag nbt = StringNbtReader.parse("{SkullOwner:{Id:" + genId() + ",Properties:{textures:[{Value:\"" + value + "\"}]}}}");
             item.setTag(nbt);
             ItemUtil.giveCreativeItem(item);
         } else {
-            CodeUtilities
-                .chat("You need to be in creative for this command to work!", ChatType.FAIL);
+            CodeUtilities.chat("You need to be in creative for this command to work!", ChatType.FAIL);
         }
     }
 
     public static void register(CommandDispatcher<CottonClientCommandSource> cd) {
         cd.register(ArgumentBuilders.literal("customhead")
-            .then(ArgumentBuilders.literal("search")
-                .executes(ctx -> {
-                    try {
-                        CodeUtilities.openGuiAsync(new CustomHeadSearchGui());
-                        assert MinecraftClient.getInstance().player != null;
-                        if (!MinecraftClient.getInstance().player.isCreative()) CodeUtilities.chat("You need to be in creative to get heads.", ChatType.FAIL);
-                        CodeUtilities.chat("Tip: Do /heads instead. Its shorter!", ChatType.INFO_YELLOW);
-                        return 1;
-                    } catch (Exception err) {
-                        CodeUtilities.chat("Error while executing command.", ChatType.FAIL);
-                        err.printStackTrace();
-                        return -1;
-                    }
-                })
-            )
-            .then(ArgumentBuilders.argument("value", StringArgumentType.greedyString())
-                .executes(ctx -> {
-                    try {
-                        run(ctx.getArgument("value", String.class));
-                        return 1;
-                    } catch (Exception err) {
-                        CodeUtilities.chat("Error while executing command.", ChatType.FAIL);
-                        err.printStackTrace();
-                        return -1;
-                    }
-                })
-            )
+                .then(ArgumentBuilders.literal("search")
+                        .executes(ctx -> {
+                            try {
+                                if (!MinecraftClient.getInstance().player.isCreative()) {
+                                    CodeUtilities.chat("You need to be in creative to get heads.", ChatType.FAIL);
+                                    return -1;
+                                }
+                                CodeUtilities.openGuiAsync(new CustomHeadSearchGui());
+                                CodeUtilities.chat("Tip: Do /heads instead. Its shorter!", ChatType.INFO_YELLOW);
+                                return 1;
+                            } catch (Exception err) {
+                                CodeUtilities.chat("Error while executing command.", ChatType.FAIL);
+                                err.printStackTrace();
+                                return -1;
+                            }
+                        })
+                )
+                .then(ArgumentBuilders.argument("value", StringArgumentType.greedyString())
+                        .executes(ctx -> {
+                            try {
+                                run(ctx.getArgument("value", String.class));
+                                return 1;
+                            } catch (Exception err) {
+                                CodeUtilities.chat("Error while executing command.", ChatType.FAIL);
+                                err.printStackTrace();
+                                return -1;
+                            }
+                        })
+                )
         );
     }
 
     public static String genId() {
         return "[I;" + CodeUtilities.rng.nextInt() + "," + CodeUtilities.rng.nextInt() + ","
-            + CodeUtilities.rng.nextInt() + "," + CodeUtilities.rng.nextInt() + "]";
+                + CodeUtilities.rng.nextInt() + "," + CodeUtilities.rng.nextInt() + "]";
     }
 }

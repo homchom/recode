@@ -34,8 +34,6 @@ public class CItem extends WItem {
        }
         if (mouseX >= 0 && mouseY >= 0 && mouseX < this.getWidth() && mouseY < this.getHeight()) {
             Screen screen = MinecraftClient.getInstance().currentScreen;
-            assert screen != null;
-            assert parent != null;
             screen.renderTooltip(matrices, Collections.singletonList(new LiteralText(hover)),
                 mouseX + x, mouseY + y);
         }

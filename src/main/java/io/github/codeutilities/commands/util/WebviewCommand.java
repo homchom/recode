@@ -1,39 +1,33 @@
 package io.github.codeutilities.commands.util;
 
-import com.google.gson.Gson;
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.util.ChatType;
-import io.github.codeutilities.util.TemplateJson;
+import io.github.codeutilities.util.TemplateUtils;
 import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.LiteralText;
+import org.json.JSONObject;
 
 public class WebviewCommand {
 
     static MinecraftClient mc = MinecraftClient.getInstance();
 
     public static void run() {
-        assert mc.player != null;
             ItemStack item = mc.player.getMainHandStack();
             if (item.getItem() != Items.AIR) {
                 try {
-                    CompoundTag tag = item.getTag();
-                    assert tag != null;
-                    CompoundTag publicBukkitNBT = tag.getCompound("PublicBukkitValues");
-                    String template = publicBukkitNBT.getString("hypercube:codetemplatedata");
-                    TemplateJson templateJson = new Gson().fromJson(template, TemplateJson.class);
+                    JSONObject template = new JSONObject();
                     LiteralText text = new LiteralText(
                         "§9§l! §bClick this message to view this code template in web!");
                     text.styled((style) -> style
                         .withClickEvent(new ClickEvent(ClickEvent.Action.values()[0],
                             String.format("https://derpystuff.gitlab.io/code/?template=%s",
-                                templateJson.code))));
+                                    template.getString("code")))));
                     mc.player.sendMessage(text, false);
                 } catch (NullPointerException e) {
                     CodeUtilities

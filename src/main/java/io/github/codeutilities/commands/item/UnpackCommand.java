@@ -16,7 +16,6 @@ public class UnpackCommand {
     static MinecraftClient mc = MinecraftClient.getInstance();
 
     public static void run() {
-        assert mc.player != null;
         if (mc.player.isCreative()) {
             ItemStack handItem = mc.player.getMainHandStack();
             if (handItem.getItem() != Items.AIR) {

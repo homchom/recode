@@ -36,7 +36,6 @@ public class Commands implements ClientCommandPlugin {
         //Smaller Commands VVV
         cd.register(ArgumentBuilders.literal("heads").executes(ctx -> {
             CodeUtilities.openGuiAsync(new CustomHeadSearchGui());
-            assert MinecraftClient.getInstance().player != null;
             if (!MinecraftClient.getInstance().player.isCreative()) {
                 CodeUtilities.chat("You need to be in creative to get heads.", ChatType.FAIL);
             }
