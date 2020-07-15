@@ -1,47 +1,44 @@
 package io.github.codeutilities.util;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-public abstract class GzFormat {
+public class CompressionUtil {
 
-    public static byte[] decryptBase64(byte[] Base64F) {
-        return Base64.getDecoder().decode(Base64F);
+    public static byte[] fromBase64(byte[] bytes) {
+        return Base64.getDecoder().decode(bytes);
     }
 
-    public static byte[] encryptBase64(byte[] Base64F) {
-        return Base64.getEncoder().encode(Base64F);
+    public static byte[] toBase64(byte[] bytes) {
+        return Base64.getEncoder().encode(bytes);
     }
 
-    public static byte[] decompress(byte[] str) throws Exception {
-        if (str == null) {
+    public static byte[] fromGZIP(byte[] bytes) throws IOException {
+        if (bytes == null) {
             return null;
         }
 
-        GZIPInputStream gis = new GZIPInputStream(new ByteArrayInputStream(str));
+        GZIPInputStream gis = new GZIPInputStream(new ByteArrayInputStream(bytes));
         BufferedReader bf = new BufferedReader(new InputStreamReader(gis, StandardCharsets.UTF_8));
         StringBuilder outStr = new StringBuilder();
         String line;
         while ((line = bf.readLine()) != null) {
             outStr.append(line);
         }
-        return outStr.toString().getBytes();
 
+        return outStr.toString().getBytes();
     }
 
-    public static byte[] compress(byte[] str) throws Exception {
-        if (str == null) {
+    public static byte[] toGZIP(byte[] bytes) throws IOException {
+        if (bytes == null) {
             return null;
         }
         ByteArrayOutputStream obj = new ByteArrayOutputStream();
         GZIPOutputStream gzip = new GZIPOutputStream(obj);
-        gzip.write(str);
+        gzip.write(bytes);
         gzip.close();
 
         return obj.toByteArray();

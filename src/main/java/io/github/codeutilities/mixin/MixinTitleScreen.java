@@ -23,7 +23,6 @@ public class MixinTitleScreen extends Screen {
 
     protected MixinTitleScreen(LiteralText title) {
         super(title);
-
     }
 
     @Inject(at = @At("RETURN"), method = "initWidgetsNormal")
