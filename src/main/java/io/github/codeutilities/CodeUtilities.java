@@ -54,7 +54,28 @@ public class CodeUtilities implements ModInitializer {
                 MinecraftClient.getInstance().player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_DIDGERIDOO, SoundCategory.PLAYERS, 2, 0);
             }
         }
+    }
 
+    public static void giveCreativeItem(ItemStack item) {
+        assert MinecraftClient.getInstance().player != null;
+        for (int index = 0; index < MinecraftClient.getInstance().player.inventory.main.size(); index++) {
+            ItemStack i = MinecraftClient.getInstance().player.inventory.main.get(index);
+            ItemStack compareItem = i.copy();
+            compareItem.setCount(item.getCount());
+            if (item == compareItem) {
+                while (i.getCount() < i.getMaxCount() && item.getCount() > 0) {
+                    i.setCount(i.getCount() + 1);
+                    item.setCount(item.getCount() - 1);
+                }
+            } else {
+                if (i.getItem() == Items.AIR) {
+                    assert MinecraftClient.getInstance().interactionManager != null;
+                    if (index < 9) MinecraftClient.getInstance().interactionManager.clickCreativeStack(item, index + 36);
+                    MinecraftClient.getInstance().player.inventory.main.set(index, item);
+                    return;
+                }
+            }
+        }
     }
 
     @Override

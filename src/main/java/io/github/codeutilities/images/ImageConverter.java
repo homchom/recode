@@ -1,6 +1,6 @@
-package me.reasonless.codeutilities.images;
+package io.github.codeutilities.images;
 
-import me.reasonless.codeutilities.util.MinecraftColors;
+import io.github.codeutilities.util.MinecraftColors;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
