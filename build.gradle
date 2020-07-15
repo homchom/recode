@@ -11,6 +11,10 @@ repositories {
 		name = 'CottonMC'
 		url = 'https://server.bbkr.space/artifactory/libs-release'
 	}
+  maven {
+		name = 'Jitpack'
+		url = "https://jitpack.io"
+	}
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -45,10 +49,14 @@ dependencies {
 	include "io.github.cottonmc:cotton-client-commands:1.0.1+1.16-rc1"
 	include "io.github.cottonmc:LibGui:2.2.0+1.16.1"  //https://github.com/CottonMC/LibGui/releases
 	include "org.json:json:20200518"
-
+  
 	// Was having some issues so I needed to add this
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
-
+	
+	modRuntime "com.lettuce.fudge:notenoughcrashes:2.1.2+1.16.1"
+	modRuntime ("com.github.SuperCoder7979:databreaker:ca256383f1c320ef3e230fdb0b6a2df5a79b3387") {
+		exclude module : "fabric-loader"
+	}
 }
 
 processResources {
