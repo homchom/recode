@@ -1,4 +1,4 @@
-package io.github.codeutilities.commands.nbs;
+package io.github.codeutilities.commands.impl.nbs;
 
 import java.io.DataInputStream;
 import java.io.File;

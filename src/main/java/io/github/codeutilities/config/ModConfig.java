@@ -17,8 +17,6 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Category("commands")
     public boolean improvedLoreCmd = true;
     @ConfigEntry.Category("commands")
-    public boolean improvedItemdataCmd = true;
-    @ConfigEntry.Category("commands")
     public boolean errorSound = true;
 
 

@@ -3,15 +3,7 @@ package io.github.codeutilities.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.commands.item.BreakableCommand;
-import io.github.codeutilities.commands.item.CustomHeadCommand;
-import io.github.codeutilities.commands.item.GiveCommand;
-import io.github.codeutilities.commands.item.ItemdataCommand;
-import io.github.codeutilities.commands.item.LoreCommand;
-import io.github.codeutilities.commands.item.UnpackCommand;
-import io.github.codeutilities.commands.nbs.NBSCommand;
-import io.github.codeutilities.commands.util.UuidCommand;
-import io.github.codeutilities.commands.util.WebviewCommand;
+import io.github.codeutilities.commands.impl.CommandHandler;
 import io.github.codeutilities.gui.CustomHeadSearchGui;
 import io.github.codeutilities.util.ChatType;
 import io.github.cottonmc.clientcommands.ArgumentBuilders;
@@ -23,15 +15,7 @@ public class Commands implements ClientCommandPlugin {
 
     @Override
     public void registerCommands(CommandDispatcher<CottonClientCommandSource> cd) {
-        GiveCommand.register(cd);
-        LoreCommand.register(cd);
-        BreakableCommand.register(cd);
-        UnpackCommand.register(cd);
-        NBSCommand.register(cd);
-        WebviewCommand.register(cd);
-        UuidCommand.register(cd);
-        CustomHeadCommand.register(cd);
-        ItemdataCommand.register(cd);
+        CommandHandler.getCommands().forEach(command -> command.register(MinecraftClient.getInstance(), cd));
 
         //Smaller Commands VVV
         cd.register(ArgumentBuilders.literal("heads").executes(ctx -> {
@@ -43,13 +27,13 @@ public class Commands implements ClientCommandPlugin {
         }));
 
         cd.register(ArgumentBuilders.literal("copytxt")
-            .then(ArgumentBuilders.argument("text", StringArgumentType.greedyString())
-                .executes(ctx -> {
-                    MinecraftClient.getInstance().keyboard.setClipboard(ctx.getArgument("text", String.class));
-                    CodeUtilities.chat("Copied text!", ChatType.INFO_BLUE);
-                    return 1;
-                })
-            )
+                .then(ArgumentBuilders.argument("text", StringArgumentType.greedyString())
+                        .executes(ctx -> {
+                            MinecraftClient.getInstance().keyboard.setClipboard(ctx.getArgument("text", String.class));
+                            CodeUtilities.chat("Copied text!", ChatType.INFO_BLUE);
+                            return 1;
+                        })
+                )
         );
     }
 }

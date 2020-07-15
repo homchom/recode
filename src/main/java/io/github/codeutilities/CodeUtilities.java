@@ -1,6 +1,7 @@
 package io.github.codeutilities;
 
 import io.github.codeutilities.config.ModConfig;
+import io.github.codeutilities.gui.CustomHeadSearchGui;
 import io.github.codeutilities.util.ChatType;
 import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
@@ -61,6 +62,7 @@ public class CodeUtilities implements ModInitializer {
     public void onInitialize() {
         log(Level.INFO, "Initializing");
 
+        CustomHeadSearchGui.load();
         AutoConfig.register(ModConfig.class, Toml4jConfigSerializer::new);
     }
 
