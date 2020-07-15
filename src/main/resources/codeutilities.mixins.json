@@ -4,8 +4,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MixinOptionsScreen",
-    "MixinTitleScreen",
-    "LibraryFix"
+    "MixinTitleScreen"
   ],
   "client": [],
   "server": [],
