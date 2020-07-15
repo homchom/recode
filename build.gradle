@@ -28,13 +28,14 @@ repositories {
 		name = 'CottonMC'
 		url = 'https://server.bbkr.space/artifactory/libs-release'
 	}
+	maven {
+		name = 'Jitpack'
+		url = "https://jitpack.io"
+	}
 }
 
 repositories {
-	maven {
-		name = "CottonMC"
-		url = "https://server.bbkr.space/artifactory/libs-release"
-	}
+	
 }
 
 dependencies {
@@ -59,7 +60,11 @@ dependencies {
 	include "io.github.cottonmc:cotton-client-commands:1.0.1+1.16-rc1"
 	include "io.github.cottonmc:LibGui:2.2.0+1.16.1"
 	include "org.json:json:20200518"
-
+	
+	modRuntime "com.lettuce.fudge:notenoughcrashes:2.1.2+1.16.1"
+	modRuntime ("com.github.SuperCoder7979:databreaker:ca256383f1c320ef3e230fdb0b6a2df5a79b3387") {
+		exclude module : "fabric-loader"
+	}
 }
 
 processResources {
