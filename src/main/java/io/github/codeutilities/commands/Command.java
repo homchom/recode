@@ -1,4 +1,4 @@
-package io.github.codeutilities.commands.impl;
+package io.github.codeutilities.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;

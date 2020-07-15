@@ -1,11 +1,11 @@
-package io.github.codeutilities.commands.impl.item;
+package io.github.codeutilities.commands.item;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.commands.impl.Command;
+import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.util.ChatType;
 import io.github.cottonmc.clientcommands.ArgumentBuilders;

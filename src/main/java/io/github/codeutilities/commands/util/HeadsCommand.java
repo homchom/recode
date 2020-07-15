@@ -1,8 +1,8 @@
-package io.github.codeutilities.commands.impl.util;
+package io.github.codeutilities.commands.util;
 
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.commands.impl.Command;
+import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.gui.CustomHeadSearchGui;
 import io.github.codeutilities.util.ChatType;
 import io.github.cottonmc.clientcommands.ArgumentBuilders;

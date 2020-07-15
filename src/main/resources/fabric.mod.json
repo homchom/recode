@@ -14,7 +14,7 @@
   "license": "MIT",
   "icon": "assets/codeutilities/icon.png",
   "entrypoints": {
-    "cotton-client-commands": ["io.github.codeutilities.commands.Commands"],
+    "cotton-client-commands": ["io.github.codeutilities.commands.CommandHandler"],
     "main": [
       "io.github.codeutilities.CodeUtilities"
     ],

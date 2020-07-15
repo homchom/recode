@@ -1,9 +1,9 @@
-package io.github.codeutilities.commands.impl.item;
+package io.github.codeutilities.commands.item;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.commands.impl.Command;
+import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.util.ChatType;
 import io.github.codeutilities.util.ItemUtil;
 import io.github.cottonmc.clientcommands.ArgumentBuilders;

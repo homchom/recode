@@ -1,10 +1,10 @@
-package io.github.codeutilities.commands.impl.nbs;
+package io.github.codeutilities.commands.nbs;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.commands.impl.Command;
+import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.nbs.NBSToTemplate;
 import io.github.codeutilities.nbs.SongData;
 import io.github.codeutilities.nbs.exceptions.OutdatedNBSException;
@@ -26,7 +26,7 @@ public class NBSCommand extends Command {
 
     public static void loadNbs(File file, String fileName) throws Exception {
         try {
-            SongData d = io.github.codeutilities.commands.impl.nbs.NBSDecoder.parse(file);
+            SongData d = io.github.codeutilities.commands.nbs.NBSDecoder.parse(file);
             String code = new NBSToTemplate(d).convert();
             ItemStack stack = new ItemStack(Items.NOTE_BLOCK);
             TemplateUtils.applyCompressedTemplateNBT(stack, d.getName(), d.getAuthor(), code);
