@@ -2,6 +2,8 @@ package io.github.codeutilities.commands.impl;
 
 import io.github.codeutilities.commands.impl.item.*;
 import io.github.codeutilities.commands.impl.nbs.NBSCommand;
+import io.github.codeutilities.commands.impl.util.CopyTextCommand;
+import io.github.codeutilities.commands.impl.util.HeadsCommand;
 import io.github.codeutilities.commands.impl.util.UuidCommand;
 import io.github.codeutilities.commands.impl.util.WebviewCommand;
 
@@ -23,7 +25,9 @@ public class CommandHandler {
                 new UnpackCommand(),
                 new NBSCommand(),
                 new UuidCommand(),
-                new WebviewCommand()
+                new WebviewCommand(),
+                new CopyTextCommand(),
+                new HeadsCommand()
         );
     }
 
