@@ -16,9 +16,16 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 public class ItemUtil {
+    // Prefers main hand slot if possible.
     public static void giveCreativeItem(ItemStack item) {
 
-        DefaultedList<ItemStack> mainInventory = MinecraftClient.getInstance().player.inventory.main;
+        MinecraftClient mc = MinecraftClient.getInstance();
+        DefaultedList<ItemStack> mainInventory = mc.player.inventory.main;
+
+        if (mc.player.getMainHandStack().isEmpty()) {
+            mc.interactionManager.clickCreativeStack(item, mc.player.inventory.selectedSlot + 36);
+            return;
+        }
 
         for (int index = 0; index < mainInventory.size(); index++) {
             ItemStack i = mainInventory.get(index);
@@ -53,7 +60,6 @@ public class ItemUtil {
 
         CompoundTag nbt = StringNbtReader.parse("{SkullOwner:{Id:" + StringUtil.genDummyIntArray() + ",Properties:{textures:[{Value:\"" + texture + "\"}]}}}");
         item.setTag(nbt);
-        System.out.println(nbt);
         ItemUtil.giveCreativeItem(item);
     }
 }

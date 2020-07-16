@@ -3,6 +3,7 @@ package io.github.codeutilities;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.gui.CustomHeadSearchGui;
 import io.github.codeutilities.util.ChatType;
+import io.github.codeutilities.util.externalfile.ExternalFile;
 import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
@@ -63,6 +64,10 @@ public class CodeUtilities implements ModInitializer {
         log(Level.INFO, "Initializing");
 
         CustomHeadSearchGui.load();
+
+        // Kinda janky, but this will create all the external files.
+        ExternalFile.IMAGE_FILES.getFile();
+
         AutoConfig.register(ModConfig.class, Toml4jConfigSerializer::new);
     }
 

@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 
 public class TemplateUtils {
 
-    public static void applyTemplateNBT(ItemStack stack, String name, String author, String codeData) {
+    public static void rawTemplateNBT(ItemStack stack, String name, String author, String codeData) {
         CompoundTag publicBukkitNBT = new CompoundTag();
         CompoundTag itemNBT = new CompoundTag();
         CompoundTag codeNBT = new CompoundTag();
@@ -30,11 +30,11 @@ public class TemplateUtils {
     }
 
 
-    public static void applyCompressedTemplateNBT(ItemStack stack, String name, String author, String template) {
+    public static void compressTemplateNBT(ItemStack stack, String name, String author, String template) {
         try {
             byte[] b64 = CompressionUtil.toBase64(CompressionUtil.toGZIP(template.getBytes(StandardCharsets.UTF_8)));
             String exported = new String(b64);
-            applyTemplateNBT(stack, name, author, exported);
+            rawTemplateNBT(stack, name, author, exported);
         } catch (IOException e) {
             e.printStackTrace();
         }
