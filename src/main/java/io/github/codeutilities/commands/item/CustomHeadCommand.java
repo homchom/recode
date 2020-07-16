@@ -4,10 +4,10 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.commands.Command;
+import io.github.codeutilities.commands.arguments.ArgBuilder;
 import io.github.codeutilities.gui.CustomHeadSearchGui;
 import io.github.codeutilities.util.ChatType;
 import io.github.codeutilities.util.ItemUtil;
-import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 
@@ -15,8 +15,8 @@ public class CustomHeadCommand extends Command {
 
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
-        cd.register(ArgumentBuilders.literal("customhead")
-                .then(ArgumentBuilders.literal("search")
+        cd.register(ArgBuilder.literal("customhead")
+                .then(ArgBuilder.literal("search")
                         .executes(ctx -> {
                             if (MinecraftClient.getInstance().player.isCreative()) {
                                 CodeUtilities.openGuiAsync(new CustomHeadSearchGui());
@@ -30,7 +30,7 @@ public class CustomHeadCommand extends Command {
                 )
 
                 // This is a bit broken.
-                .then(ArgumentBuilders.argument("value", StringArgumentType.greedyString())
+                .then(ArgBuilder.argument("value", StringArgumentType.greedyString())
                         .executes(ctx -> {
                             if (mc.player.isCreative()) {
                                 ItemUtil.givePlayerHead(ctx.getArgument("value", String.class));

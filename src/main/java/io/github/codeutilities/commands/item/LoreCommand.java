@@ -6,9 +6,9 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.commands.Command;
+import io.github.codeutilities.commands.arguments.ArgBuilder;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.util.ChatType;
-import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
@@ -201,38 +201,38 @@ public class LoreCommand extends Command {
 
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
-        cd.register(ArgumentBuilders.literal("lore")
-                .then(ArgumentBuilders.literal("add")
-                        .then(ArgumentBuilders.argument("lore", StringArgumentType.greedyString())
+        cd.register(ArgBuilder.literal("lore")
+                .then(ArgBuilder.literal("add")
+                        .then(ArgBuilder.argument("lore", StringArgumentType.greedyString())
                                 .executes(ctx -> {
                                     return add(MinecraftClient.getInstance(), ctx);
                                 })
                         )
                 )
-                .then(ArgumentBuilders.literal("clear")
+                .then(ArgBuilder.literal("clear")
                         .executes(ctx -> {
                             return clear(MinecraftClient.getInstance(), ctx);
                         })
                 )
-                .then(ArgumentBuilders.literal("remove")
-                        .then(ArgumentBuilders.argument("line", IntegerArgumentType.integer(1))
+                .then(ArgBuilder.literal("remove")
+                        .then(ArgBuilder.argument("line", IntegerArgumentType.integer(1))
                                 .executes(ctx -> {
                                     return remove(MinecraftClient.getInstance(), ctx);
                                 })
                         )
                 )
-                .then(ArgumentBuilders.literal("set")
-                        .then(ArgumentBuilders.argument("line", IntegerArgumentType.integer(1))
-                                .then(ArgumentBuilders.argument("lore", StringArgumentType.greedyString())
+                .then(ArgBuilder.literal("set")
+                        .then(ArgBuilder.argument("line", IntegerArgumentType.integer(1))
+                                .then(ArgBuilder.argument("lore", StringArgumentType.greedyString())
                                         .executes(ctx -> {
                                             return set(MinecraftClient.getInstance(), ctx);
                                         })
                                 )
                         )
                 )
-                .then(ArgumentBuilders.literal("insert")
-                        .then(ArgumentBuilders.argument("line", IntegerArgumentType.integer(1))
-                                .then(ArgumentBuilders.argument("lore", StringArgumentType.greedyString())
+                .then(ArgBuilder.literal("insert")
+                        .then(ArgBuilder.argument("line", IntegerArgumentType.integer(1))
+                                .then(ArgBuilder.argument("lore", StringArgumentType.greedyString())
                                         .executes(ctx -> {
                                             return insert(MinecraftClient.getInstance(), ctx);
                                         })

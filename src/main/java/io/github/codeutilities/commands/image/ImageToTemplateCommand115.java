@@ -4,18 +4,16 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.commands.Command;
+import io.github.codeutilities.commands.arguments.ArgBuilder;
 import io.github.codeutilities.images.ImageConverter;
 import io.github.codeutilities.util.ChatType;
 import io.github.codeutilities.util.ItemUtil;
-import io.github.codeutilities.util.StringUtil;
 import io.github.codeutilities.util.TemplateUtils;
 import io.github.codeutilities.util.externalfile.ExternalFile;
-import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.text.LiteralText;
 
 import java.io.File;
 
@@ -23,23 +21,23 @@ public class ImageToTemplateCommand115 extends Command {
 
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
-        cd.register(ArgumentBuilders.literal("image")
-                .then(ArgumentBuilders.literal("load")
-                        .then(ArgumentBuilders.argument("location", StringArgumentType.greedyString())
+        cd.register(ArgBuilder.literal("image")
+                .then(ArgBuilder.literal("load")
+                        .then(ArgBuilder.argument("location", StringArgumentType.greedyString())
                                 .executes(ctx -> {
-                                       String location = StringArgumentType.getString(ctx, "location");
-                                       File f = new File(ExternalFile.IMAGE_FILES.getFile(), location + (location.endsWith(".png") ? "" : ".png"));
+                                    String location = StringArgumentType.getString(ctx, "location");
+                                    File f = new File(ExternalFile.IMAGE_FILES.getFile(), location + (location.endsWith(".png") ? "" : ".png"));
 
-                                       if (f.exists()) {
-                                           String[] strings = ImageConverter.convert115(f);
+                                    if (f.exists()) {
+                                        String[] strings = ImageConverter.convert115(f);
 
-                                           ItemStack stack = new ItemStack(Items.NOTE_BLOCK);
-                                           TemplateUtils.compressTemplateNBT(stack, StringArgumentType.getString(ctx, "location"), mc.player.getName().asString(), convert(strings));
-                                           ItemUtil.giveCreativeItem(stack);
-                                           CodeUtilities.chat("Image loaded! Change the first Set Variable to the location!", ChatType.SUCCESS);
-                                       } else {
-                                           CodeUtilities.chat("That image doesn't exist.", ChatType.FAIL);
-                                       }
+                                        ItemStack stack = new ItemStack(Items.NOTE_BLOCK);
+                                        TemplateUtils.compressTemplateNBT(stack, StringArgumentType.getString(ctx, "location"), mc.player.getName().asString(), convert(strings));
+                                        ItemUtil.giveCreativeItem(stack);
+                                        CodeUtilities.chat("Image loaded! Change the first Set Variable to the location!", ChatType.SUCCESS);
+                                    } else {
+                                        CodeUtilities.chat("That image doesn't exist.", ChatType.FAIL);
+                                    }
                                     return 1;
                                 }))));
     }
@@ -47,7 +45,6 @@ public class ImageToTemplateCommand115 extends Command {
     private String convert(String[] layers) {
         StringBuilder code = new StringBuilder();
         StringBuilder currentBlock = new StringBuilder();
-
 
         code.append(String.format("{\"id\":\"block\",\"block\":\"func\",\"args\":{\"items\":[{\"item\":{\"id\":\"bl_tag\",\"data\":{\"option\":\"False\",\"tag\":\"Is Hidden\",\"action\":\"dynamic\",\"block\":\"func\"}},\"slot\":26}]},\"data\":\"%s\"}", "Custom Image"));
 

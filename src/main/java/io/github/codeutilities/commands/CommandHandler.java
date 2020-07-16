@@ -1,11 +1,7 @@
 package io.github.codeutilities.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.tree.CommandNode;
 import io.github.codeutilities.commands.image.ImageToTemplateCommand115;
-import io.github.codeutilities.commands.image.ImageToTemplateCommand116;
 import io.github.codeutilities.commands.item.*;
 import io.github.codeutilities.commands.nbs.NBSCommand;
 import io.github.codeutilities.commands.util.CopyTextCommand;
@@ -16,7 +12,6 @@ import io.github.cottonmc.clientcommands.ClientCommandPlugin;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

@@ -4,9 +4,9 @@ import com.google.gson.JsonObject;
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.commands.Command;
+import io.github.codeutilities.commands.arguments.ArgBuilder;
 import io.github.codeutilities.util.ChatType;
 import io.github.codeutilities.util.TemplateUtils;
-import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
@@ -17,7 +17,7 @@ public class WebviewCommand extends Command {
 
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
-        cd.register(ArgumentBuilders.literal("webview")
+        cd.register(ArgBuilder.literal("webview")
                 .executes(ctx -> {
                     ItemStack item = mc.player.getMainHandStack();
                     try {

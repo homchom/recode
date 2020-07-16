@@ -3,8 +3,8 @@ package io.github.codeutilities.commands.item;
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.commands.Command;
+import io.github.codeutilities.commands.arguments.ArgBuilder;
 import io.github.codeutilities.util.ChatType;
-import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
@@ -15,7 +15,7 @@ public class BreakableCommand extends Command {
 
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
-        cd.register(ArgumentBuilders.literal("breakable")
+        cd.register(ArgBuilder.literal("breakable")
                 .executes(ctx -> {
                     if (mc.player.isCreative()) {
                         ItemStack item = mc.player.getMainHandStack();

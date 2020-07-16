@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.commands.Command;
+import io.github.codeutilities.commands.arguments.ArgBuilder;
 import io.github.codeutilities.nbs.NBSToTemplate;
 import io.github.codeutilities.nbs.SongData;
 import io.github.codeutilities.nbs.exceptions.OutdatedNBSException;
@@ -12,7 +13,6 @@ import io.github.codeutilities.util.ChatType;
 import io.github.codeutilities.util.ItemUtil;
 import io.github.codeutilities.util.TemplateUtils;
 import io.github.codeutilities.util.externalfile.ExternalFile;
-import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
@@ -25,7 +25,7 @@ import java.io.IOException;
 public class NBSCommand extends Command {
 
 
-    public static void loadNbs(File file, String fileName) throws Exception {
+    public static void loadNbs(File file, String fileName) {
         try {
             SongData d = io.github.codeutilities.commands.nbs.NBSDecoder.parse(file);
             String code = new NBSToTemplate(d).convert();
@@ -58,7 +58,7 @@ public class NBSCommand extends Command {
     }
 
     // nbs load <filename>
-    private void runLoad(MinecraftClient mc, CommandContext<CottonClientCommandSource> ctx) throws Exception {
+    private void runLoad(MinecraftClient mc, CommandContext<CottonClientCommandSource> ctx) {
         if (mc.player.isCreative()) {
             String filename = StringArgumentType.getString(ctx, "filename");
             String childName = filename + (filename.endsWith(".nbs") ? "" : ".nbs");
@@ -75,7 +75,7 @@ public class NBSCommand extends Command {
     }
 
     // nbs player
-    private void runPlayer(MinecraftClient mc, CommandContext<CottonClientCommandSource> ctx) throws Exception {
+    private void runPlayer(MinecraftClient mc, CommandContext<CottonClientCommandSource> ctx) {
         if (mc.player.isCreative()) {
             ItemStack stack = new ItemStack(Items.JUKEBOX);
 
@@ -96,31 +96,19 @@ public class NBSCommand extends Command {
 
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
-        cd.register(ArgumentBuilders.literal("nbs")
-                .then(ArgumentBuilders.literal("load")
-                        .then(ArgumentBuilders.argument("filename", StringArgumentType.greedyString())
+        cd.register(ArgBuilder.literal("nbs")
+                .then(ArgBuilder.literal("load")
+                        .then(ArgBuilder.argument("filename", StringArgumentType.greedyString())
                                 .executes(ctx -> {
-                                    try {
-                                        runLoad(mc, ctx);
-                                        return 1;
-                                    } catch (Exception err) {
-                                        CodeUtilities.chat("Error while executing command.", ChatType.FAIL);
-                                        err.printStackTrace();
-                                        return -1;
-                                    }
+                                    runLoad(mc, ctx);
+                                    return 1;
                                 })
                         )
                 )
-                .then(ArgumentBuilders.literal("player")
+                .then(ArgBuilder.literal("player")
                         .executes(ctx -> {
-                            try {
-                                runPlayer(mc, ctx);
-                                return 1;
-                            } catch (Exception err) {
-                                CodeUtilities.chat("Error while executing command.", ChatType.FAIL);
-                                err.printStackTrace();
-                                return -1;
-                            }
+                            runPlayer(mc, ctx);
+                            return 1;
                         })
                 )
         );

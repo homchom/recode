@@ -4,9 +4,9 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.commands.Command;
+import io.github.codeutilities.commands.arguments.ArgBuilder;
 import io.github.codeutilities.util.ChatType;
 import io.github.codeutilities.util.ItemUtil;
-import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.arguments.ItemStackArgument;
@@ -17,9 +17,9 @@ public class GiveCommand extends Command {
 
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
-        cd.register(ArgumentBuilders.literal("give")
-                .then(ArgumentBuilders.argument("item", ItemStackArgumentType.itemStack())
-                        .then(ArgumentBuilders.argument("count", IntegerArgumentType.integer(1, 127))
+        cd.register(ArgBuilder.literal("give")
+                .then(ArgBuilder.argument("item", ItemStackArgumentType.itemStack())
+                        .then(ArgBuilder.argument("count", IntegerArgumentType.integer(1, 127))
                                 .executes(ctx -> {
                                     giveItem(mc, ctx.getArgument("item", ItemStackArgument.class)
                                                     .createStack(1, false),
@@ -33,7 +33,7 @@ public class GiveCommand extends Command {
                             return 1;
                         })
                 )
-                .then(ArgumentBuilders.literal("clipboard")
+                .then(ArgBuilder.literal("clipboard")
                         .executes(ctx -> {
                             String clipboard;
                             try {

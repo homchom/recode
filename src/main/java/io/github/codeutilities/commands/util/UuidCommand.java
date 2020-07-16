@@ -6,8 +6,8 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.commands.Command;
+import io.github.codeutilities.commands.arguments.ArgBuilder;
 import io.github.codeutilities.util.StringUtil;
-import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import org.apache.commons.io.IOUtils;
@@ -20,8 +20,8 @@ public class UuidCommand extends Command {
 
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
-        cd.register(ArgumentBuilders.literal("uuid")
-                .then(ArgumentBuilders.argument("username", StringArgumentType.greedyString())
+        cd.register(ArgBuilder.literal("uuid")
+                .then(ArgBuilder.argument("username", StringArgumentType.greedyString())
                         .executes(ctx -> {
                             boolean copy = false;
                             if (ctx.getArgument("username", String.class).contains(" copy")) {
@@ -48,7 +48,7 @@ public class UuidCommand extends Command {
 
                             return 1;
                         })
-                        .then(ArgumentBuilders.literal("copy"))
+                        .then(ArgBuilder.literal("copy"))
                 )
         );
     }
