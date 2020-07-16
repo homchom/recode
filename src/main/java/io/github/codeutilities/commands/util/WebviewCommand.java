@@ -22,8 +22,7 @@ public class WebviewCommand extends Command {
                     ItemStack item = mc.player.getMainHandStack();
                     try {
                         JsonObject template = TemplateUtils.fromItemStack(item);
-                        LiteralText text = new LiteralText(
-                                "§9§l! §bClick this message to view this code template in web!");
+                        LiteralText text = new LiteralText("§9§l! §bClick this message to view this code template in web!");
                         text.styled((style) -> style
                                 .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, String.format("https://derpystuff.gitlab.io/code/?template=%s", template.get("code").getAsString()))));
                         mc.player.sendMessage(text, false);

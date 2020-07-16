@@ -3,17 +3,21 @@ package io.github.codeutilities.util;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.codeutilities.CodeUtilities;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.command.arguments.ItemSlotArgumentType;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.SkullItem;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.util.collection.DefaultedList;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 
 public class ItemUtil {
     // Prefers main hand slot if possible.
@@ -45,6 +49,17 @@ public class ItemUtil {
                 }
             }
         }
+    }
+
+    public static List<ItemStack> fromItemContainer(ItemStack container) {
+        MinecraftClient client = MinecraftClient.getInstance();
+        ListTag nbt = client.player.getMainHandStack().getOrCreateTag().getCompound("BlockEntityTag").getList("Items", 10);
+        List<ItemStack> stackList = new ArrayList<>();
+        for (int i = 0; i < nbt.size(); i++) {
+            ItemStack item = ItemStack.fromTag(nbt.getCompound(i));
+            stackList.add(item);
+        }
+        return stackList;
     }
 
     public static void givePlayerHead(String texture) throws CommandSyntaxException {

@@ -21,15 +21,15 @@ public class UnpackCommand extends Command {
                     if (mc.player.isCreative()) {
                         ItemStack handItem = mc.player.getMainHandStack();
                         if (!handItem.getOrCreateTag().getCompound("BlockEntityTag").isEmpty()) {
-                            ListTag nbt = handItem.getOrCreateTag().getCompound("BlockEntityTag").getList("Items", 10);
+
                             int items = 0;
-                            for (int i = 0; i < nbt.size(); i++) {
-                                ItemStack item = ItemStack.fromTag(nbt.getCompound(i));
-                                if (item.getItem() != Items.AIR) {
+                            for (ItemStack stack : ItemUtil.fromItemContainer(handItem)) {
+                                if (!stack.isEmpty()) {
                                     items++;
+                                    ItemUtil.giveCreativeItem(stack);
                                 }
-                                ItemUtil.giveCreativeItem(item);
                             }
+
                             if (items == 0) {
                                 CodeUtilities.chat("There are no items stored in this container!", ChatType.FAIL);
                             } else {
