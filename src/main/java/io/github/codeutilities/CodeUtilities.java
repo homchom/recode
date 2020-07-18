@@ -2,16 +2,14 @@ package io.github.codeutilities;
 
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.gui.CustomHeadSearchGui;
+import io.github.codeutilities.template.TemplateStorageHandler;
 import io.github.codeutilities.util.ChatType;
-import io.github.codeutilities.util.externalfile.ExternalFile;
 import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.Toml4jConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.LiteralText;
@@ -32,7 +30,14 @@ public class CodeUtilities implements ModInitializer {
 
     // This should be moved into its own class
     public static void openGuiAsync(LightweightGuiDescription gui) {
-        new Thread(() -> MinecraftClient.getInstance().openScreen(new CottonClientScreen(gui))).start();
+        new Thread(() -> {
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            MinecraftClient.getInstance().openScreen(new CottonClientScreen(gui));
+        }).start();
     }
 
     // Perhaps some kind of "ServerHandler"
@@ -64,11 +69,16 @@ public class CodeUtilities implements ModInitializer {
         log(Level.INFO, "Initializing");
 
         CustomHeadSearchGui.load();
-
-        // Kinda janky, but this will create all the external files.
-        ExternalFile.IMAGE_FILES.getFile();
-
+        TemplateStorageHandler.load();
         AutoConfig.register(ModConfig.class, Toml4jConfigSerializer::new);
+        // Add a shutdown hook so we can save players template data on exit.
+        Runtime.getRuntime().addShutdownHook(new Thread(this::onClose));
     }
+
+    public void onClose() {
+        System.out.println("CLOSED");
+        TemplateStorageHandler.save();
+    }
+
 
 }

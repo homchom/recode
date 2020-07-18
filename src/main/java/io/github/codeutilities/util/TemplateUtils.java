@@ -48,4 +48,19 @@ public class TemplateUtils {
         return JsonParser.parseString(template).getAsJsonObject();
     }
 
+    public static boolean isTemplate(ItemStack stack) {
+        CompoundTag tag = stack.getTag();
+        if (tag == null) {
+            return false;
+        }
+
+        CompoundTag publicBukkitNBT = tag.getCompound("PublicBukkitValues");
+        if (publicBukkitNBT == null) {
+            return false;
+        }
+
+        return publicBukkitNBT.getString("hypercube:codetemplatedata").length() > 0;
+    }
+
+
 }

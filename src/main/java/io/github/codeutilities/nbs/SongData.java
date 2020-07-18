@@ -1,87 +1,88 @@
 package io.github.codeutilities.nbs;
 
 public class SongData {
-	String name;
-	String author;
-	float speed;
-	int length;
-	String fileName;
-	String notes;
-	String layers;
-	int loopTick;
-	int loopCount;
-	int customInstrumentCount;
 
-	public SongData(String name, String author, float speed, int length, String notes, String fileName, String layers, int loopTick, int loopCount, int customInstrumentCount) {
-		this.name = name;
-		this.author = author;
-		this.speed = speed;
-		this.length = length;
-		this.notes = notes;
-		this.fileName = fileName;
-		this.layers = layers;
-		this.loopTick = loopTick;
-		this.loopCount = loopCount;
-		this.customInstrumentCount = customInstrumentCount;
-	}
+    String name;
+    String author;
+    float speed;
+    int length;
+    String fileName;
+    String notes;
+    String layers;
+    int loopTick;
+    int loopCount;
+    int customInstrumentCount;
 
-	public String getName() {
-		return name;
-	}
+    public SongData(String name, String author, float speed, int length, String notes, String fileName, String layers, int loopTick, int loopCount, int customInstrumentCount) {
+        this.name = name;
+        this.author = author;
+        this.speed = speed;
+        this.length = length;
+        this.notes = notes;
+        this.fileName = fileName;
+        this.layers = layers;
+        this.loopTick = loopTick;
+        this.loopCount = loopCount;
+        this.customInstrumentCount = customInstrumentCount;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getAuthor() {
-		return author;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setAuthor(String author) {
-		this.author = author;
-	}
+    public String getAuthor() {
+        return author;
+    }
 
-	public float getSpeed() {
-		return speed;
-	}
+    public void setAuthor(String author) {
+        this.author = author;
+    }
 
-	public int getLength() {
-		return length;
-	}
+    public float getSpeed() {
+        return speed;
+    }
 
-	public void setSpeed(float speed) {
-		this.speed = speed;
-	}
+    public void setSpeed(float speed) {
+        this.speed = speed;
+    }
 
-	public String getNotes() {
-		return notes;
-	}
+    public int getLength() {
+        return length;
+    }
 
-	public void setNotes(String notes) {
-		this.notes = notes;
-	}
+    public String getNotes() {
+        return notes;
+    }
 
-	public String getFileName() {
-		return fileName;
-	}
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
 
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
+    public String getFileName() {
+        return fileName;
+    }
 
-	public String getLayers() {
-		return layers;
-	}
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
 
-	public int getLoopTick() {
-		return loopTick;
-	}
+    public String getLayers() {
+        return layers;
+    }
 
-	public int getLoopCount() {
-		return loopCount;
-	}
+    public int getLoopTick() {
+        return loopTick;
+    }
 
-	public int getCustomInstrumentCount() {
-		return customInstrumentCount;
-	}
+    public int getLoopCount() {
+        return loopCount;
+    }
+
+    public int getCustomInstrumentCount() {
+        return customInstrumentCount;
+    }
 }

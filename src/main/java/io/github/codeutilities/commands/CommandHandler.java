@@ -33,7 +33,8 @@ public class CommandHandler implements ClientCommandPlugin {
                 new WebviewCommand(),
                 new CopyTextCommand(),
                 new HeadsCommand(),
-                new ImageToTemplateCommand115()
+                new ImageToTemplateCommand115(),
+                new TemplatesCommand()
         );
     }
 

@@ -1,16 +1,13 @@
 package io.github.codeutilities.util;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import io.github.codeutilities.CodeUtilities;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.command.arguments.ItemSlotArgumentType;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.item.SkullItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringNbtReader;
+import net.minecraft.nbt.Tag;
 import net.minecraft.util.collection.DefaultedList;
 
 import java.nio.charset.Charset;
@@ -20,6 +17,7 @@ import java.util.Base64;
 import java.util.List;
 
 public class ItemUtil {
+
     // Prefers main hand slot if possible.
     public static void giveCreativeItem(ItemStack item) {
 
@@ -52,14 +50,8 @@ public class ItemUtil {
     }
 
     public static List<ItemStack> fromItemContainer(ItemStack container) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        ListTag nbt = client.player.getMainHandStack().getOrCreateTag().getCompound("BlockEntityTag").getList("Items", 10);
-        List<ItemStack> stackList = new ArrayList<>();
-        for (int i = 0; i < nbt.size(); i++) {
-            ItemStack item = ItemStack.fromTag(nbt.getCompound(i));
-            stackList.add(item);
-        }
-        return stackList;
+        ListTag nbt = container.getOrCreateTag().getCompound("BlockEntityTag").getList("Items", 10);
+        return fromListTag(nbt);
     }
 
     public static void givePlayerHead(String texture) throws CommandSyntaxException {
@@ -76,5 +68,22 @@ public class ItemUtil {
         CompoundTag nbt = StringNbtReader.parse("{SkullOwner:{Id:" + StringUtil.genDummyIntArray() + ",Properties:{textures:[{Value:\"" + texture + "\"}]}}}");
         item.setTag(nbt);
         ItemUtil.giveCreativeItem(item);
+    }
+
+    public static ListTag toListTag(List<ItemStack> stacks) {
+        ListTag listTag = new ListTag();
+        for (ItemStack stack : stacks) {
+            listTag.add(stack.toTag(new CompoundTag()));
+        }
+
+        return listTag;
+    }
+
+    public static List<ItemStack> fromListTag(ListTag listTag) {
+        List<ItemStack> stacks = new ArrayList<>();
+        for (Tag tag : listTag) {
+            stacks.add(ItemStack.fromTag((CompoundTag) tag));
+        }
+        return stacks;
     }
 }

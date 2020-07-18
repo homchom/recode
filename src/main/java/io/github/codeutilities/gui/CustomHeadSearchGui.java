@@ -33,39 +33,6 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
     List<JsonObject> heads = new ArrayList<>();
     int headIndex = 0;
 
-    public static void load() {
-        new Thread(() -> {
-            allheads.clear();
-            String[] sources = {
-                    "https://minecraft-heads.com/scripts/api.php?cat=alphabet",
-                    "https://minecraft-heads.com/scripts/api.php?cat=animals",
-                    "https://minecraft-heads.com/scripts/api.php?cat=blocks",
-                    "https://minecraft-heads.com/scripts/api.php?cat=decoration",
-                    "https://minecraft-heads.com/scripts/api.php?cat=humans",
-                    "https://minecraft-heads.com/scripts/api.php?cat=humanoid",
-                    "https://minecraft-heads.com/scripts/api.php?cat=miscellaneous",
-                    "https://minecraft-heads.com/scripts/api.php?cat=monsters",
-                    "https://minecraft-heads.com/scripts/api.php?cat=plants",
-                    "https://minecraft-heads.com/scripts/api.php?cat=food-drinks",
-                    "https://blaze.is-inside.me/fGnAHIz1.json" //actual source: https://headdb.org/api/category/all, had to host it myself to make the json format match
-            };
-            for (String cat : sources) {
-                String response = null;
-                try {
-                    response = WebUtil.getString("" + cat);
-                } catch (Exception exception) {
-                    exception.printStackTrace();
-                }
-                JsonArray headlist = new Gson().fromJson(response, JsonArray.class);
-                for (JsonElement head : headlist) {
-                    allheads.add((JsonObject) head);
-                }
-            }
-            allheads.sort(Comparator.comparing(x -> x.get("name").getAsString()));
-            loaded = true;
-        }).start();
-    }
-
     public CustomHeadSearchGui() {
         WGridPanel root = new WGridPanel(1);
         setRootPanel(root);
@@ -277,6 +244,40 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
             e.printStackTrace();
         }
         root.validate(this);
+    }
+
+    public static void load() {
+        new Thread(() -> {
+            allheads.clear();
+            String[] sources = {
+                    "https://minecraft-heads.com/scripts/api.php?cat=alphabet",
+                    "https://minecraft-heads.com/scripts/api.php?cat=animals",
+                    "https://minecraft-heads.com/scripts/api.php?cat=blocks",
+                    "https://minecraft-heads.com/scripts/api.php?cat=decoration",
+                    "https://minecraft-heads.com/scripts/api.php?cat=humans",
+                    "https://minecraft-heads.com/scripts/api.php?cat=humanoid",
+                    "https://minecraft-heads.com/scripts/api.php?cat=miscellaneous",
+                    "https://minecraft-heads.com/scripts/api.php?cat=monsters",
+                    "https://minecraft-heads.com/scripts/api.php?cat=plants",
+                    "https://minecraft-heads.com/scripts/api.php?cat=food-drinks",
+                    "https://blaze.is-inside.me/fGnAHIz1.json" //actual source: https://headdb.org/api/category/all, had to host it myself to make the json format match
+            };
+            for (String cat : sources) {
+                String response = null;
+                try {
+                    response = WebUtil.getString("" + cat);
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+                JsonArray headlist = new Gson().fromJson(response, JsonArray.class);
+                if (headlist == null) continue;
+                for (JsonElement head : headlist) {
+                    allheads.add((JsonObject) head);
+                }
+            }
+            allheads.sort(Comparator.comparing(x -> x.get("name").getAsString()));
+            loaded = true;
+        }).start();
     }
 
 

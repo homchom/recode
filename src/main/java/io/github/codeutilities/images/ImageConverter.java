@@ -1,7 +1,6 @@
 package io.github.codeutilities.images;
 
 import io.github.codeutilities.util.MinecraftColors;
-import io.github.codeutilities.util.StringUtil;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.TextColor;
 

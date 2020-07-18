@@ -21,6 +21,7 @@ public enum MinecraftColors {
 
     int r, g, b;
     String mc;
+
     MinecraftColors(int r, int g, int b, String mc) {
         this.r = r;
         this.g = g;

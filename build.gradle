@@ -40,7 +40,6 @@ dependencies {
 	modImplementation "io.github.cottonmc:cotton-client-commands:1.0.1+1.16-rc1"
 	modImplementation "io.github.prospector:modmenu:1.14.0+build.24" //https://maven.fabricmc.net/io/github/prospector/modmenu/
 	modImplementation "io.github.cottonmc:LibGui:2.2.0+1.16.1" //https://github.com/CottonMC/LibGui/releases
-	modImplementation "org.json:json:20200518"
 
 	modApi "me.shedaniel.cloth:config-2:4.6.0" //https://www.curseforge.com/minecraft/mc-mods/cloth-config/files
 	modApi "me.sargunvohra.mcmods:autoconfig1u:3.2.0-unstable"
@@ -49,7 +48,6 @@ dependencies {
 	include "me.sargunvohra.mcmods:autoconfig1u:3.2.0-unstable"
 	include "io.github.cottonmc:cotton-client-commands:1.0.1+1.16-rc1"
 	include "io.github.cottonmc:LibGui:2.2.0+1.16.1"  //https://github.com/CottonMC/LibGui/releases
-	include "org.json:json:20200518"
 
 	modRuntime "com.lettuce.fudge:notenoughcrashes:2.1.2+1.16.1"
 	modRuntime ("com.github.SuperCoder7979:databreaker:ca256383f1c320ef3e230fdb0b6a2df5a79b3387") {
