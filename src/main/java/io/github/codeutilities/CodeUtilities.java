@@ -2,8 +2,8 @@ package io.github.codeutilities;
 
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.gui.CustomHeadSearchGui;
-import io.github.codeutilities.template.TemplateStorageHandler;
-import io.github.codeutilities.util.ChatType;
+import io.github.codeutilities.template.*;
+import io.github.codeutilities.util.*;
 import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
@@ -17,6 +17,9 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.security.*;
 import java.util.Random;
 
 public class CodeUtilities implements ModInitializer {
@@ -73,6 +76,7 @@ public class CodeUtilities implements ModInitializer {
         AutoConfig.register(ModConfig.class, Toml4jConfigSerializer::new);
         // Add a shutdown hook so we can save players template data on exit.
         Runtime.getRuntime().addShutdownHook(new Thread(this::onClose));
+        MinecraftCommunicator.initalize();
     }
 
     public void onClose() {

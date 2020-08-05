@@ -45,7 +45,7 @@ public class TemplateUtils {
         CompoundTag tag = stack.getTag();
         CompoundTag publicBukkitNBT = tag.getCompound("PublicBukkitValues");
         String template = publicBukkitNBT.getString("hypercube:codetemplatedata");
-        return JsonParser.parseString(template).getAsJsonObject();
+        return new JsonParser().parse(template).getAsJsonObject();
     }
 
     public static boolean isTemplate(ItemStack stack) {

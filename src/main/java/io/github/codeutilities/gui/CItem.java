@@ -1,18 +1,25 @@
 package io.github.codeutilities.gui;
 
 import io.github.cottonmc.cotton.gui.widget.WItem;
+import net.minecraft.block.Material;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.LiteralText;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.text.*;
 
-import java.util.Collections;
+import java.util.*;
 
 public class CItem extends WItem {
 
     Runnable onclick;
     String hover = null;
+
+    public CItem() {
+        super(ItemStack.EMPTY);
+    }
 
     public CItem(ItemStack stack) {
         super(stack);
@@ -28,17 +35,9 @@ public class CItem extends WItem {
         onclick = r;
     }
 
-    public void paint(MatrixStack matrices, int x, int y, int mouseX, int mouseY) {
-        super.paint(matrices, x, y, mouseX, mouseY);
-        if (mouseX >= 0 && mouseY >= 0 && mouseX < this.getWidth() && mouseY < this.getHeight()) {
-            Screen screen = MinecraftClient.getInstance().currentScreen;
-            ItemStack stack = getItems().get(0);
-
-            if (hover == null) {
-                screen.renderTooltip(matrices, screen.getTooltipFromItem(stack), mouseX + x, mouseY + y);
-            } else {
-                screen.renderTooltip(matrices, Collections.singletonList(new LiteralText(hover)), mouseX + x, mouseY + y);
-            }
-        }
+    @Override
+    public void addTooltip(List<StringRenderable> tooltip) {
+        MinecraftClient client = MinecraftClient.getInstance();
+        tooltip.addAll(getItems().get(0).getTooltip(client.player, client.options.advancedItemTooltips ? TooltipContext.Default.ADVANCED : TooltipContext.Default.NORMAL));
     }
 }

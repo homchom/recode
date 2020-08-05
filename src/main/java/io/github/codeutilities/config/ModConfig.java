@@ -18,6 +18,8 @@ public class ModConfig implements ConfigData {
     public boolean improvedLoreCmd = true;
     @ConfigEntry.Category("commands")
     public boolean errorSound = true;
+    @ConfigEntry.Category("commands")
+    public int headMenuMaxRender = 140;
 
 
     public static ModConfig getConfig() {
