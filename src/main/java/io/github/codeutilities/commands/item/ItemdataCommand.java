@@ -12,6 +12,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.ClickEvent.Action;
 import net.minecraft.text.LiteralText;
+import net.minecraft.util.registry.Registry;
 
 public class ItemdataCommand extends Command {
 
@@ -22,7 +23,7 @@ public class ItemdataCommand extends Command {
                     ItemStack item = mc.player.getMainHandStack();
                     CompoundTag nbt = item.getTag();
                     if (nbt != null) {
-                        CodeUtilities.chat(String.format("§5----------§dItem Data for %s §5----------", item.getName().getString()));
+                        CodeUtilities.chat(String.format("§5----------§dItem Data for %s§5----------", item.getName().getString()));
                         mc.player.sendMessage(nbt.toText("  ", 0), false);
 
 
@@ -30,16 +31,17 @@ public class ItemdataCommand extends Command {
                         String unformatted = nbt.toString();
 
                         LiteralText msg1 = new LiteralText("§5Click here to copy a ");
-                        LiteralText msg2 = new LiteralText("§d§lFormatted");
-                        LiteralText msg3 = new LiteralText("§5 or ");
-                        LiteralText msg4 = new LiteralText("§d§lUnformatted");
-                        LiteralText msg5 = new LiteralText("§5 version!");
-
+                        LiteralText msg2 = new LiteralText("§d§lFormatted§5, ");
+                        LiteralText msg3 = new LiteralText("§d§lUnformatted");
+                        LiteralText msg4 = new LiteralText("§5 or ");
+                        LiteralText msg5 = new LiteralText("§d§l/give");
+                        LiteralText msg6 = new LiteralText("§5 version!");
 
                         msg2.styled((style) -> style.withClickEvent(new ClickEvent(Action.RUN_COMMAND, "/copytxt " + formatted)));
-                        msg4.styled((style) -> style.withClickEvent(new ClickEvent(Action.RUN_COMMAND, "/copytxt " + unformatted)));
+                        msg3.styled((style) -> style.withClickEvent(new ClickEvent(Action.RUN_COMMAND, "/copytxt " + formatted)));
+                        msg5.styled((style) -> style.withClickEvent(new ClickEvent(Action.RUN_COMMAND, "/copytxt " + "/give " + Registry.ITEM.getId(item.getItem()).toString() + unformatted + " 1")));
 
-                        mc.player.sendMessage(msg1.append(msg2).append(msg3).append(msg4).append(msg5), false);
+                        mc.player.sendMessage(msg1.append(msg2).append(msg3).append(msg4).append(msg5).append(msg6), false);
 
                     } else {
                         CodeUtilities.chat("No NBT data found!", ChatType.FAIL);
