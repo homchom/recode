@@ -25,9 +25,11 @@ public class TemplateStorageUI extends LightweightGuiDescription {
                 MinecraftClient mc = MinecraftClient.getInstance();
                 if (mc.player.isCreative()) {
                     ItemUtil.giveCreativeItem(item.getStack());
-                    mc.player.playSound(SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 2, 1);
+                    mc.player
+                        .playSound(SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 2, 1);
                 } else {
-                    CodeUtilities.chat("You need to be in creative to get templates.", ChatType.FAIL);
+                    CodeUtilities
+                        .chat("You need to be in creative to get templates.", ChatType.FAIL);
                 }
             });
             root.add(i, (int) (index % 14 * 17.8), index / 14 * 18, 17, 18);

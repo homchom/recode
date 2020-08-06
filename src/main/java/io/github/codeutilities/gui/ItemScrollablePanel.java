@@ -1,13 +1,13 @@
 package io.github.codeutilities.gui;
 
-import io.github.cottonmc.cotton.gui.widget.*;
-import io.github.cottonmc.cotton.gui.widget.data.Axis;
+import io.github.cottonmc.cotton.gui.widget.WGridPanel;
+import io.github.cottonmc.cotton.gui.widget.WScrollPanel;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.item.ItemStack;
 
-import java.util.*;
-import java.util.function.Consumer;
-
 public class ItemScrollablePanel extends WScrollPanel {
+
     // Jank, I know.
     private final WGridPanel itemPanel = (WGridPanel) this.children.get(0);
     private final List<ClickableGiveItem> giveItems = new ArrayList<>();
@@ -22,7 +22,7 @@ public class ItemScrollablePanel extends WScrollPanel {
         for (ClickableGiveItem giveItem : giveItems) {
             itemPanel.remove(giveItem);
         }
-        itemPanel.setSize(0,0);
+        itemPanel.setSize(0, 0);
         horizontalScrollBar.setValue(0);
 
         int renderIndex = 0;

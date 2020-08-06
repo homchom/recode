@@ -1,16 +1,12 @@
 package io.github.codeutilities.gui;
 
 import io.github.cottonmc.cotton.gui.widget.WItem;
-import net.minecraft.block.Material;
+import java.util.List;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.item.TooltipContext;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.text.*;
-
-import java.util.*;
+import net.minecraft.item.Items;
+import net.minecraft.text.StringRenderable;
 
 public class CItem extends WItem {
 
@@ -38,6 +34,8 @@ public class CItem extends WItem {
     @Override
     public void addTooltip(List<StringRenderable> tooltip) {
         MinecraftClient client = MinecraftClient.getInstance();
-        tooltip.addAll(getItems().get(0).getTooltip(client.player, client.options.advancedItemTooltips ? TooltipContext.Default.ADVANCED : TooltipContext.Default.NORMAL));
+        tooltip.addAll(getItems().get(0).getTooltip(client.player,
+            client.options.advancedItemTooltips ? TooltipContext.Default.ADVANCED
+                : TooltipContext.Default.NORMAL));
     }
 }
