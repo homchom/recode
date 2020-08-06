@@ -15,7 +15,7 @@ import java.util.*;
 
 public class CustomHeadSearchGui extends LightweightGuiDescription {
 
-    ModConfig config = ModConfig.getConfig();
+    private static final ModConfig config = ModConfig.getConfig();
     private static final List<JsonObject> allHeads = new ArrayList<>();
     private final ItemScrollablePanel panel;
 
@@ -50,30 +50,6 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
         root.validate(this);
     }
 
-
-    private List<ItemStack> toItemStack(List<JsonObject> set) {
-        List<ItemStack> items = new ArrayList<>();
-
-        for (JsonObject head : set) {
-            ItemStack item = new ItemStack(Items.PLAYER_HEAD);
-            String name = head.get("name").getAsString();
-            String value = head.get("value").getAsString();
-            try {
-                item.setTag(StringNbtReader.parse(
-                        "{display:{Name:\"{\\\"text\\\":\\\"" + name
-                                + "\\\"}\"},SkullOwner:{Id:" + StringUtil.genDummyIntArray()
-                                + ",Properties:{textures:[{Value:\"" + value + "\"}]}}}"));
-
-            } catch (CommandSyntaxException ignore) {
-                ignore.printStackTrace();
-            }
-
-            items.add(item);
-        }
-
-        return items;
-    }
-
     public static void load() {
         new Thread(() -> {
             allHeads.clear();
@@ -106,6 +82,29 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
             }
             allHeads.sort(Comparator.comparing(x -> x.get("name").getAsString()));
         }).start();
+    }
+
+    private List<ItemStack> toItemStack(List<JsonObject> set) {
+        List<ItemStack> items = new ArrayList<>();
+
+        for (JsonObject head : set) {
+            ItemStack item = new ItemStack(Items.PLAYER_HEAD);
+            String name = head.get("name").getAsString();
+            String value = head.get("value").getAsString();
+            try {
+                item.setTag(StringNbtReader.parse(
+                        "{display:{Name:\"{\\\"text\\\":\\\"" + name
+                                + "\\\"}\"},SkullOwner:{Id:" + StringUtil.genDummyIntArray()
+                                + ",Properties:{textures:[{Value:\"" + value + "\"}]}}}"));
+
+            } catch (CommandSyntaxException ignore) {
+                ignore.printStackTrace();
+            }
+
+            items.add(item);
+        }
+
+        return items;
     }
 
 }

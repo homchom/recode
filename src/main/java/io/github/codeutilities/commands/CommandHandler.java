@@ -4,23 +4,26 @@ import com.mojang.brigadier.CommandDispatcher;
 import io.github.codeutilities.commands.image.ImageToTemplateCommand115;
 import io.github.codeutilities.commands.item.*;
 import io.github.codeutilities.commands.nbs.NBSCommand;
-import io.github.codeutilities.commands.util.CopyTextCommand;
-import io.github.codeutilities.commands.util.HeadsCommand;
-import io.github.codeutilities.commands.util.UuidCommand;
-import io.github.codeutilities.commands.util.WebviewCommand;
-import io.github.cottonmc.clientcommands.ClientCommandPlugin;
-import io.github.cottonmc.clientcommands.CottonClientCommandSource;
+import io.github.codeutilities.commands.util.*;
+import io.github.cottonmc.clientcommands.*;
 import net.minecraft.client.MinecraftClient;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class CommandHandler implements ClientCommandPlugin {
 
     private static final List<Command> commands = new ArrayList<>();
 
-    static {
+    public static void register(Command... cmds) {
+        commands.addAll(Arrays.asList(cmds));
+    }
+
+    public static List<Command> getCommands() {
+        return commands;
+    }
+
+
+    public static void initialize() {
         register(
                 new BreakableCommand(),
                 new CustomHeadCommand(),
@@ -34,16 +37,11 @@ public class CommandHandler implements ClientCommandPlugin {
                 new CopyTextCommand(),
                 new HeadsCommand(),
                 new ImageToTemplateCommand115(),
-                new TemplatesCommand()
+                new TemplatesCommand(),
+                new ColorsCommand(),
+                new CopyColorCommand(),
+                new NodeCommand()
         );
-    }
-
-    public static void register(Command... cmds) {
-        commands.addAll(Arrays.asList(cmds));
-    }
-
-    public static List<Command> getCommands() {
-        return commands;
     }
 
     @Override

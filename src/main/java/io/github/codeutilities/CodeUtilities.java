@@ -1,25 +1,19 @@
 package io.github.codeutilities;
 
+import io.github.codeutilities.commands.CommandHandler;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.gui.CustomHeadSearchGui;
 import io.github.codeutilities.template.*;
-import io.github.codeutilities.util.*;
-import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
-import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
+import io.github.codeutilities.util.ChatType;
+import io.github.cottonmc.cotton.gui.client.*;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.Toml4jConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
+import net.minecraft.sound.*;
 import net.minecraft.text.LiteralText;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.*;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.security.*;
 import java.util.Random;
 
 public class CodeUtilities implements ModInitializer {
@@ -70,13 +64,13 @@ public class CodeUtilities implements ModInitializer {
     @Override
     public void onInitialize() {
         log(Level.INFO, "Initializing");
-
-        CustomHeadSearchGui.load();
-        TemplateStorageHandler.load();
         AutoConfig.register(ModConfig.class, Toml4jConfigSerializer::new);
         // Add a shutdown hook so we can save players template data on exit.
         Runtime.getRuntime().addShutdownHook(new Thread(this::onClose));
         MinecraftCommunicator.initalize();
+        CommandHandler.initialize();
+        CustomHeadSearchGui.load();
+        TemplateStorageHandler.load();
     }
 
     public void onClose() {
