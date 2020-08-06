@@ -1,19 +1,16 @@
 {
   "text.autoconfig.codeutilities.title": "CodeUtilities",
 
-  "COMMENT": "SETTINGS CATEGORIES",
   "text.autoconfig.codeutilities.category.features": "Features",
   "text.autoconfig.codeutilities.category.commands": "Commands",
 
-  "COMMENT": "SETTINGS: FEATURES",
   "text.autoconfig.codeutilities.option.playDiamondFire": "DiamondFire Menu Button",
   "text.autoconfig.codeutilities.option.adBlock": "AdBlockPlus",
   "text.autoconfig.codeutilities.option.discordRPC": "Discord Rich Presence",
 
-  "COMMENT": "SETTINGS: COMMANDS",
   "text.autoconfig.codeutilities.option.improvedLoreCmd": "Improved /lore",
   "text.autoconfig.codeutilities.option.errorSound": "Error Message Sound",
   "text.autoconfig.codeutilities.option.headMenuMaxRender": "Maximum Heads in /heads",
-  "text.autoconfig.codeutilities.option.colorMaxRender": "Maximum Colors in /colors",
+  "text.autoconfig.codeutilities.option.colorMaxRender": "Maximum Colors in /colors"
 
 }

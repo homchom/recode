@@ -4,6 +4,7 @@ import io.github.cottonmc.cotton.gui.widget.WItem;
 import java.util.List;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.StringRenderable;
@@ -37,5 +38,14 @@ public class CItem extends WItem {
         tooltip.addAll(getItems().get(0).getTooltip(client.player,
             client.options.advancedItemTooltips ? TooltipContext.Default.ADVANCED
                 : TooltipContext.Default.NORMAL));
+    }
+
+    @Override
+    public void paint(MatrixStack matrices, int x, int y, int mouseX, int mouseY) {
+        if (y > MinecraftClient.getInstance().getWindow().getWidth() || x > MinecraftClient.getInstance().getWindow().getHeight() || x < 0 || y < 0) {
+        return;
+        }
+
+        super.paint(matrices, x, y, mouseX, mouseY);
     }
 }

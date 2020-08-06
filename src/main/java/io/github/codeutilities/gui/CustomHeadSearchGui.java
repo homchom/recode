@@ -46,7 +46,7 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
             } else {
                 for (JsonObject object : allHeads) {
                     if (object.get("name").getAsString().toLowerCase().contains(s)
-                        && selected.size() <= config.headMenuMaxRender * 3) {
+                        && selected.size() <= config.headMenuMaxRender) {
                         selected.add(object);
                     }
                 }
