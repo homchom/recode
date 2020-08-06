@@ -7,7 +7,8 @@
     "item.MixinItemInsert",
     "item.MixinItemSlotUpdate",
     "MixinOptionsScreen",
-    "MixinTitleScreen"
+    "MixinTitleScreen",
+    "MixinSkullBlockEntityRenderer"
   ],
   "client": [],
   "server": [],
