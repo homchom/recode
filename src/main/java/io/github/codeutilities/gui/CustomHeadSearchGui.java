@@ -34,7 +34,7 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
         searchBox.setMaxLength(100);
         root.add(searchBox, 0, 0, 256, 0);
 
-        panel = new ItemScrollablePanel(toItemStack(allHeads.subList(0, config.headMenuMaxRender)));
+        panel = new ItemScrollablePanel(toItemStack(allHeads.subList(0, Math.max(Math.min(allHeads.size(),config.headMenuMaxRender),1))));
         root.add(panel, 0, 25, 256, 235);
 
         searchBox.setChangedListener((s -> {
@@ -42,7 +42,7 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
             List<JsonObject> selected = new ArrayList<>();
 
             if (s.isEmpty()) {
-                selected = allHeads.subList(0, config.headMenuMaxRender);
+                selected = allHeads.subList(0, Math.max(Math.min(allHeads.size(),config.headMenuMaxRender),1));
             } else {
                 for (JsonObject object : allHeads) {
                     if (object.get("name").getAsString().toLowerCase().contains(s)
@@ -86,7 +86,7 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                     continue;
                 }
 
-                JsonArray heads = new JsonParser().parse(response).getAsJsonArray();
+                JsonArray heads = JsonParser.parseString(response).getAsJsonArray();
                 for (JsonElement head : heads) {
                     allHeads.add(head.getAsJsonObject());
                 }
