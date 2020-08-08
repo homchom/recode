@@ -4,19 +4,21 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.ModConfig;
-import io.github.codeutilities.util.StringUtil;
 import io.github.codeutilities.util.WebUtil;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.StringNbtReader;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.text.LiteralText;
 
 public class CustomHeadSearchGui extends LightweightGuiDescription {
@@ -34,7 +36,8 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
         searchBox.setMaxLength(100);
         root.add(searchBox, 0, 0, 256, 0);
 
-        panel = new ItemScrollablePanel(toItemStack(allHeads.subList(0, Math.max(Math.min(allHeads.size(),config.headMenuMaxRender),1))));
+        panel = new ItemScrollablePanel(toItemStack(
+            allHeads.subList(0, Math.max(Math.min(allHeads.size(), config.headMenuMaxRender), 1))));
         root.add(panel, 0, 25, 256, 235);
 
         searchBox.setChangedListener((s -> {
@@ -42,7 +45,8 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
             List<JsonObject> selected = new ArrayList<>();
 
             if (s.isEmpty()) {
-                selected = allHeads.subList(0, Math.max(Math.min(allHeads.size(),config.headMenuMaxRender),1));
+                selected = allHeads
+                    .subList(0, Math.max(Math.min(allHeads.size(), config.headMenuMaxRender), 1));
             } else {
                 for (JsonObject object : allHeads) {
                     if (object.get("name").getAsString().toLowerCase().contains(s)
@@ -51,7 +55,6 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                     }
                 }
             }
-
             panel.setItems(toItemStack(selected));
         }));
 
@@ -102,19 +105,27 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
             ItemStack item = new ItemStack(Items.PLAYER_HEAD);
             String name = head.get("name").getAsString();
             String value = head.get("value").getAsString();
-            try {
-                item.setTag(StringNbtReader.parse(
-                    "{display:{Name:\"{\\\"text\\\":\\\"" + name
-                        + "\\\"}\"},SkullOwner:{Id:" + StringUtil.genDummyIntArray()
-                        + ",Properties:{textures:[{Value:\"" + value + "\"}]}}}"));
 
-            } catch (CommandSyntaxException err) {
-                err.printStackTrace();
-            }
-
+            CompoundTag nbt = new CompoundTag();
+            CompoundTag display = new CompoundTag();
+            CompoundTag Name = new CompoundTag();
+            display.putString("Name", "{\"text\":\"" + name + "\"}");
+            nbt.put("display", display);
+            CompoundTag SkullOwner = new CompoundTag();
+            SkullOwner.putIntArray("Id", Arrays
+                .asList(CodeUtilities.rng.nextInt(), CodeUtilities.rng.nextInt(),
+                    CodeUtilities.rng.nextInt(), CodeUtilities.rng.nextInt()));
+            CompoundTag Properties = new CompoundTag();
+            ListTag textures = new ListTag();
+            CompoundTag index1 = new CompoundTag();
+            index1.putString("Value", value);
+            textures.add(index1);
+            Properties.put("textures", textures);
+            SkullOwner.put("Properties", Properties);
+            nbt.put("SkullOwner", SkullOwner);
+            item.setTag(nbt);
             items.add(item);
         }
-
         return items;
     }
 
