@@ -30,6 +30,7 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
     public CustomHeadSearchGui() {
         WPlainPanel root = new WPlainPanel();
         root.setSize(256, 240);
+        
 
         CTextField searchBox = new CTextField(
             new LiteralText("Search... (" + allHeads.size() + " Heads)"));
