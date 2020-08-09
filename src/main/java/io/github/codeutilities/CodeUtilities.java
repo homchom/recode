@@ -29,7 +29,7 @@ public class CodeUtilities implements ModInitializer {
     public static void openGuiAsync(LightweightGuiDescription gui) {
         new Thread(() -> {
             try {
-                Thread.sleep(1);
+                Thread.sleep(10);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
