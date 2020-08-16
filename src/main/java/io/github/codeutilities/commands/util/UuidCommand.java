@@ -31,7 +31,7 @@ public class UuidCommand extends Command {
                             String url = "https://api.mojang.com/users/profiles/minecraft/" + username;
                             try {
                                 String UUIDJson = IOUtils.toString(new URL(url), StandardCharsets.UTF_8);
-                                JsonObject json = JsonParser.parseString(UUIDJson).getAsJsonObject();
+                                JsonObject json = new JsonParser().parse(UUIDJson).getAsJsonObject();
                                 String uuid = json.get("id").getAsString();
                                 String fullUUID = StringUtil.fromTrimmed(uuid);
                                 CodeUtilities.chat("§eUUID of §b" + username + "§e is §d" + fullUUID + "§e!");

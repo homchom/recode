@@ -3,13 +3,14 @@ package io.github.codeutilities.gui;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.codeutilities.CodeUtilities;
-import io.github.cottonmc.cotton.gui.widget.WItem;
+import io.github.cottonmc.cotton.gui.widget.*;
+
 import java.util.List;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.StringRenderable;
+import net.minecraft.text.*;
 import org.lwjgl.opengl.GL11;
 
 public class CItem extends WItem {
@@ -31,12 +32,18 @@ public class CItem extends WItem {
         onclick = r;
     }
 
+
     @Override
-    public void addTooltip(List<StringRenderable> tooltip) {
+    public void addTooltip(TooltipBuilder tooltip) {
         MinecraftClient client = MinecraftClient.getInstance();
-        tooltip.addAll(getItems().get(0).getTooltip(client.player,
-            client.options.advancedItemTooltips ? TooltipContext.Default.ADVANCED
-                : TooltipContext.Default.NORMAL));
+       for (Text text : getItems().get(0).getTooltip(client.player, client.options.advancedItemTooltips ?
+               TooltipContext.Default.ADVANCED : TooltipContext.Default.NORMAL)) {
+           tooltip.add(text);
+       }
+    }
+
+    public void setScale(float scale) {
+        this.scale = scale;
     }
 
     public void setScale(float scale) {

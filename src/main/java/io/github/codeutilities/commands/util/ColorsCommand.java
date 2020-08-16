@@ -30,7 +30,7 @@ public class ColorsCommand extends Command {
                 extra.setStyle(colorStyle);
                 hover.setStyle(colorStyle);
                 extra.styled((style) -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/color " + colorName)));
-                extra.styled((style) -> style.setHoverEvent(HoverEvent.Action.SHOW_TEXT.buildHoverEvent(hover)));
+                extra.styled((style) -> style.withHoverEvent(HoverEvent.Action.SHOW_TEXT.buildHoverEvent(hover)));
                 base.getSiblings().add(extra);
             }
             mc.player.sendMessage(base, false);

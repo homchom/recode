@@ -3,7 +3,7 @@
   "id": "codeutilities",
   "version": "${version}",
   "name": "CodeUtilities",
-  "description": "A set of utilities for coding in DiamondFire server.\n\nDeveloped by: Reasonless, BlazeMCworld, KabanFriends",
+  "description": "A set of utilities for coding in DiamondFire server.\n\nDeveloped by: Reasonless, BlazeMCworld, KabanFriends and Owen1212055.",
   "contributors": [],
   "contact": {
     "homepage": "https://codeutilities.github.io/",
@@ -28,8 +28,7 @@
     "codeutilities.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.8.9",
-    "fabric": "*"
+    "fabricloader": ">=0.8.9"
   },
   "custom": {
     "modmenu:clientsideOnly": true

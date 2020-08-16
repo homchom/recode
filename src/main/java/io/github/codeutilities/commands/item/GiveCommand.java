@@ -9,8 +9,7 @@ import io.github.codeutilities.util.ChatType;
 import io.github.codeutilities.util.ItemUtil;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.command.arguments.ItemStackArgument;
-import net.minecraft.command.arguments.ItemStackArgumentType;
+import net.minecraft.command.argument.*;
 import net.minecraft.item.ItemStack;
 
 public class GiveCommand extends Command {

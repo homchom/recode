@@ -90,7 +90,7 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                     continue;
                 }
 
-                JsonArray heads = JsonParser.parseString(response).getAsJsonArray();
+                JsonArray heads = new JsonParser().parse(response).getAsJsonArray();
                 for (JsonElement head : heads) {
                     allHeads.add(head.getAsJsonObject());
                 }
