@@ -45,14 +45,14 @@ public class CItem extends WItem {
             x < 0 || y < 0) {
             return;
         }
-//        if (mc.currentScreen != null) {
-//            if (x > mc.getWindow().getWidth() / 4 + mc.currentScreen.width / 2 ||
-//                    x < mc.getWindow().getWidth() / 4 - mc.currentScreen.width / 2 ||
-//                    y > mc.getWindow().getHeight() / 4 + mc.currentScreen.height / 2 ||
-//                    y < mc.getWindow().getHeight() / 4 - mc.currentScreen.height / 2) {
-//                return;
-//            }
-//        }
+        if (mc.currentScreen != null) {
+            if (x > mc.getWindow().getWidth() / 4 + mc.currentScreen.width / 2 ||
+                    x < mc.getWindow().getWidth() / 4 - mc.currentScreen.width / 2 ||
+                    y > mc.getWindow().getHeight() / 4 + mc.currentScreen.height / 2 ||
+                    y < mc.getWindow().getHeight() / 4 - mc.currentScreen.height / 2) {
+                return;
+            }
+        }
 
         super.paint(matrices, x, y, mouseX, mouseY);
     }

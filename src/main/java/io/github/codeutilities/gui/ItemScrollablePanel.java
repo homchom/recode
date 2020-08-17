@@ -1,9 +1,10 @@
 package io.github.codeutilities.gui;
 
-import io.github.cottonmc.cotton.gui.widget.*;
-import net.minecraft.item.ItemStack;
-
+import io.github.cottonmc.cotton.gui.widget.WGridPanel;
+import io.github.cottonmc.cotton.gui.widget.WScrollPanel;
 import java.util.List;
+import net.minecraft.item.ItemStack;
+import org.apache.commons.lang3.reflect.FieldUtils;
 
 public class ItemScrollablePanel extends WScrollPanel {
 
@@ -16,7 +17,17 @@ public class ItemScrollablePanel extends WScrollPanel {
     }
 
     public void setItems(List<ItemStack> items) {
-        this.children.clear();
+        try {
+            Object uncheckedChildren = FieldUtils
+                .readField(itemPanel, "children", true);
+            if (uncheckedChildren instanceof List) {
+                List children = (List) uncheckedChildren;
+                children.clear();
+            }
+        } catch (Exception err) {
+            err.printStackTrace();
+        }
+
         itemPanel.setSize(0, 0);
         horizontalScrollBar.setValue(0);
 
