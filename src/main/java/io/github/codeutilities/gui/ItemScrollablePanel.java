@@ -1,13 +1,9 @@
 package io.github.codeutilities.gui;
 
-import io.github.cottonmc.cotton.gui.widget.WGridPanel;
-import io.github.cottonmc.cotton.gui.widget.WPanel;
-import io.github.cottonmc.cotton.gui.widget.WScrollPanel;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import io.github.cottonmc.cotton.gui.widget.*;
 import net.minecraft.item.ItemStack;
+
+import java.util.List;
 
 public class ItemScrollablePanel extends WScrollPanel {
 
@@ -20,23 +16,14 @@ public class ItemScrollablePanel extends WScrollPanel {
     }
 
     public void setItems(List<ItemStack> items) {
-        try {
-            Class cl = WPanel.class;
-            Field children = cl.getDeclaredField("children");
-            children.setAccessible(true);
-            ((List) children.get(itemPanel)).clear();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        this.children.clear();
         itemPanel.setSize(0, 0);
         horizontalScrollBar.setValue(0);
 
         int renderIndex = 0;
         for (ItemStack item : items) {
             ClickableGiveItem i = new ClickableGiveItem(item);
-            i.setScale(1.5F);
-            itemPanel.add(i, (int) (renderIndex % 12 * 20), renderIndex / 12 * 20, 20, 20);
+            itemPanel.add(i, (int) (renderIndex % 14 * 17.8), renderIndex / 14 * 18, 17, 18);
             renderIndex++;
         }
         layout();

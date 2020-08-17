@@ -2,11 +2,9 @@ package io.github.codeutilities.commands.item;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.commands.arguments.ArgBuilder;
-import io.github.codeutilities.util.ChatType;
-import io.github.codeutilities.util.ItemUtil;
+import io.github.codeutilities.util.*;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.argument.*;
@@ -38,7 +36,7 @@ public class GiveCommand extends Command {
                             try {
                                 clipboard = mc.keyboard.getClipboard();
                             } catch (Exception e) {
-                                CodeUtilities.chat("Unable to get Clipboard", ChatType.FAIL);
+                                ChatUtil.sendMessage("Unable to get Clipboard", ChatType.FAIL);
                                 return -1;
                             }
                             if (clipboard.startsWith("/")) {
@@ -67,15 +65,13 @@ public class GiveCommand extends Command {
                 if (count <= item.getMaxCount()) {
                     ItemUtil.giveCreativeItem(item);
                 } else {
-                    CodeUtilities.chat(
-                            "Maximum item count for " + item.getName() + "is " + item.getMaxCount()
-                                    + "!", ChatType.FAIL);
+                    ChatUtil.sendMessage("Maximum item count for " + item.getName() + " is " + item.getMaxCount() + "!", ChatType.FAIL);
                 }
             } else {
-                CodeUtilities.chat("Minimum item count is 1!", ChatType.FAIL);
+                ChatUtil.sendMessage("Minimum item count is 1!", ChatType.FAIL);
             }
         } else {
-            CodeUtilities.chat("You need to be in creative for this command to work.", ChatType.FAIL);
+            ChatUtil.sendTranslateMessage("codeutilities.command.require_creative_mode", ChatType.FAIL);
         }
     }
 }

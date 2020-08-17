@@ -1,18 +1,14 @@
 package io.github.codeutilities.images;
 
 import io.github.codeutilities.util.MinecraftColors;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.TextColor;
+import net.minecraft.text.*;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
+import java.io.*;
 import java.util.List;
+import java.util.*;
 
 import static java.awt.Image.SCALE_SMOOTH;
 

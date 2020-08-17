@@ -11,6 +11,7 @@ import java.io.*;
 import java.net.Socket;
 
 public abstract class MinecraftCommunicator {
+
     public static Socket socket = null;
     public static boolean status;
 
@@ -29,7 +30,7 @@ public abstract class MinecraftCommunicator {
                     MinecraftCommunicator.status = true;
                     new SocketHandler(MinecraftCommunicator.socket).start();
                     MinecraftClient.getInstance().getToastManager().add(new SystemToast(SystemToast.Type.NARRATOR_TOGGLE, new LiteralText("Connected to DFVisual"), null));
-                } catch(Exception e) {
+                } catch (Exception e) {
                     status = false;
                 }
             }
@@ -39,9 +40,11 @@ public abstract class MinecraftCommunicator {
 }
 
 class SocketHandler extends Thread {
+
     Socket connectedsocket = null;
     InputStream input = null;
     OutputStream output = null;
+
     public SocketHandler(Socket socket) {
         this.connectedsocket = socket;
     }

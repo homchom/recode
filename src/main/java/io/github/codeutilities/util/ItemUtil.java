@@ -2,19 +2,12 @@ package io.github.codeutilities.util;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringNbtReader;
-import net.minecraft.nbt.Tag;
+import net.minecraft.item.*;
+import net.minecraft.nbt.*;
 import net.minecraft.util.collection.DefaultedList;
 
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
+import java.nio.charset.*;
+import java.util.*;
 
 public class ItemUtil {
 

@@ -1,11 +1,9 @@
 package io.github.codeutilities.commands.item;
 
 import com.mojang.brigadier.CommandDispatcher;
-import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.commands.arguments.ArgBuilder;
-import io.github.codeutilities.util.ChatType;
-import io.github.codeutilities.util.ItemUtil;
+import io.github.codeutilities.util.*;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
@@ -29,19 +27,19 @@ public class UnpackCommand extends Command {
                             }
 
                             if (items == 0) {
-                                CodeUtilities.chat("There are no items stored in this container!", ChatType.FAIL);
+                                ChatUtil.sendMessage("There are no items stored in this container!", ChatType.FAIL);
                             } else {
                                 if (items == 1) {
-                                    CodeUtilities.chat("Unpacked §b" + items + "§a item!", ChatType.SUCCESS);
+                                    ChatUtil.sendMessage("Unpacked §b" + items + "§r item!", ChatType.SUCCESS);
                                 } else {
-                                    CodeUtilities.chat("§aUnpacked §b" + items + "§a items!", ChatType.SUCCESS);
+                                    ChatUtil.sendMessage("Unpacked §b" + items + "§r items!", ChatType.SUCCESS);
                                 }
                             }
                         } else {
-                            CodeUtilities.chat("TThere are no items stored in this item!", ChatType.FAIL);
+                            ChatUtil.sendMessage("TThere are no items stored in this item!", ChatType.FAIL);
                         }
                     } else {
-                        CodeUtilities.chat("You need to be in creative mode to use this command!", ChatType.FAIL);
+                        ChatUtil.sendTranslateMessage("codeutilities.command.require_creative_mode", ChatType.FAIL);
                     }
                     return 1;
                 })

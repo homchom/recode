@@ -3,6 +3,7 @@ package io.github.codeutilities.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.codeutilities.commands.image.ImageToTemplateCommand115;
 import io.github.codeutilities.commands.item.*;
+import io.github.codeutilities.commands.item.template.*;
 import io.github.codeutilities.commands.nbs.NBSCommand;
 import io.github.codeutilities.commands.util.*;
 import io.github.cottonmc.clientcommands.*;
@@ -26,7 +27,7 @@ public class CommandHandler implements ClientCommandPlugin {
     public static void initialize() {
         register(
                 new BreakableCommand(),
-                new CustomHeadCommand(),
+                new SendTemplateCommand(),
                 new GiveCommand(),
                 new ItemdataCommand(),
                 new LoreCommand(),
@@ -36,10 +37,10 @@ public class CommandHandler implements ClientCommandPlugin {
                 new WebviewCommand(),
                 new CopyTextCommand(),
                 new HeadsCommand(),
-                new ImageToTemplateCommand115(),
+                //new ImageToTemplateCommand115(),
                 new TemplatesCommand(),
                 new ColorsCommand(),
-                new CopyColorCommand(),
+                new ColorCommand(),
                 new NodeCommand()
         );
     }

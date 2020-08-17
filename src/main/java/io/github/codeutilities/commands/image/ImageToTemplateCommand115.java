@@ -2,18 +2,14 @@ package io.github.codeutilities.commands.image;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.commands.arguments.ArgBuilder;
 import io.github.codeutilities.images.ImageConverter;
-import io.github.codeutilities.util.ChatType;
-import io.github.codeutilities.util.ItemUtil;
-import io.github.codeutilities.util.TemplateUtils;
+import io.github.codeutilities.util.*;
 import io.github.codeutilities.util.externalfile.ExternalFile;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.item.*;
 
 import java.io.File;
 
@@ -34,9 +30,9 @@ public class ImageToTemplateCommand115 extends Command {
                                         ItemStack stack = new ItemStack(Items.NOTE_BLOCK);
                                         TemplateUtils.compressTemplateNBT(stack, StringArgumentType.getString(ctx, "location"), mc.player.getName().asString(), convert(strings));
                                         ItemUtil.giveCreativeItem(stack);
-                                        CodeUtilities.chat("Image loaded! Change the first Set Variable to the location!", ChatType.SUCCESS);
+                                        ChatUtil.sendMessage("Image loaded! Change the first Set Variable to the location!", ChatType.SUCCESS);
                                     } else {
-                                        CodeUtilities.chat("That image doesn't exist.", ChatType.FAIL);
+                                        ChatUtil.sendMessage("That image doesn't exist.", ChatType.FAIL);
                                     }
                                     return 1;
                                 }))));

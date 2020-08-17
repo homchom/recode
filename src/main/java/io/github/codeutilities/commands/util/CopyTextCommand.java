@@ -2,10 +2,9 @@ package io.github.codeutilities.commands.util;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.commands.arguments.ArgBuilder;
-import io.github.codeutilities.util.ChatType;
+import io.github.codeutilities.util.*;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 
@@ -17,7 +16,7 @@ public class CopyTextCommand extends Command {
                 .then(ArgBuilder.argument("text", StringArgumentType.greedyString())
                         .executes(ctx -> {
                             MinecraftClient.getInstance().keyboard.setClipboard(ctx.getArgument("text", String.class));
-                            CodeUtilities.chat("Copied text!", ChatType.INFO_BLUE);
+                            ChatUtil.sendMessage("Copied text!", ChatType.INFO_BLUE);
                             return 1;
                         })
                 )

@@ -1,8 +1,8 @@
 package io.github.codeutilities.commands.nbs;
 
-import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.nbs.SongData;
 import io.github.codeutilities.nbs.exceptions.OutdatedNBSException;
+import io.github.codeutilities.util.ChatUtil;
 
 import java.io.*;
 import java.math.BigDecimal;
@@ -45,7 +45,7 @@ public class NBSDecoder {
                 throw new OutdatedNBSException();
             }
         } else {
-            CodeUtilities.chat("§a§lHEY!§r Looks like you are using original Note Block Studio. I recommend you to use §bOpen Note Block Studio§r, which is an unofficial continuation of Note Block Studio!");
+            ChatUtil.sendMessage("§a§lHEY!§r Looks like you are using original Note Block Studio. I recommend you to use §bOpen Note Block Studio§r, which is an unofficial continuation of Note Block Studio!");
         }
         short layers = readShort(dataInputStream); //song height
         title = readString(dataInputStream); //title

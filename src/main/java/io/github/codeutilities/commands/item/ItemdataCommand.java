@@ -1,17 +1,15 @@
 package io.github.codeutilities.commands.item;
 
 import com.mojang.brigadier.CommandDispatcher;
-import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.commands.arguments.ArgBuilder;
-import io.github.codeutilities.util.ChatType;
+import io.github.codeutilities.util.*;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.text.ClickEvent;
+import net.minecraft.text.*;
 import net.minecraft.text.ClickEvent.Action;
-import net.minecraft.text.LiteralText;
 import net.minecraft.util.registry.Registry;
 
 public class ItemdataCommand extends Command {
@@ -23,7 +21,7 @@ public class ItemdataCommand extends Command {
                     ItemStack item = mc.player.getMainHandStack();
                     CompoundTag nbt = item.getTag();
                     if (nbt != null) {
-                        CodeUtilities.chat(String.format("§5----------§dItem Data for %s§5----------", item.getName().getString()));
+                        ChatUtil.sendMessage(String.format("§5----------§dItem Data for %s§5----------", item.getName().getString()));
                         mc.player.sendMessage(nbt.toText("  ", 0), false);
 
 
@@ -44,7 +42,7 @@ public class ItemdataCommand extends Command {
                         mc.player.sendMessage(msg1.append(msg2).append(msg3).append(msg4).append(msg5).append(msg6), false);
 
                     } else {
-                        CodeUtilities.chat("No NBT data found!", ChatType.FAIL);
+                        ChatUtil.sendMessage("No NBT data found!", ChatType.FAIL);
                     }
                     return 1;
                 })

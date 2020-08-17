@@ -18,7 +18,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -66,30 +65,30 @@ public class MixinSkullBlockEntityRenderer {
     }
 
     private static Identifier loadSkin(MinecraftProfileTexture profileTexture, Type skin) {
-            MinecraftClient client = MinecraftClient.getInstance();
-            String string = Hashing.sha1().hashUnencodedChars(profileTexture.getHash()).toString();
+        MinecraftClient client = MinecraftClient.getInstance();
+        String string = Hashing.sha1().hashUnencodedChars(profileTexture.getHash()).toString();
 
-            // This retrieves the texture and checks if it's null or not.
-            Identifier identifier = new Identifier("skins/" + string);
+        // This retrieves the texture and checks if it's null or not.
+        Identifier identifier = new Identifier("skins/" + string);
 
-            // Get the texture from the skin provider.
-            TextureManager manager = client.getTextureManager();
-            AbstractTexture abstractTexture = manager.getTexture(identifier);
+        // Get the texture from the skin provider.
+        TextureManager manager = client.getTextureManager();
+        AbstractTexture abstractTexture = manager.getTexture(identifier);
 
-            // If it's null, then it hasn't loaded yet so we will provide a default skin until that is all setup.
-            if (abstractTexture == null) {
-                if (!loadingQueue.contains(profileTexture.getHash())) {
-                    CompletableFuture.runAsync(() -> {
-                        loadingQueue.add(profileTexture.getHash());
-                        client.getSkinProvider().loadSkin(profileTexture, skin);
-                        loadingQueue.remove(profileTexture.getHash());
-                    }, POOL);
-                }
-                return DefaultSkinHelper.getTexture();
-            } else {
-                //Return identifier if the skin isn't null (meaning it probably has loaded correctly).
-                return identifier;
+        // If it's null, then it hasn't loaded yet so we will provide a default skin until that is all setup.
+        if (abstractTexture == null) {
+            if (!loadingQueue.contains(profileTexture.getHash())) {
+                CompletableFuture.runAsync(() -> {
+                    loadingQueue.add(profileTexture.getHash());
+                    client.getSkinProvider().loadSkin(profileTexture, skin);
+                    loadingQueue.remove(profileTexture.getHash());
+                }, POOL);
             }
+            return DefaultSkinHelper.getTexture();
+        } else {
+            //Return identifier if the skin isn't null (meaning it probably has loaded correctly).
+            return identifier;
+        }
 
     }
 

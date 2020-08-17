@@ -1,7 +1,6 @@
 package io.github.codeutilities.util;
 
 import java.io.*;
-import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class WebUtil {

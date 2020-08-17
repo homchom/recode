@@ -4,14 +4,11 @@ import io.github.codeutilities.commands.CommandHandler;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.gui.CustomHeadSearchGui;
 import io.github.codeutilities.template.*;
-import io.github.codeutilities.util.ChatType;
 import io.github.cottonmc.cotton.gui.client.*;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.Toml4jConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.sound.*;
-import net.minecraft.text.LiteralText;
 import org.apache.logging.log4j.*;
 
 import java.util.Random;
@@ -45,19 +42,6 @@ public class CodeUtilities implements ModInitializer {
 
     public static void log(Level level, String message) {
         LOGGER.log(level, "[" + MOD_NAME + "] " + message);
-    }
-
-    public static void chat(String text) {
-        mc.player.sendMessage(new LiteralText(text), false);
-    }
-
-    public static void chat(String text, ChatType prefixType) {
-        mc.player.sendMessage(new LiteralText(prefixType.getString() + text), false);
-        if (ModConfig.getConfig().errorSound) {
-            if (prefixType == ChatType.FAIL) {
-                MinecraftClient.getInstance().player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_DIDGERIDOO, SoundCategory.PLAYERS, 2, 0);
-            }
-        }
     }
 
 
