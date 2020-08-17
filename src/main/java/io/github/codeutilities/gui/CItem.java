@@ -7,6 +7,7 @@ import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
+import org.lwjgl.opengl.GL11;
 
 public class CItem extends WItem {
 
@@ -37,6 +38,10 @@ public class CItem extends WItem {
         }
     }
 
+    public void setScale(float scale) {
+        this.scale = scale;
+    }
+
     @Override
     public void paint(MatrixStack matrices, int x, int y, int mouseX, int mouseY) {
         MinecraftClient mc = CodeUtilities.mc;
@@ -54,7 +59,11 @@ public class CItem extends WItem {
             }
         }
 
-        super.paint(matrices, x, y, mouseX, mouseY);
+        GL11.glTranslatef(x,y,0);
+        GL11.glScalef(scale, scale, 1);
+        super.paint(matrices, 0, 0, mouseX, mouseY);
+        GL11.glScalef(1/scale,1/scale, 1);
+        GL11.glTranslatef(-x,-y,0);
     }
 
 }

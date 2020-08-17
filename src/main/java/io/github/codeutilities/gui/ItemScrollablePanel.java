@@ -34,7 +34,8 @@ public class ItemScrollablePanel extends WScrollPanel {
         int renderIndex = 0;
         for (ItemStack item : items) {
             ClickableGiveItem i = new ClickableGiveItem(item);
-            itemPanel.add(i, (int) (renderIndex % 14 * 17.8), renderIndex / 14 * 18, 17, 18);
+            i.setScale(1.5F);
+            itemPanel.add(i, renderIndex % 12 * 20, renderIndex / 12 * 20, 20, 20);
             renderIndex++;
         }
         layout();
