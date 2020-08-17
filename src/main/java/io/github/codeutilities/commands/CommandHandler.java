@@ -41,7 +41,8 @@ public class CommandHandler implements ClientCommandPlugin {
                 new TemplatesCommand(),
                 new ColorsCommand(),
                 new ColorCommand(),
-                new NodeCommand()
+                new NodeCommand(),
+                new EditItemCommand()
         );
     }
 
