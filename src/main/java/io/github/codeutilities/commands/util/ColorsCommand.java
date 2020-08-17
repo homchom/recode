@@ -29,7 +29,7 @@ public class ColorsCommand extends Command {
                 hover.append("\n§7Click to copy!");
                 extra.setStyle(colorStyle);
                 hover.setStyle(colorStyle);
-                extra.styled((style) -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/color " + colorName)));
+                extra.styled((style) -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/color hex " + colorName)));
                 extra.styled((style) -> style.withHoverEvent(HoverEvent.Action.SHOW_TEXT.buildHoverEvent(hover)));
                 base.getSiblings().add(extra);
             }
