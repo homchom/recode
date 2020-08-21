@@ -7,9 +7,13 @@ import io.github.codeutilities.commands.arguments.ArgBuilder;
 import io.github.codeutilities.util.*;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.texture.AbstractTexture;
 import net.minecraft.text.LiteralText;
+import net.minecraft.util.Identifier;
+import org.apache.commons.lang3.reflect.FieldUtils;
 
 import java.awt.*;
+import java.util.Map;
 
 public class ColorCommand extends Command {
 
@@ -64,6 +68,15 @@ public class ColorCommand extends Command {
         LiteralText preview = new LiteralText("█");
 
 
+        try {
+
+            Map<Identifier, AbstractTexture> map = (Map<Identifier, AbstractTexture>) FieldUtils
+                    .readField(MinecraftClient.getInstance().getTextureManager(), "textures", true);
+            System.out.println(map.size());
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+
+        }
         MinecraftClient.getInstance().keyboard.setClipboard("&x&" + String.join("&", colorName.split("")));
         ChatUtil.sendMessage(text.append(ChatUtil.setColor(preview, color)), ChatType.INFO_BLUE);
     }

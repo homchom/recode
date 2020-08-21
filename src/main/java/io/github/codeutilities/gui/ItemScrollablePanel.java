@@ -1,42 +1,34 @@
 package io.github.codeutilities.gui;
 
-import io.github.cottonmc.cotton.gui.widget.WGridPanel;
 import io.github.cottonmc.cotton.gui.widget.WScrollPanel;
-import java.util.List;
 import net.minecraft.item.ItemStack;
-import org.apache.commons.lang3.reflect.FieldUtils;
+
+import java.util.List;
 
 public class ItemScrollablePanel extends WScrollPanel {
 
-    private final WGridPanel itemPanel = (WGridPanel) this.children.get(0);
+    private final ItemGridPanel itemGrid;
 
-    public ItemScrollablePanel(List<ItemStack> items) {
-        super(new WGridPanel(1));
+    private ItemScrollablePanel(ItemGridPanel grid, List<ItemStack> items) {
+        super(grid);
+        this.itemGrid = grid;
 
-        setItems(items);
+        for (ItemStack stack : items) {
+            itemGrid.addItem(stack);
+        }
+    }
+
+    public static ItemScrollablePanel with(List<ItemStack> items) {
+        return new ItemScrollablePanel(new ItemGridPanel(), items);
     }
 
     public void setItems(List<ItemStack> items) {
-        try {
-            Object uncheckedChildren = FieldUtils
-                .readField(itemPanel, "children", true);
-            if (uncheckedChildren instanceof List) {
-                List children = (List) uncheckedChildren;
-                children.clear();
-            }
-        } catch (Exception err) {
-            err.printStackTrace();
-        }
-
-        itemPanel.setSize(0, 0);
+        itemGrid.getItems().clear();
+        itemGrid.setSize(0, 0);
         horizontalScrollBar.setValue(0);
 
-        int renderIndex = 0;
         for (ItemStack item : items) {
-            ClickableGiveItem i = new ClickableGiveItem(item);
-            i.setScale(1.5F);
-            itemPanel.add(i, renderIndex % 12 * 20, renderIndex / 12 * 20, 20, 20);
-            renderIndex++;
+            itemGrid.addItem(item);
         }
         layout();
     }

@@ -16,16 +16,7 @@ public class TemplateStorageUI extends LightweightGuiDescription {
         root.setSize(256, 90);
         int index = 0;
         for (TemplateItem item : TemplateStorageHandler.getTemplates()) {
-            CItem i = new CItem(item.getStack());
-            i.setClickListener(() -> {
-                MinecraftClient mc = MinecraftClient.getInstance();
-                if (mc.player.isCreative()) {
-                    ItemUtil.giveCreativeItem(item.getStack());
-                    mc.player.playSound(SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 2, 1);
-                } else {
-                    ChatUtil.sendMessage("You need to be in creative to get templates.", ChatType.FAIL);
-                }
-            });
+            ClickableGiveItem i = new ClickableGiveItem(item.getStack());
             root.add(i, (int) (index % 14 * 17.8), index / 14 * 18, 17, 18);
             index++;
         }

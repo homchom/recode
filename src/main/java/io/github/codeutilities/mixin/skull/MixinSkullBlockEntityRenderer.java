@@ -1,4 +1,4 @@
-package io.github.codeutilities.mixin;
+package io.github.codeutilities.mixin.skull;
 
 import com.google.common.collect.Maps;
 import com.google.common.hash.Hashing;
@@ -77,13 +77,7 @@ public class MixinSkullBlockEntityRenderer {
 
         // If it's null, then it hasn't loaded yet so we will provide a default skin until that is all setup.
         if (abstractTexture == null) {
-            if (!loadingQueue.contains(profileTexture.getHash())) {
-                CompletableFuture.runAsync(() -> {
-                    loadingQueue.add(profileTexture.getHash());
-                    client.getSkinProvider().loadSkin(profileTexture, skin);
-                    loadingQueue.remove(profileTexture.getHash());
-                }, POOL);
-            }
+            client.getSkinProvider().loadSkin(profileTexture, skin);
             return DefaultSkinHelper.getTexture();
         } else {
             //Return identifier if the skin isn't null (meaning it probably has loaded correctly).

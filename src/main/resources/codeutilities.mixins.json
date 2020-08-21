@@ -3,12 +3,14 @@
   "package": "io.github.codeutilities.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "MixinOptionsScreen",
+    "MixinTitleScreen",
     "item.MixinItemCreative",
     "item.MixinItemInsert",
     "item.MixinItemSlotUpdate",
-    "MixinOptionsScreen",
-    "MixinTitleScreen",
-    "MixinSkullBlockEntityRenderer"
+    "skull.MixinPlayerSkinProvider",
+    "skull.MixinPlayerSkinTexture",
+    "skull.MixinSkullBlockEntityRenderer"
   ],
   "client": [],
   "server": [],

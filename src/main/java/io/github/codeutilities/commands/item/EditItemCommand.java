@@ -25,8 +25,7 @@ public class EditItemCommand extends Command {
                     return -1;
                 }
                 if (!mc.player.isCreative()) {
-                    ChatUtil.sendMessage("You need to be in creative for this command to work!",
-                        ChatType.FAIL);
+                    ChatUtil.sendTranslateMessage("codeutilities.command.require_creative_mode", ChatType.FAIL);
                     return -1;
                 }
                 CodeUtilities.openGuiAsync(new ItemEditorGui(item));

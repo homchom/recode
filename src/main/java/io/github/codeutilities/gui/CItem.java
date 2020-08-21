@@ -1,9 +1,11 @@
 package io.github.codeutilities.gui;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.codeutilities.CodeUtilities;
 import io.github.cottonmc.cotton.gui.widget.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
@@ -45,25 +47,27 @@ public class CItem extends WItem {
     @Override
     public void paint(MatrixStack matrices, int x, int y, int mouseX, int mouseY) {
         MinecraftClient mc = CodeUtilities.mc;
-        if (x > mc.getWindow().getHeight() ||
-            y > mc.getWindow().getWidth() ||
-            x < 0 || y < 0) {
-            return;
-        }
-        if (mc.currentScreen != null) {
-            if (x > mc.getWindow().getWidth() / 4 + mc.currentScreen.width / 2 ||
-                    x < mc.getWindow().getWidth() / 4 - mc.currentScreen.width / 2 ||
-                    y > mc.getWindow().getHeight() / 4 + mc.currentScreen.height / 2 ||
-                    y < mc.getWindow().getHeight() / 4 - mc.currentScreen.height / 2) {
-                return;
-            }
-        }
+//        if (x > mc.getWindow().getHeight() ||
+//            y > mc.getWindow().getWidth() ||
+//            x < 0 || y < 0) {
+//            return;
+//        }
 
-        GL11.glTranslatef(x,y,0);
-        GL11.glScalef(scale, scale, 1);
-        super.paint(matrices, 0, 0, mouseX, mouseY);
-        GL11.glScalef(1/scale,1/scale, 1);
-        GL11.glTranslatef(-x,-y,0);
+//        RenderSystem.enableDepthTest();
+//        ItemRenderer renderer = mc.getItemRenderer();
+//        renderer.zOffset = 100.0F;
+//        renderer.renderInGui(getItems().get(0), x + this.getWidth() / 2 - 9, y + this.getHeight() / 2 - 9);
+//        renderer.zOffset = 0.0F;
+        super.paint(matrices, x, y, mouseX, mouseY);
     }
 
+    @Override
+    public int getWidth() {
+        return (int) (super.getWidth() * scale);
+    }
+
+    @Override
+    public int getHeight() {
+        return (int) (super.getHeight() * scale);
+    }
 }
