@@ -25,7 +25,6 @@ public class ItemEditorGui extends LightweightGuiDescription {
 
         //Item Display
         CItem icon = new CItem(item[0]);
-        icon.setScale(1.5F);
         root.add(icon, 0, 0, 20, 20);
 
         //Item Name

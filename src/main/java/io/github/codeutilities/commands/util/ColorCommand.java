@@ -67,16 +67,6 @@ public class ColorCommand extends Command {
         LiteralText text = new LiteralText("Copied Color! ");
         LiteralText preview = new LiteralText("█");
 
-
-        try {
-
-            Map<Identifier, AbstractTexture> map = (Map<Identifier, AbstractTexture>) FieldUtils
-                    .readField(MinecraftClient.getInstance().getTextureManager(), "textures", true);
-            System.out.println(map.size());
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-
-        }
         MinecraftClient.getInstance().keyboard.setClipboard("&x&" + String.join("&", colorName.split("")));
         ChatUtil.sendMessage(text.append(ChatUtil.setColor(preview, color)), ChatType.INFO_BLUE);
     }

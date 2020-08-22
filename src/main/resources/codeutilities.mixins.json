@@ -8,9 +8,7 @@
     "item.MixinItemCreative",
     "item.MixinItemInsert",
     "item.MixinItemSlotUpdate",
-    "skull.MixinPlayerSkinProvider",
-    "skull.MixinPlayerSkinTexture",
-    "skull.MixinSkullBlockEntityRenderer"
+    "skull.MixinPlayerSkinProvider"
   ],
   "client": [],
   "server": [],
