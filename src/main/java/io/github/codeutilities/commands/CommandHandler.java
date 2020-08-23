@@ -64,7 +64,6 @@ public class CommandHandler implements ClientCommandPlugin {
         for (Command command : getCommands()) {
             command.register(MinecraftClient.getInstance(), commandDispatcher);
         }
-
     }
 
 }
