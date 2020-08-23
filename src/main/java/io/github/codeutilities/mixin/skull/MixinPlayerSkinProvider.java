@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.io.*;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.*;
 
 @Mixin(PlayerSkinProvider.class)
@@ -37,6 +37,7 @@ public class MixinPlayerSkinProvider {
 
 
     private final Map<Identifier, AbstractTexture> headQueueMap = new ConcurrentHashMap<>();
+    private final List<Identifier> headQueue = new ArrayList<>();
     private final ExecutorService POOL = Executors.newCachedThreadPool();
 
     @Inject(method = "loadSkin(Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/client/texture/PlayerSkinProvider$SkinTextureAvailableCallback;)Lnet/minecraft/util/Identifier;", at = @At("HEAD"), cancellable = true)
@@ -44,6 +45,7 @@ public class MixinPlayerSkinProvider {
         cir.cancel();
         String string = Hashing.sha1().hashUnencodedChars(profileTexture.getHash()).toString();
         Identifier identifier = new Identifier("skins/" + string);
+
         AbstractTexture abstractTexture = this.textureManager.getTexture(identifier);
         if (abstractTexture != null) {
             if (callback != null) {
@@ -56,11 +58,20 @@ public class MixinPlayerSkinProvider {
                     Map<Identifier, AbstractTexture> textures = (Map<Identifier, AbstractTexture>) FieldUtils.readDeclaredField(textureManager, "textures", true);
                     textures.put(identifier, texture);
                     headQueueMap.remove(identifier);
+                    headQueue.remove(identifier);
                     cir.setReturnValue(identifier);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 return;
+            } else {
+                if (headQueue.contains(identifier)) {
+                    cir.setReturnValue(DefaultSkinHelper.getTexture());
+                    return;
+                } else {
+                    headQueue.add(identifier);
+                }
+
             }
 
             CompletableFuture.runAsync(() -> {
