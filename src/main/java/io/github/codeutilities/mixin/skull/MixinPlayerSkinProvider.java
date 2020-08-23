@@ -74,16 +74,16 @@ public class MixinPlayerSkinProvider {
 
             }
 
+            File file = new File(this.skinCacheDir, string.length() > 2 ? string.substring(0, 2) : "xx");
+            File file2 = new File(file, string);
+            PlayerSkinTexture playerSkinTexture = new PlayerSkinTexture(file2, profileTexture.getUrl(), DefaultSkinHelper.getTexture(), type == MinecraftProfileTexture.Type.SKIN, () -> {
+                if (callback != null) {
+                    callback.onSkinTextureAvailable(type, identifier, profileTexture);
+                }
+
+            });
+
             CompletableFuture.runAsync(() -> {
-                File file = new File(this.skinCacheDir, string.length() > 2 ? string.substring(0, 2) : "xx");
-                File file2 = new File(file, string);
-                PlayerSkinTexture playerSkinTexture = new PlayerSkinTexture(file2, profileTexture.getUrl(), DefaultSkinHelper.getTexture(), type == MinecraftProfileTexture.Type.SKIN, () -> {
-                    if (callback != null) {
-                        callback.onSkinTextureAvailable(type, identifier, profileTexture);
-                    }
-
-                });
-
                 try {
                     playerSkinTexture.load(MinecraftClient.getInstance().getResourceManager());
                     headQueueMap.put(identifier, playerSkinTexture);
