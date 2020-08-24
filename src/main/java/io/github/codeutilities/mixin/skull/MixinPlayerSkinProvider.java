@@ -76,6 +76,12 @@ public class MixinPlayerSkinProvider {
 
             File file = new File(this.skinCacheDir, string.length() > 2 ? string.substring(0, 2) : "xx");
             File file2 = new File(file, string);
+            // Weird fix for skins not loading?
+            try {
+                file2.createNewFile();
+            } catch (IOException ignored) {
+
+            }
             PlayerSkinTexture playerSkinTexture = new PlayerSkinTexture(file2, profileTexture.getUrl(), DefaultSkinHelper.getTexture(), type == MinecraftProfileTexture.Type.SKIN, () -> {
                 if (callback != null) {
                     callback.onSkinTextureAvailable(type, identifier, profileTexture);
