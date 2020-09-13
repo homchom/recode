@@ -1,27 +1,23 @@
-# gradle
-
+#Gradle
 .gradle/
+build/
 out/
 classes/
+gradle/wrapper/gradle-wrapper.properties
 
-# idea
-
+#IDEA
 .idea/
 *.iml
 *.ipr
 *.iws
 
-# vscode
-
+#vscode
 .settings/
 .vscode/
 bin/
 .classpath
 .project
 
-# fabric
-
+#fabric
 run/
-build/
-src/main/resources/fabric.mod.json
-src/main/resources/fabric.mod.json
+*.launch

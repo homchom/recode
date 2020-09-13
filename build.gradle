@@ -1,6 +1,20 @@
 plugins {
-	id 'fabric-loom' version '0.4-SNAPSHOT'
-	id 'maven-publish'
+    id 'fabric-loom' version '0.5-SNAPSHOT'
+    id 'maven-publish'
+}
+
+apply plugin: 'idea'
+
+repositories {
+    jcenter()
+    maven {
+        name = 'CottonMC'
+        url = 'https://server.bbkr.space/artifactory/libs-release'
+    }
+    maven {
+        name = 'Jitpack'
+        url = "https://jitpack.io"
+    }
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -13,79 +27,93 @@ group = project.maven_group
 minecraft {
 }
 
-repositories {
-    maven {
-        name = 'CottonMC'
-        url = 'https://server.bbkr.space/artifactory/libs-release'
+dependencies {
+    //to change the versions see the gradle.properties file
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+
+    //implementation "com.google.code.gson:gson:2.8.6"
+
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+    //https://github.com/CottonMC/ClientCommands //NO API
+    modImplementation "io.github.cottonmc:cotton-client-commands:1.0.1+1.16-rc1"
+    //https://maven.fabricmc.net/io/github/prospector/modmenu/ // API
+    modImplementation "io.github.prospector:modmenu:1.14.6+build.31"
+    //https://github.com/CottonMC/LibGui/releases //API
+    modImplementation "io.github.cottonmc:LibGui:3.0.0-beta.1+1.16.2-rc2"
+    //https://bintray.com/shedaniel/cloth-config-2/config-2/4.7.0-unstable //API
+    modImplementation "me.shedaniel.cloth:config-2:4.8.1"
+    //https://www.curseforge.com/minecraft/mc-mods/auto-config-updated-api //API
+    modImplementation "me.sargunvohra.mcmods:autoconfig1u:3.2.2"
+
+    //include "com.google.code.gson:gson:2.8.6"
+    include "io.github.cottonmc:cotton-client-commands:1.0.1+1.16-rc1"
+    include "me.sargunvohra.mcmods:autoconfig1u:3.2.0-unstable"
+    include "me.shedaniel.cloth:config-2:4.7.0-unstable"
+    include "io.github.cottonmc:LibGui:3.0.0-beta.1+1.16.2-rc2"
+
+
+    //https://github.com/natanfudge/Not-Enough-Crashes //API
+    //modRuntime "com.lettuce.fudge:notenoughcrashes:2.1.4+1.16.2"
+    //https://github.com/SuperCoder7979/databreaker
+    modRuntime("com.github.SuperCoder7979:databreaker:0.2.6") {
+        exclude module: "fabric-loader"
     }
 }
 
-dependencies {
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-	modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
-	modCompile "io.socket:socket.io-client:1.0.0"
-	implementation "com.google.code.gson:gson:2.8.6"
-            
-    //Fabric api
-	modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-
-	//Commands
-    modCompile "io.github.cottonmc:cotton-client-commands:1.0.1+1.16-rc1"
-
-    include "io.github.cottonmc:cotton-client-commands:1.0.1+1.16-rc1"
-	include "org.json:json:20200518"
-}
-
 processResources {
-	inputs.property "version", project.version
+    inputs.property "version", project.version
 
-	from(sourceSets.main.resources.srcDirs) {
-		include "fabric.mod.json"
-		expand "version": project.version
-	}
+    from(sourceSets.main.resources.srcDirs) {
+        include "fabric.mod.json"
+        expand "version": project.version
+    }
 
-	from(sourceSets.main.resources.srcDirs) {
-		exclude "fabric.mod.json"
-	}
+    from(sourceSets.main.resources.srcDirs) {
+        exclude "fabric.mod.json"
+    }
 }
 
 // ensure that the encoding is set to UTF-8, no matter what the system default is
 // this fixes some edge cases with special characters not displaying correctly
 // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
 tasks.withType(JavaCompile) {
-	options.encoding = "UTF-8"
+    options.encoding = "UTF-8"
 }
 
 // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
 // if it is present.
 // If you remove this task, sources will not be generated.
 task sourcesJar(type: Jar, dependsOn: classes) {
-	classifier = "sources"
-	from sourceSets.main.allSource
+    classifier = "sources"
+    from sourceSets.main.allSource
 }
 
 jar {
-	from "LICENSE"
+    from "LICENSE"
 }
 
 // configure the maven publication
 publishing {
-	publications {
-		mavenJava(MavenPublication) {
-			// add all the jars that should be included when publishing to maven
-			artifact(remapJar) {
-				builtBy remapJar
-			}
-			artifact(sourcesJar) {
-				builtBy remapSourcesJar
-			}
-		}
-	}
+    publications {
+        mavenJava(MavenPublication) {
+            // add all the jars that should be included when publishing to maven
+            artifact(jar) {
+                builtBy remapJar
+            }
+            artifact("${project.buildDir.absolutePath}/libs/${archivesBaseName}-${project.version}.jar") {
+                builtBy remapJar
+            }
+            artifact(sourcesJar) {
+                builtBy remapSourcesJar
+            }
+        }
+    }
 
-	// select the repositories you want to publish to
-	repositories {
-		// uncomment to publish to the local maven
-		// mavenLocal()
-	}
+    // select the repositories you want to publish to
+    repositories {
+        // uncomment to publish to the local maven
+        // mavenLocal()
+    }
 }

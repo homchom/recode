@@ -1,15 +1,17 @@
 {
   "required": true,
-  "package": "me.reasonless.codeutilities.events.mixins",
+  "package": "io.github.codeutilities.mixin",
   "compatibilityLevel": "JAVA_8",
-  "mixins": [],
-  "client": [
-    "ClientChatListenerMixin",
-    "ChatHudMixin",
-    "ClientPlayerEntityMixin"
+  "mixins": [
+    "MixinOptionsScreen",
+    "MixinTitleScreen",
+    "item.MixinItemCreative",
+    "item.MixinItemInsert",
+    "item.MixinItemSlotUpdate"
   ],
+  "client": [],
+  "server": [],
   "injectors": {
     "defaultRequire": 1
-  },
-  "refmap": "CodeUtilities-refmap.json"
+  }
 }

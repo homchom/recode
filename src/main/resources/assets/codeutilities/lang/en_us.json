@@ -1,0 +1,18 @@
+{
+  "text.autoconfig.codeutilities.title": "CodeUtilities",
+
+  "text.autoconfig.codeutilities.category.features": "Features",
+  "text.autoconfig.codeutilities.category.commands": "Commands",
+
+  "text.autoconfig.codeutilities.option.dfButton": "DiamondFire Menu Button",
+  "text.autoconfig.codeutilities.option.adBlock": "AdBlockPlus",
+  "text.autoconfig.codeutilities.option.discordRPC": "Discord Rich Presence",
+
+  "text.autoconfig.codeutilities.option.improvedLoreCmd": "Improved /lore",
+  "text.autoconfig.codeutilities.option.errorSound": "Error Message Sound",
+  "text.autoconfig.codeutilities.option.headMenuMaxRender": "Maximum Heads in /heads",
+  "text.autoconfig.codeutilities.option.colorMaxRender": "Maximum Colors in /colors",
+
+  "codeutilities.command.require_creative_mode": "You must be in creative mode to use this command!"
+
+}
