@@ -7,9 +7,9 @@ import me.sargunvohra.mcmods.autoconfig1u.annotation.*;
 public class ModConfig implements ConfigData {
 
     @ConfigEntry.Category("features")
-    public boolean playDiamondFire = true;
-    @ConfigEntry.Category("features")
-    public boolean adBlock = false;
+    public boolean dfButton = true;
+//    @ConfigEntry.Category("features")
+//    public boolean adBlock = false;
 
 
     @ConfigEntry.Category("commands")

@@ -43,9 +43,9 @@ dependencies {
     //https://github.com/CottonMC/LibGui/releases //API
     modImplementation "io.github.cottonmc:LibGui:3.0.0-beta.1+1.16.2-rc2"
     //https://bintray.com/shedaniel/cloth-config-2/config-2/4.7.0-unstable //API
-    modImplementation "me.shedaniel.cloth:config-2:4.7.0-unstable"
+    modImplementation "me.shedaniel.cloth:config-2:4.8.1"
     //https://www.curseforge.com/minecraft/mc-mods/auto-config-updated-api //API
-    modImplementation "me.sargunvohra.mcmods:autoconfig1u:3.2.0-unstable"
+    modImplementation "me.sargunvohra.mcmods:autoconfig1u:3.2.2"
 
     //include "com.google.code.gson:gson:2.8.6"
     include "io.github.cottonmc:cotton-client-commands:1.0.1+1.16-rc1"
@@ -54,9 +54,8 @@ dependencies {
     include "io.github.cottonmc:LibGui:3.0.0-beta.1+1.16.2-rc2"
 
 
-    // Not enough crashes was crashing, we need to wait for them to update.
     //https://github.com/natanfudge/Not-Enough-Crashes //API
-//	modRuntime "com.lettuce.fudge:notenoughcrashes:2.1.4+1.16.1"
+    //modRuntime "com.lettuce.fudge:notenoughcrashes:2.1.4+1.16.2"
     //https://github.com/SuperCoder7979/databreaker
     modRuntime("com.github.SuperCoder7979:databreaker:0.2.6") {
         exclude module: "fabric-loader"

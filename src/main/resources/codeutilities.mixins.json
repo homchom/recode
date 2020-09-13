@@ -7,8 +7,7 @@
     "MixinTitleScreen",
     "item.MixinItemCreative",
     "item.MixinItemInsert",
-    "item.MixinItemSlotUpdate",
-    "skull.MixinPlayerSkinProvider"
+    "item.MixinItemSlotUpdate"
   ],
   "client": [],
   "server": [],

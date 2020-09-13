@@ -37,5 +37,6 @@ public class ColorsCommand extends Command {
 
             return 1;
         }));
+
     }
 }

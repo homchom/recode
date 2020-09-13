@@ -4,7 +4,7 @@
   "text.autoconfig.codeutilities.category.features": "Features",
   "text.autoconfig.codeutilities.category.commands": "Commands",
 
-  "text.autoconfig.codeutilities.option.playDiamondFire": "DiamondFire Menu Button",
+  "text.autoconfig.codeutilities.option.dfButton": "DiamondFire Menu Button",
   "text.autoconfig.codeutilities.option.adBlock": "AdBlockPlus",
   "text.autoconfig.codeutilities.option.discordRPC": "Discord Rich Presence",
 
