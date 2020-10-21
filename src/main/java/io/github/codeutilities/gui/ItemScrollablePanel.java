@@ -32,4 +32,8 @@ public class ItemScrollablePanel extends WScrollPanel {
         }
         layout();
     }
+
+    public ItemGridPanel getItemGrid() {
+        return itemGrid;
+    }
 }

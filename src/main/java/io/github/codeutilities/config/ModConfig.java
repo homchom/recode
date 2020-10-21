@@ -8,12 +8,8 @@ public class ModConfig implements ConfigData {
 
     @ConfigEntry.Category("features")
     public boolean dfButton = true;
-//    @ConfigEntry.Category("features")
-//    public boolean adBlock = false;
-
-
     @ConfigEntry.Category("commands")
-    public boolean improvedLoreCmd = true;
+    public boolean dfCommands = true;
     @ConfigEntry.Category("commands")
     public boolean errorSound = true;
     @ConfigEntry.Category("commands")

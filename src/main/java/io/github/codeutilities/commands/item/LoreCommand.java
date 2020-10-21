@@ -18,9 +18,6 @@ import java.util.Objects;
 public class LoreCommand extends Command {
 
     private int add(MinecraftClient mc, CommandContext<CottonClientCommandSource> ctx) {
-        if (!ModConfig.getConfig().improvedLoreCmd) {
-            return 0;
-        }
         if (mc.player.isCreative()) {
             ItemStack item = mc.player.getMainHandStack();
             if (item.getItem() != Items.AIR) {
@@ -49,9 +46,6 @@ public class LoreCommand extends Command {
     }
 
     private int clear(MinecraftClient mc, CommandContext<CottonClientCommandSource> ctx) {
-        if (!ModConfig.getConfig().improvedLoreCmd) {
-            return 0;
-        }
         if (mc.player.isCreative()) {
             ItemStack item = mc.player.getMainHandStack();
             if (item.getItem() != Items.AIR) {
@@ -77,9 +71,6 @@ public class LoreCommand extends Command {
     }
 
     private int insert(MinecraftClient mc, CommandContext<CottonClientCommandSource> ctx) {
-        if (!ModConfig.getConfig().improvedLoreCmd) {
-            return 0;
-        }
         if (mc.player.isCreative()) {
             ItemStack item = mc.player.getMainHandStack();
             if (item.getItem() != Items.AIR) {
@@ -109,9 +100,6 @@ public class LoreCommand extends Command {
     }
 
     private int remove(MinecraftClient mc, CommandContext<CottonClientCommandSource> ctx) {
-        if (!ModConfig.getConfig().improvedLoreCmd) {
-            return 0;
-        }
         if (mc.player.isCreative()) {
             ItemStack item = mc.player.getMainHandStack();
             if (item.getItem() != Items.AIR) {
@@ -138,9 +126,6 @@ public class LoreCommand extends Command {
     }
 
     private int set(MinecraftClient mc, CommandContext<CottonClientCommandSource> ctx) {
-        if (!ModConfig.getConfig().improvedLoreCmd) {
-            return 0;
-        }
         if (mc.player.isCreative()) {
             ItemStack item = mc.player.getMainHandStack();
             if (item.getItem() != Items.AIR) {

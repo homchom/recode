@@ -5,6 +5,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.*;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -13,9 +15,9 @@ import org.apache.http.impl.client.HttpClientBuilder;
 
 public class WebUtil {
 
-    public static String getString(String urlToRead) throws IOException {
+    public static String getString(String urlToRead, Charset charset) throws IOException {
         URL url = new URL(urlToRead);
-        BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+        BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream(), charset));
         StringBuilder builder = new StringBuilder();
         String line;
 
@@ -24,6 +26,11 @@ public class WebUtil {
         }
         in.close();
         return builder.toString();
+    }
+
+    public static String getString(String urlToRead) throws IOException {
+        System.out.println(urlToRead);
+        return getString(urlToRead, Charset.defaultCharset());
     }
 
     public static HttpResponse makePost(String url, JsonObject obj) {

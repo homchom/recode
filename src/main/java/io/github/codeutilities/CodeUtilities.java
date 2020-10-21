@@ -1,6 +1,7 @@
 package io.github.codeutilities;
 
 import io.github.codeutilities.commands.CommandHandler;
+import io.github.codeutilities.commands.item.TemplatesCommand;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.gui.CustomHeadSearchGui;
 import io.github.codeutilities.template.*;
@@ -53,8 +54,13 @@ public class CodeUtilities implements ModInitializer {
         Runtime.getRuntime().addShutdownHook(new Thread(this::onClose));
         MinecraftCommunicator.initalize();
         CommandHandler.initialize();
-        CustomHeadSearchGui.load();
-        TemplateStorageHandler.load();
+
+        new Thread(() -> {
+            TemplatesCommand.authenticate();
+            CustomHeadSearchGui.load();
+            TemplateStorageHandler.load();
+
+        });
     }
 
     public void onClose() {

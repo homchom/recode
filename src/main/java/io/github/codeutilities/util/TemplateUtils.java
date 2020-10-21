@@ -48,17 +48,21 @@ public class TemplateUtils {
     }
 
     public static boolean isTemplate(ItemStack stack) {
-        CompoundTag tag = stack.getTag();
-        if (tag == null) {
-            return false;
-        }
-
-        CompoundTag publicBukkitNBT = tag.getCompound("PublicBukkitValues");
-        if (publicBukkitNBT == null) {
-            return false;
-        }
-
-        return publicBukkitNBT.getString("hypercube:codetemplatedata").length() > 0;
+       try {
+           CompoundTag tag = stack.getTag();
+           if (tag == null) {
+               return false;
+           }
+    
+           CompoundTag publicBukkitNBT = tag.getCompound("PublicBukkitValues");
+           if (publicBukkitNBT == null) {
+               return false;
+           }
+    
+           return publicBukkitNBT.getString("hypercube:codetemplatedata").length() > 0;
+       } catch (Exception e) {
+           return false;
+       }
     }
 
 

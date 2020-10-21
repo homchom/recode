@@ -8,7 +8,7 @@
   "text.autoconfig.codeutilities.option.adBlock": "AdBlockPlus",
   "text.autoconfig.codeutilities.option.discordRPC": "Discord Rich Presence",
 
-  "text.autoconfig.codeutilities.option.improvedLoreCmd": "Improved /lore",
+  "text.autoconfig.codeutilities.option.dfCommands": "DF Commands",
   "text.autoconfig.codeutilities.option.errorSound": "Error Message Sound",
   "text.autoconfig.codeutilities.option.headMenuMaxRender": "Maximum Heads in /heads",
   "text.autoconfig.codeutilities.option.colorMaxRender": "Maximum Colors in /colors",
