@@ -1,5 +1,6 @@
 package io.github.codeutilities.template;
 
+import com.google.gson.JsonParseException;
 import io.github.codeutilities.util.ItemUtil;
 import io.github.codeutilities.util.externalfile.ExternalFile;
 import net.minecraft.SharedConstants;
@@ -43,16 +44,20 @@ public class TemplateStorageHandler {
     }
 
     public static void addTemplate(ItemStack stack) {
-        TemplateItem template = new TemplateItem(stack);
-        if (templates.contains(template)) {
-            return;
-        }
-        if (templates.size() > MAX_SIZE) {
-            templates.remove(MAX_SIZE);
-        }
-
-        stack.setCount(1);
-        templates.add(0, template);
+       try {
+           TemplateItem template = new TemplateItem(stack);
+    
+           if (templates.contains(template)) {
+               return;
+           }
+           if (templates.size() > MAX_SIZE) {
+               templates.remove(MAX_SIZE);
+           }
+    
+           stack.setCount(1);
+           templates.add(0, template);
+       } catch (Exception ignored) {
+       }
     }
 
     public static List<TemplateItem> getTemplates() {
