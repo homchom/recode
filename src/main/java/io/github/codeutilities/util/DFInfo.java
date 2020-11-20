@@ -1,7 +1,8 @@
 package io.github.codeutilities.util;
 
 public class DFInfo {
-    public static String PATCH_ID = "5.3";
+    public static String patchId = "5.3";
+    public static State currentState = State.LOBBY;
 
     public static boolean isPatchNewer(String base, String target) {
         String baseSplit[] = base.split("\\.", 0);
@@ -30,5 +31,12 @@ public class DFInfo {
         if(!oldNumberFound) return true;
 
         return false;
+    }
+
+    public enum State {
+        LOBBY,
+        PLAY,
+        BUILD,
+        DEV
     }
 }

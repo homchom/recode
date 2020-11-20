@@ -14,33 +14,38 @@ import net.minecraft.text.LiteralText;
 
 import java.io.File;
 
-public class ImageToTemplateCommand116 extends Command {
+public class ImageCommand extends Command {
 
-    //Release once DF is updated to 1.16.
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("image")
                 .then(ArgBuilder.literal("load")
                         .then(ArgBuilder.argument("location", StringArgumentType.greedyString())
                                 .executes(ctx -> {
-                                    String location = StringArgumentType.getString(ctx, "location");
-                                    File f = new File(ExternalFile.IMAGE_FILES.getFile(), location + (location.endsWith(".png") ? "" : ".png"));
+                                    try {
+                                        String location = StringArgumentType.getString(ctx, "location");
+                                        File f = new File(ExternalFile.IMAGE_FILES.getFile(), location + (location.endsWith(".png") ? "" : ".png"));
 
-                                    if (f.exists()) {
-                                        LiteralText[] strings = ImageConverter.convert116(f);
+                                        if (f.exists()) {
+                                            String[] strings = ImageConverter.convert116(f);
 
-                                        ItemStack stack = new ItemStack(Items.NOTE_BLOCK);
-                                        TemplateUtils.compressTemplateNBT(stack, StringArgumentType.getString(ctx, "location"), mc.player.getName().asString(), convert(strings));
-                                        ItemUtil.giveCreativeItem(stack);
-                                        ChatUtil.sendMessage("Image loaded! Change the first Set Variable to the location!", ChatType.SUCCESS);
-                                    } else {
-                                        ChatUtil.sendMessage("That image doesn't exist.", ChatType.FAIL);
+                                            ItemStack stack = new ItemStack(Items.NOTE_BLOCK);
+                                            TemplateUtils.compressTemplateNBT(stack, StringArgumentType.getString(ctx, "location"), mc.player.getName().asString(), convert(strings));
+                                            ItemUtil.giveCreativeItem(stack);
+                                            ChatUtil.sendMessage("Image loaded! Change the first Set Variable to the location!", ChatType.SUCCESS);
+                                        } else {
+                                            ChatUtil.sendMessage("That image doesn't exist.", ChatType.FAIL);
+                                        }
+                                        return 1;
+                                    }catch (Exception e) {
+                                        ChatUtil.sendMessage("Error while executing the command.", ChatType.FAIL);
+                                        e.printStackTrace();
+                                        return 0;
                                     }
-                                    return 1;
                                 }))));
     }
 
-    private String convert(LiteralText[] layers) {
+    private String convert(String[] layers) {
         StringBuilder code = new StringBuilder();
         StringBuilder currentBlock = new StringBuilder();
 
@@ -49,14 +54,14 @@ public class ImageToTemplateCommand116 extends Command {
 
         int slot = 1;
         code.append(", {\"id\":\"block\",\"block\":\"set_var\",\"args\":{\"items\":[{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"lines\",\"scope\":\"local\"}},\"slot\":0}]},\"action\":\"CreateList\"}");
-        for (LiteralText s : layers) {
+        for (String s : layers) {
             if (slot == 26) {
                 code.append(String.format(", {\"id\":\"block\",\"block\":\"set_var\",\"args\":{\"items\":[{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"lines\",\"scope\":\"local\"}},\"slot\":0}%s]},\"action\":\"AppendValue\"}", currentBlock.toString()));
                 currentBlock.delete(0, currentBlock.length());
                 slot = 1;
             }
 
-            currentBlock.append(String.format(", {\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"%s\"}},\"slot\":%d}", s.getRawString(), slot));
+            currentBlock.append(String.format(", {\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"%s\"}},\"slot\":%d}", s, slot));
             slot++;
         }
 

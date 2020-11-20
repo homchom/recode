@@ -15,8 +15,8 @@ import static java.awt.Image.SCALE_SMOOTH;
 public class ImageConverter {
 
     // Converts a file into an array of literal texts containing the respected color. This would work?
-    public static LiteralText[] convert116(File file) {
-        List<LiteralText> layers = new ArrayList<>();
+    public static String[] convert116(File file) {
+        List<String> layers = new ArrayList<>();
         if (file.exists()) {
             try {
                 BufferedImage image = ImageIO.read(file);
@@ -34,7 +34,8 @@ public class ImageConverter {
                 }
 
                 for (int i = 0; i < height; i++) {
-                    LiteralText layer = new LiteralText("");
+                    StringBuilder layer = new StringBuilder();
+                    String hex = "";
                     for (int j = 0; j < width; j++) {
                         int rgb = image.getRGB(j, i);
                         Color color = new Color(rgb, true);
@@ -42,20 +43,23 @@ public class ImageConverter {
                         if (color.getAlpha() < 255) {
                             layer.append(MinecraftColors.GRAY.getMc() + "▁");
                         } else {
-                            layer.append(new LiteralText("█").styled((style -> style.withColor(TextColor.fromRgb(rgb)))));
+                            if (hex != Integer.toHexString(rgb).substring(2)) {
+                                hex = Integer.toHexString(rgb).substring(2);
+                                String finalHex = hex.replaceAll("(.?)", "§$1").substring(0,12);
+                                layer.append("§x" + finalHex + "█");
+                            }else {
+                                layer.append("█");
+                            }
                         }
 
                     }
-                    layers.add(layer);
-
-
+                    layers.add(layer.toString());
                 }
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        return layers.toArray(new LiteralText[0]);
+        return layers.toArray(new String[0]);
     }
 
     public static String[] convert115(File file) {

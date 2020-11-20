@@ -1,6 +1,7 @@
 package io.github.codeutilities.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
+import io.github.codeutilities.commands.image.ImageCommand;
 import io.github.codeutilities.commands.item.*;
 import io.github.codeutilities.commands.item.template.*;
 import io.github.codeutilities.commands.nbs.NBSCommand;
@@ -41,7 +42,8 @@ public class CommandHandler implements ClientCommandPlugin {
                 new ColorsCommand(),
                 new ColorCommand(),
                 new NodeCommand(),
-                new EditItemCommand()
+                new EditItemCommand(),
+                new ImageCommand()
         );
         
         if (ModConfig.getConfig().dfCommands) {
