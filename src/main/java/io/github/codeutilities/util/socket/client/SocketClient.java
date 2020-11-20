@@ -5,7 +5,9 @@ import io.github.codeutilities.util.ItemUtil;
 import io.github.codeutilities.util.socket.SocketHandler;
 import io.github.codeutilities.util.socket.client.type.SocketItem;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.sound.Sound;
 import net.minecraft.client.toast.SystemToast;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.LiteralText;
 
 import java.io.*;
@@ -49,9 +51,10 @@ public class SocketClient {
                     ItemUtil.giveCreativeItem(item.getItem(itemData));
                     
                     LiteralText recieved = new LiteralText("Received Item!");
-                    LiteralText description = new LiteralText("- " + source);
+                    LiteralText description = new LiteralText(source);
                     
                     MinecraftClient.getInstance().getToastManager().add(new SystemToast(SystemToast.Type.NARRATOR_TOGGLE, recieved, description));
+                    MinecraftClient.getInstance().player.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 200, 1);
                     result.addProperty("success", "");
                 } catch (Throwable e) {
                     result.addProperty("error", e.getMessage());
