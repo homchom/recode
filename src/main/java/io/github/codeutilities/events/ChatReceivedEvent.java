@@ -13,7 +13,11 @@ public class ChatReceivedEvent {
         MinecraftClient mc = MinecraftClient.getInstance();
         //CodeUtilities.log(Level.INFO, "CHAT: " + message.getString());
         String text = message.getString();
-
+        
+        if (mc.player == null) {
+            return;
+        }
+        
         //Patch Number detection
         if (text.matches("Current patch: .*\\. See the patch notes with \\/patch!")) {
             try {
