@@ -9,6 +9,7 @@ import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import net.minecraft.item.*;
 import net.minecraft.nbt.*;
 import net.minecraft.text.LiteralText;
+import org.apache.logging.log4j.Level;
 
 import java.io.IOException;
 import java.util.*;
@@ -72,12 +73,12 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                     "https://minecraft-heads.com/scripts/api.php?cat=monsters",
                     "https://minecraft-heads.com/scripts/api.php?cat=plants",
                     "https://minecraft-heads.com/scripts/api.php?cat=food-drinks",
-                    "https://blaze.is-inside.me/fGnAHIz1.json"
+                    "http://redirectrepl.blazemcworld.repl.co/?src=https://blaze.is-inside.me/fGnAHIz1.json"
                     //actual source: https://headdb.org/api/category/all, had to host it myself to make the json format match
             };
             for (String db : sources) {
                 try {
-                    String response = WebUtil.getString("http://redirectrepl.blazemcworld.repl.co/?src=" + db);
+                    String response = WebUtil.getString(db);
 
                     JsonArray heads = new JsonParser().parse(response).getAsJsonArray();
                     for (JsonElement head : heads) {
@@ -94,29 +95,35 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
     private List<ItemStack> toItemStack(List<JsonObject> set) {
         List<ItemStack> items = new ArrayList<>();
 
-        for (JsonObject head : set) {
-            ItemStack item = new ItemStack(Items.PLAYER_HEAD);
-            String name = head.get("name").getAsString();
-            String value = head.get("value").getAsString();
+        try {
+            for (JsonObject head : set) {
+                ItemStack item = new ItemStack(Items.PLAYER_HEAD);
+                String name = head.get("name").getAsString();
+                String value = head.get("value").getAsString();
 
-            CompoundTag nbt = new CompoundTag();
-            CompoundTag display = new CompoundTag();
-            display.putString("Name", "{\"text\":\"" + name + "\"}");
-            nbt.put("display", display);
-            CompoundTag SkullOwner = new CompoundTag();
-            SkullOwner.putIntArray("Id", Arrays
-                    .asList(CodeUtilities.rng.nextInt(), CodeUtilities.rng.nextInt(),
-                            CodeUtilities.rng.nextInt(), CodeUtilities.rng.nextInt()));
-            CompoundTag Properties = new CompoundTag();
-            ListTag textures = new ListTag();
-            CompoundTag index1 = new CompoundTag();
-            index1.putString("Value", value);
-            textures.add(index1);
-            Properties.put("textures", textures);
-            SkullOwner.put("Properties", Properties);
-            nbt.put("SkullOwner", SkullOwner);
-            item.setTag(nbt);
-            items.add(item);
+                CompoundTag nbt = new CompoundTag();
+                CompoundTag display = new CompoundTag();
+                display.putString("Name", "{\"text\":\"" + name + "\"}");
+                nbt.put("display", display);
+                CompoundTag SkullOwner = new CompoundTag();
+                SkullOwner.putIntArray("Id", Arrays
+                        .asList(CodeUtilities.rng.nextInt(), CodeUtilities.rng.nextInt(),
+                                CodeUtilities.rng.nextInt(), CodeUtilities.rng.nextInt()));
+                CompoundTag Properties = new CompoundTag();
+                ListTag textures = new ListTag();
+                CompoundTag index1 = new CompoundTag();
+                index1.putString("Value", value);
+                textures.add(index1);
+                Properties.put("textures", textures);
+                SkullOwner.put("Properties", Properties);
+                nbt.put("SkullOwner", SkullOwner);
+                item.setTag(nbt);
+                items.add(item);
+            }
+        }catch (Exception e) {
+            CodeUtilities.log(Level.ERROR, "Error in toItemStack!!!");
+            CodeUtilities.log(Level.ERROR, "Stack trace:");
+            e.printStackTrace();
         }
         return items;
     }

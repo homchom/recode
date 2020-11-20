@@ -59,8 +59,7 @@ public class CodeUtilities implements ModInitializer {
             TemplatesCommand.authenticate();
             CustomHeadSearchGui.load();
             TemplateStorageHandler.load();
-
-        });
+        }).start();
     }
 
     public void onClose() {
