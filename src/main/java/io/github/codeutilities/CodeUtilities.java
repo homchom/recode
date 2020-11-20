@@ -6,6 +6,7 @@ import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.gui.CustomHeadSearchGui;
 import io.github.codeutilities.template.*;
 import io.github.codeutilities.util.DFInfo;
+import io.github.codeutilities.util.socket.SocketHandler;
 import io.github.cottonmc.cotton.gui.client.*;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.Toml4jConfigSerializer;
@@ -53,8 +54,9 @@ public class CodeUtilities implements ModInitializer {
         AutoConfig.register(ModConfig.class, Toml4jConfigSerializer::new);
         // Add a shutdown hook so we can save players template data on exit.
         Runtime.getRuntime().addShutdownHook(new Thread(this::onClose));
-        MinecraftCommunicator.initalize();
+        //MinecraftCommunicator.initalize();
         CommandHandler.initialize();
+        SocketHandler.init();
 
         new Thread(() -> {
             TemplatesCommand.authenticate();
