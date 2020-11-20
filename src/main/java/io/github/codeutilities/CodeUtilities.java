@@ -5,6 +5,7 @@ import io.github.codeutilities.commands.item.TemplatesCommand;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.gui.CustomHeadSearchGui;
 import io.github.codeutilities.template.*;
+import io.github.codeutilities.util.DFInfo;
 import io.github.cottonmc.cotton.gui.client.*;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.Toml4jConfigSerializer;
