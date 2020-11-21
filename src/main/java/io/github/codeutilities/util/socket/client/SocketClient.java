@@ -55,8 +55,9 @@ public class SocketClient {
                     
                     MinecraftClient.getInstance().getToastManager().add(new SystemToast(SystemToast.Type.NARRATOR_TOGGLE, recieved, description));
                     MinecraftClient.getInstance().player.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 200, 1);
-                    result.addProperty("success", "");
+                    result.addProperty("status", "success");
                 } catch (Throwable e) {
+                    result.addProperty("status", "error");
                     result.addProperty("error", e.getMessage());
                     e.printStackTrace();
                 }
