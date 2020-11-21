@@ -1,7 +1,8 @@
 package io.github.codeutilities.util.socket;
 
-import io.github.codeutilities.util.socket.client.SocketClient;
+import io.github.codeutilities.util.socket.client.*;
 import io.github.codeutilities.util.socket.client.type.*;
+import org.glassfish.tyrus.server.Server;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -11,7 +12,7 @@ public class SocketHandler {
     
     private final ServerSocket server = new ServerSocket(31372);
     public static final Map<String, SocketItem> ITEM_REGISTRY = new HashMap<>();
-    public static final List<SocketClient> clients = new ArrayList<>();
+    public static final List<Client> clients = new ArrayList<>();
     
     public SocketHandler() throws IOException {
         new Thread(() -> {
@@ -26,6 +27,14 @@ public class SocketHandler {
                 }
             }
         }).start();
+    
+    
+        Server server = new Server("localhost", 31371, "/codeutilities", ItemWebEndpoint.class);
+        try {
+            server.start();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
     
     public static void init() {

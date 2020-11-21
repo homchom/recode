@@ -5,6 +5,9 @@
   "text.autoconfig.codeutilities.category.commands": "Commands",
 
   "text.autoconfig.codeutilities.option.dfButton": "DiamondFire Menu Button",
+  "text.autoconfig.codeutilities.option.itemApi": "Item API",
+  "text.autoconfig.codeutilities.option.itemApi@Tooltip": "Used for sending items from third party programs.",
+
   "text.autoconfig.codeutilities.option.adBlock": "AdBlockPlus",
   "text.autoconfig.codeutilities.option.discordRPC": "Discord Rich Presence",
 

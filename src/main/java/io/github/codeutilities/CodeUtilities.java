@@ -56,7 +56,9 @@ public class CodeUtilities implements ModInitializer {
         Runtime.getRuntime().addShutdownHook(new Thread(this::onClose));
         //MinecraftCommunicator.initalize();
         CommandHandler.initialize();
-        SocketHandler.init();
+        if (ModConfig.getConfig().itemApi) {
+            SocketHandler.init();
+        }
 
         new Thread(() -> {
             TemplatesCommand.authenticate();

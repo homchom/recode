@@ -3,7 +3,7 @@ package io.github.codeutilities.commands.item.template;
 import com.google.gson.*;
 import io.github.codeutilities.util.*;
 import io.github.codeutilities.util.socket.SocketHandler;
-import io.github.codeutilities.util.socket.client.SocketClient;
+import io.github.codeutilities.util.socket.client.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -27,15 +27,8 @@ public class SendTemplateCommand extends AbstractTemplateCommand {
             JsonObject toSend = new JsonObject();
             toSend.addProperty("received", templateData.toString());
             toSend.addProperty("type", "template");
-            for (SocketClient client : SocketHandler.clients) {
-                OutputStream stream = client.getSocket().getOutputStream();
-                try {
-                    stream.write(toSend.toString().getBytes());
-                    stream.write('\n');
-                } catch (IOException e) {
-                    SocketHandler.clients.remove(client);
-                    client.getSocket().close();
-                }
+            for (Client client : SocketHandler.clients) {
+                client.sendData(toSend.toString());
             }
         
             MinecraftClient.getInstance().player.playSound(SoundEvents.ENTITY_FIREWORK_ROCKET_LAUNCH, 200, 1);
