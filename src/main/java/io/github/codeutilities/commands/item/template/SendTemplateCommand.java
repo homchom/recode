@@ -29,8 +29,13 @@ public class SendTemplateCommand extends AbstractTemplateCommand {
             toSend.addProperty("type", "template");
             for (SocketClient client : SocketHandler.clients) {
                 OutputStream stream = client.getSocket().getOutputStream();
-                stream.write(toSend.toString().getBytes());
-                stream.write('\n');
+                try {
+                    stream.write(toSend.toString().getBytes());
+                    stream.write('\n');
+                } catch (IOException e) {
+                    SocketHandler.clients.remove(client);
+                    client.getSocket().close();
+                }
             }
         
             MinecraftClient.getInstance().player.playSound(SoundEvents.ENTITY_FIREWORK_ROCKET_LAUNCH, 200, 1);

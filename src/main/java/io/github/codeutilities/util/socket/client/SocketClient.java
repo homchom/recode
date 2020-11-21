@@ -5,6 +5,7 @@ import io.github.codeutilities.util.ItemUtil;
 import io.github.codeutilities.util.socket.SocketHandler;
 import io.github.codeutilities.util.socket.client.type.SocketItem;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.sound.Sound;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.sound.SoundEvents;
@@ -31,6 +32,7 @@ public class SocketClient {
                         line = reader.readLine();
                     } catch (IOException ioException) {
                         SocketHandler.clients.remove(this);
+                        getSocket().close();
                         break;
                     }
                     
@@ -53,9 +55,14 @@ public class SocketClient {
                     LiteralText recieved = new LiteralText("Received Item!");
                     LiteralText description = new LiteralText(source);
                     
-                    MinecraftClient.getInstance().getToastManager().add(new SystemToast(SystemToast.Type.NARRATOR_TOGGLE, recieved, description));
-                    MinecraftClient.getInstance().player.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 200, 1);
-                    result.addProperty("status", "success");
+                    ClientPlayerEntity player =MinecraftClient.getInstance().player;
+                    if (player != null && player.isCreative()) {
+                        MinecraftClient.getInstance().getToastManager().add(new SystemToast(SystemToast.Type.NARRATOR_TOGGLE, recieved, description));
+                        player.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 200, 1);
+                        result.addProperty("status", "success");
+                    } else {
+                        throw new Exception("Player did not exist or was not in creative");
+                    }
                 } catch (Throwable e) {
                     result.addProperty("status", "error");
                     result.addProperty("error", e.getMessage());
@@ -66,6 +73,11 @@ public class SocketClient {
                     socket.getOutputStream().write(result.toString().getBytes());
                 } catch (IOException ioException) {
                     SocketHandler.clients.remove(this);
+                    try {
+                        getSocket().close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 }
             }
