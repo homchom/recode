@@ -20,7 +20,8 @@ public class ImageCommand extends Command {
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("image")
                 .then(ArgBuilder.literal("load")
-                        .then(ArgBuilder.argument("location", StringArgumentType.greedyString())
+                        .then(ArgBuilder.literal("hex")
+                            .then(ArgBuilder.argument("location", StringArgumentType.greedyString())
                                 .executes(ctx -> {
                                     try {
                                         String location = StringArgumentType.getString(ctx, "location");
@@ -29,7 +30,7 @@ public class ImageCommand extends Command {
                                         if (f.exists()) {
                                             String[] strings = ImageConverter.convert116(f);
 
-                                            ItemStack stack = new ItemStack(Items.NOTE_BLOCK);
+                                            ItemStack stack = new ItemStack(Items.ENDER_CHEST);
                                             TemplateUtils.compressTemplateNBT(stack, StringArgumentType.getString(ctx, "location"), mc.player.getName().asString(), convert(strings));
                                             ItemUtil.giveCreativeItem(stack);
                                             ChatUtil.sendMessage("Image loaded! Change the first Set Variable to the location!", ChatType.SUCCESS);
@@ -42,7 +43,33 @@ public class ImageCommand extends Command {
                                         e.printStackTrace();
                                         return 0;
                                     }
-                                }))));
+                                })))
+                        .then(ArgBuilder.literal("colorcodes")
+                                .then(ArgBuilder.argument("location", StringArgumentType.greedyString())
+                                        .executes(ctx -> {
+                                            try {
+                                                String location = StringArgumentType.getString(ctx, "location");
+                                                File f = new File(ExternalFile.IMAGE_FILES.getFile(), location + (location.endsWith(".png") ? "" : ".png"));
+
+                                                if (f.exists()) {
+                                                    String[] strings = ImageConverter.convert115(f);
+
+                                                    ItemStack stack = new ItemStack(Items.ENDER_CHEST);
+                                                    TemplateUtils.compressTemplateNBT(stack, StringArgumentType.getString(ctx, "location"), mc.player.getName().asString(), convert(strings));
+                                                    ItemUtil.giveCreativeItem(stack);
+                                                    ChatUtil.sendMessage("Image loaded! Change the first Set Variable to the location!", ChatType.SUCCESS);
+                                                } else {
+                                                    ChatUtil.sendMessage("That image doesn't exist.", ChatType.FAIL);
+                                                }
+                                                return 1;
+                                            }catch (Exception e) {
+                                                ChatUtil.sendMessage("Error while executing the command.", ChatType.FAIL);
+                                                e.printStackTrace();
+                                                return 0;
+                                            }
+                                        })))
+                        )
+                );
     }
 
     private String convert(String[] layers) {
