@@ -43,7 +43,8 @@ public class CommandHandler implements ClientCommandPlugin {
                 new ColorCommand(),
                 new NodeCommand(),
                 new EditItemCommand(),
-                new ImageCommand()
+                new ImageCommand(),
+                new SchemImportCommand()
         );
         
         if (ModConfig.getConfig().dfCommands) {
