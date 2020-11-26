@@ -13,7 +13,6 @@ public class SchemImportCommand extends Command {
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("colors").executes((context) -> {
-            assert mc.player != null;
             mc.player.sendMessage(Text.of("test"), false);
 
             return 1;
