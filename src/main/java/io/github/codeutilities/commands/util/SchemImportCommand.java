@@ -12,9 +12,8 @@ public class SchemImportCommand extends Command {
 
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
-        cd.register(ArgBuilder.literal("schem import").executes((context) -> {
-            assert mc.player != null;
-            mc.player.sendMessage(Text.of("test"), false);
+        cd.register(ArgBuilder.literal("colors").executes((context) -> {
+            mc.player.sendMessage('test', false);
 
             return 1;
         }));
