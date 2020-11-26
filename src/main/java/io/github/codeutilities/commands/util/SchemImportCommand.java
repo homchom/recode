@@ -12,7 +12,7 @@ public class SchemImportCommand extends Command {
 
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
-        cd.register(ArgBuilder.literal("colors").executes((context) -> {
+        cd.register(ArgBuilder.literal("schem import").executes((context) -> {
             mc.player.sendMessage(Text.of("test"), false);
 
             return 1;
