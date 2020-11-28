@@ -51,7 +51,6 @@ public class UuidCommand extends Command {
 
                             return 1;
                         })
-                        .then(ArgBuilder.literal("copy"))
                 )
         );
     }

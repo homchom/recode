@@ -27,31 +27,28 @@ public class CommandHandler implements ClientCommandPlugin {
     
     public static void initialize() {
         register(
+                new CodeUtilitiesCommand(),
                 new BreakableCommand(),
-                new SendTemplateCommand(),
                 new UnpackCommand(),
-                // THis command is just so good
                 new ItemdataCommand(),
-                new NBSCommand(),
                 new UuidCommand(),
-                new WebviewCommand(),
-                new CopyTextCommand(),
                 new HeadsCommand(),
-                //new ImageToTemplateCommand115(),
-                new TemplatesCommand(),
                 new ColorsCommand(),
                 new ColorCommand(),
-                new NodeCommand(),
-                new EditItemCommand(),
-                new ImageCommand()
+                new EditItemCommand()
         );
         
         if (ModConfig.getConfig().dfCommands) {
             register(
                     new GiveCommand(),
-                    new LoreCommand(),
                     new RejoinCommand(),
-                    new PJoinCommand()
+                    new PJoinCommand(),
+                    new NodeCommand(),
+                    new TemplatesCommand(),
+                    new WebviewCommand(),
+                    new NBSCommand(),
+                    new ImageCommand(),
+                    new SendTemplateCommand()
             );
         }
     }

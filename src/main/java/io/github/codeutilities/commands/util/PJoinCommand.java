@@ -32,8 +32,7 @@ public class PJoinCommand extends Command {
 
     private int run(MinecraftClient mc, String player) {
         if (DFInfo.currentState != DFInfo.State.LOBBY) {
-            ChatUtil.sendMessage("You need to be in the lobby to use this command!", ChatType.FAIL);
-            return -1;
+            mc.player.sendChatMessage("/leave");
         }
         mc.player.sendChatMessage("/locate " + player);
 
