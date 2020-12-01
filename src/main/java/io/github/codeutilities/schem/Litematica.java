@@ -53,14 +53,8 @@ public class Litematica {
             CompoundTag size = litematicdata.getCompound("Size");
             ListTag palette = litematicdata.getList("BlockStatePalette", 10);
             long[] longblockstates = litematicdata.getLongArray("BlockStates");
-            //ArrayList<Long> blockstates = new ArrayList<>();
-            /*for (int i = 0; i < longblockstates.length; i++) {
-                blockstates.add(longblockstates[i]);
-            }*/
-            //System.out.println(Math.max(Math.ceil(log2(palette.size())), 2)+1);
             int nbits = (int) Math.max(Math.ceil(log2(palette.size())), 2)+1;
             LitematicaBitArray arr = new LitematicaBitArray(nbits, volume, longblockstates);
-            //arr = arr.fromnbtlongarray(blockstates, volume, nbits);
             ArrayList<String> Properties = new ArrayList<>();
             ArrayList<String> PaletteBlocks = new ArrayList<>();
             ArrayList<Integer> intblocks = new ArrayList<>();
@@ -75,7 +69,6 @@ public class Litematica {
             MinecraftClient.getInstance().player.sendMessage(new LiteralText("§8§m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m"), false);
 
             for (int i = 0; i < palette.size(); i++) {
-                //System.out.println(0);
                 Tag block = palette.get(i);
                 JsonParser parser = new JsonParser();
                 JsonElement blockjson = parser.parse(block.toString());
@@ -87,26 +80,19 @@ public class Litematica {
                         property += "," + prop.toString();
                     }
                 }
-                //System.out.println(1);
+
                 if(property != ""){
                     property = property.substring(1, property.length());
                 }
-                //System.out.println(2);
                 Properties.add(property.replaceAll("\"", ""));
-                //System.out.println(Properties[i]);
                 PaletteBlocks.add(blocktype.getAsString());
-                //System.out.println(3);
             }
-            //System.out.println(4);
             int index2 = 0;
             int stone = 0;
             for (int x = 0; x < Math.abs(width); x++) {
                 for (int y = 0; y < Math.abs(height); y++) {
                     for (int z = 0; z < Math.abs(length); z++) {
                         int index = (y * Math.abs(width * length)) + z * Math.abs(width) + x;
-                        //System.out.println(arr.getAt(index2) + ", " + index2);
-                        //System.out.println(x + ", " + y + ", " + z);
-                        //System.out.println("-----------------");
                         if(arr.getAt(index2) == 1){
                             stone++;
                         }
@@ -116,20 +102,6 @@ public class Litematica {
                     }
                 }
             }
-
-            //System.out.println("STONE:" + stone);
-            /*System.out.println("---------------------------------------------");
-            int index2 = 0;
-            for (int x = 0; x < BlockIds3d[0].length; x++) {
-                for (int y = 0; y < BlockIds3d[1].length; y++) {
-                    for (int z = 0; z < BlockIds3d[2].length; z++) {
-                        System.out.println(BlockIds3d[x][y][z] + ", " + index2);
-                        BlockIds[index2] = BlockIds3d[x][y][z];
-                        index2++;
-                    }
-                }
-            }*/
-
 
             int codeblocks = 2;
             int functions = 1;
@@ -178,7 +150,6 @@ public class Litematica {
                     codeblocks++;
                     createlist = false;
                 }
-                //System.out.println(PaletteBlocks[i] + ", " + Properties[i]);
                 nbt += ",{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"" + thing.text + "\"}},\"slot\":" + slots + "}";
                 slots++;
             }
@@ -188,8 +159,8 @@ public class Litematica {
                 nbt += "]},\"action\":\"AppendValue\"}";
             }
 
-            if(codeblocks >= 23){
-                nbt += ",{\"id\":\"block\",\"block\":\"call_func\",\"args\":{\"items\":[]},\"data\":\"Build" + (functions+1) + "\"}";
+            if(codeblocks >= 23) {
+                nbt += ",{\"id\":\"block\",\"block\":\"call_func\",\"args\":{\"items\":[]},\"data\":\"Build" + (functions + 1) + "\"}";
                 nbt += "]}";
                 ItemStack item = Blocks.TWISTING_VINES.asItem().getDefaultStack();
                 TemplateUtils.compressTemplateNBT(item, file.getName(), "SchemaDF", nbt);
@@ -199,109 +170,6 @@ public class Litematica {
                 functions++;
                 nbt = "{\"blocks\":[{\"id\":\"block\",\"block\":\"func\",\"args\":{\"items\":[{\"item\":{\"id\":\"bl_tag\",\"data\":{\"option\":\"False\",\"tag\":\"Is Hidden\",\"action\":\"dynamic\",\"block\":\"func\"}},\"slot\":26}]},\"data\":\"Build" + functions + "\"}";
             }
-            /*nbt += ",{\"id\":\"block\",\"block\":\"set_var\",\"args\":{\"items\":[{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"Metadata\",\"scope\":\"local\"}},\"slot\":0}";
-            codeblocks++;
-            slots = 1;
-            createlist = true;
-            for (int i = 0; i < PaletteBlocks.size(); i++) {
-                if(slots >= 27){
-                    slots = 1;
-                    if(createlist){
-                        nbt += "]},\"action\":\"CreateList\"}";
-                    }else{
-                        nbt += "]},\"action\":\"AppendValue\"}";
-                    }
-                    if(codeblocks >= 23){
-                        nbt += ",{\"id\":\"block\",\"block\":\"call_func\",\"args\":{\"items\":[]},\"data\":\"Build" + (functions+1) + "\"}";
-                        nbt += "]}";
-                        ItemStack item = Blocks.TWISTING_VINES.asItem().getDefaultStack();
-                        TemplateUtils.compressTemplateNBT(item, file.getName(), "SchemaDF", nbt);
-                        item.setCustomName(new LiteralText("§d" + file.getName() + functions));
-                        MinecraftClient.getInstance().interactionManager.clickCreativeStack(item, functions + 8);
-                        codeblocks = 1;
-                        functions++;
-                        nbt = "{\"blocks\":[{\"id\":\"block\",\"block\":\"func\",\"args\":{\"items\":[{\"item\":{\"id\":\"bl_tag\",\"data\":{\"option\":\"False\",\"tag\":\"Is Hidden\",\"action\":\"dynamic\",\"block\":\"func\"}},\"slot\":26}]},\"data\":\"Build" + functions + "\"}";
-                    }
-                    nbt += ",{\"id\":\"block\",\"block\":\"set_var\",\"args\":{\"items\":[{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"Metadata\",\"scope\":\"local\"}},\"slot\":0}";
-                    codeblocks++;
-                    createlist = false;
-                }
-                //System.out.println(PaletteBlocks[i] + ", " + Properties[i]);
-                nbt += ",{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"" + Properties.get(i) + "\"}},\"slot\":" + slots + "}";
-                slots++;
-            }
-            if(createlist){
-                nbt += "]},\"action\":\"CreateList\"}";
-            }else{
-                nbt += "]},\"action\":\"AppendValue\"}";
-            }
-
-            if(codeblocks >= 23){
-                nbt += ",{\"id\":\"block\",\"block\":\"call_func\",\"args\":{\"items\":[]},\"data\":\"Build" + (functions+1) + "\"}";
-                nbt += "]}";
-                ItemStack item = Blocks.TWISTING_VINES.asItem().getDefaultStack();
-                TemplateUtils.compressTemplateNBT(item, file.getName(), "SchemaDF", nbt);
-                item.setCustomName(new LiteralText("§d" + file.getName() + functions));
-                MinecraftClient.getInstance().interactionManager.clickCreativeStack(item, functions + 8);
-                codeblocks = 1;
-                functions++;
-                nbt = "{\"blocks\":[{\"id\":\"block\",\"block\":\"func\",\"args\":{\"items\":[{\"item\":{\"id\":\"bl_tag\",\"data\":{\"option\":\"False\",\"tag\":\"Is Hidden\",\"action\":\"dynamic\",\"block\":\"func\"}},\"slot\":26}]},\"data\":\"Build" + functions + "\"}";
-            }*/
-            /*nbt += ",{\"id\":\"block\",\"block\":\"set_var\",\"args\":{\"items\":[{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"BlockIDs\",\"scope\":\"local\"}},\"slot\":0}";
-            codeblocks++;
-            slots = 1;
-            createlist = true;
-            int compactamount = 100;
-            //System.out.println(BlockIds.length);
-            //System.out.println(BlockIds.length/((double) compactamount));
-            //System.out.println(Math.ceil(BlockIds.length/((double) compactamount)));
-            //System.out.println(Math.ceil(BlockIds.length/((double) compactamount))+1);
-            for (int i = 1; i < Math.ceil(BlockIds.length/((double) compactamount))+1; i++) {
-                if(slots >= 27){
-                    slots = 1;
-                    if(createlist){
-                        nbt += "]},\"action\":\"CreateList\"}";
-                    }else{
-                        nbt += "]},\"action\":\"AppendValue\"}";
-                    }
-                    if(codeblocks >= 23){
-                        nbt += ",{\"id\":\"block\",\"block\":\"call_func\",\"args\":{\"items\":[]},\"data\":\"Build" + (functions+1) + "\"}";
-                        nbt += "]}";
-                        ItemStack item = Blocks.TWISTING_VINES.asItem().getDefaultStack();
-                        TemplateUtils.compressTemplateNBT(item, file.getName(), "SchemaDF", nbt);
-                        item.setCustomName(new LiteralText("§d" + file.getName() + functions));
-                        MinecraftClient.getInstance().interactionManager.clickCreativeStack(item, functions + 8);
-                        codeblocks = 1;
-                        functions++;
-                        nbt = "{\"blocks\":[{\"id\":\"block\",\"block\":\"func\",\"args\":{\"items\":[{\"item\":{\"id\":\"bl_tag\",\"data\":{\"option\":\"False\",\"tag\":\"Is Hidden\",\"action\":\"dynamic\",\"block\":\"func\"}},\"slot\":26}]},\"data\":\"Build" + functions + "\"}";
-                    }
-                    nbt += ",{\"id\":\"block\",\"block\":\"set_var\",\"args\":{\"items\":[{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"BlockIDs\",\"scope\":\"local\"}},\"slot\":0}";
-                    codeblocks++;
-                    createlist = false;
-                }
-                int i2 = i*compactamount-(i);
-                if(i > 1){
-                    i2 += i-1;
-                }
-                String ids = "";
-                int progress = 0;
-                int iterations = ((compactamount*-1)+1);
-                for (int j = iterations; j < 1; j++) {
-                    //MinecraftClient.getInstance().player.sendMessage(new LiteralText("§a" + (j/iterations)), true);
-                    if((i2+j) <= (BlockIds.length-1)){
-                        //System.out.println(BlockIds[i2+j]);
-                        ids += ";" + BlockIds[i2+j];
-                    }
-                }
-                ids = ids.substring(1, ids.length());
-                nbt += ",{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"" + ids + "\"}},\"slot\":" + slots + "}";
-                slots++;
-            }
-            if(createlist){
-                nbt += "]},\"action\":\"CreateList\"}";
-            }else{
-                nbt += "]},\"action\":\"AppendValue\"}";
-            }*/
 
             nbt += ",{\"id\":\"block\",\"block\":\"set_var\",\"args\":{\"items\":[{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"BlockData\",\"scope\":\"local\"}},\"slot\":0}";
             codeblocks++;
@@ -331,7 +199,6 @@ public class Litematica {
                     codeblocks++;
                     createlist = false;
                 }
-                //System.out.println(PaletteBlocks[i] + ", " + Properties[i]);
                 nbt += ",{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"" + thing.text + "\"}},\"slot\":" + slots + "}";
                 slots++;
             }
@@ -341,8 +208,6 @@ public class Litematica {
                 nbt += "]},\"action\":\"AppendValue\"}";
             }
             nbt += "]}";
-
-            //System.out.println(nbt);
 
             ItemStack item = Blocks.TWISTING_VINES.asItem().getDefaultStack();
             TemplateUtils.compressTemplateNBT(item, file.getName(), "SchemaDF", nbt);
@@ -391,10 +256,6 @@ public class Litematica {
 
         if(prevBlockRepeated != 1) blocksClone.add(CompressList[char1] + CompressList[char2 - 1] + prevBlockRepeated);
         else blocksClone.add(CompressList[char1] + CompressList[char2 - 1]);
-
-        if(blocksClone.size() > 500000) {
-            throw new RuntimeException("Very Long Schematic File.\nSplit coming soon...");
-        }
 
         ArrayList<DFText> result = new ArrayList<>();
 

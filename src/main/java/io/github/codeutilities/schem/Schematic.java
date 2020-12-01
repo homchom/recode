@@ -100,10 +100,6 @@ public class Schematic {
 		if(prevBlockRepeated != 1) blocksClone.add(CompressList[char1] + CompressList[char2 - 1] + prevBlockRepeated); 
 		else blocksClone.add(CompressList[char1] + CompressList[char2 - 1]);
 		
-		if(blocksClone.size() > 500000) {
-			throw new RuntimeException("Very Long Schematic File.\nSplit coming soon...");
-		}
-		
 		ArrayList<DFText> result = new ArrayList<>();
 		
 		mainLoop: for (int k = 0; k < 1000; k++) {
