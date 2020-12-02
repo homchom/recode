@@ -2,8 +2,8 @@ package io.github.codeutilities.schem;
 
 import java.util.ArrayList;
 
-import com.sk89q.worldedit.math.BlockVector3;
-import dfmatic.utils.DFText;
+import io.github.codeutilities.schem.sk89q.worldedit.math.BlockVector3;
+import io.github.codeutilities.schem.utils.DFText;
 
 public class Schematic {
 	public String name = "Unnamed";

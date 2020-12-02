@@ -21,7 +21,7 @@
 
 package io.github.codeutilities.schem.loaders;
 
-import dfmatic.Schematic;
+import io.github.codeutilities.schem.Schematic;
 
 import java.io.Closeable;
 import java.io.IOException;

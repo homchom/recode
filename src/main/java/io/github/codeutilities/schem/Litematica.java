@@ -3,9 +3,11 @@ package io.github.codeutilities.schem;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
 import io.github.codeutilities.schem.utils.DFText;
 import io.github.codeutilities.schem.Schematic;
 import io.github.codeutilities.util.TemplateUtils;
+
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
@@ -20,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Litematica {
 
@@ -66,7 +69,7 @@ public class Litematica {
             MinecraftClient.getInstance().player.sendMessage(new LiteralText("§6" + name + " §e§oBy " + author), false);
             MinecraftClient.getInstance().player.sendMessage(new LiteralText("§7Description: " + description), false);
             MinecraftClient.getInstance().player.sendMessage(new LiteralText("§d" + width + "x" + height + "x" + length + " " + volume + " Blocks including air, " + blocks + " Blocks excluding air."), false);
-            MinecraftClient.getInstance().player.sendMessage(new LiteralText("§9Created §b" + new java.util.Date(created) + " §9Last Modified §b" + new java.util.Date(modified)), false);
+            MinecraftClient.getInstance().player.sendMessage(new LiteralText("§9Created §b" + new Date(created) + " §9Last Modified §b" + new Date(modified)), false);
             MinecraftClient.getInstance().player.sendMessage(new LiteralText("§8§m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m"), false);
 
             for (int i = 0; i < palette.size(); i++) {
@@ -85,8 +88,8 @@ public class Litematica {
                 if(property != ""){
                     property = property.substring(1, property.length());
                 }
-                String blockMetadata = "[" + property.replaceAll("\"", "")) + "]";
-                schematicData.AddBlockToPalette(blocktype.getAsString + ((blockMetadata == "[]") ? "" : blockMetadata))
+                String blockMetadata = "[" + property.replaceAll("\"", "") + "]";
+                schematicData.AddBlockToPalette(blocktype.getAsString() + ((blockMetadata == "[]") ? "" : blockMetadata));
             }
             int index2 = 0;
             int stone = 0;
@@ -169,9 +172,9 @@ public class Litematica {
             slots = 1;
             createlist = true;
 
-            String[] blocksTexts = schematicData.getBlocksTexts();
+            DFText[] blocksTexts = schematicData.getBlocksTexts();
 
-            System.out.println("list length: " + blocksTexts.size());
+            System.out.println("list length: " + blocksTexts.length);
             for (DFText thing:blocksTexts) {
                 if(slots >= 27){
                     slots = 1;

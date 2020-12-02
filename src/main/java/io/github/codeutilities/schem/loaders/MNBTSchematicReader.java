@@ -19,7 +19,7 @@
 
 package io.github.codeutilities.schem.loaders;
 
-import com.sk89q.jnbt.Tag;
+import io.github.codeutilities.schem.sk89q.jnbt.Tag;
 
 import java.io.IOException;
 import java.util.Map;

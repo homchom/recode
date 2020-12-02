@@ -3,8 +3,9 @@ package io.github.codeutilities.schem;
 import java.util.ArrayList;
 import java.util.List;
 
-import dfmatic.Schematic;
+import io.github.codeutilities.schem.Schematic;
 import io.github.codeutilities.schem.utils.DFText;
+import io.github.codeutilities.schem.utils.DFNumber;
 
 public class DFUtils {
 	

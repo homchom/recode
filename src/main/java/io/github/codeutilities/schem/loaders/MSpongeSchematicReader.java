@@ -19,18 +19,9 @@
 
 package io.github.codeutilities.schem.loaders;
 
-import com.sk89q.jnbt.ByteArrayTag;
-import com.sk89q.jnbt.CompoundTag;
-import com.sk89q.jnbt.IntArrayTag;
-import com.sk89q.jnbt.IntTag;
-import com.sk89q.jnbt.ListTag;
-import com.sk89q.jnbt.NBTInputStream;
-import com.sk89q.jnbt.NamedTag;
-import com.sk89q.jnbt.ShortTag;
-import com.sk89q.jnbt.Tag;
-import com.sk89q.worldedit.math.BlockVector3;
-
-import dfmatic.Schematic;
+import io.github.codeutilities.schem.sk89q.jnbt.*;
+import io.github.codeutilities.schem.sk89q.worldedit.math.BlockVector3;
+import io.github.codeutilities.schem.Schematic;
 
 import java.io.IOException;
 import java.util.HashMap;

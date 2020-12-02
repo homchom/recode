@@ -1,15 +1,12 @@
 package io.github.codeutilities.schem.loaders;
 
-import com.sk89q.jnbt.*;
-import com.sk89q.worldedit.math.BlockVector3;
-import dfmatic.Schematic;
-import worldedit.modfied.MNBTSchematicReader;
+import io.github.codeutilities.schem.sk89q.jnbt.*;
+import io.github.codeutilities.schem.Schematic;
+import io.github.codeutilities.schem.sk89q.jnbt.NBTInputStream;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 public class MCEditSchematicLoader extends MNBTSchematicReader {
 
