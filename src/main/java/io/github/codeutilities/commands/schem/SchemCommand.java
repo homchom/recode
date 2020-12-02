@@ -81,8 +81,6 @@ public class SchemCommand extends Command {
                             File finalTarget = target;
                             new Thread(() -> {
                                 try {
-                                    //String template = Schematica.parse(finalTarget);
-                                    //System.out.println(template);
                                 } catch (Exception e) {
                                     ChatUtil.sendMessage("An error occurred while executing this command.", ChatType.FAIL);
                                     e.printStackTrace();
