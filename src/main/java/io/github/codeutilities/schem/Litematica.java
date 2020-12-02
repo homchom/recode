@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.github.codeutilities.schem.utils.DFText;
+import io.github.codeutilities.schem.Schematic;
 import io.github.codeutilities.util.TemplateUtils;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
@@ -22,13 +23,13 @@ import java.util.ArrayList;
 
 public class Litematica {
 
-    static String[] CompressList = "!#$%&+/<>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ\\abcdefghijklmnopqrstuvwxyz|".split("");
-
     public static String parse(File file) {
         try {
             InputStream inputStream = new FileInputStream(file);
 
             CompoundTag tag = NbtIo.readCompressed(inputStream);
+
+            Schematic schematicData = new Schematic();
 
             CompoundTag metadata = tag.getCompound("Metadata");
             CompoundTag enclosingsize = metadata.getCompound("EnclosingSize");
@@ -84,8 +85,8 @@ public class Litematica {
                 if(property != ""){
                     property = property.substring(1, property.length());
                 }
-                Properties.add(property.replaceAll("\"", ""));
-                PaletteBlocks.add(blocktype.getAsString());
+                String blockMetadata = "[" + property.replaceAll("\"", "")) + "]";
+                schematicData.AddBlockToPalette(blocktype.getAsString + ((blockMetadata == "[]") ? "" : blockMetadata))
             }
             int index2 = 0;
             int stone = 0;
@@ -97,7 +98,7 @@ public class Litematica {
                             stone++;
                         }
                         BlockIds[index2] = arr.getAt(index2);
-                        intblocks.add(arr.getAt(index2));
+                        schematicData.AddBlock(arr.getAt(index2));
                         index2++;
                     }
                 }
@@ -105,29 +106,21 @@ public class Litematica {
 
             int codeblocks = 2;
             int functions = 1;
-            String nbt = "{\"blocks\":[{\"id\":\"block\",\"block\":\"func\",\"args\":{\"items\":[{\"item\":{\"id\":\"bl_tag\",\"data\":{\"option\":\"False\",\"tag\":\"Is Hidden\",\"action\":\"dynamic\",\"block\":\"func\"}},\"slot\":26}]},\"data\":\"Build" + functions + "\"}";
-            nbt += ",{\"id\":\"block\",\"block\":\"set_var\",\"args\":{\"items\":[{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"SchemData\",\"scope\":\"local\"}},\"slot\":0}";
-            nbt += ",{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"" + name + "\"}},\"slot\":1}";
-            nbt += ",{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"" + author + "\"}},\"slot\":2}";
-            nbt += ",{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"" + description + "\"}},\"slot\":3}";
-            nbt += ",{\"item\":{\"id\":\"num\",\"data\":{\"name\":\"" + created + "\"}},\"slot\":4}";
-            nbt += ",{\"item\":{\"id\":\"num\",\"data\":{\"name\":\"" + modified + "\"}},\"slot\":5}";
-            nbt += ",{\"item\":{\"id\":\"num\",\"data\":{\"name\":\"" + blocks + "\"}},\"slot\":6}";
-            nbt += ",{\"item\":{\"id\":\"num\",\"data\":{\"name\":\"" + width + "\"}},\"slot\":7}";
-            nbt += ",{\"item\":{\"id\":\"num\",\"data\":{\"name\":\"" + height + "\"}},\"slot\":8}";
-            nbt += ",{\"item\":{\"id\":\"num\",\"data\":{\"name\":\"" + length + "\"}},\"slot\":9}";
-            nbt += ",{\"item\":{\"id\":\"num\",\"data\":{\"name\":\"0\"}},\"slot\":10}";
-            nbt += ",{\"item\":{\"id\":\"num\",\"data\":{\"name\":\"0\"}},\"slot\":11}";
-            nbt += ",{\"item\":{\"id\":\"num\",\"data\":{\"name\":\"0\"}},\"slot\":12}";
-            nbt += ",{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"Litematic\"}},\"slot\":13}";
-            nbt += "]},\"action\":\"CreateList\"}";
+            schematicData.name = name;
+            schematicData.author = author;
+            schematicData.description = description;
+            schematicData.creationTime = created;
+            schematicData.lastModified = modified;
+            schematicData.setWidth(width);
+            schematicData.setHeight(height);
+            schematicData.setLength(length);
+            schematicData.fileType = "Litematic";
+            String nbt = DFUtils.GenerateSchematicData(schematicData);
 
-
-            nbt += ",{\"id\":\"block\",\"block\":\"set_var\",\"args\":{\"items\":[{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"Palette\",\"scope\":\"local\"}},\"slot\":0}";
             codeblocks++;
             int slots = 1;
             boolean createlist = true;
-            for (DFText thing:getPaletteTexts(PaletteBlocks, Properties)) {
+            for (DFText thing:schematicData.getPaletteTexts()) {
                 if(slots >= 27){
                     slots = 1;
                     if(createlist){
@@ -175,8 +168,11 @@ public class Litematica {
             codeblocks++;
             slots = 1;
             createlist = true;
-            System.out.println("list length: " + getBlocksTexts(intblocks).size());
-            for (DFText thing:getBlocksTexts(intblocks)) {
+
+            String[] blocksTexts = schematicData.getBlocksTexts();
+
+            System.out.println("list length: " + blocksTexts.size());
+            for (DFText thing:blocksTexts) {
                 if(slots >= 27){
                     slots = 1;
                     if(createlist){
@@ -225,74 +221,4 @@ public class Litematica {
         int result = (int)(Math.log(N) / Math.log(2));
         return result;
     }
-
-    public static ArrayList<DFText> getBlocksTexts(ArrayList<Integer> blocks) {
-        ArrayList<String> blocksClone = new ArrayList<>();
-
-        int prevBlock = -1;
-        int prevBlockRepeated = 0;
-        for (int i = 0; i < blocks.size(); i++) {
-            int currentBlock = blocks.get(i) + 1;
-
-            if(currentBlock == prevBlock) {
-                prevBlockRepeated++;
-            } else {
-                int char1 = (int)Math.ceil(prevBlock / 65);
-                int char2 = prevBlock % 65;
-                if(char2 == 0) char2 = 65;
-
-                if(prevBlock != -1)
-                    if(prevBlockRepeated != 1) blocksClone.add(CompressList[char1] + CompressList[char2 - 1] + prevBlockRepeated);
-                    else blocksClone.add(CompressList[char1] + CompressList[char2 - 1]);
-
-                prevBlock = currentBlock;
-                prevBlockRepeated = 1;
-            }
-        }
-
-        int char1 = (int)Math.ceil(prevBlock / 65);
-        int char2 = prevBlock % 65;
-        if(char2 == 0) char2 = 65;
-
-        if(prevBlockRepeated != 1) blocksClone.add(CompressList[char1] + CompressList[char2 - 1] + prevBlockRepeated);
-        else blocksClone.add(CompressList[char1] + CompressList[char2 - 1]);
-
-        ArrayList<DFText> result = new ArrayList<>();
-
-        mainLoop: for (int k = 0; k < blocks.size(); k++) {
-            DFText text = new DFText("");
-            for (int i = 0; i < 60; i++) {
-                if(blocksClone.size() == 0) {result.add(text); break mainLoop;}
-
-                text.text += blocksClone.remove(0).replaceAll("\\\\", "\\\\\\\\");
-            }
-            result.add(text);
-        }
-
-
-        return result;
-    }
-
-
-    public static DFText[] getPaletteTexts(ArrayList<String> palette, ArrayList<String> metadata) {
-        ArrayList<DFText> result = new ArrayList<>();
-
-        int index = 0;
-
-        mainLoop: for (int k = 0; k < 10000; k++) {
-            DFText text = new DFText("");
-            for (int i = 0; i < 20; i++) {
-                if(palette.size() == index) {result.add(text); break mainLoop;}
-
-                text.text += (text.text.length() == 0 ? "" : ";") + palette.get(index).replaceFirst("minecraft:", "") + (metadata.get(index) != "" ? "[" + metadata.get(index) + "]" : "");
-
-                index++;
-            }
-            result.add(text);
-        }
-
-        return result.toArray(new DFText[result.size()]);
-    }
-
-
 }
