@@ -118,7 +118,7 @@ public class Litematica {
             schematicData.setHeight(height);
             schematicData.setLength(length);
             schematicData.fileType = "Litematic";
-            String nbt = DFUtils.GenerateSchematicData(schematicData);
+            String nbt = "{\"blocks\":[" + DFUtils.GenerateFunctionHeader(schematicData.name) + "," + DFUtils.GenerateSchematicData(schematicData);
 
             codeblocks++;
             int slots = 1;
@@ -209,7 +209,7 @@ public class Litematica {
             nbt += "]}";
 
             ItemStack item = Blocks.TWISTING_VINES.asItem().getDefaultStack();
-            TemplateUtils.compressTemplateNBT(item, file.getName(), "SchemaDF", nbt);
+            TemplateUtils.compressTemplateNBT(item, file.getName(), "Schem2DF", nbt);
             item.setCustomName(new LiteralText("§d" + file.getName() + functions));
             MinecraftClient.getInstance().interactionManager.clickCreativeStack(item, functions + 8);
 
