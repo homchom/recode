@@ -120,6 +120,7 @@ public class Litematica {
             schematicData.fileType = "Litematic";
             String nbt = "{\"blocks\":[" + DFUtils.GenerateFunctionHeader(schematicData.name) + "," + DFUtils.GenerateSchematicData(schematicData);
 
+            nbt += ",{\"id\":\"block\",\"block\":\"set_var\",\"args\":{\"items\":[{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"Palette\",\"scope\":\"local\"}},\"slot\":0}";
             codeblocks++;
             int slots = 1;
             boolean createlist = true;
