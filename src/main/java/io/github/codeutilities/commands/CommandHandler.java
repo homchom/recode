@@ -5,6 +5,7 @@ import io.github.codeutilities.commands.image.ImageCommand;
 import io.github.codeutilities.commands.item.*;
 import io.github.codeutilities.commands.item.template.*;
 import io.github.codeutilities.commands.nbs.NBSCommand;
+import io.github.codeutilities.commands.schem.SchemCommand;
 import io.github.codeutilities.commands.util.*;
 import io.github.codeutilities.config.ModConfig;
 import io.github.cottonmc.clientcommands.*;
@@ -37,6 +38,8 @@ public class CommandHandler implements ClientCommandPlugin {
                 new ColorCommand(),
                 new EditItemCommand(),
                 new CopyTextCommand()
+                new ImageCommand(),
+                new SchemCommand()
         );
         
         if (ModConfig.getConfig().dfCommands) {
