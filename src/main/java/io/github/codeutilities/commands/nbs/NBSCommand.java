@@ -10,6 +10,7 @@ import io.github.codeutilities.util.*;
 import io.github.codeutilities.util.externalfile.ExternalFile;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.toast.SystemToast;
 import net.minecraft.item.*;
 import net.minecraft.text.LiteralText;
 
@@ -19,36 +20,33 @@ public class NBSCommand extends Command {
 
 
     public static void loadNbs(File file, String fileName) {
-        try {
-            SongData d = io.github.codeutilities.commands.nbs.NBSDecoder.parse(file);
-            String code = new NBSToTemplate(d).convert();
-            ItemStack stack = new ItemStack(Items.NOTE_BLOCK);
-            TemplateUtils.compressTemplateNBT(stack, d.getName(), d.getAuthor(), code);
+        new Thread(() -> {
+            try {
+                SongData d = io.github.codeutilities.commands.nbs.NBSDecoder.parse(file);
+                String code = new NBSToTemplate(d).convert();
+                ItemStack stack = new ItemStack(Items.NOTE_BLOCK);
+                TemplateUtils.compressTemplateNBT(stack, d.getName(), d.getAuthor(), code);
 
-            if (d.getName().length() == 0) {
-                String name;
-                if (d.getFileName().indexOf(".") > 0) {
-                    name = d.getFileName().substring(0, d.getFileName().lastIndexOf("."));
+                if (d.getName().length() == 0) {
+                    String name;
+                    if (d.getFileName().indexOf(".") > 0) {
+                        name = d.getFileName().substring(0, d.getFileName().lastIndexOf("."));
+                    } else {
+                        name = d.getFileName();
+                    }
+                    stack.setCustomName(new LiteralText("§5SONG§7 -§f " + name));
                 } else {
-                    name = d.getFileName();
+                    stack.setCustomName(new LiteralText("§5SONG§7 -§f " + d.getName()));
                 }
-                stack.setCustomName(new LiteralText("§5SONG§7 -§f " + name));
-            } else {
-                stack.setCustomName(new LiteralText("§5SONG§7 -§f " + d.getName()));
+
+                ToasterUtil.sendToaster("NBS Loaded!", fileName, SystemToast.Type.NARRATOR_TOGGLE);
+                ItemUtil.giveCreativeItem(stack);
+            } catch (OutdatedNBSException e) {
+                ToasterUtil.sendToaster("§cLoading Error!", "Unsupported file version", SystemToast.Type.NARRATOR_TOGGLE);
+            } catch (IOException e) {
+                ToasterUtil.sendToaster("§cLoading Error!", "Invalid file", SystemToast.Type.NARRATOR_TOGGLE);
             }
-
-            ChatUtil.sendMessage("The NBS file §b" + fileName + "§a has successfully been loaded!",
-                    ChatType.SUCCESS);
-            ItemUtil.giveCreativeItem(stack);
-        } catch (OutdatedNBSException e) {
-            ChatUtil.sendMessage(
-                    "Sorry! Due to how importing system works, this NBS file cannot be imported! " +
-                            "Please open this file in the latest version of §bOpen Note Block Studio§r and save it once!",
-                    ChatType.FAIL);
-        } catch (IOException e) {
-            ChatUtil.sendMessage("Couldn't read data inside this file! This file may be corrupted :(", ChatType.FAIL);
-        }
-
+        }).start();
     }
 
     @Override
