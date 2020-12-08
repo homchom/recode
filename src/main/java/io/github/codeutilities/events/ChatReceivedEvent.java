@@ -27,35 +27,14 @@ public class ChatReceivedEvent {
         }
         
         //Patch Number detection
-        if (text.matches("Current patch: .*\\. See the patch notes with \\/patch!")) {
-            try {
-                String patchText = text.replaceAll("Current patch: (.*)\\. See the patch notes with \\/patch!", "$1");
 
-                DFInfo.isPatchNewer(patchText, "0"); //very lazy validation lol
-                DFInfo.patchId = patchText;
-                CodeUtilities.log(Level.INFO, "DiamondFire Patch " + DFInfo.patchId + " detected!");
-            }catch (Exception e) {
-                CodeUtilities.log(Level.INFO, "Error on parsing patch number!");
-                e.printStackTrace();
-            }
-        }
 
         //Updating Player State
         //LOBBY is handled at ActionbarReceivedEvent
         //PLAY
-        if (text.matches("Joined game: .* by .*") && text.startsWith("Joined game: ")) {
-            DFInfo.currentState = DFInfo.State.PLAY;
-        }
-        //BUILD
-        if (mc.player.isCreative() && text.contains("» You are now in build mode.") && text.startsWith("»")) {
-            DFInfo.currentState = DFInfo.State.BUILD;
-        }
-        //DEV
-        if (mc.player.isCreative() && text.contains("» You are now in dev mode.") && text.startsWith("»")) {
-            DFInfo.currentState = DFInfo.State.DEV;
-        }
 
-        //Rejoin command
+
+        //Rejoin command NOT NEEDED BECAUSE 5.3
         if (rejoinStep > 0) {
             cancel = true;
             if (text.contains("          ")) {

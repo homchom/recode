@@ -9,8 +9,12 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Category("features")
     public boolean dfButton = true;
     @ConfigEntry.Category("features")
-    @ConfigEntry.Gui.Tooltip(count = 1)
+    @ConfigEntry.Gui.Tooltip()
     public boolean itemApi = true;
+    @ConfigEntry.Category("features")
+    public boolean variableScopeView = true;
+    @ConfigEntry.Category("features")
+    public boolean betterCoordinates = true;
     @ConfigEntry.Category("commands")
     public boolean dfCommands = true;
     @ConfigEntry.Category("commands")
