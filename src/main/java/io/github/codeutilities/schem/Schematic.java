@@ -21,7 +21,7 @@ public class Schematic {
 	private final static String[] CompressList;
 	
 	static {
-		CompressList = "!#$%&+/<>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ\\abcdefghijklmnopqrstuvwxyz|".split("");
+		CompressList = "!# %&+/<>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ\\abcdefghijklmnopqrstuvwxyz|".split("");
 		CompressList[37] = "\\\\";
 	}
 
