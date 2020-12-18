@@ -1,11 +1,12 @@
 package io.github.codeutilities.schem;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.IntStream;
 
-import io.github.codeutilities.schem.Schematic;
-import io.github.codeutilities.schem.utils.DFText;
-import io.github.codeutilities.schem.utils.DFNumber;
+import io.github.codeutilities.schem.utils.*;
+import io.github.codeutilities.schem.sk89q.worldedit.math.*;
 
 public class DFUtils {
 	
@@ -37,11 +38,13 @@ public class DFUtils {
 	}
 
 	public static String GenerateBlockDataList(DFText... texts) {
+		System.out.println("len=" + texts.length);
 		ArrayList<String> jsons = new ArrayList<>();
 		for (int blockDataIndex = 1; blockDataIndex <= Math.ceil(texts.length / 10000f); blockDataIndex++) {
-			int actionIndexLimit = (Math.ceil(texts.length / 26f) > 384) ? 384 : (int)Math.ceil(texts.length / 26f);
+			int actionIndexLimit = (Math.ceil(texts.length / 26f) > 384) ? 384 : (int)Math.ceil((float)texts.length / 26f);
 
 			for (int actionIndex = 1; actionIndex <= actionIndexLimit; actionIndex++) {
+				System.out.println("iter");
 				String json = "{\"id\":\"block\",\"block\":\"set_var\",\"args\":{\"items\":[";
 				List<String> itemsJSON = new ArrayList<>();
 
@@ -86,12 +89,29 @@ public class DFUtils {
 		return json;
 	}
 	
-	public static String GenerateSchematicFunction(Schematic schematic) {
+	public static String[] GenerateSchematicFunction(Schematic schematic) {
 		String functionHeader = DFUtils.GenerateFunctionHeader(schematic.name);
 		String schemDataJson = DFUtils.GenerateSchematicData(schematic);
-		String paletteJson = GeneratePaletteList(schematic.getPaletteTexts());
-		String blocksJson = GenerateBlockDataList(schematic.getBlocksTexts());
+		String paletteJson = DFUtils.GeneratePaletteList(schematic.getPaletteTexts());
+		String blocksJson = DFUtils.GenerateBlockDataList(schematic.getBlocksTexts());
 
-		return "{\"blocks\":[" + functionHeader + "," + schemDataJson + "," + paletteJson + "," + blocksJson + "]}";
+		return SplitJson(functionHeader + "," + schemDataJson + "," + paletteJson + "," + blocksJson);
+	}
+
+	public static String[] SplitJson(String json) {
+		String[] result = StringUtils.JoinString(3, ",", json.split("(?<=}),(?=\\{\"id\")"));
+
+		for (int i = 0; i < result.length; i++) {
+			result[i] = "{\"blocks\":[" + result[i] + "]}";
+		}
+
+		return result;
+	}
+
+	//Code taken from https://stackoverflow.com/questions/43057690/java-stream-collect-every-n-elements/47112162
+	public static DFText[] JoinString(int iterations, CharSequence delimiter, List<String> list) {
+		return IntStream.range(0, (list.size() + iterations - 1) / iterations)
+				.mapToObj(i -> new DFText(String.join(delimiter, list.subList(i * iterations, Math.min(iterations * (i + 1), list.size())))))
+				.toArray(size -> new DFText[size]);
 	}
 }

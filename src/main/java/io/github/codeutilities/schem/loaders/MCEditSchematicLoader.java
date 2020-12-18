@@ -2,7 +2,7 @@ package io.github.codeutilities.schem.loaders;
 
 import io.github.codeutilities.schem.sk89q.jnbt.*;
 import io.github.codeutilities.schem.Schematic;
-import io.github.codeutilities.schem.sk89q.jnbt.NBTInputStream;
+import io.github.codeutilities.schem.loaders.MNBTSchematicReader;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -57,7 +57,6 @@ public class MCEditSchematicLoader extends MNBTSchematicReader {
             byte blockMetadata = data[i];
 
             String block = legacyBlocksList.get(blockValue + ":" + blockMetadata);
-            System.out.println(blockValue + ":" + blockMetadata);
 
             if(block != null) {
                 int blockId = schematic.AddBlockToPalette(block);

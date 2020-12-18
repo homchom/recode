@@ -1,15 +1,17 @@
 package io.github.codeutilities.schem;
 
 import java.util.ArrayList;
+import java.util.stream.IntStream;
 
 import io.github.codeutilities.schem.sk89q.worldedit.math.BlockVector3;
 import io.github.codeutilities.schem.utils.DFText;
+import io.github.codeutilities.schem.DFUtils;
 
 public class Schematic {
 	public String name = "Unnamed";
 	public String author = "Unknown";
-	public String description;
-	public String fileType;
+	public String description = "";
+	public String fileType = "Sponge";
 	public double creationTime = System.currentTimeMillis() / 1000d;
 	public double lastModified = creationTime;
 
@@ -17,6 +19,7 @@ public class Schematic {
 	private final ArrayList<Integer> blocks = new ArrayList<>();
 	private BlockVector3 dimensions = BlockVector3.ZERO;
 	private BlockVector3 offset = BlockVector3.ZERO;
+	private int blocksTextsLen = 0;
 	
 	private final static String[] CompressList;
 	
@@ -26,23 +29,27 @@ public class Schematic {
 	}
 
 	public void AddBlockToPalette(int id, String block) {
+		if(block == null || block == "null") return;
+
 		while(id > this.palette.size()) {
 			this.palette.add("");
 		}
 
-		this.palette.add(id, block);
+		this.palette.add(id, block.replace("minecraft:", ""));
 	}
 
 	public int AddBlockToPalette(String block) {
+		if(block == null || block == "null") return -1;
+
 		if(this.palette.contains(block)) return this.palette.indexOf(block.replaceFirst("minecraft:",""));
 
-		this.palette.add(block.replaceFirst("minecraft:",""));
+		this.palette.add(block.replace("minecraft:",""));
 
 		return this.palette.size() - 1;
 	}
 	
 	public void AddBlock(int block) {
-		this.blocks.add(block);
+		if(block > 0) this.blocks.add(block);
 	}
 
 	public BlockVector3 getDimensions() {
@@ -70,30 +77,7 @@ public class Schematic {
 	}
 	
 	public DFText[] getPaletteTexts() {
-		ArrayList<DFText> result = new ArrayList<>();
-		
-		int paletteSize = this.palette.size();
-		
-		for (int k = 0; k < 10000; k++) {
-			int listToIndex;
-			boolean breakLoop = false;
-
-			if(((k + 1) * 20) - 1 < paletteSize) {
-				listToIndex = ((k + 1) * 20) - 1;
-			} else {
-				listToIndex = paletteSize - 1;
-				breakLoop = true;
-			}
-
-			String[] textList = this.palette.subList(k * 20, listToIndex).toArray(new String[20]);
-			DFText text = new DFText(String.join(";", textList));
-
-			result.add(text);
-
-			if(breakLoop) break;
-		}
-		
-		return result.toArray(new DFText[result.size()]);
+		return DFUtils.JoinString(20, ";", this.palette);
 	}
 	
 	public DFText[] getBlocksTexts() {
@@ -127,21 +111,8 @@ public class Schematic {
 		
 		if(prevBlockRepeated != 1) blocksClone.add(CompressList[char1] + CompressList[char2 - 1] + prevBlockRepeated); 
 		else blocksClone.add(CompressList[char1] + CompressList[char2 - 1]);
-		
-		ArrayList<DFText> result = new ArrayList<>();
 
-		mainLoop: for (int k = 0; k < 1000; k++) {
-			DFText text = new DFText("");
-			for (int i = 0; i < 500; i++) {
-				if(blocksClone.size() == 0) {result.add(text); break mainLoop;}
-				
-				text.text += blocksClone.remove(0);
-			}
-			result.add(text);
-		}
-		
-		
-		return result.toArray(new DFText[result.size()]);
+		return DFUtils.JoinString(500, "", blocksClone);
 	}
 
 	public int getBlocksCount() {
@@ -149,6 +120,8 @@ public class Schematic {
 	}
 
 	public int getListAmount() {
-		return (int)Math.ceil(this.blocks.size() / 10000f);
+		if(blocksTextsLen == 0 && this.blocks.size() != 0) getBlocksTexts();
+
+		return (int)Math.ceil((float)blocksTextsLen/ 5000000f);
 	}
 }

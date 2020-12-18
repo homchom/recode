@@ -21,6 +21,7 @@ package io.github.codeutilities.schem.loaders;
 
 import io.github.codeutilities.schem.sk89q.jnbt.*;
 import io.github.codeutilities.schem.sk89q.worldedit.math.BlockVector3;
+
 import io.github.codeutilities.schem.Schematic;
 
 import java.io.IOException;
