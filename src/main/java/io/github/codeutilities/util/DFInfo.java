@@ -1,12 +1,15 @@
 package io.github.codeutilities.util;
 
+import net.minecraft.util.math.Vec3d;
+
 public class DFInfo {
     public static String patchId = "5.3";
     public static State currentState = State.LOBBY;
+    public static Vec3d plotCorner = null;
 
     public static boolean isPatchNewer(String base, String target) {
-        String baseSplit[] = base.split("\\.", 0);
-        String targetSplit[] = target.split("\\.", 0);
+        String[] baseSplit = base.split("\\.", 0);
+        String[] targetSplit = target.split("\\.", 0);
 
         boolean oldNumberFound = false;
 
@@ -28,9 +31,7 @@ public class DFInfo {
                 }
             }
         }
-        if(!oldNumberFound) return true;
-
-        return false;
+        return !oldNumberFound;
     }
 
     public enum State {
