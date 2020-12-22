@@ -2,6 +2,7 @@ package io.github.codeutilities.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.codeutilities.commands.image.ImageHologramCommand;
+import io.github.codeutilities.commands.image.ImageParticleCommand;
 import io.github.codeutilities.commands.item.*;
 import io.github.codeutilities.commands.item.template.*;
 import io.github.codeutilities.commands.nbs.NBSCommand;
@@ -49,6 +50,7 @@ public class CommandHandler implements ClientCommandPlugin {
                     new WebviewCommand(),
                     new NBSCommand(),
                     new ImageHologramCommand(),
+                    new ImageParticleCommand(),
                     new SendTemplateCommand()
             );
         }

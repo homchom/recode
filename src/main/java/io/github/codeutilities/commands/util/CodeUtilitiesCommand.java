@@ -64,8 +64,9 @@ public class CodeUtilitiesCommand extends Command {
                             "§7･§6/imageparticle load <filename>§f - Creates image data to print with particles.\n" +
                             "§7･§6/imageparticle printer§f - Gives you the Particle Image Printer code template.\n" +
                             "§7> §fTo use the load command, place image files in §b.minecraft/CodeUtilities/Images§f.\n" +
-                            "§7> §fMaximum size of a legacy color code image is §b64x64§f.\n" +
-                            "§7> §fMaximum size of a hex color code image is §b17x17§f.\n" +
+                            "§7> §f(Hologram) Maximum size of a legacy color code image is §b64x64§f.\n" +
+                            "§7> §f(Hologram) Maximum size of a hex color code image is §b17x17§f.\n" +
+                            "§7> §f(Particle) Maximum size of an image is §b40x40§f.\n" +
                             "§9§m                                                                    "
                     ), false);
                     return 1;
