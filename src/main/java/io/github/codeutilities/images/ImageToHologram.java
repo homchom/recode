@@ -12,7 +12,7 @@ import java.util.*;
 
 import static java.awt.Image.SCALE_SMOOTH;
 
-public class ImageConverter {
+public class ImageToHologram {
 
     // Converts a file into an array of literal texts containing the respected color. This would work?
     public static String[] convert116(File file) {
