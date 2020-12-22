@@ -14,6 +14,6 @@ public class ParticleImage {
     public String[] getData() {return imageData;}
 
     public int getWidth() {return imageWidth;}
-    
+
     public int getHeight() {return imageHeight;}
 }
