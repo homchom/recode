@@ -69,7 +69,7 @@ public class ImageParticleCommand extends Command {
 
         int slot = 1;
         for (String s : data) {
-            if (slot >= 26) {
+            if (slot > 26) {
                 code.append(String.format(",{\"id\":\"block\",\"block\":\"set_var\",\"args\":{\"items\":[{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"imageData\",\"scope\":\"local\"}},\"slot\":0}%s]},\"action\":\"%s\"}", currentBlock.toString(), codeblockType));
                 currentBlock.delete(0, currentBlock.length());
                 codeblockType = "AppendValue";
