@@ -13,11 +13,11 @@ import net.minecraft.item.*;
 
 import java.io.File;
 
-public class ImageCommand extends Command {
+public class ImageHologramCommand extends Command {
 
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
-        cd.register(ArgBuilder.literal("image")
+        cd.register(ArgBuilder.literal("imagehologram")
                 .then(ArgBuilder.literal("load")
                         .then(ArgBuilder.literal("hex")
                             .then(ArgBuilder.argument("location", StringArgumentType.greedyString())
