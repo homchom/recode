@@ -43,6 +43,7 @@ public class ImageToParticle {
                 Color color = new Color(rgb, true);
                 hex = Integer.toHexString(rgb).substring(2);
                 if (hex != previousHex) {
+                    previousHex = hex;
                     String appendStr = "#" + hex + repeatCount;
                     if (currentData.length() + appendStr.length() > 300) {
                         currentData.append("#");
