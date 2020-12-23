@@ -37,7 +37,7 @@ public class MixinItemSlotUpdate {
             if (mc.player == null) {
                 return;
             }
-            
+
             if (mc.player.isCreative() && stack.getName().getString().contains("Values")
                 && lore.toText().getString().contains("\"Right click this to obtain values. Types include\"")
                 && lore.toText().getString().contains("\"numbers, variables, text, sound effects, game\"")

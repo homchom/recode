@@ -36,47 +36,52 @@ public class MixinHeldItemTooltip{
 
     @Inject(method = "renderHeldItemTooltip", at = @At("HEAD"), cancellable = true)
     public void renderHeldItemTooltip(MatrixStack matrices, CallbackInfo callbackInfo) {
-        if(!ModConfig.getConfig().variableScopeView) {
-            return;
-        }
-
-        ItemStack itemStack = mc.player.inventory.getMainHandStack();
-
-        if(variableStack != itemStack) {
-            if(ItemUtil.isVar(itemStack, "var")) {
-                variableStack = itemStack;
-
-                CompoundTag tag = itemStack.getTag();
-                if (tag == null) {
-                    return;
-                }
-
-                CompoundTag publicBukkitNBT = tag.getCompound("PublicBukkitValues");
-                if (publicBukkitNBT == null) {
-                    return;
-                }
-
-                varItemNbt = new JsonParser().parse(publicBukkitNBT.getString("hypercube:varitem")).getAsJsonObject().getAsJsonObject("data");
-            }else {
-                variableStack = null;
+        try {
+            if(!ModConfig.getConfig().variableScopeView) {
+                return;
             }
+
+            ItemStack itemStack = mc.player.inventory.getMainHandStack();
+
+            if(variableStack != itemStack) {
+                if(ItemUtil.isVar(itemStack, "var")) {
+                    variableStack = itemStack;
+
+                    CompoundTag tag = itemStack.getTag();
+                    if (tag == null) {
+                        return;
+                    }
+
+                    CompoundTag publicBukkitNBT = tag.getCompound("PublicBukkitValues");
+                    if (publicBukkitNBT == null) {
+                        return;
+                    }
+
+                    varItemNbt = new JsonParser().parse(publicBukkitNBT.getString("hypercube:varitem")).getAsJsonObject().getAsJsonObject("data");
+                }else {
+                    variableStack = null;
+                }
+            }
+
+            if(variableStack != null) {
+                callbackInfo.cancel();
+
+                String name = varItemNbt.get("name").getAsString();
+                MutableText scope = scopes.get(varItemNbt.get("scope").getAsString());
+
+                int x1 = (mc.getWindow().getScaledWidth() - mc.textRenderer.getWidth(new LiteralText(name))) / 2;
+                int y1 = mc.getWindow().getScaledHeight() - 45;
+
+                int x2 = (mc.getWindow().getScaledWidth() - mc.textRenderer.getWidth(scope.asString())) / 2;
+                int y2 = mc.getWindow().getScaledHeight() - 35;
+
+                mc.textRenderer.drawWithShadow(matrices, new LiteralText(name), (float)x1, (float)y1, 16777215);
+                mc.textRenderer.drawWithShadow(matrices, scope, (float)x2, (float)y2, 16777215);
+            }
+        }catch(Exception e) {
+            e.printStackTrace();
         }
 
-        if(variableStack != null) {
-            callbackInfo.cancel();
-
-            String name = varItemNbt.get("name").getAsString();
-            MutableText scope = scopes.get(varItemNbt.get("scope").getAsString());
-
-            int x1 = (mc.getWindow().getScaledWidth() - mc.textRenderer.getWidth(new LiteralText(name))) / 2;
-            int y1 = mc.getWindow().getScaledHeight() - 45;
-
-            int x2 = (mc.getWindow().getScaledWidth() - mc.textRenderer.getWidth(scope.asString())) / 2;
-            int y2 = mc.getWindow().getScaledHeight() - 35;
-
-            mc.textRenderer.drawWithShadow(matrices, new LiteralText(name), (float)x1, (float)y1, 16777215);
-            mc.textRenderer.drawWithShadow(matrices, scope, (float)x2, (float)y2, 16777215);
-        }
 
     }
 

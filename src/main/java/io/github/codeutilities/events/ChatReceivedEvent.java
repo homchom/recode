@@ -17,7 +17,6 @@ public class ChatReceivedEvent {
 
     public static void onMessage(Text message, CallbackInfo ci) {
         MinecraftClient mc = MinecraftClient.getInstance();
-        //CodeUtilities.log(Level.INFO, "CHAT: " + message.getString());
         String text = message.getString();
 
         boolean cancel = false;
@@ -25,7 +24,7 @@ public class ChatReceivedEvent {
         if (mc.player == null) {
             return;
         }
-        
+
         //Patch Number detection
 
 

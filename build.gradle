@@ -6,6 +6,7 @@ plugins {
 apply plugin: 'idea'
 
 repositories {
+    mavenCentral()
     jcenter()
     maven {
         name = 'CottonMC'
@@ -66,7 +67,9 @@ dependencies {
 	include "org.glassfish.grizzly:grizzly-http-server:2.3.3"
 	include "org.glassfish.grizzly:grizzly-http:2.3.3"
 	include "org.glassfish.grizzly:grizzly-framework:2.3.3"
-	
+
+
+
     //https://github.com/natanfudge/Not-Enough-Crashes //API
     //modRuntime "com.lettuce.fudge:notenoughcrashes:2.1.4+1.16.4"
     //https://github.com/SuperCoder7979/databreaker
