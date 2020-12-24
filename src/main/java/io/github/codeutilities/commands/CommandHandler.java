@@ -39,7 +39,8 @@ public class CommandHandler implements ClientCommandPlugin {
                 new ColorCommand(),
                 new EditItemCommand(),
                 new CopyTextCommand(),
-                new ImageCommand(),
+                new ImageHologramCommand(),
+                new ImageParticleCommand(),
                 new SchemCommand()
         );
         

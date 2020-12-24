@@ -6,7 +6,13 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.commands.arguments.ArgBuilder;
+import io.github.codeutilities.schem.DFUtils;
 import io.github.codeutilities.schem.Litematica;
+import io.github.codeutilities.schem.Schematic;
+import io.github.codeutilities.schem.loaders.MCEditSchematicLoader;
+import io.github.codeutilities.schem.loaders.MSchematicReader;
+import io.github.codeutilities.schem.loaders.MSpongeSchematicReader;
+import io.github.codeutilities.schem.sk89q.jnbt.NBTInputStream;
 import io.github.codeutilities.util.ChatType;
 import io.github.codeutilities.util.ChatUtil;
 import io.github.codeutilities.util.ItemUtil;
@@ -19,6 +25,8 @@ import net.minecraft.item.Items;
 import net.minecraft.text.LiteralText;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.util.zip.GZIPInputStream;
 
 public class SchemCommand extends Command {
 
@@ -83,6 +91,19 @@ public class SchemCommand extends Command {
                             File finalTarget = target;
                             new Thread(() -> {
                                 try {
+                                    NBTInputStream nbtStream = new NBTInputStream(new GZIPInputStream(new FileInputStream(finalTarget)));
+                                    MSchematicReader reader = new MCEditSchematicLoader(nbtStream);
+                                    Schematic schematic = reader.read();
+                                    reader.close();
+
+                                    String[] templateDatas = DFUtils.GenerateSchematicFunction(schematic);
+                                    for (String templateData : templateDatas) {
+                                        ItemStack stack = new ItemStack(Items.STICKY_PISTON);
+                                        TemplateUtils.compressTemplateNBT(stack, "Schem2DF Builder", "CodeUtilities", templateData);
+                                        stack.setCustomName(new LiteralText("§b§lFunction §3» Schematic"));
+                                        ItemUtil.giveCreativeItem(stack);
+                                        Thread.sleep(10);
+                                    }
                                 } catch (Exception e) {
                                     ChatUtil.sendMessage("An error occurred while executing this command.", ChatType.FAIL);
                                     e.printStackTrace();
