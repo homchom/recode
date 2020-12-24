@@ -25,14 +25,6 @@ public class ChatReceivedEvent {
             return;
         }
 
-        //Patch Number detection
-
-
-        //Updating Player State
-        //LOBBY is handled at ActionbarReceivedEvent
-        //PLAY
-
-
         //Rejoin command NOT NEEDED BECAUSE 5.3
         if (rejoinStep > 0) {
             cancel = true;

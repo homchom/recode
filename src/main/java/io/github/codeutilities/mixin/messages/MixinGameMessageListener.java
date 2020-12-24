@@ -25,7 +25,6 @@ public class MixinGameMessageListener {
     private void onGameMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
         if (CodeUtilities.isOnDF()) {
             if (packet.getLocation() == MessageType.CHAT || packet.getLocation() == MessageType.SYSTEM) {
-                CodeUtilities.log(Level.INFO, packet.getMessage().toString());
                 ChatReceivedEvent.onMessage(packet.getMessage(), ci);
                 String text = packet.getMessage().getString();
                 updateVersion(text);
@@ -37,11 +36,9 @@ public class MixinGameMessageListener {
     @Inject(method = "onTitle", at = @At("HEAD"), cancellable = true)
     private void onTitle(TitleS2CPacket packet, CallbackInfo ci) {
         TitleS2CPacket.Action action = packet.getAction();
-        CodeUtilities.log(Level.WARN, packet.getText().getString());
         if (action == TitleS2CPacket.Action.ACTIONBAR) {
             if (packet.getText().getString().matches("DiamondFire  - .* CP - ⛁ .* Credits")) {
                 DFInfo.currentState = DFInfo.State.LOBBY;
-                System.out.println("Lobby");
             }
         }
     }
