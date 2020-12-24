@@ -1,13 +1,10 @@
 package io.github.codeutilities.mixin.messages;
 
-import com.sun.org.apache.bcel.internal.classfile.Code;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.events.ChatReceivedEvent;
 import io.github.codeutilities.util.DFInfo;
-import io.github.codeutilities.util.ToasterUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.toast.SystemToast;
 import net.minecraft.network.MessageType;
 import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
@@ -27,8 +24,12 @@ public class MixinGameMessageListener {
             if (packet.getLocation() == MessageType.CHAT || packet.getLocation() == MessageType.SYSTEM) {
                 ChatReceivedEvent.onMessage(packet.getMessage(), ci);
                 String text = packet.getMessage().getString();
-                updateVersion(text);
-                updateState(text);
+                try {
+                    this.updateVersion(text);
+                    this.updateState(text);
+                }catch (Exception e) {
+                    CodeUtilities.log(Level.ERROR, "Error while trying to parse the chat text!");
+                }
             }
         }
     }
@@ -68,15 +69,12 @@ public class MixinGameMessageListener {
         // Build Mode
         if (minecraftClient.player.isCreative() && text.contains("» You are now in build mode.") && text.startsWith("»")) {
             DFInfo.currentState = DFInfo.State.BUILD;
-            System.out.println("Build");
         }
 
         // Dev Mode
-        System.out.println(text + ": " + text.contains("» You are now in dev mode."));
         if (minecraftClient.player.isCreative() && text.contains("» You are now in dev mode.") && text.startsWith("»")) {
             DFInfo.currentState = DFInfo.State.DEV;
             DFInfo.plotCorner = minecraftClient.player.getPos().add(10, -50, -10);
-            System.out.println("Dev");
         }
     }
 }
