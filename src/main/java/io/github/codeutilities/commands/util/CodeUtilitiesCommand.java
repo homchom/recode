@@ -59,11 +59,14 @@ public class CodeUtilitiesCommand extends Command {
                 .executes(ctx -> {
                     mc.player.sendMessage(new LiteralText("§9§m                                                                    \n" +
                             "§e§lImage Commands:\n" +
-                            "§7･§6/image load colorcodes <filename>§f - Imports an image file to Code Template in legacy color code format.\n" +
-                            "§7･§6/image load hex <filename>§f - Imports an image file to Code Template in hex color format.\n" +
+                            "§7･§6/imagehologram load colorcodes <filename>§f - Converts an image to hologram, with legacy color codes.\n" +
+                            "§7･§6/imagehologram load hex <filename>§f - Converts an image to hologram, with hex color codes.\n" +
+                            "§7･§6/imageparticle load <filename>§f - Creates image data to print with particles.\n" +
+                            "§7･§6/imageparticle printer§f - Gives you the Particle Image Printer code template.\n" +
                             "§7> §fTo use the load command, place image files in §b.minecraft/CodeUtilities/Images§f.\n" +
-                            "§7> §fMaximum size of a legacy color code image is §b64x64§f.\n" +
-                            "§7> §fMaximum size of a hex color code image is §b17x17§f.\n" +
+                            "§7> §f(Hologram) Maximum size of a legacy color code image is §b64x64§f.\n" +
+                            "§7> §f(Hologram) Maximum size of a hex color code image is §b17x17§f.\n" +
+                            "§7> §f(Particle) Maximum size of an image is §b40x40§f.\n" +
                             "§9§m                                                                    "
                     ), false);
                     return 1;

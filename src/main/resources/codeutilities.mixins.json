@@ -6,7 +6,6 @@
     "MixinOptionsScreen",
     "MixinTitleScreen",
     "MixinHeldItemTooltip",
-    "MixinDebugHud",
     "item.MixinItemCreative",
     "item.MixinItemInsert",
     "item.MixinItemSlotUpdate",

@@ -4,21 +4,20 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.commands.arguments.ArgBuilder;
-import io.github.codeutilities.images.ImageConverter;
+import io.github.codeutilities.images.ImageToHologram;
 import io.github.codeutilities.util.*;
 import io.github.codeutilities.util.externalfile.ExternalFile;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.*;
-import net.minecraft.text.LiteralText;
 
 import java.io.File;
 
-public class ImageCommand extends Command {
+public class ImageHologramCommand extends Command {
 
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
-        cd.register(ArgBuilder.literal("image")
+        cd.register(ArgBuilder.literal("imagehologram")
                 .then(ArgBuilder.literal("load")
                         .then(ArgBuilder.literal("hex")
                             .then(ArgBuilder.argument("location", StringArgumentType.greedyString())
@@ -28,7 +27,7 @@ public class ImageCommand extends Command {
                                         File f = new File(ExternalFile.IMAGE_FILES.getFile(), location + (location.endsWith(".png") ? "" : ".png"));
 
                                         if (f.exists()) {
-                                            String[] strings = ImageConverter.convert116(f);
+                                            String[] strings = ImageToHologram.convert116(f);
 
                                             ItemStack stack = new ItemStack(Items.ENDER_CHEST);
                                             TemplateUtils.compressTemplateNBT(stack, StringArgumentType.getString(ctx, "location"), mc.player.getName().asString(), convert(strings));
@@ -52,7 +51,7 @@ public class ImageCommand extends Command {
                                                 File f = new File(ExternalFile.IMAGE_FILES.getFile(), location + (location.endsWith(".png") ? "" : ".png"));
 
                                                 if (f.exists()) {
-                                                    String[] strings = ImageConverter.convert115(f);
+                                                    String[] strings = ImageToHologram.convert115(f);
 
                                                     ItemStack stack = new ItemStack(Items.ENDER_CHEST);
                                                     TemplateUtils.compressTemplateNBT(stack, StringArgumentType.getString(ctx, "location"), mc.player.getName().asString(), convert(strings));

@@ -14,6 +14,7 @@ import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.MinecraftClient;
 import org.apache.logging.log4j.*;
 
+import java.time.OffsetDateTime;
 import java.util.Random;
 
 public class CodeUtilities implements ModInitializer {
@@ -55,17 +56,18 @@ public class CodeUtilities implements ModInitializer {
         AutoConfig.register(ModConfig.class, Toml4jConfigSerializer::new);
         // Add a shutdown hook so we can save players template data on exit.
         Runtime.getRuntime().addShutdownHook(new Thread(this::onClose));
-        //MinecraftCommunicator.initalize();
+
         CommandHandler.initialize();
         if (ModConfig.getConfig().itemApi) {
             SocketHandler.init();
         }
 
         new Thread(() -> {
-            TemplatesCommand.authenticate();
+//            TemplatesCommand.authenticate(); TODO: Reimplement this
             CustomHeadSearchGui.load();
             TemplateStorageHandler.load();
         }).start();
+
     }
 
     public void onClose() {
