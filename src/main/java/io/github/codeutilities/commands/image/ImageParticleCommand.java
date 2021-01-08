@@ -2,10 +2,8 @@ package io.github.codeutilities.commands.image;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import com.sun.scenario.effect.ImageData;
 import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.commands.arguments.ArgBuilder;
-import io.github.codeutilities.images.ImageToHologram;
 import io.github.codeutilities.images.ImageToParticle;
 import io.github.codeutilities.images.ParticleImage;
 import io.github.codeutilities.util.*;
@@ -13,7 +11,6 @@ import io.github.codeutilities.util.externalfile.ExternalFile;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.toast.SystemToast;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
