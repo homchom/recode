@@ -12,8 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 public class ChatReceivedEvent {
 
-    public static int rejoinStep = 0;
-    public static int pjoinStep = 0;
+    public static boolean pjoin = false;
 
     public static void onMessage(Text message, CallbackInfo ci) {
         MinecraftClient mc = MinecraftClient.getInstance();
@@ -25,30 +24,29 @@ public class ChatReceivedEvent {
             return;
         }
 
-        //PJoin command
-        if (pjoinStep > 0) {
-            cancel = true;
-            if (text.contains("          ")) {
-                pjoinStep--;
-            }else if (pjoinStep == 1) {
-                if (text.contains("is currently at §6spawn§e:")) {
-                    ChatUtil.sendMessage("This player is not in a plot.", ChatType.FAIL);
-                }else {
-                    try {
-                        String cmd = "/join " + (StringUtils.substringBetween(text, "[§7", "§8]"));
-                        if (cmd.matches("/join [0-9]+")) {
-                            mc.player.sendChatMessage(cmd);
-                        } else {
-                            ChatUtil.sendMessage("Error while trying to join the plot.", ChatType.FAIL);
-                            pjoinStep = 0;
-                        }
-                    }catch (Exception e) {
+        //PJoin command (broken right now)
+        if (pjoin) {
+            System.out.println(text.replaceAll("§", "&"));
+
+            if (text.contains("is currently at §6spawn§e:")) {
+                ChatUtil.sendMessage("This player is not in a plot.", ChatType.FAIL);
+            }else {
+                try {
+                    String[] lines = text.split("\\r?\\n");
+                    String cmd = "/join " + text.replaceAll(" .* \\[(.*)\\]", "$1");
+                    System.out.println(text.replaceAll("≫ .* \\[(.*)\\]", "$1"));
+                    if (cmd.matches("/join [0-9]+")) {
+                        mc.player.sendChatMessage(cmd);
+                    } else {
                         ChatUtil.sendMessage("Error while trying to join the plot.", ChatType.FAIL);
-                        e.printStackTrace();
-                        pjoinStep = 0;
                     }
+                    cancel = true;
+                }catch (Exception e) {
+                    e.printStackTrace();
+                    ChatUtil.sendMessage("Error while trying to join the plot.", ChatType.FAIL);
                 }
             }
+            pjoin = false;
         }
 
         //Cancelling (set cancel to true)

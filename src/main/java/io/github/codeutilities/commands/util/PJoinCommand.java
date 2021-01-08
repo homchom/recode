@@ -36,7 +36,7 @@ public class PJoinCommand extends Command {
         }
         mc.player.sendChatMessage("/locate " + player);
 
-        ChatReceivedEvent.pjoinStep = 2;
+        ChatReceivedEvent.pjoin = true;
 
         new Thread(() -> {
             try {
@@ -45,10 +45,10 @@ public class PJoinCommand extends Command {
                 e.printStackTrace();
             }
 
-            if (ChatReceivedEvent.pjoinStep > 0) {
+            if (ChatReceivedEvent.pjoin) {
                 ChatUtil.sendMessage("Timeout error while trying to join the plot.", ChatType.FAIL);
             }
-            ChatReceivedEvent.pjoinStep = 0;
+            ChatReceivedEvent.pjoin = false;
         }).start();
         return 1;
     }
