@@ -25,32 +25,6 @@ public class ChatReceivedEvent {
             return;
         }
 
-        //Rejoin command NOT NEEDED BECAUSE 5.3
-        if (rejoinStep > 0) {
-            cancel = true;
-            if (text.contains("          ")) {
-                rejoinStep--;
-            }else if (rejoinStep == 1) {
-                if (text.contains("ID: ")) {
-                    String finalId = StringUtils.substringBetween(text, "[ID: ", "]");
-                    if (finalId.matches("[0-9]+")) {
-                        new Thread(() -> {
-                            try {
-                                Thread.sleep(500);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            mc.player.sendChatMessage("/join " + finalId);
-                            ChatUtil.sendMessage("Rejoined plot " + finalId, ChatType.SUCCESS);
-                        }).start();
-                    }else {
-                        ChatUtil.sendMessage("Error while trying to rejoin the plot.", ChatType.FAIL);
-                        rejoinStep = 0;
-                    }
-                }
-            }
-        }
-
         //PJoin command
         if (pjoinStep > 0) {
             cancel = true;
@@ -61,7 +35,7 @@ public class ChatReceivedEvent {
                     ChatUtil.sendMessage("This player is not in a plot.", ChatType.FAIL);
                 }else {
                     try {
-                        String cmd = "/join " + (StringUtils.substringBetween(text, "[§7ID: ", "§8]"));
+                        String cmd = "/join " + (StringUtils.substringBetween(text, "[§7", "§8]"));
                         if (cmd.matches("/join [0-9]+")) {
                             mc.player.sendChatMessage(cmd);
                         } else {
