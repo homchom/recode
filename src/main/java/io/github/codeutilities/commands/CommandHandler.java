@@ -47,7 +47,6 @@ public class CommandHandler implements ClientCommandPlugin {
         if (ModConfig.getConfig().dfCommands) {
             register(
                     new GiveCommand(),
-                    new RejoinCommand(),
                     new PJoinCommand(),
                     new NodeCommand(),
                     new TemplatesCommand(),
