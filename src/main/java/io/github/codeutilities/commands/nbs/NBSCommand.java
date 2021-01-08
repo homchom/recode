@@ -23,7 +23,7 @@ public class NBSCommand extends Command {
     public static void loadNbs(File file, String fileName) {
         new Thread(() -> {
             try {
-                SongData d = io.github.codeutilities.commands.nbs.NBSDecoder.parse(file);
+                SongData d = NBSDecoder.parse(file);
                 String code = new NBSToTemplate(d).convert();
                 ItemStack stack = new ItemStack(Items.NOTE_BLOCK);
                 TemplateUtils.compressTemplateNBT(stack, d.getName(), d.getAuthor(), code);
