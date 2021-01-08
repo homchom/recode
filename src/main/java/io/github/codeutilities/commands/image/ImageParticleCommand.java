@@ -36,7 +36,7 @@ public class ImageParticleCommand extends Command {
                                             ItemStack stack = new ItemStack(Items.REDSTONE_ORE);
                                             TemplateUtils.compressTemplateNBT(stack, fileName, mc.player.getName().asString(), convertToTemplate(image, fileName));
                                             stack.setCustomName(new LiteralText("§6IMAGE§7 -§f " + fileName));
-                                            ItemUtil.giveCreativeItem(stack);
+                                            ItemUtil.giveCreativeItem(stack, true);
 
                                             ToasterUtil.sendToaster("Image Loaded!", fileName, SystemToast.Type.NARRATOR_TOGGLE);
                                         } else {
@@ -62,7 +62,7 @@ public class ImageParticleCommand extends Command {
                                 stack.addHideFlag(ItemStack.TooltipSection.ENCHANTMENTS);
                                 ChatUtil.sendMessage("You've received §6Particle Image Printer§b! Place it down in your codespace and open the chest to get functions!",
                                         ChatType.INFO_BLUE);
-                                ItemUtil.giveCreativeItem(stack);
+                                ItemUtil.giveCreativeItem(stack, true);
                                 return 1;
                             }catch (Exception e) {
                                 e.printStackTrace();

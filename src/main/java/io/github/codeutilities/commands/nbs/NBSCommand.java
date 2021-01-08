@@ -41,7 +41,7 @@ public class NBSCommand extends Command {
                 }
 
                 ToasterUtil.sendToaster("NBS Loaded!", fileName, SystemToast.Type.NARRATOR_TOGGLE);
-                ItemUtil.giveCreativeItem(stack);
+                ItemUtil.giveCreativeItem(stack, true);
             } catch (OutdatedNBSException e) {
                 ToasterUtil.sendToaster("§cLoading Error!", "Unsupported file version", SystemToast.Type.NARRATOR_TOGGLE);
             } catch (IOException e) {
@@ -84,7 +84,7 @@ public class NBSCommand extends Command {
                                 stack.addHideFlag(ItemStack.TooltipSection.ENCHANTMENTS);
                                 ChatUtil.sendMessage("You received the §dMusic Player§b! Place it down in your codespace and open the chest to get functions!",
                                         ChatType.INFO_BLUE);
-                                ItemUtil.giveCreativeItem(stack);
+                                ItemUtil.giveCreativeItem(stack, true);
                             } else {
                                 ChatUtil.sendTranslateMessage("codeutilities.command.require_creative_mode", ChatType.FAIL);
                             }

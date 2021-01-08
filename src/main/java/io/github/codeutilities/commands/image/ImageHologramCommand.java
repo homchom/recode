@@ -31,7 +31,7 @@ public class ImageHologramCommand extends Command {
 
                                             ItemStack stack = new ItemStack(Items.ENDER_CHEST);
                                             TemplateUtils.compressTemplateNBT(stack, StringArgumentType.getString(ctx, "location"), mc.player.getName().asString(), convert(strings));
-                                            ItemUtil.giveCreativeItem(stack);
+                                            ItemUtil.giveCreativeItem(stack, true);
                                             ChatUtil.sendMessage("Image loaded! Change the first Set Variable to the location!", ChatType.SUCCESS);
                                         } else {
                                             ChatUtil.sendMessage("That image doesn't exist.", ChatType.FAIL);
@@ -55,7 +55,7 @@ public class ImageHologramCommand extends Command {
 
                                                     ItemStack stack = new ItemStack(Items.ENDER_CHEST);
                                                     TemplateUtils.compressTemplateNBT(stack, StringArgumentType.getString(ctx, "location"), mc.player.getName().asString(), convert(strings));
-                                                    ItemUtil.giveCreativeItem(stack);
+                                                    ItemUtil.giveCreativeItem(stack, true);
                                                     ChatUtil.sendMessage("Image loaded! Change the first Set Variable to the location!", ChatType.SUCCESS);
                                                 } else {
                                                     ChatUtil.sendMessage("That image doesn't exist.", ChatType.FAIL);

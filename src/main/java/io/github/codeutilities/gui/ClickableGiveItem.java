@@ -14,7 +14,7 @@ public class ClickableGiveItem extends CItem {
     @Override
     public void onClick(int x, int y, int button) {
         MinecraftClient mc = MinecraftClient.getInstance();
-        ItemUtil.giveCreativeItem(getItems().get(0));
+        ItemUtil.giveCreativeItem(getItems().get(0), true);
         mc.player.playSound(SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 2, 1);
     }
 }

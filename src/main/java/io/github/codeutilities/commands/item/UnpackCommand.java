@@ -22,7 +22,7 @@ public class UnpackCommand extends Command {
                             for (ItemStack stack : ItemUtil.fromItemContainer(handItem)) {
                                 if (!stack.isEmpty()) {
                                     items++;
-                                    ItemUtil.giveCreativeItem(stack);
+                                    ItemUtil.giveCreativeItem(stack, true);
                                 }
                             }
 
