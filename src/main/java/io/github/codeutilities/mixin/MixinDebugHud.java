@@ -1,6 +1,5 @@
 package io.github.codeutilities.mixin;
 
-import com.sun.org.apache.bcel.internal.classfile.Code;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.util.DFInfo;
