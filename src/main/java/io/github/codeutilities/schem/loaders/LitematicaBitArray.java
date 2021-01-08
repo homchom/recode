@@ -1,6 +1,4 @@
-package io.github.codeutilities.schem;
-
-import org.apache.commons.lang3.Validate;
+package io.github.codeutilities.schem.loaders;
 
 public class LitematicaBitArray
 {
@@ -23,7 +21,7 @@ public class LitematicaBitArray
 
     public LitematicaBitArray(int bitsPerEntryIn, long arraySizeIn, long[] longArrayIn)
     {
-        Validate.inclusiveBetween(1L, 32L, (long) bitsPerEntryIn);
+        isInRange(1L, 32L, bitsPerEntryIn);
         this.arraySize = arraySizeIn;
         this.bitsPerEntry = bitsPerEntryIn;
         this.maxEntryValue = (1L << bitsPerEntryIn) - 1L;
@@ -40,8 +38,8 @@ public class LitematicaBitArray
 
     public void setAt(long index, int value)
     {
-        Validate.inclusiveBetween(0L, this.arraySize - 1L, (long) index);
-        Validate.inclusiveBetween(0L, this.maxEntryValue, (long) value);
+        isInRange(0L, this.arraySize - 1L, (long) index);
+        isInRange(0L, this.maxEntryValue, (long) value);
         long startOffset = index * (long) this.bitsPerEntry;
         int startArrIndex = (int) (startOffset >> 6); // startOffset / 64
         int endArrIndex = (int) (((index + 1L) * (long) this.bitsPerEntry - 1L) >> 6);
@@ -57,7 +55,8 @@ public class LitematicaBitArray
     }
 
     public int getAt(long index) {
-        Validate.inclusiveBetween(0L, this.arraySize - 1L, (long) index);
+        isInRange(0L, this.arraySize - 1L, index);
+
         long startOffset = index * (long) this.bitsPerEntry;
         int startArrIndex = (int) (startOffset >> 6); // startOffset / 64
         int endArrIndex = (int) (((index + 1L) * (long) this.bitsPerEntry - 1L) >> 6);
@@ -69,12 +68,12 @@ public class LitematicaBitArray
         if (endArrIndex >= this.longArray.length){
             endArrIndex = clamp(endArrIndex, 0, (this.longArray.length-1));
         }
-            if (startArrIndex == endArrIndex) {
-                return (int) (this.longArray[startArrIndex] >>> startBitOffset & this.maxEntryValue);
-            } else {
-                int endOffset = 64 - startBitOffset;
-                return (int) ((this.longArray[startArrIndex] >>> startBitOffset | this.longArray[endArrIndex] << endOffset) & this.maxEntryValue);
-            }
+        if (startArrIndex == endArrIndex) {
+            return (int) (this.longArray[startArrIndex] >>> startBitOffset & this.maxEntryValue);
+        } else {
+            int endOffset = 64 - startBitOffset;
+            return (int) ((this.longArray[startArrIndex] >>> startBitOffset | this.longArray[endArrIndex] << endOffset) & this.maxEntryValue);
+        }
     }
 
     public int[] getValueCounts()
@@ -98,6 +97,12 @@ public class LitematicaBitArray
     public long size()
     {
         return this.arraySize;
+    }
+
+    public void isInRange(long start, long end, long value) {
+        if (value < start || value > end) {
+            throw new IllegalArgumentException(value + " not in the range of " + start + " to " + end);
+        }
     }
 
     public static int clamp(int val, int min, int max) {

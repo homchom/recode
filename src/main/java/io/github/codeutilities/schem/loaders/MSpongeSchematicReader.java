@@ -85,25 +85,6 @@ public class MSpongeSchematicReader extends MNBTSchematicReader {
         int height = requireTag(schematic, "Height", ShortTag.class).getValue();
         int length = requireTag(schematic, "Length", ShortTag.class).getValue();
 
-        IntArrayTag offsetTag = getTag(schematic, "Offset", IntArrayTag.class);
-        int[] offsetParts;
-        if (offsetTag != null) {
-            offsetParts = offsetTag.getValue();
-            if  (offsetParts.length != 3) {
-                throw new IOException("Invalid offset specified in schematic.");
-            }
-        }
-
-        CompoundTag metadataTag = getTag(schematic, "Metadata", CompoundTag.class);
-        if (metadataTag != null && metadataTag.containsKey("WEOffsetX")) {
-            // We appear to have WorldEdit Metadata
-            Map<String, Tag> metadata = metadataTag.getValue();
-            int offsetX = requireTag(metadata, "WEOffsetX", IntTag.class).getValue();
-            int offsetY = requireTag(metadata, "WEOffsetY", IntTag.class).getValue();
-            int offsetZ = requireTag(metadata, "WEOffsetZ", IntTag.class).getValue();
-            clipboard.setOffset(offsetX, offsetY, offsetZ);
-        }
-
         IntTag paletteMaxTag = getTag(schematic, "PaletteMax", IntTag.class);
         Map<String, Tag> paletteObject = requireTag(schematic, "Palette", CompoundTag.class).getValue();
         if (paletteMaxTag != null && paletteObject.size() != paletteMaxTag.getValue()) {

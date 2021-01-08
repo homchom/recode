@@ -5,7 +5,7 @@ import java.util.stream.IntStream;
 
 import io.github.codeutilities.schem.sk89q.worldedit.math.BlockVector3;
 import io.github.codeutilities.schem.utils.DFText;
-import io.github.codeutilities.schem.DFUtils;
+import io.github.codeutilities.schem.utils.DFUtils;
 
 public class Schematic {
 	public String name = "Unnamed";
@@ -49,7 +49,7 @@ public class Schematic {
 	}
 	
 	public void AddBlock(int block) {
-		if(block > 0) this.blocks.add(block);
+		if(block >= 0) this.blocks.add(block);
 	}
 
 	public BlockVector3 getDimensions() {
@@ -91,7 +91,7 @@ public class Schematic {
 			if (currentBlock == prevBlock) {
 				prevBlockRepeated++;
 			} else {
-				int char1 = (int) Math.ceil(prevBlock / 65);
+				int char1 = (int) Math.floor(prevBlock / 65);
 				int char2 = prevBlock % 65;
 				if (char2 == 0) char2 = 65;
 
@@ -105,14 +105,16 @@ public class Schematic {
 			}
 		}
 		
-		int char1 = (int)Math.ceil(prevBlock / 65);
+		int char1 = (int)Math.floor(prevBlock / 65);
 		int char2 = prevBlock % 65;
 		if(char2 == 0) char2 = 65;
 		
-		if(prevBlockRepeated != 1) blocksClone.add(CompressList[char1] + CompressList[char2 - 1] + prevBlockRepeated); 
+		if(prevBlockRepeated != 1) blocksClone.add(CompressList[char1] + CompressList[char2 - 1] + prevBlockRepeated);
 		else blocksClone.add(CompressList[char1] + CompressList[char2 - 1]);
 
-		return DFUtils.JoinString(500, "", blocksClone);
+		DFText[] result = DFUtils.JoinString(500, "", blocksClone);
+		blocksTextsLen = result.length;
+		return result;
 	}
 
 	public int getBlocksCount() {
@@ -122,6 +124,6 @@ public class Schematic {
 	public int getListAmount() {
 		if(blocksTextsLen == 0 && this.blocks.size() != 0) getBlocksTexts();
 
-		return (int)Math.ceil((float)blocksTextsLen/ 5000000f);
+		return (int)Math.ceil((double)blocksTextsLen / 5000000d);
 	}
 }

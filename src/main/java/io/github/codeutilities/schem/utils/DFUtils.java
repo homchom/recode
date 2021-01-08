@@ -1,12 +1,12 @@
-package io.github.codeutilities.schem;
+package io.github.codeutilities.schem.utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import io.github.codeutilities.schem.utils.*;
-import io.github.codeutilities.schem.sk89q.worldedit.math.*;
+import io.github.codeutilities.schem.Schematic;
+import io.github.codeutilities.schem.utils.DFNumber;
 
 public class DFUtils {
 	
@@ -90,10 +90,10 @@ public class DFUtils {
 	}
 	
 	public static String[] GenerateSchematicFunction(Schematic schematic) {
-		String functionHeader = DFUtils.GenerateFunctionHeader(schematic.name);
 		String schemDataJson = DFUtils.GenerateSchematicData(schematic);
 		String paletteJson = DFUtils.GeneratePaletteList(schematic.getPaletteTexts());
 		String blocksJson = DFUtils.GenerateBlockDataList(schematic.getBlocksTexts());
+		String functionHeader = DFUtils.GenerateFunctionHeader(schematic.name);
 
 		return SplitJson(functionHeader + "," + schemDataJson + "," + paletteJson + "," + blocksJson);
 	}

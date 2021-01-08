@@ -2,7 +2,6 @@ package io.github.codeutilities.schem.loaders;
 
 import io.github.codeutilities.schem.sk89q.jnbt.*;
 import io.github.codeutilities.schem.Schematic;
-import io.github.codeutilities.schem.loaders.MNBTSchematicReader;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -37,8 +36,10 @@ public class MCEditSchematicLoader extends MNBTSchematicReader {
 
         Map<String, Tag> schematicData = compoundTag.getValue();
 
-        StringTag materials = requireTag(schematicData, "Materials", StringTag.class);
-        if(!materials.getValue().equals("Alpha")) throw new RuntimeException("This schematic isn't supported !");
+        StringTag materials = getTag(schematicData, "Materials", StringTag.class);
+        if(materials != null)
+            if(!materials.getValue().equals("Alpha"))
+                throw new RuntimeException("This schematic isn't supported !");
 
         schematic.setWidth(requireTag(schematicData, "Width", ShortTag.class).getValue());
         schematic.setHeight(requireTag(schematicData, "Height", ShortTag.class).getValue());
@@ -46,14 +47,26 @@ public class MCEditSchematicLoader extends MNBTSchematicReader {
 
         byte[] blocks = requireTag(schematicData, "Blocks", ByteArrayTag.class).getValue();
         byte[] data = requireTag(schematicData, "Data", ByteArrayTag.class).getValue();
-        byte[] addId = new byte[0];
+        byte[] addArray = new byte[0];
+
+        short[] blocksFinal = new short[blocks.length];
 
         if (schematicData.containsKey("AddBlocks")) {
-            addId = requireTag(schematicData, "AddBlocks", ByteArrayTag.class).getValue();
+            addArray = requireTag(schematicData, "AddBlocks", ByteArrayTag.class).getValue();
+        }
+        
+        for (int i = 0; i < blocks.length; i++) {
+            if ((i >> 1) >= addArray.length) {
+                blocksFinal[i] = ((short) (blocks[i] & 255));
+            } else if ((i & 1) == 0) {
+                blocksFinal[i] = ((short) (((addArray[i >> 1] & 15) << 8) + (blocks[i] & 255)));
+            } else {
+                blocksFinal[i] = ((short) (((addArray[i >> 1] & 240) << 4) + (blocks[i] & 255)));
+            }
         }
 
         for (int i = 0; i < blocks.length; i++) {
-            byte blockValue = blocks[i];
+            short blockValue = blocksFinal[i];
             byte blockMetadata = data[i];
 
             String block = legacyBlocksList.get(blockValue + ":" + blockMetadata);

@@ -5,8 +5,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import io.github.codeutilities.schem.utils.DFText;
-import io.github.codeutilities.schem.Schematic;
+import io.github.codeutilities.schem.utils.DFUtils;
 import io.github.codeutilities.util.TemplateUtils;
+import io.github.codeutilities.schem.loaders.LitematicaBitArray;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
