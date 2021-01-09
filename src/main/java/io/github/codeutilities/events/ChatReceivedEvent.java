@@ -28,13 +28,13 @@ public class ChatReceivedEvent {
         if (pjoin) {
             System.out.println(text.replaceAll("§", "&"));
 
-            if (text.contains("is currently at §6spawn§e:")) {
+            if (text.contains("is currently at§6 spawn.")) {
                 ChatUtil.sendMessage("This player is not in a plot.", ChatType.FAIL);
             }else {
                 try {
-                    String[] lines = text.split("\\r?\\n");
-                    String cmd = "/join " + text.replaceAll(" .* \\[(.*)\\]", "$1");
-                    System.out.println(text.replaceAll("≫ .* \\[(.*)\\]", "$1"));
+                    String[] lines = text.split("\n");
+                    String cmd = "/join " + lines[2].replaceAll(" .* \\[(.*)\\]$", "$1");
+                    System.out.println(lines[2] + " || " + lines[2].replaceAll("≫ .* \\[(.*)\\]$", "$1"));
                     if (cmd.matches("/join [0-9]+")) {
                         mc.player.sendChatMessage(cmd);
                     } else {
