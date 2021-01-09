@@ -94,7 +94,7 @@ public class SchemCommand extends Command {
                                                 NBTInputStream nbtStream = new NBTInputStream(new GZIPInputStream(new FileInputStream(finalFile)));
                                                 reader = new LitematicaLoader(nbtStream);
                                             } else {
-                                                ChatUtil.sendMessage("The file has to be a litematic, schematic, schem or vanilla nbt format.", ChatType.FAIL);
+                                                ChatUtil.sendMessage("[Schem2DF] The file has to be a litematic, schematic, schem or vanilla nbt format.", ChatType.FAIL);
                                                 return;
                                             }
 
