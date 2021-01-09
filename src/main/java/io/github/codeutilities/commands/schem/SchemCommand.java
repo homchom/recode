@@ -2,13 +2,11 @@ package io.github.codeutilities.commands.schem;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.commands.arguments.ArgBuilder;
 import io.github.codeutilities.schem.loaders.LitematicaLoader;
 import io.github.codeutilities.schem.utils.DFUtils;
-import io.github.codeutilities.schem.Litematica;
 import io.github.codeutilities.schem.Schematic;
 import io.github.codeutilities.schem.loaders.MCEditSchematicLoader;
 import io.github.codeutilities.schem.loaders.MSchematicReader;
@@ -22,6 +20,7 @@ import net.minecraft.client.toast.SystemToast;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.LiteralText;
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -104,18 +103,19 @@ public class SchemCommand extends Command {
                                             Schematic schematic = reader.read();
                                             reader.close();
 
-                                            String[] templateDatas = DFUtils.GenerateSchematicFunction(schematic);
+                                            String[] templateDatas = DFUtils.GenerateSchematicFunction(schematic, FilenameUtils.removeExtension(finalFile.getName()));
+                                            System.out.println(schematic.name);
                                             for (int i = 0; i < templateDatas.length; i++) {
                                                 ItemStack stack = new ItemStack(Items.NETHER_QUARTZ_ORE);
                                                 TemplateUtils.compressTemplateNBT(stack, "Schem2DF Data", "CodeUtilities", templateDatas[i]);
-                                                stack.setCustomName(new LiteralText(new StringBuilder().append("§b§lFunction §3» ").append(schematic.name).append(" #").append(i+1).toString()));
+                                                stack.setCustomName(new LiteralText(new StringBuilder().append("§b§lFunction §3» ").append(schematic.name == "Unnamed" ? schematic.name : FilenameUtils.removeExtension(finalFile.getName())).append(" #").append(i+1).toString()));
                                                 ItemUtil.giveCreativeItem(stack, false);
                                                 Thread.sleep(2);
                                             }
 
                                             ChatUtil.sendMessage("[Schem2DF] The file has successfully been loaded!", ChatType.SUCCESS);
-                                            ChatUtil.sendMessage("[Schem2DF] Connect all Code Templates together, and use it with §dSchem2DF Builder§a.", ChatType.SUCCESS);
-                                            ChatUtil.sendMessage("[Schem2DF] Schem2DF Builder can be obtained with §e/schem builder§a.", ChatType.SUCCESS);
+                                            ChatUtil.sendMessage("[Schem2DF] Connect all Code Templates together, and use it with §dSchem2DF Builder§b.", ChatType.INFO_BLUE);
+                                            ChatUtil.sendMessage("[Schem2DF] Schem2DF Builder can be obtained with §d/schem builder§b.", ChatType.INFO_BLUE);
                                             ToasterUtil.sendToaster("Structure File Loaded!", finalFile.getName(), SystemToast.Type.NARRATOR_TOGGLE);
                                         } catch (Exception e) {
                                             ChatUtil.sendMessage("An error occurred while executing this command.", ChatType.FAIL);

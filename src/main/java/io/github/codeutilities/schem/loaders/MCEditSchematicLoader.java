@@ -31,6 +31,8 @@ public class MCEditSchematicLoader extends MNBTSchematicReader {
     public Schematic read() throws IOException {
         Schematic schematic = new Schematic();
 
+        schematic.fileType = "MCEdit";
+
         NamedTag namedTag = nbtInputStream.readNamedTag();
         CompoundTag compoundTag = (CompoundTag) namedTag.getTag();
 

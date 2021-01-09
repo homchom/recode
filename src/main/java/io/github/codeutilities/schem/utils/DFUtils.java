@@ -65,11 +65,11 @@ public class DFUtils {
 		return String.join(",", jsons);
 	}
 	
-	public static String GenerateSchematicData(Schematic schematic) {
+	public static String GenerateSchematicData(Schematic schematic, String fallbackName) {
 		String json = "{\"id\":\"block\",\"block\":\"set_var\",\"args\":{\"items\":[";
 		
 		json += "{\"item\":" + "{\"id\":\"var\",\"data\":{\"name\":\"SchemData\",\"scope\":\"local\"}}" + ",\"slot\":0},";
-		json += "{\"item\":" + new DFText(schematic.name).asJson() + ",\"slot\":1},";
+		json += "{\"item\":" + new DFText(schematic.name == "Unnamed" ? schematic.name : fallbackName).asJson() + ",\"slot\":1},";
 		json += "{\"item\":" + new DFText(schematic.author).asJson() + ",\"slot\":2},";
 		json += "{\"item\":" + new DFText(schematic.description).asJson() + ",\"slot\":3},";
 		json += "{\"item\":" + new DFNumber(schematic.creationTime).asJson() + ",\"slot\":4},";
@@ -89,11 +89,11 @@ public class DFUtils {
 		return json;
 	}
 	
-	public static String[] GenerateSchematicFunction(Schematic schematic) {
-		String schemDataJson = DFUtils.GenerateSchematicData(schematic);
+	public static String[] GenerateSchematicFunction(Schematic schematic, String fallbackName) {
+		String schemDataJson = DFUtils.GenerateSchematicData(schematic, fallbackName);
 		String paletteJson = DFUtils.GeneratePaletteList(schematic.getPaletteTexts());
 		String blocksJson = DFUtils.GenerateBlockDataList(schematic.getBlocksTexts());
-		String functionHeader = DFUtils.GenerateFunctionHeader(schematic.name);
+		String functionHeader = DFUtils.GenerateFunctionHeader(schematic.name == "Unnamed" ? schematic.name : fallbackName);
 
 		return SplitJson(functionHeader + "," + schemDataJson + "," + paletteJson + "," + blocksJson);
 	}

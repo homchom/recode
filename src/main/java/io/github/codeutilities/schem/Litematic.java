@@ -17,6 +17,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.Tag;
 import net.minecraft.text.LiteralText;
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,7 +26,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Litematica {
+public class Litematic {
 
     public static String parse(File file) {
         try {
@@ -119,7 +120,7 @@ public class Litematica {
             schematicData.setHeight(height);
             schematicData.setLength(length);
             schematicData.fileType = "Litematic";
-            String nbt = "{\"blocks\":[" + DFUtils.GenerateFunctionHeader(schematicData.name) + "," + DFUtils.GenerateSchematicData(schematicData);
+            String nbt = "{\"blocks\":[" + DFUtils.GenerateFunctionHeader(schematicData.name) + "," + DFUtils.GenerateSchematicData(schematicData, FilenameUtils.removeExtension(file.getName()));
 
             nbt += ",{\"id\":\"block\",\"block\":\"set_var\",\"args\":{\"items\":[{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"Palette\",\"scope\":\"local\"}},\"slot\":0}";
             codeblocks++;
