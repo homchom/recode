@@ -21,6 +21,7 @@ public class CodeUtilitiesCommand extends Command {
                                     "§7･§6/codeutilities item§f - Shows a list of item commands\n" +
                                     "§7･§6/codeutilities music§f - Shows a list of music commands\n" +
                                     "§7･§6/codeutilities image§f - Shows a list of image commands\n" +
+                                    "§7･§6/codeutilities schem2df§f - Shows a list of Schem2DF commands\n" +
                                     "§7･§6/codeutilities misc§f - Shows a list of miscellaneous commands\n" +
                                     "§9§m                                                                    "), false);
                             return 1;
@@ -72,6 +73,21 @@ public class CodeUtilitiesCommand extends Command {
                     return 1;
                 })
             )
+                        .then(ArgBuilder.literal("schem2df")
+                                .executes(ctx -> {
+                                    mc.player.sendMessage(new LiteralText("§9§m                                                                    \n" +
+                                            "§e§lSchem2DF Commands:\n" +
+                                            "§7･§6/schem load <filename>§f - Creates the Structure Data code templates.\n" +
+                                            "§7･§6/schem builder§f - Gives you the Schem2DF Builder.\n" +
+                                            "§7･§6/schem saver§f - Gives you the Schem2DF Saver.\n" +
+                                            "§7･§6/schem transferer§f - Gives you the Schem2DF Transferer.\n" +
+                                            "§7> §fTo use the load command, place structure files in §b.minecraft/schematic§f.\n" +
+                                            "§7> §fSupported structure files: §b.schematic .schem .litematic§f or §bStructure Block NBT Files§f.\n" +
+                                            "§9§m                                                                    "
+                                    ), false);
+                                    return 1;
+                                })
+                        )
         .then(ArgBuilder.literal("misc")
                 .executes(ctx -> {
                     mc.player.sendMessage(new LiteralText("§9§m                                                                    \n" +
