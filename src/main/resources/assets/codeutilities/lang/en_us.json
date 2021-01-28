@@ -17,6 +17,7 @@
   "text.autoconfig.codeutilities.option.errorSound": "Error Message Sound",
   "text.autoconfig.codeutilities.option.headMenuMaxRender": "Maximum Heads in /heads",
   "text.autoconfig.codeutilities.option.colorMaxRender": "Maximum Colors in /colors",
+  "text.autoconfig.codeutilities.option.colorLines": "Lines in /colors"
 
   "codeutilities.command.require_creative_mode": "You must be in creative mode to use this command!"
 
