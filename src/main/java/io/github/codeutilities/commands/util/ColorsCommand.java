@@ -12,7 +12,7 @@ import net.minecraft.text.*;
 public class ColorsCommand extends Command {
 
     private final ModConfig config = ModConfig.getConfig();
-    private MinecraftClient mc = MinecraftClient.getInstance();
+    private final MinecraftClient mc = MinecraftClient.getInstance();
 
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
@@ -20,11 +20,11 @@ public class ColorsCommand extends Command {
             showColorPalette(1);
             return 1;
         })
-        .then(ArgBuilder.argument("Saturation(%)", IntegerArgumentType.integer(0, 100)).executes((context) -> {
-            float saturation = (float)IntegerArgumentType.getInteger(context, "Saturation(%)");
-            showColorPalette(saturation/100f);
-            return 1;
-        })));
+                .then(ArgBuilder.argument("Saturation(%)", IntegerArgumentType.integer(0, 100)).executes((context) -> {
+                    float saturation = (float) IntegerArgumentType.getInteger(context, "Saturation(%)");
+                    showColorPalette(saturation / 100f);
+                    return 1;
+                })));
     }
 
     private void showColorPalette(float saturation) {

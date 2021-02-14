@@ -3,12 +3,11 @@ package io.github.codeutilities.schem;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
+import io.github.codeutilities.CodeUtilities;
+import io.github.codeutilities.schem.loaders.LitematicaBitArray;
 import io.github.codeutilities.schem.utils.DFText;
 import io.github.codeutilities.schem.utils.DFUtils;
 import io.github.codeutilities.util.TemplateUtils;
-import io.github.codeutilities.schem.loaders.LitematicaBitArray;
-
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
@@ -59,7 +58,7 @@ public class Litematic {
             CompoundTag size = litematicdata.getCompound("Size");
             ListTag palette = litematicdata.getList("BlockStatePalette", 10);
             long[] longblockstates = litematicdata.getLongArray("BlockStates");
-            int nbits = (int) Math.max(Math.ceil(log2(palette.size())), 2)+1;
+            int nbits = (int) Math.max(Math.ceil(log2(palette.size())), 2) + 1;
             LitematicaBitArray arr = new LitematicaBitArray(nbits, volume, longblockstates);
             ArrayList<String> Properties = new ArrayList<>();
             ArrayList<String> PaletteBlocks = new ArrayList<>();
@@ -76,19 +75,19 @@ public class Litematic {
 
             for (int i = 0; i < palette.size(); i++) {
                 Tag block = palette.get(i);
-                JsonParser parser = new JsonParser();
+                JsonParser parser = CodeUtilities.JSON_PARSER;
                 JsonElement blockjson = parser.parse(block.toString());
                 JsonObject properties = blockjson.getAsJsonObject().getAsJsonObject("Properties");
                 JsonElement blocktype = blockjson.getAsJsonObject().get("Name");
                 String property = "";
-                if(properties != null){
-                    for(Object prop : properties.entrySet().toArray()) {
+                if (properties != null) {
+                    for (Object prop : properties.entrySet().toArray()) {
                         property += "," + prop.toString();
                     }
                 }
 
-                if(property != ""){
-                    property = property.substring(1, property.length());
+                if (property != "") {
+                    property = property.substring(1);
                 }
                 String blockMetadata = "[" + property.replaceAll("\"", "") + "]";
                 schematicData.AddBlockToPalette(blocktype.getAsString() + ((blockMetadata == "[]") ? "" : blockMetadata));
@@ -99,7 +98,7 @@ public class Litematic {
                 for (int y = 0; y < Math.abs(height); y++) {
                     for (int z = 0; z < Math.abs(length); z++) {
                         int index = (y * Math.abs(width * length)) + z * Math.abs(width) + x;
-                        if(arr.getAt(index2) == 1){
+                        if (arr.getAt(index2) == 1) {
                             stone++;
                         }
                         BlockIds[index2] = arr.getAt(index2);
@@ -126,16 +125,16 @@ public class Litematic {
             codeblocks++;
             int slots = 1;
             boolean createlist = true;
-            for (DFText thing:schematicData.getPaletteTexts()) {
-                if(slots >= 27){
+            for (DFText thing : schematicData.getPaletteTexts()) {
+                if (slots >= 27) {
                     slots = 1;
-                    if(createlist){
+                    if (createlist) {
                         nbt += "]},\"action\":\"CreateList\"}";
-                    }else{
+                    } else {
                         nbt += "]},\"action\":\"AppendValue\"}";
                     }
-                    if(codeblocks >= 23){
-                        nbt += ",{\"id\":\"block\",\"block\":\"call_func\",\"args\":{\"items\":[]},\"data\":\"Build" + (functions+1) + "\"}";
+                    if (codeblocks >= 23) {
+                        nbt += ",{\"id\":\"block\",\"block\":\"call_func\",\"args\":{\"items\":[]},\"data\":\"Build" + (functions + 1) + "\"}";
                         nbt += "]}";
                         ItemStack item = Blocks.TWISTING_VINES.asItem().getDefaultStack();
                         TemplateUtils.compressTemplateNBT(item, file.getName(), "SchemaDF", nbt);
@@ -152,13 +151,13 @@ public class Litematic {
                 nbt += ",{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"" + thing.text + "\"}},\"slot\":" + slots + "}";
                 slots++;
             }
-            if(createlist){
+            if (createlist) {
                 nbt += "]},\"action\":\"CreateList\"}";
-            }else{
+            } else {
                 nbt += "]},\"action\":\"AppendValue\"}";
             }
 
-            if(codeblocks >= 23) {
+            if (codeblocks >= 23) {
                 nbt += ",{\"id\":\"block\",\"block\":\"call_func\",\"args\":{\"items\":[]},\"data\":\"Build" + (functions + 1) + "\"}";
                 nbt += "]}";
                 ItemStack item = Blocks.TWISTING_VINES.asItem().getDefaultStack();
@@ -178,16 +177,16 @@ public class Litematic {
             DFText[] blocksTexts = schematicData.getBlocksTexts();
 
             System.out.println("list length: " + blocksTexts.length);
-            for (DFText thing:blocksTexts) {
-                if(slots >= 27){
+            for (DFText thing : blocksTexts) {
+                if (slots >= 27) {
                     slots = 1;
-                    if(createlist){
+                    if (createlist) {
                         nbt += "]},\"action\":\"CreateList\"}";
-                    }else{
+                    } else {
                         nbt += "]},\"action\":\"AppendValue\"}";
                     }
-                    if(codeblocks >= 23){
-                        nbt += ",{\"id\":\"block\",\"block\":\"call_func\",\"args\":{\"items\":[]},\"data\":\"Build" + (functions+1) + "\"}";
+                    if (codeblocks >= 23) {
+                        nbt += ",{\"id\":\"block\",\"block\":\"call_func\",\"args\":{\"items\":[]},\"data\":\"Build" + (functions + 1) + "\"}";
                         nbt += "]}";
                         ItemStack item = Blocks.TWISTING_VINES.asItem().getDefaultStack();
                         TemplateUtils.compressTemplateNBT(item, file.getName(), "SchemaDF", nbt);
@@ -204,9 +203,9 @@ public class Litematic {
                 nbt += ",{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"" + thing.text + "\"}},\"slot\":" + slots + "}";
                 slots++;
             }
-            if(createlist){
+            if (createlist) {
                 nbt += "]},\"action\":\"CreateList\"}";
-            }else{
+            } else {
                 nbt += "]},\"action\":\"AppendValue\"}";
             }
             nbt += "]}";
@@ -224,7 +223,7 @@ public class Litematic {
     }
 
     private static int log2(int N) {
-        int result = (int)(Math.log(N) / Math.log(2));
+        int result = (int) (Math.log(N) / Math.log(2));
         return result;
     }
 }

@@ -3,13 +3,15 @@ package io.github.codeutilities.commands.item;
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.commands.arguments.ArgBuilder;
-import io.github.codeutilities.util.*;
+import io.github.codeutilities.util.ChatType;
+import io.github.codeutilities.util.ChatUtil;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.text.*;
+import net.minecraft.text.ClickEvent;
 import net.minecraft.text.ClickEvent.Action;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.registry.Registry;
 
 public class ItemdataCommand extends Command {

@@ -7,7 +7,8 @@ import io.github.codeutilities.commands.arguments.ArgBuilder;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class NodeCommand extends Command {
 

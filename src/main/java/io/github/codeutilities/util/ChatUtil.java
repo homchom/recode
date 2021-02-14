@@ -2,7 +2,8 @@ package io.github.codeutilities.util;
 
 import io.github.codeutilities.config.ModConfig;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.sound.*;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.*;
 import org.jetbrains.annotations.Nullable;
 

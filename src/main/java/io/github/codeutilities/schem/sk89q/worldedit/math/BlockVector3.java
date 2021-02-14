@@ -447,9 +447,9 @@ public final class BlockVector3 {
      */
     public BlockVector3 cross(BlockVector3 other) {
         return new BlockVector3(
-            y * other.z - z * other.y,
-            z * other.x - x * other.z,
-            x * other.y - y * other.x
+                y * other.z - z * other.y,
+                z * other.x - x * other.z,
+                x * other.y - y * other.x
         );
     }
 
@@ -472,8 +472,8 @@ public final class BlockVector3 {
      * @return a new vector
      */
     public BlockVector3 clampY(int min, int max) {
-        if(!(min <= max))
-        	System.out.println("minimum cannot be greater than maximum");
+        if (!(min <= max))
+            System.out.println("minimum cannot be greater than maximum");
         if (y < min) {
             return BlockVector3.at(x, min, z);
         }
@@ -528,13 +528,12 @@ public final class BlockVector3 {
     /**
      * Perform a 2D transformation on this vector and return a new one.
      *
-     * @param angle in degrees
-     * @param aboutX about which x coordinate to rotate
-     * @param aboutZ about which z coordinate to rotate
+     * @param angle      in degrees
+     * @param aboutX     about which x coordinate to rotate
+     * @param aboutZ     about which z coordinate to rotate
      * @param translateX what to add after rotation
      * @param translateZ what to add after rotation
      * @return a new vector
-     * @see AffineTransform another method to transform vectors
      */
     public BlockVector3 transform2D(double angle, double aboutX, double aboutZ, double translateX, double translateZ) {
         angle = Math.toRadians(angle);
@@ -546,9 +545,9 @@ public final class BlockVector3 {
         double z2 = x * sin + z * cos;
 
         return BlockVector3.at(
-            x2 + aboutX + translateX,
-            y,
-            z2 + aboutZ + translateZ
+                x2 + aboutX + translateX,
+                y,
+                z2 + aboutZ + translateZ
         );
     }
 
@@ -640,6 +639,7 @@ public final class BlockVector3 {
 
     /**
      * Returns a string representation that is supported by the parser.
+     *
      * @return string
      */
     public String toParserString() {

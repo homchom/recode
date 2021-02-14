@@ -1,22 +1,18 @@
 package io.github.codeutilities.mixin.item;
 
-import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.template.TemplateStorageHandler;
 import io.github.codeutilities.util.DFInfo;
 import io.github.codeutilities.util.TemplateUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.item.*;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.packet.s2c.play.ScreenHandlerSlotUpdateS2CPacket;
-import net.minecraft.util.registry.*;
-import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.util.*;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public class MixinItemSlotUpdate {
@@ -39,9 +35,9 @@ public class MixinItemSlotUpdate {
             }
 
             if (mc.player.isCreative() && stack.getName().getString().contains("Values")
-                && lore.toText().getString().contains("\"Right click this to obtain values. Types include\"")
-                && lore.toText().getString().contains("\"numbers, variables, text, sound effects, game\"")
-                && lore.toText().getString().contains("\"values, potion effects, and spawn eggs.\"")) {
+                    && lore.toText().getString().contains("\"Right click this to obtain values. Types include\"")
+                    && lore.toText().getString().contains("\"numbers, variables, text, sound effects, game\"")
+                    && lore.toText().getString().contains("\"values, potion effects, and spawn eggs.\"")) {
                 DFInfo.currentState = DFInfo.State.DEV;
             }
         }

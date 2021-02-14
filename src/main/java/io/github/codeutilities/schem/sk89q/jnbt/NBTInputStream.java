@@ -89,7 +89,7 @@ public final class NBTInputStream implements Closeable {
     /**
      * Reads the payload of a tag given the type.
      *
-     * @param type the type
+     * @param type  the type
      * @param depth the depth
      * @return the tag
      * @throws IOException if an I/O error occurs.
@@ -99,7 +99,7 @@ public final class NBTInputStream implements Closeable {
             case NBTConstants.TYPE_END:
                 if (depth == 0) {
                     throw new IOException(
-                        "TAG_End found without a TAG_Compound/TAG_List tag preceding it.");
+                            "TAG_End found without a TAG_Compound/TAG_List tag preceding it.");
                 } else {
                     return new EndTag();
                 }

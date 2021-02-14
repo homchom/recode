@@ -43,7 +43,7 @@ public class ImageParticleCommand extends Command {
                                             ToasterUtil.sendToaster("§cLoading Error!", "Invalid file", SystemToast.Type.NARRATOR_TOGGLE);
                                         }
                                         return 1;
-                                    }catch (Exception e) {
+                                    } catch (Exception e) {
                                         e.printStackTrace();
                                         ChatUtil.sendMessage("An error occurred while executing the command.", ChatType.FAIL);
                                         return 0;
@@ -64,7 +64,7 @@ public class ImageParticleCommand extends Command {
                                         ChatType.INFO_BLUE);
                                 ItemUtil.giveCreativeItem(stack, true);
                                 return 1;
-                            }catch (Exception e) {
+                            } catch (Exception e) {
                                 e.printStackTrace();
                                 ChatUtil.sendMessage("An error occurred while executing the command.", ChatType.FAIL);
                                 return 0;

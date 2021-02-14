@@ -3,6 +3,8 @@ package io.github.codeutilities.util;
 import net.minecraft.util.math.Vec3d;
 
 public class DFInfo {
+
+    public static final String IP = "mcdiamondfire.com";
     public static String patchId = "5.3";
     public static State currentState = State.LOBBY;
     public static Vec3d plotCorner = null;
@@ -16,7 +18,7 @@ public class DFInfo {
         int l = baseSplit.length;
         if (targetSplit.length > baseSplit.length) l = targetSplit.length;
 
-        for (int i = 0;i < l;i++) {
+        for (int i = 0; i < l; i++) {
             String currentBase = "0";
             String currentTarget = "0";
 
@@ -25,7 +27,7 @@ public class DFInfo {
 
             if (Integer.parseInt(currentBase) > Integer.parseInt(currentTarget)) {
                 return true;
-            }else {
+            } else {
                 if (Integer.parseInt(currentBase) < Integer.parseInt(currentTarget)) {
                     oldNumberFound = true;
                 }
@@ -33,7 +35,6 @@ public class DFInfo {
         }
         return !oldNumberFound;
     }
-
 
     public enum State {
         LOBBY,

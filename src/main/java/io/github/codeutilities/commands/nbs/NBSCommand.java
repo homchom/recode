@@ -4,7 +4,9 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.commands.arguments.ArgBuilder;
-import io.github.codeutilities.nbs.*;
+import io.github.codeutilities.nbs.NBSDecoder;
+import io.github.codeutilities.nbs.NBSToTemplate;
+import io.github.codeutilities.nbs.SongData;
 import io.github.codeutilities.nbs.exceptions.OutdatedNBSException;
 import io.github.codeutilities.util.*;
 import io.github.codeutilities.util.externalfile.ExternalFile;
@@ -12,10 +14,12 @@ import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.enchantment.Enchantments;
-import net.minecraft.item.*;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.text.LiteralText;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 
 public class NBSCommand extends Command {
 

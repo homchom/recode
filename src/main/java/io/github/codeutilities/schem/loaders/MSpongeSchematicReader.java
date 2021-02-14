@@ -19,10 +19,9 @@
 
 package io.github.codeutilities.schem.loaders;
 
+import io.github.codeutilities.schem.Schematic;
 import io.github.codeutilities.schem.sk89q.jnbt.*;
 import io.github.codeutilities.schem.sk89q.worldedit.math.BlockVector3;
-
-import io.github.codeutilities.schem.Schematic;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -38,15 +37,16 @@ public class MSpongeSchematicReader extends MNBTSchematicReader {
 
     private final NBTInputStream inputStream;
     private int schematicVersion = -1;
+
     /**
      * Create a new instance.
      *
      * @param inputStream the input stream to read from
      */
     public MSpongeSchematicReader(NBTInputStream inputStream) {
-        if(inputStream == null) 
-        	throw new NullPointerException();
-        
+        if (inputStream == null)
+            throw new NullPointerException();
+
         this.inputStream = inputStream;
     }
 
@@ -59,7 +59,7 @@ public class MSpongeSchematicReader extends MNBTSchematicReader {
             return readVersion1(schematicTag);
         } else if (schematicVersion == 2) {
             requireTag(schematic, "DataVersion", IntTag.class);
-            
+
             Schematic clip = readVersion1(schematicTag);
             return readVersion2(clip);
         }
@@ -78,7 +78,7 @@ public class MSpongeSchematicReader extends MNBTSchematicReader {
     }
 
     private Schematic readVersion1(CompoundTag schematicTag) throws IOException {
-    	Schematic clipboard = new Schematic();
+        Schematic clipboard = new Schematic();
         Map<String, Tag> schematic = schematicTag.getValue();
 
         int width = requireTag(schematic, "Width", ShortTag.class).getValue();
@@ -95,7 +95,7 @@ public class MSpongeSchematicReader extends MNBTSchematicReader {
 
         for (String palettePart : paletteObject.keySet()) {
             int id = requireTag(paletteObject, palettePart, IntTag.class).getValue();
-            
+
             palette.put(id, palettePart);
         }
 
@@ -132,8 +132,8 @@ public class MSpongeSchematicReader extends MNBTSchematicReader {
         clipboard.setLength(length);
 
         for (Entry<Integer, String> paletteBlock : palette.entrySet()) {
-			clipboard.AddBlockToPalette(paletteBlock.getKey(), paletteBlock.getValue());
-		}
+            clipboard.AddBlockToPalette(paletteBlock.getKey(), paletteBlock.getValue());
+        }
 
         int i = 0;
         int value;

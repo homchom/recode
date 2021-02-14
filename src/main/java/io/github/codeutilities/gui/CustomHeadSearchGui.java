@@ -1,51 +1,67 @@
 package io.github.codeutilities.gui;
 
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.ModConfig;
+import io.github.codeutilities.util.IManager;
 import io.github.codeutilities.util.WebUtil;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
-import net.minecraft.item.*;
-import net.minecraft.nbt.*;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.text.LiteralText;
 import org.apache.logging.log4j.Level;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
-public class CustomHeadSearchGui extends LightweightGuiDescription {
+public class CustomHeadSearchGui extends LightweightGuiDescription implements IManager<JsonObject> {
 
-    private static final List<JsonObject> allHeads = new ArrayList<>();
-    private final ItemScrollablePanel panel;
+    private final List<JsonObject> registeredHeads = new ArrayList<>();
+    private static CustomHeadSearchGui instance;
+
+    private ItemScrollablePanel panel;
     ModConfig config = ModConfig.getConfig();
 
     public CustomHeadSearchGui() {
+        instance = this;
+    }
+
+    public void loadGui() {
         WPlainPanel root = new WPlainPanel();
         root.setSize(256, 240);
 
         CTextField searchBox = new CTextField(
-                new LiteralText("Search... (" + allHeads.size() + " Heads)"));
+                new LiteralText("Search... (" + registeredHeads.size() + " Heads)"));
         searchBox.setMaxLength(100);
         root.add(searchBox, 0, 0, 256, 0);
 
-        panel = ItemScrollablePanel.with(toItemStack(allHeads.subList(0, Math.max(Math.min(allHeads.size(), config.headMenuMaxRender), 1))));
+        panel = ItemScrollablePanel.with(toItemStack(registeredHeads.subList(0, Math.max(Math.min(registeredHeads.size(), config.headMenuMaxRender), 1))));
         root.add(panel, 0, 25, 256, 235);
 
-        final String[] lastquery = {""};//intellij wants me to do this, don't ask me why
+        final String[] lastQuery = {""};//intellij wants me to do this, don't ask me why
         searchBox.setChangedListener((s -> {
-            if (lastquery[0].equals(s)) {
+            if (lastQuery[0].equals(s)) {
                 return;
             }
-            lastquery[0] = s;
+            lastQuery[0] = s;
             s = s.toLowerCase();
             List<JsonObject> selected = new ArrayList<>();
 
             if (s.isEmpty()) {
-                selected = allHeads
-                        .subList(0, Math.max(Math.min(allHeads.size(), config.headMenuMaxRender), 1));
+                selected = registeredHeads
+                        .subList(0, Math.max(Math.min(registeredHeads.size(), config.headMenuMaxRender), 1));
             } else {
-                for (JsonObject object : allHeads) {
+                for (JsonObject object : registeredHeads) {
                     if (object.get("name").getAsString().toLowerCase().contains(s)
                             && selected.size() <= config.headMenuMaxRender) {
                         selected.add(object);
@@ -59,9 +75,47 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
         root.validate(this);
     }
 
-    public static void load() {
-        new Thread(() -> {
-            allHeads.clear();
+    private List<ItemStack> toItemStack(List<JsonObject> set) {
+        List<ItemStack> items = new ArrayList<>();
+
+        try {
+            for (JsonObject head : set) {
+                ItemStack item = new ItemStack(Items.PLAYER_HEAD);
+                String name = head.get("name").getAsString();
+                String value = head.get("value").getAsString();
+
+                CompoundTag nbt = new CompoundTag();
+                CompoundTag display = new CompoundTag();
+                display.putString("Name", "{\"text\":\"" + name + "\"}");
+                nbt.put("display", display);
+                CompoundTag SkullOwner = new CompoundTag();
+                SkullOwner.putIntArray("Id", Arrays
+                        .asList(CodeUtilities.RANDOM.nextInt(), CodeUtilities.RANDOM.nextInt(),
+                                CodeUtilities.RANDOM.nextInt(), CodeUtilities.RANDOM.nextInt()));
+                CompoundTag Properties = new CompoundTag();
+                ListTag textures = new ListTag();
+                CompoundTag index1 = new CompoundTag();
+                index1.putString("Value", value);
+                textures.add(index1);
+                Properties.put("textures", textures);
+                SkullOwner.put("Properties", Properties);
+                nbt.put("SkullOwner", SkullOwner);
+                item.setTag(nbt);
+                items.add(item);
+            }
+        } catch (Exception e) {
+            CodeUtilities.log(Level.ERROR, "Error in toItemStack!!!");
+            CodeUtilities.log(Level.ERROR, "Stack trace:");
+            e.printStackTrace();
+        }
+        return items;
+    }
+
+    @Override
+    public void initialize() {
+        registeredHeads.clear();
+
+        CompletableFuture.runAsync(() -> {
             String[] sources = {
                     "https://minecraft-heads.com/scripts/api.php?cat=alphabet",
                     "https://minecraft-heads.com/scripts/api.php?cat=animals",
@@ -80,52 +134,33 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                 try {
                     String response = WebUtil.getString(db);
 
-                    JsonArray heads = new JsonParser().parse(response).getAsJsonArray();
+                    JsonElement parse = CodeUtilities.JSON_PARSER.parse(response);
+                    JsonArray heads = parse.getAsJsonArray();
+
                     for (JsonElement head : heads) {
-                        allHeads.add(head.getAsJsonObject());
+                        if (head instanceof JsonObject) {
+                            this.register(head.getAsJsonObject());
+                        }
                     }
                 } catch (IOException | JsonSyntaxException exception) {
                     exception.printStackTrace();
                 }
             }
-            allHeads.sort(Comparator.comparing(x -> x.get("name").getAsString()));
-        }).start();
+            registeredHeads.sort(Comparator.comparing(x -> x.get("name").getAsString()));
+        });
     }
 
-    private List<ItemStack> toItemStack(List<JsonObject> set) {
-        List<ItemStack> items = new ArrayList<>();
-
-        try {
-            for (JsonObject head : set) {
-                ItemStack item = new ItemStack(Items.PLAYER_HEAD);
-                String name = head.get("name").getAsString();
-                String value = head.get("value").getAsString();
-
-                CompoundTag nbt = new CompoundTag();
-                CompoundTag display = new CompoundTag();
-                display.putString("Name", "{\"text\":\"" + name + "\"}");
-                nbt.put("display", display);
-                CompoundTag SkullOwner = new CompoundTag();
-                SkullOwner.putIntArray("Id", Arrays
-                        .asList(CodeUtilities.rng.nextInt(), CodeUtilities.rng.nextInt(),
-                                CodeUtilities.rng.nextInt(), CodeUtilities.rng.nextInt()));
-                CompoundTag Properties = new CompoundTag();
-                ListTag textures = new ListTag();
-                CompoundTag index1 = new CompoundTag();
-                index1.putString("Value", value);
-                textures.add(index1);
-                Properties.put("textures", textures);
-                SkullOwner.put("Properties", Properties);
-                nbt.put("SkullOwner", SkullOwner);
-                item.setTag(nbt);
-                items.add(item);
-            }
-        }catch (Exception e) {
-            CodeUtilities.log(Level.ERROR, "Error in toItemStack!!!");
-            CodeUtilities.log(Level.ERROR, "Stack trace:");
-            e.printStackTrace();
-        }
-        return items;
+    @Override
+    public void register(JsonObject object) {
+        this.registeredHeads.add(object);
     }
 
+    @Override
+    public List<JsonObject> getRegistered() {
+        return this.registeredHeads;
+    }
+
+    public static CustomHeadSearchGui getInstance() {
+        return instance;
+    }
 }

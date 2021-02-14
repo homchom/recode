@@ -1,26 +1,29 @@
 package io.github.codeutilities.gui;
 
-import com.google.gson.*;
-import io.github.codeutilities.util.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import io.github.codeutilities.util.TemplateUtils;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
-import io.github.cottonmc.cotton.gui.widget.*;
+import io.github.cottonmc.cotton.gui.widget.WGridPanel;
 import net.fabricmc.fabric.api.util.TriState;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.text.*;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Style;
+import net.minecraft.text.Text;
+import net.minecraft.text.TextColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.*;
 
 public class TemplateSearchGui extends LightweightGuiDescription {
-    
+
     private static final String[] plots = new String[]{"Basic", "Large", "Massive"};
     private static final String[] ranks = new String[]{"Noble", "Emperor", "Mythic", "Overlord"};
-    
+
     public TemplateSearchGui(JsonArray templates) {
         WGridPanel root = new WGridPanel(1);
         root.setSize(256, 240);
@@ -43,7 +46,7 @@ public class TemplateSearchGui extends LightweightGuiDescription {
                 err.printStackTrace();
                 templateItem.setCustomName(new LiteralText("§cFailed to load item."));
             }
-    
+
             ClickableGiveItem item = new ClickableGiveItem(templateItem);
 
             panel.getItemGrid().addItem(item);
@@ -76,21 +79,21 @@ public class TemplateSearchGui extends LightweightGuiDescription {
             texts.add(new LiteralText("§rℹ ID: ").setStyle(idIcon).append(new LiteralText(String.valueOf(i)).setStyle(idColor)));
 
             item.setTooltip(texts.toArray(new Text[0]));
-            
+
             i++;
         }
 
         setRootPanel(root);
         root.validate(this);
     }
-    
+
     private static String getOrUnknown(String[] strings, int index) {
         try {
-         return strings[index - 1];
+            return strings[index - 1];
         } catch (ArrayIndexOutOfBoundsException e) {
             return "Unknown";
         }
     }
-    
+
 
 }

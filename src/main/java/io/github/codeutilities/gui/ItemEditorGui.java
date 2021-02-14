@@ -5,7 +5,6 @@ import io.github.codeutilities.util.StringUtil;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WButton;
 import io.github.cottonmc.cotton.gui.widget.WGridPanel;
-import java.util.Collections;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -15,10 +14,12 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
+import java.util.Collections;
+
 public class ItemEditorGui extends LightweightGuiDescription {
 
     public ItemEditorGui(ItemStack in) {
-        MinecraftClient mc = CodeUtilities.mc;
+        MinecraftClient mc = CodeUtilities.MC;
         final ItemStack[] item = {in.copy()};//intellij wants me to do this, dont ask me why
         WGridPanel root = new WGridPanel(1);
         root.setSize(256, 240);
@@ -60,7 +61,7 @@ public class ItemEditorGui extends LightweightGuiDescription {
             Item newMat = Registry.ITEM.get(new Identifier("minecraft:" + s));
             if (newMat != Items.AIR) {
                 save.setEnabled(true);
-                ItemStack newItem =  new ItemStack(newMat, item[0].getCount());
+                ItemStack newItem = new ItemStack(newMat, item[0].getCount());
                 newItem.setTag(item[0].getOrCreateTag());
                 item[0] = newItem;
                 icon.setItems(Collections.singletonList(item[0]));

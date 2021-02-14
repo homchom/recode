@@ -3,10 +3,8 @@ package io.github.codeutilities.events;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.util.ChatType;
 import io.github.codeutilities.util.ChatUtil;
-import io.github.codeutilities.util.DFInfo;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
@@ -30,7 +28,7 @@ public class ChatReceivedEvent {
 
             if (text.contains("is currently at§6 spawn.")) {
                 ChatUtil.sendMessage("This player is not in a plot.", ChatType.FAIL);
-            }else {
+            } else {
                 try {
                     String[] lines = text.split("\n");
                     String cmd = "/join " + lines[2].replaceAll(" .* \\[(.*)\\]$", "$1");
@@ -41,7 +39,7 @@ public class ChatReceivedEvent {
                         ChatUtil.sendMessage("Error while trying to join the plot.", ChatType.FAIL);
                     }
                     cancel = true;
-                }catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                     ChatUtil.sendMessage("Error while trying to join the plot.", ChatType.FAIL);
                 }

@@ -3,7 +3,8 @@ package io.github.codeutilities.gui;
 import io.github.codeutilities.util.ItemUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
-import net.minecraft.sound.*;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 
 public class ClickableGiveItem extends CItem {
 

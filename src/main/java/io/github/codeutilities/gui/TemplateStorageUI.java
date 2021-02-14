@@ -1,22 +1,19 @@
 package io.github.codeutilities.gui;
 
-import io.github.codeutilities.template.*;
-import io.github.codeutilities.util.*;
+import io.github.codeutilities.template.TemplateItem;
+import io.github.codeutilities.template.TemplateStorageHandler;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
-import io.github.cottonmc.cotton.gui.widget.*;
-import net.minecraft.client.MinecraftClient;
+import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import net.minecraft.item.ItemStack;
-import net.minecraft.sound.*;
-import net.minecraft.text.LiteralText;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TemplateStorageUI extends LightweightGuiDescription {
 
-
     public TemplateStorageUI() {
         List<ItemStack> items = new ArrayList<>();
-        for (TemplateItem item : TemplateStorageHandler.getTemplates()) {
+        for (TemplateItem item : TemplateStorageHandler.getInstance().getRegistered()) {
             items.add(item.getStack());
         }
         WPlainPanel root = new WPlainPanel();
@@ -29,6 +26,4 @@ public class TemplateStorageUI extends LightweightGuiDescription {
         setRootPanel(root);
         root.validate(this);
     }
-
-
 }

@@ -3,9 +3,9 @@
   "package": "io.github.codeutilities.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "MixinHeldItemTooltip",
     "MixinOptionsScreen",
     "MixinTitleScreen",
-    "MixinHeldItemTooltip",
     "item.MixinItemCreative",
     "item.MixinItemInsert",
     "item.MixinItemSlotUpdate",

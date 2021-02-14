@@ -2,7 +2,8 @@ package io.github.codeutilities.util.externalfile;
 
 import io.github.codeutilities.CodeUtilities;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 
 public class ExternalFileBuilder {
 

@@ -1,24 +1,29 @@
 package io.github.codeutilities.commands.item;
 
-import com.google.gson.*;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.commands.arguments.ArgBuilder;
-import io.github.codeutilities.gui.*;
-import io.github.codeutilities.util.*;
+import io.github.codeutilities.gui.TemplateSearchGui;
+import io.github.codeutilities.gui.TemplateStorageUI;
+import io.github.codeutilities.util.ChatType;
+import io.github.codeutilities.util.ChatUtil;
+import io.github.codeutilities.util.WebUtil;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import org.apache.http.HttpResponse;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Random;
 
 public class TemplatesCommand extends Command {
 
     public static final String templateServer = "https://codeutilities-templates.glitch.me/";
-    public static MinecraftClient mc = CodeUtilities.mc;
     public static String authId = null;
 
     @Override
@@ -79,7 +84,7 @@ public class TemplatesCommand extends Command {
                 return null;
             }
 
-            JsonObject response = new JsonParser().parse(WebUtil.getString(url)).getAsJsonObject();
+            JsonObject response = CodeUtilities.JSON_PARSER.parse(WebUtil.getString(url)).getAsJsonObject();
             System.out.println(response);
             if (response.get("success").getAsBoolean()) {
                 return response;
@@ -100,8 +105,12 @@ public class TemplatesCommand extends Command {
     }
 
     public static void authenticate() {
+        MinecraftClient mc = CodeUtilities.MC;
+        Random random = CodeUtilities.RANDOM;
+        JsonParser jsonParser = CodeUtilities.JSON_PARSER;
+
         JsonObject data = new JsonObject();
-        String serverId = "CodeUtilities" + CodeUtilities.rng.nextInt(99999);
+        String serverId = "CodeUtilities" + random.nextInt(99999);
         data.addProperty("accessToken", mc.getSession().getAccessToken());
         data.addProperty("selectedProfile", mc.getSession().getUuid().replace("-", ""));
         data.addProperty("serverId", serverId);
@@ -110,7 +119,7 @@ public class TemplatesCommand extends Command {
         if (res.getStatusLine().getStatusCode() == 204) {
             JsonObject response;
             try {
-                response = new JsonParser().parse(WebUtil.getString(
+                response = jsonParser.parse(WebUtil.getString(
                         templateServer + "authenticate?username=" + mc.getSession().getUsername()
                                 + "&serverId=" + serverId)).getAsJsonObject();
             } catch (IOException e) {

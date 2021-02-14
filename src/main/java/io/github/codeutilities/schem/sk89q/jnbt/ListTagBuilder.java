@@ -38,9 +38,9 @@ public class ListTagBuilder {
      * @param type of tag contained in this list
      */
     ListTagBuilder(Class<? extends Tag> type) {
-    	if(type == null)
-        	throw new NullPointerException();
-    	
+        if (type == null)
+            throw new NullPointerException();
+
         this.type = type;
         this.entries = new ArrayList<>();
     }
@@ -52,9 +52,9 @@ public class ListTagBuilder {
      * @return this object
      */
     public ListTagBuilder add(Tag value) {
-    	if(value == null)
-        	throw new NullPointerException();
-    	
+        if (value == null)
+            throw new NullPointerException();
+
         if (!type.isInstance(value)) {
             throw new IllegalArgumentException(value.getClass().getCanonicalName() + " is not of expected type " + type.getCanonicalName());
         }
@@ -69,9 +69,9 @@ public class ListTagBuilder {
      * @return this object
      */
     public ListTagBuilder addAll(Collection<? extends Tag> value) {
-    	if(value == null)
-        	throw new NullPointerException();
-    	
+        if (value == null)
+            throw new NullPointerException();
+
         for (Tag v : value) {
             add(v);
         }
@@ -102,8 +102,8 @@ public class ListTagBuilder {
      * @return a new builder
      */
     public static ListTagBuilder createWith(Tag... entries) {
-    	if(entries == null)
-        	throw new NullPointerException();
+        if (entries == null)
+            throw new NullPointerException();
 
         if (entries.length == 0) {
             throw new IllegalArgumentException("This method needs an array of at least one entry");

@@ -1,7 +1,7 @@
 package io.github.codeutilities.util.socket.client;
 
-import javax.websocket.*;
-import java.io.*;
+import javax.websocket.Session;
+import java.io.IOException;
 
 public class SessionClient extends Client {
 

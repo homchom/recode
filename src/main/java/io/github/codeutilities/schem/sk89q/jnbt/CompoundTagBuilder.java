@@ -42,26 +42,26 @@ public class CompoundTagBuilder {
      * @param value the value
      */
     CompoundTagBuilder(Map<String, Tag> value) {
-    	if(value == null)
-        	throw new NullPointerException();
-    	
+        if (value == null)
+            throw new NullPointerException();
+
         this.entries = value;
     }
 
     /**
      * Put the given key and tag into the compound tag.
      *
-     * @param key they key
+     * @param key   they key
      * @param value the value
      * @return this object
      */
     public CompoundTagBuilder put(String key, Tag value) {
-    	if(key == null)
-        	throw new NullPointerException();
-    	
-    	if(value == null)
-        	throw new NullPointerException();
-    	
+        if (key == null)
+            throw new NullPointerException();
+
+        if (value == null)
+            throw new NullPointerException();
+
         entries.put(key, value);
         return this;
     }
@@ -70,7 +70,7 @@ public class CompoundTagBuilder {
      * Put the given key and value into the compound tag as a
      * {@code ByteArrayTag}.
      *
-     * @param key they key
+     * @param key   they key
      * @param value the value
      * @return this object
      */
@@ -82,7 +82,7 @@ public class CompoundTagBuilder {
      * Put the given key and value into the compound tag as a
      * {@code ByteTag}.
      *
-     * @param key they key
+     * @param key   they key
      * @param value the value
      * @return this object
      */
@@ -94,7 +94,7 @@ public class CompoundTagBuilder {
      * Put the given key and value into the compound tag as a
      * {@code DoubleTag}.
      *
-     * @param key they key
+     * @param key   they key
      * @param value the value
      * @return this object
      */
@@ -106,7 +106,7 @@ public class CompoundTagBuilder {
      * Put the given key and value into the compound tag as a
      * {@code FloatTag}.
      *
-     * @param key they key
+     * @param key   they key
      * @param value the value
      * @return this object
      */
@@ -118,7 +118,7 @@ public class CompoundTagBuilder {
      * Put the given key and value into the compound tag as a
      * {@code IntArrayTag}.
      *
-     * @param key they key
+     * @param key   they key
      * @param value the value
      * @return this object
      */
@@ -129,7 +129,7 @@ public class CompoundTagBuilder {
     /**
      * Put the given key and value into the compound tag as an {@code IntTag}.
      *
-     * @param key they key
+     * @param key   they key
      * @param value the value
      * @return this object
      */
@@ -141,7 +141,7 @@ public class CompoundTagBuilder {
      * Put the given key and value into the compound tag as a
      * {@code LongArrayTag}.
      *
-     * @param key they key
+     * @param key   they key
      * @param value the value
      * @return this object
      */
@@ -153,7 +153,7 @@ public class CompoundTagBuilder {
      * Put the given key and value into the compound tag as a
      * {@code LongTag}.
      *
-     * @param key they key
+     * @param key   they key
      * @param value the value
      * @return this object
      */
@@ -165,7 +165,7 @@ public class CompoundTagBuilder {
      * Put the given key and value into the compound tag as a
      * {@code ShortTag}.
      *
-     * @param key they key
+     * @param key   they key
      * @param value the value
      * @return this object
      */
@@ -177,7 +177,7 @@ public class CompoundTagBuilder {
      * Put the given key and value into the compound tag as a
      * {@code StringTag}.
      *
-     * @param key they key
+     * @param key   they key
      * @param value the value
      * @return this object
      */
@@ -192,9 +192,9 @@ public class CompoundTagBuilder {
      * @return this object
      */
     public CompoundTagBuilder remove(String key) {
-    	if(key == null)
-        	throw new NullPointerException();
-    	
+        if (key == null)
+            throw new NullPointerException();
+
         entries.remove(key);
         return this;
     }
@@ -206,9 +206,9 @@ public class CompoundTagBuilder {
      * @return this object
      */
     public CompoundTagBuilder putAll(Map<String, ? extends Tag> value) {
-    	if(value == null)
-        	throw new NullPointerException();
-    	
+        if (value == null)
+            throw new NullPointerException();
+
         for (Map.Entry<String, ? extends Tag> entry : value.entrySet()) {
             put(entry.getKey(), entry.getValue());
         }

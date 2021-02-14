@@ -5,13 +5,13 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.commands.arguments.ArgBuilder;
-import io.github.codeutilities.schem.loaders.LitematicaLoader;
-import io.github.codeutilities.schem.utils.DFUtils;
 import io.github.codeutilities.schem.Schematic;
+import io.github.codeutilities.schem.loaders.LitematicaLoader;
 import io.github.codeutilities.schem.loaders.MCEditSchematicLoader;
 import io.github.codeutilities.schem.loaders.MSchematicReader;
 import io.github.codeutilities.schem.loaders.MSpongeSchematicReader;
 import io.github.codeutilities.schem.sk89q.jnbt.NBTInputStream;
+import io.github.codeutilities.schem.utils.DFUtils;
 import io.github.codeutilities.util.*;
 import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
@@ -36,11 +36,11 @@ public class SchemCommand extends Command {
         cd.register(subcommand(mc, ArgBuilder.literal("schematic")));
     }
 
-    public LiteralArgumentBuilder<CottonClientCommandSource> subcommand(MinecraftClient mc, LiteralArgumentBuilder<CottonClientCommandSource> literal){
+    public LiteralArgumentBuilder<CottonClientCommandSource> subcommand(MinecraftClient mc, LiteralArgumentBuilder<CottonClientCommandSource> literal) {
         literal.then(ArgBuilder.literal("load")
                 .then(ArgumentBuilders.argument("filepath", StringArgumentType.greedyString())
                         .executes(ctx -> {
-                            if (mc.player.isCreative()){
+                            if (mc.player.isCreative()) {
                                 String arg = StringArgumentType.getString(ctx, "filepath");
                                 File target = new File("schematics/" + arg);
                                 String format = "";
@@ -79,7 +79,7 @@ public class SchemCommand extends Command {
                                         try {
                                             MSchematicReader reader;
 
-                                            if(finalFormat.equals("schematic")) {
+                                            if (finalFormat.equals("schematic")) {
                                                 try {
                                                     NBTInputStream nbtStream = new NBTInputStream(new GZIPInputStream(new FileInputStream(finalFile)));
                                                     reader = new MCEditSchematicLoader(nbtStream);
@@ -87,10 +87,10 @@ public class SchemCommand extends Command {
                                                     NBTInputStream nbtStream = new NBTInputStream(new GZIPInputStream(new FileInputStream(finalFile)));
                                                     reader = new MSpongeSchematicReader(nbtStream);
                                                 }
-                                            } else if(finalFormat.equals("schem")) {
+                                            } else if (finalFormat.equals("schem")) {
                                                 NBTInputStream nbtStream = new NBTInputStream(new GZIPInputStream(new FileInputStream(finalFile)));
                                                 reader = new MSpongeSchematicReader(nbtStream);
-                                            } else if(finalFormat.equals("litematic")) {
+                                            } else if (finalFormat.equals("litematic")) {
                                                 NBTInputStream nbtStream = new NBTInputStream(new GZIPInputStream(new FileInputStream(finalFile)));
                                                 reader = new LitematicaLoader(nbtStream);
                                             } else {
@@ -108,7 +108,7 @@ public class SchemCommand extends Command {
                                             for (int i = 0; i < templateDatas.length; i++) {
                                                 ItemStack stack = new ItemStack(Items.NETHER_QUARTZ_ORE);
                                                 TemplateUtils.compressTemplateNBT(stack, "Schem2DF Data", "CodeUtilities", templateDatas[i]);
-                                                stack.setCustomName(new LiteralText(new StringBuilder().append("§b§lFunction §3» ").append(schematic.name == "Unnamed" ? schematic.name : FilenameUtils.removeExtension(finalFile.getName())).append(" #").append(i+1).toString()));
+                                                stack.setCustomName(new LiteralText(new StringBuilder().append("§b§lFunction §3» ").append(schematic.name == "Unnamed" ? schematic.name : FilenameUtils.removeExtension(finalFile.getName())).append(" #").append(i + 1).toString()));
                                                 ItemUtil.giveCreativeItem(stack, false);
                                                 Thread.sleep(2);
                                             }
@@ -125,7 +125,7 @@ public class SchemCommand extends Command {
                                 } else {
                                     ChatUtil.sendMessage("The file §6" + arg + "§c was not found.", ChatType.FAIL);
                                 }
-                            }else{
+                            } else {
                                 ChatUtil.sendTranslateMessage("codeutilities.command.require_creative_mode", ChatType.FAIL);
                             }
                             return 1;

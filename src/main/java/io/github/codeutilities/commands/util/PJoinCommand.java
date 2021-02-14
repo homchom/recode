@@ -20,7 +20,7 @@ public class PJoinCommand extends Command {
                         .executes(ctx -> {
                             try {
                                 return run(mc, StringArgumentType.getString(ctx, "player"));
-                            }catch (Exception e) {
+                            } catch (Exception e) {
                                 ChatUtil.sendMessage("Error while attempting to execute the command.", ChatType.FAIL);
                                 e.printStackTrace();
                                 return -1;
@@ -41,7 +41,7 @@ public class PJoinCommand extends Command {
         new Thread(() -> {
             try {
                 Thread.sleep(2000);
-            }catch (InterruptedException e) {
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 

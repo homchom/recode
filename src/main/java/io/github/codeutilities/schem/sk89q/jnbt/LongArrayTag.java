@@ -35,9 +35,9 @@ public class LongArrayTag extends Tag {
      */
     public LongArrayTag(long[] value) {
         super();
-        if(value == null)
-        	throw new NullPointerException();
-        
+        if (value == null)
+            throw new NullPointerException();
+
         this.value = value;
     }
 

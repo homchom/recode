@@ -3,6 +3,7 @@ package io.github.codeutilities.mixin.messages;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.events.ChatReceivedEvent;
 import io.github.codeutilities.util.DFInfo;
+import io.github.codeutilities.util.ServerUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.MessageType;
@@ -16,18 +17,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public class MixinGameMessageListener {
-    private MinecraftClient minecraftClient = MinecraftClient.getInstance();
+    private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
 
     @Inject(method = "onGameMessage", at = @At("HEAD"), cancellable = true)
     private void onGameMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
-        if (CodeUtilities.isOnDF()) {
+        if (ServerUtil.isOnDF()) {
             if (packet.getLocation() == MessageType.CHAT || packet.getLocation() == MessageType.SYSTEM) {
                 ChatReceivedEvent.onMessage(packet.getMessage(), ci);
                 String text = packet.getMessage().getString();
                 try {
                     this.updateVersion(text);
                     this.updateState(text);
-                }catch (Exception e) {
+                } catch (Exception e) {
                     CodeUtilities.log(Level.ERROR, "Error while trying to parse the chat text!");
                 }
             }
@@ -53,7 +54,7 @@ public class MixinGameMessageListener {
                 DFInfo.patchId = patchText;
                 DFInfo.currentState = DFInfo.State.LOBBY;
                 CodeUtilities.log(Level.INFO, "DiamondFire Patch " + DFInfo.patchId + " detected!");
-            }catch (Exception e) {
+            } catch (Exception e) {
                 CodeUtilities.log(Level.INFO, "Error on parsing patch number!");
                 e.printStackTrace();
             }

@@ -11,9 +11,15 @@ public class ParticleImage {
         this.imageHeight = imageHeight;
     }
 
-    public String[] getData() {return imageData;}
+    public String[] getData() {
+        return imageData;
+    }
 
-    public int getWidth() {return imageWidth;}
+    public int getWidth() {
+        return imageWidth;
+    }
 
-    public int getHeight() {return imageHeight;}
+    public int getHeight() {
+        return imageHeight;
+    }
 }

@@ -18,22 +18,21 @@ public class EditItemCommand extends Command {
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("edititem")
-            .executes(ctx -> {
-                System.out.println("PLAYER STATE: " + DFInfo.currentState);
+                .executes(ctx -> {
+                    System.out.println("PLAYER STATE: " + DFInfo.currentState);
 
-                ItemStack item = mc.player.getMainHandStack();
-                if (item.getItem() == Items.AIR) {
-                    ChatUtil
-                        .sendMessage("You need to hold an item that is not air!", ChatType.FAIL);
-                    return -1;
-                }
-                if (!mc.player.isCreative()) {
-                    ChatUtil.sendTranslateMessage("codeutilities.command.require_creative_mode", ChatType.FAIL);
-                    return -1;
-                }
-                CodeUtilities.openGuiAsync(new ItemEditorGui(item));
-                return 1;
-            })
+                    ItemStack item = mc.player.getMainHandStack();
+                    if (item.getItem() == Items.AIR) {
+                        ChatUtil.sendMessage("You need to hold an item that is not air!", ChatType.FAIL);
+                        return -1;
+                    }
+                    if (!mc.player.isCreative()) {
+                        ChatUtil.sendTranslateMessage("codeutilities.command.require_creative_mode", ChatType.FAIL);
+                        return -1;
+                    }
+                    CodeUtilities.openGuiAsync(new ItemEditorGui(item));
+                    return 1;
+                })
         );
     }
 }

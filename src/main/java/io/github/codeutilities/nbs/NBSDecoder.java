@@ -1,6 +1,5 @@
 package io.github.codeutilities.nbs;
 
-import io.github.codeutilities.nbs.SongData;
 import io.github.codeutilities.nbs.exceptions.OutdatedNBSException;
 import io.github.codeutilities.util.ChatUtil;
 
@@ -56,7 +55,7 @@ public class NBSDecoder {
         speed = actualSpeed / 100f; //speed
         dataInputStream.readBoolean(); //autosave
         dataInputStream.readByte(); //autosave duration
-        timeSignature = (short) dataInputStream.readByte(); //time signature
+        timeSignature = dataInputStream.readByte(); //time signature
         readInt(dataInputStream); //minutes spent
         readInt(dataInputStream); //left clicks
         readInt(dataInputStream); //right clicks
