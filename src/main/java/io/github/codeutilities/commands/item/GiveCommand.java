@@ -54,7 +54,7 @@ public class GiveCommand extends Command {
                                 clipboard = clipboard.substring(3);
                             }
 
-                            mc.player.sendChatMessage("/give " + clipboard);
+                            this.sendChatMessage(mc,"/give " + clipboard);
                             return 1;
                         })
                 )
@@ -63,7 +63,7 @@ public class GiveCommand extends Command {
 
     private void giveItem(MinecraftClient mc, ItemStack item, int count) {
         item.setCount(count);
-        if (mc.player.isCreative()) {
+        if (this.isCreative(mc)) {
             if (count >= 1) {
                 if (count <= item.getMaxCount()) {
                     ItemUtil.giveCreativeItem(item, true);
@@ -73,8 +73,6 @@ public class GiveCommand extends Command {
             } else {
                 ChatUtil.sendMessage("Minimum item count is 1!", ChatType.FAIL);
             }
-        } else {
-            ChatUtil.sendTranslateMessage("codeutilities.command.require_creative_mode", ChatType.FAIL);
         }
     }
 }

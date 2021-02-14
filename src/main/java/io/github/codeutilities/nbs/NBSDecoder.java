@@ -169,7 +169,7 @@ public class NBSDecoder {
             String finalLayerVolume = new BigDecimal(volume).setScale(3, BigDecimal.ROUND_FLOOR).stripTrailingZeros().toPlainString();
             String finalLayerPanning = new BigDecimal(panning).setScale(3, BigDecimal.ROUND_FLOOR).stripTrailingZeros().toPlainString();
 
-            layerStringBuilder.append("=" + finalLayerVolume + "," + finalLayerPanning);
+            layerStringBuilder.append("=").append(finalLayerVolume).append(",").append(finalLayerPanning);
         }
 
         int customInstruments = 0;
@@ -208,7 +208,7 @@ public class NBSDecoder {
                     columnStringBuilder.append(currentTick + 1);
                     firstNoted = true;
                 } else {
-                    columnStringBuilder.append("=" + (currentTick + 1));
+                    columnStringBuilder.append("=").append(currentTick + 1);
                 }
                 boolean firstAppend = true;
                 for (int i = 0; i < layers; i++) {
@@ -230,10 +230,10 @@ public class NBSDecoder {
                             noteKeyOffset = customPitchList[instrumentId] - 45;
                         }
                         if (firstAppend == true) {
-                            columnStringBuilder.append(":" + (noteInstrument + 1) + "," + getMinecraftPitch(noteKey + (double) noteFinePitch / 100d, noteKeyOffset) + laterNoteString);
+                            columnStringBuilder.append(":").append(noteInstrument + 1).append(",").append(getMinecraftPitch(noteKey + (double) noteFinePitch / 100d, noteKeyOffset)).append(laterNoteString);
                             firstAppend = false;
                         } else {
-                            columnStringBuilder.append(";" + (noteInstrument + 1) + "," + getMinecraftPitch(noteKey + (double) noteFinePitch / 100d, noteKeyOffset) + laterNoteString);
+                            columnStringBuilder.append(";").append(noteInstrument + 1).append(",").append(getMinecraftPitch(noteKey + (double) noteFinePitch / 100d, noteKeyOffset)).append(laterNoteString);
                         }
                     }
                 }
@@ -246,7 +246,7 @@ public class NBSDecoder {
         //System.out.println("Layer Data: " + layerStringBuilder.toString());
         //YET ANOTHER EPIC DEBUG CODE ENDS HERE
 
-        return new SongData(title, author, speed, (int) ((Math.ceil((length + 1) / timeSignature) + 1) * timeSignature), stringBuilder.toString(), file, layerStringBuilder.toString(), (loopTick + 1), loopCount, customInstruments);
+        return new SongData(title, author, speed, (int) ((Math.ceil((length + 1.0) / timeSignature) + 1) * timeSignature), stringBuilder.toString(), file, layerStringBuilder.toString(), (loopTick + 1), loopCount, customInstruments);
     }
 
     private static short readShort(DataInputStream dataInputStream) throws IOException {

@@ -45,7 +45,7 @@ public class UuidCommand extends Command {
                                     ChatUtil.sendMessage("§aThe UUID has been copied to the clipboard!");
                                     mc.keyboard.setClipboard(fullUUID);
                                 } else if (ServerUtil.isOnDF()) {
-                                    mc.player.sendChatMessage("/txt " + fullUUID);
+                                    this.sendChatMessage(mc,"/txt " + fullUUID);
                                 }
                             } catch (IOException e) {
                                 ChatUtil.sendMessage("§cUser §6" + username + "§c was not found.");

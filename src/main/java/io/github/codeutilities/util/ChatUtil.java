@@ -1,7 +1,8 @@
 package io.github.codeutilities.util;
 
+import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.ModConfig;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.*;
@@ -10,8 +11,6 @@ import org.jetbrains.annotations.Nullable;
 import java.awt.*;
 
 public class ChatUtil {
-
-    private static final MinecraftClient mc = MinecraftClient.getInstance();
 
     public static void sendMessage(String text) {
         sendMessage(new LiteralText(text), null);
@@ -30,14 +29,24 @@ public class ChatUtil {
     }
 
     public static void sendMessage(MutableText text, @Nullable ChatType chatType) {
+        ClientPlayerEntity player = CodeUtilities.MC.player;
+        if (player == null) {
+            return;
+        }
+
         if (chatType == null) {
-            mc.player.sendMessage(text, false);
+            player.sendMessage(text, false);
         } else {
-            ChatUtil.setColor(text, MinecraftColors.fromCode(chatType.getTrailing()).getColor());
-            mc.player.sendMessage(new LiteralText(chatType.getString() + " ").append(text), false);
+            MinecraftColors minecraftColors = MinecraftColors.fromCode(chatType.getTrailing());
+            if (minecraftColors == null) {
+                minecraftColors = MinecraftColors.RED;
+            }
+
+            ChatUtil.setColor(text, minecraftColors.getColor());
+            player.sendMessage(new LiteralText(chatType.getString() + " ").append(text), false);
             if (chatType == ChatType.FAIL) {
                 if (ModConfig.getConfig().errorSound) {
-                    MinecraftClient.getInstance().player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_DIDGERIDOO, SoundCategory.PLAYERS, 2, 0);
+                    player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_DIDGERIDOO, SoundCategory.PLAYERS, 2, 0);
                 }
             }
         }

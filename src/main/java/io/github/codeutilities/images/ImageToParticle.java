@@ -42,7 +42,7 @@ public class ImageToParticle {
                 int rgb = image.getRGB(j, i);
                 Color color = new Color(rgb, true);
                 hex = Integer.toHexString(rgb).substring(2);
-                if (hex != previousHex) {
+                if (!hex.equals(previousHex)) {
                     previousHex = hex;
                     String appendStr = "#" + hex + repeatCount;
                     if (currentData.length() + appendStr.length() > 300) {

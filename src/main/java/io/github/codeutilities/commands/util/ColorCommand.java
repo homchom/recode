@@ -50,9 +50,9 @@ public class ColorCommand extends Command {
                                 .then(ArgBuilder.argument("s", IntegerArgumentType.integer(0, 360)).
                                         then(ArgBuilder.argument("b", IntegerArgumentType.integer(0, 360)).executes((context) -> {
 
-                                            float h = context.getArgument("h", Integer.class) / 360;
-                                            float s = context.getArgument("s", Integer.class) / 360;
-                                            float b = context.getArgument("b", Integer.class) / 360;
+                                            float h = context.getArgument("h", Integer.class) / 360.0f;
+                                            float s = context.getArgument("s", Integer.class) / 360.0f;
+                                            float b = context.getArgument("b", Integer.class) / 360.0f;
 
                                             copyColor(Color.getHSBColor(h, s, b));
                                             return 1;

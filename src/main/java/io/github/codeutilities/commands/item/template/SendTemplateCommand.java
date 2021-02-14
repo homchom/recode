@@ -33,7 +33,7 @@ public class SendTemplateCommand extends AbstractTemplateCommand {
                 client.sendData(toSend.toString());
             }
 
-            MinecraftClient.getInstance().player.playSound(SoundEvents.ENTITY_FIREWORK_ROCKET_LAUNCH, 200, 1);
+            CodeUtilities.MC.player.playSound(SoundEvents.ENTITY_FIREWORK_ROCKET_LAUNCH, 200, 1);
         } catch (IOException exception) {
             ChatUtil.sendMessage("Failed to send data", ChatType.FAIL);
         }

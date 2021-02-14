@@ -16,7 +16,7 @@ public class UnpackCommand extends Command {
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("unpack")
                 .executes(ctx -> {
-                    if (mc.player.isCreative()) {
+                    if (this.isCreative(mc)) {
                         ItemStack handItem = mc.player.getMainHandStack();
                         if (!handItem.getOrCreateTag().getCompound("BlockEntityTag").isEmpty()) {
 
@@ -40,8 +40,6 @@ public class UnpackCommand extends Command {
                         } else {
                             ChatUtil.sendMessage("TThere are no items stored in this item!", ChatType.FAIL);
                         }
-                    } else {
-                        ChatUtil.sendTranslateMessage("codeutilities.command.require_creative_mode", ChatType.FAIL);
                     }
                     return 1;
                 })

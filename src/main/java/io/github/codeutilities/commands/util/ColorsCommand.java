@@ -2,6 +2,7 @@ package io.github.codeutilities.commands.util;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.commands.arguments.ArgBuilder;
 import io.github.codeutilities.config.ModConfig;
@@ -12,7 +13,6 @@ import net.minecraft.text.*;
 public class ColorsCommand extends Command {
 
     private final ModConfig config = ModConfig.getConfig();
-    private final MinecraftClient mc = MinecraftClient.getInstance();
 
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
@@ -35,7 +35,7 @@ public class ColorsCommand extends Command {
             Text base = new LiteralText("");
             float b = 1f - ((1f / lines) * j);
             for (int i = 0; i < maxColors; i++) {
-                float index = (360 / maxColors) * i;
+                float index = (360.0f / maxColors) * i;
 
                 java.awt.Color color = java.awt.Color.getHSBColor(index / 360, saturation, b);
                 String colorName = "#" + Integer.toHexString(color.getRGB()).substring(2);
@@ -50,7 +50,7 @@ public class ColorsCommand extends Command {
                 extra.styled((style) -> style.withHoverEvent(HoverEvent.Action.SHOW_TEXT.buildHoverEvent(hover)));
                 base.getSiblings().add(extra);
             }
-            mc.player.sendMessage(base, false);
+            this.sendMessage(CodeUtilities.MC, base);
         }
     }
 }

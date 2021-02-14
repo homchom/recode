@@ -16,7 +16,7 @@ public class CopyTextCommand extends Command {
         cd.register(ArgBuilder.literal("copytxt")
                 .then(ArgBuilder.argument("text", StringArgumentType.greedyString())
                         .executes(ctx -> {
-                            MinecraftClient.getInstance().keyboard.setClipboard(ctx.getArgument("text", String.class));
+                            mc.keyboard.setClipboard(ctx.getArgument("text", String.class));
                             ChatUtil.sendMessage("Copied text!", ChatType.INFO_BLUE);
                             return 1;
                         })

@@ -82,7 +82,7 @@ public class NBSToTemplate {
                 if (noteCount == 0) {
                     currentNotes.append(currentNote);
                 } else {
-                    currentNotes.append("=" + currentNote);
+                    currentNotes.append("=").append(currentNote);
                 }
                 noteCount++;
 

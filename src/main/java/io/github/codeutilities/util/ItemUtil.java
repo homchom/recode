@@ -20,9 +20,7 @@ import java.util.List;
 public class ItemUtil {
 
     public static void giveCreativeItem(ItemStack item, boolean preferHand) {
-
-        MinecraftClient mc = MinecraftClient.getInstance();
-
+        MinecraftClient mc = CodeUtilities.MC;
         DefaultedList<ItemStack> mainInventory = mc.player.inventory.main;
 
         if (preferHand) {

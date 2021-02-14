@@ -32,9 +32,9 @@ public class PJoinCommand extends Command {
 
     private int run(MinecraftClient mc, String player) {
         if (DFInfo.currentState != DFInfo.State.LOBBY) {
-            mc.player.sendChatMessage("/leave");
+            this.sendChatMessage(mc, "/leave");
         }
-        mc.player.sendChatMessage("/locate " + player);
+        this.sendChatMessage(mc, "/locate " + player);
 
         ChatReceivedEvent.pjoin = true;
 

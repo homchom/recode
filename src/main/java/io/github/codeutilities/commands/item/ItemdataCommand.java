@@ -41,7 +41,7 @@ public class ItemdataCommand extends Command {
                         msg3.styled((style) -> style.withClickEvent(new ClickEvent(Action.RUN_COMMAND, "/copytxt " + formatted)));
                         msg5.styled((style) -> style.withClickEvent(new ClickEvent(Action.RUN_COMMAND, "/copytxt " + "/give " + Registry.ITEM.getId(item.getItem()).toString() + unformatted + " 1")));
 
-                        mc.player.sendMessage(msg1.append(msg2).append(msg3).append(msg4).append(msg5).append(msg6), false);
+                        this.sendMessage(mc, msg1.append(msg2).append(msg3).append(msg4).append(msg5).append(msg6));
 
                     } else {
                         ChatUtil.sendMessage("No NBT data found!", ChatType.FAIL);

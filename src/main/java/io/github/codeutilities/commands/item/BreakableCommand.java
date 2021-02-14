@@ -17,7 +17,7 @@ public class BreakableCommand extends Command {
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("breakable")
                 .executes(ctx -> {
-                    if (mc.player.isCreative()) {
+                    if (this.isCreative(mc)) {
                         ItemStack item = mc.player.getMainHandStack();
                         if (item.getItem() != Items.AIR) {
                             CompoundTag nbt = item.getOrCreateTag();
@@ -28,8 +28,6 @@ public class BreakableCommand extends Command {
                         } else {
                             ChatUtil.sendMessage("You need to hold an item in your main hand!", ChatType.FAIL);
                         }
-                    } else {
-                        ChatUtil.sendTranslateMessage("codeutilities.command.require_creative_mode", ChatType.FAIL);
                     }
                     return 1;
                 })
