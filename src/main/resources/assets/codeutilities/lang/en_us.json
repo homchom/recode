@@ -7,6 +7,8 @@
   "text.autoconfig.codeutilities.option.dfButton": "DiamondFire Menu Button",
   "text.autoconfig.codeutilities.option.itemApi": "Item API",
   "text.autoconfig.codeutilities.option.itemApi@Tooltip": "Used for sending items from third party programs.",
+  "text.autoconfig.codeutilities.option.chestReplacement": "Chest -> Barrel replacement",
+  "text.autoconfig.codeutilities.option.chestReplacement@Tooltip": "Makes all chests look like barrels.",
   "text.autoconfig.codeutilities.option.variableScopeView": "Variable Scope View",
   "text.autoconfig.codeutilities.option.betterCoords": "Better Coordinates in F3",
 
