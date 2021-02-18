@@ -12,6 +12,12 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip()
     public boolean itemApi = true;
     @ConfigEntry.Category("features")
+    @ConfigEntry.Gui.Tooltip()
+    public boolean chestReplacement = false;
+    @ConfigEntry.Category("features")
+    @ConfigEntry.BoundedDiscrete(min = 1, max = 100)
+    public int signRenderDistance = 100;
+    @ConfigEntry.Category("features")
     public boolean variableScopeView = true;
     @ConfigEntry.Category("commands")
     public boolean dfCommands = true;

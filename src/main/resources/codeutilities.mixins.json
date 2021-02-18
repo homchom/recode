@@ -9,7 +9,9 @@
     "item.MixinItemCreative",
     "item.MixinItemInsert",
     "item.MixinItemSlotUpdate",
-    "messages.MixinGameMessageListener"
+    "messages.MixinGameMessageListener",
+    "MixinChestBlockEntityRenderer",
+    "SignBlockEntityRenderMixin"
   ],
   "client": [],
   "server": [],
