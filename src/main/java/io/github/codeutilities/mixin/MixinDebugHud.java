@@ -34,7 +34,7 @@ public class MixinDebugHud {
                         minecraftClient.player.getPos().getY(),
                         minecraftClient.player.getPos().getZ()));
 
-                if(CodeUtilities.isOnDF() && DFInfo.currentState == DFInfo.State.DEV) {
+                if(DFInfo.isOnDF() && DFInfo.currentState == DFInfo.State.DEV) {
                     CodeUtilities.log(Level.INFO, "adding plot location");
                     Vec3d plotCoord = minecraftClient.player.getPos().subtract(DFInfo.plotCorner);
                     leftText.add(10, String.format("%s %.3f / %.3f / %.3f", "" +
@@ -46,7 +46,7 @@ public class MixinDebugHud {
             }
             
             leftText.add(Formatting.GOLD + "[CodeUtilities] " + Formatting.YELLOW + "Version: " + CodeUtilities.MOD_VERSION);
-            leftText.add(Formatting.GOLD + "[CodeUtilities] " + Formatting.YELLOW + "onDF: " + CodeUtilities.isOnDF());
+            leftText.add(Formatting.GOLD + "[CodeUtilities] " + Formatting.YELLOW + "onDF: " + DFInfo.isOnDF());
             leftText.add(Formatting.GOLD + "[CodeUtilities] " + Formatting.YELLOW + "State: " + DFInfo.currentState);
             callbackInfoReturnable.setReturnValue(leftText);
         }catch (Exception e) {

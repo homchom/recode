@@ -36,13 +36,7 @@ public class CodeUtilities implements ModInitializer {
             MinecraftClient.getInstance().openScreen(new CottonClientScreen(gui));
         }).start();
     }
-
-    // Perhaps some kind of "ServerHandler"
-    public static boolean isOnDF() {
-        if (mc.getCurrentServerEntry() == null) return false;
-        return mc.getCurrentServerEntry().address.contains("mcdiamondfire.com");
-    }
-
+    
     public static void log(Level level, String message) {
         LOGGER.log(level, "[" + MOD_NAME + "] " + message);
     }
@@ -73,6 +67,7 @@ public class CodeUtilities implements ModInitializer {
     public void onClose() {
         System.out.println("CLOSED");
         TemplateStorageHandler.save();
+        CosmeticHandler.shutdownExecutorService();
     }
 
 

@@ -1,11 +1,13 @@
 package io.github.codeutilities.util;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.Vec3d;
 
 public class DFInfo {
     public static String patchId = "5.3";
     public static State currentState = State.LOBBY;
     public static Vec3d plotCorner = null;
+    private static final MinecraftClient mc = MinecraftClient.getInstance();
 
     public static boolean isPatchNewer(String base, String target) {
         String[] baseSplit = base.split("\\.", 0);
@@ -32,6 +34,11 @@ public class DFInfo {
             }
         }
         return !oldNumberFound;
+    }
+    
+    public static boolean isOnDF() {
+        if (mc.getCurrentServerEntry() == null) return false;
+        return mc.getCurrentServerEntry().address.contains("mcdiamondfire.com");
     }
 
 

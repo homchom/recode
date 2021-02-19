@@ -15,10 +15,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class SignBlockEntityRenderMixin {
 
     @Inject(method = "render", at = @At("HEAD"), cancellable = true)
-    public void render(SignBlockEntity signBlockEntity, float f, MatrixStack matrixStack,
-        VertexConsumerProvider vertexConsumerProvider, int i, int j, CallbackInfo ci) {
-        if (!signBlockEntity.getPos().isWithinDistance(CodeUtilities.mc.cameraEntity.getBlockPos(),
-            ModConfig.getConfig().signRenderDistance)) ci.cancel();
+    public void render(SignBlockEntity signBlockEntity, float f, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, int j, CallbackInfo ci) {
+        if (!signBlockEntity.getPos().isWithinDistance(CodeUtilities.mc.cameraEntity.getBlockPos(), ModConfig.getConfig().signRenderDistance)) ci.cancel();
     }
 
 }

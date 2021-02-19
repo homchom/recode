@@ -43,4 +43,8 @@ public class CosmeticHandler {
         if(jsonElement.isJsonNull()) return null;
         return jsonElement.getAsString();
     }
+    
+    public static void shutdownExecutorService() {
+        executorService.shutdown();
+    }
 }

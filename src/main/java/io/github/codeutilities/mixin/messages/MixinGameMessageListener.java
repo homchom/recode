@@ -2,6 +2,7 @@ package io.github.codeutilities.mixin.messages;
 
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.events.ChatReceivedEvent;
+import io.github.codeutilities.util.ChatUtil;
 import io.github.codeutilities.util.DFInfo;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -20,7 +21,9 @@ public class MixinGameMessageListener {
 
     @Inject(method = "onGameMessage", at = @At("HEAD"), cancellable = true)
     private void onGameMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
-        if (CodeUtilities.isOnDF()) {
+        CodeUtilities.log(Level.FATAL, "test");
+        CodeUtilities.log(Level.FATAL, "Is hypercube message: " + ChatUtil.verifyMessage(packet.getMessage()));
+        if (DFInfo.isOnDF()) {
             if (packet.getLocation() == MessageType.CHAT || packet.getLocation() == MessageType.SYSTEM) {
                 ChatReceivedEvent.onMessage(packet.getMessage(), ci);
                 String text = packet.getMessage().getString();
