@@ -32,6 +32,14 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Category("commands")
     @ConfigEntry.BoundedDiscrete(min = 1, max = 20)
     public int colorLines = 5;
+    @ConfigEntry.Category("social")
+    public boolean socialFeatures = true;
+    @ConfigEntry.Category("social")
+    public boolean hats = true;
+    @ConfigEntry.Category("social")
+    public boolean codeUtilsChat = true;
+    @ConfigEntry.Category("social")
+    public boolean allParty = true;
     
     public static ModConfig getConfig() {
         return AutoConfig.getConfigHolder(ModConfig.class).getConfig();
