@@ -20,7 +20,7 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
     private final ItemScrollablePanel panel;
     ModConfig config = ModConfig.getConfig();
 
-    public CustomHeadSearchGui() {
+    public CustomHeadSearchGui(String query) {
         WPlainPanel root = new WPlainPanel();
         root.setSize(256, 240);
 
@@ -54,6 +54,8 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
             }
             panel.setItems(toItemStack(selected));
         }));
+
+        searchBox.setText(query);
 
         setRootPanel(root);
         root.validate(this);

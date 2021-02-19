@@ -1,5 +1,7 @@
 package io.github.codeutilities.util;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.*;
@@ -11,15 +13,17 @@ import java.util.*;
 
 public class ItemUtil {
 
-    // Prefers main hand slot if possible.
-    public static void giveCreativeItem(ItemStack item) {
+    public static void giveCreativeItem(ItemStack item, boolean preferHand) {
 
         MinecraftClient mc = MinecraftClient.getInstance();
+
         DefaultedList<ItemStack> mainInventory = mc.player.inventory.main;
 
-        if (mc.player.getMainHandStack().isEmpty()) {
-            mc.interactionManager.clickCreativeStack(item, mc.player.inventory.selectedSlot + 36);
-            return;
+        if (preferHand) {
+            if (mc.player.getMainHandStack().isEmpty()) {
+                mc.interactionManager.clickCreativeStack(item, mc.player.inventory.selectedSlot + 36);
+                return;
+            }
         }
 
         for (int index = 0; index < mainInventory.size(); index++) {
@@ -60,7 +64,29 @@ public class ItemUtil {
 
         CompoundTag nbt = StringNbtReader.parse("{SkullOwner:{Id:" + StringUtil.genDummyIntArray() + ",Properties:{textures:[{Value:\"" + texture + "\"}]}}}");
         item.setTag(nbt);
-        ItemUtil.giveCreativeItem(item);
+        ItemUtil.giveCreativeItem(item, true);
+    }
+
+    public static boolean isVar(ItemStack stack, String type) {
+        try {
+            CompoundTag tag = stack.getTag();
+            if (tag == null) {
+                return false;
+            }
+
+            CompoundTag publicBukkitNBT = tag.getCompound("PublicBukkitValues");
+            if (publicBukkitNBT == null) {
+                return false;
+            }
+
+            if(publicBukkitNBT.getString("hypercube:varitem").length() > 0) {
+                return new JsonParser().parse(publicBukkitNBT.getString("hypercube:varitem")).getAsJsonObject().get("id").getAsString().equalsIgnoreCase(type);
+            }
+
+            return false;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public static ListTag toListTag(List<ItemStack> stacks) {

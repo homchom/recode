@@ -4,34 +4,34 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.commands.arguments.ArgBuilder;
-import io.github.codeutilities.images.ImageConverter;
+import io.github.codeutilities.images.ImageToHologram;
 import io.github.codeutilities.util.*;
 import io.github.codeutilities.util.externalfile.ExternalFile;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.*;
-import net.minecraft.text.LiteralText;
 
 import java.io.File;
 
-public class ImageCommand extends Command {
+public class ImageHologramCommand extends Command {
 
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
-        cd.register(ArgBuilder.literal("image")
+        cd.register(ArgBuilder.literal("imagehologram")
                 .then(ArgBuilder.literal("load")
-                        .then(ArgBuilder.argument("location", StringArgumentType.greedyString())
+                        .then(ArgBuilder.literal("hex")
+                            .then(ArgBuilder.argument("location", StringArgumentType.greedyString())
                                 .executes(ctx -> {
                                     try {
                                         String location = StringArgumentType.getString(ctx, "location");
                                         File f = new File(ExternalFile.IMAGE_FILES.getFile(), location + (location.endsWith(".png") ? "" : ".png"));
 
                                         if (f.exists()) {
-                                            String[] strings = ImageConverter.convert116(f);
+                                            String[] strings = ImageToHologram.convert116(f);
 
-                                            ItemStack stack = new ItemStack(Items.NOTE_BLOCK);
+                                            ItemStack stack = new ItemStack(Items.ENDER_CHEST);
                                             TemplateUtils.compressTemplateNBT(stack, StringArgumentType.getString(ctx, "location"), mc.player.getName().asString(), convert(strings));
-                                            ItemUtil.giveCreativeItem(stack);
+                                            ItemUtil.giveCreativeItem(stack, true);
                                             ChatUtil.sendMessage("Image loaded! Change the first Set Variable to the location!", ChatType.SUCCESS);
                                         } else {
                                             ChatUtil.sendMessage("That image doesn't exist.", ChatType.FAIL);
@@ -42,7 +42,33 @@ public class ImageCommand extends Command {
                                         e.printStackTrace();
                                         return 0;
                                     }
-                                }))));
+                                })))
+                        .then(ArgBuilder.literal("colorcodes")
+                                .then(ArgBuilder.argument("location", StringArgumentType.greedyString())
+                                        .executes(ctx -> {
+                                            try {
+                                                String location = StringArgumentType.getString(ctx, "location");
+                                                File f = new File(ExternalFile.IMAGE_FILES.getFile(), location + (location.endsWith(".png") ? "" : ".png"));
+
+                                                if (f.exists()) {
+                                                    String[] strings = ImageToHologram.convert115(f);
+
+                                                    ItemStack stack = new ItemStack(Items.ENDER_CHEST);
+                                                    TemplateUtils.compressTemplateNBT(stack, StringArgumentType.getString(ctx, "location"), mc.player.getName().asString(), convert(strings));
+                                                    ItemUtil.giveCreativeItem(stack, true);
+                                                    ChatUtil.sendMessage("Image loaded! Change the first Set Variable to the location!", ChatType.SUCCESS);
+                                                } else {
+                                                    ChatUtil.sendMessage("That image doesn't exist.", ChatType.FAIL);
+                                                }
+                                                return 1;
+                                            }catch (Exception e) {
+                                                ChatUtil.sendMessage("Error while executing the command.", ChatType.FAIL);
+                                                e.printStackTrace();
+                                                return 0;
+                                            }
+                                        })))
+                        )
+                );
     }
 
     private String convert(String[] layers) {

@@ -12,7 +12,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ServerPlayNetworkHandler.class)
 public class MixinItemCreative {
 
-
     @Inject(method = "onCreativeInventoryAction", at = @At("HEAD"))
     public void onCreativeInventoryAction(CreativeInventoryActionC2SPacket packet, CallbackInfo ci) {
         ItemStack stack = packet.getItemStack();

@@ -1,4 +1,4 @@
-package io.github.codeutilities.commands.nbs;
+package io.github.codeutilities.nbs;
 
 import io.github.codeutilities.nbs.SongData;
 import io.github.codeutilities.nbs.exceptions.OutdatedNBSException;
@@ -220,6 +220,7 @@ public class NBSDecoder {
                         int noteInstrument = instrumentList[i][currentTick];
                         int noteKey = pitchList[i][currentTick];
                         int noteFinePitch = finepitchList[i][currentTick];
+                        int noteKeyOffset = 0;
 
                         //ANOTHER EPIC DEBUG CODE STARTS FROM HERE
                         //System.out.println("Note ID: " + noteID);
@@ -227,15 +228,13 @@ public class NBSDecoder {
 
                         if (noteInstrument >= vanillaInstruments) {
                             int instrumentId = noteInstrument - vanillaInstruments;
-                            int noteKeyOffset = customPitchList[instrumentId] - 45;
-
-                            noteKey += noteKeyOffset;
+                            noteKeyOffset = customPitchList[instrumentId] - 45;
                         }
                         if (firstAppend == true) {
-                            columnStringBuilder.append(":" + (noteInstrument + 1) + "," + getMinecraftPitch(noteKey + (double) noteFinePitch / 100d) + laterNoteString);
+                            columnStringBuilder.append(":" + (noteInstrument + 1) + "," + getMinecraftPitch(noteKey + (double) noteFinePitch / 100d, noteKeyOffset) + laterNoteString);
                             firstAppend = false;
                         } else {
-                            columnStringBuilder.append(";" + (noteInstrument + 1) + "," + getMinecraftPitch(noteKey + (double) noteFinePitch / 100d) + laterNoteString);
+                            columnStringBuilder.append(";" + (noteInstrument + 1) + "," + getMinecraftPitch(noteKey + (double) noteFinePitch / 100d, noteKeyOffset) + laterNoteString);
                         }
                     }
                 }
@@ -278,11 +277,13 @@ public class NBSDecoder {
         return builder.toString();
     }
 
-    private static int getMinecraftPitch(double key) {
+    private static int getMinecraftPitch(double key, double offset) {
 
         if (key < 33) key -= 9;
         else if (key > 57) key -= 57;
         else key -= 33;
+
+        key += offset;
 
         double finalValue = (0.5 * (Math.pow(2, (key / 12)))) * 1000;
 

@@ -2,6 +2,7 @@ package io.github.codeutilities.util.socket.client;
 
 import com.google.gson.*;
 import io.github.codeutilities.util.ItemUtil;
+import io.github.codeutilities.util.ToasterUtil;
 import io.github.codeutilities.util.socket.SocketHandler;
 import io.github.codeutilities.util.socket.client.type.SocketItem;
 import net.fabricmc.api.*;
@@ -39,13 +40,10 @@ public abstract class Client implements Closeable {
                 throw new Exception("Player is not logged in!");
             }
             
-            ItemUtil.giveCreativeItem(item.getItem(itemData));
-            
-            LiteralText recieved = new LiteralText("Received Item!");
-            LiteralText description = new LiteralText(source);
+            ItemUtil.giveCreativeItem(item.getItem(itemData), true);
             
             if (player.isCreative()) {
-                MinecraftClient.getInstance().getToastManager().add(new SystemToast(SystemToast.Type.NARRATOR_TOGGLE, recieved, description));
+                ToasterUtil.sendToaster("Received Item!", source, SystemToast.Type.NARRATOR_TOGGLE);
                 player.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 200, 1);
                 result.addProperty("status", "success");
             } else {

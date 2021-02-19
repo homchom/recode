@@ -3,10 +3,16 @@
 
   "text.autoconfig.codeutilities.category.features": "Features",
   "text.autoconfig.codeutilities.category.commands": "Commands",
+  "text.autoconfig.codeutilities.category.social": "Social Features",
 
   "text.autoconfig.codeutilities.option.dfButton": "DiamondFire Menu Button",
   "text.autoconfig.codeutilities.option.itemApi": "Item API",
-  "text.autoconfig.codeutilities.option.itemApi@Tooltip": "Used for sending items from third party programs.",
+  "text.autoconfig.codeutilities.option.itemApi.@Tooltip": "Used for sending items from third party programs.",
+  "text.autoconfig.codeutilities.option.chestReplacement": "Chest -> Barrel replacement",
+  "text.autoconfig.codeutilities.option.chestReplacement.@Tooltip": "Makes all chests look like barrels.",
+  "text.autoconfig.codeutilities.option.signRenderDistance": "Sign Render Distance",
+  "text.autoconfig.codeutilities.option.variableScopeView": "Variable Scope View",
+  "text.autoconfig.codeutilities.option.betterCoords": "Better Coordinates in F3",
 
   "text.autoconfig.codeutilities.option.adBlock": "AdBlockPlus",
   "text.autoconfig.codeutilities.option.discordRPC": "Discord Rich Presence",
@@ -15,6 +21,12 @@
   "text.autoconfig.codeutilities.option.errorSound": "Error Message Sound",
   "text.autoconfig.codeutilities.option.headMenuMaxRender": "Maximum Heads in /heads",
   "text.autoconfig.codeutilities.option.colorMaxRender": "Maximum Colors in /colors",
+  "text.autoconfig.codeutilities.option.colorLines": "Lines in /colors",
+
+  "text.autoconfig.codeutilities.option.socialFeatures": "Enable Social Features",
+  "text.autoconfig.codeutilities.option.codeUtilsChat": "CodeUtilities Chat",
+  "text.autoconfig.codeutilities.option.hats": "Show Hats",
+  "text.autoconfig.codeutilities.option.allParty": "Allow party invites from everyone.",
 
   "codeutilities.command.require_creative_mode": "You must be in creative mode to use this command!"
 

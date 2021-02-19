@@ -27,8 +27,8 @@ public class SocketHandler {
                 }
             }
         }).start();
-    
-    
+
+
         Server server = new Server("localhost", 31371, "/codeutilities", ItemWebEndpoint.class);
         try {
             server.start();

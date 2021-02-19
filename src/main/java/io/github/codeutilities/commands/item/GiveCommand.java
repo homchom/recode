@@ -63,7 +63,7 @@ public class GiveCommand extends Command {
         if (mc.player.isCreative()) {
             if (count >= 1) {
                 if (count <= item.getMaxCount()) {
-                    ItemUtil.giveCreativeItem(item);
+                    ItemUtil.giveCreativeItem(item, true);
                 } else {
                     ChatUtil.sendMessage("Maximum item count for " + item.getName() + " is " + item.getMaxCount() + "!", ChatType.FAIL);
                 }

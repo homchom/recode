@@ -41,7 +41,7 @@ public class UuidCommand extends Command {
                                 if (copy) {
                                     ChatUtil.sendMessage("§aThe UUID has been copied to the clipboard!");
                                     mc.keyboard.setClipboard(fullUUID);
-                                } else if (CodeUtilities.isOnDF()) {
+                                } else if (DFInfo.isOnDF()) {
                                     mc.player.sendChatMessage("/txt " + fullUUID);
                                 }
                             } catch (IOException e) {
@@ -51,7 +51,6 @@ public class UuidCommand extends Command {
 
                             return 1;
                         })
-                        .then(ArgBuilder.literal("copy"))
                 )
         );
     }

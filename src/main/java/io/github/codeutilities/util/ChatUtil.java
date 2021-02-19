@@ -7,6 +7,8 @@ import net.minecraft.text.*;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
+import java.lang.reflect.Field;
+import java.util.List;
 
 public class ChatUtil {
 
@@ -39,6 +41,21 @@ public class ChatUtil {
                     MinecraftClient.getInstance().player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_DIDGERIDOO, SoundCategory.PLAYERS, 2, 0);
                 }
             }
+        }
+    }
+    
+    // A hacky way of verifying that a message is sent by Hypercube.
+    public static boolean verifyMessage(Text component) {
+        List<Text> siblings = component.getSiblings();
+        if(!DFInfo.isOnDF()) return false;
+        if(siblings.size() == 0) return false;
+        Style style = siblings.get(0).getStyle();
+        Class<?> clazz = style.getClass();
+        try {
+            System.out.println(clazz.getField("bold").get(style));
+            return true;
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            return false;
         }
     }
 

@@ -1,10 +1,12 @@
 package io.github.codeutilities.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import io.github.codeutilities.commands.image.ImageCommand;
+import io.github.codeutilities.commands.image.ImageHologramCommand;
+import io.github.codeutilities.commands.image.ImageParticleCommand;
 import io.github.codeutilities.commands.item.*;
 import io.github.codeutilities.commands.item.template.*;
 import io.github.codeutilities.commands.nbs.NBSCommand;
+import io.github.codeutilities.commands.schem.SchemCommand;
 import io.github.codeutilities.commands.util.*;
 import io.github.codeutilities.config.ModConfig;
 import io.github.cottonmc.clientcommands.*;
@@ -27,29 +29,31 @@ public class CommandHandler implements ClientCommandPlugin {
     
     public static void initialize() {
         register(
+                new CodeUtilitiesCommand(),
                 new BreakableCommand(),
-                new SendTemplateCommand(),
                 new UnpackCommand(),
-                // THis command is just so good
                 new ItemdataCommand(),
-                new NBSCommand(),
                 new UuidCommand(),
-                new WebviewCommand(),
-                new CopyTextCommand(),
                 new HeadsCommand(),
-                //new ImageToTemplateCommand115(),
-                new TemplatesCommand(),
                 new ColorsCommand(),
                 new ColorCommand(),
-                new NodeCommand(),
                 new EditItemCommand(),
-                new ImageCommand()
+                new CopyTextCommand(),
+                new ImageHologramCommand(),
+                new ImageParticleCommand(),
+                new SchemCommand()
         );
         
         if (ModConfig.getConfig().dfCommands) {
             register(
                     new GiveCommand(),
-                    new LoreCommand()
+                    new NodeCommand(),
+                    new TemplatesCommand(),
+                    new WebviewCommand(),
+                    new NBSCommand(),
+                    new ImageHologramCommand(),
+                    new ImageParticleCommand(),
+                    new SendTemplateCommand()
             );
         }
     }
