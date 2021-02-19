@@ -4,8 +4,11 @@ import io.github.codeutilities.util.socket.SocketHandler;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.concurrent.*;
 
 public class SocketClient extends Client {
+    
+    private static final ExecutorService SERVICE = Executors.newFixedThreadPool(5); // MAX of 5 connections (socket)
     
     private final Socket socket;
     private final BufferedReader reader;
@@ -14,17 +17,22 @@ public class SocketClient extends Client {
         this.socket = socket;
         this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
     
-        new Thread(() -> {
+        SERVICE.execute(() -> {
             while (true) {
                 try {
                     acceptData(reader.readLine());
                 } catch (IOException e) {
                     e.printStackTrace();
                     SocketHandler.clients.remove(this);
+                    try {
+                        SocketClient.this.close();
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                    }
                     return;
                 }
             }
-        }).start();
+        });
     }
     
     public Socket getSocket() {
@@ -40,5 +48,6 @@ public class SocketClient extends Client {
     @Override
     public void close() throws IOException {
         socket.close();
+        reader.close();
     }
 }
