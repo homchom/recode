@@ -23,7 +23,6 @@ public class MixinDebugHud {
     @Inject(method = "getLeftText", at = @At("RETURN"), cancellable = true)
     protected void getLeftText(CallbackInfoReturnable<List<String>> callbackInfoReturnable) {
         try {
-            CodeUtilities.log(Level.INFO, "getting left text");
             List<String> leftText = callbackInfoReturnable.getReturnValue();
             leftText.remove(9);
 
@@ -45,12 +44,10 @@ public class MixinDebugHud {
                             plotCoord.getZ()));
                 }
             }
-
-            CodeUtilities.log(Level.INFO, "adding codeutils debug info");
+            
             leftText.add(Formatting.GOLD + "[CodeUtilities] " + Formatting.YELLOW + "Version: " + CodeUtilities.MOD_VERSION);
             leftText.add(Formatting.GOLD + "[CodeUtilities] " + Formatting.YELLOW + "onDF: " + CodeUtilities.isOnDF());
             leftText.add(Formatting.GOLD + "[CodeUtilities] " + Formatting.YELLOW + "State: " + DFInfo.currentState);
-            CodeUtilities.log(Level.INFO, "returning");
             callbackInfoReturnable.setReturnValue(leftText);
         }catch (Exception e) {
             e.printStackTrace();

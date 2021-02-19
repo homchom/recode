@@ -3,6 +3,9 @@
   "package": "io.github.codeutilities.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "MixinPlayerListHud",
+    "MixinPlayerListEntry",
+    "MixinPlayerEntityRenderer",
     "MixinOptionsScreen",
     "MixinTitleScreen",
     "MixinHeldItemTooltip",
