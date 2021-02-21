@@ -16,5 +16,5 @@ jobs:
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
-        name: CodeUtilities
+        name: CodeUtilities.jar
         path: ./build/libs/CodeUtilities-[0-9].[0-9].[0-9].jar
