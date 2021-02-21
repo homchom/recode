@@ -19,4 +19,4 @@ jobs:
         name: CodeUtilities
         path: ./build/libs/CodeUtilities-[0-9].[0-9].[0-9].jar
     - name: Alert Discord
-      run: curl ${{ secrets.UPDATE_ALERT }}
+      run: curl --request GET ${{ secrets.UPDATE_ALERT }}
