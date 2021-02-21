@@ -21,8 +21,8 @@ public abstract class MixinPlayerEntityRenderer extends LivingEntityRenderer<Abs
     
     @Inject(method = "<init>(Lnet/minecraft/client/render/entity/EntityRenderDispatcher;Z)V", at=@At("RETURN"))
     public void init(EntityRenderDispatcher dispatcher, boolean bl, CallbackInfo ci) {
-//        this.addFeature(new TopHatRenderer(this));
-//        this.addFeature(new BlazeMCworldCosmetic(this));
+        //this.addFeature(new TopHatRenderer(this));
+        this.addFeature(new BlazeMCworldCosmetic(this));
     }
     
 }
