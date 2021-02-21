@@ -24,8 +24,8 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Category("commands")
     public boolean errorSound = true;
     @ConfigEntry.Category("commands")
-    @ConfigEntry.BoundedDiscrete(min = 1, max = 300)
-    public int headMenuMaxRender = 140;
+    @ConfigEntry.BoundedDiscrete(min = 10, max = 10000)
+    public int headMenuMaxRender = 1000;
     @ConfigEntry.Category("commands")
     @ConfigEntry.BoundedDiscrete(min = 1, max = 360)
     public int colorMaxRender = 158;

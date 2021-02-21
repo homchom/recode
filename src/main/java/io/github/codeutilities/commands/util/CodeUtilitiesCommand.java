@@ -34,8 +34,7 @@ public class CodeUtilitiesCommand extends Command {
                             "§7･§6/edititem§f - Opens a menu to edit the held item.\n" +
                             "§7･§6/give <item>§f - Gives you a specified item.\n" +
                             "§7･§6/itemdata§f - Shows the held item's (client-side) NBT data.\n" +
-                            "§7･§6/templates recent§f - Shows a list of recently used Code Templates.\n" +
-                            "§7･§6/templates <all|search|view-self>§f - Views the online Code Template uploader.\n" +
+                            "§7･§6/templates§f - Shows recently used Code Templates.\n" +
                             "§7･§6/unpack§f - Extracts the contents in the held item (such as items in chests)\n" +
                             "§7･§6/webview§f - Views the held Code Template in your web browser.\n" +
                             "§7･§6/sendtemplate§f - Sends the held Code Template to connected third-party software.\n" +
@@ -98,9 +97,7 @@ public class CodeUtilitiesCommand extends Command {
                             "§7･§6/colors§f - Shows a simple hex color picker in the chat.\n" +
                             "§7･§6/heads§f - Opens a menu to search and get custom heads.\n" +
                             "§7･§6/node <1|2|3|beta>§f - Sends you to the specified DiamondFire node.\n" +
-                            "§7･§6/pjoin <player>§f - Joins a plot that the specified player is currently in\n" +
-                            "§7･§6/rejoin§f - Rejoins the current plot.\n" +
-                            "§7･§6/uuid <username>§f - Copies the UUID of a specified player to the clipboard.\n" +
+                            "§7･§6/uuid <username>§f - Grabs the Text item with UUID of the specified player.\n" +
                             "§9§m                                                                    "
                     ), false);
                     return 1;
