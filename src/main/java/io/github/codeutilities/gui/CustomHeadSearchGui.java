@@ -62,8 +62,6 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
             updateList();
         }));
 
-        searchBox.setText(query);
-
         int height = 250 / (categories.size() + 1);
 
         for (int i = 0; i <= categories.size(); i++) {
@@ -89,6 +87,7 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
 
         setRootPanel(root);
         root.validate(this);
+        searchBox.setText(query);
     }
 
     public static void load() {
@@ -138,9 +137,6 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
     }
 
     public void updateList() {
-        System.out.println(current);
-        System.out.println(current.getLabel());
-        System.out.println(current.getLabel().asString());
         List<JsonObject> selected = new ArrayList<>();
         String cat = current.getLabel().asString();
 
