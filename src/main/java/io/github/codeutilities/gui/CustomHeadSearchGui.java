@@ -36,7 +36,8 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
     ModConfig config = ModConfig.getConfig();
     private WButton current;
     private String searchQuery = "";
-    private CTextField searchBox;
+    private final CTextField searchBox;
+    private String lastquery = "";
 
     public CustomHeadSearchGui(String query) {
         WPlainPanel root = new WPlainPanel();
@@ -51,12 +52,11 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
             allHeads.subList(0, Math.max(Math.min(allHeads.size(), config.headMenuMaxRender), 1))));
         root.add(panel, 100, 25, 250, 215);
 
-        final String[] lastquery = {""};//intellij wants me to do this, don't ask me why
         searchBox.setChangedListener((s -> {
-            if (lastquery[0].equals(s)) {
+            if (lastquery.equals(s)) {
                 return;
             }
-            lastquery[0] = s;
+            lastquery = s;
             searchQuery = s.toLowerCase();
 
             updateList();
