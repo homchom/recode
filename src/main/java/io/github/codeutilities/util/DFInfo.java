@@ -37,7 +37,7 @@ public class DFInfo {
         }
         return !oldNumberFound;
     }
-    
+
     public static boolean isOnDF() {
         if (mc.getCurrentServerEntry() == null) return false;
         return mc.getCurrentServerEntry().address.contains("mcdiamondfire.com");

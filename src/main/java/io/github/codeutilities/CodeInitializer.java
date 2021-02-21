@@ -10,7 +10,7 @@ public class CodeInitializer {
     }
 
     public void initialize(IManager<?> manager) {
-        this.initialize(new IManager<?>[] {manager});
+        this.initialize(new IManager<?>[]{manager});
     }
 
     public void initialize(IManager<?>... managers) {

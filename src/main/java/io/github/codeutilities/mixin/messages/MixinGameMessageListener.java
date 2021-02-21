@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public class MixinGameMessageListener {
-    private MinecraftClient minecraftClient = MinecraftClient.getInstance();
+    private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
 
     @Inject(method = "onGameMessage", at = @At("HEAD"), cancellable = true)
     private void onGameMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
@@ -30,7 +30,7 @@ public class MixinGameMessageListener {
                 try {
                     this.updateVersion(text);
                     this.updateState(text);
-                }catch (Exception e) {
+                } catch (Exception e) {
                     CodeUtilities.log(Level.ERROR, "Error while trying to parse the chat text!");
                 }
             }
@@ -56,7 +56,7 @@ public class MixinGameMessageListener {
                 DFInfo.patchId = patchText;
                 DFInfo.currentState = DFInfo.State.LOBBY;
                 CodeUtilities.log(Level.INFO, "DiamondFire Patch " + DFInfo.patchId + " detected!");
-            }catch (Exception e) {
+            } catch (Exception e) {
                 CodeUtilities.log(Level.INFO, "Error on parsing patch number!");
                 e.printStackTrace();
             }

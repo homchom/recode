@@ -1,15 +1,6 @@
 package io.github.codeutilities.util;
 
 import com.google.gson.JsonObject;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.nio.charset.*;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.X509Certificate;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -17,23 +8,33 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 
 import javax.net.ssl.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
 
 public class WebUtil {
-    private static TrustManager[] trustAllCerts = new TrustManager[] {
+    private static final TrustManager[] trustAllCerts = new TrustManager[]{
             new X509TrustManager() {
                 public java.security.cert.X509Certificate[] getAcceptedIssuers() {
                     return null;
                 }
-            
-                public void checkClientTrusted(X509Certificate[] certs, String authType) {  }
-            
-                public void checkServerTrusted(X509Certificate[] certs, String authType) {  }
-            
+
+                public void checkClientTrusted(X509Certificate[] certs, String authType) {
+                }
+
+                public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                }
+
             }
     };
-    
-    private static HostnameVerifier allHostsValid = (hostname, session) -> true;
-    
+
+    private static final HostnameVerifier allHostsValid = (hostname, session) -> true;
+
     static {
         try {
             SSLContext sc = SSLContext.getInstance("SSL");
@@ -43,7 +44,7 @@ public class WebUtil {
         } catch (NoSuchAlgorithmException | KeyManagementException e) {
             e.printStackTrace();
         }
-    
+
     }
 
     public static String getString(String urlToRead, Charset charset) throws IOException {

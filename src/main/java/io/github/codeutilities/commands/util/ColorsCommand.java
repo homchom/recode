@@ -38,6 +38,11 @@ public class ColorsCommand extends Command {
             this.generatePicker(mc, 0);
             return 1;
         })
+                .then(ArgBuilder.argument("saturation", IntegerArgumentType.integer(0, 100)).executes((context) -> {
+                    float saturation = (float) IntegerArgumentType.getInteger(context, "saturation");
+                    this.generatePicker(mc, saturation);
+                    return 1;
+                }))
                 .then(ArgBuilder.argument("color", StringArgumentType.string()).executes((context) -> {
                     String string = StringArgumentType.getString(context, "color");
                     if (COLOR_MAP.containsKey(string)) {
@@ -45,11 +50,6 @@ public class ColorsCommand extends Command {
                     } else {
                         ChatUtil.sendMessage("Could not find this color, try again!", ChatType.FAIL);
                     }
-                    return 1;
-                }))
-                .then(ArgBuilder.argument("saturation", IntegerArgumentType.integer(0, 100)).executes((context) -> {
-                    float saturation = (float) IntegerArgumentType.getInteger(context, "saturation");
-                    this.generatePicker(mc, saturation);
                     return 1;
                 })));
     }
@@ -86,13 +86,13 @@ public class ColorsCommand extends Command {
         for (int i = 0; i <= 10; i++) {
             for (int j = 0; j <= 10; j++) {
 
-                Color color = Color.getHSBColor(hue,j / 10f, (10 - i) / 10f);
+                Color color = Color.getHSBColor(hue, j / 10f, (10 - i) / 10f);
                 String hex = "#" + Integer.toHexString(color.getRGB()).substring(2);
 
                 Style colorStyle = Style.EMPTY.withColor(TextColor.fromRgb(color.getRGB()));
                 LiteralText extra = new LiteralText(message);
                 LiteralText hover = new LiteralText(hex);
-                hover.append("\n"+paste);
+                hover.append("\n" + paste);
                 extra.setStyle(colorStyle);
                 hover.setStyle(colorStyle);
                 extra.styled((style) -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/color hex " + hex)));

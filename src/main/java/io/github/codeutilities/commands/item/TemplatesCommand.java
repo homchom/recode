@@ -3,11 +3,9 @@ package io.github.codeutilities.commands.item;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.commands.arguments.ArgBuilder;
-import io.github.codeutilities.gui.TemplateSearchGui;
 import io.github.codeutilities.gui.TemplateStorageUI;
 import io.github.codeutilities.util.ChatType;
 import io.github.codeutilities.util.ChatUtil;
@@ -17,8 +15,6 @@ import net.minecraft.client.MinecraftClient;
 import org.apache.http.HttpResponse;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.Random;
 
 public class TemplatesCommand extends Command {
@@ -29,10 +25,10 @@ public class TemplatesCommand extends Command {
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("templates")
-            .executes(ctx -> {
-                CodeUtilities.openGuiAsync(new TemplateStorageUI());
-                return 1;
-            })
+                .executes(ctx -> {
+                    CodeUtilities.openGuiAsync(new TemplateStorageUI());
+                    return 1;
+                })
         );
     }
 

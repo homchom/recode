@@ -16,7 +16,8 @@ public class SignBlockEntityRenderMixin {
 
     @Inject(method = "render", at = @At("HEAD"), cancellable = true)
     public void render(SignBlockEntity signBlockEntity, float f, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, int j, CallbackInfo ci) {
-        if (!signBlockEntity.getPos().isWithinDistance(CodeUtilities.mc.cameraEntity.getBlockPos(), ModConfig.getConfig().signRenderDistance)) ci.cancel();
+        if (!signBlockEntity.getPos().isWithinDistance(CodeUtilities.MC.cameraEntity.getBlockPos(), ModConfig.getConfig().signRenderDistance))
+            ci.cancel();
     }
 
 }

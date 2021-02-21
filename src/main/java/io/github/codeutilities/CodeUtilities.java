@@ -1,12 +1,10 @@
 package io.github.codeutilities;
 
 import com.google.gson.JsonParser;
-import io.github.codeutilities.commands.CommandHandler;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.cosmetics.CosmeticHandler;
 import io.github.codeutilities.gui.CustomHeadSearchGui;
 import io.github.codeutilities.template.TemplateStorageHandler;
-import io.github.codeutilities.template.*;
 import io.github.codeutilities.util.socket.SocketHandler;
 import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
@@ -18,7 +16,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.time.OffsetDateTime;
 import java.util.Random;
 
 public class CodeUtilities implements ModInitializer {
@@ -43,7 +40,7 @@ public class CodeUtilities implements ModInitializer {
         // Initialize.
         CodeInitializer codeInitializer = new CodeInitializer();
         codeInitializer.initialize(new TemplateStorageHandler());
-        codeInitializer.initialize(new CustomHeadSearchGui());
+        CustomHeadSearchGui.load();
 
         if (ModConfig.getConfig().itemApi) {
             SocketHandler.init();

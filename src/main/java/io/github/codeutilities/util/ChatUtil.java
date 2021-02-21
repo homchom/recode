@@ -9,7 +9,6 @@ import net.minecraft.text.*;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
-import java.lang.reflect.Field;
 import java.util.List;
 
 public class ChatUtil {
@@ -53,12 +52,12 @@ public class ChatUtil {
             }
         }
     }
-    
+
     // A hacky way of verifying that a message is sent by Hypercube.
     public static boolean verifyMessage(Text component) {
         List<Text> siblings = component.getSiblings();
-        if(!DFInfo.isOnDF()) return false;
-        if(siblings.size() == 0) return false;
+        if (!DFInfo.isOnDF()) return false;
+        if (siblings.size() == 0) return false;
         Style style = siblings.get(0).getStyle();
         Class<?> clazz = style.getClass();
         try {

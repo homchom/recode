@@ -1,11 +1,9 @@
 package io.github.codeutilities.mixin;
 
 import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.util.DFInfo;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.DebugHud;
-import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Vec3d;
 import org.apache.logging.log4j.Level;
@@ -18,7 +16,7 @@ import java.util.List;
 
 @Mixin(DebugHud.class)
 public class MixinDebugHud {
-    private MinecraftClient minecraftClient = MinecraftClient.getInstance();
+    private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
 
     @Inject(method = "getLeftText", at = @At("RETURN"), cancellable = true)
     protected void getLeftText(CallbackInfoReturnable<List<String>> callbackInfoReturnable) {
@@ -26,7 +24,7 @@ public class MixinDebugHud {
             List<String> leftText = callbackInfoReturnable.getReturnValue();
             leftText.remove(9);
 
-            if(minecraftClient.player.getPos() != null) {
+            if (minecraftClient.player.getPos() != null) {
                 CodeUtilities.log(Level.INFO, "adding world location");
                 leftText.add(9, String.format("%s %.3f / %.3f / %.3f",
                         Formatting.GOLD + "World Location:" + Formatting.YELLOW,
@@ -34,7 +32,7 @@ public class MixinDebugHud {
                         minecraftClient.player.getPos().getY(),
                         minecraftClient.player.getPos().getZ()));
 
-                if(DFInfo.isOnDF() && DFInfo.currentState == DFInfo.State.DEV) {
+                if (DFInfo.isOnDF() && DFInfo.currentState == DFInfo.State.DEV) {
                     CodeUtilities.log(Level.INFO, "adding plot location");
                     Vec3d plotCoord = minecraftClient.player.getPos().subtract(DFInfo.plotCorner);
                     leftText.add(10, String.format("%s %.3f / %.3f / %.3f", "" +
@@ -44,12 +42,12 @@ public class MixinDebugHud {
                             plotCoord.getZ()));
                 }
             }
-            
+
             leftText.add(Formatting.GOLD + "[CodeUtilities] " + Formatting.YELLOW + "Version: " + CodeUtilities.MOD_VERSION);
             leftText.add(Formatting.GOLD + "[CodeUtilities] " + Formatting.YELLOW + "onDF: " + DFInfo.isOnDF());
             leftText.add(Formatting.GOLD + "[CodeUtilities] " + Formatting.YELLOW + "State: " + DFInfo.currentState);
             callbackInfoReturnable.setReturnValue(leftText);
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

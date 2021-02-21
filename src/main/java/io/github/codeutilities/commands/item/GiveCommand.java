@@ -54,7 +54,7 @@ public class GiveCommand extends Command {
                                 clipboard = clipboard.substring(3);
                             }
 
-                            this.sendChatMessage(mc,"/give " + clipboard);
+                            this.sendChatMessage(mc, "/give " + clipboard);
                             return 1;
                         })
                 )

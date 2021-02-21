@@ -1,22 +1,12 @@
 package io.github.codeutilities.gui;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
+import com.google.gson.*;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.util.WebUtil;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WButton;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundTag;
@@ -27,28 +17,31 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.apache.logging.log4j.Level;
 
+import java.io.IOException;
+import java.util.*;
+
 public class CustomHeadSearchGui extends LightweightGuiDescription {
 
     private static final List<JsonObject> allHeads = new ArrayList<>();
     private static final List<String> categories = new ArrayList<>();
-    private static final HashMap<String,Integer> categoryCount = new HashMap<>();
+    private static final HashMap<String, Integer> categoryCount = new HashMap<>();
     private final ItemScrollablePanel panel;
     ModConfig config = ModConfig.getConfig();
     private WButton current;
     private String searchQuery = "";
-    private CTextField searchBox;
+    private final CTextField searchBox;
 
     public CustomHeadSearchGui(String query) {
         WPlainPanel root = new WPlainPanel();
         root.setSize(350, 220);
 
         searchBox = new CTextField(
-            new LiteralText("Search... (" + allHeads.size() + " Heads)"));
+                new LiteralText("Search... (" + allHeads.size() + " Heads)"));
         searchBox.setMaxLength(100);
         root.add(searchBox, 100, 0, 250, 0);
 
         panel = ItemScrollablePanel.with(toItemStack(
-            allHeads.subList(0, Math.max(Math.min(allHeads.size(), config.headMenuMaxRender), 1))));
+                allHeads.subList(0, Math.max(Math.min(allHeads.size(), config.headMenuMaxRender), 1))));
         root.add(panel, 100, 25, 250, 215);
 
         final String[] lastquery = {""};//intellij wants me to do this, don't ask me why
@@ -95,16 +88,16 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
         new Thread(() -> {
             allHeads.clear();
             String[] sources = {
-                "https://minecraft-heads.com/scripts/api.php?cat=alphabet&tags=true",
-                "https://minecraft-heads.com/scripts/api.php?cat=animals&tags=true",
-                "https://minecraft-heads.com/scripts/api.php?cat=blocks&tags=true",
-                "https://minecraft-heads.com/scripts/api.php?cat=decoration&tags=true",
-                "https://minecraft-heads.com/scripts/api.php?cat=humans&tags=true",
-                "https://minecraft-heads.com/scripts/api.php?cat=humanoid&tags=true",
-                "https://minecraft-heads.com/scripts/api.php?cat=miscellaneous&tags=true",
-                "https://minecraft-heads.com/scripts/api.php?cat=monsters&tags=true",
-                "https://minecraft-heads.com/scripts/api.php?cat=plants&tags=true",
-                "https://minecraft-heads.com/scripts/api.php?cat=food-drinks&tags=true"
+                    "https://minecraft-heads.com/scripts/api.php?cat=alphabet&tags=true",
+                    "https://minecraft-heads.com/scripts/api.php?cat=animals&tags=true",
+                    "https://minecraft-heads.com/scripts/api.php?cat=blocks&tags=true",
+                    "https://minecraft-heads.com/scripts/api.php?cat=decoration&tags=true",
+                    "https://minecraft-heads.com/scripts/api.php?cat=humans&tags=true",
+                    "https://minecraft-heads.com/scripts/api.php?cat=humanoid&tags=true",
+                    "https://minecraft-heads.com/scripts/api.php?cat=miscellaneous&tags=true",
+                    "https://minecraft-heads.com/scripts/api.php?cat=monsters&tags=true",
+                    "https://minecraft-heads.com/scripts/api.php?cat=plants&tags=true",
+                    "https://minecraft-heads.com/scripts/api.php?cat=food-drinks&tags=true"
             };
             for (String db : sources) {
                 try {
@@ -124,11 +117,11 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                     for (JsonElement head : heads) {
                         JsonObject h = head.getAsJsonObject();
                         h.addProperty("category", cat);
-                        if (h.get("tags").isJsonNull()) h.addProperty("tags","None");
+                        if (h.get("tags").isJsonNull()) h.addProperty("tags", "None");
                         allHeads.add(h);
                         amount++;
                     }
-                    categoryCount.put(cat,amount);
+                    categoryCount.put(cat, amount);
                 } catch (IOException | JsonSyntaxException exception) {
                     exception.printStackTrace();
                 }
@@ -147,10 +140,10 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
         if (searchQuery.isEmpty()) {
             if (cat.equals("All")) {
                 selected = allHeads
-                    .subList(0, Math.max(Math.min(allHeads.size(), config.headMenuMaxRender), 1));
+                        .subList(0, Math.max(Math.min(allHeads.size(), config.headMenuMaxRender), 1));
             } else {
                 for (JsonObject object : allHeads) {
-                    if (cat.equals("All") || object.get("category").getAsString().equals(cat)) {
+                    if (object.get("category").getAsString().equals(cat)) {
                         selected.add(object);
                         if (selected.size() >= config.headMenuMaxRender) {
                             break;
@@ -192,16 +185,16 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                 lore.add(StringTag.of("{\"text\":\"§7Tags:\"}"));
 
                 for (String tag : tags.split(",")) {
-                    lore.add(StringTag.of("{\"text\":" + StringTag.escape("§7-" + tag) +"}"));
+                    lore.add(StringTag.of("{\"text\":" + StringTag.escape("§7-" + tag) + "}"));
                 }
 
-                display.put("Lore",lore);
+                display.put("Lore", lore);
 
                 nbt.put("display", display);
                 CompoundTag SkullOwner = new CompoundTag();
                 SkullOwner.putIntArray("Id", Arrays
-                    .asList(CodeUtilities.rng.nextInt(), CodeUtilities.rng.nextInt(),
-                        CodeUtilities.rng.nextInt(), CodeUtilities.rng.nextInt()));
+                        .asList(CodeUtilities.RANDOM.nextInt(), CodeUtilities.RANDOM.nextInt(),
+                                CodeUtilities.RANDOM.nextInt(), CodeUtilities.RANDOM.nextInt()));
                 CompoundTag Properties = new CompoundTag();
                 ListTag textures = new ListTag();
                 CompoundTag index1 = new CompoundTag();

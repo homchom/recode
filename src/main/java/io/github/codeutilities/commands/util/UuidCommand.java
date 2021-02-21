@@ -1,12 +1,15 @@
 package io.github.codeutilities.commands.util;
 
-import com.google.gson.*;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.commands.arguments.ArgBuilder;
-import io.github.codeutilities.util.*;
+import io.github.codeutilities.util.ChatType;
+import io.github.codeutilities.util.ChatUtil;
+import io.github.codeutilities.util.DFInfo;
+import io.github.codeutilities.util.StringUtil;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import org.apache.commons.io.IOUtils;
@@ -42,7 +45,7 @@ public class UuidCommand extends Command {
                                     ChatUtil.sendMessage("§aThe UUID has been copied to the clipboard!");
                                     mc.keyboard.setClipboard(fullUUID);
                                 } else if (DFInfo.isOnDF()) {
-                                    mc.player.sendChatMessage("/txt " + fullUUID);
+                                    this.sendChatMessage(mc, "/txt " + fullUUID);
                                 }
                             } catch (IOException e) {
                                 ChatUtil.sendMessage("§cUser §6" + username + "§c was not found.");
