@@ -34,8 +34,7 @@ public class CodeUtilitiesCommand extends Command {
                             "§7･§6/edititem§f - Opens a menu to edit the held item.\n" +
                             "§7･§6/give <item>§f - Gives you a specified item.\n" +
                             "§7･§6/itemdata§f - Shows the held item's (client-side) NBT data.\n" +
-                            "§7･§6/templates recent§f - Shows a list of recently used Code Templates.\n" +
-                            "§7･§6/templates <all|search|view-self>§f - Views the online Code Template uploader.\n" +
+                            "§7･§6/templates§f - Shows recently used Code Templates.\n" +
                             "§7･§6/unpack§f - Extracts the contents in the held item (such as items in chests)\n" +
                             "§7･§6/webview§f - Views the held Code Template in your web browser.\n" +
                             "§7･§6/sendtemplate§f - Sends the held Code Template to connected third-party software.\n" +
