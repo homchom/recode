@@ -98,9 +98,7 @@ public class CodeUtilitiesCommand extends Command {
                             "§7･§6/colors§f - Shows a simple hex color picker in the chat.\n" +
                             "§7･§6/heads§f - Opens a menu to search and get custom heads.\n" +
                             "§7･§6/node <1|2|3|beta>§f - Sends you to the specified DiamondFire node.\n" +
-                            "§7･§6/pjoin <player>§f - Joins a plot that the specified player is currently in\n" +
-                            "§7･§6/rejoin§f - Rejoins the current plot.\n" +
-                            "§7･§6/uuid <username>§f - Copies the UUID of a specified player to the clipboard.\n" +
+                            "§7･§6/uuid <username>§f - Grabs the Text item with UUID of the specified player.\n" +
                             "§9§m                                                                    "
                     ), false);
                     return 1;
