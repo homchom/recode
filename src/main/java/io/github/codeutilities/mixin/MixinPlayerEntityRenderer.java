@@ -1,5 +1,6 @@
 package io.github.codeutilities.mixin;
 
+import io.github.codeutilities.cosmetics.BlazeMCworldCosmetic;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
