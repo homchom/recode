@@ -4,9 +4,7 @@ on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v1
     - name: Set up JDK 1.8
@@ -15,10 +13,8 @@ jobs:
         java-version: 1.8
     - name: Build with Gradle
       run: ./gradlew build
-    - name: send message
-      uses: appleboy/discord-action@master
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2
       with:
-        webhook_id: ${{ secrets.WEBHOOK_ID }}
-        webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
-        file: "./build/libs/CodeUtilities-*-*~(dev|sources|sources-dev).jar"
-        message: "Send Multiple File."
+        name: CodeUtilities
+        path: ./build/libs/CodeUtilities-[0-9].[0-9].[0-9].jar
