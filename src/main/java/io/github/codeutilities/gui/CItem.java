@@ -6,6 +6,8 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.item.TooltipContext.Default;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
@@ -17,6 +19,7 @@ public class CItem extends WItem {
 
     public CItem(ItemStack stack) {
         super(stack);
+        setTooltip(stack.getTooltip(null, Default.NORMAL).toArray(new Text[0]));
     }
 
     @Override

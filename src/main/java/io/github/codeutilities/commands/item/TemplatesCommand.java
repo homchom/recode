@@ -29,46 +29,10 @@ public class TemplatesCommand extends Command {
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("templates")
-                .then(ArgBuilder.literal("recent")
-                        .executes(ctx -> {
-                            CodeUtilities.openGuiAsync(new TemplateStorageUI());
-                            return 1;
-                        })
-                )
-                .then(ArgBuilder.literal("view-self")
-                        .executes(ctx -> {
-                            JsonObject response = getObject(templateServer + "templateServer" + "view-self?authId=" + authId);
-
-                            CodeUtilities.openGuiAsync(new TemplateSearchGui(response.get("templates").getAsJsonArray()));
-                            return 1;
-                        })
-                )
-                .then(ArgBuilder.literal("search")
-                        .then(ArgBuilder.argument("query", StringArgumentType.greedyString())
-                                .executes(ctx -> {
-                                    JsonObject response;
-                                    try {
-                                        response = getObject(templateServer + "search?query=" +
-                                                URLEncoder.encode(ctx.getArgument("query", String.class), "UTF-8")
-                                                + "&authId=" + authId, false);
-                                    } catch (UnsupportedEncodingException e) {
-                                        ChatUtil.sendMessage("Could not parse query!", ChatType.FAIL);
-                                        return 0;
-                                    }
-
-                                    CodeUtilities.openGuiAsync(new TemplateSearchGui(response.get("templates").getAsJsonArray()));
-                                    return 1;
-                                })
-                        )
-                )
-                .then(ArgBuilder.literal("all")
-                        .executes(ctx -> {
-                            JsonObject response = getObject(templateServer + "all", false);
-                            CodeUtilities.openGuiAsync(new TemplateSearchGui(response.get("templates").getAsJsonArray()));
-
-                            return 1;
-                        })
-                )
+            .executes(ctx -> {
+                CodeUtilities.openGuiAsync(new TemplateStorageUI());
+                return 1;
+            })
         );
     }
 

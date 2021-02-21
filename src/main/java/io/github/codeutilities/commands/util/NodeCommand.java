@@ -19,6 +19,7 @@ public class NodeCommand extends Command {
         nodeMap.put("2", "node2");
         nodeMap.put("3", "node3");
         nodeMap.put("4", "node4");
+        nodeMap.put("5", "node5");
         nodeMap.put("beta", "beta");
     }
 
