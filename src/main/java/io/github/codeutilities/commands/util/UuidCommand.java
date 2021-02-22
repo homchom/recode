@@ -48,7 +48,7 @@ public class UuidCommand extends Command {
                                                         .styled(style -> style.withColor(Formatting.YELLOW))))
                                                         .withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, fullUUID)));
                                 mc.player.sendMessage(text, false);
-                                if(mc.player.isCreative()) {
+                                if(mc.player.isCreative() && DFInfo.isOnDF()) {
                                     mc.player.sendChatMessage("/txt " + fullUUID);
                                 }
                             } catch (IOException e) {
