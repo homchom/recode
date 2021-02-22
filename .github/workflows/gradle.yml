@@ -18,8 +18,3 @@ jobs:
       with:
         name: CodeUtilities
         path: ./build/libs/CodeUtilities-[0-9].[0-9].[0-9].jar
-    - name: Alert Discord
-      uses: fjogeleit/http-request-action@master
-      with:
-        url: '${{ secrets.UPDATE_ALERT }}'
-        method: 'GET' 
