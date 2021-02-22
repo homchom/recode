@@ -1,5 +1,6 @@
 package io.github.codeutilities.cosmetics;
 
+import io.github.codeutilities.config.ModConfig;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.*;
@@ -26,15 +27,14 @@ public class TopHatRenderer extends FeatureRenderer<AbstractClientPlayerEntity, 
     }
     
     public void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int light, AbstractClientPlayerEntity abstractClientPlayerEntity, float f, float g, float h, float j, float k, float l) {
+        if(!ModConfig.getConfig().cosmetics) return;
         VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(RenderLayers.getItemLayer(new ItemStack(Items.ANVIL), false)); //
         int overlay = LivingEntityRenderer.getOverlay(abstractClientPlayerEntity, 0.0F);
     
-        getContextModel().head.rotate(matrixStack);
-        
-        matrixStack.push();
-        matrixStack.translate(0.25D, -0.5D, -0.25D);
-        matrixStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(180.0F));
-        matrixStack.scale(0.5F, -0.5F, -0.5F);
+        if(abstractClientPlayerEntity.getName().asString().equalsIgnoreCase("Reasonless") || abstractClientPlayerEntity.getName().asString().equalsIgnoreCase("RyanLand")) {
+            getContextModel().head.copyPositionAndRotation(hatModel);
+            hatModel.render(matrixStack, vertexConsumer, light, overlay);
+        }
         
     }
 
