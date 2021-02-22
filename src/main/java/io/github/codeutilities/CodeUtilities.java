@@ -46,15 +46,13 @@ public class CodeUtilities implements ModInitializer {
     public void onInitialize() {
         log(Level.INFO, "Initializing");
         AutoConfig.register(ModConfig.class, Toml4jConfigSerializer::new);
-        // Add a shutdown hook so we can save players template data on exit.
         Runtime.getRuntime().addShutdownHook(new Thread(this::onClose));
 
         CommandHandler.initialize();
         if (ModConfig.getConfig().itemApi) {
             SocketHandler.init();
         }
-    
-
+        
 
         new Thread(() -> {
 //            TemplatesCommand.authenticate(); TODO: Reimplement this
