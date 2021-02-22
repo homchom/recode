@@ -1,5 +1,6 @@
 package io.github.codeutilities.cosmetics;
 
+import io.github.codeutilities.config.ModConfig;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.model.ModelPart;
@@ -17,7 +18,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
 @Environment(EnvType.CLIENT)
-public class BlazeMCworldCosmetic extends
+public class BlazeCosmeticRenderer extends
     FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
 
     private static final Identifier blazeTexture = new Identifier(
@@ -26,7 +27,7 @@ public class BlazeMCworldCosmetic extends
     private int sneakTime = 0;
     private int lastTick = 0;
 
-    public BlazeMCworldCosmetic(
+    public BlazeCosmeticRenderer(
         FeatureRendererContext<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> featureRendererContext) {
         super(featureRendererContext);
         this.rods = new ModelPart[12];
@@ -36,9 +37,8 @@ public class BlazeMCworldCosmetic extends
         }
     }
 
-    public void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider,
-        int i, AbstractClientPlayerEntity abstractClientPlayerEntity, float f, float g, float h,
-        float j, float k, float l) {
+    public void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, AbstractClientPlayerEntity abstractClientPlayerEntity, float f, float g, float h, float j, float k, float l) {
+        if(!ModConfig.getConfig().cosmetics) return;
         if ("BlazeMCworld".equals(abstractClientPlayerEntity.getName().getString())
             && abstractClientPlayerEntity.hasSkinTexture() && !abstractClientPlayerEntity
             .isInvisible()) {

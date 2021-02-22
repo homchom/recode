@@ -25,7 +25,8 @@
 
   "text.autoconfig.codeutilities.option.socialFeatures": "Enable Social Features",
   "text.autoconfig.codeutilities.option.codeUtilsChat": "CodeUtilities Chat",
-  "text.autoconfig.codeutilities.option.hats": "Show Hats",
+  "text.autoconfig.codeutilities.option.cosmetics": "Show Cosmetics",
+  "text.autoconfig.codeutilities.option.cosmetics.@Tooltip": "Does not hide capes.",
   "text.autoconfig.codeutilities.option.allParty": "Allow party invites from everyone.",
 
   "codeutilities.command.require_creative_mode": "You must be in creative mode to use this command!"
