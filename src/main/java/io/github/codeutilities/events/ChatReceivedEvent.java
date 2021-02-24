@@ -1,7 +1,6 @@
 package io.github.codeutilities.events;
 
 import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.dfrpc.DFDiscordRPC;
 import io.github.codeutilities.util.ChatType;
 import io.github.codeutilities.util.ChatUtil;
 import io.github.codeutilities.util.DFInfo;
@@ -14,7 +13,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ChatReceivedEvent {
 
     public static boolean pjoin = false;
-    public static String dfrpcMsg = "";
 
     public static void onMessage(Text message, CallbackInfo ci) {
         MinecraftClient mc = MinecraftClient.getInstance();
@@ -49,14 +47,6 @@ public class ChatReceivedEvent {
                 }
             }
             pjoin = false;
-        }
-
-        if (DFDiscordRPC.locating) {
-            if (message.getString().contains("\nYou are")) {
-                dfrpcMsg = message.getString();
-                cancel = true;
-                DFDiscordRPC.locating = false;
-            }
         }
 
         //Cancelling (set cancel to true)
