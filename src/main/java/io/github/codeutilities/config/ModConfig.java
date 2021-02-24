@@ -19,9 +19,6 @@ public class ModConfig implements ConfigData {
     public int signRenderDistance = 100;
     @ConfigEntry.Category("features")
     public boolean variableScopeView = true;
-    @ConfigEntry.Category("features")
-    public boolean discordRPC = true;
-
     @ConfigEntry.Category("commands")
     public boolean dfCommands = true;
     @ConfigEntry.Category("commands")
@@ -35,7 +32,6 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Category("commands")
     @ConfigEntry.BoundedDiscrete(min = 1, max = 20)
     public int colorLines = 5;
-
     @ConfigEntry.Category("social")
     public boolean socialFeatures = true;
     @ConfigEntry.Category("social")

@@ -21,6 +21,7 @@ public class MixinGameMessageListener {
 
     @Inject(method = "onGameMessage", at = @At("HEAD"), cancellable = true)
     private void onGameMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
+        CodeUtilities.log(Level.FATAL, "test");
         CodeUtilities.log(Level.FATAL, "Is hypercube message: " + ChatUtil.verifyMessage(packet.getMessage()));
         if (DFInfo.isOnDF()) {
             if (packet.getLocation() == MessageType.CHAT || packet.getLocation() == MessageType.SYSTEM) {
