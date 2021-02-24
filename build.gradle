@@ -51,6 +51,10 @@ dependencies {
     modImplementation "org.glassfish.tyrus:tyrus-server:1.1"
     modImplementation "org.glassfish.tyrus:tyrus-container-grizzly:1.1"
 
+    //discord rpc
+    implementation 'com.github.Vatuu:discord-rpc:1.6.2'
+    modImplementation 'com.github.Vatuu:discord-rpc:1.6.2'
+
     //include "com.google.code.gson:gson:2.8.6"
     include "io.github.cottonmc:cotton-client-commands:1.0.1+1.16-rc1"
     include "me.sargunvohra.mcmods:autoconfig1u:3.3.1"
