@@ -4,6 +4,7 @@ import io.github.codeutilities.commands.CommandHandler;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.cosmetics.CosmeticHandler;
 import io.github.codeutilities.gui.CustomHeadSearchGui;
+import io.github.codeutilities.socal.ChatServer;
 import io.github.codeutilities.template.*;
 import io.github.codeutilities.util.socket.SocketHandler;
 import io.github.cottonmc.cotton.gui.client.*;
@@ -58,6 +59,7 @@ public class CodeUtilities implements ModInitializer {
 //            TemplatesCommand.authenticate(); TODO: Reimplement this
             CustomHeadSearchGui.load();
             TemplateStorageHandler.load();
+            new ChatServer();
         }).start();
 
     }
