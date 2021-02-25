@@ -1,4 +1,4 @@
-package io.github.codeutilities.socal;
+package io.github.codeutilities.social;
 
 import java.net.URI;
 import javax.websocket.ClientEndpoint;
