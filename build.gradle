@@ -50,6 +50,7 @@ dependencies {
     modImplementation "me.sargunvohra.mcmods:autoconfig1u:3.3.1"
     modImplementation "javax.websocket:javax.websocket-api:1.1"
     modImplementation "org.glassfish.tyrus:tyrus-server:1.1"
+    modImplementation "org.glassfish.tyrus:tyrus-client:1.1"
     modImplementation "org.glassfish.tyrus:tyrus-container-grizzly:1.1"
 
     //discord rpc
@@ -61,10 +62,11 @@ dependencies {
     include "me.shedaniel.cloth:config-2:4.8.3"
 	include "io.github.cottonmc:LibGui:3.2.2+1.16.3"
     //websocket things
-	include "javax.websocket:javax.websocket-api:1.1"
+    include "javax.websocket:javax.websocket-api:1.1"
 	include "org.glassfish.tyrus:tyrus-websocket-core:1.1"
 	include "org.glassfish.tyrus:tyrus-spi:1.1"
-	include "org.glassfish.tyrus:tyrus-server:1.1"
+    include "org.glassfish.tyrus:tyrus-server:1.1"
+    include "org.glassfish.tyrus:tyrus-client:1.1"
 	include "org.glassfish.tyrus:tyrus-core:1.1"
 	include "org.glassfish.tyrus:tyrus-container-grizzly:1.1"
 	include "org.glassfish.grizzly:grizzly-rcm:2.3.3"
@@ -76,6 +78,7 @@ dependencies {
     // API stuff
     include 'javax.websocket:javax.websocket-api:1.1'
     include 'org.glassfish.tyrus:tyrus-server:1.1'
+    include 'org.glassfish.tyrus:tyrus-client:1.1'
     include 'org.glassfish.tyrus:tyrus-container-grizzly:1.1'
     include 'org.glassfish.tyrus:tyrus-spi:1.1'
     include 'org.glassfish.tyrus:tyrus-websocket-core:1.1'
