@@ -1,6 +1,7 @@
 package io.github.codeutilities.mixin.messages;
 
 import io.github.codeutilities.CodeUtilities;
+import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.events.ChatReceivedEvent;
 import io.github.codeutilities.util.ChatUtil;
 import io.github.codeutilities.util.DFInfo;
@@ -77,6 +78,8 @@ public class MixinGameMessageListener {
         if (minecraftClient.player.isCreative() && text.contains("» You are now in dev mode.") && text.startsWith("»")) {
             DFInfo.currentState = DFInfo.State.DEV;
             DFInfo.plotCorner = minecraftClient.player.getPos().add(10, -50, -10);
+            
+            if(ModConfig.getConfig().autoRC) minecraftClient.player.sendChatMessage("/rc");
         }
     }
 }

@@ -21,6 +21,8 @@ public class ModConfig implements ConfigData {
     public boolean variableScopeView = true;
     @ConfigEntry.Category("features")
     public boolean discordRPC = true;
+    @ConfigEntry.Category("features")
+    public boolean autoRC = false;
 
     @ConfigEntry.Category("commands")
     public boolean dfCommands = true;

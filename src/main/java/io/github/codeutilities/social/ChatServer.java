@@ -19,7 +19,7 @@ public class ChatServer {
     public ChatServer() {
         try {
             WebSocketContainer wsc = ContainerProvider.getWebSocketContainer();
-            session = wsc.connectToServer(this, new URI("wss://codeutilitieschatserver.blazemcworld1.repl.co"));
+            session = wsc.connectToServer(this, new URI("wss://codeutilitieschatserver.blazemcworld1.repl.co/chat/"));
 
         } catch (Exception err) {
             err.printStackTrace();

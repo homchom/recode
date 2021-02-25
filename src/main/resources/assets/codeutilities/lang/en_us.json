@@ -13,6 +13,8 @@
   "text.autoconfig.codeutilities.option.signRenderDistance": "Sign Render Distance",
   "text.autoconfig.codeutilities.option.variableScopeView": "Variable Scope View",
   "text.autoconfig.codeutilities.option.betterCoords": "Better Coordinates in F3",
+  "text.autoconfig.codeutilities.option.autorc": "Auto /rc",
+  "text.autoconfig.codeutilities.option.autorc.@Tooltip": "Automatically runs /rc on entering dev mode.",
 
   "text.autoconfig.codeutilities.option.adBlock": "AdBlockPlus",
   "text.autoconfig.codeutilities.option.discordRPC": "Discord Rich Presence",
