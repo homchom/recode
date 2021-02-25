@@ -23,6 +23,11 @@ public class ModConfig implements ConfigData {
     public boolean discordRPC = true;
     @ConfigEntry.Category("features")
     public boolean autoRC = false;
+    @ConfigEntry.Category("features")
+    public boolean autotime = false;
+    @ConfigEntry.Category("features")
+    @ConfigEntry.BoundedDiscrete(min = 0, max = 24000)
+    public int autotimeval = 0;
 
     @ConfigEntry.Category("commands")
     public boolean dfCommands = true;
