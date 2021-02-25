@@ -3,12 +3,12 @@ package io.github.codeutilities.dfrpc;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.events.ChatReceivedEvent;
 import io.github.codeutilities.util.DFInfo;
-import net.arikia.dev.drpc.DiscordEventHandlers;
-import net.arikia.dev.drpc.DiscordRPC;
-import net.arikia.dev.drpc.DiscordRichPresence;
+
+import io.github.codeutilities.dfrpc.libs.DiscordEventHandlers;
+import io.github.codeutilities.dfrpc.libs.DiscordRPC;
+import io.github.codeutilities.dfrpc.libs.DiscordRichPresence;
 
 import net.minecraft.client.MinecraftClient;
-import org.lwjgl.system.CallbackI;
 
 import javax.swing.*;
 import java.util.Date;
