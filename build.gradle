@@ -1,6 +1,7 @@
 plugins {
     id 'fabric-loom' version '0.5-SNAPSHOT'
     id 'maven-publish'
+    id 'com.github.johnrengelman.shadow' version '4.0.4'
 }
 
 apply plugin: 'idea'
@@ -49,29 +50,30 @@ dependencies {
     modImplementation "me.sargunvohra.mcmods:autoconfig1u:3.3.1"
     modImplementation "javax.websocket:javax.websocket-api:1.1"
     modImplementation "org.glassfish.tyrus:tyrus-server:1.1"
+    modImplementation "org.glassfish.tyrus:tyrus-client:1.1"
     modImplementation "org.glassfish.tyrus:tyrus-container-grizzly:1.1"
 
     //include "com.google.code.gson:gson:2.8.6"
     include "io.github.cottonmc:cotton-client-commands:1.0.1+1.16-rc1"
     include "me.sargunvohra.mcmods:autoconfig1u:3.3.1"
     include "me.shedaniel.cloth:config-2:4.8.3"
-	include "io.github.cottonmc:LibGui:3.2.2+1.16.3"
+    include "io.github.cottonmc:LibGui:3.2.2+1.16.3"
     //websocket things
-	include "javax.websocket:javax.websocket-api:1.1"
-	include "org.glassfish.tyrus:tyrus-websocket-core:1.1"
-	include "org.glassfish.tyrus:tyrus-spi:1.1"
-	include "org.glassfish.tyrus:tyrus-server:1.1"
-	include "org.glassfish.tyrus:tyrus-core:1.1"
-	include "org.glassfish.tyrus:tyrus-container-grizzly:1.1"
-	include "org.glassfish.grizzly:grizzly-rcm:2.3.3"
-	include "org.glassfish.grizzly:grizzly-http-server:2.3.3"
-	include "org.glassfish.grizzly:grizzly-http:2.3.3"
-	include "org.glassfish.grizzly:grizzly-framework:2.3.3"
-
+    include "javax.websocket:javax.websocket-api:1.1"
+    include "org.glassfish.tyrus:tyrus-websocket-core:1.1"
+    include "org.glassfish.tyrus:tyrus-spi:1.1"
+    include "org.glassfish.tyrus:tyrus-server:1.1"
+    include "org.glassfish.tyrus:tyrus-core:1.1"
+    include "org.glassfish.tyrus:tyrus-container-grizzly:1.1"
+    include "org.glassfish.grizzly:grizzly-rcm:2.3.3"
+    include "org.glassfish.grizzly:grizzly-http-server:2.3.3"
+    include "org.glassfish.grizzly:grizzly-http:2.3.3"
+    include "org.glassfish.grizzly:grizzly-framework:2.3.3"
 
     // API stuff
     include 'javax.websocket:javax.websocket-api:1.1'
     include 'org.glassfish.tyrus:tyrus-server:1.1'
+    include 'org.glassfish.tyrus:tyrus-client:1.1'
     include 'org.glassfish.tyrus:tyrus-container-grizzly:1.1'
     include 'org.glassfish.tyrus:tyrus-spi:1.1'
     include 'org.glassfish.tyrus:tyrus-websocket-core:1.1'
@@ -114,7 +116,6 @@ tasks.withType(JavaCompile) {
 // if it is present.
 // If you remove this task, sources will not be generated.
 task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = "sources"
     from sourceSets.main.allSource
 }
 

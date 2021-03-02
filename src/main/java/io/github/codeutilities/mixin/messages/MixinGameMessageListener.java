@@ -1,6 +1,7 @@
 package io.github.codeutilities.mixin.messages;
 
 import io.github.codeutilities.CodeUtilities;
+import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.events.ChatReceivedEvent;
 import io.github.codeutilities.util.ChatUtil;
 import io.github.codeutilities.util.DFInfo;
@@ -9,6 +10,7 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.MessageType;
 import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
+import net.minecraft.text.Text;
 import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,9 +30,9 @@ public class MixinGameMessageListener {
                 ChatReceivedEvent.onMessage(packet.getMessage(), ci);
                 String text = packet.getMessage().getString();
                 try {
-                    this.updateVersion(text);
-                    this.updateState(text);
-                } catch (Exception e) {
+                    this.updateVersion(packet.getMessage());
+                    this.updateState(packet.getMessage());
+                }catch (Exception e) {
                     CodeUtilities.log(Level.ERROR, "Error while trying to parse the chat text!");
                 }
             }
@@ -47,7 +49,13 @@ public class MixinGameMessageListener {
         }
     }
 
-    private void updateVersion(String text) {
+    private void updateVersion(Text component) {
+        String text = component.getString();
+
+        if(!ChatUtil.verifyMessage(component)) {
+            return;
+        }
+
         if (text.matches("Current patch: .*\\. See the patch notes with \\/patch!")) {
             try {
                 String patchText = text.replaceAll("Current patch: (.*)\\. See the patch notes with \\/patch!", "$1");
@@ -63,7 +71,13 @@ public class MixinGameMessageListener {
         }
     }
 
-    private void updateState(String text) {
+    private void updateState(Text component) {
+        String text = component.getString();
+
+        if(!ChatUtil.verifyMessage(component)) {
+            return;
+        }
+
         // Play Mode
         if (text.matches("Joined game: .* by .*") && text.startsWith("Joined game: ")) {
             DFInfo.currentState = DFInfo.State.PLAY;
@@ -72,12 +86,16 @@ public class MixinGameMessageListener {
         // Build Mode
         if (minecraftClient.player.isCreative() && text.contains("» You are now in build mode.") && text.startsWith("»")) {
             DFInfo.currentState = DFInfo.State.BUILD;
+            if(ModConfig.getConfig().autotime) minecraftClient.player.sendChatMessage("/time " + ModConfig.getConfig().autotimeval);
         }
 
         // Dev Mode
         if (minecraftClient.player.isCreative() && text.contains("» You are now in dev mode.") && text.startsWith("»")) {
             DFInfo.currentState = DFInfo.State.DEV;
             DFInfo.plotCorner = minecraftClient.player.getPos().add(10, -50, -10);
+
+            if(ModConfig.getConfig().autoRC) minecraftClient.player.sendChatMessage("/rc");
+            if(ModConfig.getConfig().autotime) minecraftClient.player.sendChatMessage("/time " + ModConfig.getConfig().autotimeval);
         }
     }
 }

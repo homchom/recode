@@ -12,6 +12,10 @@ import io.github.codeutilities.util.DFInfo;
 import io.github.codeutilities.util.StringUtil;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.text.ClickEvent;
+import net.minecraft.text.HoverEvent;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
@@ -23,38 +27,40 @@ public class UuidCommand extends Command {
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("uuid")
-                .then(ArgBuilder.argument("username", StringArgumentType.greedyString())
-                        .executes(ctx -> {
-                            boolean copy = false;
-                            if (ctx.getArgument("username", String.class).contains(" copy")) {
-                                copy = true;
+            .then(ArgBuilder.argument("username", StringArgumentType.greedyString())
+                .executes(ctx -> {
+                    new Thread(() -> {
+                        String username = ctx.getArgument("username", String.class)
+                            .replace(" copy", "");
+                        String url = "https://mc-heads.net/minecraft/profile/" + username;
+                        try {
+                            String UUIDJson = IOUtils
+                                .toString(new URL(url), StandardCharsets.UTF_8);
+                            if (UUIDJson.isEmpty()) {
+                                ChatUtil.sendMessage("Player was not found!", ChatType.FAIL);
+                                return;
                             }
-                            String username = ctx.getArgument("username", String.class).replace(" copy", "");
-                            String url = "https://mc-heads.net/minecraft/profile/" + username;
-                            try {
-                                String UUIDJson = IOUtils.toString(new URL(url), StandardCharsets.UTF_8);
-                                if (UUIDJson.isEmpty()) {
-                                    ChatUtil.sendMessage("Player was not found!", ChatType.FAIL);
-                                    return -1;
-                                }
-                                JsonObject json = new JsonParser().parse(UUIDJson).getAsJsonObject();
-                                String uuid = json.get("id").getAsString();
-                                String fullUUID = StringUtil.fromTrimmed(uuid);
-                                ChatUtil.sendMessage("§eUUID of §b" + username + "§e is §d" + fullUUID + "§e!");
-                                if (copy) {
-                                    ChatUtil.sendMessage("§aThe UUID has been copied to the clipboard!");
-                                    mc.keyboard.setClipboard(fullUUID);
-                                } else if (DFInfo.isOnDF()) {
-                                    this.sendChatMessage(mc, "/txt " + fullUUID);
-                                }
-                            } catch (IOException e) {
-                                ChatUtil.sendMessage("§cUser §6" + username + "§c was not found.");
-                                e.printStackTrace();
-                            }
+                            JsonObject json = new JsonParser().parse(UUIDJson).getAsJsonObject();
+                            String uuid = json.get("id").getAsString();
+                            String fullUUID = StringUtil.fromTrimmed(uuid);
 
-                            return 1;
-                        })
-                )
+                            Text text = new LiteralText("§eUUID of §6" + username + " §eis §5" + fullUUID + "§e!")
+                                .styled(s -> s.withHoverEvent(
+                                    new HoverEvent(HoverEvent.Action.SHOW_TEXT,new LiteralText("§eClick to copy to clipboard."))
+                                ).withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, fullUUID)));
+                            mc.player.sendMessage(text, false);
+                            if (mc.player.isCreative() && DFInfo.isOnDF()) {
+                                mc.player.sendChatMessage("/txt " + fullUUID);
+                            }
+                        } catch (IOException e) {
+                            ChatUtil.sendMessage("§cUser §6" + username + "§c was not found.");
+                            e.printStackTrace();
+                        }
+                    }).start();
+
+                    return 1;
+                })
+            )
         );
     }
 }

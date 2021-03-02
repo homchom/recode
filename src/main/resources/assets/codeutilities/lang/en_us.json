@@ -13,6 +13,11 @@
   "text.autoconfig.codeutilities.option.signRenderDistance": "Sign Render Distance",
   "text.autoconfig.codeutilities.option.variableScopeView": "Variable Scope View",
   "text.autoconfig.codeutilities.option.betterCoords": "Better Coordinates in F3",
+  "text.autoconfig.codeutilities.option.autorc": "Auto /rc",
+  "text.autoconfig.codeutilities.option.autorc.@Tooltip": "Automatically runs /rc on entering dev mode.",
+  "text.autoconfig.codeutilities.option.autotime": "Auto /time",
+  "text.autoconfig.codeutilities.option.autotime.@Tooltip": "Automatically runs /time on entering dev or build mode.",
+  "text.autoconfig.codeutilities.option.autotimeval": "Auto /time value.",
 
   "text.autoconfig.codeutilities.option.adBlock": "AdBlockPlus",
   "text.autoconfig.codeutilities.option.discordRPC": "Discord Rich Presence",
@@ -25,7 +30,8 @@
 
   "text.autoconfig.codeutilities.option.socialFeatures": "Enable Social Features",
   "text.autoconfig.codeutilities.option.codeUtilsChat": "CodeUtilities Chat",
-  "text.autoconfig.codeutilities.option.hats": "Show Hats",
+  "text.autoconfig.codeutilities.option.cosmetics": "Show Cosmetics",
+  "text.autoconfig.codeutilities.option.cosmetics.@Tooltip": "Does not hide capes.",
   "text.autoconfig.codeutilities.option.allParty": "Allow party invites from everyone.",
 
   "codeutilities.command.require_creative_mode": "You must be in creative mode to use this command!"

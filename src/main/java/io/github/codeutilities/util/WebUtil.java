@@ -20,7 +20,7 @@ import java.security.cert.X509Certificate;
 public class WebUtil {
     private static final TrustManager[] trustAllCerts = new TrustManager[]{
             new X509TrustManager() {
-                public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                public X509Certificate[] getAcceptedIssuers() {
                     return null;
                 }
 
