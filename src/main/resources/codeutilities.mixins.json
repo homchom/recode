@@ -9,7 +9,6 @@
     "MixinPlayerEntityRenderer",
     "MixinPlayerListEntry",
     "MixinPlayerListHud",
-    "MixinPlayerSkinProvider",
     "MixinTitleScreen",
     "SignBlockEntityRenderMixin",
     "item.MixinItemCreative",
