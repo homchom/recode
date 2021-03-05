@@ -1,6 +1,5 @@
 package io.github.codeutilities.util;
 
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.MinecraftClient;
