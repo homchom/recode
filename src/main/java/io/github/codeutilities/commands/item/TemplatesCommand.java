@@ -25,8 +25,13 @@ public class TemplatesCommand extends Command {
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("templates")
             .executes(ctx -> {
-                CodeUtilities.openGuiAsync(new TemplateStorageUI());
-                return 1;
+                if (mc.player.isCreative()) {
+                    CodeUtilities.openGuiAsync(new TemplateStorageUI());
+                    return 1;
+                }else {
+                    ChatUtil.sendTranslateMessage("codeutilities.command.require_creative_mode", ChatType.FAIL);
+                    return 1;
+                }
             })
         );
     }
