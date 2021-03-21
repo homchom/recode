@@ -60,18 +60,18 @@ public class DFDiscordRPC {
     public static class DFRPCThread extends Thread {
         public void run(){
             MinecraftClient mc = MinecraftClient.getInstance();
-            String oldState = "Starting";
+            String oldState = "Not on DF";
 
             System.out.println("STARTING RPC");
 
             while(true) {
 
-                if (!DFInfo.currentState.toString().equals(oldState)) {
-                    if (DFInfo.isOnDF()) {
+                if (DFInfo.isOnDF()) {
+                    if (!String.valueOf(DFInfo.currentState).equals(oldState)) {
                         if (mc.player != null) {
                             mc.player.sendChatMessage("/locate");
                             locating = true;
-                            for (int i = 0; i < 400; i++) {
+                            for (int i = 0; i < 800; i++) {
                                 try {
                                     DFRPCThread.sleep(1);
                                 } catch (InterruptedException e) {
@@ -92,30 +92,31 @@ public class DFDiscordRPC {
                             updDiscord();
                             firstUpdate = false;
                         }
-                    } else {
-                        firstLocate = true;
-                        firstUpdate = true;
-                        try {
-                            client.close();
-                        } catch (Exception ignored) {
-                        }
                     }
-
-                    if (!ModConfig.getConfig().discordRPC) {
-                        firstLocate = true;
-                        firstUpdate = true;
-                        try {
-                            client.close();
-                        } catch (Exception ignored) {
-                        }
-                    }
+                } else {
+                    firstLocate = true;
+                    firstUpdate = true;
+                    try {
+                        client.close();
+                        } catch (Exception ignored) { }
                 }
-                System.out.println("----------- RPC Status: " + client.getStatus());
 
-                oldState = DFInfo.currentState.toString();
+                if (!ModConfig.getConfig().discordRPC) {
+                    firstLocate = true;
+                    firstUpdate = true;
+                    try {
+                        client.close();
+                    } catch (Exception ignored) { }
+
+                    System.out.println("----------- RPC Updated! Status: " + client.getStatus());
+                }
+
+                if (DFInfo.isOnDF()) {
+                    oldState = String.valueOf(DFInfo.currentState);
+                } else { oldState = "Not on DF"; }
 
                 try {
-                    DFRPCThread.sleep(500);
+                    DFRPCThread.sleep(200);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
