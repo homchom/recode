@@ -1,5 +1,6 @@
 package io.github.codeutilities.dfrpc;
 
+import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.events.ChatReceivedEvent;
 import io.github.codeutilities.util.DFInfo;
@@ -14,6 +15,7 @@ import com.jagrosh.discordipc.entities.User;
 import com.jagrosh.discordipc.exceptions.NoDiscordClientException;
 
 import net.minecraft.client.MinecraftClient;
+import org.apache.logging.log4j.Level;
 
 import java.time.OffsetDateTime;
 import java.util.regex.Matcher;
@@ -33,7 +35,7 @@ public class DFDiscordRPC {
 
     public static void main() throws Exception {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            System.out.println("Closing Discord hook.");
+            CodeUtilities.log(Level.INFO, "Closing Discord hook.");
             client.close();
         }));
 
@@ -62,7 +64,7 @@ public class DFDiscordRPC {
             MinecraftClient mc = MinecraftClient.getInstance();
             String oldState = "Not on DF";
 
-            System.out.println("STARTING RPC");
+            CodeUtilities.log(Level.INFO,"STARTING RPC");
 
             while(true) {
 
@@ -91,7 +93,7 @@ public class DFDiscordRPC {
                         } else {
                             updDiscord();
                             firstUpdate = false;
-                            System.out.println("----------- RPC Updated! Status: " + client.getStatus());
+                            CodeUtilities.log(Level.INFO, "----------- RPC Updated! Status: " + client.getStatus());
                         }
                     }
                 } else {
