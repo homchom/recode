@@ -163,15 +163,16 @@ public class DFDiscordRPC {
 
             // BUILD RICH PRESENCE
             presence.setState("Plot ID: " + id + " - " + node);
+            presence.setDetails(name);
 
             if (ChatReceivedEvent.dfrpcMsg.startsWith("                                       \nYou are currently playing on:"))
-                presence.setDetails("Playing on " + name);
+                presence.setSmallImage("modeplay", "Playing");
 
             if (ChatReceivedEvent.dfrpcMsg.startsWith("                                       \nYou are currently building on:"))
-                presence.setDetails("Building on " + name);
+                presence.setSmallImage("modebuild", "Building");
 
             if (ChatReceivedEvent.dfrpcMsg.startsWith("                                       \nYou are currently coding on:"))
-                presence.setDetails("Coding on " + name);
+                presence.setSmallImage("modedev", "Coding");
 
         }
         presence.setLargeImage("diamondfirelogo", "mcdiamondfire.com");
