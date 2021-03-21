@@ -19,10 +19,11 @@ public class ModConfig implements ConfigData {
     public int signRenderDistance = 100;
     @ConfigEntry.Category("features")
     public boolean variableScopeView = true;
-    /*
+
     @ConfigEntry.Category("features")
     public boolean discordRPC = true;
 
+/*
     @ConfigEntry.Gui.Excluded()
     //@ConfigEntry.Category("features")
     public boolean autoRC = false;

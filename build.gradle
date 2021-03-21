@@ -17,6 +17,9 @@ repositories {
         name = 'Jitpack'
         url = "https://jitpack.io"
     }
+    maven {
+        url "https://jitpack.io"
+    }
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -30,6 +33,9 @@ minecraft {
 }
 
 dependencies {
+    //dfrpc
+    compile 'com.jagrosh:DiscordIPC:0.4'
+
     //to change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
@@ -122,6 +128,7 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 
 jar {
     from "LICENSE"
+    from {configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
 // configure the maven publication
@@ -143,6 +150,7 @@ publishing {
 
     // select the repositories you want to publish to
     repositories {
+        jcenter()
         // uncomment to publish to the local maven
         // mavenLocal()
     }
