@@ -85,16 +85,20 @@ public class MixinGameMessageListener {
         // Build Mode
         if (minecraftClient.player.isCreative() && text.contains("» You are now in build mode.") && text.startsWith("»")) {
             DFInfo.currentState = DFInfo.State.BUILD;
+            /*
             if(ModConfig.getConfig().autotime) minecraftClient.player.sendChatMessage("/time " + ModConfig.getConfig().autotimeval);
+            */
         }
 
         // Dev Mode
         if (minecraftClient.player.isCreative() && text.contains("» You are now in dev mode.") && text.startsWith("»")) {
             DFInfo.currentState = DFInfo.State.DEV;
             DFInfo.plotCorner = minecraftClient.player.getPos().add(10, -50, -10);
-            
+
+            /*
             if(ModConfig.getConfig().autoRC) minecraftClient.player.sendChatMessage("/rc");
             if(ModConfig.getConfig().autotime) minecraftClient.player.sendChatMessage("/time " + ModConfig.getConfig().autotimeval);
+            */
         }
     }
 }

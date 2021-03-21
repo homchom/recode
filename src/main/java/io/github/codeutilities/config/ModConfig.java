@@ -19,8 +19,10 @@ public class ModConfig implements ConfigData {
     public int signRenderDistance = 100;
     @ConfigEntry.Category("features")
     public boolean variableScopeView = true;
+    /*
     @ConfigEntry.Category("features")
     public boolean discordRPC = true;
+
     @ConfigEntry.Gui.Excluded()
     //@ConfigEntry.Category("features")
     public boolean autoRC = false;
@@ -31,6 +33,7 @@ public class ModConfig implements ConfigData {
     //@ConfigEntry.Category("features")
     @ConfigEntry.BoundedDiscrete(min = 0, max = 24000)
     public int autotimeval = 0;
+    */
 
     @ConfigEntry.Category("commands")
     public boolean dfCommands = true;
@@ -46,6 +49,7 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.BoundedDiscrete(min = 1, max = 20)
     public int colorLines = 5;
 
+    /*
     @ConfigEntry.Gui.Excluded()
     //@ConfigEntry.Category("social")
     public boolean socialFeatures = true;
@@ -58,6 +62,7 @@ public class ModConfig implements ConfigData {
     //@ConfigEntry.Category("social")
     @ConfigEntry.Gui.Excluded()
     public boolean allParty = true;
+    */
     
     public static ModConfig getConfig() {
         return AutoConfig.getConfigHolder(ModConfig.class).getConfig();

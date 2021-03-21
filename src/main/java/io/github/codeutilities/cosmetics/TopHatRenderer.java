@@ -27,7 +27,7 @@ public class TopHatRenderer extends FeatureRenderer<AbstractClientPlayerEntity, 
     }
     
     public void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int light, AbstractClientPlayerEntity abstractClientPlayerEntity, float f, float g, float h, float j, float k, float l) {
-        if(!ModConfig.getConfig().cosmetics) return;
+        //if(!ModConfig.getConfig().cosmetics) return;
         VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(RenderLayers.getItemLayer(new ItemStack(Items.ANVIL), false)); //
         int overlay = LivingEntityRenderer.getOverlay(abstractClientPlayerEntity, 0.0F);
 
