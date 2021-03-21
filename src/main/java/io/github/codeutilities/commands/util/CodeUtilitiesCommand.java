@@ -96,7 +96,7 @@ public class CodeUtilitiesCommand extends Command {
                             "§7･§6/color hsb <h> <s> <b>§f - Creates a hex color code based on HSB values.\n" +
                             "§7･§6/colors§f - Shows a simple hex color picker in the chat.\n" +
                             "§7･§6/heads§f - Opens a menu to search and get custom heads.\n" +
-                            "§7･§6/node <1|2|3|beta>§f - Sends you to the specified DiamondFire node.\n" +
+                            "§7･§6/node <1|2|3|4|5|beta>§f - Sends you to the specified DiamondFire node.\n" +
                             "§7･§6/uuid <username>§f - Grabs the Text item with UUID of the specified player.\n" +
                             "§9§m                                                                    "
                     ), false);
