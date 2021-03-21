@@ -133,6 +133,7 @@ public class DFDiscordRPC {
         if (ChatReceivedEvent.dfrpcMsg.equals("                                       \nYou are currently at spawn.\n" +
                 "                                       ")) {
             presence.setState("At spawn");
+            presence.setSmallImage(null, null);
         }
         else {
             // PLOT ID
