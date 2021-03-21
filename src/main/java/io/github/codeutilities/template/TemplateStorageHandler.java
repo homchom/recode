@@ -1,6 +1,5 @@
 package io.github.codeutilities.template;
 
-import com.google.gson.JsonParseException;
 import io.github.codeutilities.util.ItemUtil;
 import io.github.codeutilities.util.externalfile.ExternalFile;
 import net.minecraft.SharedConstants;

@@ -45,18 +45,18 @@ public class ChatUtil {
     }
     
     // A hacky way of verifying that a message is sent by Hypercube.
+    // im too lazy to reflect or use a mixin. don't ask
     public static boolean verifyMessage(Text component) {
         List<Text> siblings = component.getSiblings();
         if(!DFInfo.isOnDF()) return false;
         if(siblings.size() == 0) return false;
-        Style style = siblings.get(0).getStyle();
-        Class<?> clazz = style.getClass();
-        try {
-            System.out.println(clazz.getField("bold").get(style));
-            return true;
-        } catch (IllegalAccessException | NoSuchFieldException e) {
-            return false;
-        }
+        String str = siblings.get(0).getStyle().toString();
+        
+        return !(str.contains("bold=null") ||
+                        str.contains("italic=null") ||
+                        str.contains("underlined=null") ||
+                        str.contains("strikethrough=null") ||
+                        str.contains("obfuscated=null"));
     }
 
     public static MutableText setColor(MutableText component, Color color) {
