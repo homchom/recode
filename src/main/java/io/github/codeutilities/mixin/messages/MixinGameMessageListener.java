@@ -42,7 +42,9 @@ public class MixinGameMessageListener {
         TitleS2CPacket.Action action = packet.getAction();
         if (action == TitleS2CPacket.Action.ACTIONBAR) {
             if (packet.getText().getString().matches("DiamondFire - .* .* CP - .* Tokens")) {
-
+                if (DFInfo.currentState != DFInfo.State.LOBBY && ModConfig.getConfig().autofly) {
+                    minecraftClient.player.sendChatMessage("/fly");
+                }
                 DFInfo.currentState = DFInfo.State.LOBBY;
             }
         }
@@ -54,15 +56,20 @@ public class MixinGameMessageListener {
         if(!ChatUtil.verifyMessage(component)) {
             return;
         }
-        
+
         if (text.matches("Current patch: .*\\. See the patch notes with \\/patch!")) {
             try {
-                String patchText = text.replaceAll("Current patch: (.*)\\. See the patch notes with \\/patch!", "$1");
+                long time = System.currentTimeMillis() / 1000L;
+                if (time - lastPatchCheck > 1) {
+                    String patchText = text.replaceAll("Current patch: (.*)\\. See the patch notes with \\/patch!", "$1");
 
-                DFInfo.isPatchNewer(patchText, "0"); //very lazy validation lol
-                DFInfo.patchId = patchText;
-                if (DFInfo.currentState != null) DFInfo.currentState = null;
-                CodeUtilities.log(Level.INFO, "DiamondFire Patch " + DFInfo.patchId + " detected!");
+                    DFInfo.isPatchNewer(patchText, "0"); //very lazy validation lol
+                    DFInfo.patchId = patchText;
+                    DFInfo.currentState = null;
+                    CodeUtilities.log(Level.INFO, "DiamondFire Patch " + DFInfo.patchId + " detected!");
+
+                    lastPatchCheck = System.currentTimeMillis() / 1000L;
+                }
             }catch (Exception e) {
                 CodeUtilities.log(Level.INFO, "Error on parsing patch number!");
                 e.printStackTrace();
@@ -73,32 +80,30 @@ public class MixinGameMessageListener {
     private void updateState(Text component) {
         String text = component.getString();
 
-        if(!ChatUtil.verifyMessage(component)) {
-            return;
-        }
-        
         // Play Mode
         if (text.matches("Joined game: .* by .*") && text.startsWith("Joined game: ")) {
             DFInfo.currentState = DFInfo.State.PLAY;
         }
 
+        if(!ChatUtil.verifyMessage(component)) {
+            return;
+        }
+
         // Build Mode
         if (minecraftClient.player.isCreative() && text.contains("» You are now in build mode.") && text.startsWith("»")) {
             DFInfo.currentState = DFInfo.State.BUILD;
-            /*
             if(ModConfig.getConfig().autotime) minecraftClient.player.sendChatMessage("/time " + ModConfig.getConfig().autotimeval);
-            */
+
         }
 
         // Dev Mode
         if (minecraftClient.player.isCreative() && text.contains("» You are now in dev mode.") && text.startsWith("»")) {
             DFInfo.currentState = DFInfo.State.DEV;
             DFInfo.plotCorner = minecraftClient.player.getPos().add(10, -50, -10);
-
-            /*
             if(ModConfig.getConfig().autoRC) minecraftClient.player.sendChatMessage("/rc");
             if(ModConfig.getConfig().autotime) minecraftClient.player.sendChatMessage("/time " + ModConfig.getConfig().autotimeval);
-            */
         }
     }
+
+    private static long lastPatchCheck = 0;
 }
