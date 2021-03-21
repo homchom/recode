@@ -43,13 +43,13 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.BoundedDiscrete(min = 1, max = 20)
     public int colorLines = 5;
 
-    @ConfigEntry.Category("social")
+    //@ConfigEntry.Category("social")
     public boolean socialFeatures = true;
     @ConfigEntry.Category("social")
     public boolean cosmetics = true;
-    @ConfigEntry.Category("social")
+    //@ConfigEntry.Category("social")
     public boolean codeUtilsChat = true;
-    @ConfigEntry.Category("social")
+    //@ConfigEntry.Category("social")
     public boolean allParty = true;
     
     public static ModConfig getConfig() {
