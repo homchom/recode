@@ -1,13 +1,14 @@
 package io.github.codeutilities.util;
 
+import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.ModConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.sound.*;
 import net.minecraft.text.*;
+import org.apache.logging.log4j.Level;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
-import java.lang.reflect.Field;
 import java.util.List;
 
 public class ChatUtil {
@@ -51,8 +52,8 @@ public class ChatUtil {
         if(!DFInfo.isOnDF()) return false;
         if(siblings.size() == 0) return false;
         String str = siblings.get(0).getStyle().toString();
-        
-        return !(str.contains("bold=null") ||
+
+        return (str.contains("bold=null") ||
                         str.contains("italic=null") ||
                         str.contains("underlined=null") ||
                         str.contains("strikethrough=null") ||

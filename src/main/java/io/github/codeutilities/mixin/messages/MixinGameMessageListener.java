@@ -23,7 +23,6 @@ public class MixinGameMessageListener {
 
     @Inject(method = "onGameMessage", at = @At("HEAD"), cancellable = true)
     private void onGameMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
-        CodeUtilities.log(Level.DEBUG, "Is hypercube message: " + ChatUtil.verifyMessage(packet.getMessage()));
         if (DFInfo.isOnDF()) {
             if (packet.getLocation() == MessageType.CHAT || packet.getLocation() == MessageType.SYSTEM) {
                 ChatReceivedEvent.onMessage(packet.getMessage(), ci);
@@ -42,7 +41,8 @@ public class MixinGameMessageListener {
     private void onTitle(TitleS2CPacket packet, CallbackInfo ci) {
         TitleS2CPacket.Action action = packet.getAction();
         if (action == TitleS2CPacket.Action.ACTIONBAR) {
-            if (packet.getText().getString().matches("DiamondFire  - .* CP - ⛁ .* Credits")) {
+            if (packet.getText().getString().matches("DiamondFire - .* .* CP - .* Tokens")) {
+
                 DFInfo.currentState = DFInfo.State.LOBBY;
             }
         }
@@ -61,7 +61,7 @@ public class MixinGameMessageListener {
 
                 DFInfo.isPatchNewer(patchText, "0"); //very lazy validation lol
                 DFInfo.patchId = patchText;
-                DFInfo.currentState = DFInfo.State.LOBBY;
+                if (DFInfo.currentState != null) DFInfo.currentState = null;
                 CodeUtilities.log(Level.INFO, "DiamondFire Patch " + DFInfo.patchId + " detected!");
             }catch (Exception e) {
                 CodeUtilities.log(Level.INFO, "Error on parsing patch number!");
@@ -72,7 +72,7 @@ public class MixinGameMessageListener {
 
     private void updateState(Text component) {
         String text = component.getString();
-        
+
         if(!ChatUtil.verifyMessage(component)) {
             return;
         }

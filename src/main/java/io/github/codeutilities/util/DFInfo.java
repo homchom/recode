@@ -5,7 +5,7 @@ import net.minecraft.util.math.Vec3d;
 
 public class DFInfo {
     public static String patchId = "5.3";
-    public static State currentState = State.LOBBY;
+    public static State currentState = null;
     public static Vec3d plotCorner = null;
     private static final MinecraftClient mc = MinecraftClient.getInstance();
 
