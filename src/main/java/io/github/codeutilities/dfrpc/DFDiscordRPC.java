@@ -91,6 +91,7 @@ public class DFDiscordRPC {
                         } else {
                             updDiscord();
                             firstUpdate = false;
+                            System.out.println("----------- RPC Updated! Status: " + client.getStatus());
                         }
                     }
                 } else {
@@ -108,7 +109,6 @@ public class DFDiscordRPC {
                         client.close();
                     } catch (Exception ignored) { }
 
-                    System.out.println("----------- RPC Updated! Status: " + client.getStatus());
                 }
 
                 if (DFInfo.isOnDF()) {
