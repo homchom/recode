@@ -45,7 +45,7 @@ public class ModConfig implements ConfigData {
 
     //@ConfigEntry.Category("social")
     public boolean socialFeatures = true;
-    @ConfigEntry.Category("social")
+    //@ConfigEntry.Category("social")
     public boolean cosmetics = true;
     //@ConfigEntry.Category("social")
     public boolean codeUtilsChat = true;
