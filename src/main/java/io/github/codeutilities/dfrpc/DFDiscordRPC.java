@@ -71,7 +71,7 @@ public class DFDiscordRPC {
                 if (DFInfo.isOnDF()) {
                     if (!String.valueOf(DFInfo.currentState).equals(oldState)) {
                         if (mc.player != null) {
-                            mc.player.sendChatMessage("/locate");
+                            if (!DFInfo.isPatchNewer(DFInfo.patchId, "5.3.1") && ModConfig.getConfig().discordRPC) mc.player.sendChatMessage("/locate");
                             locating = true;
                             for (int i = 0; i < 800; i++) {
                                 try {
