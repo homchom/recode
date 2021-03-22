@@ -16,7 +16,7 @@ public class GiveCommand extends Command {
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("dfgive")
                 .then(ArgBuilder.argument("item", ItemStackArgumentType.itemStack())
-                        .then(ArgBuilder.argument("count", IntegerArgumentType.integer(1, 127))
+                        .then(ArgBuilder.argument("count", IntegerArgumentType.integer())
                                 .executes(ctx -> {
                                     giveItem(mc, ctx.getArgument("item", ItemStackArgument.class)
                                                     .createStack(1, false),
