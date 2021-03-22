@@ -12,15 +12,17 @@ import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
+import java.util.ArrayList;
+
 public class TopHatRenderer extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
-    private final Identifier hatTexture = new Identifier("minecraft:textures/block/stone.png");
+    //private final ArrayList<Identifier> hatTexture = new ArrayList<>();
 
     public TopHatRenderer(FeatureRendererContext<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> context) {
         super(context);
     }
     
     public void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, AbstractClientPlayerEntity abstractClientPlayerEntity, float f, float g, float h, float j, float k, float l) {
-//        if ("deadmau5".equals(abstractClientPlayerEntity.getName().getString()) && abstractClientPlayerEntity.hasSkinTexture() && !abstractClientPlayerEntity.isInvisible()) {
+/*        if ("deadmau5".equals(abstractClientPlayerEntity.getName().getString()) && abstractClientPlayerEntity.hasSkinTexture() && !abstractClientPlayerEntity.isInvisible()) {
             int m = LivingEntityRenderer.getOverlay(abstractClientPlayerEntity, 0.0F);
 
         VertexConsumer vertexConsumer = vertexConsumerProvider
@@ -36,9 +38,8 @@ public class TopHatRenderer extends FeatureRenderer<AbstractClientPlayerEntity, 
 
                 matrixStack.pop();
 
-//        }
+        }*/
         
     }
 
-    
 }
