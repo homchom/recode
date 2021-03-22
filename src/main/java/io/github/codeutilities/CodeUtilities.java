@@ -66,7 +66,7 @@ public class CodeUtilities implements ModInitializer {
 //            TemplatesCommand.authenticate(); TODO: Reimplement this
             CustomHeadSearchGui.load();
             TemplateStorageHandler.load();
-            new ChatServer();
+            //new ChatServer();
         }).start();
 
     }
