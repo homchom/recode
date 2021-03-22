@@ -9,6 +9,7 @@ import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.argument.*;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.LiteralText;
 
 public class GiveCommand extends Command {
 
@@ -65,7 +66,9 @@ public class GiveCommand extends Command {
                 if (count <= item.getMaxCount()) {
                     ItemUtil.giveCreativeItem(item, true);
                 } else {
-                    ChatUtil.sendMessage("Maximum item count for " + item.getName() + " is " + item.getMaxCount() + "!", ChatType.FAIL);
+                    LiteralText text1 = new LiteralText("Maximum item count for ");
+                    LiteralText text2 = new LiteralText(" is " + item.getMaxCount() + "!");
+                    ChatUtil.sendMessage(text1.append(item.getName()).append(text2), ChatType.FAIL);
                 }
             } else {
                 ChatUtil.sendMessage("Minimum item count is 1!", ChatType.FAIL);
