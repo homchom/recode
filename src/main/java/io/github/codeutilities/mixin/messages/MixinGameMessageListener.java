@@ -93,7 +93,7 @@ public class MixinGameMessageListener {
 
                 new Thread(() -> {
                     try {
-                        Thread.sleep(10);
+                        Thread.sleep(20);
                         if(ModConfig.getConfig().autotime) minecraftClient.player.sendChatMessage("/time " + ModConfig.getConfig().autotimeval);
                     }catch (Exception e) {
                         CodeUtilities.log(Level.ERROR, "Error while executing the task!");
@@ -102,25 +102,8 @@ public class MixinGameMessageListener {
                 }).start();
             }
         }
-
-        // Dev Mode
-        if (minecraftClient.player.isCreative() && text.contains("» You are now in dev mode.") && text.startsWith("»")) {
-            if (DFInfo.currentState != DFInfo.State.DEV) {
-                DFInfo.currentState = DFInfo.State.DEV;
-                DFInfo.plotCorner = minecraftClient.player.getPos().add(10, -50, -10);
-
-                new Thread(() -> {
-                    try {
-                        Thread.sleep(10);
-                        if(ModConfig.getConfig().autoRC) minecraftClient.player.sendChatMessage("/rc");
-                        if(ModConfig.getConfig().autotime) minecraftClient.player.sendChatMessage("/time " + ModConfig.getConfig().autotimeval);
-                    } catch (Exception e) {
-                        CodeUtilities.log(Level.ERROR, "Error while executing the task!");
-                        e.printStackTrace();
-                    }
-                }).start();
-            }
-        }
+        
+        // Dev Mode (moved to MixinItemSlotUpdate)
     }
 
     private static long lastPatchCheck = 0;

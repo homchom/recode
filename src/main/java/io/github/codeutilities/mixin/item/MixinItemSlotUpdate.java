@@ -1,6 +1,7 @@
 package io.github.codeutilities.mixin.item;
 
 import io.github.codeutilities.CodeUtilities;
+import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.template.TemplateStorageHandler;
 import io.github.codeutilities.util.DFInfo;
 import io.github.codeutilities.util.TemplateUtils;
@@ -42,7 +43,22 @@ public class MixinItemSlotUpdate {
                 && lore.toText().getString().contains("\"Right click this to obtain values. Types include\"")
                 && lore.toText().getString().contains("\"numbers, variables, text, sound effects, game\"")
                 && lore.toText().getString().contains("\"values, potion effects, and spawn eggs.\"")) {
-                DFInfo.currentState = DFInfo.State.DEV;
+
+                if (DFInfo.currentState != DFInfo.State.DEV) {
+                    DFInfo.currentState = DFInfo.State.DEV;
+                    DFInfo.plotCorner = mc.player.getPos().add(10, -50, -10);
+
+                    new Thread(() -> {
+                        try {
+                            Thread.sleep(10);
+                            if(ModConfig.getConfig().autoRC) mc.player.sendChatMessage("/rc");
+                            if(ModConfig.getConfig().autotime) mc.player.sendChatMessage("/time " + ModConfig.getConfig().autotimeval);
+                        } catch (Exception e) {
+                            CodeUtilities.log(Level.ERROR, "Error while executing the task!");
+                            e.printStackTrace();
+                        }
+                    }).start();
+                }
             }
         }
     }

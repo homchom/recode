@@ -44,7 +44,7 @@ public class ChatUtil {
             }
         }
     }
-    
+
     public static MutableText setColor(MutableText component, Color color) {
         Style colorStyle = component.getStyle().withColor(TextColor.fromRgb(color.getRGB()));
         component.setStyle(colorStyle);
