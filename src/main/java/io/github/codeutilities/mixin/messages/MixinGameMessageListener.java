@@ -53,10 +53,6 @@ public class MixinGameMessageListener {
 
     private void updateVersion(Text component) {
         String text = component.getString();
-    
-        if(!ChatUtil.verifyMessage(component)) {
-            return;
-        }
 
         if (text.matches("Current patch: .*\\. See the patch notes with \\/patch!")) {
             try {
@@ -90,10 +86,6 @@ public class MixinGameMessageListener {
             DFInfo.currentState = DFInfo.State.PLAY;
         }
 
-        if(!ChatUtil.verifyMessage(component)) {
-            return;
-        }
-
         // Build Mode
         if (minecraftClient.player.isCreative() && text.contains("» You are now in build mode.") && text.startsWith("»")) {
             if (DFInfo.currentState != DFInfo.State.BUILD) {
@@ -116,6 +108,7 @@ public class MixinGameMessageListener {
             if (DFInfo.currentState != DFInfo.State.DEV) {
                 DFInfo.currentState = DFInfo.State.DEV;
                 DFInfo.plotCorner = minecraftClient.player.getPos().add(10, -50, -10);
+
                 new Thread(() -> {
                     try {
                         Thread.sleep(10);
