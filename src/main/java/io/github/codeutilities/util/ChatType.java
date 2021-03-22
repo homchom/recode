@@ -1,8 +1,8 @@
 package io.github.codeutilities.util;
 
 public enum ChatType {
-    SUCCESS("§a§l»", 'a'),
-    FAIL("§c§l»", 'c'),
+    SUCCESS("§a§l»", 'f'),
+    FAIL("§4§l»", 'c'),
     INFO_YELLOW("§6§l»", 'e'),
     INFO_BLUE("§9§l»", 'b');
 
