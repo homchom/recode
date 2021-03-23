@@ -1,6 +1,7 @@
 package io.github.codeutilities.events;
 
 import io.github.codeutilities.CodeUtilities;
+import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.dfrpc.DFDiscordRPC;
 import io.github.codeutilities.util.ChatType;
 import io.github.codeutilities.util.ChatUtil;
@@ -15,6 +16,10 @@ public class ChatReceivedEvent {
 
     public static boolean pjoin = false;
     public static String dfrpcMsg = "";
+
+    public static boolean cancelTimeMsg;
+    public static boolean cancelNVisionMsg;
+    public static boolean cancelFlyMsg;
 
     public static void onMessage(Text message, CallbackInfo ci) {
         MinecraftClient mc = MinecraftClient.getInstance();
@@ -57,6 +62,21 @@ public class ChatReceivedEvent {
                 cancel = true;
                 DFDiscordRPC.locating = false;
             }
+        }
+
+        if (cancelTimeMsg && text.contains("» Set your player time to " + ModConfig.getConfig().autotimeval + ".") && text.startsWith("»")) {
+            cancel = true;
+            cancelTimeMsg = false;
+        }
+
+        if (cancelNVisionMsg && text.contains("» Enabled night vision.") && text.startsWith("»")) {
+            cancel = true;
+            cancelNVisionMsg = false;
+        }
+
+        if (cancelFlyMsg && text.contains("» Flight enabled.") && text.startsWith("»")) {
+            cancel = true;
+            cancelFlyMsg = false;
         }
 
         //Cancelling (set cancel to true)

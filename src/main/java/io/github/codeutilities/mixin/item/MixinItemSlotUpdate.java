@@ -2,6 +2,8 @@ package io.github.codeutilities.mixin.item;
 
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.ModConfig;
+import io.github.codeutilities.events.ChatReceivedEvent;
+import io.github.codeutilities.mixin.messages.MixinGameMessageListener;
 import io.github.codeutilities.template.TemplateStorageHandler;
 import io.github.codeutilities.util.DFInfo;
 import io.github.codeutilities.util.TemplateUtils;
@@ -55,9 +57,17 @@ public class MixinItemSlotUpdate {
                     new Thread(() -> {
                         try {
                             Thread.sleep(10);
-                            if(ModConfig.getConfig().autoRC) mc.player.sendChatMessage("/rc");
-                            if(ModConfig.getConfig().autotime) mc.player.sendChatMessage("/time " + ModConfig.getConfig().autotimeval);
-                            if(ModConfig.getConfig().autonightvis) mc.player.sendChatMessage("/nightvis");
+                            if(ModConfig.getConfig().autoRC) {
+                                mc.player.sendChatMessage("/rc");
+                            }
+                            if(ModConfig.getConfig().autotime) {
+                                mc.player.sendChatMessage("/time " + ModConfig.getConfig().autotimeval);
+                                ChatReceivedEvent.cancelTimeMsg = true;
+                            }
+                            if(ModConfig.getConfig().autonightvis) {
+                                mc.player.sendChatMessage("/nightvis");
+                                ChatReceivedEvent.cancelNVisionMsg = true;
+                            }
                         } catch (Exception e) {
                             CodeUtilities.log(Level.ERROR, "Error while executing the task!");
                             e.printStackTrace();

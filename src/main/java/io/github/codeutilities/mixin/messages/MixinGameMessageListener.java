@@ -45,6 +45,7 @@ public class MixinGameMessageListener {
             if (packet.getText().getString().matches("DiamondFire - .* .* CP - .* Tokens")) {
                 if (DFInfo.currentState != DFInfo.State.LOBBY && ModConfig.getConfig().autofly) {
                     minecraftClient.player.sendChatMessage("/fly");
+                    ChatReceivedEvent.cancelFlyMsg = true;
                 }
                 DFInfo.currentState = DFInfo.State.LOBBY;
             }
@@ -57,7 +58,7 @@ public class MixinGameMessageListener {
         if (text.matches("Current patch: .*\\. See the patch notes with \\/patch!")) {
             try {
                 long time = System.currentTimeMillis() / 1000L;
-                if (time - lastPatchCheck > 1) {
+                if (time - lastPatchCheck > 2) {
                     String patchText = text.replaceAll("Current patch: (.*)\\. See the patch notes with \\/patch!", "$1");
 
                     DFInfo.isPatchNewer(patchText, "0"); //very lazy validation lol
@@ -92,20 +93,32 @@ public class MixinGameMessageListener {
                 DFInfo.currentState = DFInfo.State.BUILD;
             }
 
-            new Thread(() -> {
-                try {
-                    Thread.sleep(20);
-                    if(ModConfig.getConfig().autotime) minecraftClient.player.sendChatMessage("/time " + ModConfig.getConfig().autotimeval);
-                    if(ModConfig.getConfig().autonightvis) minecraftClient.player.sendChatMessage("/nightvis");
-                }catch (Exception e) {
-                    CodeUtilities.log(Level.ERROR, "Error while executing the task!");
-                    e.printStackTrace();
-                }
-            }).start();
+            long time = System.currentTimeMillis() / 1000L;
+            if (time - lastBuildCheck > 1) {
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(20);
+                        if(ModConfig.getConfig().autotime) {
+                            minecraftClient.player.sendChatMessage("/time " + ModConfig.getConfig().autotimeval);
+                            ChatReceivedEvent.cancelTimeMsg = true;
+                        }
+                        if(ModConfig.getConfig().autonightvis) {
+                            minecraftClient.player.sendChatMessage("/nightvis");
+                            ChatReceivedEvent.cancelNVisionMsg = true;
+                        }
+                    }catch (Exception e) {
+                        CodeUtilities.log(Level.ERROR, "Error while executing the task!");
+                        e.printStackTrace();
+                    }
+                }).start();
+
+                lastBuildCheck = time;
+            }
         }
         
         // Dev Mode (moved to MixinItemSlotUpdate)
     }
 
     private static long lastPatchCheck = 0;
+    private static long lastBuildCheck = 0;
 }
