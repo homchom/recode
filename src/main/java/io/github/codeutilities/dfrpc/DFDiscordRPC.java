@@ -7,11 +7,7 @@ import io.github.codeutilities.util.DFInfo;
 
 import com.jagrosh.discordipc.IPCClient;
 import com.jagrosh.discordipc.IPCListener;
-import com.jagrosh.discordipc.entities.Callback;
-import com.jagrosh.discordipc.entities.DiscordBuild;
-import com.jagrosh.discordipc.entities.Packet;
 import com.jagrosh.discordipc.entities.RichPresence;
-import com.jagrosh.discordipc.entities.User;
 import com.jagrosh.discordipc.exceptions.NoDiscordClientException;
 
 import net.minecraft.client.MinecraftClient;
@@ -73,7 +69,7 @@ public class DFDiscordRPC {
                         if (mc.player != null) {
                             if (!DFInfo.isPatchNewer(DFInfo.patchId, "5.3.1") && ModConfig.getConfig().discordRPC) mc.player.sendChatMessage("/locate");
                             locating = true;
-                            for (int i = 0; i < 800; i++) {
+                            for (int i = 0; i < 2000; i++) {
                                 try {
                                     DFRPCThread.sleep(1);
                                 } catch (InterruptedException e) {

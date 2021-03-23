@@ -21,7 +21,9 @@
     "modmenu": [
         "io.github.codeutilities.config.ModMenuIntegration"
     ],
-    "client": [],
+    "client": [
+      "io.github.codeutilities.keybinds.Keybinds"
+    ],
     "server": []
   },
   "mixins": [
@@ -29,7 +31,8 @@
   ],
   "depends": {
     "fabricloader": ">=0.8.9",
-    "fabric": "*"
+    "fabric": "*",
+    "fabric-key-binding-api-v1": "*"
   },
   "custom": {
     "modmenu:clientsideOnly": true

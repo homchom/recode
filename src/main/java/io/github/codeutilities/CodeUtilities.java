@@ -5,7 +5,7 @@ import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.cosmetics.CosmeticHandler;
 import io.github.codeutilities.dfrpc.DFDiscordRPC;
 import io.github.codeutilities.gui.CustomHeadSearchGui;
-import io.github.codeutilities.social.ChatServer;
+import io.github.codeutilities.keybinds.Keybinds;
 import io.github.codeutilities.template.*;
 import io.github.codeutilities.util.socket.SocketHandler;
 import io.github.cottonmc.cotton.gui.client.*;

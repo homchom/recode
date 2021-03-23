@@ -46,5 +46,28 @@
   "text.autoconfig.codeutilities.option.cosmetics.@Tooltip": "Does not hide capes.",
   "text.autoconfig.codeutilities.option.allParty": "Allow party invites from everyone.",
 
-  "codeutilities.command.require_creative_mode": "You must be in creative mode to use this command!"
+  "codeutilities.command.require_creative_mode": "You must be in creative mode to use this command!",
+
+  "key.category.codeutilities": "CodeUtilities",
+
+  "key.codeutilities.play": "Mode Play",
+  "key.codeutilities.build": "Mode Build",
+  "key.codeutilities.dev": "Mode Dev",
+
+  "key.codeutilities.fs100": "Flight Speed 100",
+  "key.codeutilities.fs360": "Flight Speed 360",
+  "key.codeutilities.fs1000": "Flight Speed 1000",
+
+  "key.codeutilities.spawn": "Spawn",
+  "key.codeutilities.lagslayer": "Toggle CPU Usage",
+
+  "key.codeutilities.rs": "Inventory Reset",
+  "key.codeutilities.rc": "Inventory Compact",
+
+  "key.codeutilities.node1": "Node 1",
+  "key.codeutilities.node2": "Node 2",
+  "key.codeutilities.node3": "Node 3",
+  "key.codeutilities.node4": "Node 4",
+  "key.codeutilities.node5": "Node 5",
+  "key.codeutilities.node_beta": "Node Beta"
 }
