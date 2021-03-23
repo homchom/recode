@@ -61,6 +61,19 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip()
     public int colorLines = 5;
 
+    @ConfigEntry.Category("keybinds")
+    @ConfigEntry.BoundedDiscrete(min = 0, max = 1000)
+    @ConfigEntry.Gui.Tooltip()
+    public int fsNormal = 100;
+    @ConfigEntry.Category("keybinds")
+    @ConfigEntry.BoundedDiscrete(min = 0, max = 1000)
+    @ConfigEntry.Gui.Tooltip()
+    public int fsMed = 350;
+    @ConfigEntry.Category("keybinds")
+    @ConfigEntry.BoundedDiscrete(min = 0, max = 1000)
+    @ConfigEntry.Gui.Tooltip()
+    public int fsFast = 1000;
+
     /*
     @ConfigEntry.Category("social")
     public boolean socialFeatures = true;

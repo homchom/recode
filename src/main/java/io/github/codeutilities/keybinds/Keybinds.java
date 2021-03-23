@@ -1,5 +1,7 @@
 package io.github.codeutilities.keybinds;
 
+import io.github.codeutilities.config.ModConfig;
+import io.github.codeutilities.util.DFInfo;
 import net.minecraft.client.MinecraftClient;
 import org.lwjgl.glfw.GLFW;
 
@@ -35,6 +37,14 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
             KeyBinding dev = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                     "key.codeutilities.dev", InputUtil.Type.KEYSYM, -1, "key.category.codeutilities"));
 
+            // toggle play dev
+            KeyBinding toggle_play_dev = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                    "key.codeutilities.toggle_play_dev", InputUtil.Type.KEYSYM, -1, "key.category.codeutilities"));
+
+            // toggle play build
+            KeyBinding toggle_play_build = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                    "key.codeutilities.toggle_play_build", InputUtil.Type.KEYSYM, -1, "key.category.codeutilities"));
+
             // spawn
             KeyBinding spawn = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                     "key.codeutilities.spawn", InputUtil.Type.KEYSYM, -1, "key.category.codeutilities"));
@@ -65,17 +75,21 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
             // =======
 
-            // fs 100
-            KeyBinding fs100 = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                    "key.codeutilities.fs100", InputUtil.Type.KEYSYM, -1, "key.category.codeutilities"));
+            // fs normal
+            KeyBinding fs_normal = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                    "key.codeutilities.fs_normal", InputUtil.Type.KEYSYM, -1, "key.category.codeutilities"));
 
-            // fs 350
-            KeyBinding fs350 = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                    "key.codeutilities.fs350", InputUtil.Type.KEYSYM, -1, "key.category.codeutilities"));
+            // fs med
+            KeyBinding fs_med = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                    "key.codeutilities.fs_med", InputUtil.Type.KEYSYM, -1, "key.category.codeutilities"));
 
-            // fs 1000
-            KeyBinding fs1000 = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                    "key.codeutilities.fs1000", InputUtil.Type.KEYSYM, -1, "key.category.codeutilities"));
+            // fs fast
+            KeyBinding fs_fast = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                    "key.codeutilities.fs_fast", InputUtil.Type.KEYSYM, -1, "key.category.codeutilities"));
+
+            // fs toggle normal med
+            KeyBinding toggle_fs_normal_med = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                    "key.codeutilities.toggle_fs_normal_med", InputUtil.Type.KEYSYM, -1, "key.category.codeutilities"));
 
             // =======
 
@@ -90,6 +104,18 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
             // rs
             KeyBinding rs = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                     "key.codeutilities.rs", InputUtil.Type.KEYSYM, -1, "key.category.codeutilities"));
+
+            // plot spawn
+            KeyBinding plotSpawn = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                    "key.codeutilities.plot_spawn", InputUtil.Type.KEYSYM, -1, "key.category.codeutilities"));
+
+            // night vision
+            KeyBinding nightvis = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                    "key.codeutilities.nightvis", InputUtil.Type.KEYSYM, -1, "key.category.codeutilities"));
+
+            // fly
+            KeyBinding fly = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                    "key.codeutilities.fly", InputUtil.Type.KEYSYM, -1, "key.category.codeutilities"));
 
             // =======
 
@@ -123,6 +149,24 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
                 // dev
                 while (dev.wasPressed()) {
                     sendChat("/dev");
+                }
+
+                // toggle play dev
+                while (toggle_play_dev.wasPressed()) {
+                    if (DFInfo.currentState == DFInfo.State.PLAY) {
+                        sendChat("/dev");
+                    } else {
+                        sendChat("/play");
+                    }
+                }
+
+                // toggle play build
+                while (toggle_play_build.wasPressed()) {
+                    if (DFInfo.currentState == DFInfo.State.PLAY) {
+                        sendChat("/build");
+                    } else {
+                        sendChat("/play");
+                    }
                 }
 
                 // spawn
@@ -160,19 +204,24 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
                     sendChat("/node beta");
                 }
 
-                // fs 100
-                while (fs100.wasPressed()) {
-                    sendChat("/fs 100");
+                // fs normal
+                while (fs_normal.wasPressed()) {
+                    sendChat("/fs " + ModConfig.getConfig().fsNormal);
                 }
 
-                // fs 350
-                while (fs350.wasPressed()) {
-                    sendChat("/fs 350");
+                // fs med
+                while (fs_med.wasPressed()) {
+                    sendChat("/fs " + ModConfig.getConfig().fsMed);
                 }
 
-                // fs 1000
-                while (fs1000.wasPressed()) {
-                    sendChat("/fs 1000");
+                // fs fast
+                while (fs_fast.wasPressed()) {
+                    sendChat("/fs " + ModConfig.getConfig().fsFast);
+                }
+
+                // toggle fs normal med
+                while (toggle_fs_normal_med.wasPressed()) {
+                    sendChat("Unfinished.");
                 }
 
                 // lagslayer
@@ -188,6 +237,21 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
                 // rs
                 while (rs.wasPressed()) {
                     sendChat("/rs");
+                }
+
+                // plot spawn
+                while (plotSpawn.wasPressed()) {
+                    sendChat("/p s");
+                }
+
+                // nightvis
+                while (nightvis.wasPressed()) {
+                    sendChat("/nightvis");
+                }
+
+                // fly
+                while (fly.wasPressed()) {
+                    sendChat("/fly");
                 }
 
                 // chat global
