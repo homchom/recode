@@ -65,7 +65,7 @@ public class MixinGameMessageListener {
                     DFInfo.currentState = null;
                     CodeUtilities.log(Level.INFO, "DiamondFire Patch " + DFInfo.patchId + " detected!");
 
-                    lastPatchCheck = System.currentTimeMillis() / 1000L;
+                    lastPatchCheck = time;
 
                     if (DFInfo.isPatchNewer(DFInfo.patchId, "5.3.1") && ModConfig.getConfig().discordRPC) {
                         ChatUtil.sendMessage("Note: Discord Rich Presence is currently unsupported in patches newer than 5.3! The features will not work correctly in Patch " + DFInfo.patchId + ".", ChatType.INFO_BLUE);
@@ -90,17 +90,18 @@ public class MixinGameMessageListener {
         if (minecraftClient.player.isCreative() && text.contains("» You are now in build mode.") && text.startsWith("»")) {
             if (DFInfo.currentState != DFInfo.State.BUILD) {
                 DFInfo.currentState = DFInfo.State.BUILD;
-
-                new Thread(() -> {
-                    try {
-                        Thread.sleep(20);
-                        if(ModConfig.getConfig().autotime) minecraftClient.player.sendChatMessage("/time " + ModConfig.getConfig().autotimeval);
-                    }catch (Exception e) {
-                        CodeUtilities.log(Level.ERROR, "Error while executing the task!");
-                        e.printStackTrace();
-                    }
-                }).start();
             }
+
+            new Thread(() -> {
+                try {
+                    Thread.sleep(20);
+                    if(ModConfig.getConfig().autotime) minecraftClient.player.sendChatMessage("/time " + ModConfig.getConfig().autotimeval);
+                    if(ModConfig.getConfig().autonightvis) minecraftClient.player.sendChatMessage("/nightvis");
+                }catch (Exception e) {
+                    CodeUtilities.log(Level.ERROR, "Error while executing the task!");
+                    e.printStackTrace();
+                }
+            }).start();
         }
         
         // Dev Mode (moved to MixinItemSlotUpdate)

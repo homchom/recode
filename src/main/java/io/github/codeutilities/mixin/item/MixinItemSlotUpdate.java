@@ -47,21 +47,29 @@ public class MixinItemSlotUpdate {
                 if (DFInfo.currentState != DFInfo.State.DEV) {
                     DFInfo.currentState = DFInfo.State.DEV;
                     DFInfo.plotCorner = mc.player.getPos().add(10, -50, -10);
+                }
+
+                long time = System.currentTimeMillis() / 1000L;
+                if (time - lastDevCheck > 1) {
 
                     new Thread(() -> {
                         try {
                             Thread.sleep(10);
                             if(ModConfig.getConfig().autoRC) mc.player.sendChatMessage("/rc");
                             if(ModConfig.getConfig().autotime) mc.player.sendChatMessage("/time " + ModConfig.getConfig().autotimeval);
+                            if(ModConfig.getConfig().autonightvis) mc.player.sendChatMessage("/nightvis");
                         } catch (Exception e) {
                             CodeUtilities.log(Level.ERROR, "Error while executing the task!");
                             e.printStackTrace();
                         }
                     }).start();
+
+                    lastDevCheck = time;
                 }
             }
         }
     }
 
+    private long lastDevCheck = 0;
 
 }
