@@ -64,6 +64,10 @@
   "key.codeutilities.rs": "Inventory Reset",
   "key.codeutilities.rc": "Inventory Compact",
 
+  "key.codeutilities.chat_global": "Chat Global",
+  "key.codeutilities.chat_local": "Chat Local",
+  "key.codeutilities.chat_none": "Chat None",
+
   "key.codeutilities.node1": "Node 1",
   "key.codeutilities.node2": "Node 2",
   "key.codeutilities.node3": "Node 3",

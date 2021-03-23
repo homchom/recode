@@ -91,6 +91,20 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
             KeyBinding rs = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                     "key.codeutilities.rs", InputUtil.Type.KEYSYM, -1, "key.category.codeutilities"));
 
+            // =======
+
+            // chat global
+            KeyBinding chatGlobal = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                    "key.codeutilities.chat_global", InputUtil.Type.KEYSYM, -1, "key.category.codeutilities"));
+
+            // chat local
+            KeyBinding chatLocal = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                    "key.codeutilities.chat_local", InputUtil.Type.KEYSYM, -1, "key.category.codeutilities"));
+
+            // chat none
+            KeyBinding chatNone = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                    "key.codeutilities.chat_none", InputUtil.Type.KEYSYM, -1, "key.category.codeutilities"));
+
             // =======================================================
             // Events
             // =======================================================
@@ -174,6 +188,21 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
                 // rs
                 while (rs.wasPressed()) {
                     sendChat("/rs");
+                }
+
+                // chat global
+                while (chatGlobal.wasPressed()) {
+                    sendChat("/c 2");
+                }
+
+                // chat local
+                while (chatLocal.wasPressed()) {
+                    sendChat("/c 1");
+                }
+
+                // chat none
+                while (chatNone.wasPressed()) {
+                    sendChat("/c 0");
                 }
 
             });
