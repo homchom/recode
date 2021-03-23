@@ -69,9 +69,9 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
             KeyBinding fs100 = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                     "key.codeutilities.fs100", InputUtil.Type.KEYSYM, -1, "key.category.codeutilities"));
 
-            // fs 360
-            KeyBinding fs360 = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                    "key.codeutilities.fs360", InputUtil.Type.KEYSYM, -1, "key.category.codeutilities"));
+            // fs 350
+            KeyBinding fs350 = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                    "key.codeutilities.fs350", InputUtil.Type.KEYSYM, -1, "key.category.codeutilities"));
 
             // fs 1000
             KeyBinding fs1000 = KeyBindingHelper.registerKeyBinding(new KeyBinding(
@@ -166,8 +166,8 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
                 }
 
                 // fs 360
-                while (fs360.wasPressed()) {
-                    sendChat("/fs 360");
+                while (fs350.wasPressed()) {
+                    sendChat("/fs 350");
                 }
 
                 // fs 1000
