@@ -165,7 +165,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
                     sendChat("/fs 100");
                 }
 
-                // fs 360
+                // fs 350
                 while (fs350.wasPressed()) {
                     sendChat("/fs 350");
                 }
