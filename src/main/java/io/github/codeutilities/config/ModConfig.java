@@ -7,6 +7,7 @@ import me.sargunvohra.mcmods.autoconfig1u.annotation.*;
 public class ModConfig implements ConfigData {
 
     @ConfigEntry.Category("features")
+    @ConfigEntry.Gui.Tooltip()
     public boolean dfButton = true;
     @ConfigEntry.Category("features")
     @ConfigEntry.Gui.Tooltip()
@@ -16,44 +17,59 @@ public class ModConfig implements ConfigData {
     public boolean chestReplacement = false;
     @ConfigEntry.Category("features")
     @ConfigEntry.BoundedDiscrete(min = 1, max = 100)
+    @ConfigEntry.Gui.Tooltip()
     public int signRenderDistance = 100;
     @ConfigEntry.Category("features")
+    @ConfigEntry.Gui.Tooltip()
     public boolean variableScopeView = true;
 
     @ConfigEntry.Category("features")
+    @ConfigEntry.Gui.Tooltip()
     public boolean discordRPC = true;
     @ConfigEntry.Category("features")
+    @ConfigEntry.Gui.Tooltip()
     public boolean autoRC = false;
     @ConfigEntry.Category("features")
+    @ConfigEntry.Gui.Tooltip()
     public boolean autotime = false;
     @ConfigEntry.Category("features")
     @ConfigEntry.BoundedDiscrete(min = 0, max = 24000)
+    @ConfigEntry.Gui.Tooltip()
     public int autotimeval = 0;
     @ConfigEntry.Category("features")
+    public boolean autonightvis = false;
+    @ConfigEntry.Category("features")
+    @ConfigEntry.Gui.Tooltip()
     public boolean autofly = false;
 
     @ConfigEntry.Category("commands")
+    @ConfigEntry.Gui.Tooltip()
     public boolean dfCommands = true;
     @ConfigEntry.Category("commands")
+    @ConfigEntry.Gui.Tooltip()
     public boolean errorSound = true;
     @ConfigEntry.Category("commands")
     @ConfigEntry.BoundedDiscrete(min = 10, max = 10000)
+    @ConfigEntry.Gui.Tooltip()
     public int headMenuMaxRender = 1000;
     @ConfigEntry.Category("commands")
     @ConfigEntry.BoundedDiscrete(min = 1, max = 360)
+    @ConfigEntry.Gui.Tooltip()
     public int colorMaxRender = 158;
     @ConfigEntry.Category("commands")
     @ConfigEntry.BoundedDiscrete(min = 1, max = 20)
+    @ConfigEntry.Gui.Tooltip()
     public int colorLines = 5;
 
     /*
-    //@ConfigEntry.Category("social")
+    @ConfigEntry.Category("social")
     public boolean socialFeatures = true;
-    //@ConfigEntry.Category("social")
+    @ConfigEntry.Category("social")
+    @ConfigEntry.Gui.Tooltip()
     public boolean cosmetics = true;
-    //@ConfigEntry.Category("social")
+    @ConfigEntry.Category("social")
     public boolean codeUtilsChat = true;
-    //@ConfigEntry.Category("social")
+    @ConfigEntry.Category("social")
     public boolean allParty = true;
     */
     
