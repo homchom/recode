@@ -11,6 +11,9 @@ public class ModConfig implements ConfigData {
     public boolean dfButton = true;
     @ConfigEntry.Category("features")
     @ConfigEntry.Gui.Tooltip()
+    public boolean discordRPC = true;
+    @ConfigEntry.Category("features")
+    @ConfigEntry.Gui.Tooltip()
     public boolean itemApi = true;
     @ConfigEntry.Category("features")
     @ConfigEntry.Gui.Tooltip()
@@ -22,10 +25,6 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Category("features")
     @ConfigEntry.Gui.Tooltip()
     public boolean variableScopeView = true;
-    @ConfigEntry.Category("features")
-    @ConfigEntry.Gui.Tooltip()
-    public boolean discordRPC = true;
-
 
     @ConfigEntry.Category("commands")
     @ConfigEntry.Gui.Tooltip()
@@ -57,6 +56,7 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip()
     public int autotimeval = 0;
     @ConfigEntry.Category("automation")
+    @ConfigEntry.Gui.Tooltip()
     public boolean autonightvis = false;
     @ConfigEntry.Category("automation")
     @ConfigEntry.Gui.Tooltip()
