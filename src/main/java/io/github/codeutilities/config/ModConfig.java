@@ -22,25 +22,10 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Category("features")
     @ConfigEntry.Gui.Tooltip()
     public boolean variableScopeView = true;
-
     @ConfigEntry.Category("features")
     @ConfigEntry.Gui.Tooltip()
     public boolean discordRPC = true;
-    @ConfigEntry.Category("features")
-    @ConfigEntry.Gui.Tooltip()
-    public boolean autoRC = false;
-    @ConfigEntry.Category("features")
-    @ConfigEntry.Gui.Tooltip()
-    public boolean autotime = false;
-    @ConfigEntry.Category("features")
-    @ConfigEntry.BoundedDiscrete(min = 0, max = 24000)
-    @ConfigEntry.Gui.Tooltip()
-    public int autotimeval = 0;
-    @ConfigEntry.Category("features")
-    public boolean autonightvis = false;
-    @ConfigEntry.Category("features")
-    @ConfigEntry.Gui.Tooltip()
-    public boolean autofly = false;
+
 
     @ConfigEntry.Category("commands")
     @ConfigEntry.Gui.Tooltip()
@@ -60,6 +45,22 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.BoundedDiscrete(min = 1, max = 20)
     @ConfigEntry.Gui.Tooltip()
     public int colorLines = 5;
+
+    @ConfigEntry.Category("automation")
+    @ConfigEntry.Gui.Tooltip()
+    public boolean autoRC = false;
+    @ConfigEntry.Category("automation")
+    @ConfigEntry.Gui.Tooltip()
+    public boolean autotime = false;
+    @ConfigEntry.Category("automation")
+    @ConfigEntry.BoundedDiscrete(min = 0, max = 24000)
+    @ConfigEntry.Gui.Tooltip()
+    public int autotimeval = 0;
+    @ConfigEntry.Category("automation")
+    public boolean autonightvis = false;
+    @ConfigEntry.Category("automation")
+    @ConfigEntry.Gui.Tooltip()
+    public boolean autofly = false;
 
     @ConfigEntry.Category("keybinds")
     @ConfigEntry.BoundedDiscrete(min = 0, max = 1000)

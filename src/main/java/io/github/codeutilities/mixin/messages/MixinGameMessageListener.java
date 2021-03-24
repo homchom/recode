@@ -4,6 +4,7 @@ import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.dfrpc.DFDiscordRPC;
 import io.github.codeutilities.events.ChatReceivedEvent;
+import io.github.codeutilities.keybinds.FlightspeedToggle;
 import io.github.codeutilities.util.DFInfo;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -47,6 +48,9 @@ public class MixinGameMessageListener {
                     ChatReceivedEvent.cancelFlyMsg = true;
                 }
                 DFInfo.currentState = DFInfo.State.LOBBY;
+
+                // fs toggle
+                FlightspeedToggle.fs_is_normal = true;
             }
         }
     }
@@ -80,9 +84,17 @@ public class MixinGameMessageListener {
     private void updateState(Text component) {
         String text = component.getString();
 
+        // Flight speed
+        if (text.matches("^Set flight speed to: \\d+% of default speed\\.$") && !text.matches("^Set flight speed to: 100% of default speed\\.$")) {
+            FlightspeedToggle.fs_is_normal = false;
+        }
+
         // Play Mode
         if (text.matches("Joined game: .* by .*") && text.startsWith("Joined game: ")) {
             DFInfo.currentState = DFInfo.State.PLAY;
+
+            // fs toggle
+            FlightspeedToggle.fs_is_normal = true;
         }
 
         // Build Mode
@@ -90,6 +102,9 @@ public class MixinGameMessageListener {
             if (DFInfo.currentState != DFInfo.State.BUILD) {
                 DFInfo.currentState = DFInfo.State.BUILD;
             }
+
+            // fs toggle
+            FlightspeedToggle.fs_is_normal = true;
 
             long time = System.currentTimeMillis() / 1000L;
             if (time - lastBuildCheck > 1) {
@@ -114,7 +129,11 @@ public class MixinGameMessageListener {
             }
         }
         
-        // Dev Mode (moved to MixinItemSlotUpdate)
+        // Dev Mode (more moved to MixinItemSlotUpdate)
+        if (minecraftClient.player.isCreative() && text.contains("» You are now in dev mode.") && text.startsWith("»")) {
+            // fs toggle
+            FlightspeedToggle.fs_is_normal = true;
+        }
     }
 
     private static long lastPatchCheck = 0;

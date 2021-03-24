@@ -1,4 +1,4 @@
-package io.github.codeutilities.mixin;
+package io.github.codeutilities.mixin.render;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import io.github.codeutilities.CodeUtilities;

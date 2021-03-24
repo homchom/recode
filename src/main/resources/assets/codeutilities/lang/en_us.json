@@ -3,6 +3,7 @@
 
   "text.autoconfig.codeutilities.category.features": "Features",
   "text.autoconfig.codeutilities.category.commands": "Commands",
+  "text.autoconfig.codeutilities.category.automation": "Automation",
   "text.autoconfig.codeutilities.category.keybinds": "Keybinds",
   "text.autoconfig.codeutilities.category.social": "Social Features",
 
@@ -75,6 +76,7 @@
   "key.codeutilities.toggle_play_dev": "Toggle Mode Play <-> Dev",
   "key.codeutilities.toggle_play_build": "Toggle Mode Play <-> Build",
   "key.codeutilities.toggle_fs_normal_med": "Toggle Flight Speed Normal <-> Medium",
+  "key.codeutilities.toggle_fs_normal_fast": "Toggle Flight Speed Normal <-> Fast",
 
   "key.codeutilities.rs": "Inventory Reset",
   "key.codeutilities.rc": "Inventory Compact",

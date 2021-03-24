@@ -1,14 +1,12 @@
 package io.github.codeutilities.keybinds;
 
 import io.github.codeutilities.config.ModConfig;
+import io.github.codeutilities.util.ChatUtil;
 import io.github.codeutilities.util.DFInfo;
 import net.minecraft.client.MinecraftClient;
-import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.options.KeyBinding;
-import net.minecraft.client.options.StickyKeyBinding;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.text.LiteralText;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -90,6 +88,10 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
             // fs toggle normal med
             KeyBinding toggle_fs_normal_med = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                     "key.codeutilities.toggle_fs_normal_med", InputUtil.Type.KEYSYM, -1, "key.category.codeutilities"));
+
+            // fs toggle normal fast
+            KeyBinding toggle_fs_normal_fast = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                    "key.codeutilities.toggle_fs_normal_fast", InputUtil.Type.KEYSYM, -1, "key.category.codeutilities"));
 
             // =======
 
@@ -199,6 +201,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
                 // fs normal
                 while (fs_normal.wasPressed()) {
                     sendChat("/fs " + ModConfig.getConfig().fsNormal);
+                    FlightspeedToggle.fs_is_normal = true;
                 }
 
                 // fs med
@@ -213,7 +216,12 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
                 // toggle fs normal med
                 while (toggle_fs_normal_med.wasPressed()) {
-                    sendChat("Unfinished.");
+                    FlightspeedToggle.toggleFlightspeed("medium");
+                }
+
+                // toggle fs normal fast
+                while (toggle_fs_normal_fast.wasPressed()) {
+                    FlightspeedToggle.toggleFlightspeed("fast");
                 }
 
                 // lagslayer
