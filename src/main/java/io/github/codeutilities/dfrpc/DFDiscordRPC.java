@@ -156,6 +156,7 @@ public class DFDiscordRPC {
                     "You are currently at spawn.\n", "").replaceFirst("^» Server: ", "").replaceFirst("\n" +
                     "                                       $", ""));
             presence.setSmallImage(null, null);
+            presence.setLargeImage("diamondfirelogo", "mcdiamondfire.com");
         }
         else {
             // PLOT ID
@@ -206,22 +207,24 @@ public class DFDiscordRPC {
             presence.setDetails(name);
 
             if (ChatReceivedEvent.dfrpcMsg.startsWith("                                       \nYou are currently playing on:")) {
-                presence.setSmallImage("modeplay", customStatus.equals("") ? "Playing" : customStatus);
+                presence.setSmallImage("modeplay", "Playing");
+                presence.setLargeImage("diamondfirelogo", customStatus.equals("") ? "mcdiamondfire.com" : customStatus);
                 mode = "play";
             }
 
             if (ChatReceivedEvent.dfrpcMsg.startsWith("                                       \nYou are currently building on:")) {
                 presence.setSmallImage("modebuild", "Building");
+                presence.setLargeImage("diamondfirelogo", "mcdiamondfire.com");
                 mode = "build";
             }
 
             if (ChatReceivedEvent.dfrpcMsg.startsWith("                                       \nYou are currently coding on:")) {
                 presence.setSmallImage("modedev", "Coding");
+                presence.setLargeImage("diamondfirelogo", "mcdiamondfire.com");
                 mode = "dev";
             }
 
         }
-        presence.setLargeImage("diamondfirelogo", "mcdiamondfire.com");
 
         if (!oldMode.equals(mode)) firstUpdate = true;
 
