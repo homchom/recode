@@ -153,20 +153,12 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
                 // toggle play dev
                 while (toggle_play_dev.wasPressed()) {
-                    if (DFInfo.currentState == DFInfo.State.PLAY) {
-                        sendChat("/dev");
-                    } else {
-                        sendChat("/play");
-                    }
+                    sendChat(DFInfo.currentState == DFInfo.State.PLAY ? "/dev" : "/play");
                 }
 
                 // toggle play build
                 while (toggle_play_build.wasPressed()) {
-                    if (DFInfo.currentState == DFInfo.State.PLAY) {
-                        sendChat("/build");
-                    } else {
-                        sendChat("/play");
-                    }
+                    sendChat(DFInfo.currentState == DFInfo.State.PLAY ? "/build" : "/play");
                 }
 
                 // spawn

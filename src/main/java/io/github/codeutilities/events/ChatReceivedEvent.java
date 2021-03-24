@@ -57,8 +57,8 @@ public class ChatReceivedEvent {
         }
 
         if (DFDiscordRPC.locating) {
-            if (message.getString().contains("\nYou are")) {
-                dfrpcMsg = message.getString();
+            if (message.getString().contains("\n§6You")) {
+                dfrpcMsg = message.getString().replaceAll("§.", "");
                 cancel = true;
                 DFDiscordRPC.locating = false;
             }

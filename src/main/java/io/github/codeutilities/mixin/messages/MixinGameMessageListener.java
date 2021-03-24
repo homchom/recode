@@ -2,9 +2,8 @@ package io.github.codeutilities.mixin.messages;
 
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.ModConfig;
+import io.github.codeutilities.dfrpc.DFDiscordRPC;
 import io.github.codeutilities.events.ChatReceivedEvent;
-import io.github.codeutilities.util.ChatType;
-import io.github.codeutilities.util.ChatUtil;
 import io.github.codeutilities.util.DFInfo;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -68,9 +67,8 @@ public class MixinGameMessageListener {
 
                     lastPatchCheck = time;
 
-                    if (DFInfo.isPatchNewer(DFInfo.patchId, "5.3.1") && ModConfig.getConfig().discordRPC) {
-                        ChatUtil.sendMessage("Note: Discord Rich Presence is currently unsupported in patches newer than 5.3! The features will not work correctly in Patch " + DFInfo.patchId + ".", ChatType.INFO_BLUE);
-                    }
+                    // update rpc on server join
+                    DFDiscordRPC.delayRPC = true;
                 }
             }catch (Exception e) {
                 CodeUtilities.log(Level.INFO, "Error on parsing patch number!");

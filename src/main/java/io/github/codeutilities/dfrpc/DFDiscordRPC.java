@@ -20,13 +20,14 @@ import java.util.regex.Pattern;
 public class DFDiscordRPC {
 
     public static boolean locating = false;
+    public static boolean delayRPC = false;
 
     private static boolean firstLocate = true;
     private static boolean firstUpdate = true;
-    private static String oldmsg = "";
+    private static String oldMode = "";
     private static OffsetDateTime time;
 
-    public static IPCClient client;
+    private static IPCClient client;
     public static RichPresence.Builder builder;
 
     public static void main() throws Exception {
@@ -46,7 +47,6 @@ public class DFDiscordRPC {
                         .setLargeImage("canary-large", "Discord Canary")
                         .setSmallImage("ptb-small", "Discord PTB");
                 io.github.codeutilities.dfrpc.DFDiscordRPC.builder = builder;
-                client.sendRichPresence(builder.build());
             }
         });
 
@@ -56,48 +56,30 @@ public class DFDiscordRPC {
     }
 
     public static class DFRPCThread extends Thread {
-        public void run(){
-            MinecraftClient mc = MinecraftClient.getInstance();
+
+        MinecraftClient mc = MinecraftClient.getInstance();
+
+        public void run() {
             String oldState = "Not on DF";
+            int i = 0;
 
-            CodeUtilities.log(Level.INFO,"STARTING RPC");
+            CodeUtilities.log(Level.INFO, "STARTING RPC");
 
-            while(true) {
+            while (true) {
 
                 if (DFInfo.isOnDF()) {
                     if (!String.valueOf(DFInfo.currentState).equals(oldState)) {
-                        if (mc.player != null) {
-                            if (!DFInfo.isPatchNewer(DFInfo.patchId, "5.3.1") && ModConfig.getConfig().discordRPC) mc.player.sendChatMessage("/locate");
-                            locating = true;
-                            for (int i = 0; i < 2000; i++) {
-                                try {
-                                    DFRPCThread.sleep(1);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                                if (!locating) break;
-                            }
-                            locating = false;
-                        }
-
-                        if (firstLocate) {
-                            try {
-                                client.connect();
-                            } catch (NoDiscordClientException ignored) {
-                            }
-                            firstLocate = false;
-                        } else {
-                            updDiscord();
-                            firstUpdate = false;
-                            CodeUtilities.log(Level.INFO, "----------- RPC Updated! Status: " + client.getStatus());
-                        }
+                        locateRequest();
+                    } else {
+                        if (i % 30 == 0 && DFInfo.currentState == DFInfo.State.PLAY) locateRequest();
                     }
                 } else {
                     firstLocate = true;
                     firstUpdate = true;
                     try {
                         client.close();
-                        } catch (Exception ignored) { }
+                    } catch (Exception ignored) {
+                    }
                 }
 
                 if (!ModConfig.getConfig().discordRPC) {
@@ -105,30 +87,74 @@ public class DFDiscordRPC {
                     firstUpdate = true;
                     try {
                         client.close();
-                    } catch (Exception ignored) { }
+                    } catch (Exception ignored) {
+                    }
 
                 }
 
                 if (DFInfo.isOnDF()) {
                     oldState = String.valueOf(DFInfo.currentState);
-                } else { oldState = "Not on DF"; }
+                } else {
+                    oldState = "Not on DF";
+                }
+
+                if (delayRPC) {
+                    delayRPC = false;
+                    try { DFRPCThread.sleep(1000); } catch (InterruptedException e) { e.printStackTrace(); }
+                }
 
                 try {
                     DFRPCThread.sleep(200);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                i++;
 
             }
+        }
+
+        public void locateRequest() {
+            if (mc.player != null) {
+                if (ModConfig.getConfig().discordRPC) {
+                    mc.player.sendChatMessage("/locate");
+                }
+                locating = true;
+                for (int i = 0; i < 2000; i++) {
+                    try {
+                        DFRPCThread.sleep(1);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    if (!locating) break;
+                }
+                locating = false;
+            }
+
+            if (firstLocate) {
+                try {
+                    client.connect();
+                } catch (NoDiscordClientException ignored) {
+                }
+                updDiscord();
+                firstLocate = false;
+            } else {
+                updDiscord();
+                firstUpdate = false;
+            }
+            CodeUtilities.log(Level.INFO, "----------- RPC Updated! Status: " + client.getStatus());
         }
     }
 
     private static void updDiscord() {
         RichPresence.Builder presence = new RichPresence.Builder();
+        String mode = "spawn";
 
-        if (ChatReceivedEvent.dfrpcMsg.equals("                                       \nYou are currently at spawn.\n" +
-                "                                       ")) {
-            presence.setState("At spawn");
+        if (ChatReceivedEvent.dfrpcMsg.startsWith("                                       \n" +
+                "You are currently at spawn.\n")) {
+            presence.setDetails("At spawn");
+            presence.setState(ChatReceivedEvent.dfrpcMsg.replaceFirst("^                                       \n" +
+                    "You are currently at spawn.\n", "").replaceFirst("^» Server: ", "").replaceFirst("\n" +
+                    "                                       $", ""));
             presence.setSmallImage(null, null);
         }
         else {
@@ -150,37 +176,60 @@ public class DFDiscordRPC {
             }
 
             // PLOT NAME
-            pattern = Pattern.compile("» .+ \\[[0-9]+]\n");
+            pattern = Pattern.compile("\n\n» .+ \\[[0-9]+]\n");
             matcher = pattern.matcher(ChatReceivedEvent.dfrpcMsg);
             String name = "";
             while (matcher.find()) {
                 name = matcher.group();
             }
-            name = name.replaceAll("(^» )|( \\[[0-9]+]\n$)", "");
+            name = name.replaceAll("(^\n\n» )|( \\[[0-9]+]\n$)", "");
+
+            // CUSTOM STATUS
+            String customStatus = "";
+            if (DFInfo.currentState == DFInfo.State.PLAY) {
+                pattern = Pattern.compile("\n» ");
+                matcher = pattern.matcher(ChatReceivedEvent.dfrpcMsg);
+                int headerAmt = 0;
+                while (matcher.find()) headerAmt++;
+                if (headerAmt == 4) {
+                    customStatus = ChatReceivedEvent.dfrpcMsg.replaceFirst("^.*\n.*\n\n» .*\n» ", "");
+                    pattern = Pattern.compile("^.*");
+                    matcher = pattern.matcher(customStatus);
+                    while (matcher.find()) {
+                        customStatus = matcher.group();
+                    }
+                }
+            }
 
             // BUILD RICH PRESENCE
             presence.setState("Plot ID: " + id + " - " + node);
             presence.setDetails(name);
 
-            if (ChatReceivedEvent.dfrpcMsg.startsWith("                                       \nYou are currently playing on:"))
-                presence.setSmallImage("modeplay", "Playing");
+            if (ChatReceivedEvent.dfrpcMsg.startsWith("                                       \nYou are currently playing on:")) {
+                presence.setSmallImage("modeplay", customStatus.equals("") ? "Playing" : customStatus);
+                mode = "play";
+            }
 
-            if (ChatReceivedEvent.dfrpcMsg.startsWith("                                       \nYou are currently building on:"))
+            if (ChatReceivedEvent.dfrpcMsg.startsWith("                                       \nYou are currently building on:")) {
                 presence.setSmallImage("modebuild", "Building");
+                mode = "build";
+            }
 
-            if (ChatReceivedEvent.dfrpcMsg.startsWith("                                       \nYou are currently coding on:"))
+            if (ChatReceivedEvent.dfrpcMsg.startsWith("                                       \nYou are currently coding on:")) {
                 presence.setSmallImage("modedev", "Coding");
+                mode = "dev";
+            }
 
         }
         presence.setLargeImage("diamondfirelogo", "mcdiamondfire.com");
 
-        if (!oldmsg.equals(ChatReceivedEvent.dfrpcMsg)) firstUpdate = true;
+        if (!oldMode.equals(mode)) firstUpdate = true;
 
         if (firstUpdate) {
             time = OffsetDateTime.now();
         }
         presence.setStartTimestamp(time);
-        oldmsg = ChatReceivedEvent.dfrpcMsg;
+        oldMode = mode;
 
         if (ModConfig.getConfig().discordRPC) client.sendRichPresence(presence.build());
     }
