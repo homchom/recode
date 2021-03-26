@@ -63,11 +63,9 @@ public class DFDiscordRPC {
             String oldState = "Not on DF";
             int i = 0;
 
-            CodeUtilities.log(Level.INFO, "STARTING RPC");
-
             while (true) {
 
-                if (DFInfo.isOnDF()) {
+                if (DFInfo.isOnDF() && !delayRPC) {
                     if (!String.valueOf(DFInfo.currentState).equals(oldState)) {
                         locateRequest();
                     } else {

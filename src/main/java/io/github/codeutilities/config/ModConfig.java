@@ -78,6 +78,22 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip()
     public int fsFast = 1000;
 
+    @ConfigEntry.Category("hiding")
+    @ConfigEntry.Gui.Tooltip()
+    public boolean hideJoinLeaveMessages = false;
+    @ConfigEntry.Category("hiding")
+    @ConfigEntry.Gui.Tooltip()
+    public boolean hideVarScopeMessages = false;
+    @ConfigEntry.Category("hiding")
+    @ConfigEntry.Gui.Tooltip()
+    public boolean hideSupportBroadcast = false;
+    @ConfigEntry.Category("hiding")
+    @ConfigEntry.Gui.Tooltip()
+    public boolean hideSessionSpy = false;
+    @ConfigEntry.Category("hiding")
+    @ConfigEntry.Gui.Tooltip()
+    public boolean hideMutedChat = false;
+
     /*
     @ConfigEntry.Category("social")
     public boolean socialFeatures = true;

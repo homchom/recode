@@ -5,6 +5,7 @@
     "text.autoconfig.codeutilities.category.commands": "Commands",
     "text.autoconfig.codeutilities.category.automation": "Automation",
     "text.autoconfig.codeutilities.category.keybinds": "Keybinds",
+    "text.autoconfig.codeutilities.category.hiding": "Hiding",
     "text.autoconfig.codeutilities.category.social": "Social Features",
   
     "text.autoconfig.codeutilities.option.dfButton": "DiamondFire Menu Button",
@@ -29,7 +30,7 @@
     "text.autoconfig.codeutilities.option.autofly.@Tooltip": "Automatically runs /fly in the lobby.",
   
     "text.autoconfig.codeutilities.option.discordRPC": "Discord Rich Presence",
-    "text.autoconfig.codeutilities.option.discordRPC.@Tooltip": "Shows where you are in DiamondFire on Discord user profile.",
+    "text.autoconfig.codeutilities.option.discordRPC.@Tooltip": "Shows where you are in DiamondFire on your Discord user profile.",
   
     "text.autoconfig.codeutilities.option.dfCommands": "DF Commands",
     "text.autoconfig.codeutilities.option.dfCommands.@Tooltip": "Enables the commands that work only in DiamondFire.",
@@ -54,6 +55,17 @@
     "text.autoconfig.codeutilities.option.fsMed.@Tooltip": "Flight speed used for the \"Flight Speed Medium\" keybind.",
     "text.autoconfig.codeutilities.option.fsFast": "Flight Speed Fast",
     "text.autoconfig.codeutilities.option.fsFast.@Tooltip": "Flight speed used for the \"Flight Speed Fast\" keybind.",
+
+    "text.autoconfig.codeutilities.option.hideJoinLeaveMessages": "Hide Join/Leave Messages",
+    "text.autoconfig.codeutilities.option.hideJoinLeaveMessages.@Tooltip": "Hides messages of players joining or leaving the current node.",
+    "text.autoconfig.codeutilities.option.hideVarScopeMessages": "Hide Variable Scope Messages",
+    "text.autoconfig.codeutilities.option.hideVarScopeMessages.@Tooltip": "Hides messages about changing variable scopes.",
+    "text.autoconfig.codeutilities.option.hideSupportBroadcast": "[Staff] Hide Support Broadcast",
+    "text.autoconfig.codeutilities.option.hideSupportBroadcast.@Tooltip": "Hides support broadcast messages for staff.",
+    "text.autoconfig.codeutilities.option.hideSessionSpy": "[Expert] Hide Session Spy",
+    "text.autoconfig.codeutilities.option.hideSessionSpy.@Tooltip": "Hides session spy messages for experts.",
+    "text.autoconfig.codeutilities.option.hideMutedChat": "[Mod] Hide Muted Chat",
+    "text.autoconfig.codeutilities.option.hideMutedChat.@Tooltip": "Hides chat messages from muted players for moderators.",
 
     "text.autoconfig.codeutilities.option.cpuOnScreen": "Show CPU on Screen",
     "text.autoconfig.codeutilities.option.cpuOnScreen.@Tooltip": "Shows CPU Usage for a plot on the screen (Requires /lagslayer to be enabled)",
