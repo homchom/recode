@@ -6,6 +6,7 @@ import io.github.codeutilities.dfrpc.DFDiscordRPC;
 import io.github.codeutilities.events.ChatReceivedEvent;
 import io.github.codeutilities.keybinds.FlightspeedToggle;
 import io.github.codeutilities.util.DFInfo;
+import io.github.codeutilities.gui.CPU_UsageText;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.MessageType;
@@ -42,7 +43,12 @@ public class MixinGameMessageListener {
     private void onTitle(TitleS2CPacket packet, CallbackInfo ci) {
         TitleS2CPacket.Action action = packet.getAction();
         if (action == TitleS2CPacket.Action.ACTIONBAR) {
-            if (packet.getText().getString().matches("DiamondFire - .* .* CP - .* Tokens")) {
+            if (packet.getText().getString().equals("CPU Usage: [▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮]")) {
+                if(ModConfig.getConfig().cpuOnScreen) {
+                    CPU_UsageText.updateCPU(packet);
+                    ci.cancel();
+                }
+			} else if (packet.getText().getString().matches("DiamondFire - .* .* CP - .* Tokens")) {
                 if (DFInfo.currentState != DFInfo.State.LOBBY && ModConfig.getConfig().autofly) {
                     minecraftClient.player.sendChatMessage("/fly");
                     ChatReceivedEvent.cancelFlyMsg = true;
