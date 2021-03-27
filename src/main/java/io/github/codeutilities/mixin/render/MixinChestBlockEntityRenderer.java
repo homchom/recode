@@ -1,4 +1,4 @@
-package io.github.codeutilities.mixin;
+package io.github.codeutilities.mixin.render;
 
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.ModConfig;
@@ -25,7 +25,7 @@ public abstract class MixinChestBlockEntityRenderer<T extends BlockEntity & Ches
         super(dispatcher);
     }
 
-    @Inject(method = "render(Lnet/minecraft/block/entity/BlockEntity;FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;II)V", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "Lnet/minecraft/client/render/block/entity/ChestBlockEntityRenderer;render(Lnet/minecraft/block/entity/BlockEntity;FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;II)V", at = @At("HEAD"), cancellable = true)
     public void render(T entity, float tickDelta, MatrixStack matrices,
                        VertexConsumerProvider vertexConsumers, int light, int overlay, CallbackInfo ci) {
         if (ModConfig.getConfig().chestReplacement) {

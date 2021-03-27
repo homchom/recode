@@ -3,7 +3,7 @@
   "id": "codeutilities",
   "version": "${version}",
   "name": "CodeUtilities",
-  "description": "A set of utilities for coding in DiamondFire server.\n\nMain Developers:\nReasonless, BlazeMCworld, KabanFriends and Owen1212055\nSchem2DF Developers:\nWLGRXD, RyanLand, Vattendroppen236, Tomoli75",
+  "description": "» A set of utilities for coding in DiamondFire server (mcdiamondfire.com).\n» Developers:\nBlazeMCworld, KabanFriends, RyanLand, Vattendroppen236 and Owen1212055\n\n» Contributors:\nWLGRXD\n\n» Retired Developers\nReasonless",
   "contributors": [],
   "contact": {
     "homepage": "https://codeutilities.github.io/",
@@ -23,7 +23,9 @@
     "modmenu": [
       "io.github.codeutilities.config.ModMenuIntegration"
     ],
-    "client": [],
+    "client": [
+      "io.github.codeutilities.keybinds.Keybinds"
+    ],
     "server": []
   },
   "mixins": [
@@ -31,7 +33,8 @@
   ],
   "depends": {
     "fabricloader": ">=0.8.9",
-    "fabric": "*"
+    "fabric": "*",
+    "fabric-key-binding-api-v1": "*"
   },
   "custom": {
     "modmenu:clientsideOnly": true

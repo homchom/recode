@@ -37,7 +37,7 @@ public class BlazeCosmeticRenderer extends
     }
 
     public void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, AbstractClientPlayerEntity abstractClientPlayerEntity, float f, float g, float h, float j, float k, float l) {
-        if(!ModConfig.getConfig().cosmetics) return;
+        //if(!ModConfig.getConfig().cosmetics) return;
         if ("BlazeMCworld".equals(abstractClientPlayerEntity.getName().getString())
             && abstractClientPlayerEntity.hasSkinTexture() && !abstractClientPlayerEntity
             .isInvisible()) {

@@ -1,4 +1,4 @@
-package io.github.codeutilities.mixin;
+package io.github.codeutilities.mixin.render;
 
 import io.github.codeutilities.cosmetics.BlazeCosmeticRenderer;
 import io.github.codeutilities.cosmetics.TopHatRenderer;

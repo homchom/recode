@@ -12,14 +12,15 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.argument.ItemStackArgument;
 import net.minecraft.command.argument.ItemStackArgumentType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.LiteralText;
 
 public class GiveCommand extends Command {
 
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
-        cd.register(ArgBuilder.literal("give")
+        cd.register(ArgBuilder.literal("dfgive")
                 .then(ArgBuilder.argument("item", ItemStackArgumentType.itemStack())
-                        .then(ArgBuilder.argument("count", IntegerArgumentType.integer(1, 127))
+                        .then(ArgBuilder.argument("count", IntegerArgumentType.integer())
                                 .executes(ctx -> {
                                     giveItem(mc, ctx.getArgument("item", ItemStackArgument.class)
                                                     .createStack(1, false),
@@ -68,7 +69,9 @@ public class GiveCommand extends Command {
                 if (count <= item.getMaxCount()) {
                     ItemUtil.giveCreativeItem(item, true);
                 } else {
-                    ChatUtil.sendMessage("Maximum item count for " + item.getName() + " is " + item.getMaxCount() + "!", ChatType.FAIL);
+                    LiteralText text1 = new LiteralText("Maximum item count for ");
+                    LiteralText text2 = new LiteralText(" is " + item.getMaxCount() + "!");
+                    ChatUtil.sendMessage(text1.append(item.getName()).append(text2), ChatType.FAIL);
                 }
             } else {
                 ChatUtil.sendMessage("Minimum item count is 1!", ChatType.FAIL);

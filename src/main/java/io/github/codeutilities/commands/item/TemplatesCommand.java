@@ -20,15 +20,21 @@ import java.util.Random;
 public class TemplatesCommand extends Command {
 
     public static final String templateServer = "https://codeutilities-templates.glitch.me/";
+    public static MinecraftClient mc = CodeUtilities.mc;
     public static String authId = null;
 
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("templates")
-                .executes(ctx -> {
+            .executes(ctx -> {
+                if (mc.player.isCreative()) {
                     CodeUtilities.openGuiAsync(new TemplateStorageUI());
                     return 1;
-                })
+                }else {
+                    ChatUtil.sendTranslateMessage("codeutilities.command.require_creative_mode", ChatType.FAIL);
+                    return 1;
+                }
+            })
         );
     }
 

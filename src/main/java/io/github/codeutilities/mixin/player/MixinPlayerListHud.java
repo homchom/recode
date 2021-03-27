@@ -1,4 +1,4 @@
-package io.github.codeutilities.mixin;
+package io.github.codeutilities.mixin.player;
 
 import net.minecraft.client.gui.hud.PlayerListHud;
 import net.minecraft.client.network.PlayerListEntry;

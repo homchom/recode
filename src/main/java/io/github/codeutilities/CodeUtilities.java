@@ -54,7 +54,6 @@ public class CodeUtilities implements ModInitializer {
             e.printStackTrace();
         }
 
-
         new Thread(() -> {
 //            TemplatesCommand.authenticate(); TODO: Reimplement this
             new ChatServer();

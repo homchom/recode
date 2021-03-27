@@ -1,4 +1,4 @@
-package io.github.codeutilities.mixin;
+package io.github.codeutilities.mixin.item;
 
 
 import com.google.gson.JsonObject;

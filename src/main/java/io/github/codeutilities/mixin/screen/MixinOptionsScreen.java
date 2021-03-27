@@ -1,4 +1,4 @@
-package io.github.codeutilities.mixin;
+package io.github.codeutilities.mixin.screen;
 
 import io.github.codeutilities.config.ModConfig;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
