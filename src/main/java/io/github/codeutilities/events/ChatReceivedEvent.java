@@ -1,6 +1,5 @@
 package io.github.codeutilities.events;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.dfrpc.DFDiscordRPC;
@@ -10,8 +9,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.awt.*;
 
 public class ChatReceivedEvent {
 
@@ -86,7 +83,7 @@ public class ChatReceivedEvent {
                 && (message.toString().contains("hoverEvent=false") || message.toString().contains("hoverEvent=null"))
                 && (message.toString().contains("insertion=false") || message.toString().contains("insertion=null"))
 
-                && (message.getString().endsWith(" joined.") || message.getString().endsWith(" joined!") || message.getString().endsWith(" left.")) ) {
+                && (message.getString().endsWith(" joined.") || message.getString().endsWith(" joined!") || message.getString().endsWith(" left."))) {
 
             // cancel message
             cancel = true;
