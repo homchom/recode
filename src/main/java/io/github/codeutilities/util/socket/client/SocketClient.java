@@ -44,8 +44,10 @@ public class SocketClient extends Client {
 
     @Override
     public void sendData(String string) throws IOException {
-        socket.getOutputStream().write(string.getBytes());
-        socket.getOutputStream().write('\n');
+        OutputStream outputStream = socket.getOutputStream();
+        outputStream.write(string.getBytes());
+        outputStream.write('\n');
+        outputStream.flush();
     }
 
     @Override
