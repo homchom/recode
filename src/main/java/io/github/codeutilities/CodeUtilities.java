@@ -1,6 +1,7 @@
 package io.github.codeutilities;
 
 import io.github.codeutilities.commands.CommandHandler;
+import io.github.codeutilities.config.JereConfig;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.cosmetics.CosmeticHandler;
 import io.github.codeutilities.dfrpc.DFDiscordRPC;
@@ -48,6 +49,7 @@ public class CodeUtilities implements ModInitializer {
     public void onInitialize() {
         log(Level.INFO, "Initializing");
         AutoConfig.register(ModConfig.class, Toml4jConfigSerializer::new);
+        AutoConfig.register(JereConfig.class, Toml4jConfigSerializer::new);
         Runtime.getRuntime().addShutdownHook(new Thread(this::onClose));
 
         CommandHandler.initialize();

@@ -1,6 +1,7 @@
 package io.github.codeutilities.mixin.messages;
 
 import io.github.codeutilities.CodeUtilities;
+import io.github.codeutilities.config.JereConfig;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.dfrpc.DFDiscordRPC;
 import io.github.codeutilities.events.ChatReceivedEvent;
@@ -92,7 +93,7 @@ public class MixinGameMessageListener {
             // streamer mode
             ClientPlayerEntity player = MinecraftClient.getInstance().player;
             String uuid = player.getUuid().toString();
-            if (ModConfig.getConfig().streamerMode && (uuid.equals("6c669475-3026-4603-b3e7-52c97681ad3a") || uuid.equals("3134fb4d-a345-4c5e-9513-97c2c951223e"))) {
+            if (JereConfig.getConfig().streamerMode && (uuid.equals("6c669475-3026-4603-b3e7-52c97681ad3a") || uuid.equals("3134fb4d-a345-4c5e-9513-97c2c951223e"))) {
                 player.sendChatMessage("/adminv off");
                 ChatReceivedEvent.cancelAdminVanishMsg = true;
             }
