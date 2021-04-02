@@ -23,6 +23,7 @@ public class ChatReceivedEvent {
     public static boolean cancelTimeMsg;
     public static boolean cancelNVisionMsg;
     public static boolean cancelFlyMsg;
+    public static boolean cancelAdminVanishMsg;
 
     public static int cancelMsgs = 0;
 
@@ -78,16 +79,14 @@ public class ChatReceivedEvent {
         String msgToString = message.toString();
         String msgGetString = message.getString();
 
-        // hide join/leave messages
-        if (ModConfig.getConfig().hideJoinLeaveMessages) {
-            /*
-            if (mc.player.getUuid().equals("3134fb4d-a345-4c5e-9513-97c2c951223e")) {
-                // debuggings
-                System.out.println(message.toString());
-            }
-            */
-
+        /*
+        if (mc.player.getUuid().toString().equals("3134fb4d-a345-4c5e-9513-97c2c951223e")) {
+            // debuggings
+            System.out.println(message.toString());
         }
+         */
+
+        // hide join/leave messages
         if (ModConfig.getConfig().hideJoinLeaveMessages
                 && msgToString.contains("', siblings=[], style=Style{ color=gray, bold=")
 
@@ -109,7 +108,15 @@ public class ChatReceivedEvent {
 
         // streamer mode
         if (ModConfig.getConfig().streamerMode && (mc.player.getUuid().toString().equals("6c669475-3026-4603-b3e7-52c97681ad3a") || mc.player.getUuid().toString().equals("3134fb4d-a345-4c5e-9513-97c2c951223e"))
-                && (msgGetString.startsWith("*")
+                && ((
+                        msgGetString.startsWith("*") && msgToString.contains("text='*'") && (
+                                // sessionspy
+                                msgToString.contains("color=green") ||
+                                // mutedchat
+                                msgToString.contains("color=red") ||
+                                // socialspy
+                                msgToString.contains("color=#FF7F55")
+                 ))
                 || msgGetString.startsWith("[SUPPORT] ")
                 || msgGetString.startsWith("[MOD] ")
                 || msgGetString.startsWith("! Incoming Report (")
@@ -133,6 +140,12 @@ public class ChatReceivedEvent {
         if (cancelFlyMsg && text.contains("» Flight enabled.") && text.startsWith("»")) {
             cancel = true;
             cancelFlyMsg = false;
+        }
+
+        // adminv msg cancel (streamer mode)
+        if (cancelAdminVanishMsg && text.equals("You are no longer invisible.")) {
+            cancel = true;
+            cancelAdminVanishMsg = false;
         }
 
         //Cancelling (set cancel to true)
