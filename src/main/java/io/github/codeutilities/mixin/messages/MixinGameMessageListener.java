@@ -42,6 +42,7 @@ public class MixinGameMessageListener {
     @Inject(method = "onTitle", at = @At("HEAD"), cancellable = true)
     private void onTitle(TitleS2CPacket packet, CallbackInfo ci) {
         TitleS2CPacket.Action action = packet.getAction();
+        if (minecraftClient.player == null) return;
         if (action == TitleS2CPacket.Action.ACTIONBAR) {
             if (packet.getText().getString().equals("CPU Usage: [▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮]")) {
                 if(ModConfig.getConfig().cpuOnScreen) {
@@ -62,6 +63,8 @@ public class MixinGameMessageListener {
     }
 
     private void updateVersion(Text component) {
+        if (minecraftClient.player == null) return;
+
         String text = component.getString();
 
         if (text.matches("Current patch: .*\\. See the patch notes with \\/patch!")) {
@@ -88,6 +91,8 @@ public class MixinGameMessageListener {
     }
 
     private void updateState(Text component) {
+        if (minecraftClient.player == null) return;
+
         String text = component.getString();
 
         // Flight speed
