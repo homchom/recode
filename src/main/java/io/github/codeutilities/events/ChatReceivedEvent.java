@@ -24,6 +24,8 @@ public class ChatReceivedEvent {
     public static boolean cancelNVisionMsg;
     public static boolean cancelFlyMsg;
 
+    public static int cancelMsgs = 0;
+
     public static void onMessage(Text message, CallbackInfo ci) {
         MinecraftClient mc = MinecraftClient.getInstance();
         String text = message.getString();
@@ -32,6 +34,11 @@ public class ChatReceivedEvent {
 
         if (mc.player == null) {
             return;
+        }
+
+        if (cancelMsgs > 0) {
+            cancelMsgs--;
+            cancel = true;
         }
 
         //PJoin command (broken right now)
@@ -67,31 +74,50 @@ public class ChatReceivedEvent {
                 DFDiscordRPC.locating = false;
             }
         }
+        
+        String msgToString = message.toString();
+        String msgGetString = message.getString();
 
         // hide join/leave messages
         if (ModConfig.getConfig().hideJoinLeaveMessages) {
+            /*
             if (mc.player.getUuid().equals("3134fb4d-a345-4c5e-9513-97c2c951223e")) {
                 // debuggings
                 System.out.println(message.toString());
             }
+            */
+
         }
         if (ModConfig.getConfig().hideJoinLeaveMessages
-                && message.toString().contains("', siblings=[], style=Style{ color=gray, bold=")
+                && msgToString.contains("', siblings=[], style=Style{ color=gray, bold=")
 
                 // check TextComponent
-                && (message.toString().contains("bold=false") || message.toString().contains("bold=null"))
-                && (message.toString().contains("italic=false") || message.toString().contains("italic=null"))
-                && (message.toString().contains("underlined=false") || message.toString().contains("underlined=null"))
-                && (message.toString().contains("strikethrough=false") || message.toString().contains("strikethrough=null"))
-                && (message.toString().contains("obfuscated=false") || message.toString().contains("obfuscated=null"))
-                && (message.toString().contains("clickEvent=false") || message.toString().contains("clickEvent=null"))
-                && (message.toString().contains("hoverEvent=false") || message.toString().contains("hoverEvent=null"))
-                && (message.toString().contains("insertion=false") || message.toString().contains("insertion=null"))
+                && (msgToString.contains("bold=false") || msgToString.contains("bold=null"))
+                && (msgToString.contains("italic=false") || msgToString.contains("italic=null"))
+                && (msgToString.contains("underlined=false") || msgToString.contains("underlined=null"))
+                && (msgToString.contains("strikethrough=false") || msgToString.contains("strikethrough=null"))
+                && (msgToString.contains("obfuscated=false") || msgToString.contains("obfuscated=null"))
+                && (msgToString.contains("clickEvent=false") || msgToString.contains("clickEvent=null"))
+                && (msgToString.contains("hoverEvent=false") || msgToString.contains("hoverEvent=null"))
+                && (msgToString.contains("insertion=false") || msgToString.contains("insertion=null"))
 
-                && (message.getString().endsWith(" joined.") || message.getString().endsWith(" joined!") || message.getString().endsWith(" left.")) ) {
+                && (msgGetString.endsWith(" joined.") || msgGetString.endsWith(" joined!") || msgGetString.endsWith(" left.")) ) {
 
             // cancel message
             cancel = true;
+        }
+
+        // streamer mode
+        if (ModConfig.getConfig().streamerMode && (mc.player.getUuid().toString().equals("6c669475-3026-4603-b3e7-52c97681ad3a") || mc.player.getUuid().toString().equals("3134fb4d-a345-4c5e-9513-97c2c951223e"))
+                && (msgGetString.startsWith("*")
+                || msgGetString.startsWith("[SUPPORT] ")
+                || msgGetString.startsWith("[MOD] ")
+                || msgGetString.startsWith("! Incoming Report (")
+                || msgGetString.startsWith("§9§l» §3Support Question: §8(§7Click to answer§8)\nAsked by ")
+                || msgGetString.matches("^» .* has answered .*'s question:")
+        )) {
+            cancel = true;
+            if (msgGetString.matches("^» .* has answered .*'s question:")) cancelMsgs = 2;
         }
 
         if (cancelTimeMsg && text.contains("» Set your player time to " + ModConfig.getConfig().autotimeval + ".") && text.startsWith("»")) {
