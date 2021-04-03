@@ -28,7 +28,7 @@ public class DFDiscordRPC {
     private static IPCClient client;
     public static RichPresence.Builder builder;
 
-    public static void main() throws Exception {
+    public static void main() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             CodeUtilities.log(Level.INFO, "Closing Discord hook.");
             client.close();
