@@ -32,10 +32,10 @@ public class CPU_UsageText {
 
         String numberStr = "";
         String numberColor = msgPart.get("color").getAsString();
-        if(!numberColor.equals("dark_gray")) {
+        if (!numberColor.equals("dark_gray")) {
             int coloredBoxes = msgPart.get("text").getAsString().length();
 
-            if(coloredBoxes == 20) {
+            if (coloredBoxes == 20) {
                 numberStr = "100%";
             } else {
                 int cpuFrom = (coloredBoxes * 5);
@@ -60,8 +60,8 @@ public class CPU_UsageText {
 
     public static void onRender(MatrixStack stack) {
 
-        if(barsText == null || numberText == null) return;
-        if((System.currentTimeMillis() - lastUpdate) > 1200) {
+        if (barsText == null || numberText == null) return;
+        if ((System.currentTimeMillis() - lastUpdate) > 1200) {
             barsText = null;
             numberText = null;
             return;

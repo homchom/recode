@@ -1,15 +1,13 @@
 package io.github.codeutilities.dfrpc;
 
-import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.config.ModConfig;
-import io.github.codeutilities.events.ChatReceivedEvent;
-import io.github.codeutilities.util.DFInfo;
-
 import com.jagrosh.discordipc.IPCClient;
 import com.jagrosh.discordipc.IPCListener;
 import com.jagrosh.discordipc.entities.RichPresence;
 import com.jagrosh.discordipc.exceptions.NoDiscordClientException;
-
+import io.github.codeutilities.CodeUtilities;
+import io.github.codeutilities.config.ModConfig;
+import io.github.codeutilities.events.ChatReceivedEvent;
+import io.github.codeutilities.util.DFInfo;
 import net.minecraft.client.MinecraftClient;
 import org.apache.logging.log4j.Level;
 
@@ -37,10 +35,9 @@ public class DFDiscordRPC {
         }));
 
         client = new IPCClient(813925725718577202L);
-        client.setListener(new IPCListener(){
+        client.setListener(new IPCListener() {
             @Override
-            public void onReady(IPCClient client)
-            {
+            public void onReady(IPCClient client) {
                 RichPresence.Builder builder = new RichPresence.Builder();
                 builder.setDetails("Idle")
                         .setStartTimestamp(OffsetDateTime.now())
@@ -98,7 +95,11 @@ public class DFDiscordRPC {
 
                 if (delayRPC) {
                     delayRPC = false;
-                    try { DFRPCThread.sleep(1000); } catch (InterruptedException e) { e.printStackTrace(); }
+                    try {
+                        DFRPCThread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 try {
@@ -155,8 +156,7 @@ public class DFDiscordRPC {
                     "                                       $", ""));
             presence.setSmallImage(null, null);
             presence.setLargeImage("diamondfirelogo", "mcdiamondfire.com");
-        }
-        else {
+        } else {
             // PLOT ID
             Pattern pattern = Pattern.compile("\\[[0-9]+]\n");
             Matcher matcher = pattern.matcher(ChatReceivedEvent.dfrpcMsg);

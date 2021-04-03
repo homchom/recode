@@ -1,8 +1,7 @@
 package io.github.codeutilities;
 
-import io.github.codeutilities.commands.CommandHandler;
-import io.github.codeutilities.config.JereConfig;
 import com.google.gson.JsonParser;
+import io.github.codeutilities.config.JereConfig;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.cosmetics.CosmeticHandler;
 import io.github.codeutilities.dfrpc.DFDiscordRPC;

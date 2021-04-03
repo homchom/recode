@@ -33,7 +33,7 @@ public class MixinOptionsScreen extends Screen {
                 MinecraftClient.getInstance()
                         .openScreen(AutoConfig.getConfigScreen(JereConfig.class, this).get());
             }));
-        }else {
+        } else {
             this.addButton(new ButtonWidget(this.width / 2 - 75, this.height / 6 + 144 - 6, 150, 20, new LiteralText("CodeUtilities"), (buttonWidget) -> {
                 MinecraftClient.getInstance()
                         .openScreen(AutoConfig.getConfigScreen(ModConfig.class, this).get());

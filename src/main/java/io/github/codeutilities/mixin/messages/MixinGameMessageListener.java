@@ -5,9 +5,9 @@ import io.github.codeutilities.config.JereConfig;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.dfrpc.DFDiscordRPC;
 import io.github.codeutilities.events.ChatReceivedEvent;
+import io.github.codeutilities.gui.CPU_UsageText;
 import io.github.codeutilities.keybinds.FlightspeedToggle;
 import io.github.codeutilities.util.DFInfo;
-import io.github.codeutilities.gui.CPU_UsageText;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -16,7 +16,6 @@ import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
 import net.minecraft.text.Text;
 import org.apache.logging.log4j.Level;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -24,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public class MixinGameMessageListener {
-    private MinecraftClient minecraftClient = MinecraftClient.getInstance();
+    private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
 
     @Inject(method = "onGameMessage", at = @At("HEAD"), cancellable = true)
     private void onGameMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
@@ -35,7 +34,7 @@ public class MixinGameMessageListener {
                 try {
                     this.updateVersion(packet.getMessage());
                     this.updateState(packet.getMessage());
-                }catch (Exception e) {
+                } catch (Exception e) {
                     CodeUtilities.log(Level.ERROR, "Error while trying to parse the chat text!");
                 }
             }
@@ -48,11 +47,11 @@ public class MixinGameMessageListener {
         if (minecraftClient.player == null) return;
         if (action == TitleS2CPacket.Action.ACTIONBAR) {
             if (packet.getText().getString().equals("CPU Usage: [▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮]")) {
-                if(ModConfig.getConfig().cpuOnScreen) {
+                if (ModConfig.getConfig().cpuOnScreen) {
                     CPU_UsageText.updateCPU(packet);
                     ci.cancel();
                 }
-			} else if (packet.getText().getString().matches("DiamondFire - .* .* CP - .* Tokens")) {
+            } else if (packet.getText().getString().matches("DiamondFire - .* .* CP - .* Tokens")) {
                 if (DFInfo.currentState != DFInfo.State.LOBBY && ModConfig.getConfig().autofly) {
                     minecraftClient.player.sendChatMessage("/fly");
                     ChatReceivedEvent.cancelFlyMsg = true;
@@ -86,7 +85,7 @@ public class MixinGameMessageListener {
                     // update rpc on server join
                     DFDiscordRPC.delayRPC = true;
                 }
-            }catch (Exception e) {
+            } catch (Exception e) {
                 CodeUtilities.log(Level.INFO, "Error on parsing patch number!");
                 e.printStackTrace();
             }
@@ -132,15 +131,15 @@ public class MixinGameMessageListener {
                 new Thread(() -> {
                     try {
                         Thread.sleep(20);
-                        if(ModConfig.getConfig().autotime) {
+                        if (ModConfig.getConfig().autotime) {
                             minecraftClient.player.sendChatMessage("/time " + ModConfig.getConfig().autotimeval);
                             ChatReceivedEvent.cancelTimeMsg = true;
                         }
-                        if(ModConfig.getConfig().autonightvis) {
+                        if (ModConfig.getConfig().autonightvis) {
                             minecraftClient.player.sendChatMessage("/nightvis");
                             ChatReceivedEvent.cancelNVisionMsg = true;
                         }
-                    }catch (Exception e) {
+                    } catch (Exception e) {
                         CodeUtilities.log(Level.ERROR, "Error while executing the task!");
                         e.printStackTrace();
                     }
@@ -149,7 +148,7 @@ public class MixinGameMessageListener {
                 lastBuildCheck = time;
             }
         }
-        
+
         // Dev Mode (more moved to MixinItemSlotUpdate)
         if (minecraftClient.player.isCreative() && text.contains("» You are now in dev mode.") && text.startsWith("»")) {
             // fs toggle

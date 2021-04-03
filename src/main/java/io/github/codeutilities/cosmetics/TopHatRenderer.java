@@ -1,18 +1,11 @@
 package io.github.codeutilities.cosmetics;
 
-import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
-
-import java.util.ArrayList;
 
 public class TopHatRenderer extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
     //private final ArrayList<Identifier> hatTexture = new ArrayList<>();
@@ -20,7 +13,7 @@ public class TopHatRenderer extends FeatureRenderer<AbstractClientPlayerEntity, 
     public TopHatRenderer(FeatureRendererContext<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> context) {
         super(context);
     }
-    
+
     public void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, AbstractClientPlayerEntity abstractClientPlayerEntity, float f, float g, float h, float j, float k, float l) {
 /*        if ("deadmau5".equals(abstractClientPlayerEntity.getName().getString()) && abstractClientPlayerEntity.hasSkinTexture() && !abstractClientPlayerEntity.isInvisible()) {
             int m = LivingEntityRenderer.getOverlay(abstractClientPlayerEntity, 0.0F);
@@ -39,7 +32,7 @@ public class TopHatRenderer extends FeatureRenderer<AbstractClientPlayerEntity, 
                 matrixStack.pop();
 
         }*/
-        
+
     }
 
 }
