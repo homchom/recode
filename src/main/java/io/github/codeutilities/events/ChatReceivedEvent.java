@@ -2,6 +2,7 @@ package io.github.codeutilities.events;
 
 import com.sun.org.apache.xpath.internal.operations.Mod;
 import io.github.codeutilities.CodeUtilities;
+import io.github.codeutilities.config.JereConfig;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.dfrpc.DFDiscordRPC;
 import io.github.codeutilities.util.ChatType;
@@ -107,7 +108,7 @@ public class ChatReceivedEvent {
         }
 
         // streamer mode
-        if (ModConfig.getConfig().streamerMode && (mc.player.getUuid().toString().equals("6c669475-3026-4603-b3e7-52c97681ad3a") || mc.player.getUuid().toString().equals("3134fb4d-a345-4c5e-9513-97c2c951223e"))
+        if (JereConfig.getConfig().streamerMode && (mc.player.getUuid().toString().equals("6c669475-3026-4603-b3e7-52c97681ad3a") || mc.player.getUuid().toString().equals("3134fb4d-a345-4c5e-9513-97c2c951223e"))
                 && ((
                         msgGetString.startsWith("*") && msgToString.contains("text='*'") && (
                                 // sessionspy

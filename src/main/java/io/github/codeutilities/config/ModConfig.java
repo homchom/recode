@@ -90,9 +90,6 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Category("hiding")
     @ConfigEntry.Gui.Tooltip()
     public boolean hideMutedChat = false;
-    @ConfigEntry.Category("hiding")
-    @ConfigEntry.Gui.Tooltip()
-    public boolean streamerMode = false;
 
     /*
     @ConfigEntry.Category("social")

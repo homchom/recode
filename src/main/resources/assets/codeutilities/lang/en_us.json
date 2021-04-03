@@ -64,13 +64,16 @@
     "text.autoconfig.codeutilities.option.hideSessionSpy.@Tooltip": "Hides session spy messages for experts.",
     "text.autoconfig.codeutilities.option.hideMutedChat": "[Mod] Hide Muted Chat",
     "text.autoconfig.codeutilities.option.hideMutedChat.@Tooltip": "Hides chat messages from muted players for moderators.",
-    "text.autoconfig.codeutilities.option.streamerMode": "[Owner] Streamer Mode",
-    "text.autoconfig.codeutilities.option.streamerMode.@Tooltip": "[Only works for Jeremaster] Automatically unvanishes you and hides the following messages: Session Spy, Muted Chat, Social Spy || Support Queue, Support Question, Support Broadcast || Mod Broadcast, Reports",
 
     "text.autoconfig.codeutilities.option.cpuOnScreen": "Show CPU on Screen",
     "text.autoconfig.codeutilities.option.cpuOnScreen.@Tooltip": "Shows CPU Usage for a plot on the screen (Requires /lagslayer to be enabled)",
   
     "codeutilities.command.require_creative_mode": "You must be in creative mode to use this command!",
+  
+	"text.autoconfig.jeremaster.title": "Jeremaster",
+  
+    "text.autoconfig.jeremaster.option.streamerMode": "Streamer Mode",
+    "text.autoconfig.jeremaster.option.streamerMode.@Tooltip": "Automatically unvanishes you and hides the following messages: Session Spy, Muted Chat, Social Spy || Support Queue, Support Question, Support Broadcast || Mod Broadcast, Reports",
   
     "key.category.codeutilities": "CodeUtilities",
   
