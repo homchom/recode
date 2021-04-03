@@ -60,8 +60,6 @@
     "text.autoconfig.codeutilities.option.hideJoinLeaveMessages.@Tooltip": "Hides messages of players joining or leaving the current node.",
     "text.autoconfig.codeutilities.option.hideVarScopeMessages": "Hide Variable Scope Messages",
     "text.autoconfig.codeutilities.option.hideVarScopeMessages.@Tooltip": "Hides messages about changing variable scopes.",
-    "text.autoconfig.codeutilities.option.hideSupportBroadcast": "[Staff] Hide Support Broadcast",
-    "text.autoconfig.codeutilities.option.hideSupportBroadcast.@Tooltip": "Hides support broadcast messages for staff.",
     "text.autoconfig.codeutilities.option.hideSessionSpy": "[Expert] Hide Session Spy",
     "text.autoconfig.codeutilities.option.hideSessionSpy.@Tooltip": "Hides session spy messages for experts.",
     "text.autoconfig.codeutilities.option.hideMutedChat": "[Mod] Hide Muted Chat",
@@ -71,6 +69,11 @@
     "text.autoconfig.codeutilities.option.cpuOnScreen.@Tooltip": "Shows CPU Usage for a plot on the screen (Requires /lagslayer to be enabled)",
   
     "codeutilities.command.require_creative_mode": "You must be in creative mode to use this command!",
+  
+	"text.autoconfig.jeremaster.title": "Jeremaster",
+  
+    "text.autoconfig.jeremaster.option.streamerMode": "Streamer Mode",
+    "text.autoconfig.jeremaster.option.streamerMode.@Tooltip": "Automatically unvanishes you and hides the following messages: Session Spy, Muted Chat, Social Spy || Support Queue, Support Question, Support Broadcast || Mod Broadcast, Reports",
   
     "key.category.codeutilities": "CodeUtilities",
   

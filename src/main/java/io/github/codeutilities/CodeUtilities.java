@@ -1,5 +1,7 @@
 package io.github.codeutilities;
 
+import io.github.codeutilities.commands.CommandHandler;
+import io.github.codeutilities.config.JereConfig;
 import com.google.gson.JsonParser;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.cosmetics.CosmeticHandler;
@@ -36,6 +38,7 @@ public class CodeUtilities implements ModInitializer {
         log(Level.INFO, "Initializing");
 
         AutoConfig.register(ModConfig.class, Toml4jConfigSerializer::new);
+        AutoConfig.register(JereConfig.class, Toml4jConfigSerializer::new);
         // Add a shutdown hook so we can save players template data on exit.
         Runtime.getRuntime().addShutdownHook(new Thread(this::onClose));
 
@@ -48,6 +51,7 @@ public class CodeUtilities implements ModInitializer {
             SocketHandler.init();
         }
 
+        // df rpc
         try {
             DFDiscordRPC.main();
         } catch (Exception e) {
