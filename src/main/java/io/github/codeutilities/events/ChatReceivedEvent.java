@@ -109,10 +109,12 @@ public class ChatReceivedEvent {
                 || msgGetString.startsWith("[SUPPORT] ")
                 || msgGetString.startsWith("[MOD] ")
                 || msgGetString.startsWith("! Incoming Report (")
+                || msgGetString.startsWith("Scanning ")
                 || msgGetString.startsWith("§9§l» §3Support Question: §8(§7Click to answer§8)\nAsked by ")
                 || msgGetString.matches("^» .* has answered .*'s question:")
         )) {
             cancel = true;
+            if (msgGetString.startsWith("Scanning ")) cancelMsgs = 1;
             if (msgGetString.matches("^» .* has answered .*'s question:")) cancelMsgs = 2;
         }
 
