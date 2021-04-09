@@ -29,7 +29,7 @@ public class SendTemplateCommand extends AbstractTemplateCommand {
             JsonObject toSend = new JsonObject();
             toSend.addProperty("received", templateData.toString());
             toSend.addProperty("type", "template");
-            for (Client client : SocketHandler.clients) {
+            for (Client client : SocketHandler.getInstance().getRegistered()) {
                 client.sendData(toSend.toString());
             }
 
