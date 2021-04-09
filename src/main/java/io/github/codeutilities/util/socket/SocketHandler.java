@@ -1,5 +1,6 @@
 package io.github.codeutilities.util.socket;
 
+import io.github.codeutilities.util.IManager;
 import io.github.codeutilities.util.socket.client.Client;
 import io.github.codeutilities.util.socket.client.SocketClient;
 import io.github.codeutilities.util.socket.client.type.NbtItem;
@@ -10,31 +11,46 @@ import org.glassfish.tyrus.server.Server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-public class SocketHandler {
+public class SocketHandler implements IManager<Client> {
 
-    private final ServerSocket server = new ServerSocket(31372);
-    public static final Map<String, SocketItem> ITEM_REGISTRY = new HashMap<>();
-    public static final List<Client> clients = new ArrayList<>();
+    private static SocketHandler instance;
+    private final Map<String, SocketItem> socketItemMap = new HashMap<>();
+    private final List<Client> clients = new ArrayList<>();
 
-    public SocketHandler() throws IOException {
-        new Thread(() -> {
+    private ServerSocket server;
+
+    @Override
+    public void initialize() {
+        instance = this;
+
+        this.addSocketItem(new NbtItem(), new TemplateItem(), new RawTemplateItem());
+        try {
+            server = new ServerSocket(31372);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (server == null) {
+            return;
+        }
+
+        ExecutorService serverService = Executors.newSingleThreadExecutor();
+        serverService.submit(() -> {
             System.out.println("Opened socket listener");
             while (true) {
                 try {
                     SocketClient client = new SocketClient(server.accept());
-                    clients.add(client);
+                    this.register(client);
                     System.out.println("Client connected on local server: " + client.getSocket());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-        }).start();
-
+        });
 
         Server server = new Server("localhost", 31371, "/codeutilities", ItemWebEndpoint.class);
         try {
@@ -44,20 +60,25 @@ public class SocketHandler {
         }
     }
 
-    public static void init() {
-        register(new NbtItem(), new TemplateItem(), new RawTemplateItem());
-
-        try {
-            new SocketHandler();
-        } catch (IOException e) {
-            System.out.println("Failed to load socket handler!");
-        }
+    private void addSocketItem(SocketItem... items) {
+        Arrays.stream(items).forEach(item -> socketItemMap.put(item.getIdentifier(), item));
     }
 
-    private static void register(SocketItem... items) {
-        for (SocketItem item : items) {
-            ITEM_REGISTRY.put(item.getIdentifier(), item);
-        }
+    @Override
+    public void register(Client client) {
+        this.clients.add(client);
     }
 
+    @Override
+    public List<Client> getRegistered() {
+        return this.clients;
+    }
+
+    public Map<String, SocketItem> getSocketItems() {
+        return socketItemMap;
+    }
+
+    public static SocketHandler getInstance() {
+        return instance;
+    }
 }

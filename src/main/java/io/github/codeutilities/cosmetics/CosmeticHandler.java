@@ -24,7 +24,7 @@ public class CosmeticHandler {
     public static void applyCape(UUID uuid, Map<MinecraftProfileTexture.Type, Identifier> identifierMap) {
         executorService.execute(() -> {
             try {
-                String cape = getCosmetic(uuid, "cape");
+                String cape = getCosmetic(uuid);
 
                 if (cape != null) {
                     URL url = new URL("https://codeutilities.github.io/data/cosmetics/capes/" + cape);
@@ -37,10 +37,10 @@ public class CosmeticHandler {
         });
     }
 
-    private static String getCosmetic(UUID uuid, String key) throws IOException {
+    private static String getCosmetic(UUID uuid) throws IOException {
         String content = WebUtil.getString("https://codeutilities.github.io/data/cosmetics/players/" + uuid.toString() + ".json");
         JsonObject jsonObject = new JsonParser().parse(content).getAsJsonObject();
-        JsonElement jsonElement = jsonObject.get(key);
+        JsonElement jsonElement = jsonObject.get("cape");
         if (jsonElement.isJsonNull()) return null;
         return jsonElement.getAsString();
     }

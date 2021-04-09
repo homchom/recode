@@ -7,17 +7,17 @@ public class NBSToTemplate {
     private static final String SONG_PARSER_VERSION = "4";
     private static final String SONG_NBS_FORMAT_VERSION = "4";
 
-    String song;
+    final String song;
     String name;
     String author;
-    String filename;
-    String layers;
-    String version;
-    float speed;
-    int length;
-    int loopTick;
-    int loopCount;
-    int customInstrumentCount;
+    final String filename;
+    final String layers;
+    final String version;
+    final float speed;
+    final int length;
+    final int loopTick;
+    final int loopCount;
+    final int customInstrumentCount;
     boolean multipleChests = false;
 
     public NBSToTemplate(SongData song) {

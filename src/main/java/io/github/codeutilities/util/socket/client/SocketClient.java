@@ -27,7 +27,7 @@ public class SocketClient extends Client {
                     acceptData(reader.readLine());
                 } catch (IOException e) {
                     e.printStackTrace();
-                    SocketHandler.clients.remove(this);
+                    SocketHandler.getInstance().unregister(this);
                     try {
                         SocketClient.this.close();
                     } catch (IOException ioException) {

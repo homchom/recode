@@ -47,8 +47,8 @@ public class ChatReceivedEvent {
             } else {
                 try {
                     String[] lines = text.split("\n");
-                    String cmd = "/join " + lines[2].replaceAll(" .* \\[(.*)\\]$", "$1");
-                    System.out.println(lines[2] + " || " + lines[2].replaceAll("≫ .* \\[(.*)\\]$", "$1"));
+                    String cmd = "/join " + lines[2].replaceAll(" .* \\[(.*)]$", "$1");
+                    System.out.println(lines[2] + " || " + lines[2].replaceAll("≫ .* \\[(.*)]$", "$1"));
                     if (cmd.matches("/join [0-9]+")) {
                         mc.player.sendChatMessage(cmd);
                     } else {

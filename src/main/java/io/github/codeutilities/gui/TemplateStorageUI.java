@@ -2,6 +2,7 @@ package io.github.codeutilities.gui;
 
 import io.github.codeutilities.template.TemplateItem;
 import io.github.codeutilities.template.TemplateStorageHandler;
+import io.github.codeutilities.util.IMenu;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import net.minecraft.item.ItemStack;
@@ -9,9 +10,13 @@ import net.minecraft.item.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TemplateStorageUI extends LightweightGuiDescription {
+public class TemplateStorageUI extends LightweightGuiDescription implements IMenu {
 
     public TemplateStorageUI() {
+    }
+
+    @Override
+    public void open(String... args) {
         List<ItemStack> items = new ArrayList<>();
         for (TemplateItem item : TemplateStorageHandler.getInstance().getRegistered()) {
             items.add(item.getStack());

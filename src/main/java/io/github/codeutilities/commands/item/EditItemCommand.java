@@ -1,13 +1,11 @@
 package io.github.codeutilities.commands.item;
 
 import com.mojang.brigadier.CommandDispatcher;
-import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.commands.arguments.ArgBuilder;
 import io.github.codeutilities.gui.ItemEditorGui;
 import io.github.codeutilities.util.ChatType;
 import io.github.codeutilities.util.ChatUtil;
-import io.github.codeutilities.util.DFInfo;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
@@ -19,8 +17,6 @@ public class EditItemCommand extends Command {
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("edititem")
                 .executes(ctx -> {
-                    System.out.println("PLAYER STATE: " + DFInfo.currentState);
-
                     ItemStack item = mc.player.getMainHandStack();
                     if (item.getItem() == Items.AIR) {
                         ChatUtil.sendMessage("You need to hold an item that is not air!", ChatType.FAIL);
@@ -30,7 +26,9 @@ public class EditItemCommand extends Command {
                         ChatUtil.sendTranslateMessage("codeutilities.command.require_creative_mode", ChatType.FAIL);
                         return -1;
                     }
-                    CodeUtilities.openGuiAsync(new ItemEditorGui(item));
+                    ItemEditorGui itemEditorGui = new ItemEditorGui(item);
+                    itemEditorGui.open();
+                    itemEditorGui.openAsync(itemEditorGui);
                     return 1;
                 })
         );

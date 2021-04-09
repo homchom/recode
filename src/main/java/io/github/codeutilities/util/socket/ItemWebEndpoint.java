@@ -13,7 +13,7 @@ import java.util.HashMap;
 @ServerEndpoint(value = "/item")
 public class ItemWebEndpoint {
 
-    HashMap<String, SessionClient> clients = new HashMap<>();
+    final HashMap<String, SessionClient> clients = new HashMap<>();
 
     @OnMessage
     public void handleTextMessage(String message, Session session) {
@@ -23,7 +23,7 @@ public class ItemWebEndpoint {
     @OnOpen
     public void onOpen(Session session) {
         SessionClient client = new SessionClient(session);
-        SocketHandler.clients.add(client);
+        SocketHandler.getInstance().register(client);
         clients.put(session.getId(), client);
     }
 
@@ -31,7 +31,7 @@ public class ItemWebEndpoint {
     public void onClose(Session session) {
         Client client = clients.remove(session.getId());
         if (client != null) {
-            SocketHandler.clients.remove(client);
+            SocketHandler.getInstance().unregister(client);
         }
     }
 

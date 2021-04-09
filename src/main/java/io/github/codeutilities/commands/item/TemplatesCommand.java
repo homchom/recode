@@ -28,7 +28,10 @@ public class TemplatesCommand extends Command {
         cd.register(ArgBuilder.literal("templates")
                 .executes(ctx -> {
                     if (mc.player.isCreative()) {
-                        CodeUtilities.openGuiAsync(new TemplateStorageUI());
+                        TemplateStorageUI templateStorageUI = new TemplateStorageUI();
+                        templateStorageUI.open();
+                        templateStorageUI.openAsync(templateStorageUI);
+
                         return 1;
                     } else {
                         ChatUtil.sendTranslateMessage("codeutilities.command.require_creative_mode", ChatType.FAIL);
@@ -43,7 +46,6 @@ public class TemplatesCommand extends Command {
     }
 
     private JsonObject getObject(String url, boolean requireAuth) {
-        System.out.println("hey");
         try {
             if (authId == null && requireAuth) {
                 ChatUtil.sendMessage("You are not authenticated!", ChatType.FAIL);

@@ -11,7 +11,7 @@ import net.minecraft.client.util.InputUtil;
 
 public class Keybinds implements ClientModInitializer {
 
-    MinecraftClient mc = MinecraftClient.getInstance();
+    final MinecraftClient mc = MinecraftClient.getInstance();
 
     @Override
     public void onInitializeClient() {

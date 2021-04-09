@@ -24,8 +24,10 @@ public enum MinecraftColors {
     WHITE(255, 255, 255, 'f');
 
 
-    int r, g, b;
-    char mc;
+    final int r;
+    final int g;
+    final int b;
+    final char mc;
 
     MinecraftColors(int r, int g, int b, char mc) {
         this.r = r;

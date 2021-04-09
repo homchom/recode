@@ -1,6 +1,9 @@
 package io.github.codeutilities;
 
+import io.github.codeutilities.util.ILoader;
 import io.github.codeutilities.util.IManager;
+
+import java.util.Arrays;
 
 public class CodeInitializer {
     private static CodeInitializer instance;
@@ -9,17 +12,27 @@ public class CodeInitializer {
         instance = this;
     }
 
-    public void initialize(IManager<?> manager) {
-        this.initialize(new IManager<?>[]{manager});
+    public void add(IManager<?> manager) {
+        this.add(new IManager<?>[] {manager});
     }
 
-    public void initialize(IManager<?>... managers) {
-        for (IManager<?> manager : managers) {
-            manager.initialize();
-        }
+    public void add(ILoader loader) {
+        this.add(new ILoader[] {loader});
+    }
+
+    public void add(ILoader... loaders) {
+        Arrays.stream(loaders).forEach(ILoader::load);
+    }
+
+    public void add(IManager<?>... managers) {
+        Arrays.stream(managers).forEach(IManager::initialize);
     }
 
     public static CodeInitializer getInstance() {
         return instance;
+    }
+
+    public void addIf(IManager<?> manager, boolean b) {
+        if (b) manager.initialize();
     }
 }

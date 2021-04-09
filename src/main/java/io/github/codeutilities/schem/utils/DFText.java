@@ -2,7 +2,7 @@ package io.github.codeutilities.schem.utils;
 
 public class DFText {
 
-    public String text;
+    public final String text;
 
     public DFText(String text) {
         this.text = text;

@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ClientPlayNetworkHandler.class)
 public class MixinItemSlotUpdate {
 
-    MinecraftClient mc = MinecraftClient.getInstance();
+    final MinecraftClient mc = MinecraftClient.getInstance();
 
     @Inject(method = "onScreenHandlerSlotUpdate", at = @At("HEAD"))
     public void onScreenHandlerSlotUpdate(ScreenHandlerSlotUpdateS2CPacket packet, CallbackInfo ci) {

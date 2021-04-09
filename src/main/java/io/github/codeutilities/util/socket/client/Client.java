@@ -34,7 +34,7 @@ public abstract class Client implements Closeable {
             String itemData = data.get("data").getAsString();
             String source = data.get("source").getAsString();
 
-            SocketItem item = SocketHandler.ITEM_REGISTRY.get(type);
+            SocketItem item = SocketHandler.getInstance().getSocketItems().get(type);
             if (item == null) {
                 throw new IllegalArgumentException("Could not find an item type that matched " + type + "!");
             }
@@ -59,7 +59,7 @@ public abstract class Client implements Closeable {
         try {
             sendData(result.toString());
         } catch (IOException ioException) {
-            SocketHandler.clients.remove(this);
+            SocketHandler.getInstance().unregister(this);
             try {
                 close();
             } catch (IOException e) {

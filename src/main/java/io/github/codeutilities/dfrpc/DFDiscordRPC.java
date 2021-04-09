@@ -8,27 +8,33 @@ import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.events.ChatReceivedEvent;
 import io.github.codeutilities.util.DFInfo;
+import io.github.codeutilities.util.ILoader;
 import net.minecraft.client.MinecraftClient;
 import org.apache.logging.log4j.Level;
 
 import java.time.OffsetDateTime;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class DFDiscordRPC {
+public class DFDiscordRPC implements ILoader {
 
     public static boolean locating = false;
     public static boolean delayRPC = false;
 
     private static boolean firstLocate = true;
     private static boolean firstUpdate = true;
+
+    // this looks weird
+    private static final String EMPTY = "                                       ";
     private static String oldMode = "";
     private static OffsetDateTime time;
 
     private static IPCClient client;
     public static RichPresence.Builder builder;
-
-    public static void main() {
+    @Override
+    public void load() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             CodeUtilities.log(Level.INFO, "Closing Discord hook.");
             client.close();
@@ -47,15 +53,14 @@ public class DFDiscordRPC {
             }
         });
 
-        DFRPCThread dfrpc = new DFRPCThread();
-        dfrpc.start();
-
+        ExecutorService discordService = Executors.newSingleThreadExecutor();
+        discordService.submit(new DFRPCThread());
     }
 
-    public static class DFRPCThread extends Thread {
+    public class DFRPCThread extends Thread {
+        final MinecraftClient mc = MinecraftClient.getInstance();
 
-        MinecraftClient mc = MinecraftClient.getInstance();
-
+        @Override
         public void run() {
             String oldState = "Not on DF";
             int i = 0;
@@ -82,9 +87,7 @@ public class DFDiscordRPC {
                     firstUpdate = true;
                     try {
                         client.close();
-                    } catch (Exception ignored) {
-                    }
-
+                    } catch (Exception ignored) {}
                 }
 
                 if (DFInfo.isOnDF()) {
@@ -134,26 +137,29 @@ public class DFDiscordRPC {
                     client.connect();
                 } catch (NoDiscordClientException ignored) {
                 }
-                updDiscord();
+                update();
                 firstLocate = false;
             } else {
-                updDiscord();
+                update();
                 firstUpdate = false;
             }
             CodeUtilities.log(Level.INFO, "----------- RPC Updated! Status: " + client.getStatus());
         }
     }
 
-    private static void updDiscord() {
+    private void update() {
         RichPresence.Builder presence = new RichPresence.Builder();
         String mode = "spawn";
 
-        if (ChatReceivedEvent.dfrpcMsg.startsWith("                                       \n" +
-                "You are currently at spawn.\n")) {
+        if (ChatReceivedEvent.dfrpcMsg.startsWith(EMPTY+"\nYou are currently at spawn.\n")) {
             presence.setDetails("At spawn");
-            presence.setState(ChatReceivedEvent.dfrpcMsg.replaceFirst("^                                       \n" +
-                    "You are currently at spawn.\n", "").replaceFirst("^» Server: ", "").replaceFirst("\n" +
-                    "                                       $", ""));
+
+            String state = ChatReceivedEvent.dfrpcMsg;
+            state = state.replaceFirst("^ {39}\nYou are currently at spawn.\n", "")
+                    .replaceFirst("^» Server: ", "")
+                    .replaceFirst("\n {39}$", "");
+
+            presence.setState(state);
             presence.setSmallImage(null, null);
             presence.setLargeImage("diamondfirelogo", "mcdiamondfire.com");
         } else {
@@ -164,7 +170,7 @@ public class DFDiscordRPC {
             while (matcher.find()) {
                 id = matcher.group();
             }
-            id = id.replaceAll("\\[|]|\n", "");
+            id = id.replaceAll("[\\[\\]\n]", "");
 
             // PLOT NODE
             pattern = Pattern.compile("Node ([0-9]|Beta)\n");
@@ -191,7 +197,8 @@ public class DFDiscordRPC {
                 int headerAmt = 0;
                 while (matcher.find()) headerAmt++;
                 if (headerAmt == 4) {
-                    customStatus = ChatReceivedEvent.dfrpcMsg.replaceFirst("^.*\n.*\n\n» .*\n» ", "");
+                    customStatus = ChatReceivedEvent.dfrpcMsg
+                            .replaceFirst("^.*\n.*\n\n» .*\n» ", "");
                     pattern = Pattern.compile("^.*");
                     matcher = pattern.matcher(customStatus);
                     while (matcher.find()) {
@@ -204,24 +211,19 @@ public class DFDiscordRPC {
             presence.setState("Plot ID: " + id + " - " + node);
             presence.setDetails(name);
 
-            if (ChatReceivedEvent.dfrpcMsg.startsWith("                                       \nYou are currently playing on:")) {
+            if (ChatReceivedEvent.dfrpcMsg.startsWith(EMPTY + "\nYou are currently playing on:")) {
                 presence.setSmallImage("modeplay", "Playing");
                 presence.setLargeImage("diamondfirelogo", customStatus.equals("") ? "mcdiamondfire.com" : customStatus);
                 mode = "play";
-            }
-
-            if (ChatReceivedEvent.dfrpcMsg.startsWith("                                       \nYou are currently building on:")) {
+            } else if (ChatReceivedEvent.dfrpcMsg.startsWith(EMPTY + "\nYou are currently building on:")) {
                 presence.setSmallImage("modebuild", "Building");
                 presence.setLargeImage("diamondfirelogo", "mcdiamondfire.com");
                 mode = "build";
-            }
-
-            if (ChatReceivedEvent.dfrpcMsg.startsWith("                                       \nYou are currently coding on:")) {
+            } else if (ChatReceivedEvent.dfrpcMsg.startsWith(EMPTY + "\nYou are currently coding on:")) {
                 presence.setSmallImage("modedev", "Coding");
                 presence.setLargeImage("diamondfirelogo", "mcdiamondfire.com");
                 mode = "dev";
             }
-
         }
 
         if (!oldMode.equals(mode)) firstUpdate = true;

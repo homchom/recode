@@ -69,11 +69,11 @@ public class MixinGameMessageListener {
 
         String text = component.getString();
 
-        if (text.matches("Current patch: .*\\. See the patch notes with \\/patch!")) {
+        if (text.matches("Current patch: .*\\. See the patch notes with /patch!")) {
             try {
                 long time = System.currentTimeMillis() / 1000L;
                 if (time - lastPatchCheck > 2) {
-                    String patchText = text.replaceAll("Current patch: (.*)\\. See the patch notes with \\/patch!", "$1");
+                    String patchText = text.replaceAll("Current patch: (.*)\\. See the patch notes with /patch!", "$1");
 
                     DFInfo.isPatchNewer(patchText, "0"); //very lazy validation lol
                     DFInfo.patchId = patchText;

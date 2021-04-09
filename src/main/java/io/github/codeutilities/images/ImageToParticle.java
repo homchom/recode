@@ -12,8 +12,8 @@ import static java.awt.Image.SCALE_SMOOTH;
 
 public class ImageToParticle {
 
-    static int maxWidth = 40;
-    static int maxHeight = 40;
+    static final int maxWidth = 40;
+    static final int maxHeight = 40;
 
     public static ParticleImage convert(File file) throws IOException {
         List<String> data = new ArrayList<>();

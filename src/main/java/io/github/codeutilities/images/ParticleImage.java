@@ -1,9 +1,9 @@
 package io.github.codeutilities.images;
 
 public class ParticleImage {
-    String[] imageData;
-    int imageWidth;
-    int imageHeight;
+    final String[] imageData;
+    final int imageWidth;
+    final int imageHeight;
 
     public ParticleImage(String[] imageData, int imageWidth, int imageHeight) {
         this.imageData = imageData;

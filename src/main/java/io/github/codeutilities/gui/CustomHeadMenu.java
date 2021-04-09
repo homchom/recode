@@ -3,6 +3,8 @@ package io.github.codeutilities.gui;
 import com.google.gson.*;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.ModConfig;
+import io.github.codeutilities.util.ILoader;
+import io.github.codeutilities.util.IMenu;
 import io.github.codeutilities.util.WebUtil;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WButton;
@@ -20,19 +22,25 @@ import org.apache.logging.log4j.Level;
 import java.io.IOException;
 import java.util.*;
 
-public class CustomHeadSearchGui extends LightweightGuiDescription {
+public class CustomHeadMenu extends LightweightGuiDescription implements IMenu, ILoader {
 
+    private static CustomHeadMenu instance;
     private static final List<JsonObject> allHeads = new ArrayList<>();
     private static final List<String> categories = new ArrayList<>();
     private static final HashMap<String, Integer> categoryCount = new HashMap<>();
-    private final ItemScrollablePanel panel;
-    ModConfig config = ModConfig.getConfig();
+
+    final ModConfig config = ModConfig.getConfig();
+
+    private ItemScrollablePanel panel;
     private WButton current;
     private String searchQuery = "";
-    private final CTextField searchBox;
-    private String lastquery = "";
+    private CTextField searchBox;
+    private String lastQuery = "";
 
-    public CustomHeadSearchGui(String query) {
+    @Override
+    public void open(String... args) {
+        String query = args[0];
+
         WPlainPanel root = new WPlainPanel();
         root.setSize(350, 220);
 
@@ -46,10 +54,10 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
         root.add(panel, 100, 25, 250, 215);
 
         searchBox.setChangedListener((s -> {
-            if (lastquery.equals(s)) {
+            if (lastQuery.equals(s)) {
                 return;
             }
-            lastquery = s;
+            lastQuery = s;
             searchQuery = s.toLowerCase();
 
             updateList();
@@ -83,9 +91,12 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
         searchBox.setText(query);
     }
 
-    public static void load() {
-        new Thread(() -> {
-            allHeads.clear();
+    @Override
+    public void load() {
+        instance = this;
+        allHeads.clear();
+
+        CodeUtilities.EXECUTOR.submit(() -> {
             String[] sources = {
                     "https://minecraft-heads.com/scripts/api.php?cat=alphabet&tags=true",
                     "https://minecraft-heads.com/scripts/api.php?cat=animals&tags=true",
@@ -126,7 +137,7 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
                 }
             }
             allHeads.sort(Comparator.comparing(x -> x.get("name").getAsString()));
-        }).start();
+        });
     }
 
     public void updateList() {
@@ -210,4 +221,7 @@ public class CustomHeadSearchGui extends LightweightGuiDescription {
         return items;
     }
 
+    public static CustomHeadMenu getInstance() {
+        return instance;
+    }
 }

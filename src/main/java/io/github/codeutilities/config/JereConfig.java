@@ -10,7 +10,7 @@ public class JereConfig implements ConfigData {
 
     @ConfigEntry.Category("jeremaster")
     @ConfigEntry.Gui.Tooltip()
-    public boolean streamerMode = false;
+    public final boolean streamerMode = false;
 
     public static JereConfig getConfig() {
         return AutoConfig.getConfigHolder(JereConfig.class).getConfig();

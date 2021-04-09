@@ -5,13 +5,13 @@ public class SongData {
     String name;
     String author;
     float speed;
-    int length;
+    final int length;
     String fileName;
     String notes;
-    String layers;
-    int loopTick;
-    int loopCount;
-    int customInstrumentCount;
+    final String layers;
+    final int loopTick;
+    final int loopCount;
+    final int customInstrumentCount;
 
     public SongData(String name, String author, float speed, int length, String notes, String fileName, String layers, int loopTick, int loopCount, int customInstrumentCount) {
         this.name = name;
