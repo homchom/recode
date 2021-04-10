@@ -22,6 +22,8 @@ public class DFDiscordRPC {
     public static boolean locating = false;
     public static boolean delayRPC = false;
 
+    public static boolean supportSession = false;
+
     private static boolean firstLocate = true;
     private static boolean firstUpdate = true;
     private static String oldMode = "";
@@ -30,10 +32,16 @@ public class DFDiscordRPC {
     private static IPCClient client;
     public static RichPresence.Builder builder;
 
+    public static final DFRPCThread dfrpc = new DFRPCThread();
+
     public static void main() throws Exception {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             CodeUtilities.log(Level.INFO, "Closing Discord hook.");
-            client.close();
+            try {
+                client.close();
+            }catch (Exception e) {
+                CodeUtilities.log(Level.ERROR, "Error while closing Discord hook.");
+            }
         }));
 
         client = new IPCClient(813925725718577202L);
@@ -42,17 +50,12 @@ public class DFDiscordRPC {
             public void onReady(IPCClient client)
             {
                 RichPresence.Builder builder = new RichPresence.Builder();
-                builder.setDetails("Idle")
-                        .setStartTimestamp(OffsetDateTime.now())
-                        .setLargeImage("canary-large", "Discord Canary")
-                        .setSmallImage("ptb-small", "Discord PTB");
+                builder.setDetails("Playing");
                 io.github.codeutilities.dfrpc.DFDiscordRPC.builder = builder;
             }
         });
 
-        DFRPCThread dfrpc = new DFRPCThread();
         dfrpc.start();
-
     }
 
     public static class DFRPCThread extends Thread {
@@ -94,6 +97,7 @@ public class DFDiscordRPC {
                     oldState = String.valueOf(DFInfo.currentState);
                 } else {
                     oldState = "Not on DF";
+                    supportSession = false;
                 }
 
                 if (delayRPC) {
@@ -153,7 +157,8 @@ public class DFDiscordRPC {
             presence.setState(ChatReceivedEvent.dfrpcMsg.replaceFirst("^                                       \n" +
                     "You are currently at spawn.\n", "").replaceFirst("^» Server: ", "").replaceFirst("\n" +
                     "                                       $", ""));
-            presence.setSmallImage(null, null);
+            if (supportSession) presence.setSmallImage("supportsession", "In Support Session");
+            else presence.setSmallImage(null, null);
             presence.setLargeImage("diamondfirelogo", "mcdiamondfire.com");
         }
         else {
@@ -205,19 +210,22 @@ public class DFDiscordRPC {
             presence.setDetails(name);
 
             if (ChatReceivedEvent.dfrpcMsg.startsWith("                                       \nYou are currently playing on:")) {
-                presence.setSmallImage("modeplay", "Playing");
+                if (supportSession) presence.setSmallImage("supportsession", "In Support Session (Playing)");
+                else presence.setSmallImage("modeplay", "Playing");
                 presence.setLargeImage("diamondfirelogo", customStatus.equals("") ? "mcdiamondfire.com" : customStatus);
                 mode = "play";
             }
 
             if (ChatReceivedEvent.dfrpcMsg.startsWith("                                       \nYou are currently building on:")) {
-                presence.setSmallImage("modebuild", "Building");
+                if (supportSession) presence.setSmallImage("supportsession", "In Support Session (Building)");
+                else presence.setSmallImage("modebuild", "Building");
                 presence.setLargeImage("diamondfirelogo", "mcdiamondfire.com");
                 mode = "build";
             }
 
             if (ChatReceivedEvent.dfrpcMsg.startsWith("                                       \nYou are currently coding on:")) {
-                presence.setSmallImage("modedev", "Coding");
+                if (supportSession) presence.setSmallImage("supportsession", "In Support Session (Coding)");
+                else presence.setSmallImage("modedev", "Coding");
                 presence.setLargeImage("diamondfirelogo", "mcdiamondfire.com");
                 mode = "dev";
             }
@@ -235,4 +243,7 @@ public class DFDiscordRPC {
         if (ModConfig.getConfig().discordRPC) client.sendRichPresence(presence.build());
     }
 
+    public static DFRPCThread getThread() {
+        return dfrpc;
+    }
 }

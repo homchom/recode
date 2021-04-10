@@ -33,6 +33,7 @@ public class MixinGameMessageListener {
                     this.updateVersion(packet.getMessage());
                     this.updateState(packet.getMessage());
                 }catch (Exception e) {
+                    e.printStackTrace();
                     CodeUtilities.log(Level.ERROR, "Error while trying to parse the chat text!");
                 }
             }
@@ -82,6 +83,7 @@ public class MixinGameMessageListener {
 
                     // update rpc on server join
                     DFDiscordRPC.delayRPC = true;
+                    DFDiscordRPC.supportSession = false;
                 }
             }catch (Exception e) {
                 CodeUtilities.log(Level.INFO, "Error on parsing patch number!");
@@ -108,8 +110,43 @@ public class MixinGameMessageListener {
             FlightspeedToggle.fs_is_normal = true;
         }
 
+        // Enter Session
+        if (text.matches("^You have entered a session with .*\\.$")) {
+            if (!DFDiscordRPC.supportSession) {
+                DFDiscordRPC.supportSession = true;
+                if (ModConfig.getConfig().discordRPC) {
+                    new Thread(() -> {
+                        DFDiscordRPC.getThread().locateRequest();
+                    }).start();
+                }
+            }
+        }
+
+        // End Session
+
+        if (text.matches("^" + minecraftClient.player.getName().asString() + " finished a session with .*\\. ▶ .*$")) {
+            if (DFDiscordRPC.supportSession) {
+                DFDiscordRPC.supportSession = false;
+                if (ModConfig.getConfig().discordRPC) {
+                    new Thread(() -> {
+                        DFDiscordRPC.getThread().locateRequest();
+                    }).start();
+                }
+            }
+        }
+        if (text.matches("^Your session with .* has ended\\.$")) {
+            if (DFDiscordRPC.supportSession) {
+                DFDiscordRPC.supportSession = false;
+                if (ModConfig.getConfig().discordRPC) {
+                    new Thread(() -> {
+                        DFDiscordRPC.getThread().locateRequest();
+                    }).start();
+                }
+            }
+        }
+
         // Build Mode
-        if (minecraftClient.player.isCreative() && text.contains("» You are now in build mode.") && text.startsWith("»")) {
+        if (minecraftClient.player.isCreative() && text.matches("^» You are now in build mode\\.$")) {
             if (DFInfo.currentState != DFInfo.State.BUILD) {
                 DFInfo.currentState = DFInfo.State.BUILD;
             }
@@ -141,7 +178,7 @@ public class MixinGameMessageListener {
         }
         
         // Dev Mode (more moved to MixinItemSlotUpdate)
-        if (minecraftClient.player.isCreative() && text.contains("» You are now in dev mode.") && text.startsWith("»")) {
+        if (minecraftClient.player.isCreative() && text.matches("^» You are now in dev mode\\.$")) {
             // fs toggle
             FlightspeedToggle.fs_is_normal = true;
         }

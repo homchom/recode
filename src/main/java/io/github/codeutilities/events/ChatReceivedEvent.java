@@ -77,6 +77,8 @@ public class ChatReceivedEvent {
                 dfrpcMsg = text.replaceAll("§.", "");
                 cancel = true;
                 DFDiscordRPC.locating = false;
+
+                System.out.println("support session? = " + DFDiscordRPC.supportSession);
             }
         }
         
