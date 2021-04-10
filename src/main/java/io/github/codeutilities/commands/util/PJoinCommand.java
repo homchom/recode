@@ -30,10 +30,9 @@ public class PJoinCommand extends Command {
     }
 
     private int run(MinecraftClient mc, String player) {
-        mc.player.sendChatMessage("/locate " + player);
+        this.sendChatMessage(mc, "/locate " + player);
 
         ChatReceivedEvent.pjoin = true;
-
         ChatUtil.sendMessage("Joining the plot §e" + player + "§b is currently playing...", ChatType.INFO_BLUE);
 
         new Thread(() -> {

@@ -12,22 +12,22 @@ import java.util.Map;
 
 public class NodeCommand extends Command {
 
-    private static final Map<String, String> nodeMap = new HashMap<>();
+    private static final Map<String, String> NODE_MAP = new HashMap<>();
 
     static {
-        nodeMap.put("1", "node1");
-        nodeMap.put("2", "node2");
-        nodeMap.put("3", "node3");
-        nodeMap.put("4", "node4");
-        nodeMap.put("5", "node5");
-        nodeMap.put("beta", "beta");
+        NODE_MAP.put("1", "node1");
+        NODE_MAP.put("2", "node2");
+        NODE_MAP.put("3", "node3");
+        NODE_MAP.put("4", "node4");
+        NODE_MAP.put("5", "node5");
+        NODE_MAP.put("beta", "beta");
     }
 
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
         LiteralArgumentBuilder<CottonClientCommandSource> cmd = ArgBuilder.literal("node");
 
-        for (Map.Entry<String, String> node : nodeMap.entrySet()) {
+        for (Map.Entry<String, String> node : NODE_MAP.entrySet()) {
             cmd.then(ArgBuilder.literal(node.getKey()).executes((context) -> {
                 this.sendChatMessage(mc, "/server " + node.getValue());
                 return 1;

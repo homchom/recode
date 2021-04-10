@@ -21,8 +21,8 @@ import java.util.List;
 
 public class TemplateSearchGui extends LightweightGuiDescription {
 
-    private static final String[] plots = new String[]{"Basic", "Large", "Massive"};
-    private static final String[] ranks = new String[]{"Noble", "Emperor", "Mythic", "Overlord"};
+    private static final String[] PLOTS = {"Basic", "Large", "Massive"};
+    private static final String[] RANKS = {"Noble", "Emperor", "Mythic", "Overlord"};
 
     public TemplateSearchGui(JsonArray templates) {
         WGridPanel root = new WGridPanel(1);
@@ -71,9 +71,9 @@ public class TemplateSearchGui extends LightweightGuiDescription {
             texts.add(new LiteralText(""));
             texts.add(new LiteralText("§r⚐ Category: ").setStyle(categoryIcon).append(new LiteralText(template.get("category").getAsString().replace('&', '§')).setStyle(categoryColor)));
             texts.add(new LiteralText("☐ ").setStyle(reqIcon)
-                    .append(getOrUnknown(plots, template.get("plot").getAsInt())).setStyle(reqText)
+                    .append(getOrUnknown(PLOTS, template.get("plot").getAsInt())).setStyle(reqText)
                     .append(new LiteralText(" ! ").setStyle(reqIcon.withBold(true)))
-                    .append(new LiteralText(getOrUnknown(ranks, template.get("rank").getAsInt())).setStyle(reqText))
+                    .append(new LiteralText(getOrUnknown(RANKS, template.get("rank").getAsInt())).setStyle(reqText))
             );
             texts.add(new LiteralText(""));
             texts.add(new LiteralText("§rℹ ID: ").setStyle(idIcon).append(new LiteralText(String.valueOf(i)).setStyle(idColor)));

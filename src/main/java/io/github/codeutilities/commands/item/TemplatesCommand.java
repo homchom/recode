@@ -19,24 +19,21 @@ import java.util.Random;
 
 public class TemplatesCommand extends Command {
 
-    public static final String templateServer = "https://codeutilities-templates.glitch.me/";
-    public static MinecraftClient mc = CodeUtilities.MC;
+    public static final String TEMPLATE_SERVER = "https://codeutilities-templates.glitch.me/";
     public static String authId = null;
 
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("templates")
                 .executes(ctx -> {
-                    if (mc.player.isCreative()) {
+                    if (this.isCreative(mc)) {
                         TemplateStorageUI templateStorageUI = new TemplateStorageUI();
                         templateStorageUI.open();
                         templateStorageUI.openAsync(templateStorageUI);
-
-                        return 1;
                     } else {
-                        ChatUtil.sendTranslateMessage("codeutilities.command.require_creative_mode", ChatType.FAIL);
-                        return 1;
+                        return -1;
                     }
+                    return 1;
                 })
         );
     }
@@ -88,7 +85,7 @@ public class TemplatesCommand extends Command {
             JsonObject response;
             try {
                 response = jsonParser.parse(WebUtil.getString(
-                        templateServer + "authenticate?username=" + mc.getSession().getUsername()
+                        TEMPLATE_SERVER + "authenticate?username=" + mc.getSession().getUsername()
                                 + "&serverId=" + serverId)).getAsJsonObject();
             } catch (IOException e) {
                 return;

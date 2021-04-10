@@ -38,8 +38,10 @@ public class UnpackCommand extends Command {
                                 }
                             }
                         } else {
-                            ChatUtil.sendMessage("TThere are no items stored in this item!", ChatType.FAIL);
+                            ChatUtil.sendMessage("There are no items stored in this item!", ChatType.FAIL);
                         }
+                    } else {
+                        return -1;
                     }
                     return 1;
                 })

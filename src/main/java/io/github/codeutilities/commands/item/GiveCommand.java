@@ -76,8 +76,6 @@ public class GiveCommand extends Command {
             } else {
                 ChatUtil.sendMessage("Minimum item count is 1!", ChatType.FAIL);
             }
-        } else {
-            ChatUtil.sendTranslateMessage("codeutilities.command.require_creative_mode", ChatType.FAIL);
         }
     }
 }

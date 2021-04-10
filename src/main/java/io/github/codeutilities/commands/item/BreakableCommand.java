@@ -28,6 +28,8 @@ public class BreakableCommand extends Command {
                         } else {
                             ChatUtil.sendMessage("You need to hold an item in your main hand!", ChatType.FAIL);
                         }
+                    } else {
+                        return -1;
                     }
                     return 1;
                 })

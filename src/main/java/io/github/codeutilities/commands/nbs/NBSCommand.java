@@ -2,6 +2,7 @@ package io.github.codeutilities.commands.nbs;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.commands.arguments.ArgBuilder;
 import io.github.codeutilities.nbs.NBSDecoder;
@@ -24,7 +25,7 @@ import java.io.IOException;
 public class NBSCommand extends Command {
 
     public static void loadNbs(File file, String fileName) {
-        new Thread(() -> {
+        CodeUtilities.EXECUTOR.submit(() -> {
             try {
                 SongData d = NBSDecoder.parse(file);
                 String code = new NBSToTemplate(d).convert();
@@ -50,7 +51,7 @@ public class NBSCommand extends Command {
             } catch (IOException e) {
                 ToasterUtil.sendToaster("§cLoading Error!", "Invalid file", SystemToast.Type.NARRATOR_TOGGLE);
             }
-        }).start();
+        });
     }
 
     @Override

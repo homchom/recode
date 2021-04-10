@@ -18,7 +18,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 
 public class WebUtil {
-    private static final TrustManager[] trustAllCerts = new TrustManager[]{
+    private static final TrustManager[] trustAllCerts = {
             new X509TrustManager() {
                 public X509Certificate[] getAcceptedIssuers() {
                     return null;

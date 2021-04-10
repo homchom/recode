@@ -22,12 +22,12 @@ import java.util.Arrays;
 
 public class RelativeLocCommand extends Command {
 
-    private static final String[] targetTypes = {"selection", "default", "damager", "killer", "victim", "shooter", "projectile"};
+    private static final String[] TARGET_TYPES = {"selection", "default", "damager", "killer", "victim", "shooter", "projectile"};
 
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("relativeloc")
-                .then(ArgBuilder.argument("target", StringListArgumentType.string(targetTypes))
+                .then(ArgBuilder.argument("target", StringListArgumentType.string(TARGET_TYPES))
                         .then(ArgBuilder.argument("forwards", FloatArgumentType.floatArg())
                                 .then(ArgBuilder.argument("upwards", FloatArgumentType.floatArg())
                                         .then(ArgBuilder.argument("right", FloatArgumentType.floatArg())
@@ -40,7 +40,7 @@ public class RelativeLocCommand extends Command {
                                                                     Float right = ctx.getArgument("right", float.class);
                                                                     Float rot_down = ctx.getArgument("rot_down", float.class);
                                                                     Float rot_right = ctx.getArgument("rot_right", float.class);
-                                                                    return this.run(mc, target, forwards, upwards, right, rot_down, rot_right);
+                                                                    return this.run(target, forwards, upwards, right, rot_down, rot_right);
                                                                 })
                                                         )
                                                 )
@@ -51,9 +51,9 @@ public class RelativeLocCommand extends Command {
         );
     }
 
-    private int run(MinecraftClient mc, String target, float forwards, float upwards, float right, float rot_down, float rot_right) {
+    private int run(String target, float forwards, float upwards, float right, float rot_down, float rot_right) {
         String[] targetNames = {"Selected Object", "Default", "Damager", "Killer", "Victim", "Shooter", "Projectile"};
-        String finalTarget = targetNames[Arrays.asList(targetTypes).indexOf(target)];
+        String finalTarget = targetNames[Arrays.asList(TARGET_TYPES).indexOf(target)];
 
         CompoundTag publicBukkitNBT = new CompoundTag();
         CompoundTag itemNBT = new CompoundTag();
@@ -92,39 +92,32 @@ public class RelativeLocCommand extends Command {
         lore.addTag(0, StringTag.of(Text.Serializer.toJson(lore1.append(lore2))));
 
         lore1 = new LiteralText("Forwards: ");
-        lore2 = new LiteralText("" + forwards);
-        lore1.setStyle(Style.EMPTY.withColor(Formatting.GRAY).withItalic(false));
-        lore2.setStyle(Style.EMPTY.withColor(Formatting.WHITE).withItalic(false));
-        lore.addTag(lore.size(), StringTag.of(Text.Serializer.toJson(lore1.append(lore2))));
+        craftLore(forwards, lore, lore1);
 
         lore1 = new LiteralText("Upwards: ");
-        lore2 = new LiteralText("" + upwards);
-        lore1.setStyle(Style.EMPTY.withColor(Formatting.GRAY).withItalic(false));
-        lore2.setStyle(Style.EMPTY.withColor(Formatting.WHITE).withItalic(false));
-        lore.addTag(lore.size(), StringTag.of(Text.Serializer.toJson(lore1.append(lore2))));
+        craftLore(upwards, lore, lore1);
 
         lore1 = new LiteralText("Right: ");
-        lore2 = new LiteralText("" + right);
-        lore1.setStyle(Style.EMPTY.withColor(Formatting.GRAY).withItalic(false));
-        lore2.setStyle(Style.EMPTY.withColor(Formatting.WHITE).withItalic(false));
-        lore.addTag(lore.size(), StringTag.of(Text.Serializer.toJson(lore1.append(lore2))));
+        craftLore(right, lore, lore1);
 
         lore1 = new LiteralText("Rot Down: ");
-        lore2 = new LiteralText("" + rot_down);
-        lore1.setStyle(Style.EMPTY.withColor(Formatting.GRAY).withItalic(false));
-        lore2.setStyle(Style.EMPTY.withColor(Formatting.WHITE).withItalic(false));
-        lore.addTag(lore.size(), StringTag.of(Text.Serializer.toJson(lore1.append(lore2))));
+        craftLore(rot_down, lore, lore1);
 
         lore1 = new LiteralText("Rot Right: ");
-        lore2 = new LiteralText("" + rot_right);
-        lore1.setStyle(Style.EMPTY.withColor(Formatting.GRAY).withItalic(false));
-        lore2.setStyle(Style.EMPTY.withColor(Formatting.WHITE).withItalic(false));
-        lore.addTag(lore.size(), StringTag.of(Text.Serializer.toJson(lore1.append(lore2))));
+        craftLore(rot_right, lore, lore1);
 
         display.put("Lore", lore);
         item.getTag().put("display", display);
 
         ItemUtil.giveCreativeItem(item, true);
         return 1;
+    }
+
+    private void craftLore(float upwards, ListTag lore, LiteralText lore1) {
+        LiteralText lore2;
+        lore2 = new LiteralText("" + upwards);
+        lore1.setStyle(Style.EMPTY.withColor(Formatting.GRAY).withItalic(false));
+        lore2.setStyle(Style.EMPTY.withColor(Formatting.WHITE).withItalic(false));
+        lore.addTag(lore.size(), StringTag.of(Text.Serializer.toJson(lore1.append(lore2))));
     }
 }

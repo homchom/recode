@@ -3,6 +3,7 @@ package io.github.codeutilities.commands.util;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.brigadier.CommandDispatcher;
+import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.commands.arguments.ArgBuilder;
 import io.github.codeutilities.commands.arguments.types.PlayerArgumentType;
@@ -29,7 +30,7 @@ public class UuidCommand extends Command {
         cd.register(ArgBuilder.literal("uuid")
                 .then(ArgBuilder.argument("username", PlayerArgumentType.player())
                         .executes(ctx -> {
-                            new Thread(() -> {
+                            CodeUtilities.EXECUTOR.submit(() -> {
                                 String username = ctx.getArgument("username", String.class);
                                 String url = "https://api.mojang.com/users/profiles/minecraft/" + username;
                                 try {
@@ -47,16 +48,16 @@ public class UuidCommand extends Command {
                                             .styled(s -> s.withHoverEvent(
                                                     new HoverEvent(HoverEvent.Action.SHOW_TEXT, new LiteralText("§eClick to copy to clipboard."))
                                             ).withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, fullUUID)));
-                                    mc.player.sendMessage(text, false);
-                                    if (mc.player.isCreative() && DFInfo.isOnDF() && DFInfo.currentState == DFInfo.State.DEV) {
-                                        mc.player.sendChatMessage("/txt " + fullUUID);
+                                    this.sendMessage(mc, text);
+
+                                    if (this.isCreative(mc) && DFInfo.isOnDF() && DFInfo.currentState == DFInfo.State.DEV) {
+                                        this.sendChatMessage(mc, "/txt " + fullUUID);
                                     }
                                 } catch (IOException e) {
                                     ChatUtil.sendMessage("§cUser §6" + username + "§c was not found.");
                                     e.printStackTrace();
                                 }
-                            }).start();
-
+                            });
                             return 1;
                         })
                 )
