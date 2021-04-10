@@ -54,7 +54,8 @@ public class CommandHandler implements ClientCommandPlugin {
                     new PJoinCommand(),
                     new ImageHologramCommand(),
                     new ImageParticleCommand(),
-                    new SchemCommand()
+                    new SchemCommand(),
+                    new RelativeLocCommand()
             );
         }
     }
