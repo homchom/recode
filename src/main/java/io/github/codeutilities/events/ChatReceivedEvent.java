@@ -83,13 +83,6 @@ public class ChatReceivedEvent {
         String msgToString = message.toString();
         String msgGetString = message.getString();
 
-        /*
-        if (mc.player.getUuid().toString().equals("3134fb4d-a345-4c5e-9513-97c2c951223e")) {
-            // debuggings
-            System.out.println(message.toString());
-        }
-         */
-
         // hide join/leave messages
         if (ModConfig.getConfig().hideJoinLeaveMessages
                 && msgToString.contains("', siblings=[], style=Style{ color=gray, bold=")
@@ -107,6 +100,34 @@ public class ChatReceivedEvent {
                 && (msgGetString.endsWith(" joined.") || msgGetString.endsWith(" joined!") || msgGetString.endsWith(" left.")) ) {
 
             // cancel message
+            cancel = true;
+        }
+
+        // hide session spy
+        if (ModConfig.getConfig().hideSessionSpy && msgGetString.startsWith("*") && msgToString.contains("text='*'") && msgToString.contains("color=green")) {
+            cancel = true;
+        }
+
+        // hide muted chat
+        if (ModConfig.getConfig().hideMutedChat && msgGetString.startsWith("*") && msgToString.contains("text='*'") && msgToString.contains("color=red")) {
+            cancel = true;
+        }
+
+        // hide var scope messages
+        if (ModConfig.getConfig().hideVarScopeMessages
+        && (
+                // local
+                msgToString.equals("TextComponent{text='', siblings=[TextComponent{text='Scope set to ', siblings=[], style=Style{ color=null, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}, TextComponent{text='LOCAL', siblings=[], style=Style{ color=green, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}, TextComponent{text=' (specific to event thread).', siblings=[], style=Style{ color=white, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}], style=Style{ color=null, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}") ||
+                // game
+                msgToString.equals("TextComponent{text='', siblings=[TextComponent{text='Scope set to ', siblings=[], style=Style{ color=null, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}, TextComponent{text='GAME', siblings=[], style=Style{ color=gray, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}, TextComponent{text=' (clears when all players leave).', siblings=[], style=Style{ color=white, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}], style=Style{ color=null, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}") ||
+                // save
+                msgToString.equals("TextComponent{text='', siblings=[TextComponent{text='Scope set to ', siblings=[], style=Style{ color=null, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}, TextComponent{text='SAVE', siblings=[], style=Style{ color=yellow, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}, TextComponent{text=' (will be saved).', siblings=[], style=Style{ color=white, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}], style=Style{ color=null, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}")
+                )) {
+            cancel = true;
+        }
+
+        // hide msg matching regex
+        if (ModConfig.getConfig().hideMsgMatchingRegex && msgGetString.replaceAll("§.", "").matches(ModConfig.getConfig().hideMsgRegex)) {
             cancel = true;
         }
 

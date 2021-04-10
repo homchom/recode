@@ -80,6 +80,12 @@ public class ModConfig implements ConfigData {
     public boolean hideVarScopeMessages = false;
     @ConfigEntry.Category("hiding")
     @ConfigEntry.Gui.Tooltip()
+    public boolean hideMsgMatchingRegex = false;
+    @ConfigEntry.Category("hiding")
+    @ConfigEntry.Gui.Tooltip()
+    public String hideMsgRegex = "";
+    @ConfigEntry.Category("hiding")
+    @ConfigEntry.Gui.Tooltip()
     public boolean hideSessionSpy = false;
     @ConfigEntry.Category("hiding")
     @ConfigEntry.Gui.Tooltip()
