@@ -40,7 +40,14 @@ public class CosmeticHandler {
         String content = WebUtil.getString("https://codeutilities.github.io/data/cosmetics/players/" + uuid.toString() + ".json");
         JsonObject jsonObject = new JsonParser().parse(content).getAsJsonObject();
         JsonElement jsonElement = jsonObject.get(key);
-        if(jsonElement.isJsonNull()) return null;
+
+        if(jsonElement.isJsonNull()) {
+            content = WebUtil.getString("https://codeutilities.github.io/data/cosmetics/players/default.json");
+            jsonObject = new JsonParser().parse(content).getAsJsonObject();
+            jsonElement = jsonObject.get(key);
+            if (jsonElement.isJsonNull()) return null;
+        }
+
         return jsonElement.getAsString();
     }
     
