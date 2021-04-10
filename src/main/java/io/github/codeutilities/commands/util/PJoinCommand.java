@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.commands.arguments.ArgBuilder;
+import io.github.codeutilities.commands.arguments.types.PlayerArgumentType;
 import io.github.codeutilities.events.ChatReceivedEvent;
 import io.github.codeutilities.util.ChatType;
 import io.github.codeutilities.util.ChatUtil;
@@ -16,10 +17,10 @@ public class PJoinCommand extends Command {
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("pjoin")
-                .then(ArgBuilder.argument("player", StringArgumentType.greedyString())
+                .then(ArgBuilder.argument("player", PlayerArgumentType.player())
                         .executes(ctx -> {
                             try {
-                                return run(mc, StringArgumentType.getString(ctx, "player"));
+                                return run(mc, ctx.getArgument("player", String.class));
                             }catch (Exception e) {
                                 ChatUtil.sendMessage("Error while attempting to execute the command.", ChatType.FAIL);
                                 e.printStackTrace();
@@ -31,12 +32,11 @@ public class PJoinCommand extends Command {
     }
 
     private int run(MinecraftClient mc, String player) {
-        if (DFInfo.currentState != DFInfo.State.LOBBY) {
-            mc.player.sendChatMessage("/leave");
-        }
         mc.player.sendChatMessage("/locate " + player);
 
         ChatReceivedEvent.pjoin = true;
+
+        ChatUtil.sendMessage("Joining the plot §e" + player + "§b is currently playing...", ChatType.INFO_BLUE);
 
         new Thread(() -> {
             try {

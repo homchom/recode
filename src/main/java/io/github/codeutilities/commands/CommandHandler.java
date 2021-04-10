@@ -38,10 +38,7 @@ public class CommandHandler implements ClientCommandPlugin {
                 new ColorsCommand(),
                 new ColorCommand(),
                 new EditItemCommand(),
-                new CopyTextCommand(),
-                new ImageHologramCommand(),
-                new ImageParticleCommand(),
-                new SchemCommand()
+                new CopyTextCommand()
         );
         
         if (ModConfig.getConfig().dfCommands) {
@@ -53,7 +50,11 @@ public class CommandHandler implements ClientCommandPlugin {
                     new NBSCommand(),
                     new ImageHologramCommand(),
                     new ImageParticleCommand(),
-                    new SendTemplateCommand()
+                    new SendTemplateCommand(),
+                    new PJoinCommand(),
+                    new ImageHologramCommand(),
+                    new ImageParticleCommand(),
+                    new SchemCommand()
             );
         }
     }

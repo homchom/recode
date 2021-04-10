@@ -15,6 +15,8 @@ import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.awt.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ChatReceivedEvent {
 
@@ -43,35 +45,41 @@ public class ChatReceivedEvent {
             cancel = true;
         }
 
-        //PJoin command (broken right now)
+        //PJoin command
         if (pjoin) {
-            System.out.println(text.replaceAll("§", "&"));
+            String msg = text.replaceAll("§.", "");
+            if (msg.startsWith("                                       \n")) {
+                if (msg.contains(" is currently at spawn.\n")) {
+                    ChatUtil.sendMessage("This player is not in a plot.", ChatType.FAIL);
+                    cancel = true;
+                }else {
+                    // PLOT ID
+                    Pattern pattern = Pattern.compile("\\[[0-9]+]\n");
+                    Matcher matcher = pattern.matcher(msg);
+                    String id = "";
+                    while (matcher.find()) {
+                        id = matcher.group();
+                    }
+                    id = id.replaceAll("\\[|]|\n", "");
 
-            if (text.contains("is currently at§6 spawn.")) {
-                ChatUtil.sendMessage("This player is not in a plot.", ChatType.FAIL);
-            }else {
-                try {
-                    String[] lines = text.split("\n");
-                    String cmd = "/join " + lines[2].replaceAll(" .* \\[(.*)\\]$", "$1");
-                    System.out.println(lines[2] + " || " + lines[2].replaceAll("≫ .* \\[(.*)\\]$", "$1"));
+                    String cmd = "/join " + id;
+
                     if (cmd.matches("/join [0-9]+")) {
                         mc.player.sendChatMessage(cmd);
                     } else {
                         ChatUtil.sendMessage("Error while trying to join the plot.", ChatType.FAIL);
                     }
+
                     cancel = true;
-                }catch (Exception e) {
-                    e.printStackTrace();
-                    ChatUtil.sendMessage("Error while trying to join the plot.", ChatType.FAIL);
                 }
+                pjoin = false;
             }
-            pjoin = false;
         }
 
         // cancel rpc /locate message
         if (DFDiscordRPC.locating) {
-            if (message.getString().contains("\n§6You")) {
-                dfrpcMsg = message.getString().replaceAll("§.", "");
+            if (text.contains("\n§6You")) {
+                dfrpcMsg = text.replaceAll("§.", "");
                 cancel = true;
                 DFDiscordRPC.locating = false;
             }
