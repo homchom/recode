@@ -19,7 +19,6 @@ import net.minecraft.command.EntitySelectorReader;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
-import org.omg.CORBA.UNKNOWN;
 
 public class StringListArgumentType implements ArgumentType<String> {
     private static final MinecraftClient mc = MinecraftClient.getInstance();
