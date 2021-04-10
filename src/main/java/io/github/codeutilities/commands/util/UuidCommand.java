@@ -30,7 +30,7 @@ public class UuidCommand extends Command {
                 .executes(ctx -> {
                     new Thread(() -> {
                         String username = ctx.getArgument("username", String.class);
-                        String url = "https://mc-heads.net/minecraft/profile/" + username;
+                        String url = "https://api.mojang.com/users/profiles/minecraft/" + username;
                         try {
                             String UUIDJson = IOUtils
                                 .toString(new URL(url), StandardCharsets.UTF_8);
