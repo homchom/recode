@@ -1,7 +1,6 @@
 package io.github.codeutilities.events;
 
 import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.config.JereConfig;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.dfrpc.DFDiscordRPC;
 import io.github.codeutilities.util.ChatType;
@@ -10,6 +9,9 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ChatReceivedEvent {
 
@@ -38,35 +40,41 @@ public class ChatReceivedEvent {
             cancel = true;
         }
 
-        //PJoin command (broken right now)
+        //PJoin command
         if (pjoin) {
-            System.out.println(text.replaceAll("§", "&"));
+            String msg = text.replaceAll("§.", "");
+            if (msg.startsWith("                                       \n")) {
+                if (msg.contains(" is currently at spawn.\n")) {
+                    ChatUtil.sendMessage("This player is not in a plot.", ChatType.FAIL);
+                    cancel = true;
+                }else {
+                    // PLOT ID
+                    Pattern pattern = Pattern.compile("\\[[0-9]+]\n");
+                    Matcher matcher = pattern.matcher(msg);
+                    String id = "";
+                    while (matcher.find()) {
+                        id = matcher.group();
+                    }
+                    id = id.replaceAll("\\[|]|\n", "");
 
-            if (text.contains("is currently at§6 spawn.")) {
-                ChatUtil.sendMessage("This player is not in a plot.", ChatType.FAIL);
-            } else {
-                try {
-                    String[] lines = text.split("\n");
-                    String cmd = "/join " + lines[2].replaceAll(" .* \\[(.*)]$", "$1");
-                    System.out.println(lines[2] + " || " + lines[2].replaceAll("≫ .* \\[(.*)]$", "$1"));
+                    String cmd = "/join " + id;
+
                     if (cmd.matches("/join [0-9]+")) {
                         mc.player.sendChatMessage(cmd);
                     } else {
                         ChatUtil.sendMessage("Error while trying to join the plot.", ChatType.FAIL);
                     }
+
                     cancel = true;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    ChatUtil.sendMessage("Error while trying to join the plot.", ChatType.FAIL);
                 }
+                pjoin = false;
             }
-            pjoin = false;
         }
 
         // cancel rpc /locate message
         if (DFDiscordRPC.locating) {
-            if (message.getString().contains("\n§6You")) {
-                dfrpcMsg = message.getString().replaceAll("§.", "");
+            if (text.contains("\n§6You")) {
+                dfrpcMsg = text.replaceAll("§.", "");
                 cancel = true;
                 DFDiscordRPC.locating = false;
             }
@@ -89,33 +97,38 @@ public class ChatReceivedEvent {
                 && (msgToString.contains("hoverEvent=false") || msgToString.contains("hoverEvent=null"))
                 && (msgToString.contains("insertion=false") || msgToString.contains("insertion=null"))
 
-                && (msgGetString.endsWith(" joined.") || msgGetString.endsWith(" joined!") || msgGetString.endsWith(" left."))) {
+                && (msgGetString.endsWith(" joined.") || msgGetString.endsWith(" joined!") || msgGetString.endsWith(" left.")) ) {
 
             // cancel message
             cancel = true;
         }
 
-        // streamer mode
-        if (JereConfig.getConfig().streamerMode && (mc.player.getUuid().toString().equals("6c669475-3026-4603-b3e7-52c97681ad3a") || mc.player.getUuid().toString().equals("3134fb4d-a345-4c5e-9513-97c2c951223e"))
-                && ((
-                msgGetString.startsWith("*") && msgToString.contains("text='*'") && (
-                        // sessionspy
-                        msgToString.contains("color=green") ||
-                                // mutedchat
-                                msgToString.contains("color=red") ||
-                                // socialspy
-                                msgToString.contains("color=#FF7F55")
-                ))
-                || msgGetString.startsWith("[SUPPORT] ")
-                || msgGetString.startsWith("[MOD] ")
-                || msgGetString.startsWith("! Incoming Report (")
-                || msgGetString.startsWith("Scanning ")
-                || msgGetString.startsWith("§9§l» §3Support Question: §8(§7Click to answer§8)\nAsked by ")
-                || msgGetString.matches("^» .* has answered .*'s question:")
-        )) {
+        // hide session spy
+        if (ModConfig.getConfig().hideSessionSpy && msgGetString.startsWith("*") && msgToString.contains("text='*'") && msgToString.contains("color=green")) {
             cancel = true;
-            if (msgGetString.startsWith("Scanning ")) cancelMsgs = 1;
-            if (msgGetString.matches("^» .* has answered .*'s question:")) cancelMsgs = 2;
+        }
+
+        // hide muted chat
+        if (ModConfig.getConfig().hideMutedChat && msgGetString.startsWith("*") && msgToString.contains("text='*'") && msgToString.contains("color=red")) {
+            cancel = true;
+        }
+
+        // hide var scope messages
+        if (ModConfig.getConfig().hideVarScopeMessages
+        && (
+                // local
+                msgToString.equals("TextComponent{text='', siblings=[TextComponent{text='Scope set to ', siblings=[], style=Style{ color=null, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}, TextComponent{text='LOCAL', siblings=[], style=Style{ color=green, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}, TextComponent{text=' (specific to event thread).', siblings=[], style=Style{ color=white, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}], style=Style{ color=null, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}") ||
+                // game
+                msgToString.equals("TextComponent{text='', siblings=[TextComponent{text='Scope set to ', siblings=[], style=Style{ color=null, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}, TextComponent{text='GAME', siblings=[], style=Style{ color=gray, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}, TextComponent{text=' (clears when all players leave).', siblings=[], style=Style{ color=white, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}], style=Style{ color=null, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}") ||
+                // save
+                msgToString.equals("TextComponent{text='', siblings=[TextComponent{text='Scope set to ', siblings=[], style=Style{ color=null, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}, TextComponent{text='SAVE', siblings=[], style=Style{ color=yellow, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}, TextComponent{text=' (will be saved).', siblings=[], style=Style{ color=white, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}], style=Style{ color=null, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}")
+                )) {
+            cancel = true;
+        }
+
+        // hide msg matching regex
+        if (ModConfig.getConfig().hideMsgMatchingRegex && msgGetString.replaceAll("§.", "").matches(ModConfig.getConfig().hideMsgRegex)) {
+            cancel = true;
         }
 
         if (cancelTimeMsg && text.contains("» Set your player time to " + ModConfig.getConfig().autotimeval + ".") && text.startsWith("»")) {

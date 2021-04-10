@@ -39,11 +39,9 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip()
     public final boolean errorSound = true;
     @ConfigEntry.Category("commands")
-    @ConfigEntry.BoundedDiscrete(min = 10, max = 10000)
     @ConfigEntry.Gui.Tooltip()
     public final int headMenuMaxRender = 1000;
     @ConfigEntry.Category("commands")
-    @ConfigEntry.BoundedDiscrete(min = 1, max = 360)
     @ConfigEntry.Gui.Tooltip()
     public int colorMaxRender = 158;
     @ConfigEntry.Category("commands")
@@ -58,7 +56,6 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip()
     public final boolean autotime = false;
     @ConfigEntry.Category("automation")
-    @ConfigEntry.BoundedDiscrete(min = 0, max = 24000)
     @ConfigEntry.Gui.Tooltip()
     public final int autotimeval = 0;
     @ConfigEntry.Category("automation")
@@ -68,15 +65,12 @@ public class ModConfig implements ConfigData {
     public final boolean autofly = false;
 
     @ConfigEntry.Category("keybinds")
-    @ConfigEntry.BoundedDiscrete(min = 0, max = 1000)
     @ConfigEntry.Gui.Tooltip()
     public final int fsNormal = 100;
     @ConfigEntry.Category("keybinds")
-    @ConfigEntry.BoundedDiscrete(min = 0, max = 1000)
     @ConfigEntry.Gui.Tooltip()
     public final int fsMed = 350;
     @ConfigEntry.Category("keybinds")
-    @ConfigEntry.BoundedDiscrete(min = 0, max = 1000)
     @ConfigEntry.Gui.Tooltip()
     public final int fsFast = 1000;
 
@@ -86,6 +80,12 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Category("hiding")
     @ConfigEntry.Gui.Tooltip()
     public boolean hideVarScopeMessages = false;
+    @ConfigEntry.Category("hiding")
+    @ConfigEntry.Gui.Tooltip()
+    public boolean hideMsgMatchingRegex = false;
+    @ConfigEntry.Category("hiding")
+    @ConfigEntry.Gui.Tooltip()
+    public String hideMsgRegex = "";
     @ConfigEntry.Category("hiding")
     @ConfigEntry.Gui.Tooltip()
     public boolean hideSessionSpy = false;

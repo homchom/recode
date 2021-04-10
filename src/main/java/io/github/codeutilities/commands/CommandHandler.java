@@ -29,35 +29,47 @@ public class CommandHandler implements ClientCommandPlugin, IManager<Command> {
     }
 
     public void initialize() {
-        register(new CodeUtilitiesCommand());
-        register(new BreakableCommand());
-        register(new UnpackCommand());
-        register(new ItemdataCommand());
-        register(new UuidCommand());
-        register(new HeadsCommand());
-        register(new ColorsCommand());
-        register(new ColorCommand());
-        register(new EditItemCommand());
-        register(new CopyTextCommand());
-        register(new ImageHologramCommand());
-        register(new ImageParticleCommand());
-        register(new SchemCommand());
+        register(
+                new CodeUtilitiesCommand(),
+                new BreakableCommand(),
+                new UnpackCommand(),
+                new ItemdataCommand(),
+                new UuidCommand(),
+                new HeadsCommand(),
+                new ColorsCommand(),
+                new ColorCommand(),
+                new EditItemCommand(),
+                new CopyTextCommand()
+        );
 
         if (ModConfig.getConfig().dfCommands) {
-            register(new GiveCommand());
-            register(new NodeCommand());
-            register(new TemplatesCommand());
-            register(new WebviewCommand());
-            register(new NBSCommand());
-            register(new ImageHologramCommand());
-            register(new ImageParticleCommand());
-            register(new SendTemplateCommand());
+            register(
+                    new GiveCommand(),
+                    new NodeCommand(),
+                    new TemplatesCommand(),
+                    new WebviewCommand(),
+                    new NBSCommand(),
+                    new ImageHologramCommand(),
+                    new ImageParticleCommand(),
+                    new SendTemplateCommand(),
+                    new PJoinCommand(),
+                    new ImageHologramCommand(),
+                    new ImageParticleCommand(),
+                    new SchemCommand(),
+                    new RelativeLocCommand()
+            );
         }
     }
 
     @Override
     public void register(Command object) {
         this.registeredCommands.add(object);
+    }
+
+    public void register(Command... objects) {
+        for (Command object : objects) {
+            this.register(object);
+        }
     }
 
     @Override

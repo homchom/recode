@@ -1,7 +1,6 @@
 package io.github.codeutilities.mixin.messages;
 
 import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.config.JereConfig;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.dfrpc.DFDiscordRPC;
 import io.github.codeutilities.events.ChatReceivedEvent;
@@ -10,7 +9,6 @@ import io.github.codeutilities.keybinds.FlightspeedToggle;
 import io.github.codeutilities.util.DFInfo;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.network.MessageType;
 import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
@@ -88,13 +86,6 @@ public class MixinGameMessageListener {
             } catch (Exception e) {
                 CodeUtilities.log(Level.INFO, "Error on parsing patch number!");
                 e.printStackTrace();
-            }
-            // streamer mode
-            ClientPlayerEntity player = MinecraftClient.getInstance().player;
-            String uuid = player.getUuid().toString();
-            if (JereConfig.getConfig().streamerMode && (uuid.equals("6c669475-3026-4603-b3e7-52c97681ad3a") || uuid.equals("3134fb4d-a345-4c5e-9513-97c2c951223e"))) {
-                player.sendChatMessage("/adminv off");
-                ChatReceivedEvent.cancelAdminVanishMsg = true;
             }
         }
     }

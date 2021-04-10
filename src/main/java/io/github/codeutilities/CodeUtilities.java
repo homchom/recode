@@ -1,7 +1,6 @@
 package io.github.codeutilities;
 
 import com.google.gson.JsonParser;
-import io.github.codeutilities.config.JereConfig;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.cosmetics.CosmeticHandler;
 import io.github.codeutilities.gui.CustomHeadMenu;
@@ -35,9 +34,6 @@ public class CodeUtilities implements ModInitializer {
     public void onInitialize() {
         log(Level.INFO, "Initializing");
         AutoConfig.register(ModConfig.class, Toml4jConfigSerializer::new);
-        AutoConfig.register(JereConfig.class, Toml4jConfigSerializer::new);
-
-        // Add a shutdown hook so we can save players template data on exit.
         Runtime.getRuntime().addShutdownHook(new Thread(this::onClose));
 
         // Initialize.

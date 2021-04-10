@@ -18,33 +18,39 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class CosmeticHandler {
-    private static final ExecutorService executorService = Executors.newFixedThreadPool(10);
+    private static ExecutorService executorService = Executors.newFixedThreadPool(10);
     private static final MinecraftClient mc = MinecraftClient.getInstance();
-
+    
     public static void applyCape(UUID uuid, Map<MinecraftProfileTexture.Type, Identifier> identifierMap) {
         executorService.execute(() -> {
             try {
-                String cape = getCosmetic(uuid);
-
-                if (cape != null) {
+                String cape = getCosmetic(uuid, "cape");
+                
+                if(cape != null) {
                     URL url = new URL("https://codeutilities.github.io/data/cosmetics/capes/" + cape);
                     Identifier identifier = mc.getTextureManager().registerDynamicTexture(uuid.toString().replaceAll("-", ""), new NativeImageBackedTexture(NativeImage.read(url.openStream())));
                     identifierMap.put(MinecraftProfileTexture.Type.CAPE, identifier);
                 }
-
-            } catch (IOException ignored) {
-            }
+                
+            } catch (IOException ignored) {}
         });
     }
-
-    private static String getCosmetic(UUID uuid) throws IOException {
+    
+    private static String getCosmetic(UUID uuid, String key) throws IOException {
         String content = WebUtil.getString("https://codeutilities.github.io/data/cosmetics/players/" + uuid.toString() + ".json");
         JsonObject jsonObject = new JsonParser().parse(content).getAsJsonObject();
-        JsonElement jsonElement = jsonObject.get("cape");
-        if (jsonElement.isJsonNull()) return null;
+        JsonElement jsonElement = jsonObject.get(key);
+
+        if(jsonElement.isJsonNull()) {
+            content = WebUtil.getString("https://codeutilities.github.io/data/cosmetics/players/default.json");
+            jsonObject = new JsonParser().parse(content).getAsJsonObject();
+            jsonElement = jsonObject.get(key);
+            if (jsonElement.isJsonNull()) return null;
+        }
+
         return jsonElement.getAsString();
     }
-
+    
     public static void shutdownExecutorService() {
         executorService.shutdown();
     }

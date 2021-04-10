@@ -55,7 +55,7 @@ public class GiveCommand extends Command {
                                 clipboard = clipboard.substring(3);
                             }
 
-                            this.sendChatMessage(mc, "/give " + clipboard);
+                            this.sendChatMessage(mc, "/dfgive " + clipboard);
                             return 1;
                         })
                 )
@@ -76,6 +76,8 @@ public class GiveCommand extends Command {
             } else {
                 ChatUtil.sendMessage("Minimum item count is 1!", ChatType.FAIL);
             }
+        } else {
+            ChatUtil.sendTranslateMessage("codeutilities.command.require_creative_mode", ChatType.FAIL);
         }
     }
 }
