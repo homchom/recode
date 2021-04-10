@@ -13,11 +13,11 @@ public class CodeInitializer {
     }
 
     public void add(IManager<?> manager) {
-        this.add(new IManager<?>[] {manager});
+        this.add(new IManager<?>[]{manager});
     }
 
     public void add(ILoader loader) {
-        this.add(new ILoader[] {loader});
+        this.add(new ILoader[]{loader});
     }
 
     public void add(ILoader... loaders) {

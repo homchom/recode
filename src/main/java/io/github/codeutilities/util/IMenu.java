@@ -16,5 +16,6 @@ public interface IMenu {
             MinecraftClient.getInstance().openScreen(new CottonClientScreen(gui));
         });
     }
+
     void open(String... args);
 }

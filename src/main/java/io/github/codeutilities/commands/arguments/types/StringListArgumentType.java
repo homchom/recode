@@ -4,25 +4,20 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandSource;
-import net.minecraft.command.EntitySelectorReader;
 import net.minecraft.text.LiteralText;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
+
+import java.util.Arrays;
+import java.util.concurrent.CompletableFuture;
 
 public class StringListArgumentType implements ArgumentType<String> {
     private static final MinecraftClient mc = MinecraftClient.getInstance();
-    private String[] suggestions;
+    private final String[] suggestions;
 
     public static final SimpleCommandExceptionType UNKNOWN_TYPE_EXCEPTION = new SimpleCommandExceptionType(new LiteralText("Unknown type"));
 
@@ -37,7 +32,7 @@ public class StringListArgumentType implements ArgumentType<String> {
     public String parse(StringReader stringReader) throws CommandSyntaxException {
         int i = stringReader.getCursor();
 
-        while(stringReader.canRead() && stringReader.peek() != ' ') {
+        while (stringReader.canRead() && stringReader.peek() != ' ') {
             stringReader.skip();
         }
 

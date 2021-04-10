@@ -31,9 +31,9 @@ public interface IManager<T> {
 
     /**
      * Removes an object from the manager's list.
+     *
      * @param object Object to be removed.
      * @return True if was removed, false if not.
-     *
      * @see List#remove(Object)
      */
     default boolean unregister(T object) {

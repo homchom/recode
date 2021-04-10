@@ -16,10 +16,8 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
 
-import java.awt.*;
 import java.util.Arrays;
 
 public class RelativeLocCommand extends Command {
@@ -29,27 +27,27 @@ public class RelativeLocCommand extends Command {
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("relativeloc")
-            .then(ArgBuilder.argument("target", StringListArgumentType.string(targetTypes))
-                .then(ArgBuilder.argument("forwards", FloatArgumentType.floatArg())
-                    .then(ArgBuilder.argument("upwards", FloatArgumentType.floatArg())
-                        .then(ArgBuilder.argument("right", FloatArgumentType.floatArg())
-                            .then(ArgBuilder.argument("rot_down", FloatArgumentType.floatArg())
-                                .then(ArgBuilder.argument("rot_right", FloatArgumentType.floatArg())
-                                    .executes(ctx -> {
-                                        String target = ctx.getArgument("target", String.class);
-                                        Float forwards = ctx.getArgument("forwards", float.class);
-                                        Float upwards = ctx.getArgument("upwards", float.class);
-                                        Float right = ctx.getArgument("right", float.class);
-                                        Float rot_down = ctx.getArgument("rot_down", float.class);
-                                        Float rot_right = ctx.getArgument("rot_right", float.class);
-                                        return this.run(mc, target, forwards, upwards, right, rot_down, rot_right);
-                                    })
+                .then(ArgBuilder.argument("target", StringListArgumentType.string(targetTypes))
+                        .then(ArgBuilder.argument("forwards", FloatArgumentType.floatArg())
+                                .then(ArgBuilder.argument("upwards", FloatArgumentType.floatArg())
+                                        .then(ArgBuilder.argument("right", FloatArgumentType.floatArg())
+                                                .then(ArgBuilder.argument("rot_down", FloatArgumentType.floatArg())
+                                                        .then(ArgBuilder.argument("rot_right", FloatArgumentType.floatArg())
+                                                                .executes(ctx -> {
+                                                                    String target = ctx.getArgument("target", String.class);
+                                                                    Float forwards = ctx.getArgument("forwards", float.class);
+                                                                    Float upwards = ctx.getArgument("upwards", float.class);
+                                                                    Float right = ctx.getArgument("right", float.class);
+                                                                    Float rot_down = ctx.getArgument("rot_down", float.class);
+                                                                    Float rot_right = ctx.getArgument("rot_right", float.class);
+                                                                    return this.run(mc, target, forwards, upwards, right, rot_down, rot_right);
+                                                                })
+                                                        )
+                                                )
+                                        )
                                 )
-                            )
                         )
-                    )
                 )
-            )
         );
     }
 

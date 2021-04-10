@@ -33,6 +33,7 @@ public class DFDiscordRPC implements ILoader {
 
     private static IPCClient client;
     public static RichPresence.Builder builder;
+
     @Override
     public void load() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -87,7 +88,8 @@ public class DFDiscordRPC implements ILoader {
                     firstUpdate = true;
                     try {
                         client.close();
-                    } catch (Exception ignored) {}
+                    } catch (Exception ignored) {
+                    }
                 }
 
                 if (DFInfo.isOnDF()) {
@@ -151,7 +153,7 @@ public class DFDiscordRPC implements ILoader {
         RichPresence.Builder presence = new RichPresence.Builder();
         String mode = "spawn";
 
-        if (ChatReceivedEvent.dfrpcMsg.startsWith(EMPTY+"\nYou are currently at spawn.\n")) {
+        if (ChatReceivedEvent.dfrpcMsg.startsWith(EMPTY + "\nYou are currently at spawn.\n")) {
             presence.setDetails("At spawn");
 
             String state = ChatReceivedEvent.dfrpcMsg;
