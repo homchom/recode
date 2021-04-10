@@ -37,11 +37,9 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip()
     public boolean errorSound = true;
     @ConfigEntry.Category("commands")
-    @ConfigEntry.BoundedDiscrete(min = 10, max = 10000)
     @ConfigEntry.Gui.Tooltip()
     public int headMenuMaxRender = 1000;
     @ConfigEntry.Category("commands")
-    @ConfigEntry.BoundedDiscrete(min = 1, max = 360)
     @ConfigEntry.Gui.Tooltip()
     public int colorMaxRender = 158;
     @ConfigEntry.Category("commands")
@@ -56,7 +54,6 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip()
     public boolean autotime = false;
     @ConfigEntry.Category("automation")
-    @ConfigEntry.BoundedDiscrete(min = 0, max = 24000)
     @ConfigEntry.Gui.Tooltip()
     public int autotimeval = 0;
     @ConfigEntry.Category("automation")
@@ -66,15 +63,12 @@ public class ModConfig implements ConfigData {
     public boolean autofly = false;
 
     @ConfigEntry.Category("keybinds")
-    @ConfigEntry.BoundedDiscrete(min = 0, max = 1000)
     @ConfigEntry.Gui.Tooltip()
     public int fsNormal = 100;
     @ConfigEntry.Category("keybinds")
-    @ConfigEntry.BoundedDiscrete(min = 0, max = 1000)
     @ConfigEntry.Gui.Tooltip()
     public int fsMed = 350;
     @ConfigEntry.Category("keybinds")
-    @ConfigEntry.BoundedDiscrete(min = 0, max = 1000)
     @ConfigEntry.Gui.Tooltip()
     public int fsFast = 1000;
 
