@@ -2,9 +2,9 @@ package io.github.codeutilities.mixin.screen;
 
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.ModConfig;
-import io.github.codeutilities.util.BlendableTexturedButtonWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.*;
+import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
@@ -24,7 +24,7 @@ public class MixinTitleScreen extends Screen {
     @Inject(at = @At("RETURN"), method = "initWidgetsNormal")
     public void drawMenuButton(int y, int spacingY, CallbackInfo info) {
         if (ModConfig.getConfig().dfButton) {
-            this.addButton(new BlendableTexturedButtonWidget(this.width / 2 - 100 + 205, y + spacingY, 20, 20, 0, 0, 20, identifier, 20, 40,
+            this.addButton(new TexturedButtonWidget(this.width / 2 - 100 + 205, y + spacingY, 20, 20, 0, 0, 20, identifier, 20, 40,
                     (button) -> {
                         MinecraftClient mc = MinecraftClient.getInstance();
                         ServerInfo serverInfo = new ServerInfo("DF", "mcdiamondfire.com:25565", false);

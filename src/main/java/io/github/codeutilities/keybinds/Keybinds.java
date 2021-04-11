@@ -3,6 +3,9 @@ package io.github.codeutilities.keybinds;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.util.ChatUtil;
 import io.github.codeutilities.util.DFInfo;
+import io.github.codeutilities.util.FuncSearchUtil;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.client.MinecraftClient;
 
 import net.minecraft.client.options.KeyBinding;
@@ -11,8 +14,9 @@ import net.minecraft.client.util.InputUtil;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.minecraft.util.math.BlockPos;
 
-    public class Keybinds implements ClientModInitializer {
+public class Keybinds implements ClientModInitializer {
 
         MinecraftClient mc = MinecraftClient.getInstance();
 
@@ -118,6 +122,10 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
             // fly
             KeyBinding fly = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                     "key.codeutilities.fly", InputUtil.Type.KEYSYM, -1, "key.category.codeutilities"));
+
+            // search
+            KeyBinding searchFunction = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                    "key.codeutilities.search", InputUtil.Type.KEYSYM, -1, "key.category.codeutilities"));
 
             // =======
 
@@ -267,6 +275,24 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
                 // chat none
                 while (chatNone.wasPressed()) {
                     sendChat("/c 0");
+                }
+
+                // search
+                while (searchFunction.wasPressed()) {
+                    if(ModConfig.getConfig().functionProcessSearch && DFInfo.isOnDF() && DFInfo.currentState == DFInfo.State.DEV) {
+                        BlockEntity blockEntity = mc.world.getBlockEntity(new BlockPos(mc.crosshairTarget.getPos()));
+
+                        if(blockEntity != null) {
+                            if(blockEntity instanceof SignBlockEntity) {
+                                SignBlockEntity signBlockEntity = (SignBlockEntity) blockEntity;
+                                FuncSearchUtil.beginSearch(signBlockEntity);
+                            }else {
+                                FuncSearchUtil.clearSearch();
+                            }
+                        }else {
+                            FuncSearchUtil.clearSearch();
+                        }
+                    }
                 }
 
             });
