@@ -27,14 +27,16 @@ public class MixinGameMessageListener {
     private void onGameMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
         if (DFInfo.isOnDF()) {
             if (packet.getLocation() == MessageType.CHAT || packet.getLocation() == MessageType.SYSTEM) {
-                ChatReceivedEvent.onMessage(packet.getMessage(), ci);
-                String text = packet.getMessage().getString();
-                try {
-                    this.updateVersion(packet.getMessage());
-                    this.updateState(packet.getMessage());
-                }catch (Exception e) {
-                    e.printStackTrace();
-                    CodeUtilities.log(Level.ERROR, "Error while trying to parse the chat text!");
+                if (Thread.currentThread().getName() == "Render thread") {
+                    ChatReceivedEvent.onMessage(packet.getMessage(), ci);
+                    String text = packet.getMessage().getString();
+                    try {
+                        this.updateVersion(packet.getMessage());
+                        this.updateState(packet.getMessage());
+                    }catch (Exception e) {
+                        e.printStackTrace();
+                        CodeUtilities.log(Level.ERROR, "Error while trying to parse the chat text!");
+                    }
                 }
             }
         }
