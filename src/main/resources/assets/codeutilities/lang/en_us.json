@@ -28,6 +28,8 @@
     "text.autoconfig.codeutilities.option.autonightvis.@Tooltip": "Automatically enables Night Vision on entering dev or build mode.",
     "text.autoconfig.codeutilities.option.autofly": "Auto /fly",
     "text.autoconfig.codeutilities.option.autofly.@Tooltip": "Automatically runs /fly in the lobby.",
+	"text.autoconfig.codeutilities.option.autolagslayer": "Auto /lagslayer",
+	"text.autoconfig.codeutilities.option.autolagslayer.@Tooltip": "Automatically shows plot CPU on your plots.",
   
     "text.autoconfig.codeutilities.option.discordRPC": "Discord Rich Presence",
     "text.autoconfig.codeutilities.option.discordRPC.@Tooltip": "Shows where you are in DiamondFire on your Discord user profile.",

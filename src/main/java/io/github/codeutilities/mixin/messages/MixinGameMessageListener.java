@@ -52,16 +52,7 @@ public class MixinGameMessageListener {
                     CPU_UsageText.updateCPU(packet);
                     ci.cancel();
                 }
-			} else if (packet.getText().getString().matches("DiamondFire - .* .* CP - .* Tokens")) {
-                if (DFInfo.currentState != DFInfo.State.LOBBY && ModConfig.getConfig().autofly) {
-                    minecraftClient.player.sendChatMessage("/fly");
-                    ChatReceivedEvent.cancelFlyMsg = true;
-                }
-                DFInfo.currentState = DFInfo.State.LOBBY;
-
-                // fs toggle
-                FlightspeedToggle.fs_is_normal = true;
-            }
+			}
         }
     }
 
@@ -108,6 +99,13 @@ public class MixinGameMessageListener {
         if (text.matches("Joined game: .* by .*") && text.startsWith("Joined game: ")) {
             DFInfo.currentState = DFInfo.State.PLAY;
 
+            // Auto LagSlayer
+            System.out.println(CPU_UsageText.lagSlayerEnabled);
+            if (!CPU_UsageText.lagSlayerEnabled && ModConfig.getConfig().autolagslayer) {
+                minecraftClient.player.sendChatMessage("/lagslayer");
+                ChatReceivedEvent.cancelLagSlayerMsg = true;
+            }
+
             // fs toggle
             FlightspeedToggle.fs_is_normal = true;
         }
@@ -125,7 +123,6 @@ public class MixinGameMessageListener {
         }
 
         // End Session
-
         if (text.matches("^" + minecraftClient.player.getName().asString() + " finished a session with .*\\. ▶ .*$")) {
             if (DFDiscordRPC.supportSession) {
                 DFDiscordRPC.supportSession = false;
@@ -151,6 +148,12 @@ public class MixinGameMessageListener {
         if (minecraftClient.player.isCreative() && text.matches("^» You are now in build mode\\.$")) {
             if (DFInfo.currentState != DFInfo.State.BUILD) {
                 DFInfo.currentState = DFInfo.State.BUILD;
+            }
+
+            // Auto LagSlayer
+            if (!CPU_UsageText.lagSlayerEnabled && ModConfig.getConfig().autolagslayer) {
+                minecraftClient.player.sendChatMessage("/lagslayer");
+                ChatReceivedEvent.cancelLagSlayerMsg = true;
             }
 
             // fs toggle

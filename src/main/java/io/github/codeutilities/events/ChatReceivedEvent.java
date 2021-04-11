@@ -3,6 +3,7 @@ package io.github.codeutilities.events;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.dfrpc.DFDiscordRPC;
+import io.github.codeutilities.gui.CPU_UsageText;
 import io.github.codeutilities.util.ChatType;
 import io.github.codeutilities.util.ChatUtil;
 import net.minecraft.client.MinecraftClient;
@@ -22,6 +23,7 @@ public class ChatReceivedEvent {
     public static boolean cancelNVisionMsg;
     public static boolean cancelFlyMsg;
     public static boolean cancelAdminVanishMsg;
+    public static boolean cancelLagSlayerMsg;
 
     public static int cancelMsgs = 0;
 
@@ -39,6 +41,47 @@ public class ChatReceivedEvent {
         if (cancelMsgs > 0) {
             cancelMsgs--;
             cancel = true;
+        }
+
+        // cancel rpc /locate message
+        if (DFDiscordRPC.locating) {
+            if (text.contains("\n§6You")) {
+                dfrpcMsg = text.replaceAll("§.", "");
+                cancel = true;
+                showCancelMsg = false;
+                DFDiscordRPC.locating = false;
+            }
+        }
+
+        //LagSlayer enable/disable
+        if (text.matches("^\\[LagSlayer\\] Now monitoring plot ID: .*$")) {
+            String plotId = text.replaceAll("\\[LagSlayer\\] Now monitoring plot ID: ", "");
+            CPU_UsageText.monitorPlotId = plotId;
+            CPU_UsageText.lagSlayerEnabled = true;
+            if (cancelLagSlayerMsg) cancel = true;
+        }
+        if (text.matches("^\\[LagSlayer\\] Stop monitoring by typing /lagslayer again\\.$")) {
+            if (cancelLagSlayerMsg) cancel = true;
+            cancelLagSlayerMsg = false;
+        }
+
+        if (text.matches("^\\[LagSlayer\\] No longer monitoring plot ID: .*$")) {
+            CPU_UsageText.monitorPlotId = "";
+            CPU_UsageText.lagSlayerEnabled = false;
+            if (cancelLagSlayerMsg) cancel = true;
+            cancelLagSlayerMsg = false;
+        }
+        if (text.matches("^\\[LagSlayer\\] Please join a plot to monitor it with LagSlayer\\.$")) {
+            CPU_UsageText.monitorPlotId = "";
+            CPU_UsageText.lagSlayerEnabled = false;
+            if (cancelLagSlayerMsg) cancel = true;
+            cancelLagSlayerMsg = false;
+        }
+        if (text.matches("^\\[LagSlayer\\] You do not have permission to monitor this plot\\.$")) {
+            CPU_UsageText.monitorPlotId = "";
+            CPU_UsageText.lagSlayerEnabled = false;
+            if (cancelLagSlayerMsg) cancel = true;
+            cancelLagSlayerMsg = false;
         }
 
         //PJoin command
@@ -69,16 +112,6 @@ public class ChatReceivedEvent {
                     cancel = true;
                 }
                 pjoin = false;
-            }
-        }
-
-        // cancel rpc /locate message
-        if (DFDiscordRPC.locating) {
-            if (text.contains("\n§6You")) {
-                dfrpcMsg = text.replaceAll("§.", "");
-                cancel = true;
-                showCancelMsg = false;
-                DFDiscordRPC.locating = false;
             }
         }
         

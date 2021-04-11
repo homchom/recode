@@ -64,6 +64,9 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Category("automation")
     @ConfigEntry.Gui.Tooltip()
     public boolean autofly = false;
+    @ConfigEntry.Category("automation")
+    @ConfigEntry.Gui.Tooltip()
+    public boolean autolagslayer = false;
 
     @ConfigEntry.Category("keybinds")
     @ConfigEntry.Gui.Tooltip()
