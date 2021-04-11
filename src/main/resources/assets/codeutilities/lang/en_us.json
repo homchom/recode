@@ -79,6 +79,8 @@
     "text.autoconfig.codeutilities.option.cpuOnScreen.@Tooltip": "Shows CPU Usage for a plot on the screen (Requires /lagslayer to be enabled)",
 	"text.autoconfig.codeutilities.option.f3Tps": "Show TPS on Debug Screen",
 	"text.autoconfig.codeutilities.option.f3Tps.@Tooltip": "Shows the Client TPS on the F3 Debug Screen",
+    "text.autoconfig.codeutilities.option.quickVarScope": "Quick Variable Scope",
+    "text.autoconfig.codeutilities.option.quickVarScope.@Tooltip": "Typing -s, -l or -g after a variable name will change it's scope similar to /var",
   
     "codeutilities.command.require_creative_mode": "You must be in creative mode to use this command!",
   
