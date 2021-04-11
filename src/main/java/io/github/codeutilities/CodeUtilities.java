@@ -26,6 +26,9 @@ public class CodeUtilities implements ModInitializer {
     public static MinecraftClient mc = MinecraftClient.getInstance();
     public static Random rng = new Random();
 
+    public static boolean process = false;
+    public static String searchedFunction = "vattendumb";
+
     // This should be moved into its own class
     public static void openGuiAsync(LightweightGuiDescription gui) {
         new Thread(() -> {

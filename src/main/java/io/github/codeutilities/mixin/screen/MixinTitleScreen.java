@@ -5,6 +5,7 @@ import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.util.BlendableTexturedButtonWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.*;
+import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;

@@ -78,6 +78,9 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip()
     public boolean chestReplacement = false;
     @ConfigEntry.Category("screen")
+    @ConfigEntry.Gui.Tooltip()
+    public boolean functionProcessSearch = true;
+    @ConfigEntry.Category("screen")
     @ConfigEntry.BoundedDiscrete(min = 1, max = 100)
     @ConfigEntry.Gui.Tooltip()
     public int signRenderDistance = 100;
