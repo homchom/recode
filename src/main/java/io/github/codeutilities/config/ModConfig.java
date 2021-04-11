@@ -28,6 +28,9 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Category("features")
     @ConfigEntry.Gui.Tooltip()
     public boolean cpuOnScreen = true;
+    @ConfigEntry.Category("features")
+    @ConfigEntry.Gui.Tooltip()
+    public boolean f3Tps = true;
 
 
     @ConfigEntry.Category("commands")

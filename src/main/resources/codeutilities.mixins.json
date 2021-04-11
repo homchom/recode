@@ -15,7 +15,9 @@
     "item.MixinItemInsert",
     "item.MixinItemSlotUpdate",
     "messages.MixinGameMessageListener",
-	"render.InGameHudMixin"
+	"render.InGameHudMixin",
+    "packet.MixinTimeUpdateListener",
+    "render.MixinDebugHud"
   ],
   "client": [],
   "server": [],
