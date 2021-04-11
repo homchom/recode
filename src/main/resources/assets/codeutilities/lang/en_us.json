@@ -6,6 +6,8 @@
     "text.autoconfig.codeutilities.category.automation": "Automation",
     "text.autoconfig.codeutilities.category.keybinds": "Keybinds",
     "text.autoconfig.codeutilities.category.hiding": "Hiding",
+    "text.autoconfig.codeutilities.category.misc": "Miscellaneous",
+    "text.autoconfig.codeutilities.category.screen": "Screen",
     "text.autoconfig.codeutilities.category.social": "Social Features",
   
     "text.autoconfig.codeutilities.option.dfButton": "DiamondFire Menu Button",
@@ -33,6 +35,8 @@
   
     "text.autoconfig.codeutilities.option.discordRPC": "Discord Rich Presence",
     "text.autoconfig.codeutilities.option.discordRPC.@Tooltip": "Shows where you are in DiamondFire on your Discord user profile.",
+    "text.autoconfig.codeutilities.option.discordRPCTimeout": "Discord RPC Message Timeout",
+    "text.autoconfig.codeutilities.option.discordRPCTimeout.@Tooltip": "Maximum milliseconds the mod will listen for hiding /locate.",
   
     "text.autoconfig.codeutilities.option.dfCommands": "DF Commands",
     "text.autoconfig.codeutilities.option.dfCommands.@Tooltip": "Enables the commands that work only in DiamondFire.",

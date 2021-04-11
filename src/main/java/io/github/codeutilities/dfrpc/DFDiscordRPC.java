@@ -121,7 +121,7 @@ public class DFDiscordRPC {
                     mc.player.sendChatMessage("/locate");
                 }
                 locating = true;
-                for (int i = 0; i < 15000; i++) {
+                for (int i = 0; i < ModConfig.getConfig().discordRPCTimeout; i++) {
                     try {
                         DFRPCThread.sleep(1);
                     } catch (InterruptedException e) {
