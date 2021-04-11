@@ -20,14 +20,12 @@ public class CodeUtilities implements ModInitializer {
 
     public static final String MOD_ID = "codeutilities";
     public static final String MOD_NAME = "CodeUtilities";
-    public static final String MOD_VERSION = "v2.0.0";
+    public static final String MOD_VERSION = "2.2.0";
+    public static final boolean BETA = false;
 
     public static Logger LOGGER = LogManager.getLogger();
     public static MinecraftClient mc = MinecraftClient.getInstance();
     public static Random rng = new Random();
-
-    public static boolean process = false;
-    public static String searchedFunction = "vattendumb";
 
     // This should be moved into its own class
     public static void openGuiAsync(LightweightGuiDescription gui) {
