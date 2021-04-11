@@ -80,7 +80,7 @@ public class MixinGameMessageListener {
                         try {
                             String str = WebUtil.getString("https://codeutilities.github.io/data/motd.txt");
                             for(String string:str.split("\n")) {
-                                minecraftClient.player.sendMessage(new LiteralText(string), false);
+                                minecraftClient.player.sendMessage(new LiteralText(string).styled(style -> style.withColor(TextColor.fromFormatting(Formatting.AQUA))), false);
                             }
 
                             String version = WebUtil.getString("https://codeutilities.github.io/data/currentversion.txt").replaceAll("\n", "");
