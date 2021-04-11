@@ -143,7 +143,7 @@ public class DFDiscordRPC {
                 updDiscord();
                 firstUpdate = false;
             }
-            CodeUtilities.log(Level.INFO, "----------- RPC Updated! Status: " + client.getStatus());
+            //CodeUtilities.log(Level.INFO, "----------- RPC Updated! Status: " + client.getStatus());
         }
     }
 

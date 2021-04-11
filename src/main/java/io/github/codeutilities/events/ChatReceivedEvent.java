@@ -30,6 +30,7 @@ public class ChatReceivedEvent {
         String text = message.getString();
 
         boolean cancel = false;
+        boolean showCancelMsg = true;
 
         if (mc.player == null) {
             return;
@@ -76,6 +77,7 @@ public class ChatReceivedEvent {
             if (text.contains("\n§6You")) {
                 dfrpcMsg = text.replaceAll("§.", "");
                 cancel = true;
+                showCancelMsg = false;
                 DFDiscordRPC.locating = false;
             }
         }
@@ -154,7 +156,7 @@ public class ChatReceivedEvent {
 
         //Cancelling (set cancel to true)
         if (cancel) {
-            CodeUtilities.log(Level.INFO, "[CANCELLED] " + text);
+            if (showCancelMsg) CodeUtilities.log(Level.INFO, "[CANCELLED] " + text);
             ci.cancel();
         }
     }
