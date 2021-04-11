@@ -27,7 +27,7 @@ public class MixinGameMessageListener {
     private void onGameMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
         if (DFInfo.isOnDF()) {
             if (packet.getLocation() == MessageType.CHAT || packet.getLocation() == MessageType.SYSTEM) {
-                if (Thread.currentThread().getName() == "Render thread") {
+                if (Thread.currentThread().getName().equals("Render thread")) {
                     ChatReceivedEvent.onMessage(packet.getMessage(), ci);
                     String text = packet.getMessage().getString();
                     try {

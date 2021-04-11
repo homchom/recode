@@ -207,7 +207,7 @@ public class DFDiscordRPC {
 
             // BUILD RICH PRESENCE
             presence.setState("Plot ID: " + id + " - " + node);
-            presence.setDetails(name);
+            presence.setDetails(name + " ");
 
             if (ChatReceivedEvent.dfrpcMsg.startsWith("                                       \nYou are currently playing on:")) {
                 if (supportSession) presence.setSmallImage("supportsession", "In Support Session (Playing)");

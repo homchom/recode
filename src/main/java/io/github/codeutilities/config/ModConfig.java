@@ -96,6 +96,9 @@ public class ModConfig implements ConfigData {
     public boolean itemApi = true;
     @ConfigEntry.Category("misc")
     @ConfigEntry.Gui.Tooltip()
+    public boolean quickVarScope = true;
+    @ConfigEntry.Category("misc")
+    @ConfigEntry.Gui.Tooltip()
     public boolean discordRPC = true;
     @ConfigEntry.Category("misc")
     @ConfigEntry.Gui.Tooltip()
