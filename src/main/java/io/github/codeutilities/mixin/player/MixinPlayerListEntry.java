@@ -36,6 +36,9 @@ public class MixinPlayerListEntry {
     @Shadow @Final
     private GameProfile profile;
     
+    /**
+     * @author
+     */
     @Overwrite
     public void loadTextures() {
         synchronized(this) {
@@ -51,7 +54,7 @@ public class MixinPlayerListEntry {
                     }
 
                 }, true);
-                CosmeticHandler.applyCape(profile.getId(), textures);
+                CosmeticHandler.applyCosmetics(profile.getId(), textures);
             }
 
         }
