@@ -60,6 +60,7 @@ public class WebUtil {
     }
 
     public static String getString(String urlToRead) throws IOException {
+        //System.out.println(urlToRead);
         return getString(urlToRead, Charset.defaultCharset());
     }
 
