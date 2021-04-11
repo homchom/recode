@@ -45,7 +45,7 @@ public class SignBlockEntityRenderMixin {
 
         TextRenderer textRenderer = mc.textRenderer;
 
-        if(FuncSearchUtil.shouldGlow(signBlockEntity) && DFInfo.currentState == DFInfo.State.DEV && ModConfig.getConfig().functionProcessSearch) {
+        if(FuncSearchUtil.shouldGlow(signBlockEntity) && DFInfo.currentState == DFInfo.State.DEV && ModConfig.getConfig().functionProcessSearch && mc.player.isCreative()) {
             double distance = Math.sqrt(signBlockEntity.getPos().getSquaredDistance(mc.cameraEntity.getBlockPos()));
             double dist = MathHelper.clamp(distance, 1, 15);
 
