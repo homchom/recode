@@ -20,7 +20,7 @@ public class CodeUtilities implements ModInitializer {
 
     public static final String MOD_ID = "codeutilities";
     public static final String MOD_NAME = "CodeUtilities";
-    public static final String MOD_VERSION = "v2.0.0-beta";
+    public static final String MOD_VERSION = "v2.0.0";
 
     public static Logger LOGGER = LogManager.getLogger();
     public static MinecraftClient mc = MinecraftClient.getInstance();
