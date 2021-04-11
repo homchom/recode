@@ -24,35 +24,37 @@ public class CosmeticRenderer extends FeatureRenderer<AbstractClientPlayerEntity
     }
     
     public void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, AbstractClientPlayerEntity abstractClientPlayerEntity, float f, float g, float h, float j, float k, float l) {
-        BakedModel model = null;
-        JsonObject attributes = null;
-        try {
-            model = CosmeticHandler.getModelFromUUID(abstractClientPlayerEntity.getUuid());
-            attributes = CosmeticHandler.getModelAttributesFromUUID(abstractClientPlayerEntity.getUuid());
-        } catch (IOException ignoreCuzIfPlayerDoesntHaveCosmeticItWillGiveFileNotFoundException) { }
-        if(model != null){
-            Vector3f translation = model.getTransformation().head.translation;
-            Vector3f scale = model.getTransformation().head.scale;
-            ModelPart head = getContextModel().head;
-            Vector3f rotation = model.getTransformation().head.rotation;
-            float scalex = scale.getX()-0.333333333f;
-            float scaley = scale.getY()-0.333333333f;
-            float scalez = scale.getZ()-0.333333333f;
-            matrixStack.translate((translation.getX()*-1)*scalex, (translation.getY()*-1)*scaley, (translation.getZ()*-1)*scalez);
-            if(attributes.get("type").getAsString().equals("head")) rotate(matrixStack, 0f, abstractClientPlayerEntity.isInSneakingPose() ? translation.getY()*0.675f+0.27f : translation.getY()*0.675f, 0f, head.pitch, head.yaw, head.roll);
-            matrixStack.scale(scalex, scaley, scalez);
-            if(abstractClientPlayerEntity.isInSneakingPose()) matrixStack.translate(0f, 0.4f, 0f);
-            matrixStack.translate(-0.5f, -0.75f, -0.5f);
+        if(!abstractClientPlayerEntity.isInvisible()){
+            BakedModel model = null;
+            JsonObject attributes = null;
+            try {
+                model = CosmeticHandler.getModelFromUUID(abstractClientPlayerEntity.getUuid());
+                attributes = CosmeticHandler.getModelAttributesFromUUID(abstractClientPlayerEntity.getUuid());
+            } catch (IOException ignoreCuzIfPlayerDoesntHaveCosmeticItWillGiveFileNotFoundException) { }
+            if(model != null){
+                Vector3f translation = model.getTransformation().head.translation;
+                Vector3f scale = model.getTransformation().head.scale;
+                ModelPart head = getContextModel().head;
+                Vector3f rotation = model.getTransformation().head.rotation;
+                float scalex = scale.getX()-0.333333333f;
+                float scaley = scale.getY()-0.333333333f;
+                float scalez = scale.getZ()-0.333333333f;
+                matrixStack.translate((translation.getX()*-1)*scalex, (translation.getY()*-1)*scaley, (translation.getZ()*-1)*scalez);
+                if(attributes.get("type").getAsString().equals("head")) rotate(matrixStack, 0f, abstractClientPlayerEntity.isInSneakingPose() ? translation.getY()*0.675f+0.27f : translation.getY()*0.675f, 0f, head.pitch, head.yaw, head.roll);
+                matrixStack.scale(scalex, scaley, scalez);
+                if(abstractClientPlayerEntity.isInSneakingPose()) matrixStack.translate(0f, 0.4f, 0f);
+                matrixStack.translate(-0.5f, -0.75f, -0.5f);
 
-            MinecraftClient.getInstance().getBlockRenderManager().getModelRenderer().render(
-                    matrixStack.peek(),
-                    vertexConsumerProvider.getBuffer(RenderLayer.getSolid()),
-                    null,
-                    model,
-                    1f, 1f, 1f,
-                    Math.max(i - 2, 0),
-                    OverlayTexture.DEFAULT_UV
-            );
+                MinecraftClient.getInstance().getBlockRenderManager().getModelRenderer().render(
+                        matrixStack.peek(),
+                        vertexConsumerProvider.getBuffer(RenderLayer.getSolid()),
+                        null,
+                        model,
+                        1f, 1f, 1f,
+                        Math.max(i - 2, 0),
+                        OverlayTexture.DEFAULT_UV
+                );
+            }
         }
     }
 
