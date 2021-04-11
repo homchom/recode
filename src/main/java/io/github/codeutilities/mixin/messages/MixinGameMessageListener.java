@@ -7,21 +7,30 @@ import io.github.codeutilities.events.ChatReceivedEvent;
 import io.github.codeutilities.keybinds.FlightspeedToggle;
 import io.github.codeutilities.util.DFInfo;
 import io.github.codeutilities.gui.CPU_UsageText;
+import io.github.codeutilities.util.WebUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.MessageType;
 import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
+import net.minecraft.text.ClickEvent;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
+import net.minecraft.text.TextColor;
+import net.minecraft.util.Formatting;
 import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.io.IOException;
+
 @Mixin(ClientPlayNetworkHandler.class)
 public class MixinGameMessageListener {
     private MinecraftClient minecraftClient = MinecraftClient.getInstance();
+
+    private boolean motdShown = false;
 
     @Inject(method = "onGameMessage", at = @At("HEAD"), cancellable = true)
     private void onGameMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
@@ -66,6 +75,24 @@ public class MixinGameMessageListener {
                 long time = System.currentTimeMillis() / 1000L;
                 if (time - lastPatchCheck > 2) {
                     String patchText = text.replaceAll("Current patch: (.*)\\. See the patch notes with \\/patch!", "$1");
+
+                    if(!motdShown) {
+                        try {
+                            String str = WebUtil.getString("https://codeutilities.github.io/data/motd.txt");
+                            for(String string:str.split("\n")) {
+                                minecraftClient.player.sendMessage(new LiteralText(string).styled(style -> style.withColor(TextColor.fromFormatting(Formatting.AQUA))), false);
+                            }
+
+                            String version = WebUtil.getString("https://codeutilities.github.io/data/currentversion.txt").replaceAll("\n", "");
+                            if(!CodeUtilities.MOD_VERSION.equals(version) && !CodeUtilities.BETA) {
+                                minecraftClient.player.sendMessage(new LiteralText(String.format("A new version of CodeUtilities (%s) is available! Click here to download!", version)).styled(style ->
+                                        style.withColor(TextColor.fromFormatting(Formatting.AQUA))).styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://codeutilities.github.io/"))), false);
+                            }
+
+                        } catch (IOException ignored) {}
+
+                        motdShown = true;
+                    }
 
                     DFInfo.isPatchNewer(patchText, "0"); //very lazy validation lol
                     DFInfo.patchId = patchText;
