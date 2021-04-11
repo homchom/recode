@@ -118,6 +118,17 @@ public class ChatReceivedEvent {
         String msgToString = message.toString();
         String msgGetString = message.getString();
 
+        /*
+        // highlight name
+        String displayName = mc.player.getDisplayName().getString();
+        if (ModConfig.getConfig().highlightName && msgGetString.matches("^[^0-z].+:.*") && !msgGetString.matches("^[0-z]+ .*" + displayName + ": ")) {
+            if (msgGetString.replaceAll("^[^0-z].+:", "").contains(displayName)) {
+                String newMsg = msgToString.replaceAll(displayName, "§e" + displayName);
+                mc.player.sendMessage(newMsg, false)
+            }
+        }
+        */
+
         // hide join/leave messages
         if (ModConfig.getConfig().hideJoinLeaveMessages
                 && msgToString.contains("', siblings=[], style=Style{ color=gray, bold=")
