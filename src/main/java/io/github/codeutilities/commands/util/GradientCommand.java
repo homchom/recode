@@ -29,13 +29,13 @@ public class GradientCommand extends Command {
 
                             try {
                                 if (strStartColor.startsWith("#")) {
-                                    startColor = new HSLColor(Color.decode(strStartColor));
-                                }else if (strStartColor.matches("^[0-9a-f]*")) {
-                                    startColor = new HSLColor(Color.decode("#" + strStartColor));
+                                    startColor = new HSLColor(Color.decode(strStartColor.toLowerCase()));
+                                }else if (strStartColor.matches("^[0-9a-fA-F]*")) {
+                                    startColor = new HSLColor(Color.decode("#" + strStartColor.toLowerCase()));
                                 }else if (strStartColor.startsWith("&x")) {
-                                    startColor = new HSLColor(Color.decode(strStartColor.replaceAll("&", "").replaceAll("x", "#")));
-                                }else if (strStartColor.matches("^&[0-9a-f]")) {
-                                    char[] chars = strStartColor.replaceAll("&", "").toCharArray();
+                                    startColor = new HSLColor(Color.decode(strStartColor.toLowerCase().replaceAll("&", "").replaceAll("x", "#")));
+                                }else if (strStartColor.matches("^&[0-9a-fA-F]")) {
+                                    char[] chars = strStartColor.toLowerCase().replaceAll("&", "").toCharArray();
                                     MinecraftColors mcColor = MinecraftColors.fromCode(chars[0]);
                                     startColor = new HSLColor(mcColor.getColor());
                                 }else {
@@ -44,13 +44,13 @@ public class GradientCommand extends Command {
                                 }
 
                                 if (strEndColor.startsWith("#")) {
-                                    endColor = new HSLColor(Color.decode(strEndColor));
-                                }else if (strEndColor.matches("^[0-9a-f]*")) {
-                                    endColor = new HSLColor(Color.decode("#" + strEndColor));
+                                    endColor = new HSLColor(Color.decode(strEndColor.toLowerCase()));
+                                }else if (strEndColor.matches("^[0-9a-fA-F]*")) {
+                                    endColor = new HSLColor(Color.decode("#" + strEndColor.toLowerCase()));
                                 }else if (strEndColor.startsWith("&x")) {
-                                    endColor = new HSLColor(Color.decode(strEndColor.replaceAll("&", "").replaceAll("x", "#")));
-                                }else if (strEndColor.matches("^&[0-9a-f]")) {
-                                    char[] chars = strEndColor.replaceAll("&", "").toCharArray();
+                                    endColor = new HSLColor(Color.decode(strEndColor.toLowerCase().replaceAll("&", "").replaceAll("x", "#")));
+                                }else if (strEndColor.matches("^&[0-9a-fA-F]")) {
+                                    char[] chars = strEndColor.toLowerCase().replaceAll("&", "").toCharArray();
                                     MinecraftColors mcColor = MinecraftColors.fromCode(chars[0]);
                                     endColor = new HSLColor(mcColor.getColor());
                                 }else {
