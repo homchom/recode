@@ -25,6 +25,7 @@ import java.util.*;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public class MixinItemSlotUpdate {
+    private long lobbyTime = System.currentTimeMillis() - 1000;
 
     MinecraftClient mc = MinecraftClient.getInstance();
 
@@ -52,8 +53,12 @@ public class MixinItemSlotUpdate {
 
                     // Auto fly
                     if (ModConfig.getConfig().autofly) {
-                        mc.player.sendChatMessage("/fly");
-                        ChatReceivedEvent.cancelFlyMsg = true;
+                        if(System.currentTimeMillis() > lobbyTime) { // theres a bug with /fly running twice this is a temp fix.
+                            mc.player.sendChatMessage("/fly");
+                            ChatReceivedEvent.cancelFlyMsg = true;
+                            lobbyTime = System.currentTimeMillis() + 1000;
+                        }
+
                     }
 
                     // Auto LagSlayer
