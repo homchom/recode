@@ -6,6 +6,8 @@
     "text.autoconfig.codeutilities.category.automation": "Automation",
     "text.autoconfig.codeutilities.category.keybinds": "Keybinds",
     "text.autoconfig.codeutilities.category.hiding": "Hiding",
+    "text.autoconfig.codeutilities.category.misc": "Miscellaneous",
+    "text.autoconfig.codeutilities.category.screen": "Screen",
     "text.autoconfig.codeutilities.category.social": "Social Features",
   
     "text.autoconfig.codeutilities.option.dfButton": "DiamondFire Menu Button",
@@ -28,9 +30,13 @@
     "text.autoconfig.codeutilities.option.autonightvis.@Tooltip": "Automatically enables Night Vision on entering dev or build mode.",
     "text.autoconfig.codeutilities.option.autofly": "Auto /fly",
     "text.autoconfig.codeutilities.option.autofly.@Tooltip": "Automatically runs /fly in the lobby.",
+	"text.autoconfig.codeutilities.option.autolagslayer": "Auto /lagslayer",
+	"text.autoconfig.codeutilities.option.autolagslayer.@Tooltip": "Automatically shows plot CPU on your plots.",
   
     "text.autoconfig.codeutilities.option.discordRPC": "Discord Rich Presence",
     "text.autoconfig.codeutilities.option.discordRPC.@Tooltip": "Shows where you are in DiamondFire on your Discord user profile.",
+    "text.autoconfig.codeutilities.option.discordRPCTimeout": "Discord RPC Message Timeout",
+    "text.autoconfig.codeutilities.option.discordRPCTimeout.@Tooltip": "Maximum milliseconds the mod will listen for hiding /locate.",
   
     "text.autoconfig.codeutilities.option.dfCommands": "DF Commands",
     "text.autoconfig.codeutilities.option.dfCommands.@Tooltip": "Enables the commands that work only in DiamondFire.",
@@ -71,6 +77,10 @@
 
     "text.autoconfig.codeutilities.option.cpuOnScreen": "Show CPU on Screen",
     "text.autoconfig.codeutilities.option.cpuOnScreen.@Tooltip": "Shows CPU Usage for a plot on the screen (Requires /lagslayer to be enabled)",
+	"text.autoconfig.codeutilities.option.f3Tps": "Show TPS on Debug Screen",
+	"text.autoconfig.codeutilities.option.f3Tps.@Tooltip": "Shows the Client TPS on the F3 Debug Screen",
+    "text.autoconfig.codeutilities.option.quickVarScope": "Quick Variable Scope",
+    "text.autoconfig.codeutilities.option.quickVarScope.@Tooltip": "Typing -s, -l or -g after a variable name will change it's scope similar to /var",
   
     "codeutilities.command.require_creative_mode": "You must be in creative mode to use this command!",
   

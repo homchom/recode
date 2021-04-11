@@ -121,7 +121,7 @@ public class DFDiscordRPC {
                     mc.player.sendChatMessage("/locate");
                 }
                 locating = true;
-                for (int i = 0; i < 15000; i++) {
+                for (int i = 0; i < ModConfig.getConfig().discordRPCTimeout; i++) {
                     try {
                         DFRPCThread.sleep(1);
                     } catch (InterruptedException e) {
@@ -143,7 +143,7 @@ public class DFDiscordRPC {
                 updDiscord();
                 firstUpdate = false;
             }
-            CodeUtilities.log(Level.INFO, "----------- RPC Updated! Status: " + client.getStatus());
+            //CodeUtilities.log(Level.INFO, "----------- RPC Updated! Status: " + client.getStatus());
         }
     }
 
@@ -207,7 +207,7 @@ public class DFDiscordRPC {
 
             // BUILD RICH PRESENCE
             presence.setState("Plot ID: " + id + " - " + node);
-            presence.setDetails(name);
+            presence.setDetails(name + " ");
 
             if (ChatReceivedEvent.dfrpcMsg.startsWith("                                       \nYou are currently playing on:")) {
                 if (supportSession) presence.setSmallImage("supportsession", "In Support Session (Playing)");

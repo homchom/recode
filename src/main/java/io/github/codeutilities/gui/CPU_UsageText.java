@@ -12,6 +12,10 @@ import net.minecraft.util.Formatting;
 
 public class CPU_UsageText {
 
+    public static boolean hasLagSlayer;
+    public static boolean lagSlayerEnabled;
+    public static String monitorPlotId;
+
     private static Text barsText;
     private static Text numberText;
     private static long lastUpdate;
@@ -64,9 +68,11 @@ public class CPU_UsageText {
         if((System.currentTimeMillis() - lastUpdate) > 1200) {
             barsText = null;
             numberText = null;
+            hasLagSlayer = false;
             return;
         }
 
+        hasLagSlayer = true;
         renderText(stack, "CPU Usage:", 3, Formatting.GOLD.getColorValue());
         renderText(stack, barsText, 2);
         renderText(stack, numberText, 1);
