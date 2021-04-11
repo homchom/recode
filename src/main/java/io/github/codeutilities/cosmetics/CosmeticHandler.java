@@ -51,7 +51,12 @@ public class CosmeticHandler {
             }
 
             return jsonElement.getAsString();
-        }catch(JsonSyntaxException ignored) { }
+        }catch(JsonSyntaxException ignored) {
+            content = WebUtil.getString("https://codeutilities.github.io/data/cosmetics/players/default.json");
+            JsonObject jsonObject = new JsonParser().parse(content).getAsJsonObject();
+            JsonElement jsonElement = jsonObject.get(key);
+            if (!jsonElement.isJsonNull()) return jsonElement.getAsString();
+        }
         return null;
     }
     
