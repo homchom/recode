@@ -2,6 +2,7 @@ package io.github.codeutilities.events;
 
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.ModConfig;
+import io.github.codeutilities.config.NoteSounds;
 import io.github.codeutilities.dfrpc.DFDiscordRPC;
 import io.github.codeutilities.gui.CPU_UsageText;
 import io.github.codeutilities.util.chat.ChatType;
@@ -121,34 +122,33 @@ public class ChatReceivedEvent {
         String msgWithoutColor = msgWithColor.replaceAll("§.", "");
 
         // highlight name
-        String displayName = mc.player.getDisplayName().getString();
-        if (ModConfig.getConfig().highlightName && msgGetString.matches("^[^0-z].+:.*") && !msgGetString.matches("^[^0-z]+ .*" + displayName + ": .*")) {
-            if (msgGetString.replaceAll("^[^0-z].+:", "").contains(displayName)) {
-                String[] chars = msgWithColor.split("");
-                int i = 0;
-                int newMsgIter = 0;
-                StringBuilder getColorCodes = new StringBuilder();
-                String newMsg = msgWithColor;
-                String textLeft;
+        if (ModConfig.getConfig().highlight) {
+            String highlightMatcher = ModConfig.getConfig().highlightMatcher.replaceAll("\\{name}", mc.player.getDisplayName().getString());
+            if (msgGetString.matches("^[^0-z].+:.*") && !(ModConfig.getConfig().highlightSender || msgGetString.matches("^[^0-z]+ .*" + highlightMatcher + ": .*"))) {
+                if (msgGetString.replaceAll("^[^0-z].+:", "").contains(highlightMatcher)) {
+                    String[] chars = msgWithColor.split("");
+                    int i = 0;
+                    int newMsgIter = 0;
+                    StringBuilder getColorCodes = new StringBuilder();
+                    String newMsg = msgWithColor;
+                    String textLeft;
 
+                    for (String currentChar : chars) {
+                        textLeft = msgWithColor.substring(i) + " ";
+                        i++;
+                        if (currentChar.equals("§")) getColorCodes.append(currentChar).append(chars[i]);
+                        if (textLeft.startsWith(highlightMatcher + " ")) {
+                            newMsg = newMsg.substring(0, newMsgIter) + ModConfig.getConfig().highlightPrefix.replaceAll("&", "§")
+                                    + highlightMatcher + getColorCodes.toString() + newMsg.substring(newMsgIter).replaceFirst("^" + highlightMatcher, "");
 
-                for (String currentChar : chars) {
-                    textLeft = msgWithColor.substring(i) + " ";
-                    i++;
-                    if (currentChar.equals("§")) getColorCodes.append(currentChar).append(chars[i]);
-                    if (textLeft.startsWith(displayName + " ")) {
-                        newMsg = newMsg.substring(0, newMsgIter) + ModConfig.getConfig().highlightNamePrefix.replaceAll("&", "§")
-                                + displayName + getColorCodes + newMsg.substring(newMsgIter).replaceFirst("^" + displayName, "");
-
-                        System.out.println("iter " + newMsgIter + " --- " + newMsg.substring(0, newMsgIter) + "+++" + ModConfig.getConfig().highlightNamePrefix.replaceAll("&", "§") + "+++" +
-                                displayName + "+++" + getColorCodes + "+++" + newMsg.substring(newMsgIter).replaceFirst("^" + displayName, ""));
-
-                        newMsgIter = newMsgIter + ModConfig.getConfig().highlightNamePrefix.length() + getColorCodes.toString().length();
+                            newMsgIter = newMsgIter + ModConfig.getConfig().highlightPrefix.length() + getColorCodes.toString().length();
+                        }
+                        newMsgIter++;
                     }
-                    newMsgIter++;
+                    mc.player.sendMessage(TextUtil.colorCodesToTextComponent(newMsg), false);
+                    if (ModConfig.getConfig().highlightSound != NoteSounds.None) mc.player.playSound(ModConfig.getConfig().highlightSound.getSound(), 3, 1);
+                    cancel = true;
                 }
-                mc.player.sendMessage(TextUtil.colorCodesToTextComponent(newMsg), false);
-                cancel = true;
             }
         }
 
