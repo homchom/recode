@@ -71,7 +71,7 @@ public class CPU_UsageText {
         }
 
         hasLagSlayer = true;
-        renderText(stack, "CPU Usage:", 3, Formatting.GOLD.getColorValue());
+        renderText(stack, Formatting.GOLD.getColorValue());
         renderText(stack, barsText, 2);
         renderText(stack, numberText, 1);
     }
@@ -80,7 +80,7 @@ public class CPU_UsageText {
         textRenderer.draw(stack, text, 5, mainWindow.getScaledHeight() - (textRenderer.fontHeight * line), 0xffffff);
     }
 
-    private static void renderText(MatrixStack stack, String text, int line, int color) {
-        textRenderer.draw(stack, text, 5, mainWindow.getScaledHeight() - (textRenderer.fontHeight * line), color);
+    private static void renderText(MatrixStack stack, int color) {
+        textRenderer.draw(stack, "CPU Usage:", 5, mainWindow.getScaledHeight() - (textRenderer.fontHeight * 3), color);
     }
 }

@@ -15,7 +15,7 @@ import net.minecraft.util.math.BlockPos;
 
 public class Keybinds implements ClientModInitializer {
 
-    MinecraftClient mc = MinecraftClient.getInstance();
+    final MinecraftClient mc = MinecraftClient.getInstance();
 
     @Override
     public void onInitializeClient() {

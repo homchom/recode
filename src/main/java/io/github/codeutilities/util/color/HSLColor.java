@@ -376,12 +376,10 @@ public class HSLColor {
     }
 
     public String toString() {
-        String toString =
-                "HSLColor[h=" + hsl[0] +
-                        ",s=" + hsl[1] +
-                        ",l=" + hsl[2] +
-                        ",alpha=" + alpha + "]";
 
-        return toString;
+        return "HSLColor[h=" + hsl[0] +
+                ",s=" + hsl[1] +
+                ",l=" + hsl[2] +
+                ",alpha=" + alpha + "]";
     }
 }

@@ -27,8 +27,8 @@ import java.util.concurrent.Executors;
 
 public class CosmeticHandler {
     private static final MinecraftClient mc = MinecraftClient.getInstance();
-    public static ModelLoader modelLoader = new ModelLoader(mc.getResourceManager(), mc.getBlockColors(), mc.getProfiler(), mc.options.mipmapLevels);
-    public static SpriteAtlasManager spriteAtlasTexture = modelLoader.upload(MinecraftClient.getInstance().getTextureManager(), MinecraftClient.getInstance().getProfiler());
+    public static final ModelLoader modelLoader = new ModelLoader(mc.getResourceManager(), mc.getBlockColors(), mc.getProfiler(), mc.options.mipmapLevels);
+    public static final SpriteAtlasManager spriteAtlasTexture = modelLoader.upload(MinecraftClient.getInstance().getTextureManager(), MinecraftClient.getInstance().getProfiler());
     private static final ExecutorService executorService = Executors.newFixedThreadPool(10);
     private static final ArrayList<String> cachedHatUUIDs = new ArrayList<>();
     private static final ArrayList<BakedModel> cachedHatModels = new ArrayList<>();

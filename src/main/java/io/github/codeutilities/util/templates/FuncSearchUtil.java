@@ -56,7 +56,7 @@ public class FuncSearchUtil {
         FUNCTION(Arrays.asList("CALL FUNCTION", "FUNCTION")),
         PROCESS(Arrays.asList("START PROCESS", "PROCESS"));
 
-        public List<String> signText;
+        public final List<String> signText;
 
         SearchType(List<String> signText) {
             this.signText = signText;

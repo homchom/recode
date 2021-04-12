@@ -28,8 +28,10 @@ public enum MinecraftColors {
 
     private static final char COLOR_CHAR = '§';
     private final TextColor formatting;
-    int r, g, b;
-    char mc;
+    final int r;
+    final int g;
+    final int b;
+    final char mc;
 
     MinecraftColors(int r, int g, int b, char mc, Formatting formatting) {
         this.r = r;

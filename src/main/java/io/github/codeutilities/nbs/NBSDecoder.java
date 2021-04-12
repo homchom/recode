@@ -138,7 +138,7 @@ public class NBSDecoder {
 
             for (int currentTick = 0; currentTick < length + 1; currentTick++) {
                 boolean noteExists = noteExistence[i][currentTick];
-                if (noteExists == true) {
+                if (noteExists) {
 
                     int noteVelocity = velocityList[i][currentTick];
                     int notePanning = panningList[i][currentTick];
@@ -202,7 +202,7 @@ public class NBSDecoder {
 
         for (int currentTick = 0; currentTick < length + 1; currentTick++) {
             boolean columnExists = columnExistence[currentTick];
-            if (columnExists == true) {
+            if (columnExists) {
                 StringBuilder columnStringBuilder = new StringBuilder();
                 if (!firstNoted) {
                     columnStringBuilder.append(currentTick + 1);
@@ -213,7 +213,7 @@ public class NBSDecoder {
                 boolean firstAppend = true;
                 for (int i = 0; i < layers; i++) {
                     boolean noteExists = noteExistence[i][currentTick];
-                    if (noteExists == true) {
+                    if (noteExists) {
                         String laterNoteString = addStringList[i][currentTick];
 
                         int noteInstrument = instrumentList[i][currentTick];
@@ -229,7 +229,7 @@ public class NBSDecoder {
                             int instrumentId = noteInstrument - vanillaInstruments;
                             noteKeyOffset = customPitchList[instrumentId] - 45;
                         }
-                        if (firstAppend == true) {
+                        if (firstAppend) {
                             columnStringBuilder.append(":").append(noteInstrument + 1).append(",").append(getMinecraftPitch(noteKey + (double) noteFinePitch / 100d, noteKeyOffset)).append(laterNoteString);
                             firstAppend = false;
                         } else {
@@ -237,7 +237,7 @@ public class NBSDecoder {
                         }
                     }
                 }
-                stringBuilder.append(columnStringBuilder.toString());
+                stringBuilder.append(columnStringBuilder);
             }
         }
 

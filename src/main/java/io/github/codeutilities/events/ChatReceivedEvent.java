@@ -56,8 +56,7 @@ public class ChatReceivedEvent {
 
         //LagSlayer enable/disable
         if (text.matches("^\\[LagSlayer\\] Now monitoring plot ID: .*$")) {
-            String plotId = text.replaceAll("\\[LagSlayer\\] Now monitoring plot ID: ", "");
-            CPU_UsageText.monitorPlotId = plotId;
+            CPU_UsageText.monitorPlotId = text.replaceAll("\\[LagSlayer\\] Now monitoring plot ID: ", "");
             CPU_UsageText.lagSlayerEnabled = true;
             if (cancelLagSlayerMsg) cancel = true;
         }
@@ -91,7 +90,6 @@ public class ChatReceivedEvent {
             if (msg.startsWith("                                       \n")) {
                 if (msg.contains(" is currently at spawn.\n")) {
                     ChatUtil.sendMessage("This player is not in a plot.", ChatType.FAIL);
-                    cancel = true;
                 } else {
                     // PLOT ID
                     Pattern pattern = Pattern.compile("\\[[0-9]+]\n");
@@ -110,8 +108,8 @@ public class ChatReceivedEvent {
                         ChatUtil.sendMessage("Error while trying to join the plot.", ChatType.FAIL);
                     }
 
-                    cancel = true;
                 }
+                cancel = true;
                 pjoin = false;
             }
         }
@@ -140,10 +138,10 @@ public class ChatReceivedEvent {
                     if (currentChar.equals("§")) getColorCodes.append(currentChar).append(chars[i]);
                     if (textLeft.startsWith(displayName + " ")) {
                         newMsg = newMsg.substring(0, newMsgIter) + ModConfig.getConfig().highlightNamePrefix.replaceAll("&", "§")
-                                + displayName + getColorCodes.toString() + newMsg.substring(newMsgIter).replaceFirst("^" + displayName, "");
+                                + displayName + getColorCodes + newMsg.substring(newMsgIter).replaceFirst("^" + displayName, "");
 
                         System.out.println("iter " + newMsgIter + " --- " + newMsg.substring(0, newMsgIter) + "+++" + ModConfig.getConfig().highlightNamePrefix.replaceAll("&", "§") + "+++" +
-                                displayName + "+++" + getColorCodes.toString() + "+++" + newMsg.substring(newMsgIter).replaceFirst("^" + displayName, ""));
+                                displayName + "+++" + getColorCodes + "+++" + newMsg.substring(newMsgIter).replaceFirst("^" + displayName, ""));
 
                         newMsgIter = newMsgIter + ModConfig.getConfig().highlightNamePrefix.length() + getColorCodes.toString().length();
                     }

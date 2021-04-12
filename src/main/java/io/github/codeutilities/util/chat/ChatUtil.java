@@ -4,7 +4,6 @@ import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.util.DFInfo;
 import io.github.codeutilities.util.color.MinecraftColors;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -15,8 +14,6 @@ import java.awt.*;
 import java.util.List;
 
 public class ChatUtil {
-
-    private static final MinecraftClient mc = MinecraftClient.getInstance();
 
     public static void sendMessage(String text) {
         sendMessage(new LiteralText(text), null);
