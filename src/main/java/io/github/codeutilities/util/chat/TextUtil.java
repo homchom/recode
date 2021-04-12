@@ -81,9 +81,6 @@ public class TextUtil {
 
             // modifiers
             lastColorOccurrence = sibling.lastIndexOf(literalColorCodes);
-            System.out.println("SIBLING = " + sibling +
-                    "\nLAST COLOR = " + lastColorOccurrence +
-                    "\nINDEX OF §o = " + sibling.indexOf("§o"));
             if (sibling.indexOf("§l") > lastColorOccurrence) bold = "true";
             if (sibling.indexOf("§o") > lastColorOccurrence) italic = "true";
             if (sibling.indexOf("§n") > lastColorOccurrence) underlined = "true";
@@ -105,7 +102,6 @@ public class TextUtil {
             }
         }
 
-        System.out.println(result);
         return result;
     }
 
