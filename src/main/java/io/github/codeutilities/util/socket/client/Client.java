@@ -3,7 +3,7 @@ package io.github.codeutilities.util.socket.client;
 import com.google.gson.JsonObject;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.util.ItemUtil;
-import io.github.codeutilities.util.ToasterUtil;
+import io.github.codeutilities.util.render.ToasterUtil;
 import io.github.codeutilities.util.socket.SocketHandler;
 import io.github.codeutilities.util.socket.client.type.SocketItem;
 import net.fabricmc.api.EnvType;

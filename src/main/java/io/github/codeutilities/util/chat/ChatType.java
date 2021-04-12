@@ -1,4 +1,4 @@
-package io.github.codeutilities.util;
+package io.github.codeutilities.util.chat;
 
 public enum ChatType {
     SUCCESS("§a§l»", 'f'),

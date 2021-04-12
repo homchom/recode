@@ -3,8 +3,10 @@ package io.github.codeutilities.events;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.dfrpc.DFDiscordRPC;
-import io.github.codeutilities.util.ChatType;
-import io.github.codeutilities.util.ChatUtil;
+import io.github.codeutilities.gui.CPU_UsageText;
+import io.github.codeutilities.util.chat.ChatType;
+import io.github.codeutilities.util.chat.ChatUtil;
+import io.github.codeutilities.util.chat.TextUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import org.apache.logging.log4j.Level;
@@ -22,6 +24,7 @@ public class ChatReceivedEvent {
     public static boolean cancelNVisionMsg;
     public static boolean cancelFlyMsg;
     public static boolean cancelAdminVanishMsg;
+    public static boolean cancelLagSlayerMsg;
 
     public static int cancelMsgs = 0;
 
@@ -30,6 +33,7 @@ public class ChatReceivedEvent {
         String text = message.getString();
 
         boolean cancel = false;
+        boolean showCancelMsg = true;
 
         if (mc.player == null) {
             return;
@@ -38,6 +42,47 @@ public class ChatReceivedEvent {
         if (cancelMsgs > 0) {
             cancelMsgs--;
             cancel = true;
+        }
+
+        // cancel rpc /locate message
+        if (DFDiscordRPC.locating) {
+            if (text.contains("\n§6You")) {
+                dfrpcMsg = text.replaceAll("§.", "");
+                cancel = true;
+                showCancelMsg = false;
+                DFDiscordRPC.locating = false;
+            }
+        }
+
+        //LagSlayer enable/disable
+        if (text.matches("^\\[LagSlayer\\] Now monitoring plot ID: .*$")) {
+            String plotId = text.replaceAll("\\[LagSlayer\\] Now monitoring plot ID: ", "");
+            CPU_UsageText.monitorPlotId = plotId;
+            CPU_UsageText.lagSlayerEnabled = true;
+            if (cancelLagSlayerMsg) cancel = true;
+        }
+        if (text.matches("^\\[LagSlayer\\] Stop monitoring by typing /lagslayer again\\.$")) {
+            if (cancelLagSlayerMsg) cancel = true;
+            cancelLagSlayerMsg = false;
+        }
+
+        if (text.matches("^\\[LagSlayer\\] No longer monitoring plot ID: .*$")) {
+            CPU_UsageText.monitorPlotId = "";
+            CPU_UsageText.lagSlayerEnabled = false;
+            if (cancelLagSlayerMsg) cancel = true;
+            cancelLagSlayerMsg = false;
+        }
+        if (text.matches("^\\[LagSlayer\\] Please join a plot to monitor it with LagSlayer\\.$")) {
+            CPU_UsageText.monitorPlotId = "";
+            CPU_UsageText.lagSlayerEnabled = false;
+            if (cancelLagSlayerMsg) cancel = true;
+            cancelLagSlayerMsg = false;
+        }
+        if (text.matches("^\\[LagSlayer\\] You do not have permission to monitor this plot\\.$")) {
+            CPU_UsageText.monitorPlotId = "";
+            CPU_UsageText.lagSlayerEnabled = false;
+            if (cancelLagSlayerMsg) cancel = true;
+            cancelLagSlayerMsg = false;
         }
 
         //PJoin command
@@ -71,17 +116,43 @@ public class ChatReceivedEvent {
             }
         }
 
-        // cancel rpc /locate message
-        if (DFDiscordRPC.locating) {
-            if (text.contains("\n§6You")) {
-                dfrpcMsg = text.replaceAll("§.", "");
-                cancel = true;
-                DFDiscordRPC.locating = false;
-            }
-        }
-
         String msgToString = message.toString();
         String msgGetString = message.getString();
+
+        String msgWithColor = TextUtil.textComponentToColorCodes(message);
+        String msgWithoutColor = msgWithColor.replaceAll("§.", "");
+
+        // highlight name
+        String displayName = mc.player.getDisplayName().getString();
+        if (ModConfig.getConfig().highlightName && msgGetString.matches("^[^0-z].+:.*") && !msgGetString.matches("^[^0-z]+ .*" + displayName + ": .*")) {
+            if (msgGetString.replaceAll("^[^0-z].+:", "").contains(displayName)) {
+                String[] chars = msgWithColor.split("");
+                int i = 0;
+                int newMsgIter = 0;
+                StringBuilder getColorCodes = new StringBuilder();
+                String newMsg = msgWithColor;
+                String textLeft;
+
+
+                for (String currentChar : chars) {
+                    textLeft = msgWithColor.substring(i) + " ";
+                    i++;
+                    if (currentChar.equals("§")) getColorCodes.append(currentChar).append(chars[i]);
+                    if (textLeft.startsWith(displayName + " ")) {
+                        newMsg = newMsg.substring(0, newMsgIter) + ModConfig.getConfig().highlightNamePrefix.replaceAll("&", "§")
+                                + displayName + getColorCodes.toString() + newMsg.substring(newMsgIter).replaceFirst("^" + displayName, "");
+
+                        System.out.println("iter " + newMsgIter + " --- " + newMsg.substring(0, newMsgIter) + "+++" + ModConfig.getConfig().highlightNamePrefix.replaceAll("&", "§") + "+++" +
+                                displayName + "+++" + getColorCodes.toString() + "+++" + newMsg.substring(newMsgIter).replaceFirst("^" + displayName, ""));
+
+                        newMsgIter = newMsgIter + ModConfig.getConfig().highlightNamePrefix.length() + getColorCodes.toString().length();
+                    }
+                    newMsgIter++;
+                }
+                mc.player.sendMessage(TextUtil.colorCodesToTextComponent(newMsg), false);
+                cancel = true;
+            }
+        }
 
         // hide join/leave messages
         if (ModConfig.getConfig().hideJoinLeaveMessages
@@ -154,7 +225,7 @@ public class ChatReceivedEvent {
 
         //Cancelling (set cancel to true)
         if (cancel) {
-            CodeUtilities.log(Level.INFO, "[CANCELLED] " + text);
+            if (showCancelMsg) CodeUtilities.log(Level.INFO, "[CANCELLED] " + msgWithColor);
             ci.cancel();
         }
     }

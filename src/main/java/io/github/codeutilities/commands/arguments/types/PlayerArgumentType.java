@@ -5,12 +5,16 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.EntitySelectorReader;
 
 import java.util.concurrent.CompletableFuture;
 
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.EntitySelectorReader;
+
 public class PlayerArgumentType implements ArgumentType<String> {
+    private static final MinecraftClient mc = MinecraftClient.getInstance();
+
     public PlayerArgumentType() {
     }
 

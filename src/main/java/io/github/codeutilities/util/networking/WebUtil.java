@@ -1,4 +1,4 @@
-package io.github.codeutilities.util;
+package io.github.codeutilities.util.networking;
 
 import com.google.gson.JsonObject;
 import org.apache.http.HttpResponse;
@@ -61,7 +61,7 @@ public class WebUtil {
     }
 
     public static String getString(String urlToRead) throws IOException {
-        System.out.println(urlToRead);
+        //System.out.println(urlToRead);
         return getString(urlToRead, Charset.defaultCharset());
     }
 

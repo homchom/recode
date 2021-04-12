@@ -1,6 +1,6 @@
 package io.github.codeutilities.images;
 
-import io.github.codeutilities.util.MinecraftColors;
+import io.github.codeutilities.util.color.MinecraftColors;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.*;
 
 import static java.awt.Image.SCALE_SMOOTH;
 

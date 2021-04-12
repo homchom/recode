@@ -1,14 +1,13 @@
 package io.github.codeutilities.util.socket.client.type;
 
+import com.google.gson.*;
+import io.github.codeutilities.util.templates.TemplateUtils;
 import com.google.gson.JsonObject;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.util.TemplateUtils;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
+import net.minecraft.item.*;
+import net.minecraft.text.*;
 
 import java.io.IOException;
 

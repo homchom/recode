@@ -32,12 +32,13 @@ public class CodeUtilitiesCommand extends Command {
                                     "§e§lItem Commands:\n" +
                                     "§7･§6/breakable§f - Makes the held item breakable\n" +
                                     "§7･§6/edititem§f - Opens a menu to edit the held item.\n" +
-                                    "§7･§6/give <item>§f - Gives you a specified item.\n" +
+                                    "§7･§6/dfgive <item>§f - Gives you a specified item.\n" +
                                     "§7･§6/itemdata§f - Shows the held item's (client-side) NBT data.\n" +
                                     "§7･§6/templates§f - Shows recently used Code Templates.\n" +
                                     "§7･§6/unpack§f - Extracts the contents in the held item (such as items in chests)\n" +
                                     "§7･§6/webview§f - Views the held Code Template in your web browser.\n" +
                                     "§7･§6/sendtemplate§f - Sends the held Code Template to connected third-party software.\n" +
+                                    "§7･§6/relativeloc <targer> <f> <u> <r> <rd> <rr>§f - Gives you the Relative Location item.\n" +
                                     "§9§m                                                                    "
                             ));
                             return 1;
@@ -95,6 +96,7 @@ public class CodeUtilitiesCommand extends Command {
                                     "§7･§6/color hex <hex-code>§f - Creates a hex color code based on hex values.\n" +
                                     "§7･§6/color hsb <h> <s> <b>§f - Creates a hex color code based on HSB values.\n" +
                                     "§7･§6/colors§f - Shows a simple hex color picker in the chat.\n" +
+                                    "§7･§6/gradient <startColor> <endColor> <text>§f - Shows a text colored in gradient.\n" +
                                     "§7･§6/heads§f - Opens a menu to search and get custom heads.\n" +
                                     "§7･§6/node <1|2|3|4|5|beta>§f - Sends you to the specified DiamondFire node.\n" +
                                     "§7･§6/uuid <username>§f - Grabs the Text item with UUID of the specified player.\n" +

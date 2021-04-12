@@ -1,46 +1,39 @@
 package io.github.codeutilities.config;
 
-import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
-import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
-import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
-import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry;
+import me.sargunvohra.mcmods.autoconfig1u.*;
+import me.sargunvohra.mcmods.autoconfig1u.annotation.*;
 
 @Config(name = "codeutilities")
 public class ModConfig implements ConfigData {
 
-    @ConfigEntry.Category("features")
+    @ConfigEntry.Category("automation")
     @ConfigEntry.Gui.Tooltip()
-    public final boolean dfButton = true;
-    @ConfigEntry.Category("features")
+    public boolean autoRC = false;
+    @ConfigEntry.Category("automation")
     @ConfigEntry.Gui.Tooltip()
-    public final boolean itemApi = true;
-    @ConfigEntry.Category("features")
+    public boolean autotime = false;
+    @ConfigEntry.Category("automation")
     @ConfigEntry.Gui.Tooltip()
-    public final boolean chestReplacement = false;
-    @ConfigEntry.Category("features")
-    @ConfigEntry.BoundedDiscrete(min = 1, max = 100)
+    public int autotimeval = 0;
+    @ConfigEntry.Category("automation")
     @ConfigEntry.Gui.Tooltip()
-    public final int signRenderDistance = 100;
-    @ConfigEntry.Category("features")
+    public boolean autonightvis = false;
+    @ConfigEntry.Category("automation")
     @ConfigEntry.Gui.Tooltip()
-    public final boolean variableScopeView = true;
-    @ConfigEntry.Category("features")
+    public boolean autofly = false;
+    @ConfigEntry.Category("automation")
     @ConfigEntry.Gui.Tooltip()
-    public final boolean discordRPC = true;
-    @ConfigEntry.Category("features")
-    @ConfigEntry.Gui.Tooltip()
-    public final boolean cpuOnScreen = true;
-
+    public boolean autolagslayer = false;
 
     @ConfigEntry.Category("commands")
     @ConfigEntry.Gui.Tooltip()
-    public final boolean dfCommands = true;
+    public boolean dfCommands = true;
     @ConfigEntry.Category("commands")
     @ConfigEntry.Gui.Tooltip()
-    public final boolean errorSound = true;
+    public boolean errorSound = true;
     @ConfigEntry.Category("commands")
     @ConfigEntry.Gui.Tooltip()
-    public final int headMenuMaxRender = 1000;
+    public int headMenuMaxRender = 1000;
     @ConfigEntry.Category("commands")
     @ConfigEntry.Gui.Tooltip()
     public int colorMaxRender = 158;
@@ -49,34 +42,9 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip()
     public int colorLines = 5;
 
-    @ConfigEntry.Category("automation")
-    @ConfigEntry.Gui.Tooltip()
-    public final boolean autoRC = false;
-    @ConfigEntry.Category("automation")
-    @ConfigEntry.Gui.Tooltip()
-    public final boolean autotime = false;
-    @ConfigEntry.Category("automation")
-    @ConfigEntry.Gui.Tooltip()
-    public final int autotimeval = 0;
-    @ConfigEntry.Category("automation")
-    public final boolean autonightvis = false;
-    @ConfigEntry.Category("automation")
-    @ConfigEntry.Gui.Tooltip()
-    public final boolean autofly = false;
-
-    @ConfigEntry.Category("keybinds")
-    @ConfigEntry.Gui.Tooltip()
-    public final int fsNormal = 100;
-    @ConfigEntry.Category("keybinds")
-    @ConfigEntry.Gui.Tooltip()
-    public final int fsMed = 350;
-    @ConfigEntry.Category("keybinds")
-    @ConfigEntry.Gui.Tooltip()
-    public final int fsFast = 1000;
-
     @ConfigEntry.Category("hiding")
     @ConfigEntry.Gui.Tooltip()
-    public final boolean hideJoinLeaveMessages = false;
+    public boolean hideJoinLeaveMessages = false;
     @ConfigEntry.Category("hiding")
     @ConfigEntry.Gui.Tooltip()
     public boolean hideVarScopeMessages = false;
@@ -93,17 +61,82 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip()
     public boolean hideMutedChat = false;
 
-    /*
-    @ConfigEntry.Category("social")
-    public boolean socialFeatures = true;
-    @ConfigEntry.Category("social")
+    @ConfigEntry.Category("keybinds")
     @ConfigEntry.Gui.Tooltip()
-    public boolean cosmetics = true;
-    @ConfigEntry.Category("social")
-    public boolean codeUtilsChat = true;
-    @ConfigEntry.Category("social")
-    public boolean allParty = true;
-    */
+    public boolean functionProcessSearch = true;
+    @ConfigEntry.Category("keybinds")
+    @ConfigEntry.Gui.Tooltip()
+    public int fsNormal = 100;
+    @ConfigEntry.Category("keybinds")
+    @ConfigEntry.Gui.Tooltip()
+    public int fsMed = 350;
+    @ConfigEntry.Category("keybinds")
+    @ConfigEntry.Gui.Tooltip()
+    public int fsFast = 1000;
+
+    @ConfigEntry.Category("highlight")
+    @ConfigEntry.Gui.Tooltip()
+    public boolean highlightName = false;
+    @ConfigEntry.Category("highlight")
+    @ConfigEntry.Gui.Tooltip()
+    public String highlightMatcher = "{name}";
+    @ConfigEntry.Category("highlight")
+    @ConfigEntry.Gui.Tooltip()
+    public String highlightNamePrefix = "&e";
+    /*
+    @ConfigEntry.Category("highlight")
+    @ConfigEntry.Gui.Tooltip()
+    public NoteSounds highlightNameSound = NoteSounds.Pling;
+
+     */
+    @ConfigEntry.Category("highlight")
+    @ConfigEntry.Gui.Tooltip()
+    public boolean highlightNameSender = false;
+
+    @ConfigEntry.Category("screen")
+    @ConfigEntry.Gui.Tooltip()
+    public boolean dfButton = true;
+    @ConfigEntry.Category("screen")
+    @ConfigEntry.Gui.Tooltip()
+    public boolean chestReplacement = false;
+    @ConfigEntry.Category("screen")
+    @ConfigEntry.BoundedDiscrete(min = 1, max = 100)
+    @ConfigEntry.Gui.Tooltip()
+    public int signRenderDistance = 100;
+    @ConfigEntry.Category("screen")
+    @ConfigEntry.Gui.Tooltip()
+    public boolean variableScopeView = true;
+    @ConfigEntry.Category("screen")
+    @ConfigEntry.Gui.Tooltip()
+    public boolean cpuOnScreen = true;
+    @ConfigEntry.Category("screen")
+    @ConfigEntry.Gui.Tooltip()
+    public boolean f3Tps = true;
+    @ConfigEntry.Category("screen")
+    @ConfigEntry.Gui.Tooltip()
+    @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+    public CosmeticType cosmeticType = CosmeticType.All_Cosmetics;
+
+    @ConfigEntry.Category("misc")
+    @ConfigEntry.Gui.Tooltip()
+    public boolean itemApi = true;
+    @ConfigEntry.Category("misc")
+    @ConfigEntry.Gui.Tooltip()
+    public boolean quickVarScope = true;
+    // discord rpc
+    @ConfigEntry.Category("misc")
+    @ConfigEntry.Gui.Tooltip()
+    public boolean discordRPC = true;
+    @ConfigEntry.Category("misc")
+    @ConfigEntry.Gui.Tooltip()
+    @ConfigEntry.BoundedDiscrete(min = 0, max = 100000)
+    public int discordRPCTimeout = 15000;
+
+    public enum CosmeticType {
+        All_Cosmetics,
+        No_Event_Cosmetics,
+        Disabled
+    }
 
     public static ModConfig getConfig() {
         return AutoConfig.getConfigHolder(ModConfig.class).getConfig();

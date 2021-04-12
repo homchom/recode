@@ -23,6 +23,8 @@ public class DFDiscordRPC implements ILoader {
     public static boolean locating = false;
     public static boolean delayRPC = false;
 
+    public static boolean supportSession = false;
+
     private static boolean firstLocate = true;
     private static boolean firstUpdate = true;
 
@@ -38,7 +40,11 @@ public class DFDiscordRPC implements ILoader {
     public void load() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             CodeUtilities.log(Level.INFO, "Closing Discord hook.");
-            client.close();
+            try {
+                client.close();
+            } catch (Exception e) {
+                CodeUtilities.log(Level.ERROR, "Error while closing Discord hook.");
+            }
         }));
 
         client = new IPCClient(813925725718577202L);
@@ -46,10 +52,7 @@ public class DFDiscordRPC implements ILoader {
             @Override
             public void onReady(IPCClient client) {
                 RichPresence.Builder builder = new RichPresence.Builder();
-                builder.setDetails("Idle")
-                        .setStartTimestamp(OffsetDateTime.now())
-                        .setLargeImage("canary-large", "Discord Canary")
-                        .setSmallImage("ptb-small", "Discord PTB");
+                builder.setDetails("Playing");
                 io.github.codeutilities.dfrpc.DFDiscordRPC.builder = builder;
             }
         });
@@ -96,6 +99,7 @@ public class DFDiscordRPC implements ILoader {
                     oldState = String.valueOf(DFInfo.currentState);
                 } else {
                     oldState = "Not on DF";
+                    supportSession = false;
                 }
 
                 if (delayRPC) {
@@ -123,7 +127,7 @@ public class DFDiscordRPC implements ILoader {
                     mc.player.sendChatMessage("/locate");
                 }
                 locating = true;
-                for (int i = 0; i < 15000; i++) {
+                for (int i = 0; i < ModConfig.getConfig().discordRPCTimeout; i++) {
                     try {
                         DFRPCThread.sleep(1);
                     } catch (InterruptedException e) {
@@ -145,7 +149,7 @@ public class DFDiscordRPC implements ILoader {
                 update();
                 firstUpdate = false;
             }
-            CodeUtilities.log(Level.INFO, "----------- RPC Updated! Status: " + client.getStatus());
+            //CodeUtilities.log(Level.INFO, "----------- RPC Updated! Status: " + client.getStatus());
         }
     }
 
@@ -155,6 +159,11 @@ public class DFDiscordRPC implements ILoader {
 
         if (ChatReceivedEvent.dfrpcMsg.startsWith(EMPTY + "\nYou are currently at spawn.\n")) {
             presence.setDetails("At spawn");
+            presence.setState(ChatReceivedEvent.dfrpcMsg.replaceFirst("^                                       \n" +
+                    "You are currently at spawn.\n", "").replaceFirst("^» Server: ", "").replaceFirst("\n" +
+                    "                                       $", ""));
+            if (supportSession) presence.setSmallImage("supportsession", "In Support Session");
+            else presence.setSmallImage(null, null);
 
             String state = ChatReceivedEvent.dfrpcMsg;
             state = state.replaceFirst("^ {39}\nYou are currently at spawn.\n", "")
@@ -211,17 +220,20 @@ public class DFDiscordRPC implements ILoader {
 
             // BUILD RICH PRESENCE
             presence.setState("Plot ID: " + id + " - " + node);
-            presence.setDetails(name);
+            presence.setDetails(name + " ");
 
             if (ChatReceivedEvent.dfrpcMsg.startsWith(EMPTY + "\nYou are currently playing on:")) {
+                if (supportSession) presence.setSmallImage("supportsession", "In Support Session (Playing)");
                 presence.setSmallImage("modeplay", "Playing");
                 presence.setLargeImage("diamondfirelogo", customStatus.equals("") ? "mcdiamondfire.com" : customStatus);
                 mode = "play";
             } else if (ChatReceivedEvent.dfrpcMsg.startsWith(EMPTY + "\nYou are currently building on:")) {
+                if (supportSession) presence.setSmallImage("supportsession", "In Support Session (Building)");
                 presence.setSmallImage("modebuild", "Building");
                 presence.setLargeImage("diamondfirelogo", "mcdiamondfire.com");
                 mode = "build";
             } else if (ChatReceivedEvent.dfrpcMsg.startsWith(EMPTY + "\nYou are currently coding on:")) {
+                if (supportSession) presence.setSmallImage("supportsession", "In Support Session (Coding)");
                 presence.setSmallImage("modedev", "Coding");
                 presence.setLargeImage("diamondfirelogo", "mcdiamondfire.com");
                 mode = "dev";

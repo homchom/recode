@@ -6,16 +6,17 @@ import com.mojang.brigadier.CommandDispatcher;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.commands.arguments.ArgBuilder;
-import io.github.codeutilities.gui.TemplateStorageUI;
-import io.github.codeutilities.util.ChatType;
-import io.github.codeutilities.util.ChatUtil;
-import io.github.codeutilities.util.WebUtil;
+import io.github.codeutilities.gui.*;
+import io.github.codeutilities.util.chat.ChatType;
+import io.github.codeutilities.util.chat.ChatUtil;
+import io.github.codeutilities.util.networking.WebUtil;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import org.apache.http.HttpResponse;
 
 import java.io.IOException;
 import java.util.Random;
+import java.io.*;
 
 public class TemplatesCommand extends Command {
 

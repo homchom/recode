@@ -1,9 +1,9 @@
 package io.github.codeutilities.commands.item.template;
 
 import com.google.gson.JsonObject;
-import io.github.codeutilities.util.ChatType;
-import io.github.codeutilities.util.ChatUtil;
-import io.github.codeutilities.util.TemplateUtils;
+import io.github.codeutilities.util.chat.ChatType;
+import io.github.codeutilities.util.chat.ChatUtil;
+import io.github.codeutilities.util.templates.TemplateUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.LiteralText;

@@ -4,36 +4,48 @@ import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.dfrpc.DFDiscordRPC;
 import io.github.codeutilities.events.ChatReceivedEvent;
-import io.github.codeutilities.gui.CPU_UsageText;
 import io.github.codeutilities.keybinds.FlightspeedToggle;
 import io.github.codeutilities.util.DFInfo;
+import io.github.codeutilities.gui.CPU_UsageText;
+import io.github.codeutilities.util.networking.WebUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.MessageType;
 import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
+import net.minecraft.text.ClickEvent;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
+import net.minecraft.text.TextColor;
+import net.minecraft.util.Formatting;
 import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.io.IOException;
+
 @Mixin(ClientPlayNetworkHandler.class)
 public class MixinGameMessageListener {
     private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
+
+    private boolean motdShown = false;
 
     @Inject(method = "onGameMessage", at = @At("HEAD"), cancellable = true)
     private void onGameMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
         if (DFInfo.isOnDF()) {
             if (packet.getLocation() == MessageType.CHAT || packet.getLocation() == MessageType.SYSTEM) {
-                ChatReceivedEvent.onMessage(packet.getMessage(), ci);
-                String text = packet.getMessage().getString();
-                try {
-                    this.updateVersion(packet.getMessage());
-                    this.updateState(packet.getMessage());
-                } catch (Exception e) {
-                    CodeUtilities.log(Level.ERROR, "Error while trying to parse the chat text!");
+                if (Thread.currentThread().getName().equals("Render thread")) {
+                    ChatReceivedEvent.onMessage(packet.getMessage(), ci);
+                    String text = packet.getMessage().getString();
+                    try {
+                        this.updateVersion(packet.getMessage());
+                        this.updateState(packet.getMessage());
+                    }catch (Exception e) {
+                        e.printStackTrace();
+                        CodeUtilities.log(Level.ERROR, "Error while trying to parse the chat text!");
+                    }
                 }
             }
         }
@@ -45,20 +57,11 @@ public class MixinGameMessageListener {
         if (minecraftClient.player == null) return;
         if (action == TitleS2CPacket.Action.ACTIONBAR) {
             if (packet.getText().getString().equals("CPU Usage: [▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮]")) {
-                if (ModConfig.getConfig().cpuOnScreen) {
+                if(ModConfig.getConfig().cpuOnScreen) {
                     CPU_UsageText.updateCPU(packet);
                     ci.cancel();
                 }
-            } else if (packet.getText().getString().matches("DiamondFire - .* .* CP - .* Tokens")) {
-                if (DFInfo.currentState != DFInfo.State.LOBBY && ModConfig.getConfig().autofly) {
-                    minecraftClient.player.sendChatMessage("/fly");
-                    ChatReceivedEvent.cancelFlyMsg = true;
-                }
-                DFInfo.currentState = DFInfo.State.LOBBY;
-
-                // fs toggle
-                FlightspeedToggle.fs_is_normal = true;
-            }
+			}
         }
     }
 
@@ -73,6 +76,24 @@ public class MixinGameMessageListener {
                 if (time - lastPatchCheck > 2) {
                     String patchText = text.replaceAll("Current patch: (.*)\\. See the patch notes with /patch!", "$1");
 
+                    if(!motdShown) {
+                        try {
+                            String str = WebUtil.getString("https://codeutilities.github.io/data/motd.txt");
+                            for(String string:str.split("\n")) {
+                                minecraftClient.player.sendMessage(new LiteralText(string).styled(style -> style.withColor(TextColor.fromFormatting(Formatting.AQUA))), false);
+                            }
+
+                            String version = WebUtil.getString("https://codeutilities.github.io/data/currentversion.txt").replaceAll("\n", "");
+                            if(!CodeUtilities.MOD_VERSION.equals(version) && !CodeUtilities.BETA) {
+                                minecraftClient.player.sendMessage(new LiteralText(String.format("A new version of CodeUtilities (%s) is available! Click here to download!", version)).styled(style ->
+                                        style.withColor(TextColor.fromFormatting(Formatting.AQUA))).styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://codeutilities.github.io/"))), false);
+                            }
+
+                        } catch (IOException ignored) {}
+
+                        motdShown = true;
+                    }
+
                     DFInfo.isPatchNewer(patchText, "0"); //very lazy validation lol
                     DFInfo.patchId = patchText;
                     DFInfo.currentState = null;
@@ -82,6 +103,7 @@ public class MixinGameMessageListener {
 
                     // update rpc on server join
                     DFDiscordRPC.delayRPC = true;
+                    DFDiscordRPC.supportSession = false;
                 }
             } catch (Exception e) {
                 CodeUtilities.log(Level.INFO, "Error on parsing patch number!");
@@ -104,14 +126,61 @@ public class MixinGameMessageListener {
         if (text.matches("Joined game: .* by .*") && text.startsWith("Joined game: ")) {
             DFInfo.currentState = DFInfo.State.PLAY;
 
+            // Auto LagSlayer
+            System.out.println(CPU_UsageText.lagSlayerEnabled);
+            if (!CPU_UsageText.lagSlayerEnabled && ModConfig.getConfig().autolagslayer) {
+                minecraftClient.player.sendChatMessage("/lagslayer");
+                ChatReceivedEvent.cancelLagSlayerMsg = true;
+            }
+
             // fs toggle
             FlightspeedToggle.fs_is_normal = true;
         }
 
+        // Enter Session
+        if (text.matches("^You have entered a session with .*\\.$")) {
+            if (!DFDiscordRPC.supportSession) {
+                DFDiscordRPC.supportSession = true;
+                if (ModConfig.getConfig().discordRPC) {
+                    new Thread(() -> {
+                        DFDiscordRPC.getThread().locateRequest();
+                    }).start();
+                }
+            }
+        }
+
+        // End Session
+        if (text.matches("^" + minecraftClient.player.getName().asString() + " finished a session with .*\\. ▶ .*$")) {
+            if (DFDiscordRPC.supportSession) {
+                DFDiscordRPC.supportSession = false;
+                if (ModConfig.getConfig().discordRPC) {
+                    new Thread(() -> {
+                        DFDiscordRPC.getThread().locateRequest();
+                    }).start();
+                }
+            }
+        }
+        if (text.matches("^Your session with .* has ended\\.$")) {
+            if (DFDiscordRPC.supportSession) {
+                DFDiscordRPC.supportSession = false;
+                if (ModConfig.getConfig().discordRPC) {
+                    new Thread(() -> {
+                        DFDiscordRPC.getThread().locateRequest();
+                    }).start();
+                }
+            }
+        }
+
         // Build Mode
-        if (minecraftClient.player.isCreative() && text.contains("» You are now in build mode.") && text.startsWith("»")) {
+        if (minecraftClient.player.isCreative() && text.matches("^» You are now in build mode\\.$")) {
             if (DFInfo.currentState != DFInfo.State.BUILD) {
                 DFInfo.currentState = DFInfo.State.BUILD;
+            }
+
+            // Auto LagSlayer
+            if (!CPU_UsageText.lagSlayerEnabled && ModConfig.getConfig().autolagslayer) {
+                minecraftClient.player.sendChatMessage("/lagslayer");
+                ChatReceivedEvent.cancelLagSlayerMsg = true;
             }
 
             // fs toggle
@@ -141,7 +210,7 @@ public class MixinGameMessageListener {
         }
 
         // Dev Mode (more moved to MixinItemSlotUpdate)
-        if (minecraftClient.player.isCreative() && text.contains("» You are now in dev mode.") && text.startsWith("»")) {
+        if (minecraftClient.player.isCreative() && text.matches("^» You are now in dev mode\\.$")) {
             // fs toggle
             FlightspeedToggle.fs_is_normal = true;
         }

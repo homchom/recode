@@ -1,7 +1,7 @@
-package io.github.codeutilities.util;
+package io.github.codeutilities.util.chat;
 
-import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.ModConfig;
+import io.github.codeutilities.util.color.MinecraftColors;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.sound.SoundCategory;

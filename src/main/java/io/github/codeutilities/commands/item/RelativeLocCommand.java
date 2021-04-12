@@ -5,6 +5,8 @@ import com.mojang.brigadier.arguments.FloatArgumentType;
 import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.commands.arguments.ArgBuilder;
 import io.github.codeutilities.commands.arguments.types.StringListArgumentType;
+import io.github.codeutilities.util.chat.ChatType;
+import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.codeutilities.util.ItemUtil;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
@@ -27,20 +29,25 @@ public class RelativeLocCommand extends Command {
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("relativeloc")
-                .then(ArgBuilder.argument("target", StringListArgumentType.string(TARGET_TYPES))
+                .then(ArgBuilder.argument("target", StringListArgumentType.string(targetTypes))
                         .then(ArgBuilder.argument("forwards", FloatArgumentType.floatArg())
                                 .then(ArgBuilder.argument("upwards", FloatArgumentType.floatArg())
                                         .then(ArgBuilder.argument("right", FloatArgumentType.floatArg())
                                                 .then(ArgBuilder.argument("rot_down", FloatArgumentType.floatArg())
                                                         .then(ArgBuilder.argument("rot_right", FloatArgumentType.floatArg())
                                                                 .executes(ctx -> {
-                                                                    String target = ctx.getArgument("target", String.class);
-                                                                    Float forwards = ctx.getArgument("forwards", float.class);
-                                                                    Float upwards = ctx.getArgument("upwards", float.class);
-                                                                    Float right = ctx.getArgument("right", float.class);
-                                                                    Float rot_down = ctx.getArgument("rot_down", float.class);
-                                                                    Float rot_right = ctx.getArgument("rot_right", float.class);
-                                                                    return this.run(target, forwards, upwards, right, rot_down, rot_right);
+                                                                    if (mc.player.isCreative()) {
+                                                                        String target = ctx.getArgument("target", String.class);
+                                                                        Float forwards = ctx.getArgument("forwards", float.class);
+                                                                        Float upwards = ctx.getArgument("upwards", float.class);
+                                                                        Float right = ctx.getArgument("right", float.class);
+                                                                        Float rot_down = ctx.getArgument("rot_down", float.class);
+                                                                        Float rot_right = ctx.getArgument("rot_right", float.class);
+                                                                        return this.run(mc, target, forwards, upwards, right, rot_down, rot_right);
+                                                                    } else {
+                                                                        ChatUtil.sendTranslateMessage("codeutilities.command.require_creative_mode", ChatType.FAIL);
+                                                                        return -1;
+                                                                    }
                                                                 })
                                                         )
                                                 )

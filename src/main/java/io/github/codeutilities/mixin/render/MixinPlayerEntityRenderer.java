@@ -1,6 +1,8 @@
 package io.github.codeutilities.mixin.render;
 
 import io.github.codeutilities.cosmetics.BlazeCosmeticRenderer;
+import io.github.codeutilities.cosmetics.CosmeticHandler;
+import io.github.codeutilities.cosmetics.CosmeticRenderer;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
@@ -20,6 +22,7 @@ public abstract class MixinPlayerEntityRenderer extends LivingEntityRenderer<Abs
 
     @Inject(method = "<init>(Lnet/minecraft/client/render/entity/EntityRenderDispatcher;Z)V", at = @At("RETURN"))
     public void init(EntityRenderDispatcher dispatcher, boolean bl, CallbackInfo ci) {
+        this.addFeature(new CosmeticRenderer(this));
         this.addFeature(new BlazeCosmeticRenderer(this));
     }
 

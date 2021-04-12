@@ -2,16 +2,22 @@ package io.github.codeutilities.keybinds;
 
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.util.DFInfo;
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import io.github.codeutilities.util.templates.FuncSearchUtil;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.client.MinecraftClient;
+
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.minecraft.util.math.BlockPos;
+
 public class Keybinds implements ClientModInitializer {
 
-    final MinecraftClient mc = MinecraftClient.getInstance();
+    MinecraftClient mc = MinecraftClient.getInstance();
 
     @Override
     public void onInitializeClient() {
@@ -115,6 +121,10 @@ public class Keybinds implements ClientModInitializer {
         // fly
         KeyBinding fly = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.codeutilities.fly", InputUtil.Type.KEYSYM, -1, "key.category.codeutilities"));
+
+        // search
+        KeyBinding searchFunction = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.codeutilities.search", InputUtil.Type.KEYSYM, -1, "key.category.codeutilities"));
 
         // =======
 
@@ -264,6 +274,24 @@ public class Keybinds implements ClientModInitializer {
             // chat none
             while (chatNone.wasPressed()) {
                 sendChat("/c 0");
+            }
+
+            // search
+            while (searchFunction.wasPressed()) {
+                if (ModConfig.getConfig().functionProcessSearch && DFInfo.isOnDF() && DFInfo.currentState == DFInfo.State.DEV && mc.player.isCreative()) {
+                    BlockEntity blockEntity = mc.world.getBlockEntity(new BlockPos(mc.crosshairTarget.getPos()));
+
+                    if (blockEntity != null) {
+                        if (blockEntity instanceof SignBlockEntity) {
+                            SignBlockEntity signBlockEntity = (SignBlockEntity) blockEntity;
+                            FuncSearchUtil.beginSearch(signBlockEntity);
+                        } else {
+                            FuncSearchUtil.clearSearch();
+                        }
+                    } else {
+                        FuncSearchUtil.clearSearch();
+                    }
+                }
             }
 
         });
