@@ -1,5 +1,6 @@
-package io.github.codeutilities.util;
+package io.github.codeutilities.util.templates;
 
+import io.github.codeutilities.util.render.ToasterUtil;
 import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.client.toast.SystemToast;
 

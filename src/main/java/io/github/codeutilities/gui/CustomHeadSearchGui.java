@@ -7,7 +7,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.ModConfig;
-import io.github.codeutilities.util.WebUtil;
+import io.github.codeutilities.util.networking.WebUtil;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WButton;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;

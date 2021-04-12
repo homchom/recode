@@ -4,16 +4,13 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.*;
 import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.commands.arguments.ArgBuilder;
-import io.github.codeutilities.util.*;
+import io.github.codeutilities.util.chat.ChatType;
+import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.texture.AbstractTexture;
 import net.minecraft.text.*;
-import net.minecraft.util.Identifier;
-import org.apache.commons.lang3.reflect.FieldUtils;
 
 import java.awt.*;
-import java.util.Map;
 
 public class ColorCommand extends Command {
 

@@ -4,15 +4,14 @@ import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.dfrpc.DFDiscordRPC;
 import io.github.codeutilities.gui.CPU_UsageText;
-import io.github.codeutilities.util.ChatType;
-import io.github.codeutilities.util.ChatUtil;
+import io.github.codeutilities.util.chat.ChatType;
+import io.github.codeutilities.util.chat.ChatUtil;
+import io.github.codeutilities.util.chat.TextUtil;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -120,22 +119,37 @@ public class ChatReceivedEvent {
         String msgToString = message.toString();
         String msgGetString = message.getString();
 
-        String msgWithColor = ChatUtil.textComponentToColorCodes(message);
+        String msgWithColor = TextUtil.textComponentToColorCodes(message);
         String msgWithoutColor = msgWithColor.replaceAll("§.", "");
 
-        // highlight name (UNFINISHED to do: RESET COLOR AFTER NAME CORRECTLY)
+        // highlight name
         String displayName = mc.player.getDisplayName().getString();
-        if (ModConfig.getConfig().highlightName && msgGetString.matches("^[^0-z].+:.*") && !msgGetString.matches("^[^0-z]+ .*" + displayName + ": ")) {
+        if (ModConfig.getConfig().highlightName && msgGetString.matches("^[^0-z].+:.*") && !msgGetString.matches("^[^0-z]+ .*" + displayName + ": .*")) {
             if (msgGetString.replaceAll("^[^0-z].+:", "").contains(displayName)) {
-                /*
-                pattafaefaefqefqfern = Pattern.compile("^.*");
-                mateafeaefaefcher = pattern.matcher(customStatus);
-                while (matcher.find()) {
-                    thiung = matcher.group();
+                String[] chars = msgWithColor.split("");
+                int i = 0;
+                int newMsgIter = 0;
+                StringBuilder getColorCodes = new StringBuilder();
+                String newMsg = msgWithColor;
+                String textLeft;
+
+
+                for (String currentChar : chars) {
+                    textLeft = msgWithColor.substring(i) + " ";
+                    i++;
+                    if (currentChar.equals("§")) getColorCodes.append(currentChar).append(chars[i]);
+                    if (textLeft.startsWith(displayName + " ")) {
+                        newMsg = newMsg.substring(0, newMsgIter) + ModConfig.getConfig().highlightNamePrefix.replaceAll("&", "§")
+                                + displayName + getColorCodes.toString() + newMsg.substring(newMsgIter).replaceFirst("^" + displayName, "");
+
+                        System.out.println("iter " + newMsgIter + " --- " + newMsg.substring(0, newMsgIter) + "+++" + ModConfig.getConfig().highlightNamePrefix.replaceAll("&", "§") + "+++" +
+                                displayName + "+++" + getColorCodes.toString() + "+++" + newMsg.substring(newMsgIter).replaceFirst("^" + displayName, ""));
+
+                        newMsgIter = newMsgIter + ModConfig.getConfig().highlightNamePrefix.length() + getColorCodes.toString().length();
+                    }
+                    newMsgIter++;
                 }
-                 */
-                String newMsg = msgWithColor.replaceAll(displayName, "§e" + displayName + "eeee");
-                mc.player.sendMessage(Text.of(newMsg), false);
+                mc.player.sendMessage(TextUtil.colorCodesToTextComponent(newMsg), false);
                 cancel = true;
             }
         }
@@ -211,7 +225,7 @@ public class ChatReceivedEvent {
 
         //Cancelling (set cancel to true)
         if (cancel) {
-            if (showCancelMsg) CodeUtilities.log(Level.INFO, "[CANCELLED] " + text);
+            if (showCancelMsg) CodeUtilities.log(Level.INFO, "[CANCELLED] " + msgWithColor);
             ci.cancel();
         }
     }

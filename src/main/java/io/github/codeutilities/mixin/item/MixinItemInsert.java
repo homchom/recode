@@ -1,7 +1,7 @@
 package io.github.codeutilities.mixin.item;
 
 import io.github.codeutilities.template.TemplateStorageHandler;
-import io.github.codeutilities.util.TemplateUtils;
+import io.github.codeutilities.util.templates.TemplateUtils;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.InventoryS2CPacket;

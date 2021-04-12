@@ -1,9 +1,8 @@
 package io.github.codeutilities.keybinds;
 
 import io.github.codeutilities.config.ModConfig;
-import io.github.codeutilities.util.ChatUtil;
 import io.github.codeutilities.util.DFInfo;
-import io.github.codeutilities.util.FuncSearchUtil;
+import io.github.codeutilities.util.templates.FuncSearchUtil;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.client.MinecraftClient;

@@ -74,6 +74,25 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip()
     public int fsFast = 1000;
 
+    @ConfigEntry.Category("highlight")
+    @ConfigEntry.Gui.Tooltip()
+    public boolean highlightName = false;
+    @ConfigEntry.Category("highlight")
+    @ConfigEntry.Gui.Tooltip()
+    public String highlightMatcher = "{name}";
+    @ConfigEntry.Category("highlight")
+    @ConfigEntry.Gui.Tooltip()
+    public String highlightNamePrefix = "&e";
+    /*
+    @ConfigEntry.Category("highlight")
+    @ConfigEntry.Gui.Tooltip()
+    public NoteSounds highlightNameSound = NoteSounds.Pling;
+
+     */
+    @ConfigEntry.Category("highlight")
+    @ConfigEntry.Gui.Tooltip()
+    public boolean highlightNameSender = false;
+
     @ConfigEntry.Category("screen")
     @ConfigEntry.Gui.Tooltip()
     public boolean dfButton = true;
@@ -104,16 +123,6 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Category("misc")
     @ConfigEntry.Gui.Tooltip()
     public boolean quickVarScope = true;
-    @ConfigEntry.Category("misc")
-    @ConfigEntry.Gui.Tooltip()
-    // highlight name
-    public boolean highlightName = false;
-    @ConfigEntry.Category("misc")
-    @ConfigEntry.Gui.Tooltip()
-    public String highlightNamePrefix = "&e";
-    @ConfigEntry.Category("misc")
-    @ConfigEntry.Gui.Tooltip()
-    public boolean highlightNameSound = true;
     // discord rpc
     @ConfigEntry.Category("misc")
     @ConfigEntry.Gui.Tooltip()

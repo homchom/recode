@@ -7,7 +7,7 @@ import io.github.codeutilities.events.ChatReceivedEvent;
 import io.github.codeutilities.keybinds.FlightspeedToggle;
 import io.github.codeutilities.util.DFInfo;
 import io.github.codeutilities.gui.CPU_UsageText;
-import io.github.codeutilities.util.WebUtil;
+import io.github.codeutilities.util.networking.WebUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.MessageType;

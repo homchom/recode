@@ -1,9 +1,8 @@
 package io.github.codeutilities.mixin.render;
 
-import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.util.DFInfo;
-import io.github.codeutilities.util.FuncSearchUtil;
+import io.github.codeutilities.util.templates.FuncSearchUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SignBlock;
 import net.minecraft.block.WallSignBlock;
@@ -13,15 +12,12 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.OutlineVertexConsumerProvider;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.SignBlockEntityRenderer;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector3f;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import org.spongepowered.asm.mixin.*;

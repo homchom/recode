@@ -3,7 +3,8 @@ package io.github.codeutilities.commands.arguments;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import io.github.codeutilities.util.*;
+import io.github.codeutilities.util.chat.ChatType;
+import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 
 //These argument classes will eventually become our own command dispatcher, removing the dependency for Cotton Client Commands.

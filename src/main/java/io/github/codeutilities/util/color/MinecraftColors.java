@@ -1,4 +1,4 @@
-package io.github.codeutilities.util;
+package io.github.codeutilities.util.color;
 
 import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
@@ -128,5 +128,10 @@ public enum MinecraftColors {
 
         return result.toString();
     }
+
+    public static String mcToHex(String colorCode) {
+        return "#" + colorCode.replaceAll("(^§x)|§", "").toUpperCase();
+    }
+
 }
 

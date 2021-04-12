@@ -5,8 +5,8 @@ import com.mojang.brigadier.arguments.FloatArgumentType;
 import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.commands.arguments.ArgBuilder;
 import io.github.codeutilities.commands.arguments.types.StringListArgumentType;
-import io.github.codeutilities.util.ChatType;
-import io.github.codeutilities.util.ChatUtil;
+import io.github.codeutilities.util.chat.ChatType;
+import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.codeutilities.util.ItemUtil;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
@@ -18,10 +18,8 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
 
-import java.awt.*;
 import java.util.Arrays;
 
 public class RelativeLocCommand extends Command {

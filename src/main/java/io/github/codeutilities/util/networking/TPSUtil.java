@@ -1,4 +1,4 @@
-package io.github.codeutilities.util;
+package io.github.codeutilities.util.networking;
 
 import java.math.BigDecimal;
 
