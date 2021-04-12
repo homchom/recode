@@ -1,37 +1,41 @@
 package io.github.codeutilities.util;
 
+import net.minecraft.text.TextColor;
+import net.minecraft.util.Formatting;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 
 public enum MinecraftColors {
-    BLACK(0, 0, 0, '0'),
-    DARK_BLUE(0, 0, 170, '1'),
-    DARK_GREEN(0, 170, 0, '2'),
-    DARK_AQUA(0, 170, 170, '3'),
-    DARK_RED(170, 0, 0, '4'),
-    DARK_PURPLE(170, 0, 170, '5'),
-    GOLD(255, 170, 0, '6'),
-    GRAY(170, 170, 170, '7'),
-    DARK_GRAY(85, 85, 85, '8'),
-    BLUE(85, 85, 255, '9'),
-    GREEN(85, 255, 85, 'a'),
-    AQUA(85, 255, 255, 'b'),
-    RED(255, 85, 85, 'c'),
-    LIGHT_PURPLE(255, 85, 255, 'd'),
-    YELLOW(255, 255, 85, 'e'),
-    WHITE(255, 255, 255, 'f');
+    BLACK(0, 0, 0, '0', Formatting.BLACK),
+    DARK_BLUE(0, 0, 170, '1', Formatting.DARK_BLUE),
+    DARK_GREEN(0, 170, 0, '2', Formatting.DARK_GREEN),
+    DARK_AQUA(0, 170, 170, '3', Formatting.DARK_AQUA),
+    DARK_RED(170, 0, 0, '4', Formatting.DARK_RED),
+    DARK_PURPLE(170, 0, 170, '5', Formatting.DARK_PURPLE),
+    GOLD(255, 170, 0, '6', Formatting.GOLD),
+    GRAY(170, 170, 170, '7', Formatting.GRAY),
+    DARK_GRAY(85, 85, 85, '8', Formatting.DARK_GRAY),
+    BLUE(85, 85, 255, '9', Formatting.BLUE),
+    GREEN(85, 255, 85, 'a', Formatting.GREEN),
+    AQUA(85, 255, 255, 'b', Formatting.AQUA),
+    RED(255, 85, 85, 'c', Formatting.RED),
+    LIGHT_PURPLE(255, 85, 255, 'd', Formatting.LIGHT_PURPLE),
+    YELLOW(255, 255, 85, 'e', Formatting.YELLOW),
+    WHITE(255, 255, 255, 'f', Formatting.WHITE),
+    RESET(255, 255, 255, 'r', Formatting.RESET);
 
-
+    private final TextColor formatting;
     int r, g, b;
     char mc;
 
-    MinecraftColors(int r, int g, int b, char mc) {
+    MinecraftColors(int r, int g, int b, char mc, Formatting formatting) {
         this.r = r;
         this.g = g;
         this.b = b;
         this.mc = mc;
+        this.formatting = TextColor.fromFormatting(formatting);
     }
 
     public int getR() {
@@ -58,10 +62,21 @@ public enum MinecraftColors {
         return mc;
     }
 
+    public TextColor getFormatting() { return formatting; }
+
     public static MinecraftColors fromCode(char code) {
         for (MinecraftColors colors : values()) {
             if (code == colors.getSymbol()) {
                 return colors;
+            }
+        }
+        return null;
+    }
+
+    public static String getMcFromFormatting(TextColor color) {
+        for (MinecraftColors colors : values()) {
+            if (color == colors.getFormatting()) {
+                return colors.getMc();
             }
         }
         return null;
@@ -100,6 +115,18 @@ public enum MinecraftColors {
         }
 
         return result;
+    }
+
+    public static String hexToMc(String hex) {
+        hex = hex.replaceFirst("^#", "");
+        String[] chars = hex.split("");
+        StringBuilder result = new StringBuilder("§x");
+
+        for (String character : chars) {
+            result.append("§").append(character.toLowerCase());
+        }
+
+        return result.toString();
     }
 }
 

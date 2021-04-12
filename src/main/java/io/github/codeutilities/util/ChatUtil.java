@@ -1,11 +1,10 @@
 package io.github.codeutilities.util;
 
-import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.ModConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.sound.*;
 import net.minecraft.text.*;
-import org.apache.logging.log4j.Level;
+import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
@@ -51,5 +50,35 @@ public class ChatUtil {
         return component;
     }
 
+    public static String textComponentToColorCodes(Text message) {
+        List<Text> siblings = message.getSiblings();
+        int siblingsAmount = siblings.size();
+
+        StringBuilder newMsg = new StringBuilder();
+        String currentText = "";
+
+        for (int i = 0; i < siblingsAmount; i++) {
+            Text sibling = siblings.get(i);
+            Style style = sibling.getStyle();
+
+            // color
+            TextColor color = style.getColor();
+            String literalColor = String.valueOf(color);
+            String code = MinecraftColors.getMcFromFormatting(color);
+            if (code == null) currentText = MinecraftColors.hexToMc(literalColor);
+            else currentText = code;
+
+            if (style.isBold()) currentText = currentText + "§l";
+            if (style.isItalic()) currentText = currentText + "§o";
+            if (style.isStrikethrough()) currentText = currentText + "§m";
+            if (style.isUnderlined()) currentText = currentText + "§n";
+            if (style.isObfuscated()) currentText = currentText + "§k";
+
+            currentText = currentText + sibling.getString();
+            newMsg.append(currentText);
+        }
+
+        return newMsg.toString();
+    }
 
 }
