@@ -77,6 +77,8 @@
     "text.autoconfig.codeutilities.option.highlightPrefix.@Tooltip": "The text to put in front of the highlighted text. Supports color codes.",
     "text.autoconfig.codeutilities.option.highlightSound": "Highlight Sound",
     "text.autoconfig.codeutilities.option.highlightSound.@Tooltip": "Sound to play when the text is highlighted.",
+    "text.autoconfig.codeutilities.option.highlightSoundVolume": "Highlight Sound Volume",
+    "text.autoconfig.codeutilities.option.highlightSoundVolume.@Tooltip": "Volume of the sound above.",
     "text.autoconfig.codeutilities.option.highlightOwnSenderSound": "Highlight Sender Sound",
     "text.autoconfig.codeutilities.option.highlightOwnSenderSound.@Tooltip[0]": "Plays a sound if you are the message sender. Requires:",
     "text.autoconfig.codeutilities.option.highlightOwnSenderSound.@Tooltip[1]": "- A sound to be selected (above)",

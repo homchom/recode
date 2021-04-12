@@ -2,7 +2,7 @@ package io.github.codeutilities.events;
 
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.ModConfig;
-import io.github.codeutilities.config.NoteSounds;
+import io.github.codeutilities.config.ConfigSounds;
 import io.github.codeutilities.dfrpc.DFDiscordRPC;
 import io.github.codeutilities.gui.CPU_UsageText;
 import io.github.codeutilities.util.DFInfo;
@@ -10,6 +10,7 @@ import io.github.codeutilities.util.chat.ChatType;
 import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.codeutilities.util.chat.TextUtil;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -126,11 +127,6 @@ public class ChatReceivedEvent {
         if (ModConfig.getConfig().highlight) {
             String highlightMatcher = ModConfig.getConfig().highlightMatcher.replaceAll("\\{name}", mc.player.getName().getString());
 
-            System.out.println("HIGHLIGHT MATCHER = " + highlightMatcher);
-            System.out.println("IGNORE SENDER = " + ModConfig.getConfig().highlightIgnoreSender);
-            System.out.println("YOU ARE NOT SENDER = " + !msgWithoutColor.matches("^.*" + highlightMatcher + ": .+"));
-            System.out.println("MESSAGE CONTENT = " + msgWithoutColor);
-
             if (( DFInfo.currentState != DFInfo.State.PLAY && msgWithoutColor.matches("^[^0-z]+.*[a-zA-Z]+: .*"))
                     || (DFInfo.currentState == DFInfo.State.PLAY && msgWithoutColor.matches("^.*[a-zA-Z]+: .*"))) {
                 if ((!msgWithoutColor.matches("^.*" + highlightMatcher + ": .*")) || ModConfig.getConfig().highlightIgnoreSender) {
@@ -155,9 +151,9 @@ public class ChatReceivedEvent {
                             newMsgIter++;
                         }
                         mc.player.sendMessage(TextUtil.colorCodesToTextComponent(newMsg), false);
-                        if ((ModConfig.getConfig().highlightSound != NoteSounds.None) &&
-                                (ModConfig.getConfig().highlightOwnSenderSound || msgWithoutColor.matches("^.*" + highlightMatcher + ": .+"))) {
-                            mc.player.playSound(ModConfig.getConfig().highlightSound.getSound(), 3, 1);
+                        if ((ModConfig.getConfig().highlightSound != ConfigSounds.None) &&
+                                (ModConfig.getConfig().highlightOwnSenderSound || (!msgWithoutColor.matches("^.*" + highlightMatcher + ": .+")))) {
+                            mc.player.playSound(ModConfig.getConfig().highlightSound.getSound(), ModConfig.getConfig().highlightSoundVolume, 1);
                         }
                         cancel = true;
                     }
