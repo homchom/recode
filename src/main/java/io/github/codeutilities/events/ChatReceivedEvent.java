@@ -5,6 +5,7 @@ import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.config.NoteSounds;
 import io.github.codeutilities.dfrpc.DFDiscordRPC;
 import io.github.codeutilities.gui.CPU_UsageText;
+import io.github.codeutilities.util.DFInfo;
 import io.github.codeutilities.util.chat.ChatType;
 import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.codeutilities.util.chat.TextUtil;
@@ -125,31 +126,43 @@ public class ChatReceivedEvent {
 
         // highlight name
         if (ModConfig.getConfig().highlight) {
-            String highlightMatcher = ModConfig.getConfig().highlightMatcher.replaceAll("\\{name}", mc.player.getDisplayName().getString());
-            if (msgGetString.matches("^[^0-z].+:.*") && !(ModConfig.getConfig().highlightSender || msgGetString.matches("^[^0-z]+ .*" + highlightMatcher + ": .*"))) {
-                if (msgGetString.replaceAll("^[^0-z].+:", "").contains(highlightMatcher)) {
-                    String[] chars = msgWithColor.split("");
-                    int i = 0;
-                    int newMsgIter = 0;
-                    StringBuilder getColorCodes = new StringBuilder();
-                    String newMsg = msgWithColor;
-                    String textLeft;
+            String highlightMatcher = ModConfig.getConfig().highlightMatcher.replaceAll("\\{name}", mc.player.getName().getString());
 
-                    for (String currentChar : chars) {
-                        textLeft = msgWithColor.substring(i) + " ";
-                        i++;
-                        if (currentChar.equals("§")) getColorCodes.append(currentChar).append(chars[i]);
-                        if (textLeft.startsWith(highlightMatcher + " ")) {
-                            newMsg = newMsg.substring(0, newMsgIter) + ModConfig.getConfig().highlightPrefix.replaceAll("&", "§")
-                                    + highlightMatcher + getColorCodes.toString() + newMsg.substring(newMsgIter).replaceFirst("^" + highlightMatcher, "");
+            System.out.println("HIGHLIGHT MATCHER = " + highlightMatcher);
+            System.out.println("IGNORE SENDER = " + ModConfig.getConfig().highlightIgnoreSender);
+            System.out.println("YOU ARE NOT SENDER = " + !msgWithoutColor.matches("^.*" + highlightMatcher + ": .+"));
+            System.out.println("MESSAGE CONTENT = " + msgWithoutColor);
 
-                            newMsgIter = newMsgIter + ModConfig.getConfig().highlightPrefix.length() + getColorCodes.toString().length();
+            if (( DFInfo.currentState != DFInfo.State.PLAY && msgWithoutColor.matches("^[^0-z]+.*[a-zA-Z]+: .*"))
+                    || (DFInfo.currentState == DFInfo.State.PLAY && msgWithoutColor.matches("^.*[a-zA-Z]+: .*"))) {
+                if ((!msgWithoutColor.matches("^.*" + highlightMatcher + ": .*")) || ModConfig.getConfig().highlightIgnoreSender) {
+                    if (msgWithoutColor.contains(highlightMatcher)) {
+                        String[] chars = msgWithColor.split("");
+                        int i = 0;
+                        int newMsgIter = 0;
+                        StringBuilder getColorCodes = new StringBuilder();
+                        String newMsg = msgWithColor;
+                        String textLeft;
+
+                        for (String currentChar : chars) {
+                            textLeft = msgWithColor.substring(i) + " ";
+                            i++;
+                            if (currentChar.equals("§")) getColorCodes.append(currentChar).append(chars[i]);
+                            if (textLeft.matches("^" + highlightMatcher + "[^a-zA-Z0-9].*")) {
+                                newMsg = newMsg.substring(0, newMsgIter) + ModConfig.getConfig().highlightPrefix.replaceAll("&", "§")
+                                        + highlightMatcher + getColorCodes.toString() + newMsg.substring(newMsgIter).replaceFirst("^" + highlightMatcher, "");
+
+                                newMsgIter = newMsgIter + ModConfig.getConfig().highlightPrefix.length() + getColorCodes.toString().length();
+                            }
+                            newMsgIter++;
                         }
-                        newMsgIter++;
+                        mc.player.sendMessage(TextUtil.colorCodesToTextComponent(newMsg), false);
+                        if ((ModConfig.getConfig().highlightSound != NoteSounds.None) &&
+                                (ModConfig.getConfig().highlightOwnSenderSound || msgWithoutColor.matches("^.*" + highlightMatcher + ": .+"))) {
+                            mc.player.playSound(ModConfig.getConfig().highlightSound.getSound(), 3, 1);
+                        }
+                        cancel = true;
                     }
-                    mc.player.sendMessage(TextUtil.colorCodesToTextComponent(newMsg), false);
-                    if (ModConfig.getConfig().highlightSound != NoteSounds.None) mc.player.playSound(ModConfig.getConfig().highlightSound.getSound(), 3, 1);
-                    cancel = true;
                 }
             }
         }

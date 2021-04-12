@@ -88,8 +88,11 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
     public NoteSounds highlightSound = NoteSounds.Pling;
     @ConfigEntry.Category("highlight")
+    @ConfigEntry.Gui.Tooltip(count = 3)
+    public boolean highlightOwnSenderSound = false;
+    @ConfigEntry.Category("highlight")
     @ConfigEntry.Gui.Tooltip()
-    public boolean highlightSender = true;
+    public boolean highlightIgnoreSender = false;
 
     @ConfigEntry.Category("screen")
     @ConfigEntry.Gui.Tooltip()
