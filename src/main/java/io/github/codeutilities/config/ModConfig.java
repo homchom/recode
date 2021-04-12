@@ -63,6 +63,9 @@ public class ModConfig implements ConfigData {
 
     @ConfigEntry.Category("keybinds")
     @ConfigEntry.Gui.Tooltip()
+    public boolean functionProcessSearch = true;
+    @ConfigEntry.Category("keybinds")
+    @ConfigEntry.Gui.Tooltip()
     public int fsNormal = 100;
     @ConfigEntry.Category("keybinds")
     @ConfigEntry.Gui.Tooltip()
@@ -77,9 +80,6 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Category("screen")
     @ConfigEntry.Gui.Tooltip()
     public boolean chestReplacement = false;
-    @ConfigEntry.Category("screen")
-    @ConfigEntry.Gui.Tooltip()
-    public boolean functionProcessSearch = true;
     @ConfigEntry.Category("screen")
     @ConfigEntry.BoundedDiscrete(min = 1, max = 100)
     @ConfigEntry.Gui.Tooltip()
@@ -102,7 +102,15 @@ public class ModConfig implements ConfigData {
     public boolean quickVarScope = true;
     @ConfigEntry.Category("misc")
     @ConfigEntry.Gui.Tooltip()
+    // highlight name
     public boolean highlightName = false;
+    @ConfigEntry.Category("misc")
+    @ConfigEntry.Gui.Tooltip()
+    public String highlightNamePrefix = "&e";
+    @ConfigEntry.Category("misc")
+    @ConfigEntry.Gui.Tooltip()
+    public boolean highlightNameSound = true;
+    // discord rpc
     @ConfigEntry.Category("misc")
     @ConfigEntry.Gui.Tooltip()
     public boolean discordRPC = true;
