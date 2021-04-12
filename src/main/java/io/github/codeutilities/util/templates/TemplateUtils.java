@@ -1,6 +1,7 @@
-package io.github.codeutilities.util;
+package io.github.codeutilities.util.templates;
 
 import com.google.gson.*;
+import io.github.codeutilities.util.CompressionUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.*;

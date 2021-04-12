@@ -1,8 +1,7 @@
 package io.github.codeutilities.nbs;
 
-import io.github.codeutilities.nbs.SongData;
 import io.github.codeutilities.nbs.exceptions.OutdatedNBSException;
-import io.github.codeutilities.util.ChatUtil;
+import io.github.codeutilities.util.chat.ChatUtil;
 
 import java.io.*;
 import java.math.BigDecimal;

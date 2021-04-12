@@ -1,4 +1,4 @@
-package io.github.codeutilities.util;
+package io.github.codeutilities.util.color;
 
 import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;

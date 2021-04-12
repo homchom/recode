@@ -1,4 +1,4 @@
-package io.github.codeutilities.util;
+package io.github.codeutilities.util.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.widget.TexturedButtonWidget;

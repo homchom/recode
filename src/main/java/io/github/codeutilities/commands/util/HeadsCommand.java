@@ -6,7 +6,8 @@ import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.commands.arguments.ArgBuilder;
 import io.github.codeutilities.gui.CustomHeadSearchGui;
-import io.github.codeutilities.util.*;
+import io.github.codeutilities.util.chat.ChatType;
+import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 

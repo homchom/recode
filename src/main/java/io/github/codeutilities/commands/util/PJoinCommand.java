@@ -1,14 +1,12 @@
 package io.github.codeutilities.commands.util;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.commands.arguments.ArgBuilder;
 import io.github.codeutilities.commands.arguments.types.PlayerArgumentType;
 import io.github.codeutilities.events.ChatReceivedEvent;
-import io.github.codeutilities.util.ChatType;
-import io.github.codeutilities.util.ChatUtil;
-import io.github.codeutilities.util.DFInfo;
+import io.github.codeutilities.util.chat.ChatType;
+import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 

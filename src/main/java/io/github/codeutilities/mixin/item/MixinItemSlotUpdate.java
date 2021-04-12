@@ -5,23 +5,19 @@ import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.events.ChatReceivedEvent;
 import io.github.codeutilities.gui.CPU_UsageText;
 import io.github.codeutilities.keybinds.FlightspeedToggle;
-import io.github.codeutilities.mixin.messages.MixinGameMessageListener;
 import io.github.codeutilities.template.TemplateStorageHandler;
 import io.github.codeutilities.util.DFInfo;
-import io.github.codeutilities.util.TemplateUtils;
+import io.github.codeutilities.util.templates.TemplateUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.packet.s2c.play.ScreenHandlerSlotUpdateS2CPacket;
-import net.minecraft.util.registry.*;
 import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.util.*;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public class MixinItemSlotUpdate {

@@ -1,13 +1,11 @@
 package io.github.codeutilities.gui;
 
 import com.google.gson.*;
-import io.github.codeutilities.util.*;
+import io.github.codeutilities.util.templates.TemplateUtils;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.*;
 import net.fabricmc.fabric.api.util.TriState;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.*;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;

@@ -1,4 +1,4 @@
-package io.github.codeutilities.util;
+package io.github.codeutilities.util.networking;
 
 import com.google.gson.JsonObject;
 import java.io.BufferedReader;

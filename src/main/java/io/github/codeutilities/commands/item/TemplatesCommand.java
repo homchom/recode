@@ -2,18 +2,18 @@ package io.github.codeutilities.commands.item;
 
 import com.google.gson.*;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.commands.arguments.ArgBuilder;
 import io.github.codeutilities.gui.*;
-import io.github.codeutilities.util.*;
+import io.github.codeutilities.util.chat.ChatType;
+import io.github.codeutilities.util.chat.ChatUtil;
+import io.github.codeutilities.util.networking.WebUtil;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import org.apache.http.HttpResponse;
 
 import java.io.*;
-import java.net.URLEncoder;
 
 public class TemplatesCommand extends Command {
 

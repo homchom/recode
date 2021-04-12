@@ -1,6 +1,6 @@
 package io.github.codeutilities.template;
 
-import io.github.codeutilities.util.TemplateUtils;
+import io.github.codeutilities.util.templates.TemplateUtils;
 import net.minecraft.item.ItemStack;
 
 import java.util.Objects;

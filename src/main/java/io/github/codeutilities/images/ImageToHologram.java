@@ -1,7 +1,6 @@
 package io.github.codeutilities.images;
 
-import io.github.codeutilities.util.MinecraftColors;
-import net.minecraft.text.*;
+import io.github.codeutilities.util.color.MinecraftColors;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

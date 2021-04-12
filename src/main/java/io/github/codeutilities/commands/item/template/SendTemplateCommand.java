@@ -1,7 +1,8 @@
 package io.github.codeutilities.commands.item.template;
 
 import com.google.gson.*;
-import io.github.codeutilities.util.*;
+import io.github.codeutilities.util.chat.ChatType;
+import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.codeutilities.util.socket.SocketHandler;
 import io.github.codeutilities.util.socket.client.*;
 import net.minecraft.client.MinecraftClient;

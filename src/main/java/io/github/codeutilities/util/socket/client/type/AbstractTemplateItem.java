@@ -1,7 +1,7 @@
 package io.github.codeutilities.util.socket.client.type;
 
 import com.google.gson.*;
-import io.github.codeutilities.util.TemplateUtils;
+import io.github.codeutilities.util.templates.TemplateUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.*;
 import net.minecraft.text.*;
