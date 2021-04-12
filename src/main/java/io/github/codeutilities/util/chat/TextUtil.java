@@ -3,6 +3,7 @@ package io.github.codeutilities.util.chat;
 import io.github.codeutilities.util.color.MinecraftColors;
 import net.minecraft.text.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -42,53 +43,48 @@ public class TextUtil {
     public static Text colorCodesToTextComponent(String message) {
         message = "§f" + message;
         Matcher siblings = null;
-        String sibling, literalColorCodes = null, color, prevcolor = "reset", text;
+        String sibling, literalColorCodes = null, color = null, prevcolor = "reset", text;
         String bold = "null", italic = "null", underlined = "null", strikethrough = "null", obfuscated = "null";
+        List<String> sections = new java.util.ArrayList<>(Collections.emptyList());
+        List<String> literalColorSections = new java.util.ArrayList<>(Collections.emptyList());
         MutableText result = Text.Serializer.fromJson("{\"text\": \"\"}");
         char literalColorCode;
         int lastColorOccurrence;
 
-        System.out.println("INPUT = " + message);
-
-        Pattern pattern = Pattern.compile("/(§x(§[0-frlomnk]){6}[^§]*)|(§[0-frlomnk][^§]*)/g");
+        Pattern pattern = Pattern.compile("(§x(§[^§]){6}([^§]|§[lomnk])+)|(§([^§]|§[lomnk])+)");
         Matcher matcher = pattern.matcher(message);
-        while (matcher.find()) {
-            System.out.println(matcher);
-            System.out.println(matcher.group(0));
-            siblings = matcher;
-        }
+        while (matcher.find()) sections.add(matcher.group());
 
-        System.out.println("SIBLINGS = " + siblings);
+        for (String section : sections) {
+            sibling = section;
 
-        for (int i = 0; i < siblings.groupCount(); i++) {
-            sibling = siblings.group(i);
+            // reset modifiers
+            bold = "null";
+            italic = "null";
+            underlined = "null";
+            strikethrough = "null";
+            obfuscated = "null";
 
             // text
-            text = sibling.replaceAll("^(§.)+","");
+            text = sibling.replaceAll("^(§.)+", "");
 
             // color
             pattern = Pattern.compile("(§x(§([0-f]|r)){6})|(§([0-f]|r))");
             matcher = pattern.matcher(sibling);
-            while (matcher.find()) literalColorCodes = matcher.group(matcher.groupCount()-1);
-            assert literalColorCodes != null;
-            if (matcher.groupCount() == 0) {
-                color = prevcolor;
-            } else {
+            while (matcher.find()) literalColorSections.add(matcher.group());
+            literalColorCodes = literalColorSections.get(literalColorSections.size() - 1);
+            if (literalColorSections.size()-1 != 0) {
                 literalColorCode = literalColorCodes.charAt(1);
                 if (literalColorCode == 'x') color = MinecraftColors.mcToHex(literalColorCodes);
                 else color = String.valueOf(Objects.requireNonNull(MinecraftColors.fromCode(literalColorCodes.charAt(1))).getFormatting());
-
-                bold = "null";
-                italic = "null";
-                underlined = "null";
-                strikethrough = "null";
-                obfuscated = "null";
             }
-            prevcolor = color;
 
             // modifiers
             lastColorOccurrence = sibling.lastIndexOf(literalColorCodes);
-            if (sibling.indexOf("§b") > lastColorOccurrence) bold = "true";
+            System.out.println("SIBLING = " + sibling +
+                    "\nLAST COLOR = " + lastColorOccurrence +
+                    "\nINDEX OF §o = " + sibling.indexOf("§o"));
+            if (sibling.indexOf("§l") > lastColorOccurrence) bold = "true";
             if (sibling.indexOf("§o") > lastColorOccurrence) italic = "true";
             if (sibling.indexOf("§n") > lastColorOccurrence) underlined = "true";
             if (sibling.indexOf("§m") > lastColorOccurrence) strikethrough = "true";
@@ -96,15 +92,17 @@ public class TextUtil {
 
             // serializer
             assert false;
-            result.append(Text.Serializer.fromJson("{" +
-                    "\"text\": \"" + text +
-                    "\", \"color\": \"" + color +
-                    "\", \"bold\": \"" + bold +
-                    "\", \"italic\": \"" + italic +
-                    "\", \"underlined\": \"" + underlined +
-                    "\", \"strikethrough\": \"" + strikethrough +
-                    "\", \"obfuscated\": \"" + obfuscated +
-                    "\"}"));
+            if (!text.equals("")) {
+                result.append(Text.Serializer.fromJson("{" +
+                        "\"text\": \"" + text +
+                        "\", \"color\": \"" + color +
+                        "\", \"bold\": \"" + bold +
+                        "\", \"italic\": \"" + italic +
+                        "\", \"underlined\": \"" + underlined +
+                        "\", \"strikethrough\": \"" + strikethrough +
+                        "\", \"obfuscated\": \"" + obfuscated +
+                        "\"}"));
+            }
         }
 
         System.out.println(result);

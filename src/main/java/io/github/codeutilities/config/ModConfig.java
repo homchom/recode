@@ -75,23 +75,21 @@ public class ModConfig implements ConfigData {
     public int fsFast = 1000;
 
     @ConfigEntry.Category("highlight")
-    @ConfigEntry.Gui.Tooltip()
-    public boolean highlightName = false;
+    @ConfigEntry.Gui.Tooltip(count = 2)
+    public boolean highlight = false;
     @ConfigEntry.Category("highlight")
     @ConfigEntry.Gui.Tooltip()
     public String highlightMatcher = "{name}";
     @ConfigEntry.Category("highlight")
     @ConfigEntry.Gui.Tooltip()
-    public String highlightNamePrefix = "&e";
-    /*
+    public String highlightPrefix = "&e";
     @ConfigEntry.Category("highlight")
     @ConfigEntry.Gui.Tooltip()
-    public NoteSounds highlightNameSound = NoteSounds.Pling;
-
-     */
+    @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+    public NoteSounds highlightSound = NoteSounds.Pling;
     @ConfigEntry.Category("highlight")
     @ConfigEntry.Gui.Tooltip()
-    public boolean highlightNameSender = false;
+    public boolean highlightSender = true;
 
     @ConfigEntry.Category("screen")
     @ConfigEntry.Gui.Tooltip()

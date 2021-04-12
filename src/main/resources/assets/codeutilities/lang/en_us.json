@@ -9,6 +9,7 @@
     "text.autoconfig.codeutilities.category.misc": "Miscellaneous",
     "text.autoconfig.codeutilities.category.screen": "Screen",
     "text.autoconfig.codeutilities.category.social": "Social Features",
+    "text.autoconfig.codeutilities.category.highlight": "Highlighting",
   
     "text.autoconfig.codeutilities.option.dfButton": "DiamondFire Menu Button",
     "text.autoconfig.codeutilities.option.dfButton.@Tooltip": "Adds a button in title screen to join DiamondFire.",
@@ -22,6 +23,7 @@
     "text.autoconfig.codeutilities.option.variableScopeView.@Tooltip": "Shows variable type (GAME, SAVE, LOCAL) under the item name.",
     "text.autoconfig.codeutilities.option.functionProcessSearch": "Function/Process Search",
     "text.autoconfig.codeutilities.option.functionProcessSearch.@Tooltip": "Shows you the all nearby usages of a functions or processes.",
+
     "text.autoconfig.codeutilities.option.autoRC": "Auto /rc",
     "text.autoconfig.codeutilities.option.autoRC.@Tooltip": "Automatically runs /rc on entering dev mode.",
     "text.autoconfig.codeutilities.option.autotime": "Auto /time",
@@ -63,6 +65,18 @@
     "text.autoconfig.codeutilities.option.fsMed.@Tooltip": "Flight speed used for the \"Flight Speed Medium\" keybind.",
     "text.autoconfig.codeutilities.option.fsFast": "Flight Speed Fast",
     "text.autoconfig.codeutilities.option.fsFast.@Tooltip": "Flight speed used for the \"Flight Speed Fast\" keybind.",
+
+    "text.autoconfig.codeutilities.option.highlight": "Highlight Text in Chat",
+    "text.autoconfig.codeutilities.option.highlight.@Tooltip[0]": "Highlights the text below in chat if it gets mentioned in a",
+    "text.autoconfig.codeutilities.option.highlight.@Tooltip[1]": "chat message sent by a player.",
+    "text.autoconfig.codeutilities.option.highlightMatcher": "Highlight Matcher",
+    "text.autoconfig.codeutilities.option.highlightMatcher.@Tooltip": "Text to highlight. {name} is replaced with your username.",
+    "text.autoconfig.codeutilities.option.highlightPrefix": "Highlight Prefix",
+    "text.autoconfig.codeutilities.option.highlightPrefix.@Tooltip": "The text to put in front of the highlighted text. Supports color codes.",
+    "text.autoconfig.codeutilities.option.highlightSound": "Highlight Sound",
+    "text.autoconfig.codeutilities.option.highlightSound.@Tooltip": "Sound to play when the text is highlighted.",
+    "text.autoconfig.codeutilities.option.highlightSender": "Ignore Message Sender",
+    "text.autoconfig.codeutilities.option.highlightSender.@Tooltip": "Ignores the sender of the chat message for highlighting.",
 
     "text.autoconfig.codeutilities.option.hideJoinLeaveMessages": "Hide Join/Leave Messages",
     "text.autoconfig.codeutilities.option.hideJoinLeaveMessages.@Tooltip": "Hides messages of players joining or leaving the current node.",
