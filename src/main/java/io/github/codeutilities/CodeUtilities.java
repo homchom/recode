@@ -3,6 +3,7 @@ package io.github.codeutilities;
 import com.google.gson.JsonParser;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.cosmetics.CosmeticHandler;
+import io.github.codeutilities.dfrpc.DFDiscordRPC;
 import io.github.codeutilities.gui.CustomHeadMenu;
 import io.github.codeutilities.template.TemplateStorageHandler;
 import io.github.codeutilities.util.socket.SocketHandler;
@@ -31,10 +32,6 @@ public class CodeUtilities implements ModInitializer {
     public static final MinecraftClient MC = MinecraftClient.getInstance();
     public static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
 
-    public static void log(Level level, String message) {
-        LOGGER.log(level, "[" + MOD_NAME + "] " + message);
-    }
-
     @Override
     public void onInitialize() {
         log(Level.INFO, "Initializing");
@@ -45,14 +42,22 @@ public class CodeUtilities implements ModInitializer {
         CodeInitializer initializer = new CodeInitializer();
         initializer.add(new TemplateStorageHandler());
         initializer.add(new CustomHeadMenu());
+        initializer.add(new DFDiscordRPC());
+
+        // Initialize only if the config value is true.
         initializer.addIf(new SocketHandler(), ModConfig.getConfig().itemApi);
     }
 
     public void onClose() {
         System.out.println("CLOSED");
 
-        // Save all the templates.
+        // Close all the services.
         TemplateStorageHandler.getInstance().save();
         CosmeticHandler.shutdownExecutorService();
     }
+
+    public static void log(Level level, String message) {
+        LOGGER.log(level, "[" + MOD_NAME + "] " + message);
+    }
+
 }
