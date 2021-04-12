@@ -22,6 +22,8 @@
     "text.autoconfig.codeutilities.option.variableScopeView.@Tooltip": "Shows variable type (GAME, SAVE, LOCAL) under the item name.",
     "text.autoconfig.codeutilities.option.functionProcessSearch": "Function/Process Search",
     "text.autoconfig.codeutilities.option.functionProcessSearch.@Tooltip": "Shows you the all nearby usages of a functions or processes.",
+    "text.autoconfig.codeutilities.option.cosmeticType": "Show Cosmetics",
+    "text.autoconfig.codeutilities.option.cosmeticType.@Tooltip": "Shows CodeUtilities cosmetics such as developer capes and hats.",
     "text.autoconfig.codeutilities.option.autoRC": "Auto /rc",
     "text.autoconfig.codeutilities.option.autoRC.@Tooltip": "Automatically runs /rc on entering dev mode.",
     "text.autoconfig.codeutilities.option.autotime": "Auto /time",
