@@ -10,7 +10,7 @@
     "text.autoconfig.codeutilities.category.screen": "Screen",
     "text.autoconfig.codeutilities.category.social": "Social Features",
     "text.autoconfig.codeutilities.category.highlight": "Highlighting",
-  
+
     "text.autoconfig.codeutilities.option.dfButton": "DiamondFire Menu Button",
     "text.autoconfig.codeutilities.option.dfButton.@Tooltip": "Adds a button in title screen to join DiamondFire.",
     "text.autoconfig.codeutilities.option.itemApi": "Item API",
@@ -23,6 +23,8 @@
     "text.autoconfig.codeutilities.option.variableScopeView.@Tooltip": "Shows variable type (GAME, SAVE, LOCAL) under the item name.",
     "text.autoconfig.codeutilities.option.functionProcessSearch": "Function/Process Search",
     "text.autoconfig.codeutilities.option.functionProcessSearch.@Tooltip": "Shows you the all nearby usages of a functions or processes.",
+    "text.autoconfig.codeutilities.option.cosmeticType": "Show Cosmetics",
+    "text.autoconfig.codeutilities.option.cosmeticType.@Tooltip": "Shows CodeUtilities cosmetics such as developer capes and hats.",
 
     "text.autoconfig.codeutilities.option.autoRC": "Auto /rc",
     "text.autoconfig.codeutilities.option.autoRC.@Tooltip": "Automatically runs /rc on entering dev mode.",

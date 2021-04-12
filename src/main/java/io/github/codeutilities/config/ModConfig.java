@@ -110,6 +110,10 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Category("screen")
     @ConfigEntry.Gui.Tooltip()
     public boolean f3Tps = true;
+    @ConfigEntry.Category("screen")
+    @ConfigEntry.Gui.Tooltip()
+    @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+    public CosmeticType cosmeticType = CosmeticType.All_Cosmetics;
 
     @ConfigEntry.Category("misc")
     @ConfigEntry.Gui.Tooltip()
@@ -125,6 +129,12 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip()
     @ConfigEntry.BoundedDiscrete(min = 0, max = 100000)
     public int discordRPCTimeout = 15000;
+
+    public enum CosmeticType {
+        All_Cosmetics,
+        No_Event_Cosmetics,
+        Disabled
+    }
 
     public static ModConfig getConfig() {
         return AutoConfig.getConfigHolder(ModConfig.class).getConfig();
