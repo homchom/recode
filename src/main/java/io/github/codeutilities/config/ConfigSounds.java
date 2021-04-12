@@ -3,8 +3,8 @@ package io.github.codeutilities.config;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 
-public enum NoteSounds {
-    None(null),
+public enum ConfigSounds {
+
     BassDrum(SoundEvents.BLOCK_NOTE_BLOCK_BASEDRUM),
     Banjo(SoundEvents.BLOCK_NOTE_BLOCK_BANJO),
     Bass(SoundEvents.BLOCK_NOTE_BLOCK_BASS),
@@ -20,11 +20,21 @@ public enum NoteSounds {
     Hat(SoundEvents.BLOCK_NOTE_BLOCK_HAT),
     Snare(SoundEvents.BLOCK_NOTE_BLOCK_SNARE),
     IronXylophone(SoundEvents.BLOCK_NOTE_BLOCK_IRON_XYLOPHONE),
-    Xylophone(SoundEvents.BLOCK_NOTE_BLOCK_XYLOPHONE);
+    Xylophone(SoundEvents.BLOCK_NOTE_BLOCK_XYLOPHONE),
+
+    ExperienceOrbPickup(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP),
+
+    ItemPickup(SoundEvents.ENTITY_ITEM_PICKUP),
+
+    ShieldBlock(SoundEvents.ITEM_SHIELD_BLOCK),
+
+    // ====================
+
+    None(null);
 
     private final SoundEvent sound;
 
-    NoteSounds(SoundEvent sound) {
+    ConfigSounds(SoundEvent sound) {
         this.sound = sound;
     }
 

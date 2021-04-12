@@ -2,6 +2,8 @@ package io.github.codeutilities.config;
 
 import me.sargunvohra.mcmods.autoconfig1u.*;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.*;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 
 @Config(name = "codeutilities")
 public class ModConfig implements ConfigData {
@@ -85,8 +87,11 @@ public class ModConfig implements ConfigData {
     public String highlightPrefix = "&e";
     @ConfigEntry.Category("highlight")
     @ConfigEntry.Gui.Tooltip()
-    @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-    public NoteSounds highlightSound = NoteSounds.Pling;
+    @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.DROPDOWN)
+    public ConfigSounds highlightSound = ConfigSounds.ShieldBlock;
+    @ConfigEntry.Category("highlight")
+    @ConfigEntry.Gui.Tooltip()
+    public float highlightSoundVolume = 3F;
     @ConfigEntry.Category("highlight")
     @ConfigEntry.Gui.Tooltip(count = 3)
     public boolean highlightOwnSenderSound = false;
