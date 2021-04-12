@@ -128,5 +128,10 @@ public enum MinecraftColors {
 
         return result.toString();
     }
+
+    public static String mcToHex(String colorCode) {
+        return "#" + colorCode.replaceAll("(^§x)|§", "").toUpperCase();
+    }
+
 }
 

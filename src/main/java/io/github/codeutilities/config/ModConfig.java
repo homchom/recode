@@ -83,9 +83,12 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Category("highlight")
     @ConfigEntry.Gui.Tooltip()
     public String highlightNamePrefix = "&e";
+    /*
     @ConfigEntry.Category("highlight")
     @ConfigEntry.Gui.Tooltip()
     public NoteSounds highlightNameSound = NoteSounds.Pling;
+
+     */
     @ConfigEntry.Category("highlight")
     @ConfigEntry.Gui.Tooltip()
     public boolean highlightNameSender = false;
