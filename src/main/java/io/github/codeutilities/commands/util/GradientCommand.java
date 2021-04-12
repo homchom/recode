@@ -83,13 +83,6 @@ public class GradientCommand extends Command {
                                 Color temp2 = HSLColor.toRGB(temp.getHue(), temp.getSaturation(), temp.getLuminance());
                                 String hex = String.format("%02x%02x%02x", temp2.getRed(), temp2.getGreen(), temp2.getBlue());
 
-                                System.out.println("COLOR INFO:");
-                                System.out.println("" + i/(text.length()-1-spaces));
-                                System.out.println("" + startColor.getHue() + " " + endColor.getHue() + " | " + lerp(startColor.getHue(), endColor.getHue(), i/(text.length()-1-spaces)));
-                                System.out.println("" + startColor.getSaturation() + " " + endColor.getSaturation() + " | " + lerp(startColor.getSaturation(), endColor.getSaturation(), i/(text.length()-1-spaces)));
-                                System.out.println("" + startColor.getLuminance() + " " + endColor.getLuminance() + " | " + lerp(startColor.getLuminance(), endColor.getLuminance(), i/(text.length()-1-spaces)));
-                                System.out.println("hex: " + hex + " (last: " + lastHex + ")");
-
                                 if (lastHex != hex) {
                                     lastHex = hex;
                                     String dfHex = "&x&" + String.join("&", hex.split(""));
