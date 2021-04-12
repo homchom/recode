@@ -42,11 +42,10 @@ public class CodeUtilities implements ModInitializer {
         Runtime.getRuntime().addShutdownHook(new Thread(this::onClose));
 
         // Initialize.
-        CodeInitializer codeInitializer = new CodeInitializer();
-        codeInitializer.add(new TemplateStorageHandler());
-        codeInitializer.add(new CustomHeadMenu());
-        codeInitializer.addIf(new SocketHandler(), ModConfig.getConfig().itemApi);
-
+        CodeInitializer initializer = new CodeInitializer();
+        initializer.add(new TemplateStorageHandler());
+        initializer.add(new CustomHeadMenu());
+        initializer.addIf(new SocketHandler(), ModConfig.getConfig().itemApi);
     }
 
     public void onClose() {
