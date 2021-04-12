@@ -20,21 +20,28 @@ import java.util.regex.Pattern;
 
 public class DFDiscordRPC implements ILoader {
 
+    // this looks weird
+    private static final String EMPTY = "                                       ";
     public static boolean locating = false;
     public static boolean delayRPC = false;
 
     public static boolean supportSession = false;
-
+    public static RichPresence.Builder builder;
+    private static DFDiscordRPC instance;
     private static boolean firstLocate = true;
     private static boolean firstUpdate = true;
-
-    // this looks weird
-    private static final String EMPTY = "                                       ";
     private static String oldMode = "";
     private static OffsetDateTime time;
-
     private static IPCClient client;
-    public static RichPresence.Builder builder;
+    private DFRPCThread thread;
+
+    public DFDiscordRPC() {
+        instance = this;
+    }
+
+    public static DFDiscordRPC getInstance() {
+        return instance;
+    }
 
     @Override
     public void load() {
@@ -58,99 +65,8 @@ public class DFDiscordRPC implements ILoader {
         });
 
         ExecutorService discordService = Executors.newSingleThreadExecutor();
-        discordService.submit(new DFRPCThread());
-    }
-
-    public class DFRPCThread extends Thread {
-        final MinecraftClient mc = MinecraftClient.getInstance();
-
-        @Override
-        public void run() {
-            String oldState = "Not on DF";
-            int i = 0;
-
-            while (true) {
-
-                if (DFInfo.isOnDF() && !delayRPC) {
-                    if (!String.valueOf(DFInfo.currentState).equals(oldState)) {
-                        locateRequest();
-                    } else {
-                        if (i % 30 == 0 && DFInfo.currentState == DFInfo.State.PLAY) locateRequest();
-                    }
-                } else {
-                    firstLocate = true;
-                    firstUpdate = true;
-                    try {
-                        client.close();
-                    } catch (Exception ignored) {
-                    }
-                }
-
-                if (!ModConfig.getConfig().discordRPC) {
-                    firstLocate = true;
-                    firstUpdate = true;
-                    try {
-                        client.close();
-                    } catch (Exception ignored) {
-                    }
-                }
-
-                if (DFInfo.isOnDF()) {
-                    oldState = String.valueOf(DFInfo.currentState);
-                } else {
-                    oldState = "Not on DF";
-                    supportSession = false;
-                }
-
-                if (delayRPC) {
-                    delayRPC = false;
-                    try {
-                        DFRPCThread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                try {
-                    DFRPCThread.sleep(200);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                i++;
-
-            }
-        }
-
-        public void locateRequest() {
-            if (mc.player != null) {
-                if (ModConfig.getConfig().discordRPC) {
-                    mc.player.sendChatMessage("/locate");
-                }
-                locating = true;
-                for (int i = 0; i < ModConfig.getConfig().discordRPCTimeout; i++) {
-                    try {
-                        DFRPCThread.sleep(1);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    if (!locating) break;
-                }
-                locating = false;
-            }
-
-            if (firstLocate) {
-                try {
-                    client.connect();
-                } catch (NoDiscordClientException ignored) {
-                }
-                update();
-                firstLocate = false;
-            } else {
-                update();
-                firstUpdate = false;
-            }
-            //CodeUtilities.log(Level.INFO, "----------- RPC Updated! Status: " + client.getStatus());
-        }
+        this.thread = new DFRPCThread();
+        discordService.submit(thread);
     }
 
     private void update() {
@@ -251,4 +167,99 @@ public class DFDiscordRPC implements ILoader {
         if (ModConfig.getConfig().discordRPC) client.sendRichPresence(presence.build());
     }
 
+    public DFRPCThread getThread() {
+        return thread;
+    }
+
+    public class DFRPCThread extends Thread {
+        final MinecraftClient mc = MinecraftClient.getInstance();
+
+        @Override
+        public void run() {
+            String oldState = "Not on DF";
+            int i = 0;
+
+            while (true) {
+
+                if (DFInfo.isOnDF() && !delayRPC) {
+                    if (!String.valueOf(DFInfo.currentState).equals(oldState)) {
+                        locateRequest();
+                    } else {
+                        if (i % 30 == 0 && DFInfo.currentState == DFInfo.State.PLAY) locateRequest();
+                    }
+                } else {
+                    firstLocate = true;
+                    firstUpdate = true;
+                    try {
+                        client.close();
+                    } catch (Exception ignored) {
+                    }
+                }
+
+                if (!ModConfig.getConfig().discordRPC) {
+                    firstLocate = true;
+                    firstUpdate = true;
+                    try {
+                        client.close();
+                    } catch (Exception ignored) {
+                    }
+                }
+
+                if (DFInfo.isOnDF()) {
+                    oldState = String.valueOf(DFInfo.currentState);
+                } else {
+                    oldState = "Not on DF";
+                    supportSession = false;
+                }
+
+                if (delayRPC) {
+                    delayRPC = false;
+                    try {
+                        DFRPCThread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                try {
+                    DFRPCThread.sleep(200);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                i++;
+
+            }
+        }
+
+        public void locateRequest() {
+            if (mc.player != null) {
+                if (ModConfig.getConfig().discordRPC) {
+                    mc.player.sendChatMessage("/locate");
+                }
+                locating = true;
+                for (int i = 0; i < ModConfig.getConfig().discordRPCTimeout; i++) {
+                    try {
+                        DFRPCThread.sleep(1);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    if (!locating) break;
+                }
+                locating = false;
+            }
+
+            if (firstLocate) {
+                try {
+                    client.connect();
+                } catch (NoDiscordClientException ignored) {
+                }
+                update();
+                firstLocate = false;
+            } else {
+                update();
+                firstUpdate = false;
+            }
+            //CodeUtilities.log(Level.INFO, "----------- RPC Updated! Status: " + client.getStatus());
+        }
+    }
 }

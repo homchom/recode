@@ -4,9 +4,9 @@ import java.math.BigDecimal;
 
 public class TPSUtil {
 
+    private static final BigDecimal dValue = new BigDecimal(1000);
     public static float TPS = 0.0f;
     private static long lastTpsTimestamp = 0;
-    private static final BigDecimal dValue = new BigDecimal(1000);
 
     public static void calculateTps(long packetTimestamp) {
         if (!Thread.currentThread().getName().contains("Render thread")) {

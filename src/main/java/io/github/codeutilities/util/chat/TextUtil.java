@@ -1,7 +1,10 @@
 package io.github.codeutilities.util.chat;
 
 import io.github.codeutilities.util.color.MinecraftColors;
-import net.minecraft.text.*;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Style;
+import net.minecraft.text.Text;
+import net.minecraft.text.TextColor;
 
 import java.util.List;
 import java.util.Objects;
@@ -64,19 +67,20 @@ public class TextUtil {
             sibling = siblings.group(i);
 
             // text
-            text = sibling.replaceAll("^(§.)+","");
+            text = sibling.replaceAll("^(§.)+", "");
 
             // color
             pattern = Pattern.compile("(§x(§([0-f]|r)){6})|(§([0-f]|r))");
             matcher = pattern.matcher(sibling);
-            while (matcher.find()) literalColorCodes = matcher.group(matcher.groupCount()-1);
+            while (matcher.find()) literalColorCodes = matcher.group(matcher.groupCount() - 1);
             assert literalColorCodes != null;
             if (matcher.groupCount() == 0) {
                 color = prevcolor;
             } else {
                 literalColorCode = literalColorCodes.charAt(1);
                 if (literalColorCode == 'x') color = MinecraftColors.mcToHex(literalColorCodes);
-                else color = String.valueOf(Objects.requireNonNull(MinecraftColors.fromCode(literalColorCodes.charAt(1))).getFormatting());
+                else
+                    color = String.valueOf(Objects.requireNonNull(MinecraftColors.fromCode(literalColorCodes.charAt(1))).getFormatting());
 
                 bold = "null";
                 italic = "null";

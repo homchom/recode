@@ -1,7 +1,9 @@
 package io.github.codeutilities.config;
 
-import me.sargunvohra.mcmods.autoconfig1u.*;
-import me.sargunvohra.mcmods.autoconfig1u.annotation.*;
+import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
+import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
+import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
+import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry;
 
 @Config(name = "codeutilities")
 public class ModConfig implements ConfigData {
@@ -132,13 +134,13 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.BoundedDiscrete(min = 0, max = 100000)
     public int discordRPCTimeout = 15000;
 
+    public static ModConfig getConfig() {
+        return AutoConfig.getConfigHolder(ModConfig.class).getConfig();
+    }
+
     public enum CosmeticType {
         All_Cosmetics,
         No_Event_Cosmetics,
         Disabled
-    }
-
-    public static ModConfig getConfig() {
-        return AutoConfig.getConfigHolder(ModConfig.class).getConfig();
     }
 }

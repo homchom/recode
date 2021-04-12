@@ -7,25 +7,24 @@ import io.github.codeutilities.schem.utils.DFUtils;
 import java.util.ArrayList;
 
 public class Schematic {
-    public String name = "Unnamed";
-    public String author = "Unknown";
-    public String description = "";
-    public String fileType = "Sponge";
-    public double creationTime = System.currentTimeMillis() / 1000d;
-    public double lastModified = creationTime;
-
-    private final ArrayList<String> palette = new ArrayList<>();
-    private final ArrayList<Integer> blocks = new ArrayList<>();
-    private BlockVector3 dimensions = BlockVector3.ZERO;
-    private BlockVector3 offset = BlockVector3.ZERO;
-    private int blocksTextsLen = 0;
-
     private final static String[] CompressList;
 
     static {
         CompressList = "!# %&+/<>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ\\abcdefghijklmnopqrstuvwxyz|".split("");
         CompressList[37] = "\\\\";
     }
+
+    private final ArrayList<String> palette = new ArrayList<>();
+    private final ArrayList<Integer> blocks = new ArrayList<>();
+    public String name = "Unnamed";
+    public String author = "Unknown";
+    public String description = "";
+    public String fileType = "Sponge";
+    public double creationTime = System.currentTimeMillis() / 1000d;
+    public double lastModified = creationTime;
+    private BlockVector3 dimensions = BlockVector3.ZERO;
+    private BlockVector3 offset = BlockVector3.ZERO;
+    private int blocksTextsLen = 0;
 
     public void AddBlockToPalette(int id, String block) {
         if (block == null || block == "null") return;

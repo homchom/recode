@@ -13,30 +13,30 @@ public class FuncSearchUtil {
     public static String searchValue;
 
     public static boolean shouldGlow(SignBlockEntity blockEntity) {
-        if(searchType == null || searchValue == null) {
+        if (searchType == null || searchValue == null) {
             return false;
         }
 
-        if(blockEntity.getTextOnRow(0).getSiblings().size() > 0 && blockEntity.getTextOnRow(1).getSiblings().size() > 0) {
+        if (blockEntity.getTextOnRow(0).getSiblings().size() > 0 && blockEntity.getTextOnRow(1).getSiblings().size() > 0) {
             return searchType.getSignText().contains(blockEntity.getTextOnRow(0).getSiblings().get(0).asString()) &&
                     searchValue.equals(blockEntity.getTextOnRow(1).getSiblings().get(0).asString());
-        }else {
+        } else {
             return false;
         }
     }
 
     public static void beginSearch(SignBlockEntity signBlockEntity) {
-        if(signBlockEntity.getTextOnRow(0).getSiblings().size() == 0||signBlockEntity.getTextOnRow(1).getSiblings().size() == 0) {
+        if (signBlockEntity.getTextOnRow(0).getSiblings().size() == 0 || signBlockEntity.getTextOnRow(1).getSiblings().size() == 0) {
             clearSearch();
             return;
         }
         SearchType searchType = SearchType.getType(signBlockEntity.getTextOnRow(0).getSiblings().get(0).asString());
         String searchValue = signBlockEntity.getTextOnRow(1).getSiblings().get(0).asString();
 
-        if(searchType == null || searchValue.length() == 0) {
+        if (searchType == null || searchValue.length() == 0) {
             clearSearch();
-        }else {
-            if(FuncSearchUtil.searchType == searchType && FuncSearchUtil.searchValue.equals(searchValue)) {
+        } else {
+            if (FuncSearchUtil.searchType == searchType && FuncSearchUtil.searchValue.equals(searchValue)) {
                 clearSearch();
                 return;
             }
@@ -62,17 +62,17 @@ public class FuncSearchUtil {
             this.signText = signText;
         }
 
-        public List<String> getSignText() {
-            return signText;
-        }
-
         public static SearchType getType(String text) {
-            for(SearchType searchType:values()) {
-                if(searchType.getSignText().contains(text)) {
+            for (SearchType searchType : values()) {
+                if (searchType.getSignText().contains(text)) {
                     return searchType;
                 }
             }
             return null;
+        }
+
+        public List<String> getSignText() {
+            return signText;
         }
     }
 

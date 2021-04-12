@@ -12,6 +12,10 @@ public class CodeInitializer {
         instance = this;
     }
 
+    public static CodeInitializer getInstance() {
+        return instance;
+    }
+
     public void add(IManager<?> manager) {
         this.add(new IManager<?>[]{manager});
     }
@@ -26,10 +30,6 @@ public class CodeInitializer {
 
     public void add(IManager<?>... managers) {
         Arrays.stream(managers).forEach(IManager::initialize);
-    }
-
-    public static CodeInitializer getInstance() {
-        return instance;
     }
 
     public void addIf(IManager<?> manager, boolean b) {

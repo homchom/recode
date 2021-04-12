@@ -24,10 +24,9 @@ public class WeakStorage<K, V> implements Closeable {
     private final long discardDelay;
 
     private final Thread timeoutThread;
-    private boolean closed = false;
-
     private final Map<K, Entry> storage = new HashMap<>();
     private final Map<K, WeakReference<V>> weakStorage = new HashMap<>();
+    private boolean closed = false;
 
     @SuppressWarnings("BusyWait")
     public WeakStorage(long dataTimeout) {

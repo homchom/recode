@@ -1,11 +1,11 @@
 package io.github.codeutilities.mixin.render;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.ModConfig;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.client.block.ChestAnimationProgress;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;

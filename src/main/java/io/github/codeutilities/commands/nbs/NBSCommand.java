@@ -9,7 +9,7 @@ import io.github.codeutilities.nbs.NBSDecoder;
 import io.github.codeutilities.nbs.NBSToTemplate;
 import io.github.codeutilities.nbs.SongData;
 import io.github.codeutilities.nbs.exceptions.OutdatedNBSException;
-import io.github.codeutilities.util.*;
+import io.github.codeutilities.util.ItemUtil;
 import io.github.codeutilities.util.chat.ChatType;
 import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.codeutilities.util.externalfile.ExternalFile;

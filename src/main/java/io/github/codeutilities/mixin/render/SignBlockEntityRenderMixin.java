@@ -18,9 +18,11 @@ import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.text.OrderedText;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
-import org.spongepowered.asm.mixin.*;
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.Shadow;
 
 import java.util.List;
 
@@ -57,12 +59,12 @@ public class SignBlockEntityRenderMixin {
         float h;
         if (blockState.getBlock() instanceof SignBlock) {
             matrixStack.translate(0.5D, 0.5D, 0.5D);
-            h = -((float) ((Integer) blockState.get(SignBlock.ROTATION) * 360) / 16.0F);
+            h = -((float) (blockState.get(SignBlock.ROTATION) * 360) / 16.0F);
             matrixStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(h));
             this.model.foot.visible = true;
         } else {
             matrixStack.translate(0.5D, 0.5D, 0.5D);
-            h = -((Direction) blockState.get(WallSignBlock.FACING)).asRotation();
+            h = -blockState.get(WallSignBlock.FACING).asRotation();
             matrixStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(h));
             matrixStack.translate(0.0D, -0.3125D, -0.4375D);
             this.model.foot.visible = false;
@@ -90,7 +92,7 @@ public class SignBlockEntityRenderMixin {
         for (int s = 0; s < 4; ++s) {
             OrderedText orderedText = signBlockEntity.getTextBeingEditedOnRow(s, (text) -> {
                 List<OrderedText> list = textRenderer.wrapLines(text, 90);
-                return list.isEmpty() ? OrderedText.EMPTY : (OrderedText) list.get(0);
+                return list.isEmpty() ? OrderedText.EMPTY : list.get(0);
             });
             if (orderedText != null) {
                 float t = (float) (-textRenderer.getWidth(orderedText) / 2);

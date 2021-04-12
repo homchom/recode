@@ -36,6 +36,10 @@ public class LitematicaBitArray {
         }
     }
 
+    public static int clamp(int val, int min, int max) {
+        return Math.max(min, Math.min(max, val));
+    }
+
     public void setAt(long index, int value) {
         isInRange(0L, this.arraySize - 1L, index);
         isInRange(0L, this.maxEntryValue, value);
@@ -96,9 +100,5 @@ public class LitematicaBitArray {
         if (value < start || value > end) {
             throw new IllegalArgumentException(value + " not in the range of " + start + " to " + end);
         }
-    }
-
-    public static int clamp(int val, int min, int max) {
-        return Math.max(min, Math.min(max, val));
     }
 }

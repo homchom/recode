@@ -5,7 +5,7 @@ import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.util.ILoader;
 import io.github.codeutilities.util.IMenu;
-import io.github.codeutilities.util.WebUtil;
+import io.github.codeutilities.util.networking.WebUtil;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WButton;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
@@ -24,11 +24,10 @@ import java.util.*;
 
 public class CustomHeadMenu extends LightweightGuiDescription implements IMenu, ILoader {
 
-    private static CustomHeadMenu instance;
     private static final List<JsonObject> allHeads = new ArrayList<>();
     private static final List<String> categories = new ArrayList<>();
     private static final HashMap<String, Integer> categoryCount = new HashMap<>();
-
+    private static CustomHeadMenu instance;
     final ModConfig config = ModConfig.getConfig();
 
     private ItemScrollablePanel panel;
@@ -36,6 +35,10 @@ public class CustomHeadMenu extends LightweightGuiDescription implements IMenu, 
     private String searchQuery = "";
     private CTextField searchBox;
     private String lastQuery = "";
+
+    public static CustomHeadMenu getInstance() {
+        return instance;
+    }
 
     @Override
     public void open(String... args) {
@@ -219,9 +222,5 @@ public class CustomHeadMenu extends LightweightGuiDescription implements IMenu, 
             e.printStackTrace();
         }
         return items;
-    }
-
-    public static CustomHeadMenu getInstance() {
-        return instance;
     }
 }

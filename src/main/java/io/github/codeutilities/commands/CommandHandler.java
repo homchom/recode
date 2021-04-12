@@ -19,13 +19,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CommandHandler implements ClientCommandPlugin, IManager<Command> {
-    private final List<Command> registeredCommands = new ArrayList<>();
     private static CommandHandler instance;
+    private final List<Command> registeredCommands = new ArrayList<>();
 
     public CommandHandler() {
         instance = this;
 
         this.initialize();
+    }
+
+    public static CommandHandler getInstance() {
+        return instance == null ? new CommandHandler() : instance;
     }
 
     public void initialize() {
@@ -83,10 +87,6 @@ public class CommandHandler implements ClientCommandPlugin, IManager<Command> {
         for (Command command : this.getRegistered()) {
             command.register(CodeUtilities.MC, commandDispatcher);
         }
-    }
-
-    public static CommandHandler getInstance() {
-        return instance == null ? new CommandHandler() : instance;
     }
 
 }

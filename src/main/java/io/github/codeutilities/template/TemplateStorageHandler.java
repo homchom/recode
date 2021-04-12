@@ -22,12 +22,35 @@ public class TemplateStorageHandler implements IManager<TemplateItem>, ISave {
 
     private static final File FILE = ExternalFile.TEMPLATE_DB.getFile();
     private static final int MAX_SIZE = 55;
-
-    private final List<TemplateItem> registeredTemplates = new ArrayList<>(MAX_SIZE);
     private static TemplateStorageHandler instance;
+    private final List<TemplateItem> registeredTemplates = new ArrayList<>(MAX_SIZE);
 
     public TemplateStorageHandler() {
         instance = this;
+    }
+
+    public static void addTemplate(ItemStack stack) {
+        TemplateStorageHandler instance = getInstance();
+        List<TemplateItem> registered = instance.getRegistered();
+
+        try {
+            TemplateItem template = new TemplateItem(stack);
+
+            if (registered.contains(template)) {
+                return;
+            }
+            if (registered.size() > MAX_SIZE) {
+                registered.remove(MAX_SIZE);
+            }
+
+            stack.setCount(1);
+            registered.add(0, template);
+        } catch (Exception ignored) {
+        }
+    }
+
+    public static TemplateStorageHandler getInstance() {
+        return instance;
     }
 
     // Must contain serialized template list.
@@ -62,26 +85,6 @@ public class TemplateStorageHandler implements IManager<TemplateItem>, ISave {
         this.registeredTemplates.add(object);
     }
 
-    public static void addTemplate(ItemStack stack) {
-        TemplateStorageHandler instance = getInstance();
-        List<TemplateItem> registered = instance.getRegistered();
-
-        try {
-            TemplateItem template = new TemplateItem(stack);
-
-            if (registered.contains(template)) {
-                return;
-            }
-            if (registered.size() > MAX_SIZE) {
-                registered.remove(MAX_SIZE);
-            }
-
-            stack.setCount(1);
-            registered.add(0, template);
-        } catch (Exception ignored) {
-        }
-    }
-
     @Override
     public List<TemplateItem> getRegistered() {
         return this.registeredTemplates;
@@ -99,9 +102,5 @@ public class TemplateStorageHandler implements IManager<TemplateItem>, ISave {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public static TemplateStorageHandler getInstance() {
-        return instance;
     }
 }

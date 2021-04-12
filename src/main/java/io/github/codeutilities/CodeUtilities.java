@@ -31,6 +31,10 @@ public class CodeUtilities implements ModInitializer {
     public static final MinecraftClient MC = MinecraftClient.getInstance();
     public static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
 
+    public static void log(Level level, String message) {
+        LOGGER.log(level, "[" + MOD_NAME + "] " + message);
+    }
+
     @Override
     public void onInitialize() {
         log(Level.INFO, "Initializing");
@@ -51,9 +55,5 @@ public class CodeUtilities implements ModInitializer {
         // Save all the templates.
         TemplateStorageHandler.getInstance().save();
         CosmeticHandler.shutdownExecutorService();
-    }
-
-    public static void log(Level level, String message) {
-        LOGGER.log(level, "[" + MOD_NAME + "] " + message);
     }
 }

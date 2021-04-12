@@ -2,16 +2,16 @@ package io.github.codeutilities.nbs;
 
 public class SongData {
 
-    String name;
-    String author;
-    float speed;
     final int length;
-    String fileName;
-    String notes;
     final String layers;
     final int loopTick;
     final int loopCount;
     final int customInstrumentCount;
+    String name;
+    String author;
+    float speed;
+    String fileName;
+    String notes;
 
     public SongData(String name, String author, float speed, int length, String notes, String fileName, String layers, int loopTick, int loopCount, int customInstrumentCount) {
         this.name = name;

@@ -12,16 +12,14 @@ import net.minecraft.util.Formatting;
 
 public class CPU_UsageText {
 
+    private static final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+    private static final Window mainWindow = MinecraftClient.getInstance().getWindow();
     public static boolean hasLagSlayer;
     public static boolean lagSlayerEnabled;
     public static String monitorPlotId;
-
     private static Text barsText;
     private static Text numberText;
     private static long lastUpdate;
-
-    private static final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-    private static final Window mainWindow = MinecraftClient.getInstance().getWindow();
 
     public CPU_UsageText() {
         throw new RuntimeException("CPU_UsageText is a static class !");

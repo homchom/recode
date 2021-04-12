@@ -19,7 +19,7 @@ public class PJoinCommand extends Command {
                         .executes(ctx -> {
                             try {
                                 return run(mc, ctx.getArgument("player", String.class));
-                            }catch (Exception e) {
+                            } catch (Exception e) {
                                 ChatUtil.sendMessage("Error while attempting to execute the command.", ChatType.FAIL);
                                 e.printStackTrace();
                                 return -1;

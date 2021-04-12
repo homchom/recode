@@ -29,6 +29,21 @@ public final class Vector3 {
     public static final Vector3 UNIT_Y = new Vector3(0, 1, 0);
     public static final Vector3 UNIT_Z = new Vector3(0, 0, 1);
     public static final Vector3 ONE = new Vector3(1, 1, 1);
+    private final double x;
+    private final double y;
+    private final double z;
+    /**
+     * Construct an instance.
+     *
+     * @param x the X coordinate
+     * @param y the Y coordinate
+     * @param z the Z coordinate
+     */
+    private Vector3(double x, double y, double z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
 
     public static Vector3 at(double x, double y, double z) {
         // switch for efficiency on typical cases
@@ -51,21 +66,16 @@ public final class Vector3 {
         return new Vector3(x, y, z);
     }
 
-    private final double x;
-    private final double y;
-    private final double z;
-
     /**
-     * Construct an instance.
+     * Create a new {@code BlockVector} using the given components.
      *
      * @param x the X coordinate
      * @param y the Y coordinate
      * @param z the Z coordinate
+     * @return a new {@code BlockVector}
      */
-    private Vector3(double x, double y, double z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+    public static BlockVector3 toBlockPoint(double x, double y, double z) {
+        return BlockVector3.at(x, y, z);
     }
 
     /**
@@ -508,18 +518,6 @@ public final class Vector3 {
                 Math.max(y, v2.y),
                 Math.max(z, v2.z)
         );
-    }
-
-    /**
-     * Create a new {@code BlockVector} using the given components.
-     *
-     * @param x the X coordinate
-     * @param y the Y coordinate
-     * @param z the Z coordinate
-     * @return a new {@code BlockVector}
-     */
-    public static BlockVector3 toBlockPoint(double x, double y, double z) {
-        return BlockVector3.at(x, y, z);
     }
 
     /**

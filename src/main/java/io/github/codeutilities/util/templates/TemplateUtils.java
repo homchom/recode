@@ -1,8 +1,8 @@
 package io.github.codeutilities.util.templates;
 
-import com.google.gson.*;
-import io.github.codeutilities.util.CompressionUtil;
 import com.google.gson.JsonObject;
+import io.github.codeutilities.CodeUtilities;
+import io.github.codeutilities.util.CompressionUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.LiteralText;

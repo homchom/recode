@@ -26,6 +26,7 @@ public enum MinecraftColors {
     WHITE(255, 255, 255, 'f', Formatting.WHITE),
     RESET(255, 255, 255, 'r', Formatting.RESET);
 
+    private static final char COLOR_CHAR = '§';
     private final TextColor formatting;
     int r, g, b;
     char mc;
@@ -37,32 +38,6 @@ public enum MinecraftColors {
         this.mc = mc;
         this.formatting = TextColor.fromFormatting(formatting);
     }
-
-    public int getR() {
-        return r;
-    }
-
-    public int getG() {
-        return g;
-    }
-
-    public int getB() {
-        return b;
-    }
-
-    public Color getColor() {
-        return new Color(r, g, b);
-    }
-
-    public String getMc() {
-        return "§" + mc;
-    }
-
-    public char getSymbol() {
-        return mc;
-    }
-
-    public TextColor getFormatting() { return formatting; }
 
     public static MinecraftColors fromCode(char code) {
         for (MinecraftColors colors : values()) {
@@ -81,12 +56,6 @@ public enum MinecraftColors {
         }
         return null;
     }
-
-    public String toString() {
-        return getMc();
-    }
-
-    private static final char COLOR_CHAR = '§';
 
     /**
      * Gets the ChatColors used at the end of the given input string.
@@ -131,6 +100,38 @@ public enum MinecraftColors {
 
     public static String mcToHex(String colorCode) {
         return "#" + colorCode.replaceAll("(^§x)|§", "").toUpperCase();
+    }
+
+    public int getR() {
+        return r;
+    }
+
+    public int getG() {
+        return g;
+    }
+
+    public int getB() {
+        return b;
+    }
+
+    public Color getColor() {
+        return new Color(r, g, b);
+    }
+
+    public String getMc() {
+        return "§" + mc;
+    }
+
+    public char getSymbol() {
+        return mc;
+    }
+
+    public TextColor getFormatting() {
+        return formatting;
+    }
+
+    public String toString() {
+        return getMc();
     }
 
 }

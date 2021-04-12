@@ -23,9 +23,6 @@ import java.util.Map;
 
 @Mixin(InGameHud.class)
 public class MixinHeldItemTooltip {
-    private final MinecraftClient mc = MinecraftClient.getInstance();
-    private ItemStack variableStack;
-    private JsonObject varItemNbt;
     private static final Map<String, MutableText> scopes = new HashMap<>();
 
     static {
@@ -33,6 +30,10 @@ public class MixinHeldItemTooltip {
         scopes.put("saved", new LiteralText("SAVE").styled((style) -> style.withColor(Formatting.YELLOW)));
         scopes.put("local", new LiteralText("LOCAL").styled((style) -> style.withColor(Formatting.GREEN)));
     }
+
+    private final MinecraftClient mc = MinecraftClient.getInstance();
+    private ItemStack variableStack;
+    private JsonObject varItemNbt;
 
     @Inject(method = "renderHeldItemTooltip", at = @At("HEAD"), cancellable = true)
     public void renderHeldItemTooltip(MatrixStack matrices, CallbackInfo callbackInfo) {

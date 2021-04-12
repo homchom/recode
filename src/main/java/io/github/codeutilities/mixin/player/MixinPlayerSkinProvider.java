@@ -23,16 +23,15 @@ import java.io.File;
 @Mixin(PlayerSkinProvider.class)
 public class MixinPlayerSkinProvider {
 
+    long loadingTexture = 0;
     @Shadow
     @Final
     private TextureManager textureManager;
+
+    //Complete overwrite for loadSkin method in net.minecraft.client.texture.PlayerSkinProvider
     @Shadow
     @Final
     private File skinCacheDir;
-
-    //Complete overwrite for loadSkin method in net.minecraft.client.texture.PlayerSkinProvider
-
-    long loadingTexture = 0;
 
     @Inject(method = "loadSkin(Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/client/texture/PlayerSkinProvider$SkinTextureAvailableCallback;)Lnet/minecraft/util/Identifier;", at = @At("HEAD"), cancellable = true)
     private void loadSkin(MinecraftProfileTexture profileTexture, Type type,

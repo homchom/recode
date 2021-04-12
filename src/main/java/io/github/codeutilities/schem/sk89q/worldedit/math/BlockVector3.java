@@ -32,6 +32,21 @@ public final class BlockVector3 {
     public static final BlockVector3 UNIT_MINUS_Y = new BlockVector3(0, -1, 0);
     public static final BlockVector3 UNIT_MINUS_Z = new BlockVector3(0, 0, -1);
     public static final BlockVector3 ONE = new BlockVector3(1, 1, 1);
+    private final int x;
+    private final int y;
+    private final int z;
+    /**
+     * Construct an instance.
+     *
+     * @param x the X coordinate
+     * @param y the Y coordinate
+     * @param z the Z coordinate
+     */
+    private BlockVector3(int x, int y, int z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
 
     public static BlockVector3 at(double x, double y, double z) {
         return at((int) Math.floor(x), (int) Math.floor(y), (int) Math.floor(z));
@@ -55,23 +70,6 @@ public final class BlockVector3 {
                 break;
         }
         return new BlockVector3(x, y, z);
-    }
-
-    private final int x;
-    private final int y;
-    private final int z;
-
-    /**
-     * Construct an instance.
-     *
-     * @param x the X coordinate
-     * @param y the Y coordinate
-     * @param z the Z coordinate
-     */
-    private BlockVector3(int x, int y, int z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
     }
 
     /**

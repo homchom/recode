@@ -5,8 +5,8 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.commands.arguments.ArgBuilder;
-import io.github.codeutilities.util.ChatType;
-import io.github.codeutilities.util.ChatUtil;
+import io.github.codeutilities.util.chat.ChatType;
+import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.*;
@@ -31,6 +31,36 @@ public class ColorsCommand extends Command {
         put("purple", 270F);
         put("magenta", 300F);
     }};
+
+    public static List<LiteralText> generateColorPicker(float hue) {
+        return generateColorPicker(hue, "█");
+    }
+
+    public static List<LiteralText> generateColorPicker(float hue, String message) {
+        List<LiteralText> list = new ArrayList<>();
+        hue = hue / 360;
+        String paste = "§6⧈ §eClick to copy the hex color! §b";
+
+        for (int i = 0; i <= 10; i++) {
+            for (int j = 0; j <= 10; j++) {
+
+                Color color = Color.getHSBColor(hue, j / 10f, (10 - i) / 10f);
+                String hex = "#" + Integer.toHexString(color.getRGB()).substring(2);
+
+                Style colorStyle = Style.EMPTY.withColor(TextColor.fromRgb(color.getRGB()));
+                LiteralText extra = new LiteralText(message);
+                LiteralText hover = new LiteralText(hex);
+                hover.append("\n" + paste);
+                extra.setStyle(colorStyle);
+                hover.setStyle(colorStyle);
+                extra.styled((style) -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/color hex " + hex)));
+                extra.styled((style) -> style.withHoverEvent(HoverEvent.Action.SHOW_TEXT.buildHoverEvent(hover)));
+                list.add(extra);
+            }
+        }
+
+        return list;
+    }
 
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
@@ -72,35 +102,5 @@ public class ColorsCommand extends Command {
 
         ChatUtil.sendMessage("Click a color to copy to your clipboard!", ChatType.INFO_BLUE);
         this.sendMessage(mc, finalText);
-    }
-
-    public static List<LiteralText> generateColorPicker(float hue) {
-        return generateColorPicker(hue, "█");
-    }
-
-    public static List<LiteralText> generateColorPicker(float hue, String message) {
-        List<LiteralText> list = new ArrayList<>();
-        hue = hue / 360;
-        String paste = "§6⧈ §eClick to copy the hex color! §b";
-
-        for (int i = 0; i <= 10; i++) {
-            for (int j = 0; j <= 10; j++) {
-
-                Color color = Color.getHSBColor(hue, j / 10f, (10 - i) / 10f);
-                String hex = "#" + Integer.toHexString(color.getRGB()).substring(2);
-
-                Style colorStyle = Style.EMPTY.withColor(TextColor.fromRgb(color.getRGB()));
-                LiteralText extra = new LiteralText(message);
-                LiteralText hover = new LiteralText(hex);
-                hover.append("\n" + paste);
-                extra.setStyle(colorStyle);
-                hover.setStyle(colorStyle);
-                extra.styled((style) -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/color hex " + hex)));
-                extra.styled((style) -> style.withHoverEvent(HoverEvent.Action.SHOW_TEXT.buildHoverEvent(hover)));
-                list.add(extra);
-            }
-        }
-
-        return list;
     }
 }

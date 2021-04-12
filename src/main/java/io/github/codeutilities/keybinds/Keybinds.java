@@ -3,16 +3,14 @@ package io.github.codeutilities.keybinds;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.util.DFInfo;
 import io.github.codeutilities.util.templates.FuncSearchUtil;
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.client.MinecraftClient;
-
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.util.math.BlockPos;
 
 public class Keybinds implements ClientModInitializer {

@@ -14,7 +14,7 @@ import java.util.List;
 
 @Mixin(DebugHud.class)
 public class MixinDebugHud {
-    private MinecraftClient minecraftClient = MinecraftClient.getInstance();
+    private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
 
     @Inject(method = "getLeftText", at = @At("RETURN"), cancellable = true)
     protected void getLeftText(CallbackInfoReturnable<List<String>> callbackInfoReturnable) {
@@ -28,7 +28,7 @@ public class MixinDebugHud {
             }
 
             callbackInfoReturnable.setReturnValue(leftText);
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

@@ -23,6 +23,10 @@ public class SocketHandler implements IManager<Client> {
 
     private ServerSocket server;
 
+    public static SocketHandler getInstance() {
+        return instance;
+    }
+
     @Override
     public void initialize() {
         instance = this;
@@ -76,9 +80,5 @@ public class SocketHandler implements IManager<Client> {
 
     public Map<String, SocketItem> getSocketItems() {
         return socketItemMap;
-    }
-
-    public static SocketHandler getInstance() {
-        return instance;
     }
 }

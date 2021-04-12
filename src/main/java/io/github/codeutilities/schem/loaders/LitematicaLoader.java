@@ -16,6 +16,10 @@ public class LitematicaLoader extends MNBTSchematicReader {
         this.nbtInputStream = nbtInputStream;
     }
 
+    private static int log2(int N) {
+        return (int) (Math.log(N) / Math.log(2));
+    }
+
     @Override
     public Schematic read() throws IOException {
         Schematic schematic = new Schematic();
@@ -87,10 +91,6 @@ public class LitematicaLoader extends MNBTSchematicReader {
         }
 
         return schematic;
-    }
-
-    private static int log2(int N) {
-        return (int) (Math.log(N) / Math.log(2));
     }
 
     @Override

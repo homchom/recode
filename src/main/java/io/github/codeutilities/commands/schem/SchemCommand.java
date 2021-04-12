@@ -12,7 +12,7 @@ import io.github.codeutilities.schem.loaders.MSchematicReader;
 import io.github.codeutilities.schem.loaders.MSpongeSchematicReader;
 import io.github.codeutilities.schem.sk89q.jnbt.NBTInputStream;
 import io.github.codeutilities.schem.utils.DFUtils;
-import io.github.codeutilities.util.*;
+import io.github.codeutilities.util.ItemUtil;
 import io.github.codeutilities.util.chat.ChatType;
 import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.codeutilities.util.render.ToasterUtil;
