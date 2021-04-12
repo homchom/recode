@@ -27,7 +27,7 @@ public class Schematic {
     private int blocksTextsLen = 0;
 
     public void AddBlockToPalette(int id, String block) {
-        if (block == null || block == "null") return;
+        if (block == null || block.equals("null")) return;
 
         while (id > this.palette.size()) {
             this.palette.add("");
@@ -37,7 +37,7 @@ public class Schematic {
     }
 
     public int AddBlockToPalette(String block) {
-        if (block == null || block == "null") return -1;
+        if (block == null || block.equals("null")) return -1;
 
         if (this.palette.contains(block)) return this.palette.indexOf(block.replaceFirst("minecraft:", ""));
 

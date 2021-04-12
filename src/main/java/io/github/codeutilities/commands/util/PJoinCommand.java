@@ -31,7 +31,7 @@ public class PJoinCommand extends Command {
 
     private int run(MinecraftClient mc, String player) {
 
-        if (player == mc.player.getName().asString()) {
+        if (player.equals(mc.player.getName().asString())) {
             ChatUtil.sendMessage("You cannot use this command on yourself!", ChatType.FAIL);
             return -1;
         }
