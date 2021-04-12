@@ -32,6 +32,7 @@ public final class Vector3 {
     private final double x;
     private final double y;
     private final double z;
+
     /**
      * Construct an instance.
      *

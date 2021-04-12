@@ -139,14 +139,15 @@ public class ChatReceivedEvent {
                         if (currentChar.equals("§")) getColorCodes.append(currentChar).append(chars[i]);
                         if (textLeft.startsWith(highlightMatcher + " ")) {
                             newMsg = newMsg.substring(0, newMsgIter) + ModConfig.getConfig().highlightPrefix.replaceAll("&", "§")
-                                    + highlightMatcher + getColorCodes.toString() + newMsg.substring(newMsgIter).replaceFirst("^" + highlightMatcher, "");
+                                    + highlightMatcher + getColorCodes + newMsg.substring(newMsgIter).replaceFirst("^" + highlightMatcher, "");
 
                             newMsgIter = newMsgIter + ModConfig.getConfig().highlightPrefix.length() + getColorCodes.toString().length();
                         }
                         newMsgIter++;
                     }
                     mc.player.sendMessage(TextUtil.colorCodesToTextComponent(newMsg), false);
-                    if (ModConfig.getConfig().highlightSound != NoteSounds.None) mc.player.playSound(ModConfig.getConfig().highlightSound.getSound(), 3, 1);
+                    if (ModConfig.getConfig().highlightSound != NoteSounds.None)
+                        mc.player.playSound(ModConfig.getConfig().highlightSound.getSound(), 3, 1);
                     cancel = true;
                 }
             }

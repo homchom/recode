@@ -132,13 +132,13 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.BoundedDiscrete(min = 0, max = 100000)
     public int discordRPCTimeout = 15000;
 
+    public static ModConfig getConfig() {
+        return AutoConfig.getConfigHolder(ModConfig.class).getConfig();
+    }
+
     public enum CosmeticType {
         All_Cosmetics,
         No_Event_Cosmetics,
         Disabled
-    }
-
-    public static ModConfig getConfig() {
-        return AutoConfig.getConfigHolder(ModConfig.class).getConfig();
     }
 }

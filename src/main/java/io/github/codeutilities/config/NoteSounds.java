@@ -28,6 +28,8 @@ public enum NoteSounds {
         this.sound = sound;
     }
 
-        public SoundEvent getSound() { return sound; }
-
+    public SoundEvent getSound() {
+        return sound;
     }
+
+}

@@ -35,6 +35,7 @@ public final class BlockVector3 {
     private final int x;
     private final int y;
     private final int z;
+
     /**
      * Construct an instance.
      *

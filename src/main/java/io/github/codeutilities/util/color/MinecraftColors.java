@@ -27,11 +27,11 @@ public enum MinecraftColors {
     RESET(255, 255, 255, 'r', Formatting.RESET);
 
     private static final char COLOR_CHAR = '§';
-    private final TextColor formatting;
     final int r;
     final int g;
     final int b;
     final char mc;
+    private final TextColor formatting;
 
     MinecraftColors(int r, int g, int b, char mc, Formatting formatting) {
         this.r = r;
