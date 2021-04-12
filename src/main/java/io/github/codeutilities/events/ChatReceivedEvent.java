@@ -123,16 +123,22 @@ public class ChatReceivedEvent {
         String msgWithColor = ChatUtil.textComponentToColorCodes(message);
         String msgWithoutColor = msgWithColor.replaceAll("§.", "");
 
-        /*
-        // highlight name
+        // highlight name (UNFINISHED to do: RESET COLOR AFTER NAME CORRECTLY)
         String displayName = mc.player.getDisplayName().getString();
-        if (ModConfig.getConfig().highlightName && msgGetString.matches("^[^0-z].+:.*") && !msgGetString.matches("^[0-z]+ .*" + displayName + ": ")) {
+        if (ModConfig.getConfig().highlightName && msgGetString.matches("^[^0-z].+:.*") && !msgGetString.matches("^[^0-z]+ .*" + displayName + ": ")) {
             if (msgGetString.replaceAll("^[^0-z].+:", "").contains(displayName)) {
-                String newMsg = msgToString.replaceAll(displayName, "§e" + displayName);
-                mc.player.sendMessage(newMsg, false)
+                /*
+                pattafaefaefqefqfern = Pattern.compile("^.*");
+                mateafeaefaefcher = pattern.matcher(customStatus);
+                while (matcher.find()) {
+                    thiung = matcher.group();
+                }
+                 */
+                String newMsg = msgWithColor.replaceAll(displayName, "§e" + displayName + "eeee");
+                mc.player.sendMessage(Text.of(newMsg), false);
+                cancel = true;
             }
         }
-        */
 
         // hide join/leave messages
         if (ModConfig.getConfig().hideJoinLeaveMessages
