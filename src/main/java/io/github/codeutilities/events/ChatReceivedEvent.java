@@ -7,10 +7,12 @@ import io.github.codeutilities.gui.CPU_UsageText;
 import io.github.codeutilities.util.ChatType;
 import io.github.codeutilities.util.ChatUtil;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -118,16 +120,25 @@ public class ChatReceivedEvent {
         String msgToString = message.toString();
         String msgGetString = message.getString();
 
-        /*
-        // highlight name
+        String msgWithColor = ChatUtil.textComponentToColorCodes(message);
+        String msgWithoutColor = msgWithColor.replaceAll("§.", "");
+
+        // highlight name (UNFINISHED to do: RESET COLOR AFTER NAME CORRECTLY)
         String displayName = mc.player.getDisplayName().getString();
-        if (ModConfig.getConfig().highlightName && msgGetString.matches("^[^0-z].+:.*") && !msgGetString.matches("^[0-z]+ .*" + displayName + ": ")) {
+        if (ModConfig.getConfig().highlightName && msgGetString.matches("^[^0-z].+:.*") && !msgGetString.matches("^[^0-z]+ .*" + displayName + ": ")) {
             if (msgGetString.replaceAll("^[^0-z].+:", "").contains(displayName)) {
-                String newMsg = msgToString.replaceAll(displayName, "§e" + displayName);
-                mc.player.sendMessage(newMsg, false)
+                /*
+                pattafaefaefqefqfern = Pattern.compile("^.*");
+                mateafeaefaefcher = pattern.matcher(customStatus);
+                while (matcher.find()) {
+                    thiung = matcher.group();
+                }
+                 */
+                String newMsg = msgWithColor.replaceAll(displayName, "§e" + displayName + "eeee");
+                mc.player.sendMessage(Text.of(newMsg), false);
+                cancel = true;
             }
         }
-        */
 
         // hide join/leave messages
         if (ModConfig.getConfig().hideJoinLeaveMessages
