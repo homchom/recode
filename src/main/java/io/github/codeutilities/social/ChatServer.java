@@ -1,15 +1,7 @@
 package io.github.codeutilities.social;
 
+import javax.websocket.*;
 import java.net.URI;
-import javax.websocket.ClientEndpoint;
-import javax.websocket.CloseReason;
-import javax.websocket.ContainerProvider;
-import javax.websocket.OnClose;
-import javax.websocket.OnError;
-import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
-import javax.websocket.WebSocketContainer;
 
 @ClientEndpoint
 public class ChatServer {

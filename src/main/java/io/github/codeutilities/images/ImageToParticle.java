@@ -12,8 +12,8 @@ import static java.awt.Image.SCALE_SMOOTH;
 
 public class ImageToParticle {
 
-    static int maxWidth = 40;
-    static int maxHeight = 40;
+    static final int maxWidth = 40;
+    static final int maxHeight = 40;
 
     public static ParticleImage convert(File file) throws IOException {
         List<String> data = new ArrayList<>();
@@ -42,7 +42,7 @@ public class ImageToParticle {
                 int rgb = image.getRGB(j, i);
                 Color color = new Color(rgb, true);
                 hex = Integer.toHexString(rgb).substring(2);
-                if (hex != previousHex) {
+                if (!hex.equals(previousHex)) {
                     previousHex = hex;
                     String appendStr = "#" + hex + repeatCount;
                     if (currentData.length() + appendStr.length() > 300) {

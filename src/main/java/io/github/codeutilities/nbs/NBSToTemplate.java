@@ -7,17 +7,17 @@ public class NBSToTemplate {
     private static final String SONG_PARSER_VERSION = "4";
     private static final String SONG_NBS_FORMAT_VERSION = "4";
 
-    String song;
+    final String song;
+    final String filename;
+    final String layers;
+    final String version;
+    final float speed;
+    final int length;
+    final int loopTick;
+    final int loopCount;
+    final int customInstrumentCount;
     String name;
     String author;
-    String filename;
-    String layers;
-    String version;
-    float speed;
-    int length;
-    int loopTick;
-    int loopCount;
-    int customInstrumentCount;
     boolean multipleChests = false;
 
     public NBSToTemplate(SongData song) {
@@ -82,13 +82,13 @@ public class NBSToTemplate {
                 if (noteCount == 0) {
                     currentNotes.append(currentNote);
                 } else {
-                    currentNotes.append("=" + currentNote);
+                    currentNotes.append("=").append(currentNote);
                 }
                 noteCount++;
 
                 if (currentNotes.length() > 1930) {
                     currentNotes = new StringBuilder(revertString);
-                    currentBlock.append(String.format(",{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"%s\"}},\"slot\":%d}", currentNotes.toString(), slot));
+                    currentBlock.append(String.format(",{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"%s\"}},\"slot\":%d}", currentNotes, slot));
                     currentNotes.setLength(0);
                     noteCount = 0;
                     finalNote = true;
@@ -98,7 +98,7 @@ public class NBSToTemplate {
 
                 if (i >= songData.length - 1) {
                     if (!finalNote) {
-                        currentBlock.append(String.format(",{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"%s\"}},\"slot\":%d}", currentNotes.toString(), slot));
+                        currentBlock.append(String.format(",{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"%s\"}},\"slot\":%d}", currentNotes, slot));
                         currentNotes.setLength(0);
                     }
                     closeChest = true;
@@ -114,7 +114,7 @@ public class NBSToTemplate {
                 }
 
                 currentBlock.append(String.format("]},\"action\":\"%s\"},", varActionType));
-                code.append(currentBlock.toString());
+                code.append(currentBlock);
                 currentBlock.setLength(0);
                 currentNotes.setLength(0);
 
@@ -145,7 +145,7 @@ public class NBSToTemplate {
                 currentSlot++;
             }
             instList.append("]},\"action\":\"CreateList\"},");
-            code.append(instList.toString());
+            code.append(instList);
         }
 
         //CreateList: songData

@@ -29,6 +29,22 @@ public final class Vector3 {
     public static final Vector3 UNIT_Y = new Vector3(0, 1, 0);
     public static final Vector3 UNIT_Z = new Vector3(0, 0, 1);
     public static final Vector3 ONE = new Vector3(1, 1, 1);
+    private final double x;
+    private final double y;
+    private final double z;
+
+    /**
+     * Construct an instance.
+     *
+     * @param x the X coordinate
+     * @param y the Y coordinate
+     * @param z the Z coordinate
+     */
+    private Vector3(double x, double y, double z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
 
     public static Vector3 at(double x, double y, double z) {
         // switch for efficiency on typical cases
@@ -50,22 +66,17 @@ public final class Vector3 {
         }
         return new Vector3(x, y, z);
     }
-    
-    private final double x;
-    private final double y;
-    private final double z;
 
     /**
-     * Construct an instance.
+     * Create a new {@code BlockVector} using the given components.
      *
      * @param x the X coordinate
      * @param y the Y coordinate
      * @param z the Z coordinate
+     * @return a new {@code BlockVector}
      */
-    private Vector3(double x, double y, double z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+    public static BlockVector3 toBlockPoint(double x, double y, double z) {
+        return BlockVector3.at(x, y, z);
     }
 
     /**
@@ -366,9 +377,9 @@ public final class Vector3 {
      */
     public Vector3 cross(Vector3 other) {
         return new Vector3(
-            y * other.z - z * other.y,
-            z * other.x - x * other.z,
-            x * other.y - y * other.x
+                y * other.z - z * other.y,
+                z * other.x - x * other.z,
+                x * other.y - y * other.x
         );
     }
 
@@ -425,13 +436,12 @@ public final class Vector3 {
     /**
      * Perform a 2D transformation on this vector and return a new one.
      *
-     * @param angle in degrees
-     * @param aboutX about which x coordinate to rotate
-     * @param aboutZ about which z coordinate to rotate
+     * @param angle      in degrees
+     * @param aboutX     about which x coordinate to rotate
+     * @param aboutZ     about which z coordinate to rotate
      * @param translateX what to add after rotation
      * @param translateZ what to add after rotation
      * @return a new vector
-     * @see AffineTransform another method to transform vectors
      */
     public Vector3 transform2D(double angle, double aboutX, double aboutZ, double translateX, double translateZ) {
         angle = Math.toRadians(angle);
@@ -443,9 +453,9 @@ public final class Vector3 {
         double z2 = x * sin + z * cos;
 
         return new Vector3(
-            x2 + aboutX + translateX,
-            y,
-            z2 + aboutZ + translateZ
+                x2 + aboutX + translateX,
+                y,
+                z2 + aboutZ + translateZ
         );
     }
 
@@ -512,18 +522,6 @@ public final class Vector3 {
     }
 
     /**
-     * Create a new {@code BlockVector} using the given components.
-     *
-     * @param x the X coordinate
-     * @param y the Y coordinate
-     * @param z the Z coordinate
-     * @return a new {@code BlockVector}
-     */
-    public static BlockVector3 toBlockPoint(double x, double y, double z) {
-        return BlockVector3.at(x, y, z);
-    }
-
-    /**
      * Create a new {@code BlockVector} from this vector.
      *
      * @return a new {@code BlockVector}
@@ -558,6 +556,7 @@ public final class Vector3 {
 
     /**
      * Returns a string representation that is supported by the parser.
+     *
      * @return string
      */
     public String toParserString() {

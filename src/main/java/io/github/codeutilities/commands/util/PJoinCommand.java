@@ -19,7 +19,7 @@ public class PJoinCommand extends Command {
                         .executes(ctx -> {
                             try {
                                 return run(mc, ctx.getArgument("player", String.class));
-                            }catch (Exception e) {
+                            } catch (Exception e) {
                                 ChatUtil.sendMessage("Error while attempting to execute the command.", ChatType.FAIL);
                                 e.printStackTrace();
                                 return -1;
@@ -31,7 +31,7 @@ public class PJoinCommand extends Command {
 
     private int run(MinecraftClient mc, String player) {
 
-        if (player == mc.player.getName().asString()) {
+        if (player.equals(mc.player.getName().asString())) {
             ChatUtil.sendMessage("You cannot use this command on yourself!", ChatType.FAIL);
             return -1;
         }
@@ -39,13 +39,12 @@ public class PJoinCommand extends Command {
         mc.player.sendChatMessage("/locate " + player);
 
         ChatReceivedEvent.pjoin = true;
-
         ChatUtil.sendMessage("Joining the plot §e" + player + "§b is currently playing...", ChatType.INFO_BLUE);
 
         new Thread(() -> {
             try {
                 Thread.sleep(2000);
-            }catch (InterruptedException e) {
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 

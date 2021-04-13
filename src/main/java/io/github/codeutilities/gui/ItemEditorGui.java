@@ -1,11 +1,11 @@
 package io.github.codeutilities.gui;
 
 import io.github.codeutilities.CodeUtilities;
+import io.github.codeutilities.util.IMenu;
 import io.github.codeutilities.util.StringUtil;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WButton;
 import io.github.cottonmc.cotton.gui.widget.WGridPanel;
-import java.util.Collections;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -15,11 +15,19 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-public class ItemEditorGui extends LightweightGuiDescription {
+import java.util.Collections;
 
-    public ItemEditorGui(ItemStack in) {
-        MinecraftClient mc = CodeUtilities.mc;
-        final ItemStack[] item = {in.copy()};//intellij wants me to do this, dont ask me why
+public class ItemEditorGui extends LightweightGuiDescription implements IMenu {
+    private final ItemStack itemStack;
+
+    public ItemEditorGui(ItemStack itemStack) {
+        this.itemStack = itemStack;
+    }
+
+    @Override
+    public void open(String... args) {
+        MinecraftClient mc = CodeUtilities.MC;
+        final ItemStack[] item = {itemStack.copy()};
         WGridPanel root = new WGridPanel(1);
         root.setSize(256, 240);
 
@@ -52,7 +60,6 @@ public class ItemEditorGui extends LightweightGuiDescription {
         root.add(save, 190, 220, 70, 20);
 
         //Item Material
-
         CTextField material = new CTextField(new LiteralText(""));
         material.setMaxLength(Integer.MAX_VALUE);
         material.setText(item[0].getItem().toString());
@@ -60,7 +67,7 @@ public class ItemEditorGui extends LightweightGuiDescription {
             Item newMat = Registry.ITEM.get(new Identifier("minecraft:" + s));
             if (newMat != Items.AIR) {
                 save.setEnabled(true);
-                ItemStack newItem =  new ItemStack(newMat, item[0].getCount());
+                ItemStack newItem = new ItemStack(newMat, item[0].getCount());
                 newItem.setTag(item[0].getOrCreateTag());
                 item[0] = newItem;
                 icon.setItems(Collections.singletonList(item[0]));
@@ -71,8 +78,5 @@ public class ItemEditorGui extends LightweightGuiDescription {
 
         setRootPanel(root);
         root.validate(this);
-
-
     }
-
 }

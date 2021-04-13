@@ -1,10 +1,11 @@
 package io.github.codeutilities.gui;
 
-import io.github.cottonmc.cotton.gui.widget.*;
-import net.fabricmc.api.*;
+import io.github.cottonmc.cotton.gui.widget.TooltipBuilder;
+import io.github.cottonmc.cotton.gui.widget.WItem;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.item.TooltipContext.Default;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;

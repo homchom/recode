@@ -19,6 +19,7 @@ public class FlightspeedToggle {
                 case "fast":
                     mc.player.sendChatMessage("/fs " + ModConfig.getConfig().fsFast);
             }
-        } else mc.player.sendChatMessage("/fs " + ModConfig.getConfig().fsNormal); fs_is_normal = true;
+        } else mc.player.sendChatMessage("/fs " + ModConfig.getConfig().fsNormal);
+        fs_is_normal = true;
     }
 }

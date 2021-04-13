@@ -1,6 +1,5 @@
 package io.github.codeutilities.mixin.render;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.ModConfig;
 import net.minecraft.block.BlockState;
@@ -20,24 +19,22 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ChestBlockEntityRenderer.class)
 public abstract class MixinChestBlockEntityRenderer<T extends BlockEntity & ChestAnimationProgress> extends
-    BlockEntityRenderer<T> {
+        BlockEntityRenderer<T> {
 
     public MixinChestBlockEntityRenderer(
-        BlockEntityRenderDispatcher dispatcher) {
+            BlockEntityRenderDispatcher dispatcher) {
         super(dispatcher);
     }
 
     @Inject(method = "Lnet/minecraft/client/render/block/entity/ChestBlockEntityRenderer;render(Lnet/minecraft/block/entity/BlockEntity;FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;II)V", at = @At("HEAD"), cancellable = true)
     public void render(T entity, float tickDelta, MatrixStack matrices,
-        VertexConsumerProvider vertexConsumers, int light, int overlay, CallbackInfo ci) {
-        if(entity instanceof ChestBlockEntity) {
+                       VertexConsumerProvider vertexConsumers, int light, int overlay, CallbackInfo ci) {
+        if (entity instanceof ChestBlockEntity) {
             if (ModConfig.getConfig().chestReplacement) {
                 ci.cancel();
 
                 BlockState state = Blocks.BARREL.getDefaultState();
-
-                CodeUtilities.mc.getBlockRenderManager().renderBlockAsEntity(state,matrices,vertexConsumers,light,overlay);
-
+                CodeUtilities.MC.getBlockRenderManager().renderBlockAsEntity(state, matrices, vertexConsumers, light, overlay);
             }
         }
     }

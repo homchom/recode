@@ -1,7 +1,10 @@
 package io.github.codeutilities.util.chat;
 
 import io.github.codeutilities.util.color.MinecraftColors;
-import net.minecraft.text.*;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Style;
+import net.minecraft.text.Text;
+import net.minecraft.text.TextColor;
 
 import java.util.Collections;
 import java.util.List;
@@ -73,10 +76,11 @@ public class TextUtil {
             matcher = pattern.matcher(sibling);
             while (matcher.find()) literalColorSections.add(matcher.group());
             literalColorCodes = literalColorSections.get(literalColorSections.size() - 1);
-            if (literalColorSections.size()-1 != 0) {
+            if (literalColorSections.size() - 1 != 0) {
                 literalColorCode = literalColorCodes.charAt(1);
                 if (literalColorCode == 'x') color = MinecraftColors.mcToHex(literalColorCodes);
-                else color = String.valueOf(Objects.requireNonNull(MinecraftColors.fromCode(literalColorCodes.charAt(1))).getFormatting());
+                else
+                    color = String.valueOf(Objects.requireNonNull(MinecraftColors.fromCode(literalColorCodes.charAt(1))).getFormatting());
             }
 
             // modifiers

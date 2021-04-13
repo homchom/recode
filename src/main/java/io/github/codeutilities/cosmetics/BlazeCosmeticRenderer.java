@@ -1,6 +1,5 @@
 package io.github.codeutilities.cosmetics;
 
-import io.github.codeutilities.config.ModConfig;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.model.ModelPart;
@@ -9,7 +8,6 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
-import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
@@ -19,16 +17,16 @@ import net.minecraft.util.math.MathHelper;
 
 @Environment(EnvType.CLIENT)
 public class BlazeCosmeticRenderer extends
-    FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
+        FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
 
     private static final Identifier blazeTexture = new Identifier(
-        "minecraft:textures/entity/blaze.png");
+            "minecraft:textures/entity/blaze.png");
     private final ModelPart[] rods;
     private int sneakTime = 0;
     private int lastTick = 0;
 
     public BlazeCosmeticRenderer(
-        FeatureRendererContext<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> featureRendererContext) {
+            FeatureRendererContext<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> featureRendererContext) {
         super(featureRendererContext);
         this.rods = new ModelPart[12];
         for (int i = 0; i < this.rods.length; ++i) {
@@ -40,10 +38,10 @@ public class BlazeCosmeticRenderer extends
     public void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, AbstractClientPlayerEntity abstractClientPlayerEntity, float f, float g, float h, float j, float k, float l) {
         //if(!ModConfig.getConfig().cosmetics) return;
         if ("BlazeMCworld".equals(abstractClientPlayerEntity.getName().getString())
-            && abstractClientPlayerEntity.hasSkinTexture() && !abstractClientPlayerEntity
-            .isInvisible()) {
+                && abstractClientPlayerEntity.hasSkinTexture() && !abstractClientPlayerEntity
+                .isInvisible()) {
             VertexConsumer vertexConsumer = vertexConsumerProvider
-                .getBuffer(RenderLayer.getEntitySolid(blazeTexture));
+                    .getBuffer(RenderLayer.getEntitySolid(blazeTexture));
             int m = LivingEntityRenderer.getOverlay(abstractClientPlayerEntity, 0.0F);
 
             setAngels(j);
@@ -87,7 +85,7 @@ public class BlazeCosmeticRenderer extends
         int k;
         for (k = 0; k < 4; ++k) {
             this.rods[k].pivotY =
-                -2.0F + MathHelper.cos(((float) (k * 2) + animationProgress) * 0.25F);
+                    -2.0F + MathHelper.cos(((float) (k * 2) + animationProgress) * 0.25F);
             this.rods[k].pivotX = MathHelper.cos(f) * 10.0F;
             this.rods[k].pivotZ = MathHelper.sin(f) * 10.0F;
             f += Math.PI / 2;
@@ -97,7 +95,7 @@ public class BlazeCosmeticRenderer extends
 
         for (k = 4; k < 8; ++k) {
             this.rods[k].pivotY =
-                2.0F + MathHelper.cos(((float) (k * 2) + animationProgress) * 0.25F);
+                    2.0F + MathHelper.cos(((float) (k * 2) + animationProgress) * 0.25F);
             this.rods[k].pivotX = MathHelper.cos(f) * 9.0F;
             this.rods[k].pivotZ = MathHelper.sin(f) * 9.0F;
             f += Math.PI / 2;
@@ -107,7 +105,7 @@ public class BlazeCosmeticRenderer extends
 
         for (k = 8; k < 12; ++k) {
             this.rods[k].pivotY =
-                11.0F + MathHelper.cos(((float) k * 1.5F + animationProgress) * 0.5F);
+                    11.0F + MathHelper.cos(((float) k * 1.5F + animationProgress) * 0.5F);
             this.rods[k].pivotX = MathHelper.cos(f) * 6.0F;
             this.rods[k].pivotZ = MathHelper.sin(f) * 6.0F;
             f += Math.PI / 2;

@@ -6,7 +6,7 @@ import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.commands.arguments.ArgBuilder;
 import io.github.codeutilities.images.ImageToParticle;
 import io.github.codeutilities.images.ParticleImage;
-import io.github.codeutilities.util.*;
+import io.github.codeutilities.util.ItemUtil;
 import io.github.codeutilities.util.chat.ChatType;
 import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.codeutilities.util.externalfile.ExternalFile;
@@ -47,7 +47,7 @@ public class ImageParticleCommand extends Command {
                                             ToasterUtil.sendToaster("§cLoading Error!", "Invalid file", SystemToast.Type.NARRATOR_TOGGLE);
                                         }
                                         return 1;
-                                    }catch (Exception e) {
+                                    } catch (Exception e) {
                                         e.printStackTrace();
                                         ChatUtil.sendMessage("An error occurred while executing the command.", ChatType.FAIL);
                                         return 0;
@@ -68,7 +68,7 @@ public class ImageParticleCommand extends Command {
                                         ChatType.INFO_BLUE);
                                 ItemUtil.giveCreativeItem(stack, true);
                                 return 1;
-                            }catch (Exception e) {
+                            } catch (Exception e) {
                                 e.printStackTrace();
                                 ChatUtil.sendMessage("An error occurred while executing the command.", ChatType.FAIL);
                                 return 0;
@@ -84,7 +84,7 @@ public class ImageParticleCommand extends Command {
         int height = image.getHeight();
         StringBuilder code = new StringBuilder();
         StringBuilder currentBlock = new StringBuilder();
-        String codeblockType = "CreateList";
+        String codeBlockType = "CreateList";
 
         System.out.println("Image size: " + data.length);
         System.out.println("Image width: " + width);
@@ -95,15 +95,15 @@ public class ImageParticleCommand extends Command {
         int slot = 1;
         for (String s : data) {
             if (slot > 26) {
-                code.append(String.format(",{\"id\":\"block\",\"block\":\"set_var\",\"args\":{\"items\":[{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"imageData\",\"scope\":\"local\"}},\"slot\":0}%s]},\"action\":\"%s\"}", currentBlock.toString(), codeblockType));
+                code.append(String.format(",{\"id\":\"block\",\"block\":\"set_var\",\"args\":{\"items\":[{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"imageData\",\"scope\":\"local\"}},\"slot\":0}%s]},\"action\":\"%s\"}", currentBlock, codeBlockType));
                 currentBlock.delete(0, currentBlock.length());
-                codeblockType = "AppendValue";
+                codeBlockType = "AppendValue";
                 slot = 1;
             }
             currentBlock.append(String.format(",{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"%s\"}},\"slot\":%d}", s, slot));
             slot++;
         }
-        code.append(String.format(",{\"id\":\"block\",\"block\":\"set_var\",\"args\":{\"items\":[{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"imageData\",\"scope\":\"local\"}},\"slot\":0}%s]},\"action\":\"%s\"}", currentBlock.toString(), codeblockType));
+        code.append(String.format(",{\"id\":\"block\",\"block\":\"set_var\",\"args\":{\"items\":[{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"imageData\",\"scope\":\"local\"}},\"slot\":0}%s]},\"action\":\"%s\"}", currentBlock, codeBlockType));
 
         code.append(String.format(",{\"id\":\"block\",\"block\":\"set_var\",\"args\":{\"items\":[{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"imageSize\",\"scope\":\"local\"}},\"slot\":0},{\"item\":{\"id\":\"num\",\"data\":{\"name\":\"%d\"}},\"slot\":1},{\"item\":{\"id\":\"num\",\"data\":{\"name\":\"%d\"}},\"slot\":2}]},\"action\":\"CreateList\"}", width, height));
 

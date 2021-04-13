@@ -1,20 +1,23 @@
 package io.github.codeutilities;
 
-import io.github.codeutilities.commands.CommandHandler;
+import com.google.gson.JsonParser;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.cosmetics.CosmeticHandler;
 import io.github.codeutilities.dfrpc.DFDiscordRPC;
-import io.github.codeutilities.gui.CustomHeadSearchGui;
-import io.github.codeutilities.template.*;
+import io.github.codeutilities.gui.CustomHeadMenu;
+import io.github.codeutilities.template.TemplateStorageHandler;
 import io.github.codeutilities.util.socket.SocketHandler;
-import io.github.cottonmc.cotton.gui.client.*;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.Toml4jConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.MinecraftClient;
-import org.apache.logging.log4j.*;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class CodeUtilities implements ModInitializer {
 
@@ -23,26 +26,11 @@ public class CodeUtilities implements ModInitializer {
     public static final String MOD_VERSION = "2.2.0";
     public static final boolean BETA = false;
 
-    public static Logger LOGGER = LogManager.getLogger();
-    public static MinecraftClient mc = MinecraftClient.getInstance();
-    public static Random rng = new Random();
-
-    // This should be moved into its own class
-    public static void openGuiAsync(LightweightGuiDescription gui) {
-        new Thread(() -> {
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            MinecraftClient.getInstance().openScreen(new CottonClientScreen(gui));
-        }).start();
-    }
-    
-    public static void log(Level level, String message) {
-        LOGGER.log(level, "[" + MOD_NAME + "] " + message);
-    }
-
+    public static final Logger LOGGER = LogManager.getLogger();
+    public static final Random RANDOM = new Random();
+    public static final JsonParser JSON_PARSER = new JsonParser();
+    public static final MinecraftClient MC = MinecraftClient.getInstance();
+    public static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
 
     @Override
     public void onInitialize() {
@@ -50,32 +38,26 @@ public class CodeUtilities implements ModInitializer {
         AutoConfig.register(ModConfig.class, Toml4jConfigSerializer::new);
         Runtime.getRuntime().addShutdownHook(new Thread(this::onClose));
 
-        CommandHandler.initialize();
-        if (ModConfig.getConfig().itemApi) {
-            SocketHandler.init();
-        }
+        // Initialize.
+        CodeInitializer initializer = new CodeInitializer();
+        initializer.add(new TemplateStorageHandler());
+        initializer.add(new CustomHeadMenu());
+        initializer.add(new DFDiscordRPC());
 
-        // df rpc
-        try {
-            DFDiscordRPC.main();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        new Thread(() -> {
-//            TemplatesCommand.authenticate(); TODO: Reimplement this
-            CustomHeadSearchGui.load();
-            TemplateStorageHandler.load();
-            //new ChatServer();
-        }).start();
-
+        // Initialize only if the config value is true.
+        initializer.addIf(new SocketHandler(), ModConfig.getConfig().itemApi);
     }
 
     public void onClose() {
         System.out.println("CLOSED");
-        TemplateStorageHandler.save();
+
+        // Close all the services.
+        TemplateStorageHandler.getInstance().save();
         CosmeticHandler.shutdownExecutorService();
     }
 
+    public static void log(Level level, String message) {
+        LOGGER.log(level, "[" + MOD_NAME + "] " + message);
+    }
 
 }

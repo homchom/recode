@@ -3,7 +3,7 @@ package io.github.codeutilities.commands.item;
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.commands.arguments.ArgBuilder;
-import io.github.codeutilities.util.*;
+import io.github.codeutilities.util.ItemUtil;
 import io.github.codeutilities.util.chat.ChatType;
 import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
@@ -16,7 +16,7 @@ public class UnpackCommand extends Command {
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("unpack")
                 .executes(ctx -> {
-                    if (mc.player.isCreative()) {
+                    if (this.isCreative(mc)) {
                         ItemStack handItem = mc.player.getMainHandStack();
                         if (!handItem.getOrCreateTag().getCompound("BlockEntityTag").isEmpty()) {
 
@@ -38,10 +38,10 @@ public class UnpackCommand extends Command {
                                 }
                             }
                         } else {
-                            ChatUtil.sendMessage("TThere are no items stored in this item!", ChatType.FAIL);
+                            ChatUtil.sendMessage("There are no items stored in this item!", ChatType.FAIL);
                         }
                     } else {
-                        ChatUtil.sendTranslateMessage("codeutilities.command.require_creative_mode", ChatType.FAIL);
+                        return -1;
                     }
                     return 1;
                 })

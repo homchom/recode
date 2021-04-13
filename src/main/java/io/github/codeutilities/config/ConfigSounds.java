@@ -38,6 +38,8 @@ public enum ConfigSounds {
         this.sound = sound;
     }
 
-        public SoundEvent getSound() { return sound; }
-
+    public SoundEvent getSound() {
+        return sound;
     }
+
+}

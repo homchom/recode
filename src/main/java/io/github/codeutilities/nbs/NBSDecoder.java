@@ -55,7 +55,7 @@ public class NBSDecoder {
         speed = actualSpeed / 100f; //speed
         dataInputStream.readBoolean(); //autosave
         dataInputStream.readByte(); //autosave duration
-        timeSignature = (short) dataInputStream.readByte(); //time signature
+        timeSignature = dataInputStream.readByte(); //time signature
         readInt(dataInputStream); //minutes spent
         readInt(dataInputStream); //left clicks
         readInt(dataInputStream); //right clicks
@@ -138,7 +138,7 @@ public class NBSDecoder {
 
             for (int currentTick = 0; currentTick < length + 1; currentTick++) {
                 boolean noteExists = noteExistence[i][currentTick];
-                if (noteExists == true) {
+                if (noteExists) {
 
                     int noteVelocity = velocityList[i][currentTick];
                     int notePanning = panningList[i][currentTick];
@@ -169,7 +169,7 @@ public class NBSDecoder {
             String finalLayerVolume = new BigDecimal(volume).setScale(3, BigDecimal.ROUND_FLOOR).stripTrailingZeros().toPlainString();
             String finalLayerPanning = new BigDecimal(panning).setScale(3, BigDecimal.ROUND_FLOOR).stripTrailingZeros().toPlainString();
 
-            layerStringBuilder.append("=" + finalLayerVolume + "," + finalLayerPanning);
+            layerStringBuilder.append("=").append(finalLayerVolume).append(",").append(finalLayerPanning);
         }
 
         int customInstruments = 0;
@@ -202,18 +202,18 @@ public class NBSDecoder {
 
         for (int currentTick = 0; currentTick < length + 1; currentTick++) {
             boolean columnExists = columnExistence[currentTick];
-            if (columnExists == true) {
+            if (columnExists) {
                 StringBuilder columnStringBuilder = new StringBuilder();
                 if (!firstNoted) {
                     columnStringBuilder.append(currentTick + 1);
                     firstNoted = true;
                 } else {
-                    columnStringBuilder.append("=" + (currentTick + 1));
+                    columnStringBuilder.append("=").append(currentTick + 1);
                 }
                 boolean firstAppend = true;
                 for (int i = 0; i < layers; i++) {
                     boolean noteExists = noteExistence[i][currentTick];
-                    if (noteExists == true) {
+                    if (noteExists) {
                         String laterNoteString = addStringList[i][currentTick];
 
                         int noteInstrument = instrumentList[i][currentTick];
@@ -229,15 +229,15 @@ public class NBSDecoder {
                             int instrumentId = noteInstrument - vanillaInstruments;
                             noteKeyOffset = customPitchList[instrumentId] - 45;
                         }
-                        if (firstAppend == true) {
-                            columnStringBuilder.append(":" + (noteInstrument + 1) + "," + getMinecraftPitch(noteKey + (double) noteFinePitch / 100d, noteKeyOffset) + laterNoteString);
+                        if (firstAppend) {
+                            columnStringBuilder.append(":").append(noteInstrument + 1).append(",").append(getMinecraftPitch(noteKey + (double) noteFinePitch / 100d, noteKeyOffset)).append(laterNoteString);
                             firstAppend = false;
                         } else {
-                            columnStringBuilder.append(";" + (noteInstrument + 1) + "," + getMinecraftPitch(noteKey + (double) noteFinePitch / 100d, noteKeyOffset) + laterNoteString);
+                            columnStringBuilder.append(";").append(noteInstrument + 1).append(",").append(getMinecraftPitch(noteKey + (double) noteFinePitch / 100d, noteKeyOffset)).append(laterNoteString);
                         }
                     }
                 }
-                stringBuilder.append(columnStringBuilder.toString());
+                stringBuilder.append(columnStringBuilder);
             }
         }
 
@@ -246,7 +246,7 @@ public class NBSDecoder {
         //System.out.println("Layer Data: " + layerStringBuilder.toString());
         //YET ANOTHER EPIC DEBUG CODE ENDS HERE
 
-        return new SongData(title, author, speed, (int) ((Math.ceil((length + 1) / timeSignature) + 1) * timeSignature), stringBuilder.toString(), file, layerStringBuilder.toString(), (loopTick + 1), loopCount, customInstruments);
+        return new SongData(title, author, speed, (int) ((Math.ceil((length + 1.0) / timeSignature) + 1) * timeSignature), stringBuilder.toString(), file, layerStringBuilder.toString(), (loopTick + 1), loopCount, customInstruments);
     }
 
     private static short readShort(DataInputStream dataInputStream) throws IOException {

@@ -7,8 +7,8 @@ import java.util.Objects;
 
 public class TemplateItem {
 
-    String code;
-    ItemStack stack;
+    final String code;
+    final ItemStack stack;
 
     public TemplateItem(ItemStack stack) {
         this.code = TemplateUtils.fromItemStack(stack).get("code").getAsString();

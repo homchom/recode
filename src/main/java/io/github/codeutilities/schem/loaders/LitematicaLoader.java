@@ -1,7 +1,7 @@
 package io.github.codeutilities.schem.loaders;
 
-import io.github.codeutilities.schem.sk89q.jnbt.*;
 import io.github.codeutilities.schem.Schematic;
+import io.github.codeutilities.schem.sk89q.jnbt.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -14,6 +14,10 @@ public class LitematicaLoader extends MNBTSchematicReader {
     public LitematicaLoader(NBTInputStream nbtInputStream) {
         if (nbtInputStream == null) throw new NullPointerException();
         this.nbtInputStream = nbtInputStream;
+    }
+
+    private static int log2(int N) {
+        return (int) (Math.log(N) / Math.log(2));
     }
 
     @Override
@@ -55,7 +59,7 @@ public class LitematicaLoader extends MNBTSchematicReader {
 
         List<CompoundTag> palette = litematicdata.getList("BlockStatePalette", CompoundTag.class);
         long[] longblockstates = litematicdata.getLongArray("BlockStates");
-        int nbits = (int) Math.max(Math.ceil(log2(palette.size())), 2)+1;
+        int nbits = (int) Math.max(Math.ceil(log2(palette.size())), 2) + 1;
         LitematicaBitArray arr = new LitematicaBitArray(nbits, volume, longblockstates);
 
         for (CompoundTag block : palette) {
@@ -64,7 +68,7 @@ public class LitematicaLoader extends MNBTSchematicReader {
             StringBuilder property = new StringBuilder();
             if (properties != null) {
                 for (Map.Entry<String, Tag> prop : properties.getValue().entrySet()) {
-                    property.append(",").append(prop.getKey()).append("=").append(((StringTag)prop.getValue()).getValue());
+                    property.append(",").append(prop.getKey()).append("=").append(((StringTag) prop.getValue()).getValue());
                 }
             }
 
@@ -87,10 +91,6 @@ public class LitematicaLoader extends MNBTSchematicReader {
         }
 
         return schematic;
-    }
-
-    private static int log2(int N) {
-        return (int)(Math.log(N) / Math.log(2));
     }
 
     @Override

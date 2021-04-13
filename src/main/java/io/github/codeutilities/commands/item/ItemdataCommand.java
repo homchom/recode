@@ -9,8 +9,9 @@ import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.text.*;
+import net.minecraft.text.ClickEvent;
 import net.minecraft.text.ClickEvent.Action;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.registry.Registry;
 
 public class ItemdataCommand extends Command {
@@ -38,9 +39,9 @@ public class ItemdataCommand extends Command {
 
                         msg2.styled((style) -> style.withClickEvent(new ClickEvent(Action.RUN_COMMAND, "/copytxt " + formatted)));
                         msg3.styled((style) -> style.withClickEvent(new ClickEvent(Action.RUN_COMMAND, "/copytxt " + formatted)));
-                        msg5.styled((style) -> style.withClickEvent(new ClickEvent(Action.RUN_COMMAND, "/copytxt " + "/give " + Registry.ITEM.getId(item.getItem()).toString() + unformatted + " 1")));
+                        msg5.styled((style) -> style.withClickEvent(new ClickEvent(Action.RUN_COMMAND, "/copytxt " + "/give " + Registry.ITEM.getId(item.getItem()) + unformatted + " 1")));
 
-                        mc.player.sendMessage(msg1.append(msg2).append(msg3).append(msg4).append(msg5).append(msg6), false);
+                        this.sendMessage(mc, msg1.append(msg2).append(msg3).append(msg4).append(msg5).append(msg6));
 
                     } else {
                         ChatUtil.sendMessage("No NBT data found!", ChatType.FAIL);

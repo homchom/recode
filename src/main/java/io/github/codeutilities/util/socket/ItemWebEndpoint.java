@@ -1,16 +1,20 @@
 package io.github.codeutilities.util.socket;
 
-import io.github.codeutilities.util.socket.client.*;
+import io.github.codeutilities.util.socket.client.Client;
+import io.github.codeutilities.util.socket.client.SessionClient;
 
-import javax.websocket.*;
+import javax.websocket.OnClose;
+import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
+import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 import java.util.HashMap;
 
 @ServerEndpoint(value = "/item")
 public class ItemWebEndpoint {
-    
-    HashMap<String, SessionClient> clients = new HashMap<>();
-    
+
+    final HashMap<String, SessionClient> clients = new HashMap<>();
+
     @OnMessage
     public void handleTextMessage(String message, Session session) {
         clients.get(session.getId()).acceptData(message);
@@ -19,7 +23,7 @@ public class ItemWebEndpoint {
     @OnOpen
     public void onOpen(Session session) {
         SessionClient client = new SessionClient(session);
-        SocketHandler.clients.add(client);
+        SocketHandler.getInstance().register(client);
         clients.put(session.getId(), client);
     }
 
@@ -27,8 +31,8 @@ public class ItemWebEndpoint {
     public void onClose(Session session) {
         Client client = clients.remove(session.getId());
         if (client != null) {
-            SocketHandler.clients.remove(client);
+            SocketHandler.getInstance().unregister(client);
         }
     }
-    
+
 }

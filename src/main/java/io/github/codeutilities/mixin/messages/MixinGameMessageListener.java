@@ -4,9 +4,9 @@ import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.dfrpc.DFDiscordRPC;
 import io.github.codeutilities.events.ChatReceivedEvent;
+import io.github.codeutilities.gui.CPU_UsageText;
 import io.github.codeutilities.keybinds.FlightspeedToggle;
 import io.github.codeutilities.util.DFInfo;
-import io.github.codeutilities.gui.CPU_UsageText;
 import io.github.codeutilities.util.networking.WebUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -28,8 +28,9 @@ import java.io.IOException;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public class MixinGameMessageListener {
-    private MinecraftClient minecraftClient = MinecraftClient.getInstance();
-
+    private static long lastPatchCheck = 0;
+    private static long lastBuildCheck = 0;
+    private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
     private boolean motdShown = false;
 
     @Inject(method = "onGameMessage", at = @At("HEAD"), cancellable = true)
@@ -42,7 +43,7 @@ public class MixinGameMessageListener {
                     try {
                         this.updateVersion(packet.getMessage());
                         this.updateState(packet.getMessage());
-                    }catch (Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                         CodeUtilities.log(Level.ERROR, "Error while trying to parse the chat text!");
                     }
@@ -57,11 +58,11 @@ public class MixinGameMessageListener {
         if (minecraftClient.player == null) return;
         if (action == TitleS2CPacket.Action.ACTIONBAR) {
             if (packet.getText().getString().equals("CPU Usage: [▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮]")) {
-                if(ModConfig.getConfig().cpuOnScreen) {
+                if (ModConfig.getConfig().cpuOnScreen) {
                     CPU_UsageText.updateCPU(packet);
                     ci.cancel();
                 }
-			}
+            }
         }
     }
 
@@ -70,26 +71,27 @@ public class MixinGameMessageListener {
 
         String text = component.getString();
 
-        if (text.matches("Current patch: .*\\. See the patch notes with \\/patch!")) {
+        if (text.matches("Current patch: .*\\. See the patch notes with /patch!")) {
             try {
                 long time = System.currentTimeMillis() / 1000L;
                 if (time - lastPatchCheck > 2) {
-                    String patchText = text.replaceAll("Current patch: (.*)\\. See the patch notes with \\/patch!", "$1");
+                    String patchText = text.replaceAll("Current patch: (.*)\\. See the patch notes with /patch!", "$1");
 
-                    if(!motdShown) {
+                    if (!motdShown) {
                         try {
                             String str = WebUtil.getString("https://codeutilities.github.io/data/motd.txt");
-                            for(String string:str.split("\n")) {
+                            for (String string : str.split("\n")) {
                                 minecraftClient.player.sendMessage(new LiteralText(string).styled(style -> style.withColor(TextColor.fromFormatting(Formatting.AQUA))), false);
                             }
 
                             String version = WebUtil.getString("https://codeutilities.github.io/data/currentversion.txt").replaceAll("\n", "");
-                            if(!CodeUtilities.MOD_VERSION.equals(version) && !CodeUtilities.BETA) {
+                            if (!CodeUtilities.MOD_VERSION.equals(version) && !CodeUtilities.BETA) {
                                 minecraftClient.player.sendMessage(new LiteralText(String.format("A new version of CodeUtilities (%s) is available! Click here to download!", version)).styled(style ->
                                         style.withColor(TextColor.fromFormatting(Formatting.AQUA))).styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://codeutilities.github.io/"))), false);
                             }
 
-                        } catch (IOException ignored) {}
+                        } catch (IOException ignored) {
+                        }
 
                         motdShown = true;
                     }
@@ -105,7 +107,7 @@ public class MixinGameMessageListener {
                     DFDiscordRPC.delayRPC = true;
                     DFDiscordRPC.supportSession = false;
                 }
-            }catch (Exception e) {
+            } catch (Exception e) {
                 CodeUtilities.log(Level.INFO, "Error on parsing patch number!");
                 e.printStackTrace();
             }
@@ -143,7 +145,7 @@ public class MixinGameMessageListener {
                 DFDiscordRPC.supportSession = true;
                 if (ModConfig.getConfig().discordRPC) {
                     new Thread(() -> {
-                        DFDiscordRPC.getThread().locateRequest();
+                        DFDiscordRPC.getInstance().getThread().locateRequest();
                     }).start();
                 }
             }
@@ -155,7 +157,7 @@ public class MixinGameMessageListener {
                 DFDiscordRPC.supportSession = false;
                 if (ModConfig.getConfig().discordRPC) {
                     new Thread(() -> {
-                        DFDiscordRPC.getThread().locateRequest();
+                        DFDiscordRPC.getInstance().getThread().locateRequest();
                     }).start();
                 }
             }
@@ -165,7 +167,7 @@ public class MixinGameMessageListener {
                 DFDiscordRPC.supportSession = false;
                 if (ModConfig.getConfig().discordRPC) {
                     new Thread(() -> {
-                        DFDiscordRPC.getThread().locateRequest();
+                        DFDiscordRPC.getInstance().getThread().locateRequest();
                     }).start();
                 }
             }
@@ -191,15 +193,15 @@ public class MixinGameMessageListener {
                 new Thread(() -> {
                     try {
                         Thread.sleep(20);
-                        if(ModConfig.getConfig().autotime) {
+                        if (ModConfig.getConfig().autotime) {
                             minecraftClient.player.sendChatMessage("/time " + ModConfig.getConfig().autotimeval);
                             ChatReceivedEvent.cancelTimeMsg = true;
                         }
-                        if(ModConfig.getConfig().autonightvis) {
+                        if (ModConfig.getConfig().autonightvis) {
                             minecraftClient.player.sendChatMessage("/nightvis");
                             ChatReceivedEvent.cancelNVisionMsg = true;
                         }
-                    }catch (Exception e) {
+                    } catch (Exception e) {
                         CodeUtilities.log(Level.ERROR, "Error while executing the task!");
                         e.printStackTrace();
                     }
@@ -208,14 +210,11 @@ public class MixinGameMessageListener {
                 lastBuildCheck = time;
             }
         }
-        
+
         // Dev Mode (more moved to MixinItemSlotUpdate)
         if (minecraftClient.player.isCreative() && text.matches("^» You are now in dev mode\\.$")) {
             // fs toggle
             FlightspeedToggle.fs_is_normal = true;
         }
     }
-
-    private static long lastPatchCheck = 0;
-    private static long lastBuildCheck = 0;
 }

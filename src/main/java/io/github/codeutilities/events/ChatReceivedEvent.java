@@ -59,8 +59,7 @@ public class ChatReceivedEvent {
 
         //LagSlayer enable/disable
         if (text.matches("^\\[LagSlayer\\] Now monitoring plot ID: .*$")) {
-            String plotId = text.replaceAll("\\[LagSlayer\\] Now monitoring plot ID: ", "");
-            CPU_UsageText.monitorPlotId = plotId;
+            CPU_UsageText.monitorPlotId = text.replaceAll("\\[LagSlayer\\] Now monitoring plot ID: ", "");
             CPU_UsageText.lagSlayerEnabled = true;
             if (cancelLagSlayerMsg) cancel = true;
         }
@@ -94,8 +93,7 @@ public class ChatReceivedEvent {
             if (msg.startsWith("                                       \n")) {
                 if (msg.contains(" is currently at spawn.\n")) {
                     ChatUtil.sendMessage("This player is not in a plot.", ChatType.FAIL);
-                    cancel = true;
-                }else {
+                } else {
                     // PLOT ID
                     Pattern pattern = Pattern.compile("\\[[0-9]+]\n");
                     Matcher matcher = pattern.matcher(msg);
@@ -113,8 +111,8 @@ public class ChatReceivedEvent {
                         ChatUtil.sendMessage("Error while trying to join the plot.", ChatType.FAIL);
                     }
 
-                    cancel = true;
                 }
+                cancel = true;
                 pjoin = false;
             }
         }
@@ -177,7 +175,7 @@ public class ChatReceivedEvent {
                 && (msgToString.contains("hoverEvent=false") || msgToString.contains("hoverEvent=null"))
                 && (msgToString.contains("insertion=false") || msgToString.contains("insertion=null"))
 
-                && (msgGetString.endsWith(" joined.") || msgGetString.endsWith(" joined!") || msgGetString.endsWith(" left.")) ) {
+                && (msgGetString.endsWith(" joined.") || msgGetString.endsWith(" joined!") || msgGetString.endsWith(" left."))) {
 
             // cancel message
             cancel = true;

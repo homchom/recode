@@ -10,20 +10,21 @@ import io.github.codeutilities.util.DFInfo;
 import io.github.codeutilities.util.templates.TemplateUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.item.*;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.packet.s2c.play.ScreenHandlerSlotUpdateS2CPacket;
 import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public class MixinItemSlotUpdate {
+    final MinecraftClient mc = MinecraftClient.getInstance();
     private long lobbyTime = System.currentTimeMillis() - 1000;
-
-    MinecraftClient mc = MinecraftClient.getInstance();
+    private long lastDevCheck = 0;
 
     @Inject(method = "onScreenHandlerSlotUpdate", at = @At("HEAD"))
     public void onScreenHandlerSlotUpdate(ScreenHandlerSlotUpdateS2CPacket packet, CallbackInfo ci) {
@@ -41,15 +42,15 @@ public class MixinItemSlotUpdate {
             }
 
             if (DFInfo.isOnDF() && stack.getName().getString().contains("◇ Game Menu ◇")
-                && lore.toText().getString().contains("\"Click to open the Game Menu.\"")
-                && lore.toText().getString().contains("\"Hold and type in chat to search.\"")) {
+                    && lore.toText().getString().contains("\"Click to open the Game Menu.\"")
+                    && lore.toText().getString().contains("\"Hold and type in chat to search.\"")) {
 
                 if (DFInfo.currentState != DFInfo.State.LOBBY) {
                     DFInfo.currentState = DFInfo.State.LOBBY;
 
                     // Auto fly
                     if (ModConfig.getConfig().autofly) {
-                        if(System.currentTimeMillis() > lobbyTime) { // theres a bug with /fly running twice this is a temp fix.
+                        if (System.currentTimeMillis() > lobbyTime) { // theres a bug with /fly running twice this is a temp fix.
                             mc.player.sendChatMessage("/fly");
                             ChatReceivedEvent.cancelFlyMsg = true;
                             lobbyTime = System.currentTimeMillis() + 1000;
@@ -69,9 +70,9 @@ public class MixinItemSlotUpdate {
             }
 
             if (DFInfo.isOnDF() && mc.player.isCreative() && stack.getName().getString().contains("Player Event")
-                && lore.toText().getString().contains("\"Used to execute code when something\"")
-                && lore.toText().getString().contains("\"is done by (or happens to) a player.\"")
-                && lore.toText().getString().contains("\"Example:\"")) {
+                    && lore.toText().getString().contains("\"Used to execute code when something\"")
+                    && lore.toText().getString().contains("\"is done by (or happens to) a player.\"")
+                    && lore.toText().getString().contains("\"Example:\"")) {
 
                 if (DFInfo.currentState != DFInfo.State.DEV) {
                     DFInfo.currentState = DFInfo.State.DEV;
@@ -92,14 +93,14 @@ public class MixinItemSlotUpdate {
                         new Thread(() -> {
                             try {
                                 Thread.sleep(10);
-                                if(ModConfig.getConfig().autoRC) {
+                                if (ModConfig.getConfig().autoRC) {
                                     mc.player.sendChatMessage("/rc");
                                 }
-                                if(ModConfig.getConfig().autotime) {
+                                if (ModConfig.getConfig().autotime) {
                                     mc.player.sendChatMessage("/time " + ModConfig.getConfig().autotimeval);
                                     ChatReceivedEvent.cancelTimeMsg = true;
                                 }
-                                if(ModConfig.getConfig().autonightvis) {
+                                if (ModConfig.getConfig().autonightvis) {
                                     mc.player.sendChatMessage("/nightvis");
                                     ChatReceivedEvent.cancelNVisionMsg = true;
                                 }
@@ -115,7 +116,5 @@ public class MixinItemSlotUpdate {
             }
         }
     }
-
-    private long lastDevCheck = 0;
 
 }

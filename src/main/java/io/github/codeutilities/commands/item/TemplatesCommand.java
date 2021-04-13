@@ -1,11 +1,12 @@
 package io.github.codeutilities.commands.item;
 
-import com.google.gson.*;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.commands.arguments.ArgBuilder;
-import io.github.codeutilities.gui.*;
+import io.github.codeutilities.gui.TemplateStorageUI;
 import io.github.codeutilities.util.chat.ChatType;
 import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.codeutilities.util.networking.WebUtil;
@@ -13,26 +14,57 @@ import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import org.apache.http.HttpResponse;
 
-import java.io.*;
+import java.io.IOException;
+import java.util.Random;
 
 public class TemplatesCommand extends Command {
 
-    public static final String templateServer = "https://codeutilities-templates.glitch.me/";
-    public static MinecraftClient mc = CodeUtilities.mc;
+    public static final String TEMPLATE_SERVER = "https://codeutilities-templates.glitch.me/";
     public static String authId = null;
+
+    public static void authenticate() {
+        MinecraftClient mc = CodeUtilities.MC;
+        Random random = CodeUtilities.RANDOM;
+        JsonParser jsonParser = CodeUtilities.JSON_PARSER;
+
+        JsonObject data = new JsonObject();
+        String serverId = "CodeUtilities" + random.nextInt(99999);
+        data.addProperty("accessToken", mc.getSession().getAccessToken());
+        data.addProperty("selectedProfile", mc.getSession().getUuid().replace("-", ""));
+        data.addProperty("serverId", serverId);
+
+        HttpResponse res = WebUtil.makePost("https://sessionserver.mojang.com/session/minecraft/join", data);
+        if (res.getStatusLine().getStatusCode() == 204) {
+            JsonObject response;
+            try {
+                response = jsonParser.parse(WebUtil.getString(
+                        TEMPLATE_SERVER + "authenticate?username=" + mc.getSession().getUsername()
+                                + "&serverId=" + serverId)).getAsJsonObject();
+            } catch (IOException e) {
+                return;
+            }
+
+            if (response.get("success").getAsBoolean()) {
+                authId = response.get("id").getAsString();
+            } else {
+                System.out.println(response.get("error").getAsString());
+            }
+        }
+    }
 
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("templates")
-            .executes(ctx -> {
-                if (mc.player.isCreative()) {
-                    CodeUtilities.openGuiAsync(new TemplateStorageUI());
+                .executes(ctx -> {
+                    if (this.isCreative(mc)) {
+                        TemplateStorageUI templateStorageUI = new TemplateStorageUI();
+                        templateStorageUI.open();
+                        templateStorageUI.openAsync(templateStorageUI);
+                    } else {
+                        return -1;
+                    }
                     return 1;
-                }else {
-                    ChatUtil.sendTranslateMessage("codeutilities.command.require_creative_mode", ChatType.FAIL);
-                    return 1;
-                }
-            })
+                })
         );
     }
 
@@ -41,14 +73,13 @@ public class TemplatesCommand extends Command {
     }
 
     private JsonObject getObject(String url, boolean requireAuth) {
-        System.out.println("hey");
         try {
             if (authId == null && requireAuth) {
                 ChatUtil.sendMessage("You are not authenticated!", ChatType.FAIL);
                 return null;
             }
 
-            JsonObject response = new JsonParser().parse(WebUtil.getString(url)).getAsJsonObject();
+            JsonObject response = CodeUtilities.JSON_PARSER.parse(WebUtil.getString(url)).getAsJsonObject();
             System.out.println(response);
             if (response.get("success").getAsBoolean()) {
                 return response;
@@ -66,31 +97,5 @@ public class TemplatesCommand extends Command {
         }
 
         return null;
-    }
-
-    public static void authenticate() {
-        JsonObject data = new JsonObject();
-        String serverId = "CodeUtilities" + CodeUtilities.rng.nextInt(99999);
-        data.addProperty("accessToken", mc.getSession().getAccessToken());
-        data.addProperty("selectedProfile", mc.getSession().getUuid().replace("-", ""));
-        data.addProperty("serverId", serverId);
-
-        HttpResponse res = WebUtil.makePost("https://sessionserver.mojang.com/session/minecraft/join", data);
-        if (res.getStatusLine().getStatusCode() == 204) {
-            JsonObject response;
-            try {
-                response = new JsonParser().parse(WebUtil.getString(
-                        templateServer + "authenticate?username=" + mc.getSession().getUsername()
-                                + "&serverId=" + serverId)).getAsJsonObject();
-            } catch (IOException e) {
-                return;
-            }
-
-            if (response.get("success").getAsBoolean()) {
-                authId = response.get("id").getAsString();
-            } else {
-                System.out.println(response.get("error").getAsString());
-            }
-        }
     }
 }

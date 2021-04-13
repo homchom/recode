@@ -2,10 +2,7 @@ package io.github.codeutilities.mixin.messages;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonWriter;
-import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.ModConfig;
-import io.github.codeutilities.util.ItemUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -23,33 +20,33 @@ public class MixinPlayerChatMessage {
 
     @Inject(method = "Lnet/minecraft/client/network/ClientPlayerEntity;sendChatMessage(Ljava/lang/String;)V", at = @At("HEAD"), cancellable = true)
     public void onMessage(String string, CallbackInfo ci) {
-        if(minecraftClient.player != null) {
-            if((string.endsWith(" -l") || string.endsWith(" -s") || string.endsWith(" -g")) && !string.startsWith("/") && ModConfig.getConfig().quickVarScope) {
+        if (minecraftClient.player != null) {
+            if ((string.endsWith(" -l") || string.endsWith(" -s") || string.endsWith(" -g")) && !string.startsWith("/") && ModConfig.getConfig().quickVarScope) {
                 ItemStack itemStack = minecraftClient.player.inventory.getMainHandStack();
-                if(itemStack.hasTag()) {
+                if (itemStack.hasTag()) {
                     CompoundTag tag = itemStack.getTag();
-                    if(tag.contains("PublicBukkitValues")) {
+                    if (tag.contains("PublicBukkitValues")) {
                         CompoundTag publicBukkitValues = tag.getCompound("PublicBukkitValues");
-                        if(publicBukkitValues.contains("hypercube:varitem")) {
+                        if (publicBukkitValues.contains("hypercube:varitem")) {
                             String varItem = publicBukkitValues.getString("hypercube:varitem");
                             try {
                                 JsonObject jsonObject = new JsonParser().parse(varItem).getAsJsonObject();
-                                if(jsonObject.has("id")) {
-                                    if(jsonObject.get("id").getAsString().equals("var")) {
+                                if (jsonObject.has("id")) {
+                                    if (jsonObject.get("id").getAsString().equals("var")) {
                                         JsonObject data = jsonObject.get("data").getAsJsonObject();
                                         String displayScope = "";
                                         String displayScopeColor = "";
-                                        if(string.endsWith(" -l")) {
+                                        if (string.endsWith(" -l")) {
                                             displayScope = "LOCAL";
                                             displayScopeColor = "green";
                                             data.addProperty("scope", "local");
                                         }
-                                        if(string.endsWith(" -s")) {
+                                        if (string.endsWith(" -s")) {
                                             displayScope = "SAVE";
                                             displayScopeColor = "yellow";
                                             data.addProperty("scope", "saved");
                                         }
-                                        if(string.endsWith(" -g")) {
+                                        if (string.endsWith(" -g")) {
                                             displayScope = "GAME";
                                             displayScopeColor = "gray";
                                             data.addProperty("scope", "unsaved");
@@ -72,7 +69,7 @@ public class MixinPlayerChatMessage {
                                         minecraftClient.interactionManager.clickCreativeStack(itemStack, minecraftClient.player.inventory.selectedSlot + 36);
                                     }
                                 }
-                            }catch (Exception e) {
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }

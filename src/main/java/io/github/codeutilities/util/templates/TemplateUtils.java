@@ -1,22 +1,22 @@
 package io.github.codeutilities.util.templates;
 
-import com.google.gson.*;
+import com.google.gson.JsonObject;
+import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.util.CompressionUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.text.*;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 public class TemplateUtils {
-    
-    
+
     public static final int VERSION = 1;
-    
+
     public static void applyRawTemplateNBT(ItemStack stack, String name, String author, String codeData) {
         applyRawTemplateNBT(stack, new LiteralText(name), author, codeData, VERSION);
-        
     }
 
     public static void applyRawTemplateNBT(ItemStack stack, Text name, String author, String codeData, int version) {
@@ -54,26 +54,24 @@ public class TemplateUtils {
         CompoundTag tag = stack.getTag();
         CompoundTag publicBukkitNBT = tag.getCompound("PublicBukkitValues");
         String template = publicBukkitNBT.getString("hypercube:codetemplatedata");
-        return new JsonParser().parse(template).getAsJsonObject();
+        return CodeUtilities.JSON_PARSER.parse(template).getAsJsonObject();
     }
 
     public static boolean isTemplate(ItemStack stack) {
-       try {
-           CompoundTag tag = stack.getTag();
-           if (tag == null) {
-               return false;
-           }
-    
-           CompoundTag publicBukkitNBT = tag.getCompound("PublicBukkitValues");
-           if (publicBukkitNBT == null) {
-               return false;
-           }
-    
-           return publicBukkitNBT.getString("hypercube:codetemplatedata").length() > 0;
-       } catch (Exception e) {
-           return false;
-       }
+        if (stack == null || stack.isEmpty()) {
+            return false;
+        }
+
+        CompoundTag tag = stack.getTag();
+        if (tag == null) {
+            return false;
+        }
+
+        CompoundTag publicBukkitNBT = tag.getCompound("PublicBukkitValues");
+        if (publicBukkitNBT == null) {
+            return false;
+        }
+
+        return publicBukkitNBT.getString("hypercube:codetemplatedata").length() > 0;
     }
-
-
 }

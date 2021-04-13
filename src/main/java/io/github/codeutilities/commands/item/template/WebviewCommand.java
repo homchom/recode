@@ -5,7 +5,8 @@ import io.github.codeutilities.util.chat.ChatType;
 import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.codeutilities.util.templates.TemplateUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.*;
+import net.minecraft.text.ClickEvent;
+import net.minecraft.text.LiteralText;
 
 public class WebviewCommand extends AbstractTemplateCommand {
 

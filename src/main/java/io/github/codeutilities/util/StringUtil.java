@@ -1,13 +1,14 @@
 package io.github.codeutilities.util;
 
 import io.github.codeutilities.CodeUtilities;
-import java.lang.reflect.Field;
-import java.util.Arrays;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
+
+import java.lang.reflect.Field;
+import java.util.Arrays;
 
 public class StringUtil {
 
@@ -42,8 +43,8 @@ public class StringUtil {
     }
 
     public static String genDummyIntArray() {
-        return "[I;" + CodeUtilities.rng.nextInt() + "," + CodeUtilities.rng.nextInt() + ","
-            + CodeUtilities.rng.nextInt() + "," + CodeUtilities.rng.nextInt() + "]";
+        return "[I;" + CodeUtilities.RANDOM.nextInt() + "," + CodeUtilities.RANDOM.nextInt() + ","
+                + CodeUtilities.RANDOM.nextInt() + "," + CodeUtilities.RANDOM.nextInt() + "]";
     }
 
     public static String textToString(Text txt) {

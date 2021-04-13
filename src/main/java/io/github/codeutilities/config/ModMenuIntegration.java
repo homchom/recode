@@ -1,7 +1,8 @@
 package io.github.codeutilities.config;
 
 import io.github.codeutilities.CodeUtilities;
-import io.github.prospector.modmenu.api.*;
+import io.github.prospector.modmenu.api.ConfigScreenFactory;
+import io.github.prospector.modmenu.api.ModMenuApi;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import net.minecraft.client.MinecraftClient;
 

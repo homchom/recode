@@ -1,5 +1,6 @@
 package io.github.codeutilities.mixin.render;
 
+import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.gui.CPU_UsageText;
 import io.github.codeutilities.util.DFInfo;
@@ -15,18 +16,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(InGameHud.class)
 public class InGameHudMixin {
-
-    private final MinecraftClient mc = MinecraftClient.getInstance();
-
-    @Inject(method="renderStatusEffectOverlay", at=@At("RETURN"))
+    @Inject(method = "renderStatusEffectOverlay", at = @At("RETURN"))
     private void renderStatusEffectOverlay(MatrixStack stack, CallbackInfo ci) {
         CPU_UsageText.onRender(stack);
 
-        if(FuncSearchUtil.searchType != null && FuncSearchUtil.searchValue != null && ModConfig.getConfig().functionProcessSearch && DFInfo.isOnDF() && DFInfo.currentState == DFInfo.State.DEV) {
+        if (FuncSearchUtil.searchType != null && FuncSearchUtil.searchValue != null && ModConfig.getConfig().functionProcessSearch && DFInfo.isOnDF() && DFInfo.currentState == DFInfo.State.DEV) {
+            MinecraftClient mc = CodeUtilities.MC;
             mc.textRenderer.drawWithShadow(stack, new LiteralText("Searching usages of " + FuncSearchUtil.searchType.toString()).styled(style -> style.withUnderline(true)), 2, 2, 0xffffff);
             mc.textRenderer.drawWithShadow(stack, new LiteralText(FuncSearchUtil.searchValue), 2, 12, 0xffffff);
         }
-
-
     }
 }

@@ -2,7 +2,7 @@ package io.github.codeutilities.mixin.item;
 
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.util.ItemUtil;
 import net.minecraft.client.MinecraftClient;
@@ -22,11 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Mixin(InGameHud.class)
-public class MixinHeldItemTooltip{
-    private MinecraftClient mc = MinecraftClient.getInstance();
-    private ItemStack variableStack;
-    private JsonObject varItemNbt;
-    private static Map<String, MutableText> scopes = new HashMap<>();
+public class MixinHeldItemTooltip {
+    private static final Map<String, MutableText> scopes = new HashMap<>();
 
     static {
         scopes.put("unsaved", new LiteralText("GAME").styled((style) -> style.withColor(Formatting.GRAY)));
@@ -34,17 +31,21 @@ public class MixinHeldItemTooltip{
         scopes.put("local", new LiteralText("LOCAL").styled((style) -> style.withColor(Formatting.GREEN)));
     }
 
+    private final MinecraftClient mc = MinecraftClient.getInstance();
+    private ItemStack variableStack;
+    private JsonObject varItemNbt;
+
     @Inject(method = "renderHeldItemTooltip", at = @At("HEAD"), cancellable = true)
     public void renderHeldItemTooltip(MatrixStack matrices, CallbackInfo callbackInfo) {
         try {
-            if(!ModConfig.getConfig().variableScopeView) {
+            if (!ModConfig.getConfig().variableScopeView) {
                 return;
             }
 
             ItemStack itemStack = mc.player.inventory.getMainHandStack();
 
-            if(variableStack != itemStack) {
-                if(ItemUtil.isVar(itemStack, "var")) {
+            if (variableStack != itemStack) {
+                if (ItemUtil.isVar(itemStack, "var")) {
                     variableStack = itemStack;
 
                     CompoundTag tag = itemStack.getTag();
@@ -57,13 +58,13 @@ public class MixinHeldItemTooltip{
                         return;
                     }
 
-                    varItemNbt = new JsonParser().parse(publicBukkitNBT.getString("hypercube:varitem")).getAsJsonObject().getAsJsonObject("data");
-                }else {
+                    varItemNbt = CodeUtilities.JSON_PARSER.parse(publicBukkitNBT.getString("hypercube:varitem")).getAsJsonObject().getAsJsonObject("data");
+                } else {
                     variableStack = null;
                 }
             }
 
-            if(variableStack != null) {
+            if (variableStack != null) {
                 callbackInfo.cancel();
 
                 String name = varItemNbt.get("name").getAsString();
@@ -75,10 +76,10 @@ public class MixinHeldItemTooltip{
                 int x2 = (mc.getWindow().getScaledWidth() - mc.textRenderer.getWidth(scope.asString())) / 2;
                 int y2 = mc.getWindow().getScaledHeight() - 35;
 
-                mc.textRenderer.drawWithShadow(matrices, new LiteralText(name), (float)x1, (float)y1, 16777215);
-                mc.textRenderer.drawWithShadow(matrices, scope, (float)x2, (float)y2, 16777215);
+                mc.textRenderer.drawWithShadow(matrices, new LiteralText(name), (float) x1, (float) y1, 16777215);
+                mc.textRenderer.drawWithShadow(matrices, scope, (float) x2, (float) y2, 16777215);
             }
-        }catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
