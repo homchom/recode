@@ -2,9 +2,9 @@ package io.github.codeutilities.cosmetics;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.util.networking.WebUtil;
 import net.minecraft.client.MinecraftClient;
@@ -26,24 +26,25 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class CosmeticHandler {
-    private static final MinecraftClient mc = MinecraftClient.getInstance();
-    public static final ModelLoader modelLoader = new ModelLoader(mc.getResourceManager(), mc.getBlockColors(), mc.getProfiler(), mc.options.mipmapLevels);
-    public static final SpriteAtlasManager spriteAtlasTexture = modelLoader.upload(MinecraftClient.getInstance().getTextureManager(), MinecraftClient.getInstance().getProfiler());
-    private static final ExecutorService executorService = Executors.newFixedThreadPool(10);
-    private static final ArrayList<String> cachedHatUUIDs = new ArrayList<>();
-    private static final ArrayList<BakedModel> cachedHatModels = new ArrayList<>();
-    private static final ArrayList<JsonObject> cachedHatModelAttributes = new ArrayList<>();
+    private static final MinecraftClient MC = MinecraftClient.getInstance();
+    public static final ModelLoader MODEL_LOADER = new ModelLoader(MC.getResourceManager(), MC.getBlockColors(), MC.getProfiler(), MC.options.mipmapLevels);
+    public static final SpriteAtlasManager SPRITE_ATLAS_MANAGER = MODEL_LOADER.upload(MinecraftClient.getInstance().getTextureManager(), MinecraftClient.getInstance().getProfiler());
+    private static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(10);
+
+    private static final ArrayList<String> CACHED_HAT_UUIDS = new ArrayList<>();
+    private static final ArrayList<BakedModel> CACHED_HAT_MODELS = new ArrayList<>();
+    private static final ArrayList<JsonObject> CACHED_HAT_MODEL_ATTRIBUTES = new ArrayList<>();
 
     public static void applyCosmetics(UUID uuid, Map<MinecraftProfileTexture.Type, Identifier> identifierMap) {
         if (ModConfig.getConfig().cosmeticType == ModConfig.CosmeticType.Disabled) return;
-        executorService.execute(() -> {
+        EXECUTOR_SERVICE.execute(() -> {
             try {
                 String cape = getCosmetic(uuid, "cape");
                 String hat = getCosmetic(uuid, "hat");
 
                 if (cape != null) {
                     URL url = new URL("https://codeutilities.github.io/data/cosmetics/capes/" + cape);
-                    Identifier identifier = mc.getTextureManager().registerDynamicTexture(uuid.toString().replaceAll("-", ""), new NativeImageBackedTexture(NativeImage.read(url.openStream())));
+                    Identifier identifier = MC.getTextureManager().registerDynamicTexture(uuid.toString().replaceAll("-", ""), new NativeImageBackedTexture(NativeImage.read(url.openStream())));
                     identifierMap.put(MinecraftProfileTexture.Type.CAPE, identifier);
                 }
 
@@ -59,13 +60,13 @@ public class CosmeticHandler {
         if (ModConfig.getConfig().cosmeticType == ModConfig.CosmeticType.Disabled) return null;
         try {
             content = WebUtil.getString("https://codeutilities.github.io/data/cosmetics/players/" + uuid.toString() + ".json");
-            JsonObject jsonObject = new JsonParser().parse(content).getAsJsonObject();
+            JsonObject jsonObject = CodeUtilities.JSON_PARSER.parse(content).getAsJsonObject();
             JsonElement jsonElement = jsonObject.get(key);
 
             if (jsonElement.isJsonNull()) {
                 if (ModConfig.getConfig().cosmeticType == ModConfig.CosmeticType.No_Event_Cosmetics) return null;
                 content = WebUtil.getString("https://codeutilities.github.io/data/cosmetics/players/default.json");
-                jsonObject = new JsonParser().parse(content).getAsJsonObject();
+                jsonObject = CodeUtilities.JSON_PARSER.parse(content).getAsJsonObject();
                 jsonElement = jsonObject.get(key);
                 if (jsonElement.isJsonNull()) return null;
             }
@@ -74,7 +75,7 @@ public class CosmeticHandler {
         } catch (JsonSyntaxException | IOException ignored) {
             if (ModConfig.getConfig().cosmeticType == ModConfig.CosmeticType.No_Event_Cosmetics) return null;
             content = WebUtil.getString("https://codeutilities.github.io/data/cosmetics/players/default.json");
-            JsonObject jsonObject = new JsonParser().parse(content).getAsJsonObject();
+            JsonObject jsonObject = CodeUtilities.JSON_PARSER.parse(content).getAsJsonObject();
             JsonElement jsonElement = jsonObject.get(key);
             if (!jsonElement.isJsonNull()) return jsonElement.getAsString();
         }
@@ -86,17 +87,17 @@ public class CosmeticHandler {
         if (hat != null) {
             String hatjson = WebUtil.getString("https://codeutilities.github.io/data/cosmetics/hats/" + hat);
             hatjson = hatjson.replaceAll("\t", "").replaceAll("\n", "");
-            JsonObject attributes = new JsonParser().parse(hatjson).getAsJsonObject().get("attributes").getAsJsonObject();
+            JsonObject attributes = CodeUtilities.JSON_PARSER.parse(hatjson).getAsJsonObject().get("attributes").getAsJsonObject();
             JsonUnbakedModel jsonUnbakedModel = JsonUnbakedModel.deserialize(hatjson);
-            BakedModel model = jsonUnbakedModel.bake(CosmeticHandler.modelLoader, CosmeticHandler.spriteAtlasTexture::getSprite, ModelRotation.X180_Y0, new Identifier("minecraft:placeholder"));
+            BakedModel model = jsonUnbakedModel.bake(CosmeticHandler.MODEL_LOADER, CosmeticHandler.SPRITE_ATLAS_MANAGER::getSprite, ModelRotation.X180_Y0, new Identifier("minecraft:placeholder"));
 
-            if (!cachedHatUUIDs.contains(uuid.toString())) {
-                cachedHatUUIDs.add(uuid.toString());
-                cachedHatModels.add(model);
-                cachedHatModelAttributes.add(attributes);
+            if (!CACHED_HAT_UUIDS.contains(uuid.toString())) {
+                CACHED_HAT_UUIDS.add(uuid.toString());
+                CACHED_HAT_MODELS.add(model);
+                CACHED_HAT_MODEL_ATTRIBUTES.add(attributes);
             } else {
-                cachedHatModelAttributes.set(cachedHatUUIDs.indexOf(uuid.toString()), attributes);
-                cachedHatModels.set(cachedHatUUIDs.indexOf(uuid.toString()), model);
+                CACHED_HAT_MODEL_ATTRIBUTES.set(CACHED_HAT_UUIDS.indexOf(uuid.toString()), attributes);
+                CACHED_HAT_MODELS.set(CACHED_HAT_UUIDS.indexOf(uuid.toString()), model);
             }
             return model;
         }
@@ -104,22 +105,22 @@ public class CosmeticHandler {
     }
 
     public static BakedModel getModelFromUUID(UUID uuid) throws IOException {
-        if (cachedHatUUIDs.contains(uuid.toString())) {
-            return cachedHatModels.get(cachedHatUUIDs.indexOf(uuid.toString()));
+        if (CACHED_HAT_UUIDS.contains(uuid.toString())) {
+            return CACHED_HAT_MODELS.get(CACHED_HAT_UUIDS.indexOf(uuid.toString()));
         } else {
             return null;
         }
     }
 
     public static JsonObject getModelAttributesFromUUID(UUID uuid) throws IOException {
-        if (cachedHatUUIDs.contains(uuid.toString())) {
-            return cachedHatModelAttributes.get(cachedHatUUIDs.indexOf(uuid.toString()));
+        if (CACHED_HAT_UUIDS.contains(uuid.toString())) {
+            return CACHED_HAT_MODEL_ATTRIBUTES.get(CACHED_HAT_UUIDS.indexOf(uuid.toString()));
         } else {
             return null;
         }
     }
 
     public static void shutdownExecutorService() {
-        executorService.shutdown();
+        EXECUTOR_SERVICE.shutdown();
     }
 }
