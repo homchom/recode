@@ -47,9 +47,9 @@ public class FuncSearchUtil {
     }
 
     public static void clearSearch() {
+        if (searchType != null || searchValue != null) ToasterUtil.sendToaster("Code Search", "Search Cleared!", SystemToast.Type.NARRATOR_TOGGLE);
         FuncSearchUtil.searchType = null;
         FuncSearchUtil.searchValue = null;
-        ToasterUtil.sendToaster("Code Search", "Search Cleared!", SystemToast.Type.NARRATOR_TOGGLE);
     }
 
     public enum SearchType {
