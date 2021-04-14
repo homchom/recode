@@ -1,6 +1,6 @@
 package io.github.codeutilities.mixin.render;
 
-import io.github.codeutilities.config.ModConfig;
+import io.github.codeutilities.config.CodeUtilsConfig;
 import io.github.codeutilities.util.networking.TPSUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.DebugHud;
@@ -21,7 +21,7 @@ public class MixinDebugHud {
         try {
             List<String> leftText = callbackInfoReturnable.getReturnValue();
 
-            if (ModConfig.getConfig(ModConfig.class).f3Tps) {
+            if (CodeUtilsConfig.f3Tps) {
                 leftText.add("");
                 leftText.add(Formatting.UNDERLINE + "CodeUtilities");
                 leftText.add("Client TPS: " + TPSUtil.TPS);

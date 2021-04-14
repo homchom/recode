@@ -1,7 +1,7 @@
 package io.github.codeutilities.mixin.render;
 
 import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.config.ModConfig;
+import io.github.codeutilities.config.CodeUtilsConfig;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
@@ -29,7 +29,7 @@ public abstract class MixinChestBlockEntityRenderer<T extends BlockEntity & Ches
     @Inject(method = "Lnet/minecraft/client/render/block/entity/ChestBlockEntityRenderer;render(Lnet/minecraft/block/entity/BlockEntity;FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;II)V", at = @At("HEAD"), cancellable = true)
     public void render(T entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, CallbackInfo ci) {
         if (entity instanceof ChestBlockEntity) {
-            if (ModConfig.getConfig(ModConfig.Screen_Rendering.class).chestReplacement) {
+            if (CodeUtilsConfig.chestReplacement) {
                 ci.cancel();
 
                 BlockState state = Blocks.BARREL.getDefaultState();

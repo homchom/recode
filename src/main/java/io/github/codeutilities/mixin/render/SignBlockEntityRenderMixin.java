@@ -1,6 +1,6 @@
 package io.github.codeutilities.mixin.render;
 
-import io.github.codeutilities.config.ModConfig;
+import io.github.codeutilities.config.CodeUtilsConfig;
 import io.github.codeutilities.util.DFInfo;
 import io.github.codeutilities.util.templates.FuncSearchUtil;
 import net.minecraft.block.BlockState;
@@ -42,12 +42,12 @@ public class SignBlockEntityRenderMixin {
      */
     @Overwrite
     public void render(SignBlockEntity signBlockEntity, float f, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, int j) {
-        if (!signBlockEntity.getPos().isWithinDistance(mc.cameraEntity.getBlockPos(), ModConfig.getConfig(ModConfig.Screen_Rendering.class).signRenderDistance))
+        if (!signBlockEntity.getPos().isWithinDistance(mc.cameraEntity.getBlockPos(), CodeUtilsConfig.signRenderDistance))
             return;
 
         TextRenderer textRenderer = mc.textRenderer;
 
-        if (FuncSearchUtil.shouldGlow(signBlockEntity) && DFInfo.currentState == DFInfo.State.DEV && ModConfig.getConfig(ModConfig.class).functionProcessSearch && mc.player.isCreative()) {
+        if (FuncSearchUtil.shouldGlow(signBlockEntity) && DFInfo.currentState == DFInfo.State.DEV && CodeUtilsConfig.functionProcessSearch && mc.player.isCreative()) {
             double distance = Math.sqrt(signBlockEntity.getPos().getSquaredDistance(mc.cameraEntity.getBlockPos()));
             double dist = MathHelper.clamp(distance, 1, 15);
 

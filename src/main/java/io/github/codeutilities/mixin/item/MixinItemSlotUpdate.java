@@ -1,13 +1,15 @@
 package io.github.codeutilities.mixin.item;
 
+import com.sun.tools.javac.jvm.Code;
 import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.config.ModConfig;
+import io.github.codeutilities.config.CodeUtilsConfig;
 import io.github.codeutilities.events.ChatReceivedEvent;
 import io.github.codeutilities.gui.CPU_UsageText;
 import io.github.codeutilities.keybinds.FlightspeedToggle;
 import io.github.codeutilities.template.TemplateStorageHandler;
 import io.github.codeutilities.util.DFInfo;
 import io.github.codeutilities.util.templates.TemplateUtils;
+import jdk.vm.ci.code.CodeUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.item.ItemStack;
@@ -49,7 +51,7 @@ public class MixinItemSlotUpdate {
                     DFInfo.currentState = DFInfo.State.LOBBY;
 
                     // Auto fly
-                    if (ModConfig.getConfig(ModConfig.class).autofly) {
+                    if (CodeUtilsConfig.autofly) {
                         if (System.currentTimeMillis() > lobbyTime) { // theres a bug with /fly running twice this is a temp fix.
                             mc.player.sendChatMessage("/fly");
                             ChatReceivedEvent.cancelFlyMsg = true;
@@ -59,7 +61,7 @@ public class MixinItemSlotUpdate {
                     }
 
                     // Auto LagSlayer
-                    if (CPU_UsageText.lagSlayerEnabled && ModConfig.getConfig(ModConfig.class).autolagslayer) {
+                    if (CPU_UsageText.lagSlayerEnabled && CodeUtilsConfig.autolagslayer) {
                         mc.player.sendChatMessage("/lagslayer");
                         ChatReceivedEvent.cancelLagSlayerMsg = true;
                     }
@@ -79,7 +81,7 @@ public class MixinItemSlotUpdate {
                     DFInfo.plotCorner = mc.player.getPos().add(10, -50, -10);
 
                     // Auto LagSlayer
-                    if (!CPU_UsageText.lagSlayerEnabled && ModConfig.getConfig(ModConfig.class).autolagslayer) {
+                    if (!CPU_UsageText.lagSlayerEnabled && CodeUtilsConfig.autolagslayer) {
                         mc.player.sendChatMessage("/lagslayer");
                         ChatReceivedEvent.cancelLagSlayerMsg = true;
                     }
@@ -93,14 +95,14 @@ public class MixinItemSlotUpdate {
                         new Thread(() -> {
                             try {
                                 Thread.sleep(10);
-                                if (ModConfig.getConfig(ModConfig.class).autoRC) {
+                                if (CodeUtilsConfig.autoRC) {
                                     mc.player.sendChatMessage("/rc");
                                 }
-                                if (ModConfig.getConfig(ModConfig.Automation_Time.class).autotime) {
-                                    mc.player.sendChatMessage("/time " + ModConfig.getConfig(ModConfig.Automation_Time.class).autotimeval);
+                                if (CodeUtilsConfig.autotime) {
+                                    mc.player.sendChatMessage("/time " + CodeUtilsConfig.autotimeval);
                                     ChatReceivedEvent.cancelTimeMsg = true;
                                 }
-                                if (ModConfig.getConfig(ModConfig.class).autonightvis) {
+                                if (CodeUtilsConfig.autonightvis) {
                                     mc.player.sendChatMessage("/nightvis");
                                     ChatReceivedEvent.cancelNVisionMsg = true;
                                 }

@@ -1,14 +1,12 @@
 package io.github.codeutilities;
 
 import com.google.gson.JsonParser;
-import io.github.codeutilities.config.ModConfig;
+import io.github.codeutilities.config.CodeUtilsConfig;
 import io.github.codeutilities.cosmetics.CosmeticHandler;
 import io.github.codeutilities.dfrpc.DFDiscordRPC;
 import io.github.codeutilities.gui.CustomHeadMenu;
 import io.github.codeutilities.template.TemplateStorageHandler;
 import io.github.codeutilities.util.socket.SocketHandler;
-import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
-import me.sargunvohra.mcmods.autoconfig1u.serializer.Toml4jConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.MinecraftClient;
 import org.apache.logging.log4j.Level;
@@ -35,17 +33,24 @@ public class CodeUtilities implements ModInitializer {
     @Override
     public void onInitialize() {
         log(Level.INFO, "Initializing");
-        AutoConfig.register(ModConfig.class, Toml4jConfigSerializer::new);
         Runtime.getRuntime().addShutdownHook(new Thread(this::onClose));
+
+        /* register config
+        AutoConfig.register(ModConfig.class, Toml4jConfigSerializer::new);
+        AutoConfig.register(
+                ModConfig.class,
+                PartitioningSerializer.wrap(DummyConfigSerializer::new)
+        );
+         */
 
         // Initialize.
         CodeInitializer initializer = new CodeInitializer();
+        CodeUtilsConfig.cacheConfig();
         initializer.add(new TemplateStorageHandler());
         initializer.add(new CustomHeadMenu());
         initializer.add(new DFDiscordRPC());
-
         // Initialize only if the config value is true.
-        initializer.addIf(new SocketHandler(), ModConfig.getConfig(ModConfig.class).itemApi);
+        initializer.addIf(new SocketHandler(), CodeUtilsConfig.itemApi);
         MC.send(CosmeticHandler.INSTANCE::load);
     }
 

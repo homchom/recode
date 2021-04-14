@@ -1,7 +1,7 @@
 package io.github.codeutilities.mixin.render;
 
 import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.config.ModConfig;
+import io.github.codeutilities.config.CodeUtilsConfig;
 import io.github.codeutilities.gui.CPU_UsageText;
 import io.github.codeutilities.util.DFInfo;
 import io.github.codeutilities.util.templates.FuncSearchUtil;
@@ -20,7 +20,7 @@ public class InGameHudMixin {
     private void renderStatusEffectOverlay(MatrixStack stack, CallbackInfo ci) {
         CPU_UsageText.onRender(stack);
 
-        if (FuncSearchUtil.searchType != null && FuncSearchUtil.searchValue != null && ModConfig.getConfig(ModConfig.class).functionProcessSearch && DFInfo.isOnDF() && DFInfo.currentState == DFInfo.State.DEV) {
+        if (FuncSearchUtil.searchType != null && FuncSearchUtil.searchValue != null && CodeUtilsConfig.functionProcessSearch && DFInfo.isOnDF() && DFInfo.currentState == DFInfo.State.DEV) {
             MinecraftClient mc = CodeUtilities.MC;
             mc.textRenderer.drawWithShadow(stack, new LiteralText("Searching usages of " + FuncSearchUtil.searchType.toString()).styled(style -> style.withUnderline(true)), 2, 2, 0xffffff);
             mc.textRenderer.drawWithShadow(stack, new LiteralText(FuncSearchUtil.searchValue), 2, 12, 0xffffff);

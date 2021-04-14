@@ -1,7 +1,7 @@
 package io.github.codeutilities.mixin.messages;
 
 import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.config.ModConfig;
+import io.github.codeutilities.config.CodeUtilsConfig;
 import io.github.codeutilities.dfrpc.DFDiscordRPC;
 import io.github.codeutilities.events.ChatReceivedEvent;
 import io.github.codeutilities.gui.CPU_UsageText;
@@ -58,7 +58,7 @@ public class MixinGameMessageListener {
         if (minecraftClient.player == null) return;
         if (action == TitleS2CPacket.Action.ACTIONBAR) {
             if (packet.getText().getString().equals("CPU Usage: [▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮]")) {
-                if (ModConfig.getConfig(ModConfig.class).cpuOnScreen) {
+                if (CodeUtilsConfig.cpuOnScreen) {
                     CPU_UsageText.updateCPU(packet);
                     ci.cancel();
                 }
@@ -106,6 +106,12 @@ public class MixinGameMessageListener {
                     // update rpc on server join
                     DFDiscordRPC.delayRPC = true;
                     DFDiscordRPC.supportSession = false;
+
+                    // auto chat local
+                    if (CodeUtilsConfig.autoChatLocal) {
+                        minecraftClient.player.sendChatMessage("/c 1");
+                        ChatReceivedEvent.cancelMsgs = 1;
+                    }
                 }
             } catch (Exception e) {
                 CodeUtilities.log(Level.INFO, "Error on parsing patch number!");
@@ -130,7 +136,7 @@ public class MixinGameMessageListener {
 
             // Auto LagSlayer
             System.out.println(CPU_UsageText.lagSlayerEnabled);
-            if (!CPU_UsageText.lagSlayerEnabled && ModConfig.getConfig(ModConfig.class).autolagslayer) {
+            if (!CPU_UsageText.lagSlayerEnabled && CodeUtilsConfig.autolagslayer) {
                 minecraftClient.player.sendChatMessage("/lagslayer");
                 ChatReceivedEvent.cancelLagSlayerMsg = true;
             }
@@ -143,7 +149,7 @@ public class MixinGameMessageListener {
         if (text.matches("^You have entered a session with .*\\.$")) {
             if (!DFDiscordRPC.supportSession) {
                 DFDiscordRPC.supportSession = true;
-                if (ModConfig.getConfig(ModConfig.Discord_RPC.class).discordRPC) {
+                if (CodeUtilsConfig.discordRPC) {
                     new Thread(() -> {
                         DFDiscordRPC.getInstance().getThread().locateRequest();
                     }).start();
@@ -155,7 +161,7 @@ public class MixinGameMessageListener {
         if (text.matches("^" + minecraftClient.player.getName().asString() + " finished a session with .*\\. ▶ .*$")) {
             if (DFDiscordRPC.supportSession) {
                 DFDiscordRPC.supportSession = false;
-                if (ModConfig.getConfig(ModConfig.Discord_RPC.class).discordRPC) {
+                if (CodeUtilsConfig.discordRPC) {
                     new Thread(() -> {
                         DFDiscordRPC.getInstance().getThread().locateRequest();
                     }).start();
@@ -165,7 +171,7 @@ public class MixinGameMessageListener {
         if (text.matches("^Your session with .* has ended\\.$")) {
             if (DFDiscordRPC.supportSession) {
                 DFDiscordRPC.supportSession = false;
-                if (ModConfig.getConfig(ModConfig.Discord_RPC.class).discordRPC) {
+                if (CodeUtilsConfig.discordRPC) {
                     new Thread(() -> {
                         DFDiscordRPC.getInstance().getThread().locateRequest();
                     }).start();
@@ -180,7 +186,7 @@ public class MixinGameMessageListener {
             }
 
             // Auto LagSlayer
-            if (!CPU_UsageText.lagSlayerEnabled && ModConfig.getConfig(ModConfig.class).autolagslayer) {
+            if (!CPU_UsageText.lagSlayerEnabled && CodeUtilsConfig.autolagslayer) {
                 minecraftClient.player.sendChatMessage("/lagslayer");
                 ChatReceivedEvent.cancelLagSlayerMsg = true;
             }
@@ -193,11 +199,11 @@ public class MixinGameMessageListener {
                 new Thread(() -> {
                     try {
                         Thread.sleep(20);
-                        if (ModConfig.getConfig(ModConfig.Automation_Time.class).autotime) {
-                            minecraftClient.player.sendChatMessage("/time " + ModConfig.getConfig(ModConfig.Automation_Time.class).autotimeval);
+                        if (CodeUtilsConfig.autotime) {
+                            minecraftClient.player.sendChatMessage("/time " + CodeUtilsConfig.autotimeval);
                             ChatReceivedEvent.cancelTimeMsg = true;
                         }
-                        if (ModConfig.getConfig(ModConfig.class).autonightvis) {
+                        if (CodeUtilsConfig.autonightvis) {
                             minecraftClient.player.sendChatMessage("/nightvis");
                             ChatReceivedEvent.cancelNVisionMsg = true;
                         }

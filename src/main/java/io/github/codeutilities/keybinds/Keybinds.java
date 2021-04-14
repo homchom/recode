@@ -1,6 +1,6 @@
 package io.github.codeutilities.keybinds;
 
-import io.github.codeutilities.config.ModConfig;
+import io.github.codeutilities.config.CodeUtilsConfig;
 import io.github.codeutilities.util.DFInfo;
 import io.github.codeutilities.util.templates.FuncSearchUtil;
 import net.fabricmc.api.ClientModInitializer;
@@ -205,18 +205,18 @@ public class Keybinds implements ClientModInitializer {
 
             // fs normal
             while (fs_normal.wasPressed()) {
-                sendChat("/fs " + ModConfig.getConfig(ModConfig.Keybinds_Flightspeed.class).fsNormal);
+                sendChat("/fs " + CodeUtilsConfig.fsNormal);
                 FlightspeedToggle.fs_is_normal = true;
             }
 
             // fs med
             while (fs_med.wasPressed()) {
-                sendChat("/fs " + ModConfig.getConfig(ModConfig.Keybinds_Flightspeed.class).fsMed);
+                sendChat("/fs " + CodeUtilsConfig.fsMed);
             }
 
             // fs fast
             while (fs_fast.wasPressed()) {
-                sendChat("/fs " + ModConfig.getConfig(ModConfig.Keybinds_Flightspeed.class).fsFast);
+                sendChat("/fs " + CodeUtilsConfig.fsFast);
             }
 
             // toggle fs normal med
@@ -276,7 +276,7 @@ public class Keybinds implements ClientModInitializer {
 
             // search
             while (searchFunction.wasPressed()) {
-                if (ModConfig.getConfig(ModConfig.class).functionProcessSearch && DFInfo.isOnDF() && DFInfo.currentState == DFInfo.State.DEV && mc.player.isCreative()) {
+                if (CodeUtilsConfig.functionProcessSearch && DFInfo.isOnDF() && DFInfo.currentState == DFInfo.State.DEV && mc.player.isCreative()) {
                     BlockEntity blockEntity = mc.world.getBlockEntity(new BlockPos(mc.crosshairTarget.getPos()));
 
                     if (blockEntity != null) {

@@ -2,7 +2,7 @@ package io.github.codeutilities.mixin.messages;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import io.github.codeutilities.config.ModConfig;
+import io.github.codeutilities.config.CodeUtilsConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -21,7 +21,7 @@ public class MixinPlayerChatMessage {
     @Inject(method = "Lnet/minecraft/client/network/ClientPlayerEntity;sendChatMessage(Ljava/lang/String;)V", at = @At("HEAD"), cancellable = true)
     public void onMessage(String string, CallbackInfo ci) {
         if (minecraftClient.player != null) {
-            if ((string.endsWith(" -l") || string.endsWith(" -s") || string.endsWith(" -g")) && !string.startsWith("/") && ModConfig.getConfig(ModConfig.class).quickVarScope) {
+            if ((string.endsWith(" -l") || string.endsWith(" -s") || string.endsWith(" -g")) && !string.startsWith("/") && CodeUtilsConfig.quickVarScope) {
                 ItemStack itemStack = minecraftClient.player.inventory.getMainHandStack();
                 if (itemStack.hasTag()) {
                     CompoundTag tag = itemStack.getTag();

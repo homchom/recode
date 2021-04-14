@@ -1,7 +1,7 @@
 package io.github.codeutilities.util.chat;
 
 import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.config.ModConfig;
+import io.github.codeutilities.config.CodeUtilsConfig;
 import io.github.codeutilities.util.DFInfo;
 import io.github.codeutilities.util.color.MinecraftColors;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -48,7 +48,7 @@ public class ChatUtil {
             ChatUtil.setColor(text, minecraftColors.getColor());
             player.sendMessage(new LiteralText(chatType.getString() + " ").append(text), false);
             if (chatType == ChatType.FAIL) {
-                if (ModConfig.getConfig(ModConfig.class).errorSound) {
+                if (CodeUtilsConfig.errorSound) {
                     player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_DIDGERIDOO, SoundCategory.PLAYERS, 2, 0);
                 }
             }

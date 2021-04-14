@@ -10,7 +10,7 @@ import io.github.codeutilities.commands.item.template.WebviewCommand;
 import io.github.codeutilities.commands.nbs.NBSCommand;
 import io.github.codeutilities.commands.schem.SchemCommand;
 import io.github.codeutilities.commands.util.*;
-import io.github.codeutilities.config.ModConfig;
+import io.github.codeutilities.config.CodeUtilsConfig;
 import io.github.codeutilities.util.IManager;
 import io.github.cottonmc.clientcommands.ClientCommandPlugin;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
@@ -47,7 +47,7 @@ public class CommandHandler implements ClientCommandPlugin, IManager<Command> {
                 new GradientCommand()
         );
 
-        if (ModConfig.getConfig(ModConfig.class).dfCommands) {
+        if (CodeUtilsConfig.dfCommands) {
             register(
                     new GiveCommand(),
                     new NodeCommand(),

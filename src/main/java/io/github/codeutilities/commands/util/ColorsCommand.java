@@ -4,7 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.commands.arguments.ArgBuilder;
-import io.github.codeutilities.config.ModConfig;
+import io.github.codeutilities.config.CodeUtilsConfig;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.*;
@@ -27,8 +27,8 @@ public class ColorsCommand extends Command {
     }
 
     private void showColorPalette(float saturation) {
-        int maxColors = ModConfig.getConfig(ModConfig.Commands_Color.class).colorMaxRender;
-        int lines = ModConfig.getConfig(ModConfig.Commands_Color.class).colorLines;
+        int maxColors = CodeUtilsConfig.colorMaxRender;
+        int lines = CodeUtilsConfig.colorLines;
 
         for (int j = 0; j < lines; j++) {
             Text base = new LiteralText("");

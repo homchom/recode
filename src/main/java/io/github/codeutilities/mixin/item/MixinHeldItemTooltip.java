@@ -3,7 +3,7 @@ package io.github.codeutilities.mixin.item;
 
 import com.google.gson.JsonObject;
 import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.config.ModConfig;
+import io.github.codeutilities.config.CodeUtilsConfig;
 import io.github.codeutilities.util.ItemUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.InGameHud;
@@ -38,7 +38,7 @@ public class MixinHeldItemTooltip {
     @Inject(method = "renderHeldItemTooltip", at = @At("HEAD"), cancellable = true)
     public void renderHeldItemTooltip(MatrixStack matrices, CallbackInfo callbackInfo) {
         try {
-            if (!ModConfig.getConfig(ModConfig.class).variableScopeView) {
+            if (!CodeUtilsConfig.variableScopeView) {
                 return;
             }
 

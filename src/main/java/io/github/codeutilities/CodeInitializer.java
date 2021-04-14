@@ -2,7 +2,6 @@ package io.github.codeutilities;
 
 import io.github.codeutilities.util.ILoader;
 import io.github.codeutilities.util.IManager;
-
 import java.util.Arrays;
 
 public class CodeInitializer {
@@ -35,4 +34,5 @@ public class CodeInitializer {
     public void addIf(IManager<?> manager, boolean b) {
         if (b) manager.initialize();
     }
+
 }
