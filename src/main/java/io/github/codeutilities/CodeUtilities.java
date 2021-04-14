@@ -46,7 +46,6 @@ public class CodeUtilities implements ModInitializer {
 
         // Initialize.
         CodeInitializer initializer = new CodeInitializer();
-        CodeUtilsConfig.cacheConfig();
         initializer.add(new TemplateStorageHandler());
         initializer.add(new CustomHeadMenu());
         initializer.add(new DFDiscordRPC());

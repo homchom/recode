@@ -63,7 +63,6 @@ dependencies {
 
     //include "com.google.code.gson:gson:2.8.6"
     include "io.github.cottonmc:cotton-client-commands:1.0.1+1.16-rc1"
-    include "me.sargunvohra.mcmods:autoconfig1u:3.3.1"
     include "io.github.cottonmc:LibGui:3.2.2+1.16.3"
     //websocket things
     include "javax.websocket:javax.websocket-api:1.1"
