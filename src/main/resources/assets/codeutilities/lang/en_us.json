@@ -56,6 +56,8 @@
     "text.autoconfig.codeutilities.option.discord_rpc.discordRPCTimeout": "Message Timeout",
     "text.autoconfig.codeutilities.option.discord_rpc.discordRPCTimeout.@Tooltip[0]": "Maximum milliseconds the mod will",
     "text.autoconfig.codeutilities.option.discord_rpc.discordRPCTimeout.@Tooltip[1]": "listen for hiding /locate.",
+    "text.autoconfig.codeutilities.option.discord_rpc.discordRPCShowElapsed": "Show Elapsed",
+    "text.autoconfig.codeutilities.option.discord_rpc.discordRPCShowElapsed.@Tooltip": "Show the \"Time Elapsed\" field in your presence.",
   
     "text.autoconfig.codeutilities.option.dfCommands": "DF Commands",
     "text.autoconfig.codeutilities.option.dfCommands.@Tooltip": "Enables the commands that work only in DiamondFire.",

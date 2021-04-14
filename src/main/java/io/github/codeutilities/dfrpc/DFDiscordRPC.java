@@ -161,7 +161,7 @@ public class DFDiscordRPC implements ILoader {
         if (firstUpdate) {
             time = OffsetDateTime.now();
         }
-        presence.setStartTimestamp(time);
+        if (ModConfig.getConfig(ModConfig.Discord_RPC.class).discordRPCShowElapsed) presence.setStartTimestamp(time);
         oldMode = mode;
 
         if (ModConfig.getConfig(ModConfig.Discord_RPC.class).discordRPC) client.sendRichPresence(presence.build());

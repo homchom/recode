@@ -211,6 +211,8 @@ public class ModConfig implements ConfigData {
         @ConfigEntry.Gui.Tooltip(count = 2)
         @ConfigEntry.BoundedDiscrete(min = 0, max = 100000)
         public int discordRPCTimeout = 15000;
+        @ConfigEntry.Gui.Tooltip()
+        public boolean discordRPCShowElapsed = true;
     }
 
     // =================================================================================================
