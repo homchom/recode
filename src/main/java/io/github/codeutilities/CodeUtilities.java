@@ -5,6 +5,7 @@ import io.github.codeutilities.config.CodeUtilsConfig;
 import io.github.codeutilities.cosmetics.CosmeticHandler;
 import io.github.codeutilities.dfrpc.DFDiscordRPC;
 import io.github.codeutilities.gui.CustomHeadMenu;
+import io.github.codeutilities.social.PlayerlistStarServer;
 import io.github.codeutilities.template.TemplateStorageHandler;
 import io.github.codeutilities.util.socket.SocketHandler;
 import net.fabricmc.api.ModInitializer;
@@ -49,6 +50,8 @@ public class CodeUtilities implements ModInitializer {
         initializer.add(new TemplateStorageHandler());
         initializer.add(new CustomHeadMenu());
         initializer.add(new DFDiscordRPC());
+        initializer.add(new PlayerlistStarServer());
+
         // Initialize only if the config value is true.
         initializer.addIf(new SocketHandler(), CodeUtilsConfig.itemApi);
         MC.send(CosmeticHandler.INSTANCE::load);

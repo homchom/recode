@@ -1,6 +1,8 @@
 package io.github.codeutilities.util.networking;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import io.github.codeutilities.CodeUtilities;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -78,4 +80,9 @@ public class WebUtil {
             return null;
         }
     }
+
+    public static JsonElement getJson(String url) throws IOException {
+        return CodeUtilities.JSON_PARSER.parse(getString(url));
+    }
+
 }
