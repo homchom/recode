@@ -26,7 +26,7 @@ public class MixinTitleScreen extends Screen {
 
     @Inject(at = @At("RETURN"), method = "initWidgetsNormal")
     public void drawMenuButton(int y, int spacingY, CallbackInfo info) {
-        if (ModConfig.getConfig().dfButton) {
+        if (ModConfig.getConfig(ModConfig.class).dfButton) {
             this.addButton(new BlendableTexturedButtonWidget(this.width / 2 - 100 + 205, y + spacingY, 20, 20, 0, 0, 20, identifier, 20, 40,
                     (button) -> {
                         MinecraftClient mc = MinecraftClient.getInstance();

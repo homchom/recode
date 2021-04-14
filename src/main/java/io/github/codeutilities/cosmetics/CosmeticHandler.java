@@ -35,7 +35,7 @@ public class CosmeticHandler {
     private static final ArrayList<JsonObject> cachedHatModelAttributes = new ArrayList<>();
 
     public static void applyCosmetics(UUID uuid, Map<MinecraftProfileTexture.Type, Identifier> identifierMap) {
-        if (ModConfig.getConfig().cosmeticType == ModConfig.CosmeticType.Disabled) return;
+        if (ModConfig.getConfig(ModConfig.class).cosmeticType == ModConfig.CosmeticType.Disabled) return;
         executorService.execute(() -> {
             try {
                 String cape = getCosmetic(uuid, "cape");
@@ -56,14 +56,14 @@ public class CosmeticHandler {
 
     private static String getCosmetic(UUID uuid, String key) throws IOException {
         String content = null;
-        if (ModConfig.getConfig().cosmeticType == ModConfig.CosmeticType.Disabled) return null;
+        if (ModConfig.getConfig(ModConfig.class).cosmeticType == ModConfig.CosmeticType.Disabled) return null;
         try {
             content = WebUtil.getString("https://codeutilities.github.io/data/cosmetics/players/" + uuid.toString() + ".json");
             JsonObject jsonObject = new JsonParser().parse(content).getAsJsonObject();
             JsonElement jsonElement = jsonObject.get(key);
 
             if (jsonElement.isJsonNull()) {
-                if (ModConfig.getConfig().cosmeticType == ModConfig.CosmeticType.No_Event_Cosmetics) return null;
+                if (ModConfig.getConfig(ModConfig.class).cosmeticType == ModConfig.CosmeticType.No_Event_Cosmetics) return null;
                 content = WebUtil.getString("https://codeutilities.github.io/data/cosmetics/players/default.json");
                 jsonObject = new JsonParser().parse(content).getAsJsonObject();
                 jsonElement = jsonObject.get(key);
@@ -72,7 +72,7 @@ public class CosmeticHandler {
 
             return jsonElement.getAsString();
         } catch (JsonSyntaxException | IOException ignored) {
-            if (ModConfig.getConfig().cosmeticType == ModConfig.CosmeticType.No_Event_Cosmetics) return null;
+            if (ModConfig.getConfig(ModConfig.class).cosmeticType == ModConfig.CosmeticType.No_Event_Cosmetics) return null;
             content = WebUtil.getString("https://codeutilities.github.io/data/cosmetics/players/default.json");
             JsonObject jsonObject = new JsonParser().parse(content).getAsJsonObject();
             JsonElement jsonElement = jsonObject.get(key);

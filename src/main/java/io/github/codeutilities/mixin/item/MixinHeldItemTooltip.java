@@ -38,7 +38,7 @@ public class MixinHeldItemTooltip {
     @Inject(method = "renderHeldItemTooltip", at = @At("HEAD"), cancellable = true)
     public void renderHeldItemTooltip(MatrixStack matrices, CallbackInfo callbackInfo) {
         try {
-            if (!ModConfig.getConfig().variableScopeView) {
+            if (!ModConfig.getConfig(ModConfig.class).variableScopeView) {
                 return;
             }
 

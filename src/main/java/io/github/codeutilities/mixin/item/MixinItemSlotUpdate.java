@@ -49,7 +49,7 @@ public class MixinItemSlotUpdate {
                     DFInfo.currentState = DFInfo.State.LOBBY;
 
                     // Auto fly
-                    if (ModConfig.getConfig().autofly) {
+                    if (ModConfig.getConfig(ModConfig.class).autofly) {
                         if (System.currentTimeMillis() > lobbyTime) { // theres a bug with /fly running twice this is a temp fix.
                             mc.player.sendChatMessage("/fly");
                             ChatReceivedEvent.cancelFlyMsg = true;
@@ -59,7 +59,7 @@ public class MixinItemSlotUpdate {
                     }
 
                     // Auto LagSlayer
-                    if (CPU_UsageText.lagSlayerEnabled && ModConfig.getConfig().autolagslayer) {
+                    if (CPU_UsageText.lagSlayerEnabled && ModConfig.getConfig(ModConfig.class).autolagslayer) {
                         mc.player.sendChatMessage("/lagslayer");
                         ChatReceivedEvent.cancelLagSlayerMsg = true;
                     }
@@ -79,7 +79,7 @@ public class MixinItemSlotUpdate {
                     DFInfo.plotCorner = mc.player.getPos().add(10, -50, -10);
 
                     // Auto LagSlayer
-                    if (!CPU_UsageText.lagSlayerEnabled && ModConfig.getConfig().autolagslayer) {
+                    if (!CPU_UsageText.lagSlayerEnabled && ModConfig.getConfig(ModConfig.class).autolagslayer) {
                         mc.player.sendChatMessage("/lagslayer");
                         ChatReceivedEvent.cancelLagSlayerMsg = true;
                     }
@@ -93,14 +93,14 @@ public class MixinItemSlotUpdate {
                         new Thread(() -> {
                             try {
                                 Thread.sleep(10);
-                                if (ModConfig.getConfig().autoRC) {
+                                if (ModConfig.getConfig(ModConfig.class).autoRC) {
                                     mc.player.sendChatMessage("/rc");
                                 }
-                                if (ModConfig.getConfig().autotime) {
-                                    mc.player.sendChatMessage("/time " + ModConfig.getConfig().autotimeval);
+                                if (ModConfig.getConfig(ModConfig.Automation_Time.class).autotime) {
+                                    mc.player.sendChatMessage("/time " + ModConfig.getConfig(ModConfig.Automation_Time.class).autotimeval);
                                     ChatReceivedEvent.cancelTimeMsg = true;
                                 }
-                                if (ModConfig.getConfig().autonightvis) {
+                                if (ModConfig.getConfig(ModConfig.class).autonightvis) {
                                     mc.player.sendChatMessage("/nightvis");
                                     ChatReceivedEvent.cancelNVisionMsg = true;
                                 }

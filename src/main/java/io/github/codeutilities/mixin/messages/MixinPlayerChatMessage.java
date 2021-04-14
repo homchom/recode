@@ -21,7 +21,7 @@ public class MixinPlayerChatMessage {
     @Inject(method = "Lnet/minecraft/client/network/ClientPlayerEntity;sendChatMessage(Ljava/lang/String;)V", at = @At("HEAD"), cancellable = true)
     public void onMessage(String string, CallbackInfo ci) {
         if (minecraftClient.player != null) {
-            if ((string.endsWith(" -l") || string.endsWith(" -s") || string.endsWith(" -g")) && !string.startsWith("/") && ModConfig.getConfig().quickVarScope) {
+            if ((string.endsWith(" -l") || string.endsWith(" -s") || string.endsWith(" -g")) && !string.startsWith("/") && ModConfig.getConfig(ModConfig.class).quickVarScope) {
                 ItemStack itemStack = minecraftClient.player.inventory.getMainHandStack();
                 if (itemStack.hasTag()) {
                     CompoundTag tag = itemStack.getTag();

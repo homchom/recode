@@ -30,7 +30,7 @@ public abstract class MixinChestBlockEntityRenderer<T extends BlockEntity & Ches
     public void render(T entity, float tickDelta, MatrixStack matrices,
                        VertexConsumerProvider vertexConsumers, int light, int overlay, CallbackInfo ci) {
         if (entity instanceof ChestBlockEntity) {
-            if (ModConfig.getConfig().chestReplacement) {
+            if (ModConfig.getConfig(ModConfig.Screen_Rendering.class).chestReplacement) {
                 ci.cancel();
 
                 BlockState state = Blocks.BARREL.getDefaultState();

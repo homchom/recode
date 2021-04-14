@@ -45,7 +45,7 @@ public class CodeUtilities implements ModInitializer {
         initializer.add(new DFDiscordRPC());
 
         // Initialize only if the config value is true.
-        initializer.addIf(new SocketHandler(), ModConfig.getConfig().itemApi);
+        initializer.addIf(new SocketHandler(), ModConfig.getConfig(ModConfig.class).itemApi);
     }
 
     public void onClose() {

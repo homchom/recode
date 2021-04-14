@@ -47,7 +47,7 @@ public class CommandHandler implements ClientCommandPlugin, IManager<Command> {
                 new GradientCommand()
         );
 
-        if (ModConfig.getConfig().dfCommands) {
+        if (ModConfig.getConfig(ModConfig.class).dfCommands) {
             register(
                     new GiveCommand(),
                     new NodeCommand(),
