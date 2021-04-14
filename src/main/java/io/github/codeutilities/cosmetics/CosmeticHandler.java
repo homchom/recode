@@ -3,7 +3,7 @@ package io.github.codeutilities.cosmetics;
 import com.google.gson.*;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.ModConfig;
-import io.github.codeutilities.config.ModConfig.CosmeticType;
+import io.github.codeutilities.cosmetics.type.CosmeticType;
 import io.github.codeutilities.util.ILoader;
 import io.github.codeutilities.util.networking.WebUtil;
 
