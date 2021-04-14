@@ -58,7 +58,7 @@ public class MixinGameMessageListener {
         if (minecraftClient.player == null) return;
         if (action == TitleS2CPacket.Action.ACTIONBAR) {
             if (packet.getText().getString().equals("CPU Usage: [▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮]")) {
-                if (ModConfig.getConfig().cpuOnScreen) {
+                if (ModConfig.getConfig(ModConfig.class).cpuOnScreen) {
                     CPU_UsageText.updateCPU(packet);
                     ci.cancel();
                 }
@@ -130,7 +130,7 @@ public class MixinGameMessageListener {
 
             // Auto LagSlayer
             System.out.println(CPU_UsageText.lagSlayerEnabled);
-            if (!CPU_UsageText.lagSlayerEnabled && ModConfig.getConfig().autolagslayer) {
+            if (!CPU_UsageText.lagSlayerEnabled && ModConfig.getConfig(ModConfig.class).autolagslayer) {
                 minecraftClient.player.sendChatMessage("/lagslayer");
                 ChatReceivedEvent.cancelLagSlayerMsg = true;
             }
@@ -143,7 +143,7 @@ public class MixinGameMessageListener {
         if (text.matches("^You have entered a session with .*\\.$")) {
             if (!DFDiscordRPC.supportSession) {
                 DFDiscordRPC.supportSession = true;
-                if (ModConfig.getConfig().discordRPC) {
+                if (ModConfig.getConfig(ModConfig.Discord_RPC.class).discordRPC) {
                     new Thread(() -> {
                         DFDiscordRPC.getInstance().getThread().locateRequest();
                     }).start();
@@ -155,7 +155,7 @@ public class MixinGameMessageListener {
         if (text.matches("^" + minecraftClient.player.getName().asString() + " finished a session with .*\\. ▶ .*$")) {
             if (DFDiscordRPC.supportSession) {
                 DFDiscordRPC.supportSession = false;
-                if (ModConfig.getConfig().discordRPC) {
+                if (ModConfig.getConfig(ModConfig.Discord_RPC.class).discordRPC) {
                     new Thread(() -> {
                         DFDiscordRPC.getInstance().getThread().locateRequest();
                     }).start();
@@ -165,7 +165,7 @@ public class MixinGameMessageListener {
         if (text.matches("^Your session with .* has ended\\.$")) {
             if (DFDiscordRPC.supportSession) {
                 DFDiscordRPC.supportSession = false;
-                if (ModConfig.getConfig().discordRPC) {
+                if (ModConfig.getConfig(ModConfig.Discord_RPC.class).discordRPC) {
                     new Thread(() -> {
                         DFDiscordRPC.getInstance().getThread().locateRequest();
                     }).start();
@@ -180,7 +180,7 @@ public class MixinGameMessageListener {
             }
 
             // Auto LagSlayer
-            if (!CPU_UsageText.lagSlayerEnabled && ModConfig.getConfig().autolagslayer) {
+            if (!CPU_UsageText.lagSlayerEnabled && ModConfig.getConfig(ModConfig.class).autolagslayer) {
                 minecraftClient.player.sendChatMessage("/lagslayer");
                 ChatReceivedEvent.cancelLagSlayerMsg = true;
             }
@@ -193,11 +193,11 @@ public class MixinGameMessageListener {
                 new Thread(() -> {
                     try {
                         Thread.sleep(20);
-                        if (ModConfig.getConfig().autotime) {
-                            minecraftClient.player.sendChatMessage("/time " + ModConfig.getConfig().autotimeval);
+                        if (ModConfig.getConfig(ModConfig.Automation_Time.class).autotime) {
+                            minecraftClient.player.sendChatMessage("/time " + ModConfig.getConfig(ModConfig.Automation_Time.class).autotimeval);
                             ChatReceivedEvent.cancelTimeMsg = true;
                         }
-                        if (ModConfig.getConfig().autonightvis) {
+                        if (ModConfig.getConfig(ModConfig.class).autonightvis) {
                             minecraftClient.player.sendChatMessage("/nightvis");
                             ChatReceivedEvent.cancelNVisionMsg = true;
                         }

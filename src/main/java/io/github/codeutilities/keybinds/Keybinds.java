@@ -205,18 +205,18 @@ public class Keybinds implements ClientModInitializer {
 
             // fs normal
             while (fs_normal.wasPressed()) {
-                sendChat("/fs " + ModConfig.getConfig().fsNormal);
+                sendChat("/fs " + ModConfig.getConfig(ModConfig.Keybinds_Flightspeed.class).fsNormal);
                 FlightspeedToggle.fs_is_normal = true;
             }
 
             // fs med
             while (fs_med.wasPressed()) {
-                sendChat("/fs " + ModConfig.getConfig().fsMed);
+                sendChat("/fs " + ModConfig.getConfig(ModConfig.Keybinds_Flightspeed.class).fsMed);
             }
 
             // fs fast
             while (fs_fast.wasPressed()) {
-                sendChat("/fs " + ModConfig.getConfig().fsFast);
+                sendChat("/fs " + ModConfig.getConfig(ModConfig.Keybinds_Flightspeed.class).fsFast);
             }
 
             // toggle fs normal med
@@ -276,7 +276,7 @@ public class Keybinds implements ClientModInitializer {
 
             // search
             while (searchFunction.wasPressed()) {
-                if (ModConfig.getConfig().functionProcessSearch && DFInfo.isOnDF() && DFInfo.currentState == DFInfo.State.DEV && mc.player.isCreative()) {
+                if (ModConfig.getConfig(ModConfig.class).functionProcessSearch && DFInfo.isOnDF() && DFInfo.currentState == DFInfo.State.DEV && mc.player.isCreative()) {
                     BlockEntity blockEntity = mc.world.getBlockEntity(new BlockPos(mc.crosshairTarget.getPos()));
 
                     if (blockEntity != null) {

@@ -47,7 +47,8 @@ public class CodeUtilities implements ModInitializer {
         initializer.add(new PlayerlistStarServer());
 
         // Initialize only if the config value is true.
-        initializer.addIf(new SocketHandler(), ModConfig.getConfig().itemApi);
+        initializer.addIf(new SocketHandler(), ModConfig.getConfig(ModConfig.class).itemApi);
+        MC.send(CosmeticHandler.INSTANCE::load);
     }
 
     public void onClose() {
@@ -55,7 +56,7 @@ public class CodeUtilities implements ModInitializer {
 
         // Close all the services.
         TemplateStorageHandler.getInstance().save();
-        CosmeticHandler.shutdownExecutorService();
+        CosmeticHandler.INSTANCE.shutdownExecutorService();
     }
 
     public static void log(Level level, String message) {

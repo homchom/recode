@@ -28,7 +28,7 @@ public class CustomHeadMenu extends LightweightGuiDescription implements IMenu, 
     private static final List<String> categories = new ArrayList<>();
     private static final HashMap<String, Integer> categoryCount = new HashMap<>();
     private static CustomHeadMenu instance;
-    final ModConfig config = ModConfig.getConfig();
+    private final int headMenuMaxRender = ModConfig.getConfig(ModConfig.class).headMenuMaxRender;
 
     private ItemScrollablePanel panel;
     private WButton current;
@@ -53,7 +53,7 @@ public class CustomHeadMenu extends LightweightGuiDescription implements IMenu, 
         root.add(searchBox, 100, 0, 250, 0);
 
         panel = ItemScrollablePanel.with(toItemStack(
-                allHeads.subList(0, Math.max(Math.min(allHeads.size(), config.headMenuMaxRender), 1))));
+                allHeads.subList(0, Math.max(Math.min(allHeads.size(), headMenuMaxRender), 1))));
         root.add(panel, 100, 25, 250, 215);
 
         searchBox.setChangedListener((s -> {
@@ -150,12 +150,12 @@ public class CustomHeadMenu extends LightweightGuiDescription implements IMenu, 
         if (searchQuery.isEmpty()) {
             if (cat.equals("All")) {
                 selected = allHeads
-                        .subList(0, Math.max(Math.min(allHeads.size(), config.headMenuMaxRender), 1));
+                        .subList(0, Math.max(Math.min(allHeads.size(), headMenuMaxRender), 1));
             } else {
                 for (JsonObject object : allHeads) {
                     if (object.get("category").getAsString().equals(cat)) {
                         selected.add(object);
-                        if (selected.size() >= config.headMenuMaxRender) {
+                        if (selected.size() >= headMenuMaxRender) {
                             break;
                         }
                     }
@@ -166,7 +166,7 @@ public class CustomHeadMenu extends LightweightGuiDescription implements IMenu, 
                 if (cat.equals("All") || object.get("category").getAsString().equals(cat)) {
                     if (object.get("name").getAsString().toLowerCase().contains(searchQuery) || object.get("tags").getAsString().toLowerCase().contains(searchQuery)) {
                         selected.add(object);
-                        if (selected.size() >= config.headMenuMaxRender) {
+                        if (selected.size() >= headMenuMaxRender) {
                             break;
                         }
                     }
