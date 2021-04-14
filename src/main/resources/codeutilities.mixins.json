@@ -12,10 +12,12 @@
     "packet.MixinTimeUpdateListener",
     "player.MixinPlayerListEntry",
     "player.MixinPlayerListHud",
+    "player.TextureMapAccessor",
     "render.InGameHudMixin",
     "render.MixinChestBlockEntityRenderer",
     "render.MixinDebugHud",
     "render.MixinPlayerEntityRenderer",
+    "render.ModelLoaderAccessor",
     "render.SignBlockEntityRenderMixin",
     "screen.MixinOptionsScreen",
     "screen.MixinTitleScreen"

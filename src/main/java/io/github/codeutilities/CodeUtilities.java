@@ -46,6 +46,7 @@ public class CodeUtilities implements ModInitializer {
 
         // Initialize only if the config value is true.
         initializer.addIf(new SocketHandler(), ModConfig.getConfig().itemApi);
+        MC.send(CosmeticHandler.INSTANCE::load); // Load on main thread later
     }
 
     public void onClose() {
@@ -53,7 +54,7 @@ public class CodeUtilities implements ModInitializer {
 
         // Close all the services.
         TemplateStorageHandler.getInstance().save();
-        CosmeticHandler.shutdownExecutorService();
+        CosmeticHandler.INSTANCE.shutdownExecutorService();
     }
 
     public static void log(Level level, String message) {
