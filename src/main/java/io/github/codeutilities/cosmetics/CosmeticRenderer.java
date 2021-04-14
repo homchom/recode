@@ -1,6 +1,7 @@
 package io.github.codeutilities.cosmetics;
 
 import com.google.gson.JsonObject;
+import io.github.codeutilities.cosmetics.type.CosmeticType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -24,14 +25,12 @@ public class CosmeticRenderer extends FeatureRenderer<AbstractClientPlayerEntity
 
     public void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, AbstractClientPlayerEntity abstractClientPlayerEntity, float f, float g, float h, float j, float k, float l) {
         if (!abstractClientPlayerEntity.isInvisible()) {
-            BakedModel model = null;
-            JsonObject attributes = null;
-            try {
-                model = CosmeticHandler.getModelFromUUID(abstractClientPlayerEntity.getUuid());
-                attributes = CosmeticHandler.getModelAttributesFromUUID(abstractClientPlayerEntity.getUuid());
-            } catch (IOException ignoreCuzIfPlayerDoesntHaveCosmeticItWillGiveFileNotFoundException) {
-            }
-            if (model != null) {
+            CosmeticModel cosmeticModel = CosmeticType.HAT.getPlayerHat(abstractClientPlayerEntity.getUuid());
+            
+            if (cosmeticModel != null) {
+                BakedModel model = cosmeticModel.model;
+                JsonObject attributes = cosmeticModel.attributes;
+                
                 Vector3f translation = model.getTransformation().head.translation;
                 Vector3f scale = model.getTransformation().head.scale;
                 ModelPart head = getContextModel().head;
