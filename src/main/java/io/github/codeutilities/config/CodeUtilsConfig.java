@@ -1,14 +1,22 @@
 package io.github.codeutilities.config;
 
+import io.github.codeutilities.CodeUtilities;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.TranslatableText;
+import org.apache.logging.log4j.Level;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class CodeUtilsConfig {
 
@@ -25,7 +33,10 @@ public class CodeUtilsConfig {
 
         general.addEntry(entryBuilder.startStrField(new TranslatableText("option.codeutils.optionA"), "yea")
                 .setDefaultValue("This is the default value") // Recommended: Used when user click "Reset"
-                .setTooltip(new TranslatableText("This option is awesome!")) // Optional: Shown when the user hover over this option
+                .setTooltip(new TranslatableText("This option is awesome!"))// Optional: Shown when the user hover over this option
+                .setSaveConsumer(newValue -> {
+                    // code to run when saving
+                })
                 .build()); // Builds the option entry for cloth config
 
         // ============================================================================================================================
@@ -33,30 +44,34 @@ public class CodeUtilsConfig {
         return builder.build();
     }
 
-    public static void cacheConfig()  {
-        try {
-            System.out.println(Files.readAllLines(FabricLoader.getInstance().getConfigDir().resolve("codeutilities.json")));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-/*
-        try (FileReader reader = new FileReader())
-        {
-            //Read JSON file
-            Object obj = jsonParser.parse(reader);
-            System.out.println(obj);
+    public static void cacheConfig() {
+        Path configDir = FabricLoader.getInstance().getConfigDir();
+        Path configPath = configDir.resolve("codeutilities.json");
+        File configFile = configPath.toFile();
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
+        JSONObject obj = new JSONObject();
+        JSONParser parser = new JSONParser();
+
+        boolean success;
+
+        // check if config file exists
+        if (!configFile.exists()) {
+            try {
+                success = configFile.createNewFile();
+                FileWriter configWriter = new FileWriter(String.valueOf(configPath));
+                configWriter.write(obj.toJSONString());
+                configWriter.flush();
+                if (!success) CodeUtilities.log(Level.FATAL, "Error when parsing \"../.minecraft/config/codeutilities.json\"");
+            } catch (IOException e) { e.printStackTrace(); }
         }
 
- */
+        // parse the file
+        try { obj = (JSONObject) parser.parse(new FileReader(String.valueOf(configPath)));
+        } catch (IOException | ParseException e) { e.printStackTrace(); }
+
+        config = obj;
+
     }
-
     // TEMPORARY OLD ONES
     public static boolean itemApi = true;
     public static boolean autoChatLocal = false;
