@@ -43,7 +43,6 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
     }
     modImplementation "io.github.prospector:modmenu:1.16.9"
-    compile 'com.googlecode.json-simple:json-simple:1.1.1'
 
     //to change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"

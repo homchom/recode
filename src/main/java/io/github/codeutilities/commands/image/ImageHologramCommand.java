@@ -8,7 +8,7 @@ import io.github.codeutilities.images.ImageToHologram;
 import io.github.codeutilities.util.ItemUtil;
 import io.github.codeutilities.util.chat.ChatType;
 import io.github.codeutilities.util.chat.ChatUtil;
-import io.github.codeutilities.util.externalfile.ExternalFile;
+import io.github.codeutilities.util.file.ExternalFile;
 import io.github.codeutilities.util.templates.TemplateUtils;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;

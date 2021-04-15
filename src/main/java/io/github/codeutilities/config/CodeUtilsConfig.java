@@ -1,6 +1,7 @@
 package io.github.codeutilities.config;
 
 import io.github.codeutilities.CodeUtilities;
+import io.github.codeutilities.util.file.FileUtil;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
@@ -8,19 +9,20 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.TranslatableText;
 import org.apache.logging.log4j.Level;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 
 public class CodeUtilsConfig {
 
-    public static Object config;
+    public static JSONObject config;
+
+    private final static Path configPath = FabricLoader.getInstance().getConfigDir().resolve("codeutilities.json");
+    private final static String configPathString = String.valueOf(configPath);
 
     public static Screen getScreen(Screen parent) {
         ConfigBuilder builder = ConfigBuilder.create()
@@ -31,26 +33,26 @@ public class CodeUtilsConfig {
 
         // ============================================================================================================================
 
-        general.addEntry(entryBuilder.startStrField(new TranslatableText("option.codeutils.optionA"), "yea")
+        general.addEntry(entryBuilder.startStrField(new TranslatableText("option.codeutils.optionA"), config.has("examplekey") ? config.getString("examplekey") : "")
+                // !!!!!!!!!! to do key should always exist using cacheConfig()
                 .setDefaultValue("This is the default value") // Recommended: Used when user click "Reset"
                 .setTooltip(new TranslatableText("This option is awesome!"))// Optional: Shown when the user hover over this option
                 .setSaveConsumer(newValue -> {
-                    // code to run when saving
+                    config.put("examplekey", newValue);
                 })
                 .build()); // Builds the option entry for cloth config
 
         // ============================================================================================================================
 
+        builder.setSavingRunnable(() -> {
+           updConfig(config);
+        });
+
         return builder.build();
     }
 
     public static void cacheConfig() {
-        Path configDir = FabricLoader.getInstance().getConfigDir();
-        Path configPath = configDir.resolve("codeutilities.json");
         File configFile = configPath.toFile();
-
-        JSONObject obj = new JSONObject();
-        JSONParser parser = new JSONParser();
 
         boolean success;
 
@@ -58,20 +60,29 @@ public class CodeUtilsConfig {
         if (!configFile.exists()) {
             try {
                 success = configFile.createNewFile();
-                FileWriter configWriter = new FileWriter(String.valueOf(configPath));
-                configWriter.write(obj.toJSONString());
-                configWriter.flush();
+                updConfig(new JSONObject());
                 if (!success) CodeUtilities.log(Level.FATAL, "Error when parsing \"../.minecraft/config/codeutilities.json\"");
             } catch (IOException e) { e.printStackTrace(); }
         }
 
         // parse the file
-        try { obj = (JSONObject) parser.parse(new FileReader(String.valueOf(configPath)));
-        } catch (IOException | ParseException e) { e.printStackTrace(); }
+        String jsonString = "";
+        try { jsonString = FileUtil.readFile(configPathString, Charset.defaultCharset());
+        } catch (IOException e) { e.printStackTrace(); }
 
-        config = obj;
+        config = new JSONObject(jsonString);
+    }
+
+    public static void updConfig(JSONObject obj) {
+
+        try {
+            FileWriter configWriter = new FileWriter(configPathString);
+            configWriter.write(obj.toString());
+            configWriter.flush();
+        } catch (IOException e) { e.printStackTrace(); }
 
     }
+
     // TEMPORARY OLD ONES
     public static boolean itemApi = true;
     public static boolean autoChatLocal = false;

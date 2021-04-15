@@ -12,7 +12,7 @@ import io.github.codeutilities.nbs.exceptions.OutdatedNBSException;
 import io.github.codeutilities.util.ItemUtil;
 import io.github.codeutilities.util.chat.ChatType;
 import io.github.codeutilities.util.chat.ChatUtil;
-import io.github.codeutilities.util.externalfile.ExternalFile;
+import io.github.codeutilities.util.file.ExternalFile;
 import io.github.codeutilities.util.render.ToasterUtil;
 import io.github.codeutilities.util.templates.TemplateUtils;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;

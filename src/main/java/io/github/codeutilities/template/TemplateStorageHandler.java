@@ -3,7 +3,7 @@ package io.github.codeutilities.template;
 import io.github.codeutilities.util.IManager;
 import io.github.codeutilities.util.ISave;
 import io.github.codeutilities.util.ItemUtil;
-import io.github.codeutilities.util.externalfile.ExternalFile;
+import io.github.codeutilities.util.file.ExternalFile;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.datafixer.DataFixTypes;

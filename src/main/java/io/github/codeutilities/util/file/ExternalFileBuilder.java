@@ -1,4 +1,4 @@
-package io.github.codeutilities.util.externalfile;
+package io.github.codeutilities.util.file;
 
 import io.github.codeutilities.CodeUtilities;
 
