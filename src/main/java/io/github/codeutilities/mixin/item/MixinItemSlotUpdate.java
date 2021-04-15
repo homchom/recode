@@ -1,6 +1,5 @@
 package io.github.codeutilities.mixin.item;
 
-import com.sun.tools.javac.jvm.Code;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.CodeUtilsConfig;
 import io.github.codeutilities.events.ChatReceivedEvent;
@@ -9,7 +8,6 @@ import io.github.codeutilities.keybinds.FlightspeedToggle;
 import io.github.codeutilities.template.TemplateStorageHandler;
 import io.github.codeutilities.util.DFInfo;
 import io.github.codeutilities.util.templates.TemplateUtils;
-import jdk.vm.ci.code.CodeUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.item.ItemStack;
