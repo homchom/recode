@@ -5,6 +5,7 @@ import io.github.codeutilities.util.file.FileUtil;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
+import me.shedaniel.clothconfig2.impl.builders.SubCategoryBuilder;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.TranslatableText;
@@ -16,9 +17,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Objects;
 
 public class CodeUtilsConfig {
 
@@ -36,75 +36,75 @@ public class CodeUtilsConfig {
 
     public enum ConfigEntries {
         // automation ---------------------------------------------------------------------
-        autotime("automation", "autotime", false),
-        autotimeval("automation", "autotimeval",0),
+        autotime("automation", "time", "autotime", false),
+        autotimeval("automation", "time", "autotimeval",0),
 
-        autoRC("automation", "autoRC", false),
-        autonightvis("automation", "autonightvis", false),
-        autofly("automation", "autofly", false),
-        autolagslayer("automation", "autolagslayer", false),
+        autoRC("automation", null,"autoRC", false),
+        autonightvis("automation", null,"autonightvis", false),
+        autofly("automation", null,"autofly", false),
+        autolagslayer("automation", null, "autolagslayer", false),
 
         // commands ------------------------------------------------------------------------
-        dfCommands("commands", "dfCommands", true),
-        errorSound("commands", "errorSound", true),
-        headMenuMaxRender("commands", "headMenuMaxRender", 1000),
+        dfCommands("commands", null, "dfCommands", true),
+        errorSound("commands", null, "errorSound", true),
+        headMenuMaxRender("commands", null, "headMenuMaxRender", 1000),
 
-        colorMaxRender("commands", "colorMaxRender", 158),
-        colorLines("commands", "colorLines", 5),
+        colorMaxRender("commands", "colors", "colorMaxRender", 158),
+        colorLines("commands", "colors", "colorLines", 5),
 
         // hiding -------------------------------------------------------------------------
-        hideJoinLeaveMessages("hiding", "hideJoinLeaveMessages", false),
-        hideVarScopeMessages("hiding", "hideVarScopeMessages", false),
+        hideJoinLeaveMessages("hiding", null, "hideJoinLeaveMessages", false),
+        hideVarScopeMessages("hiding", null, "hideVarScopeMessages", false),
 
-        hideMsgMatchingRegex("hiding", "hideMsgMatchingRegex", false),
-        hideMsgRegex("hiding", "hideMsgRegex", ""),
+        hideMsgMatchingRegex("hiding", "regex", "hideMsgMatchingRegex", false),
+        hideMsgRegex("hiding", "regex", "hideMsgRegex", ""),
 
-        hideSessionSpy("hiding", "hideSessionSpy", false),
-        hideMutedChat("hiding", "hideMutedChat", false),
+        hideSessionSpy("hiding", "staff", "hideSessionSpy", false),
+        hideMutedChat("hiding", "staff", "hideMutedChat", false),
 
         // keybinds -----------------------------------------------------------------------
-        functionProcessSearch("keybinds", "functionProcessSearch", true),
-
-        fsNormal("keybinds", "fsNormal", 100),
-        fsMed("keybinds", "fsMed", 350),
-        fsFast("keybinds", "fsFast", 1000),
+        fsNormal("keybinds", "flightspeed", "fsNormal", 100),
+        fsMed("keybinds", "flightspeed", "fsMed", 350),
+        fsFast("keybinds", "flightspeed", "fsFast", 1000),
 
         // highlight ----------------------------------------------------------------------
-        highlight("highlight", "highlight", false),
-        highlightIgnoreSender("highlight", "highlightIgnoreSender", false),
+        highlight("highlight", null, "highlight", false),
+        highlightIgnoreSender("highlight", null, "highlightIgnoreSender", false),
 
-        highlightMatcher("highlight", "highlightMatcher", "{name}"),
-        highlightPrefix("highlight", "highlightPrefix", "&e"),
+        highlightMatcher("highlight", "text", "highlightMatcher", "{name}"),
+        highlightPrefix("highlight", "text", "highlightPrefix", "&e"),
 
-        highlightSound("highlight", "highlightSound", null),
-        highlightSoundVolume("highlight", "highlightSoundVolume", 3F),
-        highlightOwnSenderSound("highlight", "highlightOwnSenderSound", false),
+        highlightSound("highlight", "sound", "highlightSound", null),
+        highlightSoundVolume("highlight", "sound", "highlightSoundVolume", 3F),
+        highlightOwnSenderSound("highlight", "sound", "highlightOwnSenderSound", false),
 
         // screen ------------------------------------------------------------------------
-        chestReplacement("screen", "chestReplacement", false),
-        signRenderDistance("screen", "signRenderDistance", 100),
+        chestReplacement("screen", "world_rendering", "chestReplacement", false),
+        signRenderDistance("screen", "world_rendering", "signRenderDistance", 100),
 
-        dfButton("screen", "dfButton", true),
-        variableScopeView("screen", "variableScopeView", true),
-        cpuOnScreen("screen", "cpuOnScreen", true),
-        f3Tps("screen", "f3Tps", true),
-        cosmeticType("screen", "cosmeticType", null),
+        dfButton("screen", null, "dfButton", true),
+        variableScopeView("screen", null, "variableScopeView", true),
+        cpuOnScreen("screen", null, "cpuOnScreen", true),
+        f3Tps("screen", null, "f3Tps", true),
+        cosmeticType("screen", null, "cosmeticType", new String[]{"Enabled", "Spawn", "Disabled"}),
 
         // misc ----------------------------------------------------------------------------
-        itemApi("misc", "itemApi", true),
-        quickVarScope("misc", "quickVarScope", true),
+        itemApi("misc", null, "itemApi", true),
+        quickVarScope("misc", null, "quickVarScope", true),
 
-        discordRPC("misc", "discordRPC", true),
-        discordRPCTimeout("misc", "discordRPCTimeout", 15000),
-        discordRPCShowElapsed("misc", "discordRPCShowElapsed", true);
+        discordRPC("misc", "discordrpc", "discordRPC", true),
+        discordRPCTimeout("misc", "discordrpc", "discordRPCTimeout", 15000),
+        discordRPCShowElapsed("misc", "discordrpc", "discordRPCShowElapsed", true);
 
         // --------------------------------------------------------------------------------------
 
         final String category;
+        final String subcategory;
         final String key;
         final Object defaultValue;
-        ConfigEntries(String category, String key, Object defaultValue) {
+        ConfigEntries(String category, String subcategory, String key, Object defaultValue) {
             this.category = category;
+            this.subcategory = category + "_" + subcategory;
             this.key = key;
             this.defaultValue = defaultValue;
         }
@@ -132,6 +132,26 @@ public class CodeUtilsConfig {
         }
     }
 
+    public enum ConfigSubcategories {
+        Automation_Time("automation_time", true),
+
+        Hiding_Regex("hiding_regex", true),
+        Hiding_Staff("hiding_staff", true),
+
+        Keybinds_Flightspeed("keybinds_flightspeed", true),
+
+        Highlight_Text("highlight_text", true),
+        Highlight_Sound("highlight_sound", true),
+
+        Screen_World_Rendering("screen_world_rendering", true),
+
+        Misc_DiscordRPC("misc_discordrpc", true);
+
+        final String subcategory;
+        final boolean startExpanded;
+        ConfigSubcategories(String subcategory, Boolean startExpanded) { this.subcategory = subcategory; this.startExpanded = startExpanded; }
+    }
+
     // ============================================================================================================================
     //
     // ============================================================================================================================
@@ -142,48 +162,91 @@ public class CodeUtilsConfig {
                 .setParentScreen(parent)
                 .setTitle(new TranslatableText("config.codeutilities.title"));
         HashMap<String, ConfigCategory> categories = new HashMap<>();
+        HashMap<String, SubCategoryBuilder> subcategories = new HashMap<>();
         ConfigEntryBuilder entryBuilder = builder.entryBuilder();
+
+        final String optionKeyText = "config.codeutilities.option.";
+        final String optionTooltipText = ".tooltip";
 
         // Category builder
         for (ConfigCategories category : ConfigCategories.values()) {
             categories.put(category.category, builder.getOrCreateCategory(new TranslatableText("config.codeutilities.category." + category.category)));
         }
 
-        System.out.println("BUILDING CONFIG " + config);
+        // Subcategory builder
+        for (ConfigSubcategories subcategory : ConfigSubcategories.values()) {
+            subcategories.put(subcategory.subcategory,
+                    entryBuilder.startSubCategory(new TranslatableText("config.codeutilities.subcategory." + subcategory.subcategory)).setExpanded(subcategory.startExpanded));
+        }
 
         // Entry builder
+        int i = 0;
         for (ConfigEntries entry : entryValues) {
+            i++;
             ConfigCategory category = categories.get(entry.category);
+            SubCategoryBuilder subcategory = subcategories.get(entry.subcategory);
+            SubCategoryBuilder nextSubcategory;
+            if (i == entryValues.length) nextSubcategory = null; else nextSubcategory = subcategories.get(entryValues[i].subcategory);
 
-             // Boolean
-             if (entry.defaultValue instanceof Boolean) {
-                 category.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("config.codeutilities.option." + entry.key), config.getBoolean(entry.key))
-                         .setDefaultValue((Boolean) entry.defaultValue)
-                         .setTooltip(new TranslatableText("config.codeutilities.option." + entry.key + ".tooltip"))
-                         .setSaveConsumer(newValue -> config.put(entry.key, newValue))
-                         .build());
-             // String
-             } else if (entry.defaultValue instanceof String) {
-                category.addEntry(entryBuilder.startStrField(new TranslatableText("config.codeutilities.option." + entry.key), config.getString(entry.key))
-                        .setDefaultValue((String) entry.defaultValue)
-                        .setTooltip(new TranslatableText("config.codeutilties.option." + entry.key + ".tooltip"))
-                        .setSaveConsumer(newValue -> config.put(entry.key, newValue))
-                        .build());
-             // Integer
-             } else if (entry.defaultValue instanceof Integer) {
-                 category.addEntry(entryBuilder.startIntField(new TranslatableText("config.codeutilities.option." + entry.key), config.getInt(entry.key))
-                         .setDefaultValue((Integer) entry.defaultValue)
-                         .setTooltip(new TranslatableText("config.codeutilities.option." + entry.key + ".tooltip"))
-                         .setSaveConsumer(newValue -> config.put(entry.key, newValue))
-                         .build());
-             // Float
-             } else if (entry.defaultValue instanceof Float) {
-                 category.addEntry(entryBuilder.startFloatField(new TranslatableText("config.codeutilities.option." + entry.key), config.getFloat(entry.key))
-                         .setDefaultValue((Float) entry.defaultValue)
-                         .setTooltip(new TranslatableText("config.codeutilities.option." + entry.key + ".tooltip"))
-                         .setSaveConsumer(newValue -> config.put(entry.key, newValue))
-                         .build());
-             }
+            if (subcategory == null) {
+                // Boolean
+                if (entry.defaultValue instanceof Boolean) {
+                    category.addEntry(entryBuilder.startBooleanToggle(new TranslatableText(optionKeyText + entry.key), config.getBoolean(entry.key))
+                            .setDefaultValue((Boolean) entry.defaultValue)
+                            .setTooltip(new TranslatableText(optionKeyText + entry.key + optionTooltipText)).setSaveConsumer(newValue -> config.put(entry.key, newValue)).build());
+                    // String
+                } else if (entry.defaultValue instanceof String) {
+                    category.addEntry(entryBuilder.startStrField(new TranslatableText(optionKeyText + entry.key), config.getString(entry.key))
+                            .setDefaultValue((String) entry.defaultValue)
+                            .setTooltip(new TranslatableText(optionKeyText + entry.key + optionTooltipText)).setSaveConsumer(newValue -> config.put(entry.key, newValue)).build());
+                    // Integer
+                } else if (entry.defaultValue instanceof Integer) {
+                    category.addEntry(entryBuilder.startIntField(new TranslatableText(optionKeyText + entry.key), config.getInt(entry.key))
+                            .setDefaultValue((Integer) entry.defaultValue)
+                            .setTooltip(new TranslatableText(optionKeyText + entry.key + optionTooltipText)).setSaveConsumer(newValue -> config.put(entry.key, newValue)).build());
+                    // Float
+                } else if (entry.defaultValue instanceof Float) {
+                    category.addEntry(entryBuilder.startFloatField(new TranslatableText(optionKeyText + entry.key), config.getFloat(entry.key))
+                            .setDefaultValue((Float) entry.defaultValue)
+                            .setTooltip(new TranslatableText(optionKeyText + entry.key + optionTooltipText)).setSaveConsumer(newValue -> config.put(entry.key, newValue)).build());
+                    // String Iterable
+                } else if (entry.defaultValue instanceof String[]) {
+                    category.addEntry(entryBuilder.startStringDropdownMenu(new TranslatableText(optionKeyText + entry.key), config.getString(entry.key))
+                            .setSelections(Arrays.asList((String[]) entry.defaultValue))
+                            .setDefaultValue(((String[]) entry.defaultValue)[0])
+                            .setTooltip(new TranslatableText(optionKeyText + entry.key + optionTooltipText)).setSaveConsumer(newValue -> config.put(entry.key, newValue)).build());
+                }
+
+                 } else {
+                // Boolean
+                if (entry.defaultValue instanceof Boolean) {
+                    subcategory.add(entryBuilder.startBooleanToggle(new TranslatableText(optionKeyText + entry.key), config.getBoolean(entry.key))
+                            .setDefaultValue((Boolean) entry.defaultValue)
+                            .setTooltip(new TranslatableText(optionKeyText + entry.key + optionTooltipText)).setSaveConsumer(newValue -> config.put(entry.key, newValue)).build());
+                    // String
+                } else if (entry.defaultValue instanceof String) {
+                    subcategory.add(entryBuilder.startStrField(new TranslatableText(optionKeyText + entry.key), config.getString(entry.key))
+                            .setDefaultValue((String) entry.defaultValue)
+                            .setTooltip(new TranslatableText(optionKeyText + entry.key + optionTooltipText)).setSaveConsumer(newValue -> config.put(entry.key, newValue)).build());
+                    // Integer
+                } else if (entry.defaultValue instanceof Integer) {
+                    subcategory.add(entryBuilder.startIntField(new TranslatableText(optionKeyText + entry.key), config.getInt(entry.key))
+                            .setDefaultValue((Integer) entry.defaultValue)
+                            .setTooltip(new TranslatableText(optionKeyText + entry.key + optionTooltipText)).setSaveConsumer(newValue -> config.put(entry.key, newValue)).build());
+                    // Float
+                } else if (entry.defaultValue instanceof Float) {
+                    subcategory.add(entryBuilder.startFloatField(new TranslatableText(optionKeyText + entry.key), config.getFloat(entry.key))
+                            .setDefaultValue((Float) entry.defaultValue)
+                            .setTooltip(new TranslatableText(optionKeyText + entry.key + optionTooltipText)).setSaveConsumer(newValue -> config.put(entry.key, newValue)).build());
+                // String Iterable
+                } else if (entry.defaultValue instanceof String[]) {
+                    subcategory.add(entryBuilder.startStringDropdownMenu(new TranslatableText(optionKeyText + entry.key), config.getString(entry.key))
+                        .setSelections(Arrays.asList((String[]) entry.defaultValue))
+                        .setDefaultValue(((String[]) entry.defaultValue)[0])
+                        .setTooltip(new TranslatableText(optionKeyText + entry.key + optionTooltipText)).setSaveConsumer(newValue -> config.put(entry.key, newValue)).build());
+                }
+                if (subcategory != nextSubcategory) category.addEntry(subcategory.build());
+            }
 
         }
 
@@ -223,8 +286,6 @@ public class CodeUtilsConfig {
 
     public static void updConfig(JSONObject obj) {
 
-        System.out.println("CONFIG " + obj);
-
         for (Object objKey : obj.keySet().toArray()) {
             String key = objKey.toString();
 
@@ -237,6 +298,10 @@ public class CodeUtilsConfig {
                 if (obj.getInt(key) == Integer.parseInt(ConfigEntries.fromKey(key).defaultValue.toString())) check = true;
             } else if (obj.get(key) instanceof Float) {
                 if (obj.getFloat(key) == Float.parseFloat(ConfigEntries.fromKey(key).defaultValue.toString())) check = true;
+            } else if (obj.get(key) instanceof String[]) {
+                if (((String[]) obj.get(key))[0].equals("e")) {
+                    //e
+                }
             }
 
             if (check) obj.remove(key);
@@ -272,13 +337,4 @@ public class CodeUtilsConfig {
         return ConfigSounds.None;
     }
 
-    public static CosmeticType getCosmeticType(String key) {
-        return CosmeticType.Enabled;
-    }
-
-    public enum CosmeticType {
-        Enabled,
-        No_Event_Cosmetics,
-        Disabled;
-    }
 }
