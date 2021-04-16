@@ -14,12 +14,12 @@ public class FlightspeedToggle {
             fs_is_normal = false;
             switch (mode) {
                 case "medium":
-                    mc.player.sendChatMessage("/fs " + CodeUtilsConfig.fsMed);
+                    mc.player.sendChatMessage("/fs " + CodeUtilsConfig.getInt("fsMed"));
                     return;
                 case "fast":
-                    mc.player.sendChatMessage("/fs " + CodeUtilsConfig.fsFast);
+                    mc.player.sendChatMessage("/fs " + CodeUtilsConfig.getInt("fsFast"));
             }
-        } else mc.player.sendChatMessage("/fs " + CodeUtilsConfig.fsNormal);
+        } else mc.player.sendChatMessage("/fs " + CodeUtilsConfig.getInt("fsNormal"));
         fs_is_normal = true;
     }
 }

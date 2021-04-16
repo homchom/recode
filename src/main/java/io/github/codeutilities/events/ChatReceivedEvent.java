@@ -123,12 +123,12 @@ public class ChatReceivedEvent {
         String msgWithoutColor = msgWithColor.replaceAll("§.", "");
 
         // highlight name
-        if (CodeUtilsConfig.highlight) {
-            String highlightMatcher = CodeUtilsConfig.highlightMatcher.replaceAll("\\{name}", mc.player.getName().getString());
+        if (CodeUtilsConfig.getBool("highlight")) {
+            String highlightMatcher = CodeUtilsConfig.getStr("highlightMatcher").replaceAll("\\{name}", mc.player.getName().getString());
 
             if (( DFInfo.currentState != DFInfo.State.PLAY && msgWithoutColor.matches("^[^0-z]+.*[a-zA-Z]+: .*"))
                     || (DFInfo.currentState == DFInfo.State.PLAY && msgWithoutColor.matches("^.*[a-zA-Z]+: .*"))) {
-                if ((!msgWithoutColor.matches("^.*" + highlightMatcher + ": .*")) || CodeUtilsConfig.highlightIgnoreSender) {
+                if ((!msgWithoutColor.matches("^.*" + highlightMatcher + ": .*")) || CodeUtilsConfig.getBool("highlightIgnoreSender")) {
                     if (msgWithoutColor.contains(highlightMatcher)) {
                         String[] chars = msgWithColor.split("");
                         int i = 0;
@@ -142,17 +142,17 @@ public class ChatReceivedEvent {
                             i++;
                             if (currentChar.equals("§")) getColorCodes.append(currentChar).append(chars[i]);
                             if (textLeft.matches("^" + highlightMatcher + "[^a-zA-Z0-9].*")) {
-                                newMsg = newMsg.substring(0, newMsgIter) + CodeUtilsConfig.highlightPrefix.replaceAll("&", "§")
+                                newMsg = newMsg.substring(0, newMsgIter) + CodeUtilsConfig.getStr("highlightPrefix").replaceAll("&", "§")
                                         + highlightMatcher + getColorCodes.toString() + newMsg.substring(newMsgIter).replaceFirst("^" + highlightMatcher, "");
 
-                                newMsgIter = newMsgIter + CodeUtilsConfig.highlightPrefix.length() + getColorCodes.toString().length();
+                                newMsgIter = newMsgIter + CodeUtilsConfig.getStr("highlightPrefix").length() + getColorCodes.toString().length();
                             }
                             newMsgIter++;
                         }
                         mc.player.sendMessage(TextUtil.colorCodesToTextComponent(newMsg), false);
-                        if ((CodeUtilsConfig.highlightSound != ConfigSounds.None) &&
-                                (CodeUtilsConfig.highlightOwnSenderSound || (!msgWithoutColor.matches("^.*" + highlightMatcher + ": .+")))) {
-                            mc.player.playSound(CodeUtilsConfig.highlightSound.getSound(), CodeUtilsConfig.highlightSoundVolume, 1);
+                        if ((CodeUtilsConfig.getConfigSounds("highlightSound") != ConfigSounds.None) &&
+                                (CodeUtilsConfig.getBool("highlightOwnSenderSound") || (!msgWithoutColor.matches("^.*" + highlightMatcher + ": .+")))) {
+                            mc.player.playSound(CodeUtilsConfig.getConfigSounds("highlightSound").getSound(), CodeUtilsConfig.getFloat("highlightSoundVolume"), 1);
                         }
                         cancel = true;
                     }
@@ -161,7 +161,7 @@ public class ChatReceivedEvent {
         }
 
         // hide join/leave messages
-        if (CodeUtilsConfig.hideJoinLeaveMessages
+        if (CodeUtilsConfig.getBool("hideJoinLeaveMessages")
                 && msgToString.contains("', siblings=[], style=Style{ color=gray, bold=")
 
                 // check TextComponent
@@ -181,17 +181,17 @@ public class ChatReceivedEvent {
         }
 
         // hide session spy
-        if (CodeUtilsConfig.hideSessionSpy && msgGetString.startsWith("*") && msgToString.contains("text='*'") && msgToString.contains("color=green")) {
+        if (CodeUtilsConfig.getBool("hideSessionSpy") && msgGetString.startsWith("*") && msgToString.contains("text='*'") && msgToString.contains("color=green")) {
             cancel = true;
         }
 
         // hide muted chat
-        if (CodeUtilsConfig.hideMutedChat && msgGetString.startsWith("*") && msgToString.contains("text='*'") && msgToString.contains("color=red")) {
+        if (CodeUtilsConfig.getBool("hideMutedChat") && msgGetString.startsWith("*") && msgToString.contains("text='*'") && msgToString.contains("color=red")) {
             cancel = true;
         }
 
         // hide var scope messages
-        if (CodeUtilsConfig.hideVarScopeMessages
+        if (CodeUtilsConfig.getBool("hideVarScopeMessages")
                 && (
                 // local
                 msgToString.equals("TextComponent{text='', siblings=[TextComponent{text='Scope set to ', siblings=[], style=Style{ color=null, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}, TextComponent{text='LOCAL', siblings=[], style=Style{ color=green, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}, TextComponent{text=' (specific to event thread).', siblings=[], style=Style{ color=white, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}], style=Style{ color=null, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}") ||
@@ -204,11 +204,11 @@ public class ChatReceivedEvent {
         }
 
         // hide msg matching regex
-        if (CodeUtilsConfig.hideMsgMatchingRegex && msgGetString.replaceAll("§.", "").matches(CodeUtilsConfig.hideMsgRegex)) {
+        if (CodeUtilsConfig.getBool("hideMsgMatchingRegex") && msgGetString.replaceAll("§.", "").matches(CodeUtilsConfig.getStr("hideMsgRegex"))) {
             cancel = true;
         }
 
-        if (cancelTimeMsg && text.contains("» Set your player time to " + CodeUtilsConfig.autotimeval + ".") && text.startsWith("»")) {
+        if (cancelTimeMsg && text.contains("» Set your player time to " + CodeUtilsConfig.getInt("autotimeval") + ".") && text.startsWith("»")) {
             cancel = true;
             cancelTimeMsg = false;
         }

@@ -38,7 +38,70 @@ public class CodeUtilsConfig {
     // ============================================================================================================================
 
     public enum ConfigEntries {
-        Example_String("general", "examplekey", "Default");
+        // automation ---------------------------------------------------------------------
+        autotime("automation", "autotime", false),
+        autotimeval("automation", "autotimeval",0),
+
+        autoRC("automation", "autoRC", false),
+        autonightvis("automation", "autonightvis", false),
+        autofly("automation", "autofly", false),
+        autolagslayer("automation", "autolagslayer", false),
+
+        // commands ------------------------------------------------------------------------
+        dfCommands("commands", "dfCommands", true),
+        errorSound("commands", "errorSound", true),
+        headMenuMaxRender("commands", "headMenuMaxRender", 1000),
+
+        colorMaxRender("commands", "colorMaxRender", 158),
+        colorLines("commands", "colorLines", 5),
+
+        // hiding -------------------------------------------------------------------------
+        hideJoinLeaveMessages("hiding", "hideJoinLeaveMessages", false),
+        hideVarScopeMessages("hiding", "hideVarScopeMessages", false),
+
+        hideMsgMatchingRegex("hiding", "hideMsgMatchingRegex", false),
+        hideMsgRegex("hiding", "hideMsgRegex", ""),
+
+        hideSessionSpy("hiding", "hideSessionSpy", false),
+        hideMutedChat("hiding", "hideMutedChat", false),
+
+        // keybinds -----------------------------------------------------------------------
+        functionProcessSearch("keybinds", "functionProcessSearch", true),
+
+        fsNormal("keybinds", "fsNormal", 100),
+        fsMed("keybinds", "fsMed", 350),
+        fsFast("keybinds", "fsFast", 1000),
+
+        // highlight ----------------------------------------------------------------------
+        highlight("highlight", "highlight", false),
+        highlightIgnoreSender("highlight", "highlightIgnoreSender", false),
+
+        highlightMatcher("highlight", "highlightMatcher", "{name}"),
+        highlightPrefix("highlight", "highlightPrefix", "&e"),
+
+        highlightSound("highlight", "highlightSound", null),
+        highlightSoundVolume("highlight", "highlightSoundVolume", 3F),
+        highlightOwnSenderSound("highlight", "highlightOwnSenderSound", false),
+
+        // screen ------------------------------------------------------------------------
+        chestReplacement("screen", "chestReplacement", false),
+        signRenderDistance("screen", "signRenderDistance", 100),
+
+        dfButton("screen", "dfButton", true),
+        variableScopeView("screen", "variableScopeView", true),
+        cpuOnScreen("screen", "cpuOnScreen", true),
+        f3Tps("screen", "f3Tps", true),
+        cosmeticType("screen", "cosmeticType", null),
+
+        // misc ----------------------------------------------------------------------------
+        itemApi("misc", "itemApi", true),
+        quickVarScope("misc", "quickVarScope", true),
+
+        discordRPC("misc", "discordRPC", true),
+        discordRPCTimeout("misc", "discordRPCTimeout", 15000),
+        discordRPCShowElapsed("misc", "discordRPCShowElapsed", true);
+
+        // --------------------------------------------------------------------------------------
 
         final String category;
         final String key;
@@ -58,7 +121,13 @@ public class CodeUtilsConfig {
     }
 
     public enum ConfigCategories {
-        General("general");
+        Automation("automation"),
+        Commands("commands"),
+        Hiding("hiding"),
+        Keybinds("keybinds"),
+        Highlight("highlight"),
+        Screen("screen"),
+        Misc("misc");
 
         final String category;
         ConfigCategories(String category) {
@@ -74,14 +143,16 @@ public class CodeUtilsConfig {
         // Init builder
         ConfigBuilder builder = ConfigBuilder.create()
                 .setParentScreen(parent)
-                .setTitle(new TranslatableText("config.title"));
+                .setTitle(new TranslatableText("config.codeutilities.title"));
         HashMap<String, ConfigCategory> categories = new HashMap<>();
         ConfigEntryBuilder entryBuilder = builder.entryBuilder();
 
         // Category builder
         for (ConfigCategories category : ConfigCategories.values()) {
-            categories.put(category.category, builder.getOrCreateCategory(new TranslatableText("config.category." + category.category)));
+            categories.put(category.category, builder.getOrCreateCategory(new TranslatableText("config.codeutilities.category." + category.category)));
         }
+
+        System.out.println("BUILDING CONFIG " + config);
 
         // Entry builder
         for (ConfigEntries entry : entryValues) {
@@ -89,26 +160,33 @@ public class CodeUtilsConfig {
 
              // Boolean
              if (entry.defaultValue instanceof Boolean) {
-                 category.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("config.option." + entry.key), config.getBoolean(entry.key))
+                 category.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("config.codeutilities.option." + entry.key), config.getBoolean(entry.key))
                          .setDefaultValue((Boolean) entry.defaultValue)
-                         .setTooltip(new TranslatableText("config.option." + entry.key + ".tooltip"))
+                         .setTooltip(new TranslatableText("config.codeutilities.option." + entry.key + ".tooltip"))
                          .setSaveConsumer(newValue -> config.put(entry.key, newValue))
                          .build());
              // String
              } else if (entry.defaultValue instanceof String) {
-                category.addEntry(entryBuilder.startStrField(new TranslatableText("config.option." + entry.key), config.getString(entry.key))
+                category.addEntry(entryBuilder.startStrField(new TranslatableText("config.codeutilities.option." + entry.key), config.getString(entry.key))
                         .setDefaultValue((String) entry.defaultValue)
-                        .setTooltip(new TranslatableText("config.option." + entry.key + ".tooltip"))
+                        .setTooltip(new TranslatableText("config.codeutilties.option." + entry.key + ".tooltip"))
                         .setSaveConsumer(newValue -> config.put(entry.key, newValue))
                         .build());
              // Integer
              } else if (entry.defaultValue instanceof Integer) {
-                 category.addEntry(entryBuilder.startIntField(new TranslatableText("config.option." + entry.key), config.getInt(entry.key))
+                 category.addEntry(entryBuilder.startIntField(new TranslatableText("config.codeutilities.option." + entry.key), config.getInt(entry.key))
                          .setDefaultValue((Integer) entry.defaultValue)
-                         .setTooltip(new TranslatableText("config.option." + entry.key + ".tooltip"))
+                         .setTooltip(new TranslatableText("config.codeutilities.option." + entry.key + ".tooltip"))
                          .setSaveConsumer(newValue -> config.put(entry.key, newValue))
                          .build());
-            }
+             // Float
+             } else if (entry.defaultValue instanceof Float) {
+                 category.addEntry(entryBuilder.startFloatField(new TranslatableText("config.codeutilities.option." + entry.key), config.getFloat(entry.key))
+                         .setDefaultValue((Float) entry.defaultValue)
+                         .setTooltip(new TranslatableText("config.codeutilities.option." + entry.key + ".tooltip"))
+                         .setSaveConsumer(newValue -> config.put(entry.key, newValue))
+                         .build());
+             }
 
         }
 
@@ -148,70 +226,62 @@ public class CodeUtilsConfig {
 
     public static void updConfig(JSONObject obj) {
 
-        for (Iterator<String> it = obj.keys(); it.hasNext(); ) {
-            String key = it.next();
-            if (obj.get(key).equals(Objects.requireNonNull(ConfigEntries.fromKey(key)).defaultValue)) {
-                obj.remove(key);
+        System.out.println("CONFIG " + obj);
+
+        for (Object objKey : obj.keySet().toArray()) {
+            String key = objKey.toString();
+
+            boolean check = false;
+            if (obj.get(key) instanceof String) {
+                if (obj.getString(key).equals(ConfigEntries.fromKey(key).defaultValue.toString())) check = true;
+            } else if (obj.get(key) instanceof Boolean) {
+                if (obj.getBoolean(key) == Boolean.parseBoolean(ConfigEntries.fromKey(key).defaultValue.toString())) check = true;
+            } else if (obj.get(key) instanceof Integer) {
+                if (obj.getInt(key) == Integer.parseInt(ConfigEntries.fromKey(key).defaultValue.toString())) check = true;
+            } else if (obj.get(key) instanceof Float) {
+                if (obj.getFloat(key) == Float.parseFloat(ConfigEntries.fromKey(key).defaultValue.toString())) check = true;
             }
+
+            if (check) obj.remove(key);
         }
 
-            try {
-                FileWriter configWriter = new FileWriter(configPathString);
-                configWriter.write(obj.toString());
-                configWriter.flush();
-            } catch (IOException e) { e.printStackTrace(); }
+        try {
+            FileWriter configWriter = new FileWriter(configPathString);
+            configWriter.write(obj.toString());
+            configWriter.flush();
+        } catch (IOException e) { e.printStackTrace(); }
 
     }
 
-    // TEMPORARY OLD ONES
-    public static boolean itemApi = true;
-    public static boolean autoChatLocal = false;
-    public static boolean autolagslayer = false;
-    public static boolean discordRPC = true;
-    public static boolean cpuOnScreen = true;
-    public static boolean autotime = false;
-    public static int autotimeval = 69420;
-    public static boolean autonightvis = false;
-    public static boolean dfCommands = true;
-    public static boolean autoRC = false;
-    public static boolean autofly = false;
-    public static boolean hideMsgMatchingRegex = false;
-    public static String hideMsgRegex = "";
-    public static boolean hideVarScopeMessages = false;
-    public static boolean hideMutedChat = false;
-    public static boolean hideSessionSpy = false;
-    public static boolean hideJoinLeaveMessages = false;
-    public static ConfigSounds highlightSound = ConfigSounds.ShieldBlock;
-    public static boolean highlightOwnSenderSound = false;
-    public static float highlightSoundVolume = 3F;
-    public static String highlightPrefix = "&e";
-    public static boolean highlightIgnoreSender = false;
-    public static String highlightMatcher = "{name}";
-    public static boolean highlight = false;
-    public static boolean discordRPCShowElapsed = true;
-    public static int discordRPCTimeout = 15000;
-    public static int colorMaxRender = 100;
-    public static int colorLines = 100;
-    public static CosmeticType cosmeticType = CosmeticType.Disabled;
+    public static boolean getBool(String key) {
+        return config.getBoolean(key);
+    }
+
+    public static String getStr(String key) {
+        return config.getString(key);
+    }
+
+    public static int getInt(String key) {
+        return config.getInt(key);
+    }
+
+    public static float getFloat(String key) {
+        return config.getFloat(key);
+    }
+
+    // ---------------------------------------------------------------------------
+
+    public static ConfigSounds getConfigSounds(String key) {
+        return ConfigSounds.None;
+    }
+
+    public static CosmeticType getCosmeticType(String key) {
+        return CosmeticType.Enabled;
+    }
+
     public enum CosmeticType {
-        Enabled(),
-        No_Event_Cosmetics(),
-        Disabled()
-    }
-    public static int headMenuMaxRender = 1000;
-    public static int fsNormal = 100;
-    public static int fsFast = 1000;
-    public static int fsMed = 350;
-    public static boolean functionProcessSearch = true;
-    public static boolean variableScopeView = true;
-    public static boolean quickVarScope = true;
-    public static boolean chestReplacement = false;
-    public static boolean f3Tps = true;
-    public static boolean dfButton = true;
-    public static boolean errorSound = true;
-    public static int signRenderDistance = 100;
-
-    public static Object getConfig() {
-        return config;
+        Enabled,
+        No_Event_Cosmetics,
+        Disabled;
     }
 }

@@ -48,7 +48,7 @@ public class CommandHandler implements ClientCommandPlugin, IManager<Command> {
                 new ConfigCommand()
         );
 
-        if (CodeUtilsConfig.dfCommands) {
+        if (CodeUtilsConfig.getBool("dfCommands")) {
             register(
                     new GiveCommand(),
                     new NodeCommand(),

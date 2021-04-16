@@ -21,7 +21,7 @@ public class MixinDebugHud {
         try {
             List<String> leftText = callbackInfoReturnable.getReturnValue();
 
-            if (CodeUtilsConfig.f3Tps) {
+            if (CodeUtilsConfig.getBool("f3Tps")) {
                 leftText.add("");
                 leftText.add(Formatting.UNDERLINE + "CodeUtilities");
                 leftText.add("Client TPS: " + TPSUtil.TPS);
