@@ -1,7 +1,6 @@
 package io.github.codeutilities.config;
 
 import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.util.color.MinecraftColors;
 import io.github.codeutilities.util.file.FileUtil;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
@@ -11,9 +10,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.TranslatableText;
 import org.apache.logging.log4j.Level;
 import org.json.JSONObject;
-import sun.security.krb5.Config;
 
-import javax.print.DocFlavor;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
