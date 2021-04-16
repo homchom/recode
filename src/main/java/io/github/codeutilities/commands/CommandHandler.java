@@ -44,7 +44,8 @@ public class CommandHandler implements ClientCommandPlugin, IManager<Command> {
                 new ColorCommand(),
                 new EditItemCommand(),
                 new CopyTextCommand(),
-                new GradientCommand()
+                new GradientCommand(),
+                new ConfigCommand()
         );
 
         if (CodeUtilsConfig.dfCommands) {
