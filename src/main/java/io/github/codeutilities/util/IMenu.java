@@ -7,7 +7,8 @@ import net.minecraft.client.MinecraftClient;
 
 public interface IMenu {
     // Don't do this. Opening guis from others threads on a synchronous game is NOT GOOD.
-    default void openAsync(LightweightGuiDescription gui) {
+    default void openAsync(LightweightGuiDescription gui, String... args) {
+        this.open(args);
         CodeUtilities.EXECUTOR.submit(() -> {
             try {
                 Thread.sleep(10);
