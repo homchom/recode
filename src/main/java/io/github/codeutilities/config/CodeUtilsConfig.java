@@ -178,7 +178,7 @@ public class CodeUtilsConfig {
         // Subcategory builder
         for (ConfigSubcategories subcategory : ConfigSubcategories.values()) {
             subcategories.put(subcategory.subcategory,
-                    entryBuilder.startSubCategory(new TranslatableText("config.codeutilities.subcategory." + subcategory.subcategory)).setExpanded(subcategory.startExpanded));
+                    entryBuilder.startSubCategory(new TranslatableText("config.codeutilities.subcategory." + subcategory.subcategory)).setExpanded(subcategory.startExpanded).setTooltip(new TranslatableText("config.codeutilities.subcategory." + subcategory.subcategory + optionTooltipText)));
         }
 
         // Entry builder
