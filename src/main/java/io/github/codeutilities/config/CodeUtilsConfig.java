@@ -137,6 +137,8 @@ public class CodeUtilsConfig {
     public enum ConfigSubcategories {
         Automation_Time("automation_time", true),
 
+        Colors("colors", true),
+
         Hiding_Regex("hiding_regex", true),
         Hiding_Staff("hiding_staff", true),
 
