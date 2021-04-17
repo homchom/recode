@@ -161,10 +161,10 @@ public class DFDiscordRPC implements ILoader {
         if (firstUpdate) {
             time = OffsetDateTime.now();
         }
-        if (CodeUtilsConfig.discordRPCShowElapsed) presence.setStartTimestamp(time);
+        if (CodeUtilsConfig.getBool("discordRPCShowElapsed")) presence.setStartTimestamp(time);
         oldMode = mode;
 
-        if (CodeUtilsConfig.discordRPC) client.sendRichPresence(presence.build());
+        if (CodeUtilsConfig.getBool("discordRPC")) client.sendRichPresence(presence.build());
     }
 
     public DFRPCThread getThread() {
@@ -196,7 +196,7 @@ public class DFDiscordRPC implements ILoader {
                     }
                 }
 
-                if (!CodeUtilsConfig.discordRPC) {
+                if (!CodeUtilsConfig.getBool("discordRPC")) {
                     firstLocate = true;
                     firstUpdate = true;
                     try {
@@ -233,11 +233,11 @@ public class DFDiscordRPC implements ILoader {
 
         public void locateRequest() {
             if (mc.player != null) {
-                if (CodeUtilsConfig.discordRPC) {
+                if (CodeUtilsConfig.getBool("discordRPC")) {
                     mc.player.sendChatMessage("/locate");
                 }
                 locating = true;
-                for (int i = 0; i < CodeUtilsConfig.discordRPCTimeout; i++) {
+                for (int i = 0; i < CodeUtilsConfig.getInt("discordRPCTimeout"); i++) {
                     try {
                         DFRPCThread.sleep(1);
                     } catch (InterruptedException e) {

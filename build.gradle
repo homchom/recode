@@ -38,11 +38,6 @@ dependencies {
     //dfrpc
     compile 'com.jagrosh:DiscordIPC:0.4'
 
-    // config
-    modApi("me.shedaniel.cloth:cloth-config-fabric:4.11.19") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
-
     //to change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
@@ -57,10 +52,13 @@ dependencies {
     modImplementation "org.glassfish.tyrus:tyrus-server:1.1"
     modImplementation "org.glassfish.tyrus:tyrus-client:1.1"
     modImplementation "org.glassfish.tyrus:tyrus-container-grizzly:1.1"
+	modImplementation "io.github.prospector:modmenu:1.16.9"
+	modImplementation "me.shedaniel.cloth:cloth-config-fabric:4.11.19"
 
     //include "com.google.code.gson:gson:2.8.6"
     include "io.github.cottonmc:cotton-client-commands:1.0.1+1.16-rc1"
     include "io.github.cottonmc:LibGui:3.2.2+1.16.3"
+	include "me.shedaniel.cloth:cloth-config-fabric:4.11.19"
     //websocket things
     include "javax.websocket:javax.websocket-api:1.1"
     include "org.glassfish.tyrus:tyrus-websocket-core:1.1"

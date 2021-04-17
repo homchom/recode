@@ -48,7 +48,7 @@ public class ChatUtil {
             ChatUtil.setColor(text, minecraftColors.getColor());
             player.sendMessage(new LiteralText(chatType.getString() + " ").append(text), false);
             if (chatType == ChatType.FAIL) {
-                if (CodeUtilsConfig.errorSound) {
+                if (CodeUtilsConfig.getBool("errorSound")) {
                     player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_DIDGERIDOO, SoundCategory.PLAYERS, 2, 0);
                 }
             }
