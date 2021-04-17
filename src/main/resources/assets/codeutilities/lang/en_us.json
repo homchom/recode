@@ -59,8 +59,8 @@
     "config.codeutilities.option.headMenuMaxRender": "Maximum Heads in /heads",
     "config.codeutilities.option.headMenuMaxRender.tooltip": "Amount of heads to display in the /heads menu.",
 
-    "config.codeutilities.subcategory.colors": "/colors Command",
-    "config.codeutilities.option.colors.tooltip": "Settings that apply to the /colors command.",
+    "config.codeutilities.subcategory.commands_colors": "/colors Command",
+    "config.codeutilities.option.commands_colors.tooltip": "Settings that apply to the /colors command.",
     "config.codeutilities.option.colorMaxRender": "Maximum Columns",
     "config.codeutilities.option.colorMaxRender.tooltip": "Amount of color bars to display in one color line.",
     "config.codeutilities.option.colorLines": "Maximum Rows",
