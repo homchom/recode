@@ -10,9 +10,9 @@ import net.minecraft.item.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TemplateStorageUI extends LightweightGuiDescription implements IMenu {
+public class PlotsStorageUI extends LightweightGuiDescription implements IMenu {
 
-    public TemplateStorageUI() {
+    public PlotsStorageUI() {
     }
 
     @Override

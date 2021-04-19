@@ -5,7 +5,7 @@ import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.commands.arguments.ArgBuilder;
 import io.github.codeutilities.gui.ItemGridPanel;
 import io.github.codeutilities.gui.PlotItem;
-import io.github.codeutilities.gui.TemplateStorageUI;
+import io.github.codeutilities.gui.PlotsStorageUI;
 import io.github.codeutilities.util.DFInfo;
 import io.github.codeutilities.util.ItemUtil;
 import io.github.codeutilities.util.chat.ChatType;
@@ -33,7 +33,7 @@ public class PlotsCommand extends Command {
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("plots").executes(ctx -> {
             try {
-                TemplateStorageUI templateStorageUI = new TemplateStorageUI();
+                PlotsStorageUI templateStorageUI = new PlotsStorageUI();
                 ItemGridPanel panel = new ItemGridPanel();
                 List<ItemStack> itemlist = DFInfo.isInBeta ? betaItems : items;
                 if (itemlist == null || itemlist.size() == 0) {
