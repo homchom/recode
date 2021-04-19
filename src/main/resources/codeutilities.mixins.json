@@ -10,6 +10,7 @@
     "messages.MixinGameMessageListener",
     "messages.MixinPlayerChatMessage",
     "packet.MixinTimeUpdateListener",
+    "packet.MixinInventoryPacketListener",
     "player.MixinPlayerListEntry",
     "player.MixinPlayerListHud",
     "player.TextureMapAccessor",

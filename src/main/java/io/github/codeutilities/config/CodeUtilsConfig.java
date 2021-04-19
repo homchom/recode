@@ -17,8 +17,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 public class CodeUtilsConfig {
 
@@ -74,7 +76,7 @@ public class CodeUtilsConfig {
         highlightMatcher("highlight", "text", "highlightMatcher", "{name}"),
         highlightPrefix("highlight", "text", "highlightPrefix", "&e"),
 
-        highlightSound("highlight", "sound", "highlightSound", null),
+        highlightSound("highlight", "sound", "highlightSound", new String[]{"1", "None", "Shield Block", "Bass Drum", "Banjo", "Bass", "Bell", "Bit", "Chime", "Cow Bell", "Didgeridoo", "Flute", "Guitar", "Harp", "Pling", "Hat", "Snare", "Iron Xylophone", "Xylophone", "Experience Orb Pickup", "Item Pickup"}),
         highlightSoundVolume("highlight", "sound", "highlightSoundVolume", 3F),
         highlightOwnSenderSound("highlight", "sound", "highlightOwnSenderSound", false),
 
@@ -86,7 +88,7 @@ public class CodeUtilsConfig {
         variableScopeView("screen", null, "variableScopeView", true),
         cpuOnScreen("screen", null, "cpuOnScreen", true),
         f3Tps("screen", null, "f3Tps", true),
-        cosmeticType("screen", null, "cosmeticType", new String[]{"Enabled", "Spawn", "Disabled"}),
+        cosmeticType("screen", null, "cosmeticType", new String[]{"1", "Enabled", "Spawn", "Disabled"}),
 
         // misc ----------------------------------------------------------------------------
         itemApi("misc", null, "itemApi", true),
@@ -135,6 +137,8 @@ public class CodeUtilsConfig {
     public enum ConfigSubcategories {
         Automation_Time("automation_time", true),
 
+        Commands_Colors("commands_colors", true),
+
         Hiding_Regex("hiding_regex", true),
         Hiding_Staff("hiding_staff", true),
 
@@ -176,7 +180,7 @@ public class CodeUtilsConfig {
         // Subcategory builder
         for (ConfigSubcategories subcategory : ConfigSubcategories.values()) {
             subcategories.put(subcategory.subcategory,
-                    entryBuilder.startSubCategory(new TranslatableText("config.codeutilities.subcategory." + subcategory.subcategory)).setExpanded(subcategory.startExpanded));
+                    entryBuilder.startSubCategory(new TranslatableText("config.codeutilities.subcategory." + subcategory.subcategory)).setExpanded(subcategory.startExpanded).setTooltip(new TranslatableText("config.codeutilities.subcategory." + subcategory.subcategory + optionTooltipText)));
         }
 
         // Entry builder
@@ -211,9 +215,13 @@ public class CodeUtilsConfig {
                             .setTooltip(new TranslatableText(optionKeyText + entry.key + optionTooltipText)).setSaveConsumer(newValue -> config.put(entry.key, newValue)).build());
                     // String Iterable
                 } else if (entry.defaultValue instanceof String[]) {
+                    String[] defaultValue = (String[]) entry.defaultValue;
+                    int index = Integer.parseInt(defaultValue[0]);
+                    List<String> asList = new ArrayList(Arrays.asList(defaultValue));
+                    asList.remove(0);
                     category.addEntry(entryBuilder.startStringDropdownMenu(new TranslatableText(optionKeyText + entry.key), config.getString(entry.key))
-                            .setSelections(Arrays.asList((String[]) entry.defaultValue))
-                            .setDefaultValue(((String[]) entry.defaultValue)[0])
+                            .setSelections(asList)
+                            .setDefaultValue(asList.get(index))
                             .setTooltip(new TranslatableText(optionKeyText + entry.key + optionTooltipText)).setSaveConsumer(newValue -> config.put(entry.key, newValue)).build());
                 }
 
@@ -240,9 +248,13 @@ public class CodeUtilsConfig {
                             .setTooltip(new TranslatableText(optionKeyText + entry.key + optionTooltipText)).setSaveConsumer(newValue -> config.put(entry.key, newValue)).build());
                 // String Iterable
                 } else if (entry.defaultValue instanceof String[]) {
+                    String[] defaultValue = (String[]) entry.defaultValue;
+                    int index = Integer.parseInt(defaultValue[0]);
+                    List<String> asList = new ArrayList(Arrays.asList(defaultValue));
+                    asList.remove(0);
                     subcategory.add(entryBuilder.startStringDropdownMenu(new TranslatableText(optionKeyText + entry.key), config.getString(entry.key))
-                        .setSelections(Arrays.asList((String[]) entry.defaultValue))
-                        .setDefaultValue(((String[]) entry.defaultValue)[0])
+                            .setSelections(asList)
+                            .setDefaultValue(asList.get(index))
                         .setTooltip(new TranslatableText(optionKeyText + entry.key + optionTooltipText)).setSaveConsumer(newValue -> config.put(entry.key, newValue)).build());
                 }
                 if (subcategory != nextSubcategory) category.addEntry(subcategory.build());
@@ -280,7 +292,16 @@ public class CodeUtilsConfig {
         config = new JSONObject(jsonString);
 
         // add default values to var
-        for (ConfigEntries entry : entryValues) if (!config.has(entry.key)) config.put(entry.key, entry.defaultValue);
+        for (ConfigEntries entry : entryValues) {
+            if (!config.has(entry.key)) {
+                if (entry.defaultValue instanceof String[]) {
+                    String[] defaultValue = (String[]) entry.defaultValue;
+                    int index = Integer.parseInt(defaultValue[0]);
+                    List<String> asList = new ArrayList(Arrays.asList(defaultValue));
+                    config.put(entry.key, asList.get(index + 1));
+                } else config.put(entry.key, entry.defaultValue);
+            }
+        }
 
     }
 
@@ -288,20 +309,23 @@ public class CodeUtilsConfig {
 
         for (Object objKey : obj.keySet().toArray()) {
             String key = objKey.toString();
+            ConfigEntries fromKey = ConfigEntries.fromKey(key);
 
             boolean check = false;
-            if (obj.get(key) instanceof String) {
-                if (obj.getString(key).equals(ConfigEntries.fromKey(key).defaultValue.toString())) check = true;
+            if (obj.get(key) instanceof String && fromKey.defaultValue instanceof String) {
+                if (obj.getString(key).equals(fromKey.defaultValue.toString())) check = true;
             } else if (obj.get(key) instanceof Boolean) {
-                if (obj.getBoolean(key) == Boolean.parseBoolean(ConfigEntries.fromKey(key).defaultValue.toString())) check = true;
+                if (obj.getBoolean(key) == Boolean.parseBoolean(fromKey.defaultValue.toString())) check = true;
             } else if (obj.get(key) instanceof Integer) {
-                if (obj.getInt(key) == Integer.parseInt(ConfigEntries.fromKey(key).defaultValue.toString())) check = true;
+                if (obj.getInt(key) == Integer.parseInt(fromKey.defaultValue.toString())) check = true;
             } else if (obj.get(key) instanceof Float) {
-                if (obj.getFloat(key) == Float.parseFloat(ConfigEntries.fromKey(key).defaultValue.toString())) check = true;
-            } else if (obj.get(key) instanceof String[]) {
-                if (((String[]) obj.get(key))[0].equals("e")) {
-                    //e
-                }
+                if (obj.getFloat(key) == Float.parseFloat(fromKey.defaultValue.toString())) check = true;
+            } else if (fromKey.defaultValue instanceof String[]) {
+                String[] defaultValue = (String[]) fromKey.defaultValue;
+                int index = Integer.parseInt(defaultValue[0]);
+                List<String> asList = new ArrayList(Arrays.asList(defaultValue));
+                String defaultSel = asList.get(index + 1);
+                if (obj.getString(key).equals(defaultSel)) check = true;
             }
 
             if (check) obj.remove(key);
@@ -329,12 +353,6 @@ public class CodeUtilsConfig {
 
     public static float getFloat(String key) {
         return config.getFloat(key);
-    }
-
-    // ---------------------------------------------------------------------------
-
-    public static ConfigSounds getConfigSounds(String key) {
-        return ConfigSounds.None;
     }
 
 }

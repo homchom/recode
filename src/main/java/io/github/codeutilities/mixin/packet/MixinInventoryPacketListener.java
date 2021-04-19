@@ -1,0 +1,61 @@
+package io.github.codeutilities.mixin.packet;
+
+import io.github.codeutilities.commands.util.PlotsCommand;
+import io.github.codeutilities.util.DFInfo;
+import io.github.codeutilities.util.ItemUtil;
+import io.github.codeutilities.util.chat.ChatType;
+import io.github.codeutilities.util.chat.ChatUtil;
+import io.github.codeutilities.util.file.ExternalFile;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtIo;
+import net.minecraft.network.packet.s2c.play.InventoryS2CPacket;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+@Mixin(ClientPlayNetworkHandler.class)
+public class MixinInventoryPacketListener {
+    private static final File FILE = ExternalFile.PLOTS_DB.getFile();
+    private CompoundTag lastTag = null;
+
+    @Inject(method = "onInventory", at = @At("RETURN"))
+    private void onInventory(InventoryS2CPacket packet, CallbackInfo ci) {
+        List<ItemStack> contents = packet.getContents();
+        if (DFInfo.currentState != DFInfo.State.LOBBY) return;
+        if (!MinecraftClient.getInstance().player.getMainHandStack().getName().getString().equals("◇ My Plots ◇")) return;
+        boolean correctInventory = false;
+        for (ItemStack item : contents) {
+            if (item.getName().getString().equals("Claim new plot")) correctInventory = true;
+        }
+        if (!correctInventory) return;
+        List<ItemStack> items = new ArrayList<>();
+        for (short i = 0; i < contents.size(); i++) {
+            ItemStack item = contents.get(i);
+            if (item.getItem().toString().equals("air") || i >= 27) break;
+            items.add(item);
+        }
+        try {
+            CompoundTag compoundTag = new CompoundTag();
+            compoundTag.put("items", ItemUtil.toListTag(PlotsCommand.items));
+            compoundTag.put("betaItems", ItemUtil.toListTag(PlotsCommand.betaItems));
+            compoundTag.put(DFInfo.isInBeta ? "betaItems" : "items", ItemUtil.toListTag(DFInfo.isInBeta ? PlotsCommand.betaItems : PlotsCommand.items));
+            compoundTag.put(DFInfo.isInBeta ? "betaItems" : "items", ItemUtil.toListTag(items));
+            if (lastTag != null && compoundTag.toString().equals(lastTag.toString())) return;
+            NbtIo.write(compoundTag, FILE);
+            PlotsCommand.getItems(compoundTag);
+            lastTag = compoundTag;
+        } catch (IOException e) {
+            e.printStackTrace();
+            ChatUtil.sendMessage("Failed to save plots data!", ChatType.FAIL);
+        }
+    }
+}

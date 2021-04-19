@@ -24,7 +24,8 @@ public class EditItemCommand extends Command {
                     }
                     if (this.isCreative(mc)) {
                         ItemEditorGui itemEditorGui = new ItemEditorGui(item);
-                        itemEditorGui.openAsync(itemEditorGui);
+                        itemEditorGui.open();
+                        itemEditorGui.scheduleOpenGui(itemEditorGui);
                         return 1;
                     } else {
                         return -1;
