@@ -100,6 +100,7 @@ public class CodeUtilitiesCommand extends Command {
                                     "§7･§6/heads§f - Opens a menu to search and get custom heads.\n" +
                                     "§7･§6/node <1|2|3|4|5|beta>§f - Sends you to the specified DiamondFire node.\n" +
                                     "§7･§6/uuid <username>§f - Grabs the Text item with UUID of the specified player.\n" +
+                                    "§7･§6/plots§f - Opens the plots gui without using the item (must use item first to cache plots).\n" +
                                     "§9§m                                                                    "
                             ));
                             return 1;
