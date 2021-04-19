@@ -45,6 +45,7 @@ public class CodeUtilsConfig {
         autonightvis("automation", null,"autonightvis", false),
         autofly("automation", null,"autofly", false),
         autolagslayer("automation", null, "autolagslayer", false),
+        autoChatLocal("automation", null, "autoChatLocal", false),
 
         // commands ------------------------------------------------------------------------
         dfCommands("commands", null, "dfCommands", true),

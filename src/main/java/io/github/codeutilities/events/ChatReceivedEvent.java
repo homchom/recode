@@ -14,6 +14,7 @@ import net.minecraft.text.Text;
 import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -53,6 +54,20 @@ public class ChatReceivedEvent {
                 cancel = true;
                 showCancelMsg = false;
                 DFDiscordRPC.locating = false;
+            }
+        }
+
+        // detect if player is in beta
+        if (DFInfo.currentState == DFInfo.State.LOBBY && text.equals("◆ Welcome back to DiamondFire! ◆")) {
+            DFInfo.isInBeta = false;
+            Collection<String> lines = mc.world.getScoreboard().getKnownPlayers();
+            for (String line : lines) {
+                try {
+                    if (line.startsWith("§aNode ") && (line.split(" ")[1]).equals("Beta§8")) {
+                        DFInfo.isInBeta = true;
+                    }
+                } catch (ArrayIndexOutOfBoundsException ignored) {
+                }
             }
         }
 

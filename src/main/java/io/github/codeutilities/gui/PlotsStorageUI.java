@@ -1,34 +1,30 @@
 package io.github.codeutilities.gui;
 
-import io.github.codeutilities.template.TemplateItem;
-import io.github.codeutilities.template.TemplateStorageHandler;
+import io.github.codeutilities.commands.util.PlotsCommand;
+import io.github.codeutilities.util.DFInfo;
 import io.github.codeutilities.util.IMenu;
+import io.github.codeutilities.util.chat.ChatType;
+import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
-import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import net.minecraft.item.ItemStack;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class TemplateStorageUI extends LightweightGuiDescription implements IMenu {
+public class PlotsStorageUI extends LightweightGuiDescription implements IMenu {
 
-    public TemplateStorageUI() {
+    public PlotsStorageUI() {
     }
 
     @Override
     public void open(String... args) {
-        List<ItemStack> items = new ArrayList<>();
-        for (TemplateItem item : TemplateStorageHandler.getInstance().getRegistered()) {
-            items.add(item.getStack());
+        ItemGridPanel panel = new ItemGridPanel();
+        List<ItemStack> itemlist = DFInfo.isInBeta ? PlotsCommand.betaItems : PlotsCommand.items;
+        if (itemlist == null || itemlist.size() == 0) {
+            ChatUtil.sendMessage("Unable to load plots, please open the menu from the item so it can cache the plots.", ChatType.FAIL);
+            return;
         }
-        WPlainPanel root = new WPlainPanel();
-        ItemScrollablePanel panel = ItemScrollablePanel.with(items);
-        root.setSize(256, 90);
-        panel.setSize(256, 90);
-
-        root.add(panel, 0, 0, 256, 90);
-
-        setRootPanel(root);
-        root.validate(this);
+        for (ItemStack item : itemlist) panel.addItem(new PlotItem(item));
+        setRootPanel(panel);
+        panel.validate(this);
     }
 }
