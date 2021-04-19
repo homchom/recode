@@ -15,16 +15,14 @@ public class HeadsCommand extends Command {
         cd.register(ArgBuilder.literal("heads").executes(ctx -> {
             if (this.isCreative(mc)) {
                 CustomHeadMenu headMenu = CustomHeadMenu.getInstance();
-                headMenu.open("");
-                headMenu.scheduleOpenGui(headMenu);
+                headMenu.scheduleOpenGui(headMenu, "");
             }
             return 1;
         }).then(ArgBuilder.argument("query", StringArgumentType.greedyString()).executes(ctx -> {
             if (this.isCreative(mc)) {
                 String query = ctx.getArgument("query", String.class);
                 CustomHeadMenu headMenu = CustomHeadMenu.getInstance();
-                headMenu.open(query);
-                headMenu.scheduleOpenGui(headMenu);
+                headMenu.scheduleOpenGui(headMenu, query);
             }
             return 1;
         })));
