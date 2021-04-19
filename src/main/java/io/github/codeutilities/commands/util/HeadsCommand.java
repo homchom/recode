@@ -16,7 +16,7 @@ public class HeadsCommand extends Command {
             if (this.isCreative(mc)) {
                 CustomHeadMenu headMenu = CustomHeadMenu.getInstance();
                 headMenu.open("");
-                headMenu.openAsync(headMenu);
+                headMenu.scheduleOpenGui(headMenu);
             }
             return 1;
         }).then(ArgBuilder.argument("query", StringArgumentType.greedyString()).executes(ctx -> {
@@ -24,7 +24,7 @@ public class HeadsCommand extends Command {
                 String query = ctx.getArgument("query", String.class);
                 CustomHeadMenu headMenu = CustomHeadMenu.getInstance();
                 headMenu.open(query);
-                headMenu.openAsync(headMenu);
+                headMenu.scheduleOpenGui(headMenu);
             }
             return 1;
         })));

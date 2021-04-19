@@ -59,7 +59,7 @@ public class TemplatesCommand extends Command {
                     if (this.isCreative(mc)) {
                         TemplateStorageUI templateStorageUI = new TemplateStorageUI();
                         templateStorageUI.open();
-                        templateStorageUI.openAsync(templateStorageUI);
+                        templateStorageUI.scheduleOpenGui(templateStorageUI);
                     } else {
                         return -1;
                     }

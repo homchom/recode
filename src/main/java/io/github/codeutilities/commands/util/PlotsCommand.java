@@ -42,7 +42,7 @@ public class PlotsCommand extends Command {
                 }
                 for (ItemStack item : itemlist) panel.addItem(new PlotItem(item));
                 templateStorageUI.setRootPanel(panel);
-                templateStorageUI.openAsync(templateStorageUI);
+                templateStorageUI.scheduleOpenGui(templateStorageUI);
             } catch (Exception e) {
                 e.printStackTrace();
                 return -1;
