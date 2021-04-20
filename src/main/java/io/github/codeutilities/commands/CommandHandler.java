@@ -62,7 +62,8 @@ public class CommandHandler implements ClientCommandPlugin, IManager<Command> {
                     new ImageHologramCommand(),
                     new ImageParticleCommand(),
                     new SchemCommand(),
-                    new RelativeLocCommand()
+                    new RelativeLocCommand(),
+                    new PlotsCommand()
             );
         }
     }

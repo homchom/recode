@@ -45,9 +45,8 @@ public class MixinInventoryPacketListener {
         }
         try {
             CompoundTag compoundTag = new CompoundTag();
-            compoundTag.put("items", ItemUtil.toListTag(PlotsCommand.items));
-            compoundTag.put("betaItems", ItemUtil.toListTag(PlotsCommand.betaItems));
-            compoundTag.put(DFInfo.isInBeta ? "betaItems" : "items", ItemUtil.toListTag(DFInfo.isInBeta ? PlotsCommand.betaItems : PlotsCommand.items));
+            List<ItemStack> antioverrider = DFInfo.isInBeta ? PlotsCommand.items : PlotsCommand.betaItems;
+            if (antioverrider != null) compoundTag.put(DFInfo.isInBeta ? "items" : "betaItems", ItemUtil.toListTag(antioverrider));
             compoundTag.put(DFInfo.isInBeta ? "betaItems" : "items", ItemUtil.toListTag(items));
             if (lastTag != null && compoundTag.toString().equals(lastTag.toString())) return;
             NbtIo.write(compoundTag, FILE);
