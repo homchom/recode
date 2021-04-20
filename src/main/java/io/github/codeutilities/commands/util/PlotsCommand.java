@@ -29,8 +29,7 @@ public class PlotsCommand extends Command {
         cd.register(ArgBuilder.literal("plots").executes(ctx -> {
             try {
                 PlotsStorageUI plotsStorageUI = new PlotsStorageUI();
-                plotsStorageUI.open();
-                plotsStorageUI.openAsync(plotsStorageUI);
+                plotsStorageUI.scheduleOpenGui(plotsStorageUI);
             } catch (Exception e) {
                 e.printStackTrace();
                 return -1;
