@@ -10,6 +10,7 @@ import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
+import net.minecraft.util.Formatting;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -30,8 +31,8 @@ public class MixinPlayerListHud {
     @Inject(method = "getPlayerName", at = @At("RETURN"), cancellable = true)
     public void getPlayerName(PlayerListEntry entry, CallbackInfoReturnable<Text> cir) {
         if (codeutilitiesUsers == null) {
-            devStar = new LiteralText("§d⭐ ");
-            userStar = new LiteralText("§3⭐ ");
+            devStar = new LiteralText(" ⭐").formatted(Formatting.LIGHT_PURPLE);
+            userStar = new LiteralText(" ⭐").formatted(Formatting.GRAY);
             codeutilitiesUsers = new HashMap<>();
         }
 
@@ -43,7 +44,7 @@ public class MixinPlayerListHud {
             int num = codeutilitiesUsers.get(id);
             if (num == 2 || num == 3) {
                 Text star = num == 3 ? devStar : userStar;
-                name = star.copy().append(name);
+                name = name.copy().append(star);
             }
         } else {
             codeutilitiesUsers.put(id, 0);
