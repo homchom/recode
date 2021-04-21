@@ -42,9 +42,8 @@ public abstract class Client implements Closeable {
                 throw new Exception("Player is not logged in!");
             }
 
-            ItemUtil.giveCreativeItem(item.getItem(itemData), true);
-
             if (player.isCreative()) {
+                ItemUtil.giveCreativeItem(item.getItem(itemData), true);
                 ToasterUtil.sendToaster("Received Item!", source, SystemToast.Type.NARRATOR_TOGGLE);
                 player.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 200, 1);
                 result.addProperty("status", "success");
