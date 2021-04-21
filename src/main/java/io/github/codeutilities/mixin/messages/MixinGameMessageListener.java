@@ -87,7 +87,7 @@ public class MixinGameMessageListener {
                             String version = WebUtil.getString("https://codeutilities.github.io/data/currentversion.txt").replaceAll("\n", "");
                             if (!CodeUtilities.MOD_VERSION.equals(version) && !CodeUtilities.BETA) {
                                 minecraftClient.player.sendMessage(new LiteralText(String.format("A new version of CodeUtilities (%s) is available! Click here to download!", version)).styled(style ->
-                                        style.withColor(TextColor.fromFormatting(Formatting.AQUA))).styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://codeutilities.github.io/"))), false);
+                                        style.withColor(TextColor.fromFormatting(Formatting.YELLOW))).styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://codeutilities.github.io/"))), false);
                             }
 
                         } catch (IOException ignored) {
