@@ -17,21 +17,13 @@ public class FuncSearchUtil {
             return false;
         }
 
-        if (blockEntity.getTextOnRow(0).getSiblings().size() > 0 && blockEntity.getTextOnRow(1).getSiblings().size() > 0) {
-            return searchType.getSignText().contains(blockEntity.getTextOnRow(0).getSiblings().get(0).asString()) &&
-                    searchValue.equals(blockEntity.getTextOnRow(1).getSiblings().get(0).asString());
-        } else {
-            return false;
-        }
+        return searchType.getSignText().contains(blockEntity.getTextOnRow(0).getString()) &&
+                searchValue.equals(blockEntity.getTextOnRow(1).getString());
     }
 
     public static void beginSearch(SignBlockEntity signBlockEntity) {
-        if (signBlockEntity.getTextOnRow(0).getSiblings().size() == 0 || signBlockEntity.getTextOnRow(1).getSiblings().size() == 0) {
-            clearSearch();
-            return;
-        }
-        SearchType searchType = SearchType.getType(signBlockEntity.getTextOnRow(0).getSiblings().get(0).asString());
-        String searchValue = signBlockEntity.getTextOnRow(1).getSiblings().get(0).asString();
+        SearchType searchType = SearchType.getType(signBlockEntity.getTextOnRow(0).getString());
+        String searchValue = signBlockEntity.getTextOnRow(1).getString();
 
         if (searchType == null || searchValue.length() == 0) {
             clearSearch();

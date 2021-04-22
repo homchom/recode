@@ -276,7 +276,7 @@ public class Keybinds implements ClientModInitializer {
 
             // search
             while (searchFunction.wasPressed()) {
-                if (CodeUtilsConfig.getBool("functionProcessSearch") && DFInfo.isOnDF() && DFInfo.currentState == DFInfo.State.DEV && mc.player.isCreative()) {
+                if (DFInfo.isOnDF() && DFInfo.currentState == DFInfo.State.DEV && mc.player.isCreative()) {
                     BlockEntity blockEntity = mc.world.getBlockEntity(new BlockPos(mc.crosshairTarget.getPos()));
 
                     if (blockEntity != null) {

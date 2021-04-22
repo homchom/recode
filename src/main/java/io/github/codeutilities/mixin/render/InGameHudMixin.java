@@ -20,7 +20,7 @@ public class InGameHudMixin {
     private void renderStatusEffectOverlay(MatrixStack stack, CallbackInfo ci) {
         CPU_UsageText.onRender(stack);
 
-        if (FuncSearchUtil.searchType != null && FuncSearchUtil.searchValue != null && CodeUtilsConfig.getBool("functionProcessSearch") && DFInfo.isOnDF() && DFInfo.currentState == DFInfo.State.DEV) {
+        if (FuncSearchUtil.searchType != null && FuncSearchUtil.searchValue != null && DFInfo.isOnDF() && DFInfo.currentState == DFInfo.State.DEV) {
             MinecraftClient mc = CodeUtilities.MC;
             mc.textRenderer.drawWithShadow(stack, new LiteralText("Searching usages of " + FuncSearchUtil.searchType.toString()).styled(style -> style.withUnderline(true)), 2, 2, 0xffffff);
             mc.textRenderer.drawWithShadow(stack, new LiteralText(FuncSearchUtil.searchValue), 2, 12, 0xffffff);
