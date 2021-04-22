@@ -32,9 +32,15 @@ public class WebviewCommand extends AbstractTemplateCommand {
             try {
                 HttpClient httpClient = HttpClientBuilder.create().build();
                 HttpPost post = new HttpPost("https://twv.vercel.app/v2/create");
-                StringEntity postingString = new StringEntity("template=" + data);
+
+                JsonObject json = new JsonObject();
+                json.addProperty("temp",true);
+                json.addProperty("template",data);
+
+                StringEntity postingString = new StringEntity(json.toString());
                 post.setEntity(postingString);
-                post.setHeader("content-type", "application/x-www-form-urlencoded");
+                post.setHeader("content-type", "application/json");
+                post.setHeader("user-agent", "CodeUtilities");
                 HttpResponse res = httpClient.execute(post);
 
                 String response = EntityUtils.toString(res.getEntity());
