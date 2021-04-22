@@ -1,5 +1,6 @@
-package io.github.codeutilities.gui;
+package io.github.codeutilities.gui.menus;
 
+import io.github.codeutilities.gui.widgets.ItemScrollablePanel;
 import io.github.codeutilities.template.TemplateItem;
 import io.github.codeutilities.template.TemplateStorageHandler;
 import io.github.codeutilities.util.IMenu;

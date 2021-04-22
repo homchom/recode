@@ -1,5 +1,6 @@
-package io.github.codeutilities.gui;
+package io.github.codeutilities.gui.widgets;
 
+import io.github.codeutilities.gui.widgets.CItem;
 import io.github.codeutilities.util.ItemUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;

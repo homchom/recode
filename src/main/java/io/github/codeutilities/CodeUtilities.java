@@ -4,7 +4,7 @@ import com.google.gson.JsonParser;
 import io.github.codeutilities.config.CodeUtilsConfig;
 import io.github.codeutilities.cosmetics.CosmeticHandler;
 import io.github.codeutilities.dfrpc.DFDiscordRPC;
-import io.github.codeutilities.gui.CustomHeadMenu;
+import io.github.codeutilities.gui.menus.CustomHeadMenu;
 import io.github.codeutilities.social.PlayerlistStarServer;
 import io.github.codeutilities.template.TemplateStorageHandler;
 import io.github.codeutilities.util.socket.SocketHandler;

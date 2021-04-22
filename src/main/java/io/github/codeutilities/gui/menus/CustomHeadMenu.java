@@ -1,8 +1,10 @@
-package io.github.codeutilities.gui;
+package io.github.codeutilities.gui.menus;
 
 import com.google.gson.*;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.CodeUtilsConfig;
+import io.github.codeutilities.gui.widgets.CTextField;
+import io.github.codeutilities.gui.widgets.ItemScrollablePanel;
 import io.github.codeutilities.util.ILoader;
 import io.github.codeutilities.util.IMenu;
 import io.github.codeutilities.util.networking.WebUtil;

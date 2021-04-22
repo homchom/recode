@@ -1,7 +1,8 @@
-package io.github.codeutilities.gui;
+package io.github.codeutilities.gui.widgets;
 
 import com.google.gson.JsonObject;
 import io.github.codeutilities.CodeUtilities;
+import io.github.codeutilities.gui.widgets.CItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.ListTag;
 
