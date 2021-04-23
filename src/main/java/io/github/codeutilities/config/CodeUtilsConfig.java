@@ -90,6 +90,7 @@ public class CodeUtilsConfig {
         cpuOnScreen("screen", null, "cpuOnScreen", true),
         f3Tps("screen", null, "f3Tps", true),
         cosmeticType("screen", null, "cosmeticType", new String[]{"1", "Enabled", "Spawn", "Disabled"}),
+        previewHeadSkin("screen",null,"previewHeadSkin", false),
 
         // misc ----------------------------------------------------------------------------
         itemApi("misc", null, "itemApi", true),
