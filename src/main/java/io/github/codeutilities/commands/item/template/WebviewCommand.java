@@ -63,7 +63,7 @@ public class WebviewCommand extends AbstractTemplateCommand {
                     "Click this message to view this code template in web!");
                 text.styled((style) -> style
                     .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL,
-                        "https://https://derpystuff.gitlab.io/code/?template=" + data)));
+                        "https://derpystuff.gitlab.io/code/?template=" + data)));
                 ChatUtil.sendMessage(text, ChatType.INFO_BLUE);
             }
         });
