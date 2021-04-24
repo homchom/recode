@@ -36,7 +36,7 @@
 
     "config.codeutilities.option.autoRC": "Automaattinen /rc",
     "config.codeutilities.option.autoRC.tooltip": "Automaattisesti suorittaa /rc kuin\nsiirtyy ohjelmointi tai rakentamis tilaan.",
-    "config.codeutilities.option.autonightvis": "Auto /nightvis",
+    "config.codeutilities.option.autonightvis": "Automaattinen /nightvis",
     "config.codeutilities.option.autonightvis.tooltip": "Automaattisesti käyttää yönäköä\nkuin siirtyy ohjelmointi tai rakentamis tilaan.",
     "config.codeutilities.option.autofly": "Automattinen /fly",
     "config.codeutilities.option.autofly.tooltip": "Automaattisesti suorittaa /fly spawnissa.",
@@ -171,5 +171,8 @@
     "key.codeutilities.node3": "Node 3",
     "key.codeutilities.node4": "Node 4",
     "key.codeutilities.node5": "Node 5",
-    "key.codeutilities.node_beta": "Node Beta"
+    "key.codeutilities.node_beta": "Node Beta",
+
+    "config.codeutilities.option.autoChatLocal": "Automaattinen /chat local",
+    "config.codeutilities.option.autoChatLocal.tooltip": "Automaattisesti suorittaa /chat local\nkuin liityt omaan plottiisi."
   }
