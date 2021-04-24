@@ -133,9 +133,6 @@
 
     "codeutilities.command.require_creative_mode": "You must be in creative mode to use this command!",
 
-    "text.autoconfig.jeremaster.option.streamerMode": "Streamer Mode",
-    "text.autoconfig.jeremaster.option.streamerMode.tooltip": "Automatically unvanishes you and hides the following messages: Session Spy, Muted Chat, Social Spy || Support Queue, Support Question, Support Broadcast || Mod Broadcast, Reports",
-
     "key.category.codeutilities": "CodeUtilities",
 
     "key.codeutilities.play": "Mode Play",
