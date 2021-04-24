@@ -42,8 +42,8 @@
     "config.codeutilities.option.autofly.tooltip": "Automatically runs /fly at spawn.",
     "config.codeutilities.option.autolagslayer": "Auto /lagslayer",
     "config.codeutilities.option.autolagslayer.tooltip": "Automatically display CPU usage upon\njoining one of your plots.",
-    "config.codeutilities.option.autofly": "Auto /chat local",
-    "config.codeutilities.option.autofly.tooltip": "Automatically runs /chat local.",
+    "config.codeutilities.option.autoChatLocal": "Auto /chat local",
+    "config.codeutilities.option.autoChatLocal.tooltip": "Automatically runs /chat local.",
 
     "config.codeutilities.subcategory.misc_discordrpc": "Discord Rich Presence",
     "config.codeutilities.subcategory.misc_discordrpc.tooltip": "Shows where you are in DiamondFire\non your Discord user profile.",
