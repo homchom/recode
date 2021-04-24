@@ -7,6 +7,7 @@ import io.github.codeutilities.events.ChatReceivedEvent;
 import io.github.codeutilities.gui.CPU_UsageText;
 import io.github.codeutilities.keybinds.FlightspeedToggle;
 import io.github.codeutilities.util.DFInfo;
+import io.github.codeutilities.util.chat.MessageGrabber;
 import io.github.codeutilities.util.networking.WebUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -35,6 +36,14 @@ public class MixinGameMessageListener {
 
     @Inject(method = "onGameMessage", at = @At("HEAD"), cancellable = true)
     private void onGameMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
+        if(MessageGrabber.isActive()) {
+            MessageGrabber.supply(packet.getMessage());
+
+            if(MessageGrabber.isSilent()) {
+                ci.cancel();
+                CodeUtilities.log(Level.INFO, "[CANCELLED] " + packet.getMessage().getString());
+            }
+        }
         if (DFInfo.isOnDF()) {
             if (packet.getLocation() == MessageType.CHAT || packet.getLocation() == MessageType.SYSTEM) {
                 if (Thread.currentThread().getName().equals("Render thread")) {

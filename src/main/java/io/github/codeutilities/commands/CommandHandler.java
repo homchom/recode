@@ -45,7 +45,8 @@ public class CommandHandler implements ClientCommandPlugin, IManager<Command> {
                 new EditItemCommand(),
                 new CopyTextCommand(),
                 new GradientCommand(),
-                new ConfigCommand()
+                new ConfigCommand(),
+                new DebugCommand()
         );
 
         if (CodeUtilsConfig.getBool("dfCommands")) {
