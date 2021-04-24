@@ -16,16 +16,16 @@
     "config.codeutilities.option.chestReplacement": "Visualizza Casse come Barili",
     "config.codeutilities.option.chestReplacement.tooltip": "Visualizza tutte le casse come barili.",
     "config.codeutilities.option.signRenderDistance": "Distanza di Resa Cartelli",
-    "config.codeutilities.option.signRenderDistance.tooltip": "Distanza massima per visualizzare cartelli.",
+    "config.codeutilities.option.signRenderDistance.tooltip": "Distanza massima per visualizzare i cartelli.",
 
     "config.codeutilities.option.dfButton": "Pulsante DiamondFire",
     "config.codeutilities.option.dfButton.tooltip": "Aggiunge un pulsante nello schermo del titolo per entrare in DiamondFire.",
     "config.codeutilities.option.itemApi": "Item API",
     "config.codeutilities.option.itemApi.tooltip": "Usato per inviare oggetti da programmi di terze parti.",
-    "config.codeutilities.option.variableScopeView": "Visualizza Tipo Variabi",
+    "config.codeutilities.option.variableScopeView": "Visualizza Tipo Variabile",
     "config.codeutilities.option.variableScopeView.tooltip": "Mostra il tipo di variabile sotto il nome dell'oggetto.\n(GAME, SAVE, LOCAL)",
     "config.codeutilities.option.cosmeticType": "Mostra Cosmetici",
-    "config.codeutilities.option.cosmeticType.tooltip": "Mostra cosmetici di CodeUtilities come\ni matelli e i cappelli degli sviluppatori.",
+    "config.codeutilities.option.cosmeticType.tooltip": "Mostra cosmetici di CodeUtilities come\ni mantelli e i cappelli degli sviluppatori.",
 
     "config.codeutilities.subcategory.automation_time": "Auto /time",
     "config.codeutilities.subcategory.automation_time.tooltip": "Esegue automaticamente /time\nquando si entra in dev o build mode.",
@@ -50,7 +50,7 @@
     "config.codeutilities.option.discordRPC": "Attivo",
     "config.codeutilities.option.discordRPC.tooltip": "Attiva questa funzionalità.",
     "config.codeutilities.option.discordRPCTimeout": "Timeout Messaggio",
-    "config.codeutilities.option.discordRPCTimeout.tooltip": "Millisecondi massimi la mod controllerà\n la chat per nascondere /locate.",
+    "config.codeutilities.option.discordRPCTimeout.tooltip": "Millisecondi massimi in cui la mod controllerà\nla chat per nascondere /locate.",
     "config.codeutilities.option.discordRPCShowElapsed": "Mostra Tempo Trascorso",
     "config.codeutilities.option.discordRPCShowElapsed.tooltip": "Mostra il campo \"Tempo Trascorso\" nella tua attività di gioco.",
 
@@ -59,7 +59,7 @@
     "config.codeutilities.option.errorSound": "Suono del Messaggio di Errore",
     "config.codeutilities.option.errorSound.tooltip": "Riproduce un suono quando la mod invia un messaggio di errore.",
     "config.codeutilities.option.headMenuMaxRender": "Teste Massime in /heads",
-    "config.codeutilities.option.headMenuMaxRender.tooltip": "Quantità di teste da visualizzare nel menù di /heads.",
+    "config.codeutilities.option.headMenuMaxRender.tooltip": "Quantità di teste da visualizzare nel menu di /heads.",
 
     "config.codeutilities.subcategory.commands_colors": "Comando /colors",
     "config.codeutilities.option.commands_colors.tooltip": "Impostazioni riguardanti il comando /colors.",
@@ -78,7 +78,7 @@
     "config.codeutilities.option.functionProcessSearch.tooltip": "Mostra a te tutti gli utilizzi di una function o process.",
 
     "config.codeutilities.subcategory.keybinds_flightspeed": "Valori del Keyblind Velocità in Volo",
-    "config.codeutilities.subcategory.keybinds_flightspeed.tooltip": "Valori utilizzati per i keyblind per la Velocità in Volo\nche si trovano nel menù \"Opzioni -> Controlli -> CodeUtilities\".",
+    "config.codeutilities.subcategory.keybinds_flightspeed.tooltip": "Valori utilizzati per i keyblind per la Velocità in Volo\nche si trovano nel menu \"Opzioni -> Controlli -> CodeUtilities\".",
     "config.codeutilities.option.fsNormal": "Velocità in Volo Normale",
     "config.codeutilities.option.fsNormal.tooltip": "Velocità in volo utilizzata nel keybind \"Velocità in Volo Normale\".",
     "config.codeutilities.option.fsMed": "Velocità in Volo Media",
@@ -92,7 +92,7 @@
     "config.codeutilities.option.highlightIgnoreSender.tooltip": "Ignora il mittente del messaggio\nin chat per l'evidenziazione.",
 
     "config.codeutilities.subcategory.highlight_text": "Testo",
-    "config.codeutilities.subcategory.highlight_text.tooltip": "Impostazione per l'evidenziazione del testo.",
+    "config.codeutilities.subcategory.highlight_text.tooltip": "Impostazioni per l'evidenziazione del testo.",
     "config.codeutilities.option.highlightMatcher": "Matcher",
     "config.codeutilities.option.highlightMatcher.tooltip": "Testo da evidenziare.\n{name} viene rimpiazzato con il tuo nome utente.",
     "config.codeutilities.option.highlightPrefix": "Prefisso",
@@ -104,11 +104,11 @@
     "config.codeutilities.option.highlightSound.tooltip": "Suono da riprodurre quando un testo\nviene evidenziato. Seleziona \"None\" per disablitare.",
     "config.codeutilities.option.highlightSoundVolume": "Volume",
     "config.codeutilities.option.highlightSoundVolume.tooltip": "Volume del suono precendente.",
-    "config.codeutilities.option.highlightOwnSenderSound": "Riproduci Suono se Mittente",
-    "config.codeutilities.option.highlightOwnSenderSound.tooltip": "Riproduce un siono se tu sei il mittente del messaggio. Richiede:\n- Un suono deve essere selezionato\n- Il mittente del messaggio deve essere ignorato",
+    "config.codeutilities.option.highlightOwnSenderSound": "Riproduci Suono se Il Mittente",
+    "config.codeutilities.option.highlightOwnSenderSound.tooltip": "Riproduce un suono se tu sei il mittente del messaggio. Richiede:\n- Un suono deve essere selezionato\n- Il mittente del messaggio deve essere ignorato",
 
     "config.codeutilities.option.hideJoinLeaveMessages": "Nascondi Messaggi Join/Leave",
-    "config.codeutilities.option.hideJoinLeaveMessages.tooltip": "Nasconde i messaggi di giocatori che si\nconnettono o disconettono dal node attale.",
+    "config.codeutilities.option.hideJoinLeaveMessages.tooltip": "Nasconde i messaggi di giocatori che si\nconnettono o disconettono dal node attuale.",
     "config.codeutilities.option.hideVarScopeMessages": "Nascondi Messaggi Tipo di Variabile",
     "config.codeutilities.option.hideVarScopeMessages.tooltip": "Nasconde i messaggi relativi al cambio di tipo di variabile.",
 
