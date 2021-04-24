@@ -174,5 +174,5 @@
     "key.codeutilities.node_beta": "Node Beta",
 
     "config.codeutilities.option.autoChatLocal": "Automaattinen /chat local",
-    "config.codeutilities.option.autoChatLocal.tooltip": "Automaattisesti suorittaa /chat local\nkuin liityt omaan plottiisi."
+    "config.codeutilities.option.autoChatLocal.tooltip": "Automaattisesti suorittaa /chat local"
   }
