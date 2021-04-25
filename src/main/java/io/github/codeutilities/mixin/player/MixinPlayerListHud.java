@@ -2,9 +2,11 @@ package io.github.codeutilities.mixin.player;
 
 import com.google.gson.JsonObject;
 import io.github.codeutilities.CodeUtilities;
+import io.github.codeutilities.config.CodeUtilsConfig;
 import io.github.codeutilities.util.networking.WebUtil;
-import java.util.HashMap;
-import java.util.UUID;
+
+import java.util.*;
+
 import net.minecraft.client.gui.hud.PlayerListHud;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.text.LiteralText;
@@ -19,25 +21,24 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(PlayerListHud.class)
 public class MixinPlayerListHud {
 
-    HashMap<UUID, Integer> codeutilitiesUsers;
+    Map<UUID, Integer> codeutilitiesUsers = Collections.synchronizedMap(new HashMap<>());
 //    0 = request made
 //    1 = vanilla
 //    2 = codeutilities
 //    3 = codeutilities dev
 
-    Text userStar;
-    Text devStar;
+    Text userStar = new LiteralText("§7⭐");
+    Text devStar = new LiteralText("§a⭐");
 
     @Inject(method = "getPlayerName", at = @At("RETURN"), cancellable = true)
     public void getPlayerName(PlayerListEntry entry, CallbackInfoReturnable<Text> cir) {
-        if (codeutilitiesUsers == null) {
-            devStar = new LiteralText("§a⭐");
-            userStar = new LiteralText("§7⭐");
-            codeutilitiesUsers = new HashMap<>();
+        if (!CodeUtilsConfig.getBool("loadTabStars")) {
+            return;
         }
-
+        
         UUID id = entry.getProfile().getId();
         Text name = cir.getReturnValue();
+        
         if (codeutilitiesUsers.containsKey(id)) {
             int num = codeutilitiesUsers.get(id);
             if (num == 2 || num == 3) {
@@ -58,13 +59,11 @@ public class MixinPlayerListHud {
                         if (hasCodeutilities) {
                             try {
                                 JsonObject jsonData = WebUtil
-                                        .getJson("https://codeutilities.github.io/data/cosmetics/players/" + id.toString() + ".json")
+                                        .getJson("https://codeutilities.github.io/data/cosmetics/players/" + id + ".json")
                                         .getAsJsonObject();
 
                                 boolean dev = jsonData.get("dev").getAsBoolean();
-
                                 codeutilitiesUsers.put(id, dev ? 3 : 2);
-
                             } catch (Exception e) {
                                 codeutilitiesUsers.put(id, 2);
                             }
@@ -78,7 +77,7 @@ public class MixinPlayerListHud {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    codeutilitiesUsers.remove(id);
+                    // codeutilitiesUsers.remove(id); Don't remove as this forces a reload.
                 }
             });
         }

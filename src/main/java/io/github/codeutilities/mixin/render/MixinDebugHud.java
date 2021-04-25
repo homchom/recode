@@ -14,18 +14,18 @@ import java.util.List;
 
 @Mixin(DebugHud.class)
 public class MixinDebugHud {
-    private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
-
+  
     @Inject(method = "getLeftText", at = @At("RETURN"), cancellable = true)
     protected void getLeftText(CallbackInfoReturnable<List<String>> callbackInfoReturnable) {
+        if (!CodeUtilsConfig.getBool("f3Tps")) {
+            return;
+        }
+        
         try {
             List<String> leftText = callbackInfoReturnable.getReturnValue();
-
-            if (CodeUtilsConfig.getBool("f3Tps")) {
-                leftText.add("");
-                leftText.add(Formatting.UNDERLINE + "CodeUtilities");
-                leftText.add("Client TPS: " + TPSUtil.TPS);
-            }
+            leftText.add("");
+            leftText.add(Formatting.UNDERLINE + "CodeUtilities");
+            leftText.add("Client TPS: " + TPSUtil.TPS);
 
             callbackInfoReturnable.setReturnValue(leftText);
         } catch (Exception e) {

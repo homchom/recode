@@ -1,6 +1,7 @@
 package io.github.codeutilities.mixin.packet;
 
 import io.github.codeutilities.commands.util.PlotsCommand;
+import io.github.codeutilities.config.CodeUtilsConfig;
 import io.github.codeutilities.util.DFInfo;
 import io.github.codeutilities.util.ItemUtil;
 import io.github.codeutilities.util.chat.ChatType;
@@ -29,6 +30,10 @@ public class MixinInventoryPacketListener {
 
     @Inject(method = "onInventory", at = @At("RETURN"))
     private void onInventory(InventoryS2CPacket packet, CallbackInfo ci) {
+        if (!CodeUtilsConfig.getBool("cmdLoadPlots")) {
+            return;
+        }
+        
         List<ItemStack> contents = packet.getContents();
         if (DFInfo.currentState != DFInfo.State.LOBBY) return;
         if (!MinecraftClient.getInstance().player.getMainHandStack().getName().getString().equals("◇ My Plots ◇")) return;

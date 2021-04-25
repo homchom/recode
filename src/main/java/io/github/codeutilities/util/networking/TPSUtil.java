@@ -1,5 +1,7 @@
 package io.github.codeutilities.util.networking;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+
 import java.math.BigDecimal;
 
 public class TPSUtil {
@@ -9,7 +11,7 @@ public class TPSUtil {
     private static long lastTpsTimestamp = 0;
 
     public static void calculateTps(long packetTimestamp) {
-        if (!Thread.currentThread().getName().contains("Render thread")) {
+        if (!RenderSystem.isOnRenderThread()) {
             return;
         }
 

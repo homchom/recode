@@ -26,6 +26,8 @@
     "config.codeutilities.option.variableScopeView.tooltip": "Shows the variable scope under the item name.\n(GAME, SAVE, LOCAL)",
     "config.codeutilities.option.cosmeticType": "Show Cosmetics",
     "config.codeutilities.option.cosmeticType.tooltip": "Shows CodeUtilities cosmetics such\nas developer capes and hats.",
+    "config.codeutilities.option.loadTabStars": "Load Tablist Stars",
+    "config.codeutilities.option.loadTabStars.tooltip": "Shows other players that are using codeutilities.",
 
     "config.codeutilities.subcategory.automation_time": "Auto /time",
     "config.codeutilities.subcategory.automation_time.tooltip": "Automatically runs /time upon\nentering dev or build mode.",
@@ -67,6 +69,9 @@
     "config.codeutilities.option.colorMaxRender.tooltip": "Amount of color bars to display in one color line.",
     "config.codeutilities.option.colorLines": "Maximum Rows",
     "config.codeutilities.option.colorLines.tooltip": "Amount of rows to show in /color.",
+
+    "config.codeutilities.option.cmdLoadPlots": "/plots loading",
+    "config.codeutilities.option.cmdLoadPlots.tooltip": "Should plots be cached or not for /plots.",
 
     "config.codeutilities.option.socialFeatures": "Enable Social Features",
     "config.codeutilities.option.codeUtilsChat": "CodeUtilities Chat",

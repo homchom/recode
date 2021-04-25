@@ -54,6 +54,7 @@ public class CodeUtilsConfig {
 
         colorMaxRender("commands", "colors", "colorMaxRender", 158),
         colorLines("commands", "colors", "colorLines", 5),
+        plotCmdLoading("commands",null,"cmdLoadPlots", true),
 
         // hiding -------------------------------------------------------------------------
         hideJoinLeaveMessages("hiding", null, "hideJoinLeaveMessages", false),
@@ -91,7 +92,7 @@ public class CodeUtilsConfig {
         f3Tps("screen", null, "f3Tps", true),
         cosmeticType("screen", null, "cosmeticType", new String[]{"1", "Enabled", "Spawn", "Disabled"}),
         previewHeadSkin("screen",null,"previewHeadSkin", false),
-
+        loadTabStars("screen",null,"loadTabStars", true),
         // misc ----------------------------------------------------------------------------
         itemApi("misc", null, "itemApi", true),
         quickVarScope("misc", null, "quickVarScope", true),
@@ -99,7 +100,6 @@ public class CodeUtilsConfig {
         discordRPC("misc", "discordrpc", "discordRPC", true),
         discordRPCTimeout("misc", "discordrpc", "discordRPCTimeout", 15000),
         discordRPCShowElapsed("misc", "discordrpc", "discordRPCShowElapsed", true);
-
         // --------------------------------------------------------------------------------------
 
         final String category;
@@ -219,7 +219,7 @@ public class CodeUtilsConfig {
                 } else if (entry.defaultValue instanceof String[]) {
                     String[] defaultValue = (String[]) entry.defaultValue;
                     int index = Integer.parseInt(defaultValue[0]);
-                    List<String> asList = new ArrayList(Arrays.asList(defaultValue));
+                    List<String> asList = new ArrayList<>(Arrays.asList(defaultValue));
                     asList.remove(0);
                     category.addEntry(entryBuilder.startStringDropdownMenu(new TranslatableText(optionKeyText + entry.key), config.getString(entry.key))
                             .setSelections(asList)
@@ -252,7 +252,7 @@ public class CodeUtilsConfig {
                 } else if (entry.defaultValue instanceof String[]) {
                     String[] defaultValue = (String[]) entry.defaultValue;
                     int index = Integer.parseInt(defaultValue[0]);
-                    List<String> asList = new ArrayList(Arrays.asList(defaultValue));
+                    List<String> asList = new ArrayList<>(Arrays.asList(defaultValue));
                     asList.remove(0);
                     subcategory.add(entryBuilder.startStringDropdownMenu(new TranslatableText(optionKeyText + entry.key), config.getString(entry.key))
                             .setSelections(asList)
@@ -299,7 +299,7 @@ public class CodeUtilsConfig {
                 if (entry.defaultValue instanceof String[]) {
                     String[] defaultValue = (String[]) entry.defaultValue;
                     int index = Integer.parseInt(defaultValue[0]);
-                    List<String> asList = new ArrayList(Arrays.asList(defaultValue));
+                    List<String> asList = new ArrayList<>(Arrays.asList(defaultValue));
                     config.put(entry.key, asList.get(index + 1));
                 } else config.put(entry.key, entry.defaultValue);
             }
@@ -325,7 +325,7 @@ public class CodeUtilsConfig {
             } else if (fromKey.defaultValue instanceof String[]) {
                 String[] defaultValue = (String[]) fromKey.defaultValue;
                 int index = Integer.parseInt(defaultValue[0]);
-                List<String> asList = new ArrayList(Arrays.asList(defaultValue));
+                List<String> asList = new ArrayList<>(Arrays.asList(defaultValue));
                 String defaultSel = asList.get(index + 1);
                 if (obj.getString(key).equals(defaultSel)) check = true;
             }

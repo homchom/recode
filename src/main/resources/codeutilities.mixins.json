@@ -18,7 +18,6 @@
     "render.MixinChestBlockEntityRenderer",
     "render.MixinDebugHud",
     "render.MixinPlayerEntityRenderer",
-    "render.ModelLoaderAccessor",
     "render.SignBlockEntityRenderMixin",
     "screen.MixinOptionsScreen",
     "screen.MixinTitleScreen"

@@ -1,5 +1,6 @@
 package io.github.codeutilities.mixin.messages;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.CodeUtilsConfig;
 import io.github.codeutilities.dfrpc.DFDiscordRPC;
@@ -46,7 +47,7 @@ public class MixinGameMessageListener {
         }
         if (DFInfo.isOnDF()) {
             if (packet.getLocation() == MessageType.CHAT || packet.getLocation() == MessageType.SYSTEM) {
-                if (Thread.currentThread().getName().equals("Render thread")) {
+                if (RenderSystem.isOnRenderThread()) {
                     ChatReceivedEvent.onMessage(packet.getMessage(), ci);
                     String text = packet.getMessage().getString();
                     try {
