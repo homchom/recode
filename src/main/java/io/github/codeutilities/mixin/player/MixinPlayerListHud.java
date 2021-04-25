@@ -31,36 +31,41 @@ public class MixinPlayerListHud {
     @Inject(method = "getPlayerName", at = @At("RETURN"), cancellable = true)
     public void getPlayerName(PlayerListEntry entry, CallbackInfoReturnable<Text> cir) {
         if (codeutilitiesUsers == null) {
-            devStar = new LiteralText(" ⭐").formatted(Formatting.LIGHT_PURPLE);
-            userStar = new LiteralText(" ⭐").formatted(Formatting.GRAY);
+            devStar = new LiteralText("§d⭐");
+            userStar = new LiteralText("§7⭐");
             codeutilitiesUsers = new HashMap<>();
         }
 
         UUID id = entry.getProfile().getId();
-
         Text name = cir.getReturnValue();
-
         if (codeutilitiesUsers.containsKey(id)) {
             int num = codeutilitiesUsers.get(id);
             if (num == 2 || num == 3) {
                 Text star = num == 3 ? devStar : userStar;
-                name = name.copy().append(star);
+                name = star.copy().append(name);
             }
         } else {
             codeutilitiesUsers.put(id, 0);
             CodeUtilities.EXECUTOR.submit(() -> {
                 try {
                     JsonObject json = WebUtil
-                        .getJson("https://untitled-mnlfv6uw5c06.runkit.sh/get/" + id.toString().replaceAll("-",""))
+                        .getJson("https://CodeUtilities-Player-DB.techstreetdev.repl.co/get/" + id.toString().replaceAll("-",""))
                         .getAsJsonObject();
 
                     if (json.get("success").getAsBoolean()) {
                         boolean hasCodeutilities = json.get("codeutilities").getAsBoolean();
 
                         if (hasCodeutilities) {
+                            try {
+                                JsonObject jsonData = WebUtil
+                                        .getJson("https://raw.githubusercontent.com/CodeUtilities/data/main/cosmetics/players/" + id.toString() + ".json")
+                                        .getAsJsonObject();
 
-                            //TODO add check for codeutilities devs and set their number to 3
-                            codeutilitiesUsers.put(id, 2);
+                                boolean dev = jsonData.get("dev").getAsBoolean();
+                                codeutilitiesUsers.put(id, dev ? 3 : 2);
+                            } catch (Exception e) {
+                                codeutilitiesUsers.put(id, 2);
+                            }
 
                         } else {
                             codeutilitiesUsers.put(id, 1);
