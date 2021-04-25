@@ -49,7 +49,7 @@ public class MixinPlayerListHud {
             CodeUtilities.EXECUTOR.submit(() -> {
                 try {
                     JsonObject json = WebUtil
-                        .getJson("https://CodeUtilities-Player-DB.techstreetdev.repl.co/get/" + id.toString().replaceAll("-",""))
+                        .getJson("http://CodeUtilities-Player-DB.techstreetdev.repl.co/get/" + id.toString().replaceAll("-",""))
                         .getAsJsonObject();
 
                     if (json.get("success").getAsBoolean()) {
@@ -58,7 +58,7 @@ public class MixinPlayerListHud {
                         if (hasCodeutilities) {
                             try {
                                 JsonObject jsonData = WebUtil
-                                        .getJson("https://raw.githubusercontent.com/CodeUtilities/data/main/cosmetics/players/" + id.toString() + ".json")
+                                        .getJson("http://raw.githubusercontent.com/CodeUtilities/data/main/cosmetics/players/" + id.toString() + ".json")
                                         .getAsJsonObject();
 
                                 boolean dev = jsonData.get("dev").getAsBoolean();
