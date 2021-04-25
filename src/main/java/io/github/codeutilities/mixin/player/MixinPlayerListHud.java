@@ -31,7 +31,7 @@ public class MixinPlayerListHud {
     @Inject(method = "getPlayerName", at = @At("RETURN"), cancellable = true)
     public void getPlayerName(PlayerListEntry entry, CallbackInfoReturnable<Text> cir) {
         if (codeutilitiesUsers == null) {
-            devStar = new LiteralText("&x§8§0§0§0§f§f⭐").formatted(Formatting.LIGHT_PURPLE);
+            devStar = new LiteralText("§x§8§0§0§0§f§f⭐").formatted(Formatting.LIGHT_PURPLE);
             userStar = new LiteralText("§7⭐").formatted(Formatting.GRAY);
             codeutilitiesUsers = new HashMap<>();
         }
