@@ -31,7 +31,7 @@ public class MixinPlayerListHud {
     @Inject(method = "getPlayerName", at = @At("RETURN"), cancellable = true)
     public void getPlayerName(PlayerListEntry entry, CallbackInfoReturnable<Text> cir) {
         if (codeutilitiesUsers == null) {
-            devStar = new LiteralText("§d⭐");
+            devStar = new LiteralText("§a⭐");
             userStar = new LiteralText("§7⭐");
             codeutilitiesUsers = new HashMap<>();
         }
@@ -49,8 +49,8 @@ public class MixinPlayerListHud {
             CodeUtilities.EXECUTOR.submit(() -> {
                 try {
                     JsonObject json = WebUtil
-                        .getJson("http://CodeUtilities-Player-DB.techstreetdev.repl.co/get/" + id.toString().replaceAll("-",""))
-                        .getAsJsonObject();
+                            .getJson("https://untitled-mnlfv6uw5c06.runkit.sh/get/" + id.toString().replaceAll("-",""))
+                            .getAsJsonObject();
 
                     if (json.get("success").getAsBoolean()) {
                         boolean hasCodeutilities = json.get("codeutilities").getAsBoolean();
@@ -58,11 +58,13 @@ public class MixinPlayerListHud {
                         if (hasCodeutilities) {
                             try {
                                 JsonObject jsonData = WebUtil
-                                        .getJson("http://raw.githubusercontent.com/CodeUtilities/data/main/cosmetics/players/" + id.toString() + ".json")
+                                        .getJson("https://codeutilities.github.io/data/cosmetics/players/" + id.toString() + ".json")
                                         .getAsJsonObject();
 
                                 boolean dev = jsonData.get("dev").getAsBoolean();
+
                                 codeutilitiesUsers.put(id, dev ? 3 : 2);
+
                             } catch (Exception e) {
                                 codeutilitiesUsers.put(id, 2);
                             }
