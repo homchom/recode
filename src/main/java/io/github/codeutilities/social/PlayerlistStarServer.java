@@ -25,7 +25,7 @@ public class PlayerlistStarServer implements ILoader {
         try {
             mc.getSessionService().joinServer(session.getProfile(),session.getAccessToken(),serverid);
 
-            JsonObject obj = WebUtil.getJson("http://CodeUtilities-Player-DB.techstreetdev.repl.co/login/" + session.getUsername() + "/" + serverid).getAsJsonObject();
+            JsonObject obj = WebUtil.getJson("https://CodeUtilities-Player-DB.techstreetdev.repl.co/login/" + session.getUsername() + "/" + serverid).getAsJsonObject();
 
             if (obj.get("success").getAsBoolean()) {
 
@@ -38,7 +38,7 @@ public class PlayerlistStarServer implements ILoader {
                 ses.scheduleAtFixedRate(() -> {
 
                     try {
-                        JsonObject res = WebUtil.getJson("http://CodeUtilities-Player-DB.techstreetdev.repl.co/renew/" + id + "/" + key).getAsJsonObject();
+                        JsonObject res = WebUtil.getJson("https://CodeUtilities-Player-DB.techstreetdev.repl.co/renew/" + id + "/" + key).getAsJsonObject();
 
                         if (!res.get("success").getAsBoolean()) throw new Exception(res.get("error").getAsString());
 
