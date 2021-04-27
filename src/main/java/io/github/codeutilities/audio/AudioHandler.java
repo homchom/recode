@@ -8,6 +8,7 @@ import io.socket.client.IO;
 import io.socket.client.Socket;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.util.Duration;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.sound.SoundCategory;
@@ -48,12 +49,22 @@ public class AudioHandler implements ILoader {
                             String plotId = (String) obj.get("plot");
                             String track = (String) obj.get("track");
                             String source = (String) obj.get("source");
+                            boolean loop = (boolean) obj.get("loop");
                             if (!currentPlotId.equals(plotId)) {
                                 ToasterUtil.sendToaster("Now Playing", "Plot " + plotId, SystemToast.Type.NARRATOR_TOGGLE);
                                 currentPlotId = plotId;
                             }
                             Media mediaSource = new Media(source);
                             MediaPlayer player = new MediaPlayer(mediaSource);
+                            if(loop) {
+                                player.setOnEndOfMedia(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        player.seek(Duration.ZERO);
+                                        player.play();
+                                    }
+                                });
+                            }
                             player.play();
                             HashSet<MediaPlayer> clips = tracks.get(track);
                             if (clips == null) {
