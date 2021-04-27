@@ -70,6 +70,8 @@ public class CodeUtilities implements ModInitializer {
             CustomHeadSearchGui.load();
             TemplateStorageHandler.load();
             //new ChatServer();
+            try {
+                new AudioHandler();
             } catch (Exception e) {
                 e.printStackTrace();
             }
