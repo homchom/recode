@@ -61,7 +61,7 @@ public class AudioHandler implements ILoader {
                                 currentPlotId = plotId;
                             }
                             if(CodeUtilities.BETA) {
-                                ToasterUtil.sendToaster("Playback - "+plotId,title,SystemToast.Type.NARRATOR_TOGGLE);
+                                ToasterUtil.sendToaster("Debug Playback - "+plotId,title,SystemToast.Type.NARRATOR_TOGGLE);
                             }
                             Media mediaSource = new Media(source);
                             MediaPlayer player = new MediaPlayer(mediaSource);
