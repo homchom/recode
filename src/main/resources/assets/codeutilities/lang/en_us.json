@@ -81,7 +81,10 @@
 	"text.autoconfig.codeutilities.option.f3Tps.@Tooltip": "Shows the Client TPS on the F3 Debug Screen",
     "text.autoconfig.codeutilities.option.quickVarScope": "Quick Variable Scope",
     "text.autoconfig.codeutilities.option.quickVarScope.@Tooltip": "Typing -s, -l or -g after a variable name will change it's scope similar to /var",
-  
+
+    "text.autoconfig.codeutilities.option.audioUrl": "Project: Audio Endpoint",
+    "text.autoconfig.codeutilities.option.audioUrl.@Tooltip": "The Socket URL to connect to for Project: Audio",
+
     "codeutilities.command.require_creative_mode": "You must be in creative mode to use this command!",
   
 	"text.autoconfig.jeremaster.title": "Jeremaster",

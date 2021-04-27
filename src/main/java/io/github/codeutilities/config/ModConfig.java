@@ -104,6 +104,10 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip()
     @ConfigEntry.BoundedDiscrete(min = 0, max = 100000)
     public int discordRPCTimeout = 15000;
+    @ConfigEntry.Category("misc")
+    @ConfigEntry.Gui.Tooltip()
+    @ConfigEntry.BoundedDiscrete(min = 0, max = 100000)
+    public String audioUrl = "https://audio.tomoli.me/";
 
     public static ModConfig getConfig() {
         return AutoConfig.getConfigHolder(ModConfig.class).getConfig();

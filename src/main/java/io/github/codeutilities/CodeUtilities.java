@@ -1,5 +1,6 @@
 package io.github.codeutilities;
 
+import io.github.codeutilities.audio.AudioHandler;
 import io.github.codeutilities.commands.CommandHandler;
 import io.github.codeutilities.config.ModConfig;
 import io.github.codeutilities.cosmetics.CosmeticHandler;
@@ -14,6 +15,9 @@ import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.MinecraftClient;
 import org.apache.logging.log4j.*;
 
+import javax.websocket.DeploymentException;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Random;
 
 public class CodeUtilities implements ModInitializer {
@@ -66,6 +70,9 @@ public class CodeUtilities implements ModInitializer {
             CustomHeadSearchGui.load();
             TemplateStorageHandler.load();
             //new ChatServer();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }).start();
 
     }
