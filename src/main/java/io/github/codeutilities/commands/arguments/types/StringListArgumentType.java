@@ -7,19 +7,16 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import java.util.Arrays;
-import java.util.concurrent.CompletableFuture;
-
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandSource;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
 
-public class StringListArgumentType implements ArgumentType<String> {
-    private static final MinecraftClient mc = MinecraftClient.getInstance();
-    private String[] suggestions;
+import java.util.Arrays;
+import java.util.concurrent.CompletableFuture;
 
+public class StringListArgumentType implements ArgumentType<String> {
     public static final SimpleCommandExceptionType UNKNOWN_TYPE_EXCEPTION = new SimpleCommandExceptionType(new LiteralText("Unknown type"));
+    private final String[] suggestions;
 
     public StringListArgumentType(String[] suggestions) {
         this.suggestions = suggestions;
@@ -32,7 +29,7 @@ public class StringListArgumentType implements ArgumentType<String> {
     public String parse(StringReader stringReader) throws CommandSyntaxException {
         int i = stringReader.getCursor();
 
-        while(stringReader.canRead() && stringReader.peek() != ' ') {
+        while (stringReader.canRead() && stringReader.peek() != ' ') {
             stringReader.skip();
         }
 

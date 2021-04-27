@@ -1,6 +1,6 @@
 package io.github.codeutilities.mixin.packet;
 
-import io.github.codeutilities.util.TPSUtil;
+import io.github.codeutilities.util.networking.TPSUtil;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
 import org.spongepowered.asm.mixin.Mixin;

@@ -25,7 +25,6 @@ import java.util.Map;
 
 /**
  * A class which contains NBT-related utility methods.
- *
  */
 public final class NBTUtils {
 
@@ -151,7 +150,7 @@ public final class NBTUtils {
                 return LongArrayTag.class;
             default:
                 throw new IllegalArgumentException("Invalid tag type : " + type
-                    + ".");
+                        + ".");
         }
     }
 
@@ -165,17 +164,17 @@ public final class NBTUtils {
      * @return a vector
      */
     public static Vector3 toVector(ListTag listTag) {
-    	if(listTag == null)
-        	throw new NullPointerException();
-    	
+        if (listTag == null)
+            throw new NullPointerException();
+
         return Vector3.at(listTag.asDouble(0), listTag.asDouble(1), listTag.asDouble(2));
     }
 
     /**
      * Get child tag of a NBT structure.
      *
-     * @param items the map to read from
-     * @param key the key to look for
+     * @param items    the map to read from
+     * @param key      the key to look for
      * @param expected the expected NBT class type
      * @return child tag
      * @throws IllegalArgumentException if the format of the items is invalid

@@ -1,7 +1,7 @@
 package io.github.codeutilities.schem.loaders;
 
-import io.github.codeutilities.schem.sk89q.jnbt.*;
 import io.github.codeutilities.schem.Schematic;
+import io.github.codeutilities.schem.sk89q.jnbt.*;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -39,8 +39,8 @@ public class MCEditSchematicLoader extends MNBTSchematicReader {
         Map<String, Tag> schematicData = compoundTag.getValue();
 
         StringTag materials = getTag(schematicData, "Materials", StringTag.class);
-        if(materials != null)
-            if(!materials.getValue().equals("Alpha"))
+        if (materials != null)
+            if (!materials.getValue().equals("Alpha"))
                 throw new RuntimeException("This schematic isn't supported !");
 
         schematic.setWidth(requireTag(schematicData, "Width", ShortTag.class).getValue());
@@ -56,7 +56,7 @@ public class MCEditSchematicLoader extends MNBTSchematicReader {
         if (schematicData.containsKey("AddBlocks")) {
             addArray = requireTag(schematicData, "AddBlocks", ByteArrayTag.class).getValue();
         }
-        
+
         for (int i = 0; i < blocks.length; i++) {
             if ((i >> 1) >= addArray.length) {
                 blocksFinal[i] = ((short) (blocks[i] & 255));
@@ -73,7 +73,7 @@ public class MCEditSchematicLoader extends MNBTSchematicReader {
 
             String block = legacyBlocksList.get(blockValue + ":" + blockMetadata);
 
-            if(block != null) {
+            if (block != null) {
                 int blockId = schematic.AddBlockToPalette(block);
                 schematic.AddBlock(blockId);
             }

@@ -3,13 +3,15 @@ package io.github.codeutilities.commands.item;
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.commands.arguments.ArgBuilder;
-import io.github.codeutilities.util.*;
+import io.github.codeutilities.util.chat.ChatType;
+import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.text.*;
+import net.minecraft.text.ClickEvent;
 import net.minecraft.text.ClickEvent.Action;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.registry.Registry;
 
 public class ItemdataCommand extends Command {
@@ -32,14 +34,14 @@ public class ItemdataCommand extends Command {
                         LiteralText msg2 = new LiteralText("§d§lFormatted§5, ");
                         LiteralText msg3 = new LiteralText("§d§lUnformatted");
                         LiteralText msg4 = new LiteralText("§5 or ");
-                        LiteralText msg5 = new LiteralText("§d§l/give");
+                        LiteralText msg5 = new LiteralText("§d§l/dfgive");
                         LiteralText msg6 = new LiteralText("§5 version!");
 
                         msg2.styled((style) -> style.withClickEvent(new ClickEvent(Action.RUN_COMMAND, "/copytxt " + formatted)));
                         msg3.styled((style) -> style.withClickEvent(new ClickEvent(Action.RUN_COMMAND, "/copytxt " + formatted)));
-                        msg5.styled((style) -> style.withClickEvent(new ClickEvent(Action.RUN_COMMAND, "/copytxt " + "/give " + Registry.ITEM.getId(item.getItem()).toString() + unformatted + " 1")));
+                        msg5.styled((style) -> style.withClickEvent(new ClickEvent(Action.RUN_COMMAND, "/copytxt " + "/dfgive " + Registry.ITEM.getId(item.getItem()) + unformatted + " 1")));
 
-                        mc.player.sendMessage(msg1.append(msg2).append(msg3).append(msg4).append(msg5).append(msg6), false);
+                        this.sendMessage(mc, msg1.append(msg2).append(msg3).append(msg4).append(msg5).append(msg6));
 
                     } else {
                         ChatUtil.sendMessage("No NBT data found!", ChatType.FAIL);

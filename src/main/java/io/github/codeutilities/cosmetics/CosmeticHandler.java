@@ -1,61 +1,93 @@
 package io.github.codeutilities.cosmetics;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
-import io.github.codeutilities.util.WebUtil;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.texture.NativeImage;
-import net.minecraft.client.texture.NativeImageBackedTexture;
-import net.minecraft.util.Identifier;
+import com.google.gson.*;
+import io.github.codeutilities.CodeUtilities;
+import io.github.codeutilities.config.CodeUtilsConfig;
+import io.github.codeutilities.cosmetics.type.CosmeticType;
+import io.github.codeutilities.util.ILoader;
+import io.github.codeutilities.util.networking.WebUtil;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.*;
+import java.util.concurrent.*;
 
-public class CosmeticHandler {
-    private static ExecutorService executorService = Executors.newFixedThreadPool(10);
-    private static final MinecraftClient mc = MinecraftClient.getInstance();
-    
-    public static void applyCape(UUID uuid, Map<MinecraftProfileTexture.Type, Identifier> identifierMap) {
+public class CosmeticHandler implements ILoader {
+
+    public static final CosmeticHandler INSTANCE = new CosmeticHandler();
+
+    private final ExecutorService executorService = Executors.newFixedThreadPool(2); // Don't allocate too many threads.
+
+    private JsonObject CACHED_DEFAULTS = null;
+    private final HashSet<UUID> specialUsers = new HashSet<>();
+
+    public void applyCosmetics(UUID uuid) {
+        if (CodeUtilsConfig.getStr("cosmeticType").equals("Disabled")) {
+            return;
+        }
+
         executorService.execute(() -> {
-            try {
-                String cape = getCosmetic(uuid, "cape");
-                
-                if(cape != null) {
-                    URL url = new URL("https://codeutilities.github.io/data/cosmetics/capes/" + cape);
-                    Identifier identifier = mc.getTextureManager().registerDynamicTexture(uuid.toString().replaceAll("-", ""), new NativeImageBackedTexture(NativeImage.read(url.openStream())));
-                    identifierMap.put(MinecraftProfileTexture.Type.CAPE, identifier);
-                }
-                
-            } catch (IOException ignored) {}
-        });
-    }
-    
-    private static String getCosmetic(UUID uuid, String key) throws IOException {
-        String content = WebUtil.getString("https://codeutilities.github.io/data/cosmetics/players/" + uuid.toString() + ".json");
-        try {
-            JsonObject jsonObject = new JsonParser().parse(content).getAsJsonObject();
-            JsonElement jsonElement = jsonObject.get(key);
-
-            if(jsonElement.isJsonNull()) {
-                content = WebUtil.getString("https://codeutilities.github.io/data/cosmetics/players/default.json");
-                jsonObject = new JsonParser().parse(content).getAsJsonObject();
-                jsonElement = jsonObject.get(key);
-                if (jsonElement.isJsonNull()) return null;
+            JsonObject cosmetics = getPlayerCosmetics(uuid);
+            if (cosmetics == null) {
+                return;
             }
 
-            return jsonElement.getAsString();
-        }catch(JsonSyntaxException ignored) { }
+            if (!specialUsers.contains(uuid)) { // Don't try to load user data from users without cosmetics.
+                return;
+            }
+
+            for (CosmeticType type : CosmeticType.REGISTERED_COSMETICS) {
+                JsonElement element = cosmetics.get(type.getName());
+                if (element != null && !element.isJsonNull()) {
+                    type.applyCosmetic(uuid, element.getAsString());
+                }
+            }
+        });
+    }
+
+    private JsonObject getPlayerCosmetics(UUID uuid) {
+        JsonObject playerCosmetics = getObject("https://codeutilities.github.io/data/cosmetics/players/" + uuid.toString() + ".json");
+        if (playerCosmetics == null) {
+            if (!CodeUtilsConfig.getStr("cosmeticType").equals("Disabled")) {
+                if (CACHED_DEFAULTS == null) {
+                    CACHED_DEFAULTS = getObject("https://codeutilities.github.io/data/cosmetics/players/default.json");
+                }
+                return CACHED_DEFAULTS;
+            }
+
+            return null;
+        } else {
+            return playerCosmetics;
+        }
+    }
+
+    private JsonObject getObject(String url) {
+        try {
+            String jsonObject = WebUtil.getString(url);
+            return CodeUtilities.JSON_PARSER.parse(jsonObject).getAsJsonObject();
+        } catch (JsonSyntaxException | IOException ignored) {
+        }
+
         return null;
     }
-    
-    public static void shutdownExecutorService() {
+
+    public void shutdownExecutorService() {
         executorService.shutdown();
+    }
+
+    @Override
+    public void load() {
+        try {
+            JsonObject object = getObject("https://raw.githubusercontent.com/CodeUtilities/data/main/cosmetics/players/registry.json");
+            for (JsonElement element : object.getAsJsonArray("registry")) {
+                specialUsers.add(UUID.fromString(element.getAsString()));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        CosmeticType.HAT.getName(); // load cosmetics on main thread
+    }
+
+    public void invalidateCache() {
+        specialUsers.clear();
     }
 }

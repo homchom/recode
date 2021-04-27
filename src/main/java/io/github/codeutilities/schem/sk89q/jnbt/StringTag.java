@@ -33,9 +33,9 @@ public final class StringTag extends Tag {
      */
     public StringTag(String value) {
         super();
-        if(value == null)
-        	throw new NullPointerException();
-        
+        if (value == null)
+            throw new NullPointerException();
+
         this.value = value;
     }
 

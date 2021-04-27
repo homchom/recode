@@ -4,8 +4,6 @@ import com.google.common.hash.Hashing;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import io.github.codeutilities.CodeUtilities;
-import java.io.File;
-import java.util.Date;
 import net.minecraft.client.texture.AbstractTexture;
 import net.minecraft.client.texture.PlayerSkinProvider;
 import net.minecraft.client.texture.PlayerSkinTexture;
@@ -20,24 +18,25 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.io.File;
+
 @Mixin(PlayerSkinProvider.class)
 public class MixinPlayerSkinProvider {
 
+    long loadingTexture = 0;
     @Shadow
     @Final
     private TextureManager textureManager;
+
+    //Complete overwrite for loadSkin method in net.minecraft.client.texture.PlayerSkinProvider
     @Shadow
     @Final
     private File skinCacheDir;
 
-    //Complete overwrite for loadSkin method in net.minecraft.client.texture.PlayerSkinProvider
-
-    long loadingTexture = 0;
-
     @Inject(method = "loadSkin(Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/client/texture/PlayerSkinProvider$SkinTextureAvailableCallback;)Lnet/minecraft/util/Identifier;", at = @At("HEAD"), cancellable = true)
     private void loadSkin(MinecraftProfileTexture profileTexture, Type type,
-        @Nullable PlayerSkinProvider.SkinTextureAvailableCallback callback,
-        CallbackInfoReturnable<Identifier> cir) {
+                          @Nullable PlayerSkinProvider.SkinTextureAvailableCallback callback,
+                          CallbackInfoReturnable<Identifier> cir) {
 
         String string = Hashing.sha1().hashUnencodedChars(profileTexture.getHash()).toString();
         Identifier identifier = new Identifier("skins/" + string);
@@ -47,22 +46,22 @@ public class MixinPlayerSkinProvider {
                 callback.onSkinTextureAvailable(type, identifier, profileTexture);
             }
         } else {
-            if (loadingTexture < System.currentTimeMillis()-5000) {
+            if (loadingTexture < System.currentTimeMillis() - 5000) {
                 loadingTexture = System.currentTimeMillis();
                 File file = new File(skinCacheDir, string.length() > 2 ? string.substring(0, 2) : "xx");
                 File file2 = new File(file, string);
                 Identifier finalIdentifier = identifier;
                 new Thread(() -> {
                     PlayerSkinTexture playerSkinTexture = new PlayerSkinTexture(file2,
-                        profileTexture.getUrl(), DefaultSkinHelper
-                        .getTexture(), type == Type.SKIN, () -> {
+                            profileTexture.getUrl(), DefaultSkinHelper
+                            .getTexture(), type == Type.SKIN, () -> {
                         if (callback != null) {
                             callback.onSkinTextureAvailable(type, finalIdentifier, profileTexture);
                         }
 
                     });
-                    loadingTexture=0;
-                    CodeUtilities.mc.execute(() -> this.textureManager.registerTexture(finalIdentifier, playerSkinTexture));
+                    loadingTexture = 0;
+                    CodeUtilities.MC.execute(() -> this.textureManager.registerTexture(finalIdentifier, playerSkinTexture));
                 }).start();
             }
             identifier = DefaultSkinHelper.getTexture();

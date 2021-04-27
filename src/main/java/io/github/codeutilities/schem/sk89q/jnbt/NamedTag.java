@@ -31,15 +31,15 @@ public class NamedTag {
      * Create a new named tag.
      *
      * @param name the name
-     * @param tag the tag
+     * @param tag  the tag
      */
     public NamedTag(String name, Tag tag) {
-    	if(name == null)
-        	throw new NullPointerException();
-    	
-    	if(tag == null)
-        	throw new NullPointerException();
-    	
+        if (name == null)
+            throw new NullPointerException();
+
+        if (tag == null)
+            throw new NullPointerException();
+
         this.name = name;
         this.tag = tag;
     }

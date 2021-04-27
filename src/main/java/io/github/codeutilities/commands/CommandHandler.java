@@ -1,33 +1,38 @@
 package io.github.codeutilities.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
+import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.commands.image.ImageHologramCommand;
 import io.github.codeutilities.commands.image.ImageParticleCommand;
 import io.github.codeutilities.commands.item.*;
-import io.github.codeutilities.commands.item.template.*;
+import io.github.codeutilities.commands.item.template.SendTemplateCommand;
+import io.github.codeutilities.commands.item.template.WebviewCommand;
 import io.github.codeutilities.commands.nbs.NBSCommand;
 import io.github.codeutilities.commands.schem.SchemCommand;
 import io.github.codeutilities.commands.util.*;
-import io.github.codeutilities.config.ModConfig;
-import io.github.cottonmc.clientcommands.*;
-import net.minecraft.client.MinecraftClient;
+import io.github.codeutilities.config.CodeUtilsConfig;
+import io.github.codeutilities.util.IManager;
+import io.github.cottonmc.clientcommands.ClientCommandPlugin;
+import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public class CommandHandler implements ClientCommandPlugin {
-    
-    private static final List<Command> commands = new ArrayList<>();
-    
-    public static void register(Command... cmds) {
-        commands.addAll(Arrays.asList(cmds));
+public class CommandHandler implements ClientCommandPlugin, IManager<Command> {
+    private static CommandHandler instance;
+    private final List<Command> registeredCommands = new ArrayList<>();
+
+    public CommandHandler() {
+        instance = this;
+
+        this.initialize();
     }
-    
-    public static List<Command> getCommands() {
-        return commands;
+
+    public static CommandHandler getInstance() {
+        return instance == null ? new CommandHandler() : instance;
     }
-    
-    
-    public static void initialize() {
+
+    public void initialize() {
         register(
                 new CodeUtilitiesCommand(),
                 new BreakableCommand(),
@@ -39,10 +44,12 @@ public class CommandHandler implements ClientCommandPlugin {
                 new ColorCommand(),
                 new EditItemCommand(),
                 new CopyTextCommand(),
-                new GradientCommand()
+                new GradientCommand(),
+                new ConfigCommand(),
+                new DebugCommand()
         );
-        
-        if (ModConfig.getConfig().dfCommands) {
+
+        if (CodeUtilsConfig.getBool("dfCommands")) {
             register(
                     new GiveCommand(),
                     new NodeCommand(),
@@ -56,16 +63,33 @@ public class CommandHandler implements ClientCommandPlugin {
                     new ImageHologramCommand(),
                     new ImageParticleCommand(),
                     new SchemCommand(),
-                    new RelativeLocCommand()
+                    new RelativeLocCommand(),
+                    new PlotsCommand()
             );
         }
     }
-    
+
     @Override
-    public void registerCommands(CommandDispatcher<CottonClientCommandSource> commandDispatcher) {
-        for (Command command : getCommands()) {
-            command.register(MinecraftClient.getInstance(), commandDispatcher);
+    public void register(Command object) {
+        this.registeredCommands.add(object);
+    }
+
+    public void register(Command... objects) {
+        for (Command object : objects) {
+            this.register(object);
         }
     }
-    
+
+    @Override
+    public List<Command> getRegistered() {
+        return this.registeredCommands;
+    }
+
+    @Override
+    public void registerCommands(CommandDispatcher<CottonClientCommandSource> commandDispatcher) {
+        for (Command command : this.getRegistered()) {
+            command.register(CodeUtilities.MC, commandDispatcher);
+        }
+    }
+
 }

@@ -4,14 +4,13 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.commands.arguments.ArgBuilder;
-import io.github.codeutilities.config.ModConfig;
+import io.github.codeutilities.config.CodeUtilsConfig;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.*;
 
 public class ColorsCommand extends Command {
 
-    private final ModConfig config = ModConfig.getConfig();
     private MinecraftClient mc = MinecraftClient.getInstance();
 
     @Override
@@ -20,16 +19,16 @@ public class ColorsCommand extends Command {
             showColorPalette(1);
             return 1;
         })
-        .then(ArgBuilder.argument("Saturation(%)", IntegerArgumentType.integer(0, 100)).executes((context) -> {
-            float saturation = (float)IntegerArgumentType.getInteger(context, "Saturation(%)");
-            showColorPalette(saturation/100f);
-            return 1;
-        })));
+                .then(ArgBuilder.argument("Saturation(%)", IntegerArgumentType.integer(0, 100)).executes((context) -> {
+                    float saturation = (float)IntegerArgumentType.getInteger(context, "Saturation(%)");
+                    showColorPalette(saturation/100f);
+                    return 1;
+                })));
     }
 
     private void showColorPalette(float saturation) {
-        int maxColors = config.colorMaxRender;
-        int lines = config.colorLines;
+        int maxColors = CodeUtilsConfig.getInt("colorMaxRender");
+        int lines = CodeUtilsConfig.getInt("colorLines");
 
         for (int j = 0; j < lines; j++) {
             Text base = new LiteralText("");

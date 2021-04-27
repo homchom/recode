@@ -5,11 +5,15 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.commands.arguments.ArgBuilder;
 import io.github.codeutilities.images.ImageToHologram;
-import io.github.codeutilities.util.*;
-import io.github.codeutilities.util.externalfile.ExternalFile;
+import io.github.codeutilities.util.ItemUtil;
+import io.github.codeutilities.util.chat.ChatType;
+import io.github.codeutilities.util.chat.ChatUtil;
+import io.github.codeutilities.util.file.ExternalFile;
+import io.github.codeutilities.util.templates.TemplateUtils;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.item.*;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 
 import java.io.File;
 
@@ -20,29 +24,29 @@ public class ImageHologramCommand extends Command {
         cd.register(ArgBuilder.literal("imagehologram")
                 .then(ArgBuilder.literal("load")
                         .then(ArgBuilder.literal("hex")
-                            .then(ArgBuilder.argument("location", StringArgumentType.greedyString())
-                                .executes(ctx -> {
-                                    try {
-                                        String location = StringArgumentType.getString(ctx, "location");
-                                        File f = new File(ExternalFile.IMAGE_FILES.getFile(), location + (location.endsWith(".png") ? "" : ".png"));
+                                .then(ArgBuilder.argument("location", StringArgumentType.greedyString())
+                                        .executes(ctx -> {
+                                            try {
+                                                String location = StringArgumentType.getString(ctx, "location");
+                                                File f = new File(ExternalFile.IMAGE_FILES.getFile(), location + (location.endsWith(".png") ? "" : ".png"));
 
-                                        if (f.exists()) {
-                                            String[] strings = ImageToHologram.convert116(f);
+                                                if (f.exists()) {
+                                                    String[] strings = ImageToHologram.convert116(f);
 
-                                            ItemStack stack = new ItemStack(Items.ENDER_CHEST);
-                                            TemplateUtils.compressTemplateNBT(stack, StringArgumentType.getString(ctx, "location"), mc.player.getName().asString(), convert(strings));
-                                            ItemUtil.giveCreativeItem(stack, true);
-                                            ChatUtil.sendMessage("Image loaded! Change the first Set Variable to the location!", ChatType.SUCCESS);
-                                        } else {
-                                            ChatUtil.sendMessage("That image doesn't exist.", ChatType.FAIL);
-                                        }
-                                        return 1;
-                                    }catch (Exception e) {
-                                        ChatUtil.sendMessage("Error while executing the command.", ChatType.FAIL);
-                                        e.printStackTrace();
-                                        return 0;
-                                    }
-                                })))
+                                                    ItemStack stack = new ItemStack(Items.ENDER_CHEST);
+                                                    TemplateUtils.compressTemplateNBT(stack, StringArgumentType.getString(ctx, "location"), mc.player.getName().asString(), convert(strings));
+                                                    ItemUtil.giveCreativeItem(stack, true);
+                                                    ChatUtil.sendMessage("Image loaded! Change the first Set Variable to the location!", ChatType.SUCCESS);
+                                                } else {
+                                                    ChatUtil.sendMessage("That image doesn't exist.", ChatType.FAIL);
+                                                }
+                                                return 1;
+                                            } catch (Exception e) {
+                                                ChatUtil.sendMessage("Error while executing the command.", ChatType.FAIL);
+                                                e.printStackTrace();
+                                                return 0;
+                                            }
+                                        })))
                         .then(ArgBuilder.literal("colorcodes")
                                 .then(ArgBuilder.argument("location", StringArgumentType.greedyString())
                                         .executes(ctx -> {
@@ -61,14 +65,14 @@ public class ImageHologramCommand extends Command {
                                                     ChatUtil.sendMessage("That image doesn't exist.", ChatType.FAIL);
                                                 }
                                                 return 1;
-                                            }catch (Exception e) {
+                                            } catch (Exception e) {
                                                 ChatUtil.sendMessage("Error while executing the command.", ChatType.FAIL);
                                                 e.printStackTrace();
                                                 return 0;
                                             }
                                         })))
-                        )
-                );
+                )
+        );
     }
 
     private String convert(String[] layers) {
@@ -82,7 +86,7 @@ public class ImageHologramCommand extends Command {
         code.append(", {\"id\":\"block\",\"block\":\"set_var\",\"args\":{\"items\":[{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"lines\",\"scope\":\"local\"}},\"slot\":0}]},\"action\":\"CreateList\"}");
         for (String s : layers) {
             if (slot == 26) {
-                code.append(String.format(", {\"id\":\"block\",\"block\":\"set_var\",\"args\":{\"items\":[{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"lines\",\"scope\":\"local\"}},\"slot\":0}%s]},\"action\":\"AppendValue\"}", currentBlock.toString()));
+                code.append(String.format(", {\"id\":\"block\",\"block\":\"set_var\",\"args\":{\"items\":[{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"lines\",\"scope\":\"local\"}},\"slot\":0}%s]},\"action\":\"AppendValue\"}", currentBlock));
                 currentBlock.delete(0, currentBlock.length());
                 slot = 1;
             }
@@ -92,7 +96,7 @@ public class ImageHologramCommand extends Command {
         }
 
 
-        code.append(String.format(", {\"id\":\"block\",\"block\":\"set_var\",\"args\":{\"items\":[{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"lines\",\"scope\":\"local\"}},\"slot\":0}%s]},\"action\":\"AppendValue\"}", currentBlock.toString()));
+        code.append(String.format(", {\"id\":\"block\",\"block\":\"set_var\",\"args\":{\"items\":[{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"lines\",\"scope\":\"local\"}},\"slot\":0}%s]},\"action\":\"AppendValue\"}", currentBlock));
 
         return "{\"blocks\": [" + code + ", {\"id\":\"block\",\"block\":\"func\",\"args\":{\"items\":[{\"item\":{\"id\":\"bl_tag\",\"data\":{\"option\":\"False\",\"tag\":\"Is Hidden\",\"action\":\"dynamic\",\"block\":\"func\"}},\"slot\":26}]},\"data\":\"spawn\"},{\"id\":\"block\",\"block\":\"set_var\",\"args\":{\"items\":[{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"location\",\"scope\":\"local\"}},\"slot\":0}]},\"action\":\"=\"},{\"id\":\"block\",\"block\":\"set_var\",\"args\":{\"items\":[{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"loc\",\"scope\":\"local\"}},\"slot\":0},{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"location\",\"scope\":\"local\"}},\"slot\":1},{\"item\":{\"id\":\"num\",\"data\":{\"name\":\"20\"}},\"slot\":2},{\"item\":{\"id\":\"bl_tag\",\"data\":{\"option\":\"Y\",\"tag\":\"Coordinate\",\"action\":\"ShiftAxis\",\"block\":\"set_var\"}},\"slot\":26}]},\"action\":\"ShiftAxis\"},{\"id\":\"block\",\"block\":\"repeat\",\"args\":{\"items\":[{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"line\",\"scope\":\"local\"}},\"slot\":0},{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"lines\",\"scope\":\"local\"}},\"slot\":1},{\"item\":{\"id\":\"bl_tag\",\"data\":{\"option\":\"False (Use Copy of List)\",\"tag\":\"Allow List Changes\",\"action\":\"ForEach\",\"block\":\"repeat\"}},\"slot\":26}]},\"action\":\"ForEach\"},{\"id\":\"bracket\",\"direct\":\"open\",\"type\":\"repeat\"},{\"id\":\"block\",\"block\":\"game_action\",\"args\":{\"items\":[{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"loc\",\"scope\":\"local\"}},\"slot\":0},{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"line\",\"scope\":\"local\"}},\"slot\":1},{\"item\":{\"id\":\"bl_tag\",\"data\":{\"option\":\"Invisible (No hitbox)\",\"tag\":\"Visibility\",\"action\":\"SpawnArmorStand\",\"block\":\"game_action\"}},\"slot\":26}]},\"action\":\"SpawnArmorStand\"},{\"id\":\"block\",\"block\":\"set_var\",\"args\":{\"items\":[{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"loc\",\"scope\":\"local\"}},\"slot\":0},{\"item\":{\"id\":\"num\",\"data\":{\"name\":\"-0.21\"}},\"slot\":1},{\"item\":{\"id\":\"bl_tag\",\"data\":{\"option\":\"Y\",\"tag\":\"Coordinate\",\"action\":\"ShiftAxis\",\"block\":\"set_var\"}},\"slot\":26}]},\"action\":\"ShiftAxis\"},{\"id\":\"block\",\"block\":\"control\",\"args\":{\"items\":[{\"item\":{\"id\":\"num\",\"data\":{\"name\":\"0\"}},\"slot\":0},{\"item\":{\"id\":\"bl_tag\",\"data\":{\"option\":\"Ticks\",\"tag\":\"Time Unit\",\"action\":\"Wait\",\"block\":\"control\"}},\"slot\":26}]},\"action\":\"Wait\"},{\"id\":\"bracket\",\"direct\":\"close\",\"type\":\"repeat\"}]}";
     }

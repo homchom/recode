@@ -1,21 +1,26 @@
 package io.github.codeutilities.util;
 
-import com.google.gson.JsonParser;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import io.github.codeutilities.CodeUtilities;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.item.*;
-import net.minecraft.nbt.*;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringNbtReader;
+import net.minecraft.nbt.Tag;
 import net.minecraft.util.collection.DefaultedList;
 
-import java.nio.charset.*;
-import java.util.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
 
 public class ItemUtil {
 
     public static void giveCreativeItem(ItemStack item, boolean preferHand) {
-
-        MinecraftClient mc = MinecraftClient.getInstance();
-
+        MinecraftClient mc = CodeUtilities.MC;
         DefaultedList<ItemStack> mainInventory = mc.player.inventory.main;
 
         if (preferHand) {
@@ -78,8 +83,8 @@ public class ItemUtil {
                 return false;
             }
 
-            if(publicBukkitNBT.getString("hypercube:varitem").length() > 0) {
-                return new JsonParser().parse(publicBukkitNBT.getString("hypercube:varitem")).getAsJsonObject().get("id").getAsString().equalsIgnoreCase(type);
+            if (publicBukkitNBT.getString("hypercube:varitem").length() > 0) {
+                return CodeUtilities.JSON_PARSER.parse(publicBukkitNBT.getString("hypercube:varitem")).getAsJsonObject().get("id").getAsString().equalsIgnoreCase(type);
             }
 
             return false;

@@ -1,14 +1,14 @@
 package io.github.codeutilities.template;
 
-import io.github.codeutilities.util.TemplateUtils;
+import io.github.codeutilities.util.templates.TemplateUtils;
 import net.minecraft.item.ItemStack;
 
 import java.util.Objects;
 
 public class TemplateItem {
 
-    String code;
-    ItemStack stack;
+    final String code;
+    final ItemStack stack;
 
     public TemplateItem(ItemStack stack) {
         this.code = TemplateUtils.fromItemStack(stack).get("code").getAsString();

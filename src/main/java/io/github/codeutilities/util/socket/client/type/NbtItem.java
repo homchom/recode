@@ -8,12 +8,12 @@ import net.minecraft.nbt.StringNbtReader;
 import java.io.IOException;
 
 public class NbtItem extends SocketItem {
-    
+
     @Override
     public String getIdentifier() {
         return "nbt";
     }
-    
+
     @Override
     public ItemStack getItem(String data) throws Exception {
         ItemStack stack;
@@ -22,7 +22,7 @@ public class NbtItem extends SocketItem {
         } catch (RuntimeException | CommandSyntaxException e) {
             throw new IOException("Failed to parse provided NBT data.");
         }
-        
+
         return stack;
     }
 }

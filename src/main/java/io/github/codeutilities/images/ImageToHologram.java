@@ -1,14 +1,15 @@
 package io.github.codeutilities.images;
 
-import io.github.codeutilities.util.MinecraftColors;
-import net.minecraft.text.*;
+import io.github.codeutilities.util.color.MinecraftColors;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.*;
 
 import static java.awt.Image.SCALE_SMOOTH;
 
@@ -41,13 +42,13 @@ public class ImageToHologram {
                         Color color = new Color(rgb, true);
 
                         if (color.getAlpha() < 255) {
-                            layer.append(MinecraftColors.GRAY.getMc() + "▁");
+                            layer.append(MinecraftColors.GRAY.getMc()).append("▁");
                         } else {
-                            if (hex != Integer.toHexString(rgb).substring(2)) {
+                            if (!hex.equals(Integer.toHexString(rgb).substring(2))) {
                                 hex = Integer.toHexString(rgb).substring(2);
-                                String finalHex = hex.replaceAll("(.?)", "§$1").substring(0,12);
-                                layer.append("§x" + finalHex + "█");
-                            }else {
+                                String finalHex = hex.replaceAll("(.?)", "§$1").substring(0, 12);
+                                layer.append("§x").append(finalHex).append("█");
+                            } else {
                                 layer.append("█");
                             }
                         }
@@ -82,13 +83,12 @@ public class ImageToHologram {
                 }
 
                 for (int i = 0; i < height; i++) {
-                    String layer = "";
+                    StringBuilder layer = new StringBuilder();
                     for (int j = 0; j < width; j++) {
                         int rgb = image.getRGB(j, i);
                         Color color = new Color(rgb, true);
 
-                        List<MinecraftColors> colors = new ArrayList<>();
-                        colors.addAll(Arrays.asList(MinecraftColors.values()));
+                        List<MinecraftColors> colors = new ArrayList<>(Arrays.asList(MinecraftColors.values()));
 
                         MinecraftColors nearestColor = MinecraftColors.BLACK;
 
@@ -101,9 +101,9 @@ public class ImageToHologram {
                         }
 
                         if (color.getAlpha() < 255) {
-                            layer = layer + MinecraftColors.GRAY.getMc() + "▁";
+                            layer.append(MinecraftColors.GRAY.getMc()).append("▁");
                         } else {
-                            layer = layer + nearestColor.getMc() + "█";
+                            layer.append(nearestColor.getMc()).append("█");
                         }
 
                     }
@@ -112,7 +112,7 @@ public class ImageToHologram {
                     if (layer.length() == 0) {
                         layers.add(" ");
                     } else {
-                        layers.add(layer);
+                        layers.add(layer.toString());
                     }
 
                 }

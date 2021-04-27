@@ -1,16 +1,20 @@
 package io.github.codeutilities.events;
 
 import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.config.ModConfig;
+import io.github.codeutilities.config.CodeUtilsConfig;
+import io.github.codeutilities.config.ConfigSounds;
 import io.github.codeutilities.dfrpc.DFDiscordRPC;
 import io.github.codeutilities.gui.CPU_UsageText;
-import io.github.codeutilities.util.ChatType;
-import io.github.codeutilities.util.ChatUtil;
+import io.github.codeutilities.util.DFInfo;
+import io.github.codeutilities.util.chat.ChatType;
+import io.github.codeutilities.util.chat.ChatUtil;
+import io.github.codeutilities.util.chat.TextUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -53,10 +57,23 @@ public class ChatReceivedEvent {
             }
         }
 
+        // detect if player is in beta
+        if (DFInfo.currentState == DFInfo.State.LOBBY && text.equals("◆ Welcome back to DiamondFire! ◆")) {
+            DFInfo.isInBeta = false;
+            Collection<String> lines = mc.world.getScoreboard().getKnownPlayers();
+            for (String line : lines) {
+                try {
+                    if (line.startsWith("§aNode ") && (line.split(" ")[1]).equals("Beta§8")) {
+                        DFInfo.isInBeta = true;
+                    }
+                } catch (ArrayIndexOutOfBoundsException ignored) {
+                }
+            }
+        }
+
         //LagSlayer enable/disable
         if (text.matches("^\\[LagSlayer\\] Now monitoring plot ID: .*$")) {
-            String plotId = text.replaceAll("\\[LagSlayer\\] Now monitoring plot ID: ", "");
-            CPU_UsageText.monitorPlotId = plotId;
+            CPU_UsageText.monitorPlotId = text.replaceAll("\\[LagSlayer\\] Now monitoring plot ID: ", "");
             CPU_UsageText.lagSlayerEnabled = true;
             if (cancelLagSlayerMsg) cancel = true;
         }
@@ -90,8 +107,7 @@ public class ChatReceivedEvent {
             if (msg.startsWith("                                       \n")) {
                 if (msg.contains(" is currently at spawn.\n")) {
                     ChatUtil.sendMessage("This player is not in a plot.", ChatType.FAIL);
-                    cancel = true;
-                }else {
+                } else {
                     // PLOT ID
                     Pattern pattern = Pattern.compile("\\[[0-9]+]\n");
                     Matcher matcher = pattern.matcher(msg);
@@ -109,8 +125,8 @@ public class ChatReceivedEvent {
                         ChatUtil.sendMessage("Error while trying to join the plot.", ChatType.FAIL);
                     }
 
-                    cancel = true;
                 }
+                cancel = true;
                 pjoin = false;
             }
         }
@@ -118,8 +134,49 @@ public class ChatReceivedEvent {
         String msgToString = message.toString();
         String msgGetString = message.getString();
 
+        String msgWithColor = TextUtil.textComponentToColorCodes(message);
+        String msgWithoutColor = msgWithColor.replaceAll("§.", "");
+
+        // highlight name
+        if (CodeUtilsConfig.getBool("highlight")) {
+            String highlightMatcher = CodeUtilsConfig.getStr("highlightMatcher").replaceAll("\\{name}", mc.player.getName().getString());
+
+            if (( DFInfo.currentState != DFInfo.State.PLAY && msgWithoutColor.matches("^[^0-z]+.*[a-zA-Z]+: .*"))
+                    || (DFInfo.currentState == DFInfo.State.PLAY && msgWithoutColor.matches("^.*[a-zA-Z]+: .*"))) {
+                if ((!msgWithoutColor.matches("^.*" + highlightMatcher + ": .*")) || CodeUtilsConfig.getBool("highlightIgnoreSender")) {
+                    if (msgWithoutColor.contains(highlightMatcher)) {
+                        String[] chars = msgWithColor.split("");
+                        int i = 0;
+                        int newMsgIter = 0;
+                        StringBuilder getColorCodes = new StringBuilder();
+                        String newMsg = msgWithColor;
+                        String textLeft;
+
+                        for (String currentChar : chars) {
+                            textLeft = msgWithColor.substring(i) + " ";
+                            i++;
+                            if (currentChar.equals("§")) getColorCodes.append(currentChar).append(chars[i]);
+                            if (textLeft.matches("^" + highlightMatcher + "[^a-zA-Z0-9].*")) {
+                                newMsg = newMsg.substring(0, newMsgIter) + CodeUtilsConfig.getStr("highlightPrefix").replaceAll("&", "§")
+                                        + highlightMatcher + getColorCodes.toString() + newMsg.substring(newMsgIter).replaceFirst("^" + highlightMatcher, "");
+
+                                newMsgIter = newMsgIter + CodeUtilsConfig.getStr("highlightPrefix").length() + getColorCodes.toString().length();
+                            }
+                            newMsgIter++;
+                        }
+                        mc.player.sendMessage(TextUtil.colorCodesToTextComponent(newMsg), false);
+                        if ((ConfigSounds.getSoundFromName(CodeUtilsConfig.getStr("highlightSound")) != null) &&
+                                (CodeUtilsConfig.getBool("highlightOwnSenderSound") || (!msgWithoutColor.matches("^.*" + highlightMatcher + ": .+")))) {
+                            mc.player.playSound(ConfigSounds.getSoundFromName(CodeUtilsConfig.getStr("highlightSound")), CodeUtilsConfig.getFloat("highlightSoundVolume"), 1);
+                        }
+                        cancel = true;
+                    }
+                }
+            }
+        }
+
         // hide join/leave messages
-        if (ModConfig.getConfig().hideJoinLeaveMessages
+        if (CodeUtilsConfig.getBool("hideJoinLeaveMessages")
                 && msgToString.contains("', siblings=[], style=Style{ color=gray, bold=")
 
                 // check TextComponent
@@ -132,24 +189,24 @@ public class ChatReceivedEvent {
                 && (msgToString.contains("hoverEvent=false") || msgToString.contains("hoverEvent=null"))
                 && (msgToString.contains("insertion=false") || msgToString.contains("insertion=null"))
 
-                && (msgGetString.endsWith(" joined.") || msgGetString.endsWith(" joined!") || msgGetString.endsWith(" left.")) ) {
+                && (msgGetString.endsWith(" joined.") || msgGetString.endsWith(" joined!") || msgGetString.endsWith(" left."))) {
 
             // cancel message
             cancel = true;
         }
 
         // hide session spy
-        if (ModConfig.getConfig().hideSessionSpy && msgGetString.startsWith("*") && msgToString.contains("text='*'") && msgToString.contains("color=green")) {
+        if (CodeUtilsConfig.getBool("hideSessionSpy") && msgGetString.startsWith("*") && msgToString.contains("text='*'") && msgToString.contains("color=green")) {
             cancel = true;
         }
 
         // hide muted chat
-        if (ModConfig.getConfig().hideMutedChat && msgGetString.startsWith("*") && msgToString.contains("text='*'") && msgToString.contains("color=red")) {
+        if (CodeUtilsConfig.getBool("hideMutedChat") && msgGetString.startsWith("*") && msgToString.contains("text='*'") && msgToString.contains("color=red")) {
             cancel = true;
         }
 
         // hide var scope messages
-        if (ModConfig.getConfig().hideVarScopeMessages
+        if (CodeUtilsConfig.getBool("hideVarScopeMessages")
                 && (
                 // local
                 msgToString.equals("TextComponent{text='', siblings=[TextComponent{text='Scope set to ', siblings=[], style=Style{ color=null, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}, TextComponent{text='LOCAL', siblings=[], style=Style{ color=green, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}, TextComponent{text=' (specific to event thread).', siblings=[], style=Style{ color=white, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}], style=Style{ color=null, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}") ||
@@ -162,11 +219,11 @@ public class ChatReceivedEvent {
         }
 
         // hide msg matching regex
-        if (ModConfig.getConfig().hideMsgMatchingRegex && msgGetString.replaceAll("§.", "").matches(ModConfig.getConfig().hideMsgRegex)) {
+        if (CodeUtilsConfig.getBool("hideMsgMatchingRegex") && msgGetString.replaceAll("§.", "").matches(CodeUtilsConfig.getStr("hideMsgRegex"))) {
             cancel = true;
         }
 
-        if (cancelTimeMsg && text.contains("» Set your player time to " + ModConfig.getConfig().autotimeval + ".") && text.startsWith("»")) {
+        if (cancelTimeMsg && text.contains("» Set your player time to " + CodeUtilsConfig.getInt("autotimeval") + ".") && text.startsWith("»")) {
             cancel = true;
             cancelTimeMsg = false;
         }
@@ -189,7 +246,7 @@ public class ChatReceivedEvent {
 
         //Cancelling (set cancel to true)
         if (cancel) {
-            if (showCancelMsg) CodeUtilities.log(Level.INFO, "[CANCELLED] " + text);
+            if (showCancelMsg) CodeUtilities.log(Level.INFO, "[CANCELLED] " + msgWithColor);
             ci.cancel();
         }
     }

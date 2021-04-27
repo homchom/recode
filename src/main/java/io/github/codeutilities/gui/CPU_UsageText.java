@@ -12,16 +12,14 @@ import net.minecraft.util.Formatting;
 
 public class CPU_UsageText {
 
+    private static final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+    private static final Window mainWindow = MinecraftClient.getInstance().getWindow();
     public static boolean hasLagSlayer;
     public static boolean lagSlayerEnabled;
     public static String monitorPlotId;
-
     private static Text barsText;
     private static Text numberText;
     private static long lastUpdate;
-
-    private static final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-    private static final Window mainWindow = MinecraftClient.getInstance().getWindow();
 
     public CPU_UsageText() {
         throw new RuntimeException("CPU_UsageText is a static class !");
@@ -36,10 +34,10 @@ public class CPU_UsageText {
 
         String numberStr = "";
         String numberColor = msgPart.get("color").getAsString();
-        if(!numberColor.equals("dark_gray")) {
+        if (!numberColor.equals("dark_gray")) {
             int coloredBoxes = msgPart.get("text").getAsString().length();
 
-            if(coloredBoxes == 20) {
+            if (coloredBoxes == 20) {
                 numberStr = "100%";
             } else {
                 int cpuFrom = (coloredBoxes * 5);
@@ -64,8 +62,8 @@ public class CPU_UsageText {
 
     public static void onRender(MatrixStack stack) {
 
-        if(barsText == null || numberText == null) return;
-        if((System.currentTimeMillis() - lastUpdate) > 1200) {
+        if (barsText == null || numberText == null) return;
+        if ((System.currentTimeMillis() - lastUpdate) > 1200) {
             barsText = null;
             numberText = null;
             hasLagSlayer = false;
@@ -73,7 +71,7 @@ public class CPU_UsageText {
         }
 
         hasLagSlayer = true;
-        renderText(stack, "CPU Usage:", 3, Formatting.GOLD.getColorValue());
+        renderText(stack, Formatting.GOLD.getColorValue());
         renderText(stack, barsText, 2);
         renderText(stack, numberText, 1);
     }
@@ -82,7 +80,7 @@ public class CPU_UsageText {
         textRenderer.draw(stack, text, 5, mainWindow.getScaledHeight() - (textRenderer.fontHeight * line), 0xffffff);
     }
 
-    private static void renderText(MatrixStack stack, String text, int line, int color) {
-        textRenderer.draw(stack, text, 5, mainWindow.getScaledHeight() - (textRenderer.fontHeight * line), color);
+    private static void renderText(MatrixStack stack, int color) {
+        textRenderer.draw(stack, "CPU Usage:", 5, mainWindow.getScaledHeight() - (textRenderer.fontHeight * 3), color);
     }
 }

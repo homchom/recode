@@ -4,10 +4,13 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import io.github.codeutilities.commands.Command;
 import io.github.codeutilities.commands.arguments.ArgBuilder;
-import io.github.codeutilities.util.*;
+import io.github.codeutilities.util.ItemUtil;
+import io.github.codeutilities.util.chat.ChatType;
+import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.command.argument.*;
+import net.minecraft.command.argument.ItemStackArgument;
+import net.minecraft.command.argument.ItemStackArgumentType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.LiteralText;
 
@@ -52,7 +55,7 @@ public class GiveCommand extends Command {
                                 clipboard = clipboard.substring(3);
                             }
 
-                            mc.player.sendChatMessage("/dfgive " + clipboard);
+                            this.sendChatMessage(mc, "/dfgive " + clipboard);
                             return 1;
                         })
                 )
@@ -61,7 +64,7 @@ public class GiveCommand extends Command {
 
     private void giveItem(MinecraftClient mc, ItemStack item, int count) {
         item.setCount(count);
-        if (mc.player.isCreative()) {
+        if (this.isCreative(mc)) {
             if (count >= 1) {
                 if (count <= item.getMaxCount()) {
                     ItemUtil.giveCreativeItem(item, true);
@@ -73,8 +76,6 @@ public class GiveCommand extends Command {
             } else {
                 ChatUtil.sendMessage("Minimum item count is 1!", ChatType.FAIL);
             }
-        } else {
-            ChatUtil.sendTranslateMessage("codeutilities.command.require_creative_mode", ChatType.FAIL);
         }
     }
 }
