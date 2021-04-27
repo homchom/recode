@@ -16,9 +16,10 @@ import org.apache.logging.log4j.Level;
 import org.json.JSONObject;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class AudioHandler implements ILoader {
     String currentPlotId = "";
@@ -33,12 +34,13 @@ public class AudioHandler implements ILoader {
     }
     @Override
     public void load() {
+        if(!CodeUtilsConfig.getBool("audio")) { return; }
         try {
             com.sun.javafx.application.PlatformImpl.startup(() -> {
                 URI uri = URI.create(CodeUtilsConfig.getStr("audioUrl"));
                 String username = MinecraftClient.getInstance().getSession().getUsername();
                 IO.Options options = IO.Options.builder()
-                        .setQuery("username="+username+"&source="+("forge-"+CodeUtilities.MOD_ID+"-"+CodeUtilities.MOD_VERSION))
+                        .setQuery("username="+username+"&source="+("fabric-"+CodeUtilities.MOD_ID+"-"+CodeUtilities.MOD_VERSION))
                         .build();
                 Socket socket = IO.socket(uri, options);
                 socket.on("message", args -> {
@@ -49,11 +51,14 @@ public class AudioHandler implements ILoader {
                             String plotId = (String) obj.get("plot");
                             String track = (String) obj.get("track");
                             String source = (String) obj.get("source");
+                            String title = (String) obj.get("title");
                             boolean loop = (boolean) obj.get("loop");
                             if (!currentPlotId.equals(plotId)) {
-                                ToasterUtil.sendToaster("Now Playing", "Plot " + plotId, SystemToast.Type.NARRATOR_TOGGLE);
+                                // enable to show when plot takes control of session
+                                // ToasterUtil.sendToaster("Now Playing", "Plot " + plotId, SystemToast.Type.NARRATOR_TOGGLE);
                                 currentPlotId = plotId;
                             }
+                            ToasterUtil.sendToaster("Plot "+plotId,title,SystemToast.Type.TUTORIAL_HINT);
                             Media mediaSource = new Media(source);
                             MediaPlayer player = new MediaPlayer(mediaSource);
                             if(loop) {
@@ -96,16 +101,22 @@ public class AudioHandler implements ILoader {
                             audio.stop();
                         }
                     }
-                    if (action.equals("keepalive")) {
-                        for (Map.Entry<String, HashSet<MediaPlayer>> trackList : tracks.entrySet()) {
-                            for (MediaPlayer audio : trackList.getValue()) {
-                                float volumeMaster = MinecraftClient.getInstance().options.getSoundVolume(SoundCategory.MASTER);
-                                float volumeRecords = MinecraftClient.getInstance().options.getSoundVolume(SoundCategory.RECORDS);
-                                float volume = volumeMaster * volumeRecords;
-                                audio.setVolume(volume);
+                    Runnable handleVolume = new Runnable() {
+                        @Override
+                        public void run() {
+                            for (Map.Entry<String, HashSet<MediaPlayer>> trackList : tracks.entrySet()) {
+                                for (MediaPlayer audio : trackList.getValue()) {
+                                    float volumeMaster = MinecraftClient.getInstance().options.getSoundVolume(SoundCategory.MASTER);
+                                    float volumeRecords = MinecraftClient.getInstance().options.getSoundVolume(SoundCategory.RECORDS);
+                                    float volume = volumeMaster * volumeRecords;
+                                    audio.setVolume(volume);
+                                }
                             }
                         }
-                    }
+                    };
+                    ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+                    executor.scheduleAtFixedRate(handleVolume, 0, 1, TimeUnit.SECONDS);
+
                 });
                 socket.connect();
             });

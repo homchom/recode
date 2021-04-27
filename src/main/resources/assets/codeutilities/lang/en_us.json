@@ -141,6 +141,9 @@
     "config.codeutilities.option.audioUrl": "Project: Audio Endpoint",
     "config.codeutilities.option.audioUrl.tooltip": "The Socket URL to connect to for Project: Audio",
 
+    "config.codeutilities.option.audio": "Project: Audio Support",
+    "config.codeutilities.option.audio.tooltip": "Allows plots to play custom sounds / music",
+
 "codeutilities.command.require_creative_mode": "You must be in creative mode to use this command!",
 
 "key.category.codeutilities": "CodeUtilities",
