@@ -140,10 +140,11 @@
 
     "config.codeutilities.subcategory.misc_audio": "Project: Audio",
     "config.codeutilities.option.audioUrl": "Backend Endpoint",
-    "config.codeutilities.option.audioUrl.tooltip": "The Socket URL to connect to for Project: Audio",
-
+    "config.codeutilities.option.audioUrl.tooltip": "The Socket URL to connect to for Project: Audio.",
     "config.codeutilities.option.audio": "Playback Support",
-    "config.codeutilities.option.audio.tooltip": "Allows plots to play custom sounds / music",
+    "config.codeutilities.option.audio.tooltip": "Allows plots to play custom sounds / music.",
+    "config.codeutilities.option.audioAlerts": "Playback Alerts",
+    "config.codeutilities.option.audioAlerts.tooltip": "Notifications when a plot takes control of your audio.",
 
 "codeutilities.command.require_creative_mode": "You must be in creative mode to use this command!",
 

@@ -55,10 +55,14 @@ public class AudioHandler implements ILoader {
                             boolean loop = (boolean) obj.get("loop");
                             if (!currentPlotId.equals(plotId)) {
                                 // enable to show when plot takes control of session
-                                // ToasterUtil.sendToaster("Now Playing", "Plot " + plotId, SystemToast.Type.NARRATOR_TOGGLE);
+                                if(CodeUtilsConfig.getBool("audioAlerts")) {
+                                    ToasterUtil.sendToaster("Now Playing", "Plot " + plotId, SystemToast.Type.NARRATOR_TOGGLE);
+                                }
                                 currentPlotId = plotId;
                             }
-                            ToasterUtil.sendToaster("Plot "+plotId,title,SystemToast.Type.TUTORIAL_HINT);
+                            if(CodeUtilities.BETA) {
+                                ToasterUtil.sendToaster("Playback - "+plotId,title,SystemToast.Type.NARRATOR_TOGGLE);
+                            }
                             Media mediaSource = new Media(source);
                             MediaPlayer player = new MediaPlayer(mediaSource);
                             if(loop) {

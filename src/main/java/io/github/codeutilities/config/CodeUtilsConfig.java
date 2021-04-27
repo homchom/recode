@@ -102,7 +102,8 @@ public class CodeUtilsConfig {
         discordRPCShowElapsed("misc", "discordrpc", "discordRPCShowElapsed", true),
 
         audio("misc", "audio", "audio", true),
-        audioUrl("misc", "audio", "audioUrl", "https://audio.tomoli.me/");
+        audioUrl("misc", "audio", "audioUrl", "https://audio.tomoli.me/"),
+        audioAlerts("misc", "audio", "audioAlerts", false);
         // --------------------------------------------------------------------------------------
 
         final String category;
