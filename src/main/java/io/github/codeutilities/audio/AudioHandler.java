@@ -16,6 +16,7 @@ import org.json.JSONObject;
 
 import java.net.URI;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -24,14 +25,13 @@ public class AudioHandler implements ILoader {
     String currentPlotId = "";
     HashMap<String, HashSet<MediaPlayer>> tracks = new HashMap<>();
     private static AudioHandler instance;
-    private static final ScheduledExecutorService scheduledExecutor = Executors.newScheduledThreadPool(1);
     public AudioHandler() {
         instance = this;
     }
-
     public static AudioHandler getInstance() {
         return instance;
     }
+    private static final ScheduledExecutorService scheduledExecutor = Executors.newScheduledThreadPool(1);
     @Override
     public void load() {
         if(!CodeUtilsConfig.getBool("audio")) { return; }
