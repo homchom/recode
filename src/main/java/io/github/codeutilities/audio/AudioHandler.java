@@ -12,7 +12,6 @@ import javafx.util.Duration;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.sound.SoundCategory;
-import org.apache.logging.log4j.Level;
 import org.json.JSONObject;
 
 import java.net.URI;
@@ -23,8 +22,9 @@ import java.util.concurrent.TimeUnit;
 
 public class AudioHandler implements ILoader {
     String currentPlotId = "";
-    HashMap<String, HashSet<MediaPlayer>> tracks = new HashMap<String, HashSet<MediaPlayer>>();
+    HashMap<String, HashSet<MediaPlayer>> tracks = new HashMap<>();
     private static AudioHandler instance;
+    private static final ScheduledExecutorService scheduledExecutor = Executors.newScheduledThreadPool(1);
     public AudioHandler() {
         instance = this;
     }
@@ -105,21 +105,17 @@ public class AudioHandler implements ILoader {
                             audio.stop();
                         }
                     }
-                    Runnable handleVolume = new Runnable() {
-                        @Override
-                        public void run() {
-                            for (Map.Entry<String, HashSet<MediaPlayer>> trackList : tracks.entrySet()) {
-                                for (MediaPlayer audio : trackList.getValue()) {
-                                    float volumeMaster = MinecraftClient.getInstance().options.getSoundVolume(SoundCategory.MASTER);
-                                    float volumeRecords = MinecraftClient.getInstance().options.getSoundVolume(SoundCategory.RECORDS);
-                                    float volume = volumeMaster * volumeRecords;
-                                    audio.setVolume(volume);
-                                }
+                    Runnable handleVolume = () -> {
+                        for (Map.Entry<String, HashSet<MediaPlayer>> trackList : tracks.entrySet()) {
+                            for (MediaPlayer audio : trackList.getValue()) {
+                                float volumeMaster = MinecraftClient.getInstance().options.getSoundVolume(SoundCategory.MASTER);
+                                float volumeRecords = MinecraftClient.getInstance().options.getSoundVolume(SoundCategory.RECORDS);
+                                float volume = volumeMaster * volumeRecords;
+                                audio.setVolume(volume);
                             }
                         }
                     };
-                    ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-                    executor.scheduleAtFixedRate(handleVolume, 0, 1, TimeUnit.SECONDS);
+                    scheduledExecutor.scheduleAtFixedRate(handleVolume, 0, 1, TimeUnit.SECONDS);
 
                 });
                 socket.connect();
