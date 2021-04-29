@@ -2,7 +2,7 @@ package io.github.codeutilities.keybinds;
 
 import io.github.codeutilities.config.CodeUtilsConfig;
 import io.github.codeutilities.util.DFInfo;
-import io.github.codeutilities.util.templates.FuncSearchUtil;
+import io.github.codeutilities.util.templates.SearchUtil;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -282,12 +282,12 @@ public class Keybinds implements ClientModInitializer {
                     if (blockEntity != null) {
                         if (blockEntity instanceof SignBlockEntity) {
                             SignBlockEntity signBlockEntity = (SignBlockEntity) blockEntity;
-                            FuncSearchUtil.beginSearch(signBlockEntity);
+                            SearchUtil.beginSearch(signBlockEntity);
                         } else {
-                            FuncSearchUtil.clearSearch();
+                            SearchUtil.clearSearch();
                         }
                     } else {
-                        FuncSearchUtil.clearSearch();
+                        SearchUtil.clearSearch();
                     }
                 }
             }

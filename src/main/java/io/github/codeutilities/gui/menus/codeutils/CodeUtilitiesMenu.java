@@ -39,7 +39,7 @@ public class CodeUtilitiesMenu extends LightweightGuiDescription implements IMen
 
         WButton bugReport = new WButton(new LiteralText("Bug Report"));
         bugReport.setOnClick(() -> {
-            //todo: make bug report button work
+            ;
         });
         panel.add(bugReport, 60, 192, 100, 20);
     }

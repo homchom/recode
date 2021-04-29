@@ -1,10 +1,9 @@
 package io.github.codeutilities.mixin.render;
 
 import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.config.CodeUtilsConfig;
 import io.github.codeutilities.gui.CPU_UsageText;
 import io.github.codeutilities.util.DFInfo;
-import io.github.codeutilities.util.templates.FuncSearchUtil;
+import io.github.codeutilities.util.templates.SearchUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.util.math.MatrixStack;
@@ -20,10 +19,10 @@ public class InGameHudMixin {
     private void renderStatusEffectOverlay(MatrixStack stack, CallbackInfo ci) {
         CPU_UsageText.onRender(stack);
 
-        if (FuncSearchUtil.searchType != null && FuncSearchUtil.searchValue != null && DFInfo.isOnDF() && DFInfo.currentState == DFInfo.State.DEV) {
+        if (SearchUtil.searchType != null && SearchUtil.searchValue != null && DFInfo.isOnDF() && DFInfo.currentState == DFInfo.State.DEV) {
             MinecraftClient mc = CodeUtilities.MC;
-            mc.textRenderer.drawWithShadow(stack, new LiteralText("Searching usages of " + FuncSearchUtil.searchType.toString()).styled(style -> style.withUnderline(true)), 2, 2, 0xffffff);
-            mc.textRenderer.drawWithShadow(stack, new LiteralText(FuncSearchUtil.searchValue), 2, 12, 0xffffff);
+            mc.textRenderer.drawWithShadow(stack, new LiteralText("Searching usages of " + SearchUtil.searchType.toString()).styled(style -> style.withUnderline(true)), 2, 2, 0xffffff);
+            mc.textRenderer.drawWithShadow(stack, new LiteralText(SearchUtil.searchValue), 2, 12, 0xffffff);
         }
     }
 }

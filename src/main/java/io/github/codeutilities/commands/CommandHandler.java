@@ -46,6 +46,7 @@ public class CommandHandler implements ClientCommandPlugin, IManager<Command> {
                 new CopyTextCommand(),
                 new GradientCommand(),
                 new ConfigCommand(),
+                new SearchCommand(),
                 new DebugCommand()
         );
 

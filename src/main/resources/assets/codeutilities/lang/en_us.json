@@ -139,6 +139,10 @@
     "config.codeutilities.option.quickVarScope.tooltip": "Typing \"-s\", \"-l\" or \"-g\" after a\nvariable name in chat will change its scope,\nsimilar to the way /var works.",
 
     "codeutilities.command.require_creative_mode": "You must be in creative mode to use this command!",
+    "codeutilities.command.require_dev_mode": "You must be in dev mode to use this command!",
+
+    "codeutilities.template_search.cleared": "Search Cleared!",
+    "codeutilities.template_search.invalid_usage": "Invalid Codeblock: %s",
 
     "key.category.codeutilities": "CodeUtilities",
 
