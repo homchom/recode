@@ -4,7 +4,6 @@ import com.google.gson.JsonParser;
 import io.github.codeutilities.config.CodeUtilsConfig;
 import io.github.codeutilities.cosmetics.CosmeticHandler;
 import io.github.codeutilities.dfrpc.DFDiscordRPC;
-import io.github.codeutilities.gui.menus.codeutils.ContributorsMenu;
 import io.github.codeutilities.gui.menus.CustomHeadMenu;
 import io.github.codeutilities.social.PlayerlistStarServer;
 import io.github.codeutilities.template.TemplateStorageHandler;
@@ -53,7 +52,6 @@ public class CodeUtilities implements ModInitializer {
         CodeUtilsConfig.cacheConfig();
         initializer.add(new TemplateStorageHandler());
         initializer.add(new CustomHeadMenu());
-        initializer.add(new ContributorsMenu());
         initializer.add(new DFDiscordRPC());
         initializer.add(new PlayerlistStarServer());
 
@@ -61,10 +59,6 @@ public class CodeUtilities implements ModInitializer {
         initializer.addIf(new SocketHandler(), CodeUtilsConfig.getBool("itemApi"));
         MC.send(CosmeticHandler.INSTANCE::load);
     }
-
-
-
-
 
     public void onClose() {
         System.out.println("CLOSED");
