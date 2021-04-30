@@ -105,7 +105,7 @@ public class ChatReceivedEvent {
         if (pjoin) {
             String msg = text.replaceAll("§.", "");
             if (msg.startsWith("                                       \n")) {
-                if (msg.contains(" is currently at spawn.\n")) {
+                if (msg.contains(" is currently at spawn\n")) {
                     ChatUtil.sendMessage("This player is not in a plot.", ChatType.FAIL);
                 } else {
                     // PLOT ID
