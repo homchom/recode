@@ -49,7 +49,7 @@ public class ChatReceivedEvent {
 
         // cancel rpc /locate message
         if (DFDiscordRPC.locating) {
-            if (text.contains("\n§6You")) {
+            if (text.contains("\nYou are currently")) {
                 dfrpcMsg = text.replaceAll("§.", "");
                 cancel = true;
                 showCancelMsg = false;

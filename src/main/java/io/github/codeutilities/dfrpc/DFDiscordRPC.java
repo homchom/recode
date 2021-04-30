@@ -76,14 +76,14 @@ public class DFDiscordRPC implements ILoader {
         if (ChatReceivedEvent.dfrpcMsg.startsWith(EMPTY + "\nYou are currently at spawn.\n")) {
             presence.setDetails("At spawn");
             presence.setState(ChatReceivedEvent.dfrpcMsg.replaceFirst("^                                       \n" +
-                    "You are currently at spawn.\n", "").replaceFirst("^» Server: ", "").replaceFirst("\n" +
+                    "You are currently at spawn.\n", "").replaceFirst("^→ Server: ", "").replaceFirst("\n" +
                     "                                       $", ""));
             if (supportSession) presence.setSmallImage("supportsession", "In Support Session");
             else presence.setSmallImage(null, null);
 
             String state = ChatReceivedEvent.dfrpcMsg;
             state = state.replaceFirst("^ {39}\nYou are currently at spawn.\n", "")
-                    .replaceFirst("^» Server: ", "")
+                    .replaceFirst("^→ Server: ", "")
                     .replaceFirst("\n {39}$", "");
 
             presence.setState(state);
@@ -108,24 +108,24 @@ public class DFDiscordRPC implements ILoader {
             }
 
             // PLOT NAME
-            pattern = Pattern.compile("\n\n» .+ \\[[0-9]+]\n");
+            pattern = Pattern.compile("\n\n→ .+ \\[[0-9]+]\n");
             matcher = pattern.matcher(ChatReceivedEvent.dfrpcMsg);
             String name = "";
             while (matcher.find()) {
                 name = matcher.group();
             }
-            name = name.replaceAll("(^\n\n» )|( \\[[0-9]+]\n$)", "");
+            name = name.replaceAll("(^\n\n→ )|( \\[[0-9]+]\n$)", "");
 
             // CUSTOM STATUS
             String customStatus = "";
             if (DFInfo.currentState == DFInfo.State.PLAY) {
-                pattern = Pattern.compile("\n» ");
+                pattern = Pattern.compile("\n→ ");
                 matcher = pattern.matcher(ChatReceivedEvent.dfrpcMsg);
                 int headerAmt = 0;
                 while (matcher.find()) headerAmt++;
                 if (headerAmt == 4) {
                     customStatus = ChatReceivedEvent.dfrpcMsg
-                            .replaceFirst("^.*\n.*\n\n» .*\n» ", "");
+                            .replaceFirst("^.*\n.*\n\n→ .*\n→ ", "");
                     pattern = Pattern.compile("^.*");
                     matcher = pattern.matcher(customStatus);
                     while (matcher.find()) {
