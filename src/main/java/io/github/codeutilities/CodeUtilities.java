@@ -24,7 +24,7 @@ public class CodeUtilities implements ModInitializer {
     public static final String MOD_ID = "codeutilities";
     public static final String MOD_NAME = "CodeUtilities";
     public static final String MOD_VERSION = "2.2.1";
-    public static final boolean BETA = true;
+    public static final boolean BETA = false;
 
     public static final Logger LOGGER = LogManager.getLogger();
     public static final Random RANDOM = new Random();
