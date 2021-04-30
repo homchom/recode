@@ -91,6 +91,7 @@ public class CodeUtilsConfig {
         variableScopeView("screen", null, "variableScopeView", true),
         cpuOnScreen("screen", null, "cpuOnScreen", true),
         f3Tps("screen", null, "f3Tps", true),
+        cosmeticsEnabled("screen", null, "cosmeticsEnabled", true),
         //previewHeadSkin("screen",null,"previewHeadSkin", false),
         loadTabStars("screen",null,"loadTabStars", true),
         // misc ----------------------------------------------------------------------------

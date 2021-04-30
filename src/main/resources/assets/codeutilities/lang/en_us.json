@@ -24,8 +24,8 @@
     "config.codeutilities.option.itemApi.tooltip": "Used for sending items from third party programs.",
     "config.codeutilities.option.variableScopeView": "Variable Scope View",
     "config.codeutilities.option.variableScopeView.tooltip": "Shows the variable scope under the item name.\n(GAME, SAVE, LOCAL)",
-    "config.codeutilities.option.cosmeticType": "Show Cosmetics",
-    "config.codeutilities.option.cosmeticType.tooltip": "Shows CodeUtilities cosmetics such\nas developer capes and hats.",
+    "config.codeutilities.option.cosmeticsEnabled": "Show Cosmetics",
+    "config.codeutilities.option.cosmeticsEnabled.tooltip": "Shows CodeUtilities cosmetics such\nas developer capes and hats.",
     "config.codeutilities.option.loadTabStars": "Load Tablist Stars",
     "config.codeutilities.option.loadTabStars.tooltip": "Shows other players that are using codeutilities.",
 
