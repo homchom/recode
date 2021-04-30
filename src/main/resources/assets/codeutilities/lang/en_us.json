@@ -60,6 +60,11 @@
     "config.codeutilities.option.dfCommands.tooltip": "Enables the commands that work only in DiamondFire.",
     "config.codeutilities.option.errorSound": "Error Message Sound",
     "config.codeutilities.option.errorSound.tooltip": "Plays a sound when the mod sends error messages.",
+	
+	"config.codeutilities.subcategory.commands_heads": "/heads Command",
+	"config.codeutilities.subcategory.commands_heads.tooltip": "Settings that apply to the /heads command.",
+	"config.codeutilities.option.headsEnabled": "Enabled",
+	"config.codeutilities.option.headsEnabled.tooltip": "Enable this feature.",
     "config.codeutilities.option.headMenuMaxRender": "Maximum Heads in /heads",
     "config.codeutilities.option.headMenuMaxRender.tooltip": "Amount of heads to display in the /heads menu.",
 

@@ -50,7 +50,8 @@ public class CodeUtilsConfig {
         // commands ------------------------------------------------------------------------
         dfCommands("commands", null, "dfCommands", true),
         errorSound("commands", null, "errorSound", true),
-        headMenuMaxRender("commands", null, "headMenuMaxRender", 1000),
+        headsEnabled("commands", "heads", "headsEnabled", false),
+        headMenuMaxRender("commands", "heads", "headMenuMaxRender", 1000),
 
         colorMaxRender("commands", "colors", "colorMaxRender", 158),
         colorLines("commands", "colors", "colorLines", 5),
@@ -140,6 +141,7 @@ public class CodeUtilsConfig {
         Automation_Time("automation_time", true),
 
         Commands_Colors("commands_colors", true),
+        Commands_Heads("commands_heads", true),
 
         Hiding_Regex("hiding_regex", true),
         Hiding_Staff("hiding_staff", true),
