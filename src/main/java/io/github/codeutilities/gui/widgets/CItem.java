@@ -64,6 +64,7 @@ public class CItem extends WItem {
     public void renderTooltip(MatrixStack matrices, int x, int y, int tX, int tY) {
         super.renderTooltip(matrices, x, y, tX, tY);
 
+        /* Feature temporarily disabled
         if (CodeUtilsConfig.getBool("previewHeadSkin")) {
             if (item.getItem() == Items.PLAYER_HEAD) {
                 try {
@@ -94,6 +95,7 @@ public class CItem extends WItem {
                 }
             }
         }
+        */
     }
 
 }
