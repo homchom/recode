@@ -72,30 +72,24 @@ public class ChatReceivedEvent {
         }
 
         //LagSlayer enable/disable
-        if (text.matches("^\\[LagSlayer\\] Now monitoring plot ID: .*$")) {
-            CPU_UsageText.monitorPlotId = text.replaceAll("\\[LagSlayer\\] Now monitoring plot ID: ", "");
+        if (text.matches("^\\[LagSlayer\\] Now monitoring plot .*\\. Type /lagslayer to stop monitoring\\.$")) {
             CPU_UsageText.lagSlayerEnabled = true;
-            if (cancelLagSlayerMsg) cancel = true;
-        }
-        if (text.matches("^\\[LagSlayer\\] Stop monitoring by typing /lagslayer again\\.$")) {
             if (cancelLagSlayerMsg) cancel = true;
             cancelLagSlayerMsg = false;
         }
 
-        if (text.matches("^\\[LagSlayer\\] No longer monitoring plot ID: .*$")) {
-            CPU_UsageText.monitorPlotId = "";
+        if (text.matches("^\\[LagSlayer\\] Stopped monitoring plot .*\\.$")) {
             CPU_UsageText.lagSlayerEnabled = false;
             if (cancelLagSlayerMsg) cancel = true;
             cancelLagSlayerMsg = false;
         }
-        if (text.matches("^\\[LagSlayer\\] Please join a plot to monitor it with LagSlayer\\.$")) {
-            CPU_UsageText.monitorPlotId = "";
+
+        if (text.matches("^Error: You must be in a plot to use this command!$")) {
             CPU_UsageText.lagSlayerEnabled = false;
             if (cancelLagSlayerMsg) cancel = true;
             cancelLagSlayerMsg = false;
         }
-        if (text.matches("^\\[LagSlayer\\] You do not have permission to monitor this plot\\.$")) {
-            CPU_UsageText.monitorPlotId = "";
+        if (text.matches("^Error: You can't monitor this plot!$")) {
             CPU_UsageText.lagSlayerEnabled = false;
             if (cancelLagSlayerMsg) cancel = true;
             cancelLagSlayerMsg = false;

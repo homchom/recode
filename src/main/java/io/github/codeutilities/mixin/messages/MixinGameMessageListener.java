@@ -67,7 +67,7 @@ public class MixinGameMessageListener {
         TitleS2CPacket.Action action = packet.getAction();
         if (minecraftClient.player == null) return;
         if (action == TitleS2CPacket.Action.ACTIONBAR) {
-            if (packet.getText().getString().equals("CPU Usage: [▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮]")) {
+            if (packet.getText().getString().matches("^CPU Usage: \\[▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮\\] \\(.*%\\)$")) {
                 if (CodeUtilsConfig.getBool("cpuOnScreen")) {
                     CPU_UsageText.updateCPU(packet);
                     ci.cancel();
@@ -141,7 +141,7 @@ public class MixinGameMessageListener {
         }
 
         // Play Mode
-        if (text.matches("Joined game: .* by .*") && text.startsWith("Joined game: ")) {
+        if (text.matches("^Joined game: .* by .*$")) {
             DFInfo.currentState = DFInfo.State.PLAY;
 
             // Auto LagSlayer

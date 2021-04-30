@@ -58,11 +58,7 @@ public class MixinItemSlotUpdate {
 
                     }
 
-                    // Auto LagSlayer
-                    if (CPU_UsageText.lagSlayerEnabled && CodeUtilsConfig.getBool("autolagslayer")) {
-                        mc.player.sendChatMessage("/lagslayer");
-                        ChatReceivedEvent.cancelLagSlayerMsg = true;
-                    }
+                    CPU_UsageText.lagSlayerEnabled = false;
 
                     // fs toggle
                     FlightspeedToggle.fs_is_normal = true;

@@ -16,7 +16,6 @@ public class CPU_UsageText {
     private static final Window mainWindow = MinecraftClient.getInstance().getWindow();
     public static boolean hasLagSlayer;
     public static boolean lagSlayerEnabled;
-    public static String monitorPlotId;
     private static Text barsText;
     private static Text numberText;
     private static long lastUpdate;
@@ -30,31 +29,23 @@ public class CPU_UsageText {
         JsonObject msgPart = msgArray.get(2).getAsJsonObject();
 
         barsText = packet.getText();
+
+        System.out.println(barsText);
+
+        int sibs = barsText.getSiblings().size();
+
+        Text pText = barsText.getSiblings().get(sibs - 2);
+        pText.getSiblings().add(barsText.getSiblings().get(sibs - 1));
+
+        barsText.getSiblings().remove(sibs - 1);
+        barsText.getSiblings().remove(sibs - 2);
         barsText.getSiblings().remove(0);
 
-        String numberStr = "";
+        String numberStr = pText.asString().replaceAll("\\(", "").replaceAll("\\)", "");
         String numberColor = msgPart.get("color").getAsString();
-        if (!numberColor.equals("dark_gray")) {
-            int coloredBoxes = msgPart.get("text").getAsString().length();
-
-            if (coloredBoxes == 20) {
-                numberStr = "100%";
-            } else {
-                int cpuFrom = (coloredBoxes * 5);
-                int cpuTo = cpuFrom + 5;
-
-                numberStr = cpuFrom + "% - " + cpuTo + "%";
-            }
-        } else {
-            numberStr = "0% - 5%";
-            //numberColor = "#666666";
-
-            //MutableText barsTextMiddle = (MutableText)barsText.getSiblings().get(1);
-            //barsTextMiddle.setStyle(barsTextMiddle.getStyle().withColor(Formatting.);
-        }
 
         numberText = Text.Serializer.fromJson("{\"extra\":[{\"italic\":false,\"color\":\"gray\",\"text\":\"[\"}," +
-                "{\"italic\":false,\"color\":\"" + numberColor + "\",\"text\":\"" + numberStr + "\"}," +
+                "{\"italic\":false,\"color\":\"" + numberColor + "\",\"text\":\"" + numberStr + "%\"}," +
                 "{\"italic\":false,\"color\":\"gray\",\"text\":\"]\"}],\"text\":\"\"}");
 
         lastUpdate = System.currentTimeMillis();
