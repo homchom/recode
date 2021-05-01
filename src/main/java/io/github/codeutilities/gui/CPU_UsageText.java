@@ -44,9 +44,11 @@ public class CPU_UsageText {
         String numberStr = pText.asString().replaceAll("\\(", "").replaceAll("\\)", "");
         String numberColor = msgPart.get("color").getAsString();
 
-        numberText = Text.Serializer.fromJson("{\"extra\":[{\"italic\":false,\"color\":\"gray\",\"text\":\"[\"}," +
+        if (numberColor.equals("dark_gray")) numberColor = "white";
+
+        numberText = Text.Serializer.fromJson("{\"extra\":[{\"italic\":false,\"color\":\"white\",\"text\":\"(\"}," +
                 "{\"italic\":false,\"color\":\"" + numberColor + "\",\"text\":\"" + numberStr + "%\"}," +
-                "{\"italic\":false,\"color\":\"gray\",\"text\":\"]\"}],\"text\":\"\"}");
+                "{\"italic\":false,\"color\":\"white\",\"text\":\")\"}],\"text\":\"\"}");
 
         lastUpdate = System.currentTimeMillis();
     }
