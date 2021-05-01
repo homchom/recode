@@ -2,6 +2,7 @@ package io.github.codeutilities.gui;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import io.github.codeutilities.CodeUtilities;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.util.Window;
@@ -9,6 +10,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.apache.logging.log4j.Level;
 
 public class CPU_UsageText {
 
@@ -64,9 +66,15 @@ public class CPU_UsageText {
         }
 
         hasLagSlayer = true;
-        renderText(stack, Formatting.GOLD.getColorValue());
-        renderText(stack, barsText, 2);
-        renderText(stack, numberText, 1);
+
+        try {
+            renderText(stack, Formatting.GOLD.getColorValue());
+            renderText(stack, barsText, 2);
+            renderText(stack, numberText, 1);
+        }catch (Exception e) {
+            CodeUtilities.log(Level.ERROR, "Error while trying to render LagSlayer HUD!");
+            e.printStackTrace();
+        }
     }
 
     private static void renderText(MatrixStack stack, Text text, int line) {
