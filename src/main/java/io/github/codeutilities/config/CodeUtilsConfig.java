@@ -102,7 +102,7 @@ public class CodeUtilsConfig {
         discordRPCTimeout("misc", "discordrpc", "discordRPCTimeout", 15000),
         discordRPCShowElapsed("misc", "discordrpc", "discordRPCShowElapsed", true),
 
-        audio("misc", "audio", "audio", true),
+        audio("misc", "audio", "audio", false),
         audioUrl("misc", "audio", "audioUrl", "https://audio.tomoli.me/"),
         audioAlerts("misc", "audio", "audioAlerts", false);
         // --------------------------------------------------------------------------------------
