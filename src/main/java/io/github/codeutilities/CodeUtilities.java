@@ -1,6 +1,7 @@
 package io.github.codeutilities;
 
 import com.google.gson.JsonParser;
+import io.github.codeutilities.audio.AudioHandler;
 import io.github.codeutilities.config.CodeUtilsConfig;
 import io.github.codeutilities.cosmetics.CosmeticHandler;
 import io.github.codeutilities.dfrpc.DFDiscordRPC;
@@ -54,7 +55,7 @@ public class CodeUtilities implements ModInitializer {
         initializer.add(new CustomHeadMenu());
         initializer.add(new DFDiscordRPC());
         initializer.add(new PlayerlistStarServer());
-
+        initializer.add(new AudioHandler());
         // Initialize only if the config value is true.
         initializer.addIf(new SocketHandler(), CodeUtilsConfig.getBool("itemApi"));
         MC.send(CosmeticHandler.INSTANCE::load);

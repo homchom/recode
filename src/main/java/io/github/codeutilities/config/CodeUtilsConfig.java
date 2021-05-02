@@ -100,7 +100,11 @@ public class CodeUtilsConfig {
 
         discordRPC("misc", "discordrpc", "discordRPC", true),
         discordRPCTimeout("misc", "discordrpc", "discordRPCTimeout", 15000),
-        discordRPCShowElapsed("misc", "discordrpc", "discordRPCShowElapsed", true);
+        discordRPCShowElapsed("misc", "discordrpc", "discordRPCShowElapsed", true),
+
+        audio("misc", "audio", "audio", true),
+        audioUrl("misc", "audio", "audioUrl", "https://audio.tomoli.me/"),
+        audioAlerts("misc", "audio", "audioAlerts", false);
         // --------------------------------------------------------------------------------------
 
         final String category;
@@ -153,7 +157,9 @@ public class CodeUtilsConfig {
 
         Screen_World_Rendering("screen_world_rendering", true),
 
-        Misc_DiscordRPC("misc_discordrpc", true);
+        Misc_DiscordRPC("misc_discordrpc", true),
+
+        Misc_Audio("misc_audio", true);
 
         final String subcategory;
         final boolean startExpanded;

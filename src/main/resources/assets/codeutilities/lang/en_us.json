@@ -143,6 +143,14 @@
     "config.codeutilities.option.quickVarScope": "Quick Variable Scope",
     "config.codeutilities.option.quickVarScope.tooltip": "Typing \"-s\", \"-l\" or \"-g\" after a\nvariable name in chat will change its scope,\nsimilar to the way /var works.",
 
+    "config.codeutilities.subcategory.misc_audio": "Project: Audio",
+    "config.codeutilities.option.audioUrl": "Backend Endpoint",
+    "config.codeutilities.option.audioUrl.tooltip": "The Socket URL to connect to for Project: Audio.",
+    "config.codeutilities.option.audio": "Playback Support",
+    "config.codeutilities.option.audio.tooltip": "Allows plots to play custom sounds / music.",
+    "config.codeutilities.option.audioAlerts": "Playback Alerts",
+    "config.codeutilities.option.audioAlerts.tooltip": "Notifications when a plot takes control of your audio.",
+
     "codeutilities.command.require_creative_mode": "You must be in creative mode to use this command!",
     "codeutilities.command.require_dev_mode": "You must be in dev mode to use this command!",
 
