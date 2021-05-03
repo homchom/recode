@@ -6,6 +6,7 @@ import io.github.codeutilities.config.CodeUtilsConfig;
 import io.github.codeutilities.util.DFInfo;
 import io.github.codeutilities.util.chat.ChatType;
 import io.github.codeutilities.util.chat.ChatUtil;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -101,7 +102,7 @@ public class MixinPlayerChatMessage {
             }
         }
         //start conversation
-        if (CodeUtilsConfig.getBool("automsg") && (string.startsWith("/msg") || string.startsWith("/w"))) {
+        if (CodeUtilsConfig.getBool("automsg") && (string.startsWith("/msg ") || string.startsWith("/w "))) {
             if (args.length == 2) {
                 ci.cancel();
                 DFInfo.currentConversation = args[1];
@@ -112,7 +113,7 @@ public class MixinPlayerChatMessage {
             }
         }
         //end conversation
-        if (DFInfo.currentConversation != null && (string.startsWith("/chat") || string.startsWith("/c"))) {
+        if (DFInfo.currentConversation != null && (string.startsWith("/chat ") || string.startsWith("/c "))) {
             if (conversationTimer.getState() == Thread.State.RUNNABLE) stopTimer = true;
             DFInfo.currentConversation = null;
             ChatUtil.sendMessage("The conversation was ended.", ChatType.SUCCESS);
