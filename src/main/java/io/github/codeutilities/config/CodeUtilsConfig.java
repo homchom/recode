@@ -88,6 +88,8 @@ public class CodeUtilsConfig {
         signRenderDistance("screen", "world_rendering", "signRenderDistance", 100),
 
         dfButton("screen", null, "dfButton", true),
+        dfNodeButtons("screen", null, "dfNodeButtons", false),
+
         variableScopeView("screen", null, "variableScopeView", true),
         cpuOnScreen("screen", null, "cpuOnScreen", true),
         f3Tps("screen", null, "f3Tps", true),
