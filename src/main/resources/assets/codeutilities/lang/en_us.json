@@ -29,6 +29,15 @@
     "config.codeutilities.option.loadTabStars": "Load Tablist Stars",
     "config.codeutilities.option.loadTabStars.tooltip": "Shows other players that are using codeutilities.",
 
+
+    "config.codeutilities.subcategory.automation_automsg": "Auto /msg",
+    "config.codeutilities.subcategory.automation_automsg.tooltip": "Will set a conversation with someone when\ndoing /msg <player>, any message sent in chat\nwill automatically be sent to that person only.",
+    "config.codeutilities.option.automsg": "Enabled",
+    "config.codeutilities.option.automsg.tooltip": "Enable this feature.",
+    "config.codeutilities.option.automsg_timeout": "Timeout Enabled",
+    "config.codeutilities.option.automsg_timeout.tooltip": "Enable the timeout feature, ending\nautomatically a conversation if it\nis inactive for too long.",
+    "config.codeutilities.option.automsg_timeoutNumber": "Timeout (in milliseconds).",
+    "config.codeutilities.option.automsg_timeoutNumber.tooltip": "The time it takes for an inactive\nconversation to end.",
     "config.codeutilities.subcategory.automation_time": "Auto /time",
     "config.codeutilities.subcategory.automation_time.tooltip": "Automatically runs /time upon\nentering dev or build mode.",
     "config.codeutilities.option.autotime": "Enabled",

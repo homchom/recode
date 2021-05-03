@@ -71,6 +71,10 @@ public class ChatReceivedEvent {
             }
         }
 
+        // update conversation end timer
+        if (DFInfo.currentConversation != null && text.toLowerCase().startsWith("[" + DFInfo.currentConversation.toLowerCase() + " → you] "))
+            DFInfo.conversationUpdateTime = String.valueOf(System.currentTimeMillis());
+
         //LagSlayer enable/disable
         if (text.matches("^\\[LagSlayer\\] Now monitoring plot .*\\. Type /lagslayer to stop monitoring\\.$")) {
             CPU_UsageText.lagSlayerEnabled = true;
