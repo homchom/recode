@@ -173,5 +173,16 @@
     "key.codeutilities.node3": "Node 3",
     "key.codeutilities.node4": "Node 4",
     "key.codeutilities.node5": "Node 5",
-    "key.codeutilities.node_beta": "Node Beta"
+    "key.codeutilities.node_beta": "Node Beta",
+    "config.codeutilities.subcategory.automation_automsg": "Auto /msg",
+     "config.codeutilities.subcategory.automation_automsg.tooltip": "Inizia una conversazione con qualcuno quando\nsi esegue /msg <giocatore>, qualsiasi messaggio inviato in chat\nverrà automaticamente inviato solo a quella persona.",
+     "config.codeutilities.option.automsg": "Attivo",
+     "config.codeutilities.option.automsg.tooltip": "Attiva questa funzionalità.",
+     "config.codeutilities.option.automsg_timeout": "Timeout Attivo",
+     "config.codeutilities.option.automsg_timeout.tooltip": "Attiva la funzione timeout, terminando\nautomaticamente una conversazione se\nè inattiva per troppo tempo.",
+     "config.codeutilities.option.automsg_timeoutNumber": "Timeout (in millisecondi).",
+     "config.codeutilities.option.automsg_timeoutNumber.tooltip": "Il tempo necessario per terminare\nuna conversazione inattiva.",
+     
+     "config.codeutilities.option.dfNodeButtons": "Pulsanti DiamondFire Node",
+     "config.codeutilities.option.dfNodeButtons.tooltip": "Aggiunge pulsanti specifici dei node nella schermata del titolo per entrare in DiamondFire."
   }
