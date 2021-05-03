@@ -20,6 +20,9 @@
 
     "config.codeutilities.option.dfButton": "DiamondFire Menu Button",
     "config.codeutilities.option.dfButton.tooltip": "Adds a button in the title screen to join DiamondFire.",
+    "config.codeutilities.option.dfNodeButtons": "DiamondFire Node Buttons",
+    "config.codeutilities.option.dfNodeButtons.tooltip": "Adds node specific buttons in the title screen to join DiamondFire.",
+	
     "config.codeutilities.option.itemApi": "Item API",
     "config.codeutilities.option.itemApi.tooltip": "Used for sending items from third party programs.",
     "config.codeutilities.option.variableScopeView": "Variable Scope View",
