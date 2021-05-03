@@ -38,6 +38,10 @@ public class CodeUtilsConfig {
 
     public enum ConfigEntries {
         // automation ---------------------------------------------------------------------
+        autoMessage("automation", "automsg", "automsg", true),
+        autoMessageTimeout("automation", "automsg", "automsg_timeout", true),
+        autoMessageTimeoutNumber("automation", "automsg", "automsg_timeoutNumber", 300000),
+
         autotime("automation", "time", "autotime", false),
         autotimeval("automation", "time", "autotimeval",0),
 
@@ -142,6 +146,7 @@ public class CodeUtilsConfig {
     }
 
     public enum ConfigSubcategories {
+        Automation_AutoMsg("automation_automsg", true),
         Automation_Time("automation_time", true),
 
         Commands_Colors("commands_colors", true),
@@ -319,16 +324,17 @@ public class CodeUtilsConfig {
 
         for (Object objKey : obj.keySet().toArray()) {
             String key = objKey.toString();
+            Object objkey = obj.get(key);
             ConfigEntries fromKey = ConfigEntries.fromKey(key);
 
             boolean check = false;
-            if (obj.get(key) instanceof String && fromKey.defaultValue instanceof String) {
+            if (objkey instanceof String && fromKey.defaultValue instanceof String) {
                 if (obj.getString(key).equals(fromKey.defaultValue.toString())) check = true;
-            } else if (obj.get(key) instanceof Boolean) {
+            } else if (objkey instanceof Boolean) {
                 if (obj.getBoolean(key) == Boolean.parseBoolean(fromKey.defaultValue.toString())) check = true;
-            } else if (obj.get(key) instanceof Integer) {
+            } else if (objkey instanceof Integer) {
                 if (obj.getInt(key) == Integer.parseInt(fromKey.defaultValue.toString())) check = true;
-            } else if (obj.get(key) instanceof Float) {
+            } else if (objkey instanceof Float) {
                 if (obj.getFloat(key) == Float.parseFloat(fromKey.defaultValue.toString())) check = true;
             } else if (fromKey.defaultValue instanceof String[]) {
                 String[] defaultValue = (String[]) fromKey.defaultValue;

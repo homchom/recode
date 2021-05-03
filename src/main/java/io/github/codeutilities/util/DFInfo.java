@@ -10,6 +10,8 @@ public class DFInfo {
     public static State currentState = null;
     public static boolean isInBeta = false;
     public static Vec3d plotCorner = null;
+    public static String currentConversation = null;
+    public static String conversationUpdateTime = null;
 
     public static boolean isPatchNewer(String base, String target) {
         String[] baseSplit = base.split("\\.", 0);

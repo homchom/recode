@@ -37,7 +37,6 @@ public class MixinPlayerSkinProvider {
     private void loadSkin(MinecraftProfileTexture profileTexture, Type type,
                           @Nullable PlayerSkinProvider.SkinTextureAvailableCallback callback,
                           CallbackInfoReturnable<Identifier> cir) {
-
         String string = Hashing.sha1().hashUnencodedChars(profileTexture.getHash()).toString();
         Identifier identifier = new Identifier("skins/" + string);
         AbstractTexture abstractTexture = this.textureManager.getTexture(identifier);
