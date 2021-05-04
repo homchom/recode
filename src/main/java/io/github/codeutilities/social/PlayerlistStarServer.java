@@ -1,57 +1,78 @@
 package io.github.codeutilities.social;
 
-import com.google.gson.JsonObject;
+import com.mojang.authlib.exceptions.AuthenticationException;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.util.ILoader;
-import io.github.codeutilities.util.networking.WebUtil;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import java.net.URI;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.UUID;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.Session;
-import net.minecraft.util.ChatUtil;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.json.JSONObject;
 
 public class PlayerlistStarServer implements ILoader {
 
     public static String key;
+    public static HashMap<UUID, Boolean> users = new HashMap<>();
 
     @Override
     public void load() {
         MinecraftClient mc = CodeUtilities.MC;
-        Session session = mc.getSession();
 
-        String serverid = RandomStringUtils.randomAlphabetic(20);
+        Socket socket = IO.socket(URI.create("https://CodeUtilitiesServer.blazemcworld1.repl.co"));
 
-        try {
-            mc.getSessionService().joinServer(session.getProfile(),session.getAccessToken(),serverid);
+        //sent when the server needs the client to authenticate
+        //args: (String) salt
+        socket.on("requestAuth", (Object... args) -> {
+            try {
+                String salt = (String) args[0];
+                MessageDigest md = MessageDigest.getInstance("SHA-1");
+                md.update(salt.getBytes());
+                String data = RandomStringUtils.randomAlphabetic(20);
+                md.update(data.getBytes());
 
-            JsonObject obj = WebUtil.getJson("https://untitled-mnlfv6uw5c06.runkit.sh/login/" + session.getUsername() + "/" + serverid).getAsJsonObject();
+                String serverid = String.valueOf(Hex.encodeHex(md.digest(), true));
 
-            if (obj.get("success").getAsBoolean()) {
+                Session session = mc.getSession();
 
-                key = obj.get("key").getAsString();
+                mc.getSessionService()
+                    .joinServer(session.getProfile(), session.getAccessToken(), serverid);
 
-                ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
+                socket.emit("authLogin", data, session.getUsername());
+            } catch (NoSuchAlgorithmException | AuthenticationException e) {
+                e.printStackTrace();
+            }
+        });
 
-                String id = session.getUuid().replaceAll("-","");
+        //sent when a new user connects
+        //args: (String) uuid (bool) isDev
+        socket.on("newUser", (Object... args) -> {
+            UUID uuid = UUID.fromString((String) args[0]);
+            users.put(uuid, (boolean) args[1]);
+        });
 
-                ses.scheduleAtFixedRate(() -> {
+        //sent when a user disconnects
+        //args (String) uuid
+        socket.on("remUser", (Object... args) -> {
+            UUID uuid = UUID.fromString((String) args[0]);
+            users.remove(uuid);
+        });
 
-                    try {
-                        JsonObject res = WebUtil.getJson("https://untitled-mnlfv6uw5c06.runkit.sh/renew/" + id + "/" + key).getAsJsonObject();
+        //sent once on login, contains all currently connected users
+        //args (JsonObject) users
+        socket.on("userList", (Object... args) -> {
+            JSONObject users = (JSONObject) args[0];
+            for (String key : users.keySet()) {
+                users.put(key,users.getBoolean(key));
+            }
+        });
 
-                        if (!res.get("success").getAsBoolean()) throw new Exception(res.get("error").getAsString());
-
-                    } catch (Exception err) {
-                        err.printStackTrace();
-                    }
-
-                },1,5, TimeUnit.MINUTES);
-
-            } else throw new Exception(obj.get("error").getAsString());
-        } catch (Exception err) {
-            err.printStackTrace();
-        }
+        socket.connect();
     }
 }
