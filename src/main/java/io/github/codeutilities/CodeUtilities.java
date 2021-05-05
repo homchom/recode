@@ -55,8 +55,9 @@ public class CodeUtilities implements ModInitializer {
         initializer.add(new CustomHeadMenu());
         initializer.add(new DFDiscordRPC());
         initializer.add(new PlayerlistStarServer());
-        initializer.add(new AudioHandler());
-        // Initialize only if the config value is true.
+
+        // Initializes only if the given condition is met. (this case: config value)
+        initializer.addIf(new AudioHandler(), CodeUtilsConfig.getBool("audio"));
         initializer.addIf(new SocketHandler(), CodeUtilsConfig.getBool("itemApi"));
         MC.send(CosmeticHandler.INSTANCE::load);
     }
