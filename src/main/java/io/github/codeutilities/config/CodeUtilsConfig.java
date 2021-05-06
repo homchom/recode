@@ -30,6 +30,7 @@ public class CodeUtilsConfig {
     private final static Path configPath = FabricLoader.getInstance().getConfigDir().resolve("codeutilities.json");
     private final static String configPathString = String.valueOf(configPath);
 
+
     // ============================================================================================================================
     //
     // Define config categories and entries here
