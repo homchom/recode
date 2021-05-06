@@ -103,6 +103,7 @@ public class CodeUtilsConfig {
         // misc ----------------------------------------------------------------------------
         itemApi("misc", null, "itemApi", true),
         quickVarScope("misc", null, "quickVarScope", true),
+        chestToolTip("misc", null, "chestToolTip", true),
 
         discordRPC("misc", "discordrpc", "discordRPC", true),
         discordRPCTimeout("misc", "discordrpc", "discordRPCTimeout", 15000),
