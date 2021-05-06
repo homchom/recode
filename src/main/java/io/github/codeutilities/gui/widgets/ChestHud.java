@@ -26,6 +26,7 @@ public class ChestHud {
         }
     }
 
+
     private static void afterContainerRender(Screen screen, MatrixStack matrices, int mouseX, int mouseY, float tickDelta) {
         GenericContainerScreenHandler handler = ((GenericContainerScreen) screen).getScreenHandler();
         MinecraftClient mc = CodeUtilities.MC;
