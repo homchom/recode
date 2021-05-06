@@ -62,7 +62,6 @@ public class CodeUtilities implements ModInitializer {
         initializer.addIf(new SocketHandler(), CodeUtilsConfig.getBool("itemApi"));
         ChestHud.register();
         MC.send(CosmeticHandler.INSTANCE::load);
-
     }
 
     public void onClose() {
