@@ -163,6 +163,9 @@
     "config.codeutilities.option.audioAlerts": "Playback Alerts",
     "config.codeutilities.option.audioAlerts.tooltip": "Notifications when a plot takes control of your audio.",
 
+    "config.codeutilities.option.chestToolTip": "Chest Tooltip",
+    "config.codeutilities.option.chestToolTip.tooltip": "Display chest params when you are in dev",
+
     "codeutilities.command.require_creative_mode": "You must be in creative mode to use this command!",
     "codeutilities.command.require_dev_mode": "You must be in dev mode to use this command!",
 

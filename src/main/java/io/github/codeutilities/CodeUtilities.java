@@ -66,7 +66,6 @@ public class CodeUtilities implements ModInitializer {
 
     public void onClose() {
         System.out.println("CLOSED");
-
         TemplateStorageHandler.getInstance().save();
         CosmeticHandler.INSTANCE.shutdownExecutorService();
     }

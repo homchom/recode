@@ -37,6 +37,7 @@ public class ChestHud {
         Integer x = 20;
         Integer y = 20;
 
+
         if (DFInfo.currentState == DFInfo.State.DEV) {
             if (CodeUtilsConfig.getBool("chestToolTip")) {
                 for (Text text : item.getTooltip(player, TooltipContext.Default.NORMAL)) {
@@ -46,5 +47,6 @@ public class ChestHud {
                 }
             }
         }
+
     }
 }
