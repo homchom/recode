@@ -2,7 +2,6 @@ package io.github.codeutilities.mixin.render;
 
 import io.github.codeutilities.config.CodeUtilsConfig;
 import io.github.codeutilities.util.networking.TPSUtil;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.DebugHud;
 import net.minecraft.util.Formatting;
 import org.spongepowered.asm.mixin.Mixin;

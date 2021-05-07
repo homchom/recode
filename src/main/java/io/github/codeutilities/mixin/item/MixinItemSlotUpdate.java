@@ -2,11 +2,11 @@ package io.github.codeutilities.mixin.item;
 
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.CodeUtilsConfig;
-import io.github.codeutilities.events.ChatReceivedEvent;
-import io.github.codeutilities.gui.CPU_UsageText;
-import io.github.codeutilities.keybinds.FlightspeedToggle;
-import io.github.codeutilities.template.TemplateStorageHandler;
-import io.github.codeutilities.util.DFInfo;
+import io.github.codeutilities.features.social.chat.ChatReceivedEvent;
+import io.github.codeutilities.util.render.gui.CPU_UsageText;
+import io.github.codeutilities.features.keybinds.FlightspeedToggle;
+import io.github.codeutilities.util.templates.TemplateStorageHandler;
+import io.github.codeutilities.util.networking.DFInfo;
 import io.github.codeutilities.util.templates.TemplateUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;

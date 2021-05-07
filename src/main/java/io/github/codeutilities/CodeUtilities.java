@@ -1,15 +1,15 @@
 package io.github.codeutilities;
 
 import com.google.gson.JsonParser;
-import io.github.codeutilities.audio.AudioHandler;
+import io.github.codeutilities.features.external.AudioHandler;
 import io.github.codeutilities.config.CodeUtilsConfig;
-import io.github.codeutilities.cosmetics.CosmeticHandler;
-import io.github.codeutilities.dfrpc.DFDiscordRPC;
-import io.github.codeutilities.gui.menus.CustomHeadMenu;
-import io.github.codeutilities.gui.widgets.ChestHud;
-import io.github.codeutilities.social.PlayerlistStarServer;
-import io.github.codeutilities.template.TemplateStorageHandler;
-import io.github.codeutilities.util.socket.SocketHandler;
+import io.github.codeutilities.features.social.cosmetics.CosmeticHandler;
+import io.github.codeutilities.features.external.DFDiscordRPC;
+import io.github.codeutilities.util.render.gui.menus.CustomHeadMenu;
+import io.github.codeutilities.util.render.gui.widgets.ChestHud;
+import io.github.codeutilities.features.social.tab.PlayerlistStarServer;
+import io.github.codeutilities.util.templates.TemplateStorageHandler;
+import io.github.codeutilities.util.networking.socket.SocketHandler;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;

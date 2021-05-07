@@ -1,7 +1,7 @@
 package io.github.codeutilities.mixin.render;
 
 import io.github.codeutilities.config.CodeUtilsConfig;
-import io.github.codeutilities.util.DFInfo;
+import io.github.codeutilities.util.networking.DFInfo;
 import io.github.codeutilities.util.templates.SearchUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SignBlock;

@@ -2,19 +2,15 @@ package io.github.codeutilities.mixin.player;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
-import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.cosmetics.CosmeticHandler;
+import io.github.codeutilities.features.social.cosmetics.CosmeticHandler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.client.texture.*;
 import net.minecraft.util.Identifier;
-import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
-import java.net.URL;
 import java.util.Map;
 
 @Mixin(PlayerListEntry.class)

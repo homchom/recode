@@ -2,8 +2,8 @@ package io.github.codeutilities.util.chat;
 
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.CodeUtilsConfig;
-import io.github.codeutilities.util.DFInfo;
-import io.github.codeutilities.util.color.MinecraftColors;
+import io.github.codeutilities.util.networking.DFInfo;
+import io.github.codeutilities.util.render.color.MinecraftColors;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;

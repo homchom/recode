@@ -1,9 +1,9 @@
 package io.github.codeutilities.mixin.packet;
 
-import io.github.codeutilities.commands.util.PlotsCommand;
+import io.github.codeutilities.commands.impl.util.PlotsCommand;
 import io.github.codeutilities.config.CodeUtilsConfig;
-import io.github.codeutilities.util.DFInfo;
-import io.github.codeutilities.util.ItemUtil;
+import io.github.codeutilities.util.networking.DFInfo;
+import io.github.codeutilities.util.misc.ItemUtil;
 import io.github.codeutilities.util.chat.ChatType;
 import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.codeutilities.util.file.ExternalFile;

@@ -1,7 +1,7 @@
 package io.github.codeutilities.mixin.player;
 
 import io.github.codeutilities.config.CodeUtilsConfig;
-import io.github.codeutilities.social.PlayerlistStarServer;
+import io.github.codeutilities.features.social.tab.PlayerlistStarServer;
 import java.util.UUID;
 import net.minecraft.client.gui.hud.PlayerListHud;
 import net.minecraft.client.network.PlayerListEntry;

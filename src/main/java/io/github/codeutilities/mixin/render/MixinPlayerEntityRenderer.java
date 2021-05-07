@@ -1,7 +1,7 @@
 package io.github.codeutilities.mixin.render;
 
-import io.github.codeutilities.cosmetics.BlazeCosmeticRenderer;
-import io.github.codeutilities.cosmetics.CosmeticRenderer;
+import io.github.codeutilities.features.social.cosmetics.BlazeCosmeticRenderer;
+import io.github.codeutilities.features.social.cosmetics.CosmeticRenderer;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.LivingEntityRenderer;

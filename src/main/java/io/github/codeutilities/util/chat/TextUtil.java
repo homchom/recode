@@ -1,6 +1,6 @@
 package io.github.codeutilities.util.chat;
 
-import io.github.codeutilities.util.color.MinecraftColors;
+import io.github.codeutilities.util.render.color.MinecraftColors;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
