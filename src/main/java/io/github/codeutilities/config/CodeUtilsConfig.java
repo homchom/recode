@@ -65,12 +65,14 @@ public class CodeUtilsConfig {
         // hiding -------------------------------------------------------------------------
         hideJoinLeaveMessages("hiding", null, "hideJoinLeaveMessages", false),
         hideVarScopeMessages("hiding", null, "hideVarScopeMessages", false),
+        stackDuplicateMsgs("hiding",null,"stackDuplicateMsgs",false),
 
         hideMsgMatchingRegex("hiding", "regex", "hideMsgMatchingRegex", false),
         hideMsgRegex("hiding", "regex", "hideMsgRegex", ""),
 
         hideSessionSpy("hiding", "staff", "hideSessionSpy", false),
         hideMutedChat("hiding", "staff", "hideMutedChat", false),
+
 
         // keybinds -----------------------------------------------------------------------
         fsNormal("keybinds", "flightspeed", "fsNormal", 100),
