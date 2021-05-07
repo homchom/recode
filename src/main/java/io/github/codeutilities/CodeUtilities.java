@@ -55,7 +55,7 @@ public class CodeUtilities implements ModInitializer {
         initializer.add(new TemplateStorageHandler());
         initializer.add(new CustomHeadMenu());
         initializer.add(new DFDiscordRPC());
-        initializer.add(new PlayerlistStarServer());
+//        initializer.add(new PlayerlistStarServer());
 
         // Initializes only if the given condition is met. (this case: config value)
         initializer.addIf(new AudioHandler(), CodeUtilsConfig.getBool("audio"));

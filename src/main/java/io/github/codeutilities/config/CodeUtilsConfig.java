@@ -65,12 +65,14 @@ public class CodeUtilsConfig {
         // hiding -------------------------------------------------------------------------
         hideJoinLeaveMessages("hiding", null, "hideJoinLeaveMessages", false),
         hideVarScopeMessages("hiding", null, "hideVarScopeMessages", false),
+        stackDuplicateMsgs("hiding",null,"stackDuplicateMsgs",false),
 
         hideMsgMatchingRegex("hiding", "regex", "hideMsgMatchingRegex", false),
         hideMsgRegex("hiding", "regex", "hideMsgRegex", ""),
 
         hideSessionSpy("hiding", "staff", "hideSessionSpy", false),
         hideMutedChat("hiding", "staff", "hideMutedChat", false),
+
 
         // keybinds -----------------------------------------------------------------------
         fsNormal("keybinds", "flightspeed", "fsNormal", 100),
@@ -91,6 +93,7 @@ public class CodeUtilsConfig {
         // screen ------------------------------------------------------------------------
         chestReplacement("screen", "world_rendering", "chestReplacement", false),
         signRenderDistance("screen", "world_rendering", "signRenderDistance", 100),
+        chestToolTip("screen", null, "chestToolTip", true),
 
         dfButton("screen", null, "dfButton", true),
         dfNodeButtons("screen", null, "dfNodeButtons", false),
@@ -104,7 +107,6 @@ public class CodeUtilsConfig {
         // misc ----------------------------------------------------------------------------
         itemApi("misc", null, "itemApi", true),
         quickVarScope("misc", null, "quickVarScope", true),
-        chestToolTip("misc", null, "chestToolTip", true),
 
         discordRPC("misc", "discordrpc", "discordRPC", true),
         discordRPCTimeout("misc", "discordrpc", "discordRPCTimeout", 15000),
