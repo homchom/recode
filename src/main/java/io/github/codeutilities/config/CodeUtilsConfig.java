@@ -91,6 +91,7 @@ public class CodeUtilsConfig {
         // screen ------------------------------------------------------------------------
         chestReplacement("screen", "world_rendering", "chestReplacement", false),
         signRenderDistance("screen", "world_rendering", "signRenderDistance", 100),
+        chestToolTip("screen", null, "chestToolTip", true),
 
         dfButton("screen", null, "dfButton", true),
         dfNodeButtons("screen", null, "dfNodeButtons", false),
@@ -104,7 +105,6 @@ public class CodeUtilsConfig {
         // misc ----------------------------------------------------------------------------
         itemApi("misc", null, "itemApi", true),
         quickVarScope("misc", null, "quickVarScope", true),
-        chestToolTip("misc", null, "chestToolTip", true),
 
         discordRPC("misc", "discordrpc", "discordRPC", true),
         discordRPCTimeout("misc", "discordrpc", "discordRPCTimeout", 15000),
