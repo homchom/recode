@@ -7,7 +7,6 @@ import io.github.codeutilities.features.social.cosmetics.CosmeticHandler;
 import io.github.codeutilities.features.external.DFDiscordRPC;
 import io.github.codeutilities.util.render.gui.menus.CustomHeadMenu;
 import io.github.codeutilities.util.render.gui.widgets.ChestHud;
-import io.github.codeutilities.features.social.tab.PlayerlistStarServer;
 import io.github.codeutilities.util.templates.TemplateStorageHandler;
 import io.github.codeutilities.util.networking.socket.SocketHandler;
 import net.fabricmc.api.ModInitializer;

@@ -1,6 +1,5 @@
 package io.github.codeutilities.util.chat;
 
-import io.github.codeutilities.CodeUtilities;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;

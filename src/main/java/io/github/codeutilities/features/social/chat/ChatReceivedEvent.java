@@ -156,7 +156,7 @@ public class ChatReceivedEvent {
                             if (currentChar.equals("§")) getColorCodes.append(currentChar).append(chars[i]);
                             if (textLeft.matches("^" + highlightMatcher + "[^a-zA-Z0-9].*")) {
                                 newMsg = newMsg.substring(0, newMsgIter) + CodeUtilsConfig.getStr("highlightPrefix").replaceAll("&", "§")
-                                        + highlightMatcher + getColorCodes.toString() + newMsg.substring(newMsgIter).replaceFirst("^" + highlightMatcher, "");
+                                        + highlightMatcher + getColorCodes + newMsg.substring(newMsgIter).replaceFirst("^" + highlightMatcher, "");
 
                                 newMsgIter = newMsgIter + CodeUtilsConfig.getStr("highlightPrefix").length() + getColorCodes.toString().length();
                             }

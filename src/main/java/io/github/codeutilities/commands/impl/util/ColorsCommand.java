@@ -11,7 +11,7 @@ import net.minecraft.text.*;
 
 public class ColorsCommand extends Command {
 
-    private MinecraftClient mc = MinecraftClient.getInstance();
+    private final MinecraftClient mc = MinecraftClient.getInstance();
 
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
