@@ -19,7 +19,7 @@
     "render.MixinChestBlockEntityRenderer",
     "render.MixinDebugHud",
     "render.MixinPlayerEntityRenderer",
-    "render.SignBlockEntityRenderMixin",
+    "render.MixinSignBlockEntityRender",
     "screen.MixinOptionsScreen",
     "screen.MixinTitleScreen"
   ],
