@@ -9,8 +9,11 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.text.Text;
 import org.lwjgl.opengl.GL11;
 
@@ -30,21 +33,38 @@ public class ChestHud {
 
     private static void afterContainerRender(Screen screen, MatrixStack matrices, int mouseX, int mouseY, float tickDelta) {
 
-        if(DFInfo.currentState == DFInfo.State.DEV && CodeUtilsConfig.getBool("chestToolTip")) {
-            ItemStack item = CodeUtilities.MC.player.inventory.getStack(17);
+        if (DFInfo.currentState == DFInfo.State.DEV && CodeUtilsConfig.getBool("chestToolTip")) {
+            if (CodeUtilsConfig.getBool("chestToolTipType")) {
+                ItemStack item = CodeUtilities.MC.player.inventory.getStack(17);
 
-            int i = ((screen.width) / 2) + 85;
-            int j = (screen.height) / 2 - 68;
+                int i = ((screen.width) / 2) + 85;
+                int j = (screen.height) / 2 - 68;
 
-            // check if block in dev area later.
-            if(CodeUtilities.MC.getWindow().getScaledWidth() >= 600) {
-                List<Text> lines = item.getTooltip(CodeUtilities.MC.player, TooltipContext.Default.NORMAL);
-                GL11.glTranslatef(0f, 0f, -1f);
-                screen.renderOrderedTooltip(matrices, Lists.transform(lines, Text::asOrderedText), i, j);
-                GL11.glTranslatef(0f, 0f, 1f);
+                // check if block in dev area later.
+                if (CodeUtilities.MC.getWindow().getScaledWidth() >= 600) {
+                    List<Text> lines = item.getTooltip(CodeUtilities.MC.player, TooltipContext.Default.NORMAL);
+                    GL11.glTranslatef(0f, 0f, -1f);
+                    screen.renderOrderedTooltip(matrices, Lists.transform(lines, Text::asOrderedText), i, j);
+                    GL11.glTranslatef(0f, 0f, 1f);
+                }
+
+            } else {
+                GenericContainerScreenHandler handler = ((GenericContainerScreen) screen).getScreenHandler();
+                MinecraftClient mc = CodeUtilities.MC;
+                ClientPlayerEntity player = mc.player;
+
+                Inventory inventory = player.inventory;
+                ItemStack item = inventory.getStack(17);
+
+                Integer x = 20;
+                Integer y = 20;
+
+                // check if block in dev area later.
+                for (Text text : item.getTooltip(player, TooltipContext.Default.NORMAL)) {
+                    y += 10;
+                    MinecraftClient.getInstance().textRenderer.draw(matrices, text, x, y, 0x000fff);
+                }
             }
         }
-
-
     }
 }

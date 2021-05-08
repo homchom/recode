@@ -94,6 +94,7 @@ public class CodeUtilsConfig {
         chestReplacement("screen", "world_rendering", "chestReplacement", false),
         signRenderDistance("screen", "world_rendering", "signRenderDistance", 100),
         chestToolTip("screen", null, "chestToolTip", true),
+        chestToolTipType("screen", null, "chestToolTipType", true),
 
         dfButton("screen", null, "dfButton", true),
         dfNodeButtons("screen", null, "dfNodeButtons", false),
