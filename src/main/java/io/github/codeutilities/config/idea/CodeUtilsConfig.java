@@ -45,10 +45,10 @@ public class CodeUtilsConfig {
     }
 
     @SuppressWarnings("unchecked")
-    private static <Value> Value getValue(ConfigSetting<?> setting, Class<Value> valueClass) {
-        Object value = setting.getValue();
+    public static <Value> Value getValue(ConfigSetting<?> setting, Class<Value> valueClass) {
+        Object value = setting.getDefaultValue();
         if (value.getClass().isAssignableFrom(valueClass)) {
-            return (Value) setting.getValue();
+            return (Value) setting.getDefaultValue();
         }
         return null;
     }

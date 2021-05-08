@@ -8,18 +8,18 @@ public class PositionSetting extends ConfigSetting<HudData> {
     }
 
     public int getX() {
-        return this.value.getX();
+        return this.defaultValue.getX();
     }
 
     public void setX(int x) {
-        this.value.setX(x);
+        this.defaultValue.setX(x);
     }
 
     public int getY() {
-        return this.value.getY();
+        return this.defaultValue.getY();
     }
 
     public void setY(int y) {
-        this.value.setY(y);
+        this.defaultValue.setY(y);
     }
 }
