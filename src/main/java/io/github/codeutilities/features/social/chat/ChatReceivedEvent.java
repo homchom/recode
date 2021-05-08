@@ -57,6 +57,7 @@ public class ChatReceivedEvent {
             }
         }
 
+
         // detect if player is in beta
         if (DFInfo.currentState == DFInfo.State.LOBBY && text.equals("◆ Welcome back to DiamondFire! ◆")) {
             DFInfo.isInBeta = false;
