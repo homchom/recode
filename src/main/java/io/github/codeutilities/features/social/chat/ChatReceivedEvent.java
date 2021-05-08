@@ -58,6 +58,10 @@ public class ChatReceivedEvent {
         }
 
         // detect if player is in beta
+        if (DFInfo.currentState == DFInfo.State.LOBBY && text.startsWith("[Development Build]")) {
+            ChatUtil.sendMessage("§bCodeUtilities §5» §7Hypercube development build detected, please dont report bugs for this node as Development Nodes are not supported.");
+        }
+
         if (DFInfo.currentState == DFInfo.State.LOBBY && text.equals("◆ Welcome back to DiamondFire! ◆")) {
             DFInfo.isInBeta = false;
             Collection<String> lines = mc.world.getScoreboard().getKnownPlayers();
