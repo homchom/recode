@@ -4,7 +4,7 @@ import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.CodeUtilsConfig;
 import io.github.codeutilities.config.ConfigSounds;
 import io.github.codeutilities.features.external.DFDiscordRPC;
-import io.github.codeutilities.util.render.gui.CPU_UsageText;
+import io.github.codeutilities.gui.CPU_UsageText;
 import io.github.codeutilities.util.networking.DFInfo;
 import io.github.codeutilities.util.chat.ChatType;
 import io.github.codeutilities.util.chat.ChatUtil;

@@ -1,17 +1,11 @@
-package io.github.codeutilities.util.render.gui.menus.codeutilities_menu;
+package io.github.codeutilities.gui.menus.codeutilities_menu;
 
 import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.config.CodeUtilsConfig;
-import io.github.codeutilities.util.render.gui.IMenu;
-import io.github.codeutilities.util.render.gui.widgets.CImage;
+import io.github.codeutilities.gui.IMenu;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
-import io.github.cottonmc.cotton.gui.widget.WButton;
 import io.github.cottonmc.cotton.gui.widget.WLabel;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.LiteralText;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Util;
 import org.apache.logging.log4j.Level;
 
 import java.io.BufferedReader;

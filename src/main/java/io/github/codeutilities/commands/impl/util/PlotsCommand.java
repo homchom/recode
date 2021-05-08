@@ -3,7 +3,7 @@ package io.github.codeutilities.commands.impl.util;
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.codeutilities.commands.sys.Command;
 import io.github.codeutilities.commands.sys.arguments.ArgBuilder;
-import io.github.codeutilities.util.render.gui.menus.PlotsStorageUI;
+import io.github.codeutilities.gui.menus.PlotsStorageUI;
 import io.github.codeutilities.util.misc.ItemUtil;
 import io.github.codeutilities.util.file.ExternalFile;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;

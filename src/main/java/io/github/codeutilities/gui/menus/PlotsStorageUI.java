@@ -1,10 +1,10 @@
-package io.github.codeutilities.util.render.gui.menus;
+package io.github.codeutilities.gui.menus;
 
 import io.github.codeutilities.commands.impl.util.PlotsCommand;
-import io.github.codeutilities.util.render.gui.widgets.ItemGridPanel;
-import io.github.codeutilities.util.render.gui.widgets.PlotItem;
+import io.github.codeutilities.gui.widgets.ItemGridPanel;
+import io.github.codeutilities.gui.widgets.PlotItem;
 import io.github.codeutilities.util.networking.DFInfo;
-import io.github.codeutilities.util.render.gui.IMenu;
+import io.github.codeutilities.gui.IMenu;
 import io.github.codeutilities.util.chat.ChatType;
 import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;

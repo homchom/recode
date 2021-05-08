@@ -1,14 +1,13 @@
-package io.github.codeutilities.util.render.gui.menus.codeutilities_menu;
+package io.github.codeutilities.gui.menus.codeutilities_menu;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.util.Contributor;
-import io.github.codeutilities.util.file.ILoader;
 import io.github.codeutilities.util.networking.WebUtil;
-import io.github.codeutilities.util.render.gui.IMenu;
-import io.github.codeutilities.util.render.gui.widgets.CImage;
+import io.github.codeutilities.gui.IMenu;
+import io.github.codeutilities.gui.widgets.CImage;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.*;
 import net.minecraft.client.texture.NativeImage;
