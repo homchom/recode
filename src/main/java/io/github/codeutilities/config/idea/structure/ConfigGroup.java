@@ -35,4 +35,10 @@ public abstract class ConfigGroup implements IManager<ConfigSubGroup> {
     public List<ConfigSetting<?>> getSettings() {
         return settings;
     }
+
+    public ConfigSetting<?> findSetting(String key) {
+        return settings.stream()
+                .filter(setting -> setting.getKey().equalsIgnoreCase(key))
+                .findFirst().orElse(null);
+    }
 }

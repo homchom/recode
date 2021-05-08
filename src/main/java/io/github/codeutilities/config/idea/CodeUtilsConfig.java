@@ -4,6 +4,7 @@ import io.github.codeutilities.config.idea.structure.ConfigManager;
 import io.github.codeutilities.config.idea.structure.ConfigSetting;
 
 import java.util.List;
+import java.util.Objects;
 
 public class CodeUtilsConfig {
     private static final ConfigManager CONFIG = ConfigManager.getInstance();
@@ -46,6 +47,7 @@ public class CodeUtilsConfig {
 
     @SuppressWarnings("unchecked")
     public static <Value> Value getValue(ConfigSetting<?> setting, Class<Value> valueClass) {
+        Objects.requireNonNull(setting, "Could not find the setting");
         Object value = setting.getDefaultValue();
         if (value.getClass().isAssignableFrom(valueClass)) {
             return (Value) setting.getDefaultValue();

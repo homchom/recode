@@ -1,15 +1,20 @@
 package io.github.codeutilities;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
-import io.github.codeutilities.features.external.AudioHandler;
 import io.github.codeutilities.config.CodeUtilsConfig;
-import io.github.codeutilities.features.social.cosmetics.CosmeticHandler;
+import io.github.codeutilities.config.idea.internal.ConfigFile;
+import io.github.codeutilities.config.idea.internal.ConfigInstruction;
+import io.github.codeutilities.config.idea.internal.gson.ConfigSerializer;
+import io.github.codeutilities.config.idea.structure.ConfigManager;
+import io.github.codeutilities.features.external.AudioHandler;
 import io.github.codeutilities.features.external.DFDiscordRPC;
+import io.github.codeutilities.features.social.cosmetics.CosmeticHandler;
+import io.github.codeutilities.util.networking.socket.SocketHandler;
 import io.github.codeutilities.util.render.gui.menus.CustomHeadMenu;
 import io.github.codeutilities.util.render.gui.widgets.ChestHud;
-import io.github.codeutilities.features.social.tab.PlayerlistStarServer;
 import io.github.codeutilities.util.templates.TemplateStorageHandler;
-import io.github.codeutilities.util.networking.socket.SocketHandler;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -30,6 +35,10 @@ public class CodeUtilities implements ModInitializer {
 
     public static final Logger LOGGER = LogManager.getLogger();
     public static final Random RANDOM = new Random();
+    public static final Gson GSON = new GsonBuilder()
+            .registerTypeAdapter(ConfigInstruction.class, new ConfigSerializer())
+            .setPrettyPrinting()
+            .create();
     public static final JsonParser JSON_PARSER = new JsonParser();
     public static final MinecraftClient MC = MinecraftClient.getInstance();
     public static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
@@ -41,17 +50,10 @@ public class CodeUtilities implements ModInitializer {
         log(Level.INFO, "Initializing");
         Runtime.getRuntime().addShutdownHook(new Thread(this::onClose));
 
-        /* register config
-        AutoConfig.register(ModConfig.class, Toml4jConfigSerializer::new);
-        AutoConfig.register(
-                ModConfig.class,
-                PartitioningSerializer.wrap(DummyConfigSerializer::new)
-        );
-         */
-
         // Initialize.
         CodeInitializer initializer = new CodeInitializer();
-        CodeUtilsConfig.cacheConfig();
+        initializer.add(new ConfigFile());
+        initializer.add(new ConfigManager());
         initializer.add(new TemplateStorageHandler());
         initializer.add(new CustomHeadMenu());
         initializer.add(new DFDiscordRPC());
@@ -62,7 +64,6 @@ public class CodeUtilities implements ModInitializer {
         initializer.addIf(new SocketHandler(), CodeUtilsConfig.getBool("itemApi"));
         ChestHud.register();
         MC.send(CosmeticHandler.INSTANCE::load);
-
     }
 
     public void onClose() {
