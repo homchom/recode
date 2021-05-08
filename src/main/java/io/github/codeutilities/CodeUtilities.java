@@ -11,7 +11,6 @@ import io.github.codeutilities.util.templates.TemplateStorageHandler;
 import io.github.codeutilities.util.networking.socket.SocketHandler;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,8 +31,6 @@ public class CodeUtilities implements ModInitializer {
     public static final JsonParser JSON_PARSER = new JsonParser();
     public static final MinecraftClient MC = MinecraftClient.getInstance();
     public static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
-
-    public static Screen SCREEN_TO_OPEN;
 
     @Override
     public void onInitialize() {
