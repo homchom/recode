@@ -168,7 +168,7 @@
     "config.codeutilities.option.chestToolTip": "Chest Tooltip",
     "config.codeutilities.option.chestToolTip.tooltip": "Display chest params when you are in dev",
     "config.codeutilities.option.chestToolTipType": "Chest Tooltip Style",
-    "config.codeutilities.option.chestToolTip.tooltip": "Choose between regular Minecraft tooltip style \n or raw text in the top left corner.",
+    "config.codeutilities.option.chestToolTipType.tooltip": "Choose between regular Minecraft tooltip style \nor raw text in the top left corner.",
 
     "codeutilities.command.require_creative_mode": "You must be in creative mode to use this command!",
     "codeutilities.command.require_dev_mode": "You must be in dev mode to use this command!",
