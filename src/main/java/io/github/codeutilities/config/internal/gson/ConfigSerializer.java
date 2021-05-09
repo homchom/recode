@@ -3,18 +3,15 @@ package io.github.codeutilities.config.internal.gson;
 import com.google.gson.*;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.internal.ConfigInstruction;
-import io.github.codeutilities.config.structure.ConfigManager;
 import io.github.codeutilities.config.structure.ConfigSetting;
 
 import java.lang.reflect.Type;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("rawtypes")
 public class ConfigSerializer implements JsonSerializer<ConfigInstruction>, JsonDeserializer<ConfigInstruction> {
-    private static final ConfigManager CONFIG = ConfigManager.getInstance();
-    private static final Class<ConfigSetting> SETTING_CLASS = ConfigSetting.class;
 
     @Override
     public ConfigInstruction deserialize(JsonElement obj, Type type, JsonDeserializationContext context) {
@@ -26,7 +23,7 @@ public class ConfigSerializer implements JsonSerializer<ConfigInstruction>, Json
                 JsonElement jsonElement = json.get(key);
 
                 // Deserialize the setting
-                ConfigSetting setting = CodeUtilities.GSON.fromJson(jsonElement, SETTING_CLASS);
+                ConfigSetting<?> setting = CodeUtilities.GSON.fromJson(jsonElement, ConfigSetting.class);
                 configInstruction.put(key, setting);
             }
 
@@ -37,15 +34,18 @@ public class ConfigSerializer implements JsonSerializer<ConfigInstruction>, Json
     @Override
     public JsonElement serialize(ConfigInstruction obj, Type type, JsonSerializationContext context) {
         JsonObject json = new JsonObject();
-        obj.getSettingMap().forEach((key, value) -> json.add(key, CodeUtilities.GSON.toJsonTree(value)));
+        for (Map.Entry<String, ConfigSetting<?>> entry : obj.getSettingMap().entrySet()) {
+            String key = entry.getKey();
+            ConfigSetting<?> value = entry.getValue();
+            json.add(key, CodeUtilities.GSON.toJsonTree(value));
+        }
         return json;
     }
 
     static Set<String> safeSet(JsonObject object) {
-        Set<String> set = new HashSet<>();
-        for (Map.Entry<String, JsonElement> entry : object.entrySet()) {
-            set.add(entry.getKey());
-        }
-        return set;
+        return object.entrySet()
+                .stream()
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toSet());
     }
 }

@@ -4,8 +4,8 @@ import io.github.codeutilities.config.structure.ConfigGroup;
 import io.github.codeutilities.config.structure.ConfigSubGroup;
 import io.github.codeutilities.config.types.BooleanSetting;
 import io.github.codeutilities.config.types.FloatSetting;
-import io.github.codeutilities.config.types.ListSetting;
 import io.github.codeutilities.config.types.StringSetting;
+import io.github.codeutilities.config.types.list.StringListSetting;
 
 public class HighlightGroup extends ConfigGroup {
     public HighlightGroup(String name) {
@@ -26,7 +26,7 @@ public class HighlightGroup extends ConfigGroup {
 
         // Sound
         ConfigSubGroup sound = new ConfigSubGroup("sound");
-        sound.register(new ListSetting<>("highlightSound",
+        sound.register(new StringListSetting("highlightSound",
                 "None", "Shield Block", "Bass Drum", "Banjo",
                 "Bass", "Bell", "Bit", "Chime", "Cow Bell", "Didgeridoo", "Flute",
                 "Guitar", "Harp", "Pling", "Hat", "Snare", "Iron Xylophone", "Xylophone",

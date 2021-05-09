@@ -5,6 +5,7 @@ import io.github.codeutilities.config.structure.ConfigManager;
 import io.github.codeutilities.config.structure.ConfigSetting;
 import io.github.codeutilities.config.structure.ConfigSubGroup;
 import io.github.codeutilities.config.types.*;
+import io.github.codeutilities.config.types.list.ListSetting;
 import io.github.codeutilities.util.translation.ITranslatable;
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;

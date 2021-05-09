@@ -7,9 +7,11 @@ import io.github.codeutilities.config.CodeUtilsConfig;
 import io.github.codeutilities.config.internal.ConfigFile;
 import io.github.codeutilities.config.internal.ConfigInstruction;
 import io.github.codeutilities.config.internal.gson.ConfigSerializer;
-import io.github.codeutilities.config.internal.gson.ConfigSettingSerializer;
+import io.github.codeutilities.config.internal.gson.types.*;
+import io.github.codeutilities.config.internal.gson.types.list.StringListSerializer;
 import io.github.codeutilities.config.structure.ConfigManager;
-import io.github.codeutilities.config.structure.ConfigSetting;
+import io.github.codeutilities.config.types.*;
+import io.github.codeutilities.config.types.list.StringListSetting;
 import io.github.codeutilities.features.external.AudioHandler;
 import io.github.codeutilities.features.external.DFDiscordRPC;
 import io.github.codeutilities.features.social.cosmetics.CosmeticHandler;
@@ -38,7 +40,13 @@ public class CodeUtilities implements ModInitializer {
     public static final Random RANDOM = new Random();
     public static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(ConfigInstruction.class, new ConfigSerializer())
-            .registerTypeAdapter(ConfigSetting.class, new ConfigSettingSerializer())
+            .registerTypeAdapter(BooleanSetting.class, new BooleanSerializer())
+            .registerTypeAdapter(IntegerSetting.class, new IntegerSerializer())
+            .registerTypeAdapter(DoubleSetting.class, new DoubleSerializer())
+            .registerTypeAdapter(FloatSetting.class, new FloatSerializer())
+            .registerTypeAdapter(LongSetting.class, new LongSerializer())
+            .registerTypeAdapter(StringSetting.class, new StringSerializer())
+            .registerTypeAdapter(StringListSetting.class, new StringListSerializer())
             .setPrettyPrinting()
             .create();
     public static final JsonParser JSON_PARSER = new JsonParser();

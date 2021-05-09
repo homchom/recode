@@ -6,6 +6,8 @@ import io.github.codeutilities.config.internal.ConfigFile;
 import io.github.codeutilities.config.internal.ConfigInstruction;
 import io.github.codeutilities.config.types.*;
 import io.github.codeutilities.config.types.hud.PositionSetting;
+import io.github.codeutilities.config.types.list.ListSetting;
+import io.github.codeutilities.config.types.list.StringListSetting;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +32,9 @@ public class ConfigManager implements IManager<ConfigGroup> {
         this.register(new ScreenGroup("screen"));
         this.register(new MiscellaneousGroup("misc"));
 
+        // Ignore this
+        this.getRegistered().forEach(IManager::initialize);
+
         // Getting deserialized instructions from the file
         ConfigFile configFile = ConfigFile.getInstance();
         ConfigInstruction instruction = configFile.getConfigInstruction();
@@ -50,8 +55,10 @@ public class ConfigManager implements IManager<ConfigGroup> {
             if (configSetting.isList()) {
                 ListSetting<?> listSetting = configSetting.cast();
                 if (listSetting.isString() && instructionSetting.isString()) {
+                    StringListSetting stringListSetting = listSetting.cast();
+
                     StringSetting stringSetting = instructionSetting.cast();
-                    listSetting.setSelected(stringSetting.getValue());
+                    stringListSetting.setSelected(stringSetting.getValue());
                 }
                 continue;
             }
@@ -118,11 +125,21 @@ public class ConfigManager implements IManager<ConfigGroup> {
     }
 
     public ConfigSetting<?> find(String key) {
-        return groups.stream()
-                .flatMap(group -> group.getRegistered().stream())
-                .flatMap(configSubGroup -> configSubGroup.getRegistered().stream())
-                .filter(configSetting -> configSetting.getKey().equalsIgnoreCase(key))
-                .findFirst().orElse(null);
+        for (ConfigGroup group : groups) {
+            for (ConfigSetting<?> setting : group.getSettings()) {
+                if (setting.getKey().equalsIgnoreCase(key)) {
+                    return setting;
+                }
+            }
+            for (ConfigSubGroup configSubGroup : group.getRegistered()) {
+                for (ConfigSetting<?> configSetting : configSubGroup.getRegistered()) {
+                    if (configSetting.getKey().equalsIgnoreCase(key)) {
+                        return configSetting;
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     public static ConfigManager getInstance() {

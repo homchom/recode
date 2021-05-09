@@ -1,4 +1,4 @@
-package io.github.codeutilities.config.types;
+package io.github.codeutilities.config.types.list;
 
 import io.github.codeutilities.config.structure.ConfigSetting;
 
@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ListSetting<Type> extends ConfigSetting<List<Type>> {
-    private String selected = "";
+    private Type selected;
 
     public ListSetting() {
     }
@@ -16,11 +16,11 @@ public class ListSetting<Type> extends ConfigSetting<List<Type>> {
         super(key, Arrays.asList(defaultValue));
     }
 
-    public String getSelected() {
+    public Type getSelected() {
         return selected;
     }
 
-    public ListSetting<Type> setSelected(String selected) {
+    public ListSetting<Type> setSelected(Type selected) {
         this.selected = selected;
         return this;
     }
