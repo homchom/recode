@@ -1,4 +1,4 @@
-package io.github.codeutilities.util.render.gui;
+package io.github.codeutilities.gui;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;

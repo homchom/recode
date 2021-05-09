@@ -1,4 +1,4 @@
-package io.github.codeutilities.util.render.gui.widgets;
+package io.github.codeutilities.gui.widgets;
 
 import io.github.cottonmc.cotton.gui.widget.TooltipBuilder;
 import io.github.cottonmc.cotton.gui.widget.WItem;
