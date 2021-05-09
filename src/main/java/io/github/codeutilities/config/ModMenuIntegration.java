@@ -1,8 +1,8 @@
 package io.github.codeutilities.config;
 
-import com.terraformersmc.modmenu.api.ConfigScreenFactory;
-import com.terraformersmc.modmenu.api.ModMenuApi;
 import io.github.codeutilities.config.menu.ConfigScreen;
+import io.github.prospector.modmenu.api.ConfigScreenFactory;
+import io.github.prospector.modmenu.api.ModMenuApi;
 
 public class ModMenuIntegration implements ModMenuApi {
 

@@ -57,7 +57,7 @@ public class ConfigManager implements IManager<ConfigGroup> {
 
             // This is only for lists
             if (memory.isList()) {
-                if (memory instanceof StringListSetting && instruction.isString()) {
+                if (memory.isString() && instruction.isString()) {
                     StringListSetting setting = memory.cast();
                     StringSetting cast = instruction.cast();
                     setting.setSelected(cast.getValue());
@@ -73,8 +73,8 @@ public class ConfigManager implements IManager<ConfigGroup> {
                     PositionSetting setting = memory.cast();
                     PositionSetting cast = instruction.cast();
                     setting.setValue(cast.getValue());
-                    continue;
                 }
+                continue;
             }
 
             // Primitives
