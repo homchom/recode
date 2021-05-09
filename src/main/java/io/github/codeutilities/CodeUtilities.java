@@ -13,7 +13,6 @@ import io.github.codeutilities.features.external.DFDiscordRPC;
 import io.github.codeutilities.features.social.cosmetics.CosmeticHandler;
 import io.github.codeutilities.util.networking.socket.SocketHandler;
 import io.github.codeutilities.util.render.gui.menus.CustomHeadMenu;
-import io.github.codeutilities.util.render.gui.widgets.ChestHud;
 import io.github.codeutilities.util.templates.TemplateStorageHandler;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.MinecraftClient;
@@ -57,12 +56,11 @@ public class CodeUtilities implements ModInitializer {
         initializer.add(new TemplateStorageHandler());
         initializer.add(new CustomHeadMenu());
         initializer.add(new DFDiscordRPC());
-//        initializer.add(new PlayerlistStarServer());
+        //initializer.add(new PlayerlistStarServer());
 
         // Initializes only if the given condition is met. (this case: config value)
         initializer.addIf(new AudioHandler(), CodeUtilsConfig.getBoolean("audio"));
         initializer.addIf(new SocketHandler(), CodeUtilsConfig.getBoolean("itemApi"));
-        ChestHud.register();
         MC.send(CosmeticHandler.INSTANCE::load);
     }
 
