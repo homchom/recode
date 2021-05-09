@@ -27,7 +27,7 @@ public abstract class ChatHudMixin {
 
     @Inject(method = "addMessage(Lnet/minecraft/text/Text;I)V", at = @At("HEAD"), cancellable = true)
     private void addMessage(Text msg, int id, CallbackInfo ci) {
-        if (CodeUtilsConfig.getBool("stackDuplicateMsgs")) {
+        if (CodeUtilsConfig.getBoolean("stackDuplicateMsgs")) {
             if (msg.getString().equals(lastmsg.getString())) {
                 stackcount++;
                 msg = new LiteralText("").append(msg).append(" §3§lx" + stackcount);

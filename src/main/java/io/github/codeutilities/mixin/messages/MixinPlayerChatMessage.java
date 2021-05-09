@@ -3,9 +3,9 @@ package io.github.codeutilities.mixin.messages;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.github.codeutilities.config.CodeUtilsConfig;
-import io.github.codeutilities.util.networking.DFInfo;
 import io.github.codeutilities.util.chat.ChatType;
 import io.github.codeutilities.util.chat.ChatUtil;
+import io.github.codeutilities.util.networking.DFInfo;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -27,7 +27,7 @@ public class MixinPlayerChatMessage {
                 stopTimer = false;
                 stopConversationTimer();
             }
-            if (System.currentTimeMillis() - CodeUtilsConfig.getInt("automsg_timeoutNumber") >= Long.parseLong(DFInfo.conversationUpdateTime)) {
+            if (System.currentTimeMillis() - CodeUtilsConfig.getInteger("automsg_timeoutNumber") >= Long.parseLong(DFInfo.conversationUpdateTime)) {
                 ChatUtil.sendMessage("Your conversation with " + DFInfo.currentConversation + " was inactive and ended.", ChatType.INFO_BLUE);
                 DFInfo.currentConversation = null;
                 DFInfo.conversationUpdateTime = null;
@@ -46,7 +46,7 @@ public class MixinPlayerChatMessage {
                     CompoundTag tag = mainHand.getTag();
                     CompoundTag publicBukkitValues = tag.getCompound("PublicBukkitValues");
                     if (tag.contains("PublicBukkitValues") && publicBukkitValues.contains("hypercube:varitem")) {
-                        if ((string.endsWith(" -l") || string.endsWith(" -s") || string.endsWith(" -g")) && CodeUtilsConfig.getBool("quickVarScope")) {
+                        if ((string.endsWith(" -l") || string.endsWith(" -s") || string.endsWith(" -g")) && CodeUtilsConfig.getBoolean("quickVarScope")) {
                             String varItem = publicBukkitValues.getString("hypercube:varitem");
                             try {
                                 JsonObject jsonObject = new JsonParser().parse(varItem).getAsJsonObject();
@@ -101,12 +101,12 @@ public class MixinPlayerChatMessage {
             }
         }
         //start conversation
-        if (CodeUtilsConfig.getBool("automsg") && (string.startsWith("/msg ") || string.startsWith("/w "))) {
+        if (CodeUtilsConfig.getBoolean("automsg") && (string.startsWith("/msg ") || string.startsWith("/w "))) {
             if (args.length == 2) {
                 ci.cancel();
                 DFInfo.currentConversation = args[1];
                 DFInfo.conversationUpdateTime = String.valueOf(System.currentTimeMillis());
-                if (CodeUtilsConfig.getBool("automsg_timeout")) startConversationTimer();
+                if (CodeUtilsConfig.getBoolean("automsg_timeout")) startConversationTimer();
                 ChatUtil.sendMessage("Started a conversation with " + DFInfo.currentConversation + "!", ChatType.SUCCESS);
 
             }

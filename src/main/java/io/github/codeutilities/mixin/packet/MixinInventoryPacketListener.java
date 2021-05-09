@@ -2,11 +2,11 @@ package io.github.codeutilities.mixin.packet;
 
 import io.github.codeutilities.commands.impl.util.PlotsCommand;
 import io.github.codeutilities.config.CodeUtilsConfig;
-import io.github.codeutilities.util.networking.DFInfo;
-import io.github.codeutilities.util.misc.ItemUtil;
 import io.github.codeutilities.util.chat.ChatType;
 import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.codeutilities.util.file.ExternalFile;
+import io.github.codeutilities.util.misc.ItemUtil;
+import io.github.codeutilities.util.networking.DFInfo;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.item.ItemStack;
@@ -30,7 +30,7 @@ public class MixinInventoryPacketListener {
 
     @Inject(method = "onInventory", at = @At("RETURN"))
     private void onInventory(InventoryS2CPacket packet, CallbackInfo ci) {
-        if (!CodeUtilsConfig.getBool("cmdLoadPlots")) {
+        if (!CodeUtilsConfig.getBoolean("cmdLoadPlots")) {
             return;
         }
         

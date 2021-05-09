@@ -11,7 +11,7 @@ import net.minecraft.text.*;
 
 public class ColorsCommand extends Command {
 
-    private MinecraftClient mc = MinecraftClient.getInstance();
+    private final MinecraftClient mc = MinecraftClient.getInstance();
 
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
@@ -27,8 +27,8 @@ public class ColorsCommand extends Command {
     }
 
     private void showColorPalette(float saturation) {
-        int maxColors = CodeUtilsConfig.getInt("colorMaxRender");
-        int lines = CodeUtilsConfig.getInt("colorLines");
+        int maxColors = CodeUtilsConfig.getInteger("colorMaxRender");
+        int lines = CodeUtilsConfig.getInteger("colorLines");
 
         for (int j = 0; j < lines; j++) {
             Text base = new LiteralText("");

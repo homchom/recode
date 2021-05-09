@@ -16,7 +16,7 @@ public class MixinDebugHud {
   
     @Inject(method = "getLeftText", at = @At("RETURN"), cancellable = true)
     protected void getLeftText(CallbackInfoReturnable<List<String>> callbackInfoReturnable) {
-        if (!CodeUtilsConfig.getBool("f3Tps")) {
+        if (!CodeUtilsConfig.getBoolean("f3Tps")) {
             return;
         }
         

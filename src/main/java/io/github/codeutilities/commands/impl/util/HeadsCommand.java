@@ -14,7 +14,7 @@ public class HeadsCommand extends Command {
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("heads").executes(ctx -> {
-            if (!CodeUtilsConfig.getBool("headsEnabled")) {
+            if (!CodeUtilsConfig.getBoolean("headsEnabled")) {
                 mc.player.sendChatMessage("/hypercube:heads");
                 return 1;
             }
@@ -24,7 +24,7 @@ public class HeadsCommand extends Command {
             }
             return 1;
         }).then(ArgBuilder.argument("query", StringArgumentType.greedyString()).executes(ctx -> {
-            if (!CodeUtilsConfig.getBool("headsEnabled")) {
+            if (!CodeUtilsConfig.getBoolean("headsEnabled")) {
                 mc.player.sendChatMessage("/hypercube:heads " + ctx.getArgument("query", String.class));
                 return 1;
             }

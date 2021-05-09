@@ -3,11 +3,11 @@ package io.github.codeutilities.util.render.gui.menus;
 import com.google.gson.*;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.CodeUtilsConfig;
+import io.github.codeutilities.util.file.ILoader;
+import io.github.codeutilities.util.networking.WebUtil;
+import io.github.codeutilities.util.render.gui.IMenu;
 import io.github.codeutilities.util.render.gui.widgets.CTextField;
 import io.github.codeutilities.util.render.gui.widgets.ItemScrollablePanel;
-import io.github.codeutilities.util.file.ILoader;
-import io.github.codeutilities.util.render.gui.IMenu;
-import io.github.codeutilities.util.networking.WebUtil;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WButton;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
@@ -30,7 +30,7 @@ public class CustomHeadMenu extends LightweightGuiDescription implements IMenu, 
     private static final List<String> categories = new ArrayList<>();
     private static final HashMap<String, Integer> categoryCount = new HashMap<>();
     private static CustomHeadMenu instance;
-    private final int headMenuMaxRender = CodeUtilsConfig.getInt("headMenuMaxRender");
+    private final int headMenuMaxRender = CodeUtilsConfig.getInteger("headMenuMaxRender");
 
     private ItemScrollablePanel panel;
     private WButton current;

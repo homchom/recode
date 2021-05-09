@@ -4,10 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
 import io.github.codeutilities.config.CodeUtilsConfig;
-import io.github.codeutilities.config.idea.internal.ConfigFile;
-import io.github.codeutilities.config.idea.internal.ConfigInstruction;
-import io.github.codeutilities.config.idea.internal.gson.ConfigSerializer;
-import io.github.codeutilities.config.idea.structure.ConfigManager;
+import io.github.codeutilities.config.internal.ConfigFile;
+import io.github.codeutilities.config.internal.ConfigInstruction;
+import io.github.codeutilities.config.internal.gson.ConfigSerializer;
+import io.github.codeutilities.config.structure.ConfigManager;
 import io.github.codeutilities.features.external.AudioHandler;
 import io.github.codeutilities.features.external.DFDiscordRPC;
 import io.github.codeutilities.features.social.cosmetics.CosmeticHandler;
@@ -60,14 +60,15 @@ public class CodeUtilities implements ModInitializer {
 //        initializer.add(new PlayerlistStarServer());
 
         // Initializes only if the given condition is met. (this case: config value)
-        initializer.addIf(new AudioHandler(), CodeUtilsConfig.getBool("audio"));
-        initializer.addIf(new SocketHandler(), CodeUtilsConfig.getBool("itemApi"));
+        initializer.addIf(new AudioHandler(), CodeUtilsConfig.getBoolean("audio"));
+        initializer.addIf(new SocketHandler(), CodeUtilsConfig.getBoolean("itemApi"));
         ChestHud.register();
         MC.send(CosmeticHandler.INSTANCE::load);
     }
 
     public void onClose() {
         System.out.println("CLOSED");
+        ConfigFile.getInstance().save();
         TemplateStorageHandler.getInstance().save();
         CosmeticHandler.INSTANCE.shutdownExecutorService();
     }

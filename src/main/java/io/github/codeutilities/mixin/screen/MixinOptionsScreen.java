@@ -1,7 +1,7 @@
 package io.github.codeutilities.mixin.screen;
 
 import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.config.idea.menu.ConfigScreen;
+import io.github.codeutilities.config.menu.ConfigScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.options.OptionsScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -21,7 +21,7 @@ public class MixinOptionsScreen extends Screen {
     @Inject(method = "init()V", at = @At("RETURN"))
     protected void init(CallbackInfo callbackInfo) {
         this.addButton(new ButtonWidget(this.width / 2 - 75, this.height / 6 + 144 - 6, 150, 20, new LiteralText("CodeUtilities"), (buttonWidget) -> {
-            CodeUtilities.MC.openScreen(new ConfigScreen(CodeUtilities.MC.currentScreen).getScreen());
+            CodeUtilities.MC.openScreen(ConfigScreen.getScreen(CodeUtilities.MC.currentScreen));
         }));
     }
 }

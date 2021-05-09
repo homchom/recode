@@ -42,7 +42,7 @@ public class MixinSignBlockEntityRender {
      */
     @Overwrite
     public void render(SignBlockEntity signBlockEntity, float f, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, int j) {
-        if (!signBlockEntity.getPos().isWithinDistance(mc.cameraEntity.getBlockPos(), CodeUtilsConfig.getInt("signRenderDistance")))
+        if (!signBlockEntity.getPos().isWithinDistance(mc.cameraEntity.getBlockPos(), CodeUtilsConfig.getInteger("signRenderDistance")))
             return;
 
         TextRenderer textRenderer = mc.textRenderer;

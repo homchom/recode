@@ -30,7 +30,7 @@ public class ChestHud {
 
     private static void afterContainerRender(Screen screen, MatrixStack matrices, int mouseX, int mouseY, float tickDelta) {
 
-        if(DFInfo.currentState == DFInfo.State.DEV && CodeUtilsConfig.getBool("chestToolTip")) {
+        if(DFInfo.currentState == DFInfo.State.DEV && CodeUtilsConfig.getBoolean("chestToolTip")) {
             ItemStack item = CodeUtilities.MC.player.inventory.getStack(17);
 
             int i = ((screen.width) / 2) + 85;
