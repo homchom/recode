@@ -6,10 +6,10 @@ import io.github.codeutilities.config.CodeUtilsConfig;
 import io.github.codeutilities.features.external.DFDiscordRPC;
 import io.github.codeutilities.features.keybinds.FlightspeedToggle;
 import io.github.codeutilities.features.social.chat.ChatReceivedEvent;
+import io.github.codeutilities.gui.CPU_UsageText;
 import io.github.codeutilities.util.chat.MessageGrabber;
 import io.github.codeutilities.util.networking.DFInfo;
 import io.github.codeutilities.util.networking.WebUtil;
-import io.github.codeutilities.util.render.gui.CPU_UsageText;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.MessageType;
@@ -37,10 +37,10 @@ public class MixinGameMessageListener {
 
     @Inject(method = "onGameMessage", at = @At("HEAD"), cancellable = true)
     private void onGameMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
-        if(MessageGrabber.isActive()) {
+        if (MessageGrabber.isActive()) {
             MessageGrabber.supply(packet.getMessage());
 
-            if(MessageGrabber.isSilent()) {
+            if (MessageGrabber.isSilent()) {
                 ci.cancel();
                 CodeUtilities.log(Level.INFO, "[CANCELLED] " + packet.getMessage().getString());
             }

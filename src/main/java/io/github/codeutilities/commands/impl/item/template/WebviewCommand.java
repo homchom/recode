@@ -34,8 +34,8 @@ public class WebviewCommand extends AbstractTemplateCommand {
                 HttpPost post = new HttpPost("https://twv.vercel.app/v2/create");
 
                 JsonObject json = new JsonObject();
-                json.addProperty("temp",true);
-                json.addProperty("template",data);
+                json.addProperty("temp", true);
+                json.addProperty("template", data);
 
                 StringEntity postingString = new StringEntity(json.toString());
                 post.setEntity(postingString);
@@ -51,19 +51,19 @@ public class WebviewCommand extends AbstractTemplateCommand {
 
 
                 LiteralText text = new LiteralText(
-                    "Click this message to view this code template in web!");
+                        "Click this message to view this code template in web!");
                 text.styled((style) -> style
-                    .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL,
-                        "https://derpystuff.gitlab.io/code/l?link=" + link)));
+                        .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL,
+                                "https://derpystuff.gitlab.io/code/l?link=" + link)));
                 ChatUtil.sendMessage(text, ChatType.INFO_BLUE);
             } catch (Exception err) {
                 err.printStackTrace();
                 ChatUtil.sendMessage("Failed to shorten link.", ChatType.FAIL);
                 LiteralText text = new LiteralText(
-                    "Click this message to view this code template in web!");
+                        "Click this message to view this code template in web!");
                 text.styled((style) -> style
-                    .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL,
-                        "https://derpystuff.gitlab.io/code/?template=" + data)));
+                        .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL,
+                                "https://derpystuff.gitlab.io/code/?template=" + data)));
                 ChatUtil.sendMessage(text, ChatType.INFO_BLUE);
             }
         });

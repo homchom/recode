@@ -20,8 +20,8 @@ public class ColorsCommand extends Command {
             return 1;
         })
                 .then(ArgBuilder.argument("Saturation(%)", IntegerArgumentType.integer(0, 100)).executes((context) -> {
-                    float saturation = (float)IntegerArgumentType.getInteger(context, "Saturation(%)");
-                    showColorPalette(saturation/100f);
+                    float saturation = (float) IntegerArgumentType.getInteger(context, "Saturation(%)");
+                    showColorPalette(saturation / 100f);
                     return 1;
                 })));
     }

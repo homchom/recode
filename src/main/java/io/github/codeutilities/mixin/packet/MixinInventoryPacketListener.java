@@ -33,10 +33,11 @@ public class MixinInventoryPacketListener {
         if (!CodeUtilsConfig.getBoolean("cmdLoadPlots")) {
             return;
         }
-        
+
         List<ItemStack> contents = packet.getContents();
         if (DFInfo.currentState != DFInfo.State.LOBBY) return;
-        if (!MinecraftClient.getInstance().player.getMainHandStack().getName().getString().equals("◇ My Plots ◇")) return;
+        if (!MinecraftClient.getInstance().player.getMainHandStack().getName().getString().equals("◇ My Plots ◇"))
+            return;
         boolean correctInventory = false;
         for (ItemStack item : contents) {
             if (item.getName().getString().equals("Claim new plot")) correctInventory = true;
@@ -51,7 +52,8 @@ public class MixinInventoryPacketListener {
         try {
             CompoundTag compoundTag = new CompoundTag();
             List<ItemStack> antioverrider = DFInfo.isInBeta ? PlotsCommand.items : PlotsCommand.betaItems;
-            if (antioverrider != null) compoundTag.put(DFInfo.isInBeta ? "items" : "betaItems", ItemUtil.toListTag(antioverrider));
+            if (antioverrider != null)
+                compoundTag.put(DFInfo.isInBeta ? "items" : "betaItems", ItemUtil.toListTag(antioverrider));
             compoundTag.put(DFInfo.isInBeta ? "betaItems" : "items", ItemUtil.toListTag(items));
             if (lastTag != null && compoundTag.toString().equals(lastTag.toString())) return;
             NbtIo.write(compoundTag, FILE);

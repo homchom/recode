@@ -1,4 +1,3 @@
-
 package io.github.codeutilities.features.external;
 
 import com.google.gson.JsonObject;
