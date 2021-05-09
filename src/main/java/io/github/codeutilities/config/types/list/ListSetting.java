@@ -25,44 +25,38 @@ public class ListSetting<Type> extends ConfigSetting<List<Type>> {
         return this;
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> T cast() {
-        return (T) this;
-    }
-
     @Override
     public boolean isString() {
-        return defaultValue.get(0) instanceof String;
+        return selected.getClass().isAssignableFrom(String.class);
     }
 
     @Override
     public boolean isInteger() {
-        return defaultValue.get(0) instanceof Integer;
+        return selected.getClass().isAssignableFrom(Integer.class);
     }
 
     @Override
     public boolean isDouble() {
-        return defaultValue.get(0) instanceof Double;
+        return selected.getClass().isAssignableFrom(Double.class);
     }
 
     @Override
     public boolean isFloat() {
-        return defaultValue.get(0) instanceof Float;
+        return selected.getClass().isAssignableFrom(Float.class);
     }
 
     @Override
     public boolean isLong() {
-        return defaultValue.get(0) instanceof Long;
+        return selected.getClass().isAssignableFrom(Long.class);
     }
 
     @Override
     public boolean isList() {
-        return defaultValue.get(0) instanceof List;
+        return selected.getClass().isAssignableFrom(List.class);
     }
 
     @Override
     public boolean isBoolean() {
-        return defaultValue.get(0) instanceof Boolean;
+        return selected.getClass().isAssignableFrom(Boolean.class);
     }
 }

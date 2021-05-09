@@ -62,16 +62,24 @@ public class CodeUtilities implements ModInitializer {
 
         // Initialize.
         CodeInitializer initializer = new CodeInitializer();
+        log(Level.INFO, "1");
         initializer.add(new ConfigFile());
+        log(Level.INFO, "2");
         initializer.add(new ConfigManager());
+        log(Level.INFO, "3");
         initializer.add(new TemplateStorageHandler());
+        log(Level.INFO, "4");
         initializer.add(new CustomHeadMenu());
+        log(Level.INFO, "5");
         initializer.add(new DFDiscordRPC());
         //initializer.add(new PlayerlistStarServer());
+        log(Level.INFO, "6");
 
         // Initializes only if the given condition is met. (this case: config value)
         initializer.addIf(new AudioHandler(), CodeUtilsConfig.getBoolean("audio"));
+        log(Level.INFO, "7");
         initializer.addIf(new SocketHandler(), CodeUtilsConfig.getBoolean("itemApi"));
+        log(Level.INFO, "8");
         MC.send(CosmeticHandler.INSTANCE::load);
     }
 

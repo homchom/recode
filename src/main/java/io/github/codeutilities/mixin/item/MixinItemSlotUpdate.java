@@ -93,7 +93,7 @@ public class MixinItemSlotUpdate {
                                     mc.player.sendChatMessage("/rc");
                                 }
                                 if (CodeUtilsConfig.getBoolean("autotime")) {
-                                    mc.player.sendChatMessage("/time " + CodeUtilsConfig.getInteger("autotimeval"));
+                                    mc.player.sendChatMessage("/time " + CodeUtilsConfig.getLong("autotimeval"));
                                     ChatReceivedEvent.cancelTimeMsg = true;
                                 }
                                 if (CodeUtilsConfig.getBoolean("autonightvis")) {

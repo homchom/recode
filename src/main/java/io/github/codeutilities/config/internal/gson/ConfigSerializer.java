@@ -4,6 +4,7 @@ import com.google.gson.*;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.internal.ConfigInstruction;
 import io.github.codeutilities.config.structure.ConfigSetting;
+import io.github.codeutilities.config.types.*;
 
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -18,13 +19,35 @@ public class ConfigSerializer implements JsonSerializer<ConfigInstruction>, Json
         ConfigInstruction configInstruction = new ConfigInstruction();
         if (obj.isJsonObject()) {
             JsonObject json = obj.getAsJsonObject();
-            Set<String> keys = safeSet(json);
+            Set<String> keys = getSafeKeys(json);
+
             for (String key : keys) {
                 JsonElement jsonElement = json.get(key);
+                ConfigSetting<?> setting = null;
 
                 // Deserialize the setting
-                ConfigSetting<?> setting = CodeUtilities.GSON.fromJson(jsonElement, ConfigSetting.class);
-                configInstruction.put(key, setting);
+                if (jsonElement.isJsonPrimitive()) {
+                    JsonPrimitive primitive = jsonElement.getAsJsonPrimitive();
+
+                    if (primitive.isString()) {
+                        setting = CodeUtilities.GSON.fromJson(primitive, StringSetting.class);
+                    } else if (primitive.isBoolean()) {
+                        setting = CodeUtilities.GSON.fromJson(primitive, BooleanSetting.class);
+                    } else if (primitive.isNumber()) {
+                        Number number = primitive.getAsNumber();
+                        if (number instanceof Integer) {
+                            setting = CodeUtilities.GSON.fromJson(primitive, IntegerSetting.class);
+                        } else if (number instanceof Double) {
+                            setting = CodeUtilities.GSON.fromJson(primitive, DoubleSetting.class);
+                        } else if (number instanceof Float) {
+                            setting = CodeUtilities.GSON.fromJson(primitive, FloatSetting.class);
+                        } else if (number instanceof Long) {
+                            setting = CodeUtilities.GSON.fromJson(primitive, LongSetting.class);
+                        }
+                    }
+                }
+
+                if (setting != null) configInstruction.put(key, setting);
             }
 
         }
@@ -42,7 +65,7 @@ public class ConfigSerializer implements JsonSerializer<ConfigInstruction>, Json
         return json;
     }
 
-    static Set<String> safeSet(JsonObject object) {
+    static Set<String> getSafeKeys(JsonObject object) {
         return object.entrySet()
                 .stream()
                 .map(Map.Entry::getKey)

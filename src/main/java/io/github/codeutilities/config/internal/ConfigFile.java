@@ -7,9 +7,12 @@ import io.github.codeutilities.config.structure.ConfigManager;
 import io.github.codeutilities.util.file.ILoader;
 import io.github.codeutilities.util.file.ISave;
 import net.fabricmc.loader.api.FabricLoader;
+import org.apache.logging.log4j.Level;
 
 import java.io.*;
 import java.nio.file.Path;
+
+import static io.github.codeutilities.CodeUtilities.log;
 
 public class ConfigFile implements ILoader, ISave {
     private static final FabricLoader FABRIC_LOADER = FabricLoader.getInstance();
@@ -25,8 +28,11 @@ public class ConfigFile implements ILoader, ISave {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     public void load() {
+        log(Level.INFO, "a");
         this.configPath = FABRIC_LOADER.getConfigDir().resolve("codeutilities.json");
+        log(Level.INFO, "b");
         File file = configPath.toFile();
+        log(Level.INFO, "c");
         JsonObject jsonObject = null;
 
         if (!file.exists()) {
@@ -45,8 +51,10 @@ public class ConfigFile implements ILoader, ISave {
                 e.printStackTrace();
             }
         }
+        log(Level.INFO, "d");
         // Deserialize all the values from the config
         this.configInstruction = CodeUtilities.GSON.fromJson(jsonObject, ConfigInstruction.class);
+        log(Level.INFO, "e");
     }
 
     @Override

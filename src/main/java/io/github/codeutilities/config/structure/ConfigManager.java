@@ -6,7 +6,6 @@ import io.github.codeutilities.config.internal.ConfigFile;
 import io.github.codeutilities.config.internal.ConfigInstruction;
 import io.github.codeutilities.config.types.*;
 import io.github.codeutilities.config.types.hud.PositionSetting;
-import io.github.codeutilities.config.types.list.ListSetting;
 import io.github.codeutilities.config.types.list.StringListSetting;
 
 import java.util.ArrayList;
@@ -41,74 +40,77 @@ public class ConfigManager implements IManager<ConfigGroup> {
         this.readInstruction(instruction);
     }
 
-    private void readInstruction(ConfigInstruction instruction) {
-        if (instruction.isEmpty()) {
+    private void readInstruction(ConfigInstruction configInstruction) {
+        if (configInstruction.isEmpty()) {
             return;
         }
-        // Update the values
-        for (Map.Entry<String, ConfigSetting<?>> entry : instruction.getSettingMap().entrySet()) {
+
+        // Update the settings
+        for (Map.Entry<String, ConfigSetting<?>> entry : configInstruction.getSettingMap().entrySet()) {
             String key = entry.getKey();
-            ConfigSetting<?> instructionSetting = entry.getValue();
-            ConfigSetting<?> configSetting = find(key);
+
+            // Deserialized settings
+            ConfigSetting<?> instruction = entry.getValue();
+
+            // In-memory
+            ConfigSetting<?> memory = this.find(key);
 
             // This is only for lists
-            if (configSetting.isList()) {
-                ListSetting<?> listSetting = configSetting.cast();
-                if (listSetting.isString() && instructionSetting.isString()) {
-                    StringListSetting stringListSetting = listSetting.cast();
-
-                    StringSetting stringSetting = instructionSetting.cast();
-                    stringListSetting.setSelected(stringSetting.getValue());
+            if (memory.isList()) {
+                if (memory instanceof StringListSetting && instruction.isString()) {
+                    StringListSetting setting = memory.cast();
+                    StringSetting cast = instruction.cast();
+                    setting.setSelected(cast.getValue());
                 }
                 continue;
             }
 
             // More advanced settings
-            if (configSetting.isAdvanced()) {
+            if (memory.isAdvanced()) {
 
                 // Hud positions
-                if (configSetting instanceof PositionSetting) {
-                    PositionSetting setting = configSetting.cast();
-                    PositionSetting cast = instructionSetting.cast();
+                if (memory instanceof PositionSetting) {
+                    PositionSetting setting = memory.cast();
+                    PositionSetting cast = instruction.cast();
                     setting.setValue(cast.getValue());
                     continue;
                 }
             }
 
             // Primitives
-            if (configSetting.isString()) {
-                StringSetting setting = configSetting.cast();
-                StringSetting cast = instructionSetting.cast();
+            if (memory.isString()) {
+                StringSetting setting = memory.cast();
+                StringSetting cast = instruction.cast();
                 setting.setValue(cast.getValue());
                 continue;
             }
-            if (configSetting.isInteger()) {
-                IntegerSetting setting = configSetting.cast();
-                IntegerSetting cast = instructionSetting.cast();
+            if (memory.isInteger()) {
+                IntegerSetting setting = memory.cast();
+                IntegerSetting cast = instruction.cast();
                 setting.setValue(cast.getValue());
                 continue;
             }
-            if (configSetting.isDouble()) {
-                DoubleSetting setting = configSetting.cast();
-                DoubleSetting cast = instructionSetting.cast();
+            if (memory.isDouble()) {
+                DoubleSetting setting = memory.cast();
+                DoubleSetting cast = instruction.cast();
                 setting.setValue(cast.getValue());
                 continue;
             }
-            if (configSetting.isFloat()) {
-                FloatSetting setting = configSetting.cast();
-                FloatSetting cast = instructionSetting.cast();
+            if (memory.isFloat()) {
+                FloatSetting setting = memory.cast();
+                FloatSetting cast = instruction.cast();
                 setting.setValue(cast.getValue());
                 continue;
             }
-            if (configSetting.isLong()) {
-                LongSetting setting = configSetting.cast();
-                LongSetting cast = instructionSetting.cast();
+            if (memory.isLong()) {
+                LongSetting setting = memory.cast();
+                LongSetting cast = instruction.cast();
                 setting.setValue(cast.getValue());
                 continue;
             }
-            if (configSetting.isBoolean()) {
-                BooleanSetting setting = configSetting.cast();
-                BooleanSetting cast = instructionSetting.cast();
+            if (memory.isBoolean()) {
+                BooleanSetting setting = memory.cast();
+                BooleanSetting cast = instruction.cast();
                 setting.setValue(cast.getValue());
             }
         }

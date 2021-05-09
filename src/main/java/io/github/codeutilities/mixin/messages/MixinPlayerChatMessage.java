@@ -27,7 +27,7 @@ public class MixinPlayerChatMessage {
                 stopTimer = false;
                 stopConversationTimer();
             }
-            if (System.currentTimeMillis() - CodeUtilsConfig.getInteger("automsg_timeoutNumber") >= Long.parseLong(DFInfo.conversationUpdateTime)) {
+            if (System.currentTimeMillis() - CodeUtilsConfig.getLong("automsg_timeoutNumber") >= Long.parseLong(DFInfo.conversationUpdateTime)) {
                 ChatUtil.sendMessage("Your conversation with " + DFInfo.currentConversation + " was inactive and ended.", ChatType.INFO_BLUE);
                 DFInfo.currentConversation = null;
                 DFInfo.conversationUpdateTime = null;

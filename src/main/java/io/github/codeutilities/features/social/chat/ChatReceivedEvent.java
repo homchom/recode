@@ -221,7 +221,7 @@ public class ChatReceivedEvent {
             cancel = true;
         }
 
-        if (cancelTimeMsg && text.contains("» Set your player time to " + CodeUtilsConfig.getInteger("autotimeval") + ".") && text.startsWith("»")) {
+        if (cancelTimeMsg && text.contains("» Set your player time to " + CodeUtilsConfig.getLong("autotimeval") + ".") && text.startsWith("»")) {
             cancel = true;
             cancelTimeMsg = false;
         }

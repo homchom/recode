@@ -210,7 +210,7 @@ public class MixinGameMessageListener {
                     try {
                         Thread.sleep(20);
                         if (CodeUtilsConfig.getBoolean("autotime")) {
-                            minecraftClient.player.sendChatMessage("/time " + CodeUtilsConfig.getInteger("autotimeval"));
+                            minecraftClient.player.sendChatMessage("/time " + CodeUtilsConfig.getLong("autotimeval"));
                             ChatReceivedEvent.cancelTimeMsg = true;
                         }
                         if (CodeUtilsConfig.getBoolean("autonightvis")) {
