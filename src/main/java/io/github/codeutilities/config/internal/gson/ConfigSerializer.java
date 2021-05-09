@@ -21,11 +21,9 @@ public class ConfigSerializer implements JsonSerializer<ConfigInstruction>, Json
         ConfigInstruction configInstruction = new ConfigInstruction();
         if (obj.isJsonObject()) {
             JsonObject json = obj.getAsJsonObject();
-            JsonObject data = json.get("settings").getAsJsonObject();
-
-            Set<String> keys = safeSet(data);
+            Set<String> keys = safeSet(json);
             for (String key : keys) {
-                JsonObject jsonSetting = data.get(key).getAsJsonObject();
+                JsonObject jsonSetting = json.get(key).getAsJsonObject();
 
                 // Deserialize the setting
                 ConfigSetting setting = CodeUtilities.GSON.fromJson(jsonSetting, SETTING_CLASS);
