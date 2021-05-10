@@ -205,18 +205,18 @@ public class Keybinds implements ClientModInitializer {
 
             // fs normal
             while (fs_normal.wasPressed()) {
-                sendChat("/fs " + CodeUtilsConfig.getInt("fsNormal"));
+                sendChat("/fs " + CodeUtilsConfig.getInteger("fsNormal"));
                 FlightspeedToggle.fs_is_normal = true;
             }
 
             // fs med
             while (fs_med.wasPressed()) {
-                sendChat("/fs " + CodeUtilsConfig.getInt("fsMed"));
+                sendChat("/fs " + CodeUtilsConfig.getInteger("fsMed"));
             }
 
             // fs fast
             while (fs_fast.wasPressed()) {
-                sendChat("/fs " + CodeUtilsConfig.getInt("fsFast"));
+                sendChat("/fs " + CodeUtilsConfig.getInteger("fsFast"));
             }
 
             // toggle fs normal med

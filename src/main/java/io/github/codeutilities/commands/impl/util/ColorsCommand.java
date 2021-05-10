@@ -20,15 +20,15 @@ public class ColorsCommand extends Command {
             return 1;
         })
                 .then(ArgBuilder.argument("Saturation(%)", IntegerArgumentType.integer(0, 100)).executes((context) -> {
-                    float saturation = (float)IntegerArgumentType.getInteger(context, "Saturation(%)");
-                    showColorPalette(saturation/100f);
+                    float saturation = (float) IntegerArgumentType.getInteger(context, "Saturation(%)");
+                    showColorPalette(saturation / 100f);
                     return 1;
                 })));
     }
 
     private void showColorPalette(float saturation) {
-        int maxColors = CodeUtilsConfig.getInt("colorMaxRender");
-        int lines = CodeUtilsConfig.getInt("colorLines");
+        int maxColors = CodeUtilsConfig.getInteger("colorMaxRender");
+        int lines = CodeUtilsConfig.getInteger("colorLines");
 
         for (int j = 0; j < lines; j++) {
             Text base = new LiteralText("");

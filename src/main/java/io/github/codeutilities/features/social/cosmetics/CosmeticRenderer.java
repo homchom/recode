@@ -24,11 +24,11 @@ public class CosmeticRenderer extends FeatureRenderer<AbstractClientPlayerEntity
     public void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, AbstractClientPlayerEntity abstractClientPlayerEntity, float f, float g, float h, float j, float k, float l) {
         if (!abstractClientPlayerEntity.isInvisible()) {
             CosmeticModel cosmeticModel = CosmeticType.HAT.getPlayerHat(abstractClientPlayerEntity.getUuid());
-            
+
             if (cosmeticModel != null) {
                 BakedModel model = cosmeticModel.model;
                 JsonObject attributes = cosmeticModel.attributes;
-                
+
                 Vector3f translation = model.getTransformation().head.translation;
                 Vector3f scale = model.getTransformation().head.scale;
                 ModelPart head = getContextModel().head;

@@ -1,7 +1,7 @@
 package io.github.codeutilities.mixin.render;
 
 import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.util.render.gui.CPU_UsageText;
+import io.github.codeutilities.gui.CPU_UsageText;
 import io.github.codeutilities.util.networking.DFInfo;
 import io.github.codeutilities.util.templates.SearchUtil;
 import net.minecraft.client.MinecraftClient;

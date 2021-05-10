@@ -31,7 +31,7 @@ public class MessageGrabber {
     public static void supply(Text message) {
         currentMessages.add(message);
 
-        if(currentMessages.size() >= messagesToGrab) {
+        if (currentMessages.size() >= messagesToGrab) {
             messageConsumer.accept(currentMessages);
             currentMessages.clear();
             messagesToGrab = 0;

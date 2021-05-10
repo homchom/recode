@@ -2,7 +2,6 @@ package io.github.codeutilities.mixin.player;
 
 import io.github.codeutilities.config.CodeUtilsConfig;
 import io.github.codeutilities.features.social.tab.PlayerlistStarServer;
-import java.util.UUID;
 import net.minecraft.client.gui.hud.PlayerListHud;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.text.LiteralText;
@@ -12,6 +11,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.UUID;
+
 @Mixin(PlayerListHud.class)
 public class MixinPlayerListHud {
 
@@ -20,7 +21,7 @@ public class MixinPlayerListHud {
 
     @Inject(method = "getPlayerName", at = @At("RETURN"), cancellable = true)
     public void getPlayerName(PlayerListEntry entry, CallbackInfoReturnable<Text> cir) {
-        if (!CodeUtilsConfig.getBool("loadTabStars")) {
+        if (!CodeUtilsConfig.getBoolean("loadTabStars")) {
             return;
         }
 

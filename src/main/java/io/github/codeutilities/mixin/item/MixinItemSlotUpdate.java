@@ -2,10 +2,10 @@ package io.github.codeutilities.mixin.item;
 
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.CodeUtilsConfig;
-import io.github.codeutilities.events.register.ReceiveChatMessageEvent;
 import io.github.codeutilities.features.keybinds.FlightspeedToggle;
+import io.github.codeutilities.features.social.chat.ChatReceivedEvent;
+import io.github.codeutilities.gui.CPU_UsageText;
 import io.github.codeutilities.util.networking.DFInfo;
-import io.github.codeutilities.util.render.gui.CPU_UsageText;
 import io.github.codeutilities.util.templates.TemplateStorageHandler;
 import io.github.codeutilities.util.templates.TemplateUtils;
 import net.minecraft.client.MinecraftClient;
@@ -49,10 +49,10 @@ public class MixinItemSlotUpdate {
                     DFInfo.currentState = DFInfo.State.LOBBY;
 
                     // Auto fly
-                    if (CodeUtilsConfig.getBool("autofly")) {
+                    if (CodeUtilsConfig.getBoolean("autofly")) {
                         if (System.currentTimeMillis() > lobbyTime) { // theres a bug with /fly running twice this is a temp fix.
                             mc.player.sendChatMessage("/fly");
-                            ReceiveChatMessageEvent.cancelFlyMsg = true;
+                            ChatReceivedEvent.cancelFlyMsg = true;
                             lobbyTime = System.currentTimeMillis() + 1000;
                         }
 
@@ -75,9 +75,9 @@ public class MixinItemSlotUpdate {
                     DFInfo.plotCorner = mc.player.getPos().add(10, -50, -10);
 
                     // Auto LagSlayer
-                    if (!CPU_UsageText.lagSlayerEnabled && CodeUtilsConfig.getBool("autolagslayer")) {
+                    if (!CPU_UsageText.lagSlayerEnabled && CodeUtilsConfig.getBoolean("autolagslayer")) {
                         mc.player.sendChatMessage("/lagslayer");
-                        ReceiveChatMessageEvent.cancelLagSlayerMsg = true;
+                        ChatReceivedEvent.cancelLagSlayerMsg = true;
                     }
 
                     // fs toggle
@@ -89,16 +89,16 @@ public class MixinItemSlotUpdate {
                         new Thread(() -> {
                             try {
                                 Thread.sleep(10);
-                                if (CodeUtilsConfig.getBool("autoRC")) {
+                                if (CodeUtilsConfig.getBoolean("autoRC")) {
                                     mc.player.sendChatMessage("/rc");
                                 }
-                                if (CodeUtilsConfig.getBool("autotime")) {
-                                    mc.player.sendChatMessage("/time " + CodeUtilsConfig.getInt("autotimeval"));
-                                    ReceiveChatMessageEvent.cancelTimeMsg = true;
+                                if (CodeUtilsConfig.getBoolean("autotime")) {
+                                    mc.player.sendChatMessage("/time " + CodeUtilsConfig.getLong("autotimeval"));
+                                    ChatReceivedEvent.cancelTimeMsg = true;
                                 }
-                                if (CodeUtilsConfig.getBool("autonightvis")) {
+                                if (CodeUtilsConfig.getBoolean("autonightvis")) {
                                     mc.player.sendChatMessage("/nightvis");
-                                    ReceiveChatMessageEvent.cancelNVisionMsg = true;
+                                    ChatReceivedEvent.cancelNVisionMsg = true;
                                 }
                             } catch (Exception e) {
                                 CodeUtilities.log(Level.ERROR, "Error while executing the task!");
