@@ -45,7 +45,8 @@ public class SearchUtil {
     }
 
     public static void clearSearch() {
-        if (searchType != null || searchValue != null) ToasterUtil.sendToaster("Code Search", "Search Cleared!", SystemToast.Type.NARRATOR_TOGGLE);
+        if (searchType != null || searchValue != null)
+            ToasterUtil.sendToaster("Code Search", "Search Cleared!", SystemToast.Type.NARRATOR_TOGGLE);
         SearchUtil.searchType = null;
         SearchUtil.searchValue = null;
     }
@@ -86,7 +87,7 @@ public class SearchUtil {
 
         static {
             List<String> stringList = new ArrayList<>();
-            for(SearchType value:values()) {
+            for (SearchType value : values()) {
                 stringList.add(value.toString());
             }
             STRINGS = stringList.toArray(new String[0]);

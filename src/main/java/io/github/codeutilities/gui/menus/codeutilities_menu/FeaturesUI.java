@@ -31,7 +31,7 @@ public class FeaturesUI extends LightweightGuiDescription implements IMenu {
 
             while ((inputLine = in.readLine()) != null) {
                 y += 10;
-                root.add(new WLabel(new LiteralText(String.valueOf(inputLine))), 4, y);
+                root.add(new WLabel(new LiteralText(inputLine)), 4, y);
             }
 
             in.close();

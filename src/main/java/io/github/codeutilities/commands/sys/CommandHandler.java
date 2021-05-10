@@ -49,7 +49,7 @@ public class CommandHandler implements ClientCommandPlugin, IManager<Command> {
                 new DebugCommand()
         );
 
-        if (CodeUtilsConfig.getBool("dfCommands")) {
+        if (CodeUtilsConfig.getBoolean("dfCommands")) {
             register(
                     new GiveCommand(),
                     new NodeCommand(),

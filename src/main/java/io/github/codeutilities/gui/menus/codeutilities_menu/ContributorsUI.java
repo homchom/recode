@@ -4,12 +4,14 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.util.Contributor;
-import io.github.codeutilities.util.networking.WebUtil;
 import io.github.codeutilities.gui.IMenu;
 import io.github.codeutilities.gui.widgets.CImage;
+import io.github.codeutilities.util.Contributor;
+import io.github.codeutilities.util.networking.WebUtil;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
-import io.github.cottonmc.cotton.gui.widget.*;
+import io.github.cottonmc.cotton.gui.widget.WLabel;
+import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
+import io.github.cottonmc.cotton.gui.widget.WScrollPanel;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.util.Identifier;
@@ -44,7 +46,7 @@ public class ContributorsUI extends LightweightGuiDescription implements IMenu {
 
         try {
             JsonArray array = WebUtil.getJson("https://api.github.com/repos/CodeUtilities/CodeUtilities/contributors").getAsJsonArray();
-            for(JsonElement element:array) {
+            for (JsonElement element : array) {
                 JsonObject object = element.getAsJsonObject();
                 this.contributors.add(new Contributor(object.get("login").getAsString(), object.get("id").getAsInt(), object.get("contributions").getAsInt(), object.get("avatar_url").getAsString()));
             }
@@ -52,7 +54,7 @@ public class ContributorsUI extends LightweightGuiDescription implements IMenu {
             e.printStackTrace();
         }
 
-        for (Contributor contributor:contributors) {
+        for (Contributor contributor : contributors) {
             if (contributor.getAvatar() == null) {
                 try {
                     URL url = new URL(contributor.getAvatarUrl());
@@ -70,9 +72,9 @@ public class ContributorsUI extends LightweightGuiDescription implements IMenu {
             panel.add(new WLabel(contributor.getName()), x + 35, y + 12);
 
 
-            if(x == 110) {
+            if (x == 110) {
                 x = 0;
-                y+=35;
+                y += 35;
             } else {
                 x = 110;
             }

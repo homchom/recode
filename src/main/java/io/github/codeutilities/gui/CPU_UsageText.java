@@ -71,7 +71,7 @@ public class CPU_UsageText {
             renderText(stack, Formatting.GOLD.getColorValue());
             renderText(stack, barsText, 2);
             renderText(stack, numberText, 1);
-        }catch (Exception e) {
+        } catch (Exception e) {
             CodeUtilities.log(Level.ERROR, "Error while trying to render LagSlayer HUD!");
             e.printStackTrace();
         }

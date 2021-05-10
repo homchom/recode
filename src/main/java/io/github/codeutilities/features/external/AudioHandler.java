@@ -1,4 +1,3 @@
-
 package io.github.codeutilities.features.external;
 
 import com.google.gson.JsonObject;
@@ -39,7 +38,7 @@ public class AudioHandler implements ILoader {
     public void load() {
         try {
             com.sun.javafx.application.PlatformImpl.startup(() -> {
-                URI uri = URI.create(CodeUtilsConfig.getStr("audioUrl"));
+                URI uri = URI.create(CodeUtilsConfig.getString("audioUrl"));
                 String username = MinecraftClient.getInstance().getSession().getUsername();
                 IO.Options options = IO.Options.builder()
                         .setQuery("username=" + username + "&source=" + ("fabric-" + CodeUtilities.MOD_ID + "-" + CodeUtilities.MOD_VERSION))
@@ -61,7 +60,7 @@ public class AudioHandler implements ILoader {
 
                             if (!currentPlotId.equals(plotId)) {
                                 // enable to show when plot takes control of session
-                                if (CodeUtilsConfig.getBool("audioAlerts")) {
+                                if (CodeUtilsConfig.getBoolean("audioAlerts")) {
                                     ToasterUtil.sendToaster("Now Playing", "Plot " + plotId, SystemToast.Type.NARRATOR_TOGGLE);
                                 }
                                 currentPlotId = plotId;

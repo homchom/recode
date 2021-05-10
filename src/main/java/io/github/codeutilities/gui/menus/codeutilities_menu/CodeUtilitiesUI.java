@@ -1,11 +1,13 @@
 package io.github.codeutilities.gui.menus.codeutilities_menu;
 
 import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.config.CodeUtilsConfig;
+import io.github.codeutilities.config.menu.ConfigScreen;
 import io.github.codeutilities.gui.IMenu;
 import io.github.codeutilities.gui.widgets.CImage;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
-import io.github.cottonmc.cotton.gui.widget.*;
+import io.github.cottonmc.cotton.gui.widget.WButton;
+import io.github.cottonmc.cotton.gui.widget.WLabel;
+import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
@@ -58,7 +60,7 @@ public class CodeUtilitiesUI extends LightweightGuiDescription implements IMenu 
         WButton options = new WButton(new LiteralText("Options"));
         options.setOnClick(() -> {
             MinecraftClient mc = MinecraftClient.getInstance();
-            mc.openScreen(CodeUtilsConfig.getScreen(MinecraftClient.getInstance().currentScreen));
+            mc.openScreen(ConfigScreen.getScreen(MinecraftClient.getInstance().currentScreen));
         });
         panel.add(options, 60, 214, 100, 20);
     }

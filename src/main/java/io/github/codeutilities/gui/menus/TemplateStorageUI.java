@@ -1,9 +1,9 @@
 package io.github.codeutilities.gui.menus;
 
+import io.github.codeutilities.gui.IMenu;
 import io.github.codeutilities.gui.widgets.ItemScrollablePanel;
 import io.github.codeutilities.util.templates.TemplateItem;
 import io.github.codeutilities.util.templates.TemplateStorageHandler;
-import io.github.codeutilities.gui.IMenu;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import net.minecraft.item.ItemStack;

@@ -5,32 +5,33 @@ import net.minecraft.sound.SoundEvents;
 
 public enum ConfigSounds {
 
-    ShieldBlock(SoundEvents.ITEM_SHIELD_BLOCK, "Shield Block"),
+    // Default
+    SHIELD_BLOCK(SoundEvents.ITEM_SHIELD_BLOCK, "Shield Block"),
 
-    BassDrum(SoundEvents.BLOCK_NOTE_BLOCK_BASEDRUM, "Bass Drum"),
-    Banjo(SoundEvents.BLOCK_NOTE_BLOCK_BANJO, "Banjo"),
-    Bass(SoundEvents.BLOCK_NOTE_BLOCK_BASS, "Bass"),
-    Bell(SoundEvents.BLOCK_NOTE_BLOCK_BELL, "Bell"),
-    Bit(SoundEvents.BLOCK_NOTE_BLOCK_BIT, "Bit"),
-    Chime(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, "Chime"),
-    CowBell(SoundEvents.BLOCK_NOTE_BLOCK_COW_BELL, "Cow Bell"),
-    Didgeridoo(SoundEvents.BLOCK_NOTE_BLOCK_DIDGERIDOO, "Didgeridoo"),
-    Flute(SoundEvents.BLOCK_NOTE_BLOCK_FLUTE, "Flute"),
-    Guitar(SoundEvents.BLOCK_NOTE_BLOCK_GUITAR, "Guitar"),
+    // Note blocks
+    BASS_DRUM(SoundEvents.BLOCK_NOTE_BLOCK_BASEDRUM, "Bass Drum"),
+    BANJO(SoundEvents.BLOCK_NOTE_BLOCK_BANJO, "Banjo"),
+    BASS(SoundEvents.BLOCK_NOTE_BLOCK_BASS, "Bass"),
+    BELL(SoundEvents.BLOCK_NOTE_BLOCK_BELL, "Bell"),
+    BIT(SoundEvents.BLOCK_NOTE_BLOCK_BIT, "Bit"),
+    CHIME(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, "Chime"),
+    COW_BELL(SoundEvents.BLOCK_NOTE_BLOCK_COW_BELL, "Cow Bell"),
+    DIDGERIDOO(SoundEvents.BLOCK_NOTE_BLOCK_DIDGERIDOO, "Didgeridoo"),
+    FLUTE(SoundEvents.BLOCK_NOTE_BLOCK_FLUTE, "Flute"),
+    GUITAR(SoundEvents.BLOCK_NOTE_BLOCK_GUITAR, "Guitar"),
     Harp(SoundEvents.BLOCK_NOTE_BLOCK_HARP, "Harp"),
-    Pling(SoundEvents.BLOCK_NOTE_BLOCK_PLING, "Pling"),
-    Hat(SoundEvents.BLOCK_NOTE_BLOCK_HAT, "Hat"),
-    Snare(SoundEvents.BLOCK_NOTE_BLOCK_SNARE, "Snare"),
-    IronXylophone(SoundEvents.BLOCK_NOTE_BLOCK_IRON_XYLOPHONE, "Iron Xylophone"),
-    Xylophone(SoundEvents.BLOCK_NOTE_BLOCK_XYLOPHONE, "Xylophone"),
+    PLING(SoundEvents.BLOCK_NOTE_BLOCK_PLING, "Pling"),
+    HAT(SoundEvents.BLOCK_NOTE_BLOCK_HAT, "Hat"),
+    SNARE(SoundEvents.BLOCK_NOTE_BLOCK_SNARE, "Snare"),
+    IRON_XYLOPHONE(SoundEvents.BLOCK_NOTE_BLOCK_IRON_XYLOPHONE, "Iron Xylophone"),
+    XYLOPHONE(SoundEvents.BLOCK_NOTE_BLOCK_XYLOPHONE, "Xylophone"),
 
-    ExperienceOrbPickup(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, "Experience Orb Pickup"),
+    // Other
+    EXPERIENCE_ORB_PICKUP(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, "Experience Orb Pickup"),
+    ITEM_PICKUP(SoundEvents.ENTITY_ITEM_PICKUP, "Item Pickup"),
 
-    ItemPickup(SoundEvents.ENTITY_ITEM_PICKUP, "Item Pickup"),
-
-    // ====================
-
-    None(null, "None");
+    // None
+    NONE(null, "None");
 
     private final SoundEvent sound;
     private final String name;
@@ -44,9 +45,11 @@ public enum ConfigSounds {
         return sound;
     }
 
-    public String getName() { return name; }
+    public String getName() {
+        return name;
+    }
 
-    public static SoundEvent getSoundFromName(String name) {
+    public static SoundEvent getByName(String name) {
         for (ConfigSounds sounds : values()) {
             if (name.equals(sounds.getName())) {
                 return sounds.getSound();

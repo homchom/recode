@@ -5,16 +5,17 @@ import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.util.file.ILoader;
 import io.socket.client.IO;
 import io.socket.client.Socket;
-import java.net.URI;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
-import java.util.UUID;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.Session;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.json.JSONObject;
+
+import java.net.URI;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.UUID;
 
 public class PlayerlistStarServer implements ILoader {
 
@@ -42,7 +43,7 @@ public class PlayerlistStarServer implements ILoader {
                 Session session = mc.getSession();
 
                 mc.getSessionService()
-                    .joinServer(session.getProfile(), session.getAccessToken(), serverid);
+                        .joinServer(session.getProfile(), session.getAccessToken(), serverid);
 
                 socket.emit("authLogin", data, session.getUsername());
             } catch (NoSuchAlgorithmException | AuthenticationException e) {
@@ -69,7 +70,7 @@ public class PlayerlistStarServer implements ILoader {
         socket.on("userList", (Object... args) -> {
             JSONObject users = (JSONObject) args[0];
             for (String key : users.keySet()) {
-                users.put(key,users.getBoolean(key));
+                users.put(key, users.getBoolean(key));
             }
         });
 

@@ -16,10 +16,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ChatHud.class)
 public abstract class ChatHudMixin {
 
-    @Shadow @Final private static Logger LOGGER;
-    @Shadow @Final private MinecraftClient client;
-    @Shadow protected abstract void addMessage(Text message, int messageId, int timestamp,
-        boolean refresh);
+    @Shadow
+    @Final
+    private static Logger LOGGER;
+    @Shadow
+    @Final
+    private MinecraftClient client;
+
+    @Shadow
+    protected abstract void addMessage(Text message, int messageId, int timestamp,
+                                       boolean refresh);
 
     int lastid = 0;
     Text lastmsg = new LiteralText("");
@@ -27,7 +33,7 @@ public abstract class ChatHudMixin {
 
     @Inject(method = "addMessage(Lnet/minecraft/text/Text;I)V", at = @At("HEAD"), cancellable = true)
     private void addMessage(Text msg, int id, CallbackInfo ci) {
-        if (CodeUtilsConfig.getBool("stackDuplicateMsgs")) {
+        if (CodeUtilsConfig.getBoolean("stackDuplicateMsgs")) {
             if (msg.getString().equals(lastmsg.getString())) {
                 stackcount++;
                 msg = new LiteralText("").append(msg).append(" §3§lx" + stackcount);
@@ -43,7 +49,7 @@ public abstract class ChatHudMixin {
                 }
             }
 
-            addMessage(msg,id, client.inGameHud.getTicks(), false);
+            addMessage(msg, id, client.inGameHud.getTicks(), false);
             LOGGER.info("[CHAT] {}", msg.getString().replaceAll("\r", "\\\\r").replaceAll("\n", "\\\\n"));
             ci.cancel();
         }

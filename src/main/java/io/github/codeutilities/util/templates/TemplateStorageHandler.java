@@ -1,9 +1,9 @@
 package io.github.codeutilities.util.templates;
 
 import io.github.codeutilities.commands.sys.IManager;
+import io.github.codeutilities.util.file.ExternalFile;
 import io.github.codeutilities.util.file.ISave;
 import io.github.codeutilities.util.misc.ItemUtil;
-import io.github.codeutilities.util.file.ExternalFile;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.datafixer.DataFixTypes;
