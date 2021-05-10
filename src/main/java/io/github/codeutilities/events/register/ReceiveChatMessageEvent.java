@@ -1,24 +1,28 @@
-package io.github.codeutilities.features.social.chat;
+package io.github.codeutilities.events.register;
 
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.CodeUtilsConfig;
 import io.github.codeutilities.config.ConfigSounds;
+import io.github.codeutilities.events.interfaces.ChatEvents;
 import io.github.codeutilities.features.external.DFDiscordRPC;
-import io.github.codeutilities.util.render.gui.CPU_UsageText;
-import io.github.codeutilities.util.networking.DFInfo;
 import io.github.codeutilities.util.chat.ChatType;
 import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.codeutilities.util.chat.TextUtil;
+import io.github.codeutilities.util.networking.DFInfo;
+import io.github.codeutilities.util.render.gui.CPU_UsageText;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
 import org.apache.logging.log4j.Level;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ChatReceivedEvent {
+public class ReceiveChatMessageRegisterer {
+    public ReceiveChatMessageRegisterer() {
+        ChatEvents.RECEIVE_MESSAGE.register(this::run);
+    }
 
     public static boolean pjoin = false;
     public static String dfrpcMsg = "";
@@ -31,7 +35,7 @@ public class ChatReceivedEvent {
 
     public static int cancelMsgs = 0;
 
-    public static void onMessage(Text message, CallbackInfo ci) {
+    private ActionResult run(Text message) {
         MinecraftClient mc = MinecraftClient.getInstance();
         String text = message.getString();
 
@@ -39,7 +43,7 @@ public class ChatReceivedEvent {
         boolean showCancelMsg = true;
 
         if (mc.player == null) {
-            return;
+            return ActionResult.FAIL;
         }
 
         if (cancelMsgs > 0) {
@@ -204,7 +208,7 @@ public class ChatReceivedEvent {
             cancel = true;
         }
 
-        // hide var scope messages
+        // hide var scope messages (NOT WORKING RN)
         if (CodeUtilsConfig.getBool("hideVarScopeMessages")
                 && (
                 // local
@@ -246,7 +250,8 @@ public class ChatReceivedEvent {
         //Cancelling (set cancel to true)
         if (cancel) {
             if (showCancelMsg) CodeUtilities.log(Level.INFO, "[CANCELLED] " + msgWithColor);
-            ci.cancel();
+            return ActionResult.SUCCESS;
         }
+        return ActionResult.PASS;
     }
 }
