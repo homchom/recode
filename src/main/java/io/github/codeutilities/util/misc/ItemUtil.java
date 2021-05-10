@@ -9,6 +9,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.nbt.Tag;
+import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.collection.DefaultedList;
 
 import java.nio.charset.Charset;
@@ -48,6 +49,32 @@ public class ItemUtil {
                 }
             }
         }
+    }
+
+    /**
+     * Sets the item at a container slot. (Only works in creative)
+     * @param slot The slot you want to change.
+     * @param itemStack The item stack to replace it with
+     */
+    public static void setContainerItem(int slot, ItemStack itemStack) {
+        MinecraftClient mc = CodeUtilities.MC;
+
+        // this method kinda doesnt work in survival mode so let's throw an exception if this happens.
+        if(!mc.player.isCreative()) {
+            throw new IllegalStateException("Player is not in creative mode.");
+        }
+
+        // replace the 8th slot with the item we want to set.
+        ItemStack replacedItem = mc.player.inventory.main.get(7);
+        CodeUtilities.MC.interactionManager.clickCreativeStack(itemStack, 43);
+        mc.player.inventory.main.set(7, itemStack);
+
+        // simulates pressing the 8 key on the slot we want to change.
+        CodeUtilities.MC.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, slot, 7, SlotActionType.SWAP, CodeUtilities.MC.player);
+
+        // change the 8th slot back to what it was before.
+        CodeUtilities.MC.interactionManager.clickCreativeStack(replacedItem, 43);
+        mc.player.inventory.main.set(7, replacedItem);
     }
 
     public static List<ItemStack> fromItemContainer(ItemStack container) {

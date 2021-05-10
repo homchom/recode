@@ -19,6 +19,7 @@ import io.github.codeutilities.gui.menus.CustomHeadMenu;
 import io.github.codeutilities.util.networking.socket.SocketHandler;
 import io.github.codeutilities.util.templates.TemplateStorageHandler;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.networking.v1.C2SPlayChannelEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import org.apache.logging.log4j.Level;

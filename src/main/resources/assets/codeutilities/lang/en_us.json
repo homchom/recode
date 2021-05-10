@@ -165,6 +165,17 @@
     "config.codeutilities.option.audioAlerts": "Playback Alerts",
     "config.codeutilities.option.audioAlerts.tooltip": "Notifications when a plot takes control of your audio.",
 
+    "config.codeutilities.subcategory.misc_quicknum": "Quick Number Change",
+    "config.codeutilities.subcategory.misc_quicknum.tooltip": "Allows you to change a number variable\nsimply by scrolling.",
+    "config.codeutilities.option.quicknum": "Enable",
+    "config.codeutilities.option.quicknum.tooltip": "Enable this feature.",
+    "config.codeutilities.option.quicknumSound": "Play sound",
+    "config.codeutilities.option.quicknumSound.tooltip": "Plays a sound when changing the number.",
+    "config.codeutilities.option.quicknumAmount": "Amount",
+    "config.codeutilities.option.quicknumAmount.tooltip": "Change how much a scroll changes the number.",
+    "config.codeutilities.option.quicknumFineAmount": "Fine Amount",
+    "config.codeutilities.option.quicknumFineAmount.tooltip": "Change how much a scroll changes the number. (When holding CTRL)",
+
     "config.codeutilities.option.chestToolTip": "Chest Tooltip",
     "config.codeutilities.option.chestToolTip.tooltip": "Display chest params when you are in dev",
     "config.codeutilities.option.chestToolTipType": "Chest Tooltip Style",

@@ -2,9 +2,8 @@ package io.github.codeutilities.config.config;
 
 import io.github.codeutilities.config.structure.ConfigGroup;
 import io.github.codeutilities.config.structure.ConfigSubGroup;
-import io.github.codeutilities.config.types.BooleanSetting;
-import io.github.codeutilities.config.types.LongSetting;
-import io.github.codeutilities.config.types.StringSetting;
+import io.github.codeutilities.config.types.*;
+import io.github.codeutilities.config.types.list.StringListSetting;
 
 public class MiscellaneousGroup extends ConfigGroup {
     public MiscellaneousGroup(String name) {
@@ -30,6 +29,15 @@ public class MiscellaneousGroup extends ConfigGroup {
         audio.register(new StringSetting("audioUrl", "https://audio.tomoli.me/"));
         audio.register(new BooleanSetting("audioAlerts", false));
         this.register(audio);
+
+        // Quick Number Change
+        ConfigSubGroup quickNum = new ConfigSubGroup("quicknum");
+        quickNum.register(new BooleanSetting("quicknum", true));
+        quickNum.register(new BooleanSetting("quicknumSound", true));
+        quickNum.register(new DoubleSetting("quicknumAmount", 1.0));
+        quickNum.register(new DoubleSetting("quicknumFineAmount", 0.1));
+        this.register(quickNum);
+
     }
 
 
