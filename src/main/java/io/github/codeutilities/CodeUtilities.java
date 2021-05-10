@@ -12,6 +12,7 @@ import io.github.codeutilities.config.internal.gson.types.list.StringListSeriali
 import io.github.codeutilities.config.structure.ConfigManager;
 import io.github.codeutilities.config.types.*;
 import io.github.codeutilities.config.types.list.StringListSetting;
+import io.github.codeutilities.events.EventHandler;
 import io.github.codeutilities.features.external.AudioHandler;
 import io.github.codeutilities.features.external.DFDiscordRPC;
 import io.github.codeutilities.features.social.cosmetics.CosmeticHandler;
@@ -67,6 +68,7 @@ public class CodeUtilities implements ModInitializer {
         initializer.add(new TemplateStorageHandler());
         initializer.add(new CustomHeadMenu());
         initializer.add(new DFDiscordRPC());
+        initializer.add(new EventHandler());
         //initializer.add(new PlayerlistStarServer());
 
         // Initializes only if the given condition is met. (this case: config value)
