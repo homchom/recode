@@ -48,9 +48,9 @@ public class CodeUtilsConfig {
     @SuppressWarnings("unchecked")
     public static <Value> Value getValue(ConfigSetting<?> setting, Class<Value> valueClass) {
         Objects.requireNonNull(setting, "Could not find the setting");
-        Object value = setting.getDefaultValue();
+        Object value = setting.getValue();
         if (value.getClass().isAssignableFrom(valueClass)) {
-            return (Value) setting.getDefaultValue();
+            return (Value) setting.getValue();
         }
         return null;
     }
