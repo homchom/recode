@@ -6,9 +6,9 @@ import com.jagrosh.discordipc.entities.RichPresence;
 import com.jagrosh.discordipc.exceptions.NoDiscordClientException;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.CodeUtilsConfig;
-import io.github.codeutilities.features.social.chat.ChatReceivedEvent;
-import io.github.codeutilities.util.networking.DFInfo;
+import io.github.codeutilities.events.register.ReceiveChatMessageEvent;
 import io.github.codeutilities.util.file.ILoader;
+import io.github.codeutilities.util.networking.DFInfo;
 import net.minecraft.client.MinecraftClient;
 import org.apache.logging.log4j.Level;
 
@@ -73,15 +73,15 @@ public class DFDiscordRPC implements ILoader {
         RichPresence.Builder presence = new RichPresence.Builder();
         String mode = "spawn";
 
-        if (ChatReceivedEvent.dfrpcMsg.startsWith(EMPTY + "\nYou are currently at spawn.\n")) {
+        if (ReceiveChatMessageEvent.dfrpcMsg.startsWith(EMPTY + "\nYou are currently at spawn.\n")) {
             presence.setDetails("At spawn");
-            presence.setState(ChatReceivedEvent.dfrpcMsg.replaceFirst("^                                       \n" +
+            presence.setState(ReceiveChatMessageEvent.dfrpcMsg.replaceFirst("^                                       \n" +
                     "You are currently at spawn.\n", "").replaceFirst("^→ Server: ", "").replaceFirst("\n" +
                     "                                       $", ""));
             if (supportSession) presence.setSmallImage("supportsession", "In Support Session");
             else presence.setSmallImage(null, null);
 
-            String state = ChatReceivedEvent.dfrpcMsg;
+            String state = ReceiveChatMessageEvent.dfrpcMsg;
             state = state.replaceFirst("^ {39}\nYou are currently at spawn.\n", "")
                     .replaceFirst("^→ Server: ", "")
                     .replaceFirst("\n {39}$", "");
@@ -92,7 +92,7 @@ public class DFDiscordRPC implements ILoader {
         } else {
             // PLOT ID
             Pattern pattern = Pattern.compile("\\[[0-9]+]\n");
-            Matcher matcher = pattern.matcher(ChatReceivedEvent.dfrpcMsg);
+            Matcher matcher = pattern.matcher(ReceiveChatMessageEvent.dfrpcMsg);
             String id = "";
             while (matcher.find()) {
                 id = matcher.group();
@@ -101,7 +101,7 @@ public class DFDiscordRPC implements ILoader {
 
             // PLOT NODE
             pattern = Pattern.compile("Node ([0-9]|Beta)\n");
-            matcher = pattern.matcher(ChatReceivedEvent.dfrpcMsg);
+            matcher = pattern.matcher(ReceiveChatMessageEvent.dfrpcMsg);
             String node = "";
             while (matcher.find()) {
                 node = matcher.group();
@@ -109,7 +109,7 @@ public class DFDiscordRPC implements ILoader {
 
             // PLOT NAME
             pattern = Pattern.compile("\n\n→ .+ \\[[0-9]+]\n");
-            matcher = pattern.matcher(ChatReceivedEvent.dfrpcMsg);
+            matcher = pattern.matcher(ReceiveChatMessageEvent.dfrpcMsg);
             String name = "";
             while (matcher.find()) {
                 name = matcher.group();
@@ -120,11 +120,11 @@ public class DFDiscordRPC implements ILoader {
             String customStatus = "";
             if (DFInfo.currentState == DFInfo.State.PLAY) {
                 pattern = Pattern.compile("\n→ ");
-                matcher = pattern.matcher(ChatReceivedEvent.dfrpcMsg);
+                matcher = pattern.matcher(ReceiveChatMessageEvent.dfrpcMsg);
                 int headerAmt = 0;
                 while (matcher.find()) headerAmt++;
                 if (headerAmt == 4) {
-                    customStatus = ChatReceivedEvent.dfrpcMsg
+                    customStatus = ReceiveChatMessageEvent.dfrpcMsg
                             .replaceFirst("^.*\n.*\n\n→ .*\n→ ", "");
                     pattern = Pattern.compile("^.*");
                     matcher = pattern.matcher(customStatus);
@@ -138,17 +138,17 @@ public class DFDiscordRPC implements ILoader {
             presence.setState("Plot ID: " + id + " - " + node);
             presence.setDetails(name + " ");
 
-            if (ChatReceivedEvent.dfrpcMsg.startsWith(EMPTY + "\nYou are currently playing on:")) {
+            if (ReceiveChatMessageEvent.dfrpcMsg.startsWith(EMPTY + "\nYou are currently playing on:")) {
                 if (supportSession) presence.setSmallImage("supportsession", "In Support Session (Playing)");
                 presence.setSmallImage("modeplay", "Playing");
                 presence.setLargeImage("diamondfirelogo", customStatus.equals("") ? "mcdiamondfire.com" : customStatus);
                 mode = "play";
-            } else if (ChatReceivedEvent.dfrpcMsg.startsWith(EMPTY + "\nYou are currently building on:")) {
+            } else if (ReceiveChatMessageEvent.dfrpcMsg.startsWith(EMPTY + "\nYou are currently building on:")) {
                 if (supportSession) presence.setSmallImage("supportsession", "In Support Session (Building)");
                 presence.setSmallImage("modebuild", "Building");
                 presence.setLargeImage("diamondfirelogo", "mcdiamondfire.com");
                 mode = "build";
-            } else if (ChatReceivedEvent.dfrpcMsg.startsWith(EMPTY + "\nYou are currently coding on:")) {
+            } else if (ReceiveChatMessageEvent.dfrpcMsg.startsWith(EMPTY + "\nYou are currently coding on:")) {
                 if (supportSession) presence.setSmallImage("supportsession", "In Support Session (Coding)");
                 presence.setSmallImage("modedev", "Coding");
                 presence.setLargeImage("diamondfirelogo", "mcdiamondfire.com");

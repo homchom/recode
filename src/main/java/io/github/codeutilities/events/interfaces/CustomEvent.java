@@ -1,4 +1,4 @@
-package io.github.codeutilities.events;
+package io.github.codeutilities.events.interfaces;
 
 import net.minecraft.util.ActionResult;
 

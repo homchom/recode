@@ -19,8 +19,8 @@ import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ReceiveChatMessageRegisterer {
-    public ReceiveChatMessageRegisterer() {
+public class ReceiveChatMessageEvent {
+    public ReceiveChatMessageEvent() {
         ChatEvents.RECEIVE_MESSAGE.register(this::run);
     }
 

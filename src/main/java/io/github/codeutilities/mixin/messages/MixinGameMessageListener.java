@@ -3,13 +3,14 @@ package io.github.codeutilities.mixin.messages;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.CodeUtilsConfig;
+import io.github.codeutilities.events.interfaces.ChatEvents;
+import io.github.codeutilities.events.register.ReceiveChatMessageEvent;
 import io.github.codeutilities.features.external.DFDiscordRPC;
-import io.github.codeutilities.features.social.chat.ChatReceivedEvent;
-import io.github.codeutilities.util.render.gui.CPU_UsageText;
 import io.github.codeutilities.features.keybinds.FlightspeedToggle;
-import io.github.codeutilities.util.networking.DFInfo;
 import io.github.codeutilities.util.chat.MessageGrabber;
+import io.github.codeutilities.util.networking.DFInfo;
 import io.github.codeutilities.util.networking.WebUtil;
+import io.github.codeutilities.util.render.gui.CPU_UsageText;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.MessageType;
@@ -19,6 +20,7 @@ import net.minecraft.text.ClickEvent;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.Mixin;
@@ -34,6 +36,7 @@ public class MixinGameMessageListener {
     private static long lastBuildCheck = 0;
     private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
     private boolean motdShown = false;
+    private final ChatEvents invoker = ChatEvents.RECEIVE_MESSAGE.invoker();
 
     @Inject(method = "onGameMessage", at = @At("HEAD"), cancellable = true)
     private void onGameMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
@@ -48,7 +51,8 @@ public class MixinGameMessageListener {
         if (DFInfo.isOnDF()) {
             if (packet.getLocation() == MessageType.CHAT || packet.getLocation() == MessageType.SYSTEM) {
                 if (RenderSystem.isOnRenderThread()) {
-                    ChatReceivedEvent.onMessage(packet.getMessage(), ci);
+                    if (invoker.receive(packet.getMessage()).equals(ActionResult.SUCCESS)) ci.cancel();
+//                    ChatReceivedEvent.onMessage(packet.getMessage(), ci);
                     String text = packet.getMessage().getString();
                     try {
                         this.updateVersion(packet.getMessage());
@@ -120,7 +124,7 @@ public class MixinGameMessageListener {
                     // auto chat local
                     if (CodeUtilsConfig.getBool("autoChatLocal")) {
                         minecraftClient.player.sendChatMessage("/c 1");
-                        ChatReceivedEvent.cancelMsgs = 1;
+                        ReceiveChatMessageEvent.cancelMsgs = 1;
                     }
                 }
             } catch (Exception e) {
@@ -148,7 +152,7 @@ public class MixinGameMessageListener {
             System.out.println(CPU_UsageText.lagSlayerEnabled);
             if (!CPU_UsageText.lagSlayerEnabled && CodeUtilsConfig.getBool("autolagslayer")) {
                 minecraftClient.player.sendChatMessage("/lagslayer");
-                ChatReceivedEvent.cancelLagSlayerMsg = true;
+                ReceiveChatMessageEvent.cancelLagSlayerMsg = true;
             }
 
             // fs toggle
@@ -198,7 +202,7 @@ public class MixinGameMessageListener {
             // Auto LagSlayer
             if (!CPU_UsageText.lagSlayerEnabled && CodeUtilsConfig.getBool("autolagslayer")) {
                 minecraftClient.player.sendChatMessage("/lagslayer");
-                ChatReceivedEvent.cancelLagSlayerMsg = true;
+                ReceiveChatMessageEvent.cancelLagSlayerMsg = true;
             }
 
             // fs toggle
@@ -211,11 +215,11 @@ public class MixinGameMessageListener {
                         Thread.sleep(20);
                         if (CodeUtilsConfig.getBool("autotime")) {
                             minecraftClient.player.sendChatMessage("/time " + CodeUtilsConfig.getInt("autotimeval"));
-                            ChatReceivedEvent.cancelTimeMsg = true;
+                            ReceiveChatMessageEvent.cancelTimeMsg = true;
                         }
                         if (CodeUtilsConfig.getBool("autonightvis")) {
                             minecraftClient.player.sendChatMessage("/nightvis");
-                            ChatReceivedEvent.cancelNVisionMsg = true;
+                            ReceiveChatMessageEvent.cancelNVisionMsg = true;
                         }
                     } catch (Exception e) {
                         CodeUtilities.log(Level.ERROR, "Error while executing the task!");

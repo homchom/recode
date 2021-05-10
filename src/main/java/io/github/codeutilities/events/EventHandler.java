@@ -1,35 +1,32 @@
-package io.github.codeutilities.events.register;
+package io.github.codeutilities.events;
 
 import io.github.codeutilities.commands.sys.IManager;
-import io.github.codeutilities.util.file.ILoader;
+import io.github.codeutilities.events.register.ReceiveChatMessageEvent;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class EventRegisterer implements IManager<ILoader> {
-    private static EventRegisterer instance;
-    private final List<ILoader> registeredEvents = new ArrayList<>();
-
-    public EventRegisterer() {
-        instance = this;
-    }
-
-    public static EventRegisterer getInstance() {
-        return instance;
-    }
+public class EventHandler implements IManager<Object> {
+    private final List<Object> registeredEvents = new ArrayList<>();
 
     @Override
     public void initialize() {
-        for (ILoader loader : registeredEvents) loader.load();
+        register(
+                new ReceiveChatMessageEvent()
+        );
     }
 
     @Override
-    public void register(ILoader object) {
+    public void register(Object object) {
         registeredEvents.add(object);
     }
 
+    public void register(Object... objects) {
+        for (Object object : objects) register(object);
+    }
+
     @Override
-    public List<ILoader> getRegistered() {
+    public List<Object> getRegistered() {
         return registeredEvents;
     }
 }

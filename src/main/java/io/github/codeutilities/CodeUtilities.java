@@ -1,14 +1,15 @@
 package io.github.codeutilities;
 
 import com.google.gson.JsonParser;
-import io.github.codeutilities.features.external.AudioHandler;
 import io.github.codeutilities.config.CodeUtilsConfig;
-import io.github.codeutilities.features.social.cosmetics.CosmeticHandler;
+import io.github.codeutilities.events.EventHandler;
+import io.github.codeutilities.features.external.AudioHandler;
 import io.github.codeutilities.features.external.DFDiscordRPC;
+import io.github.codeutilities.features.social.cosmetics.CosmeticHandler;
+import io.github.codeutilities.util.networking.socket.SocketHandler;
 import io.github.codeutilities.util.render.gui.menus.CustomHeadMenu;
 import io.github.codeutilities.util.render.gui.widgets.ChestHud;
 import io.github.codeutilities.util.templates.TemplateStorageHandler;
-import io.github.codeutilities.util.networking.socket.SocketHandler;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -54,6 +55,7 @@ public class CodeUtilities implements ModInitializer {
         initializer.add(new TemplateStorageHandler());
         initializer.add(new CustomHeadMenu());
         initializer.add(new DFDiscordRPC());
+        initializer.add(new EventHandler());
 //        initializer.add(new PlayerlistStarServer());
 
         // Initializes only if the given condition is met. (this case: config value)

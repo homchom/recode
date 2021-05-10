@@ -1,12 +1,13 @@
-package io.github.codeutilities.events;
+package io.github.codeutilities.events.interfaces;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 
-public interface EventChatMessageListener extends CustomEvent {
-    Event<EventChatMessageListener> EVENT = EventFactory.createArrayBacked(EventChatMessageListener.class,
-            listeners -> packet -> CustomEvent.makeEvent(listeners, listener -> ((EventChatMessageListener) listener).receiveInteract(packet)));
-    ActionResult receiveInteract(GameMessageS2CPacket packet);
+public interface ChatEvents extends CustomEvent {
+    Event<ChatEvents> RECEIVE_MESSAGE = EventFactory.createArrayBacked(ChatEvents.class,
+            listeners -> message -> CustomEvent.makeEvent(listeners, listener -> ((ChatEvents) listener).receive(message)));
+
+    ActionResult receive(Text message);
 }
