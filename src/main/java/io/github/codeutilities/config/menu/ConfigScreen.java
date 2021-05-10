@@ -6,6 +6,7 @@ import io.github.codeutilities.config.structure.ConfigSetting;
 import io.github.codeutilities.config.structure.ConfigSubGroup;
 import io.github.codeutilities.config.types.*;
 import io.github.codeutilities.config.types.list.ListSetting;
+import io.github.codeutilities.config.types.list.StringListSetting;
 import io.github.codeutilities.util.translation.ITranslatable;
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
@@ -13,9 +14,9 @@ import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.impl.builders.SubCategoryBuilder;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.*;
+import net.minecraft.util.Formatting;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ConfigScreen implements ITranslatable {
@@ -66,9 +67,9 @@ public class ConfigScreen implements ITranslatable {
                 // Sub Category
                 ConfigSubGroup subGroup = subGroups.get(j);
                 String subGroupName = subGroup.getName();
-                SubCategoryBuilder subBuilder = entryBuilder.startSubCategory(ITranslatable.get(SUB_CATEGORY_TEXT + subGroupName))
+                SubCategoryBuilder subBuilder = entryBuilder.startSubCategory(ITranslatable.get(SUB_CATEGORY_TEXT + groupName + "_" + subGroupName))
                         .setExpanded(subGroup.isStartExpanded())
-                        .setTooltip(ITranslatable.get(SUB_CATEGORY_TEXT + subGroupName + TOOLTIP_TEXT));
+                        .setTooltip(ITranslatable.get(SUB_CATEGORY_TEXT  + groupName + "_" + subGroupName + TOOLTIP_TEXT));
 
                 for (ConfigSetting<?> configSetting : subGroup.getRegistered()) {
                     String settingKey = configSetting.getKey();
@@ -85,10 +86,24 @@ public class ConfigScreen implements ITranslatable {
         return builder.build();
     }
 
-    private static AbstractConfigListEntry<?> getEntry(ConfigEntryBuilder builder, ConfigSetting<?> configSetting, TranslatableText key, TranslatableText tooltip) {
+    private static AbstractConfigListEntry<?> getEntry(ConfigEntryBuilder builder, ConfigSetting<?> configSetting, TranslatableText title, TranslatableText tooltip) {
+
+        if (configSetting.isList()) {
+            ListSetting<?> setting = configSetting.cast();
+            if (setting.isString()) {
+                StringListSetting list = setting.cast();
+
+                return builder.startStringDropdownMenu(title, list.getSelected())
+                        .setSelections(list.getValue())
+                        .setDefaultValue(list.getSelected())
+                        .setTooltip(tooltip)
+                        .setSaveConsumer(list::setSelected)
+                        .build();
+            }
+        }
         if (configSetting.isBoolean()) {
             BooleanSetting setting = configSetting.cast();
-            return builder.startBooleanToggle(key, setting.getValue())
+            return builder.startBooleanToggle(title, setting.getValue())
                     .setDefaultValue(setting.getDefaultValue())
                     .setTooltip(tooltip)
                     .setSaveConsumer(setting::setValue)
@@ -96,7 +111,7 @@ public class ConfigScreen implements ITranslatable {
         }
         if (configSetting.isString()) {
             StringSetting setting = configSetting.cast();
-            return builder.startStrField(key, setting.getValue())
+            return builder.startStrField(title, setting.getValue())
                     .setDefaultValue(setting.getDefaultValue())
                     .setTooltip(tooltip)
                     .setSaveConsumer(setting::setValue)
@@ -104,7 +119,7 @@ public class ConfigScreen implements ITranslatable {
         }
         if (configSetting.isInteger()) {
             IntegerSetting setting = configSetting.cast();
-            return builder.startIntField(key, setting.getValue())
+            return builder.startIntField(title, setting.getValue())
                     .setDefaultValue(setting.getDefaultValue())
                     .setTooltip(tooltip)
                     .setSaveConsumer(setting::setValue)
@@ -112,7 +127,7 @@ public class ConfigScreen implements ITranslatable {
         }
         if (configSetting.isLong()) {
             LongSetting setting = configSetting.cast();
-            return builder.startLongField(key, setting.getValue())
+            return builder.startLongField(title, setting.getValue())
                     .setDefaultValue(setting.getDefaultValue())
                     .setTooltip(tooltip)
                     .setSaveConsumer(setting::setValue)
@@ -120,7 +135,7 @@ public class ConfigScreen implements ITranslatable {
         }
         if (configSetting.isDouble()) {
             DoubleSetting setting = configSetting.cast();
-            return builder.startDoubleField(key, setting.getValue())
+            return builder.startDoubleField(title, setting.getValue())
                     .setDefaultValue(setting.getDefaultValue())
                     .setTooltip(tooltip)
                     .setSaveConsumer(setting::setValue)
@@ -128,30 +143,41 @@ public class ConfigScreen implements ITranslatable {
         }
         if (configSetting.isFloat()) {
             FloatSetting setting = configSetting.cast();
-            return builder.startFloatField(key, setting.getValue())
+            return builder.startFloatField(title, setting.getValue())
                     .setDefaultValue(setting.getDefaultValue())
                     .setTooltip(tooltip)
                     .setSaveConsumer(setting::setValue)
                     .build();
         }
-        if (configSetting.isList()) {
-            ListSetting<?> setting = configSetting.cast();
-            if (setting.isString()) {
-                ListSetting<String> list = setting.cast();
-
-                List<String> strings = new ArrayList<>(list.getDefaultValue());
-                String defaultValue = strings.get(0);
-                strings.remove(0);
-
-                return builder.startStringDropdownMenu(key, list.getSelected())
-                        .setSelections(strings)
-                        .setDefaultValue(defaultValue)
-                        .setTooltip(tooltip)
-                        .setSaveConsumer(list::setSelected)
-                        .build();
-            }
-        }
 
         return null;
+    }
+
+    private static Text getTitle(Text origin) {
+        Style style = origin.getStyle();
+        style.withColor(TextColor.fromFormatting(Formatting.YELLOW));
+        MutableText copy = origin.copy();
+        copy.setStyle(style);
+
+        return origin;
+    }
+
+    private static Text getTooltip(Text title, Text origin) {
+        MutableText titleText = title.copy();
+        titleText.append(new LiteralText("\n\n"));
+
+        LiteralText description = new LiteralText("» ");
+        Style style = description.getStyle();
+        style.withColor(TextColor.fromFormatting(Formatting.AQUA));
+        description.setStyle(style);
+
+        MutableText copy = origin.copy();
+        Style style1 = copy.getStyle();
+        style1.withColor(TextColor.fromFormatting(Formatting.GRAY));
+        copy.setStyle(style1);
+        description.append(copy);
+
+        titleText.append(description);
+        return titleText;
     }
 }
