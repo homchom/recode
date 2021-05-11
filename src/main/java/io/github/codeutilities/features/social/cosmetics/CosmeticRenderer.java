@@ -41,7 +41,7 @@ public class CosmeticRenderer extends FeatureRenderer<AbstractClientPlayerEntity
                     rotate(matrixStack, 0f, abstractClientPlayerEntity.isInSneakingPose() ? translation.getY() * 0.675f + 0.27f : translation.getY() * 0.675f, 0f, head.pitch, head.yaw, head.roll);
                 matrixStack.scale(scalex, scaley, scalez);
                 if (abstractClientPlayerEntity.isInSneakingPose()) matrixStack.translate(0f, 0.4f, 0f);
-                matrixStack.translate(-0.5f, -0.75f, -0.5f);
+                matrixStack.translate(-0.5f, -0.9f, -0.5f);
 
                 MinecraftClient.getInstance().getBlockRenderManager().getModelRenderer().render(
                         matrixStack.peek(),
