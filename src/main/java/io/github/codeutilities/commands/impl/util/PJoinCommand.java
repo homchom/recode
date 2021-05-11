@@ -4,7 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import io.github.codeutilities.commands.sys.Command;
 import io.github.codeutilities.commands.sys.arguments.ArgBuilder;
 import io.github.codeutilities.commands.sys.arguments.types.PlayerArgumentType;
-import io.github.codeutilities.features.social.chat.ChatReceivedEvent;
+import io.github.codeutilities.events.register.ReceiveChatMessageEvent;
 import io.github.codeutilities.util.chat.ChatType;
 import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
@@ -38,7 +38,7 @@ public class PJoinCommand extends Command {
 
         mc.player.sendChatMessage("/locate " + player);
 
-        ChatReceivedEvent.pjoin = true;
+        ReceiveChatMessageEvent.pjoin = true;
         ChatUtil.sendMessage("Joining the plot §e" + player + "§b is currently playing...", ChatType.INFO_BLUE);
 
         new Thread(() -> {
@@ -48,10 +48,10 @@ public class PJoinCommand extends Command {
                 e.printStackTrace();
             }
 
-            if (ChatReceivedEvent.pjoin) {
+            if (ReceiveChatMessageEvent.pjoin) {
                 ChatUtil.sendMessage("Timeout error while trying to join the plot.", ChatType.FAIL);
             }
-            ChatReceivedEvent.pjoin = false;
+            ReceiveChatMessageEvent.pjoin = false;
         }).start();
         return 1;
     }
