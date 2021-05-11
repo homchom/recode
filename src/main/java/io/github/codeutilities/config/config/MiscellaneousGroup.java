@@ -34,8 +34,9 @@ public class MiscellaneousGroup extends ConfigGroup {
         ConfigSubGroup quickNum = new ConfigSubGroup("quicknum");
         quickNum.register(new BooleanSetting("quicknum", true));
         quickNum.register(new BooleanSetting("quicknumSound", true));
-        quickNum.register(new DoubleSetting("quicknumAmount", 1.0));
-        quickNum.register(new DoubleSetting("quicknumFineAmount", 0.1));
+        quickNum.register(new DoubleSetting("quicknumPrimaryAmount", 1.0));
+        quickNum.register(new DoubleSetting("quicknumSecondaryAmount", 10d));
+        quickNum.register(new DoubleSetting("quicknumTertiaryAmount", 0.1));
         this.register(quickNum);
 
     }

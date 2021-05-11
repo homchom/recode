@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.TextColor;
@@ -48,10 +49,11 @@ public class MixinMouse {
 
 
             for(Slot slot:slotList) {
-                double sX = ((double) (screen.width - 176) / 2) + slot.x;
-                double sY = ((double) (screen.height - 166) / 2) + slot.y;
+                double sX = Math.floor(((double) (screen.width - 176) / 2) + slot.x);
+                double sY = Math.floor(((double) (screen.height - 166) / 2) + slot.y);
                 sX *= scale;
                 sY *= scale;
+
 
                 if(sX < mouseX && mouseX < sX + (16 * scale)) {
                     if (sY < mouseY && mouseY < sY + (16 * scale)) {
@@ -72,29 +74,54 @@ public class MixinMouse {
                                     JsonObject data = parsedJson.get("data").getAsJsonObject();
 
                                     String name = data.get("name").getAsString();
-                                    BigDecimal bigDecimal = new BigDecimal(name);
-                                    if(Screen.hasControlDown()) {
-                                        bigDecimal = bigDecimal.add(BigDecimal.valueOf((vertical > 0) ? CodeUtilsConfig.getDouble("quicknumFineAmount") : -CodeUtilsConfig.getDouble("quicknumFineAmount")));
-                                    }else {
-                                        bigDecimal = bigDecimal.add(BigDecimal.valueOf((vertical > 0) ? CodeUtilsConfig.getDouble("quicknumAmount") : -CodeUtilsConfig.getDouble("quicknumAmount")));
 
+                                    try {
+                                        BigDecimal bigDecimal = new BigDecimal(name);
+
+                                        if(Screen.hasControlDown()) {
+                                            if(vertical > 0) {
+                                                bigDecimal = bigDecimal.add(BigDecimal.valueOf(CodeUtilsConfig.getDouble("quicknumSecondaryAmount")));
+                                                if(CodeUtilsConfig.getBoolean("quicknumSound")) CodeUtilities.MC.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_HAT, SoundCategory.PLAYERS, 1, 1);
+                                            }else {
+                                                bigDecimal = bigDecimal.subtract(BigDecimal.valueOf(CodeUtilsConfig.getDouble("quicknumSecondaryAmount")));
+                                                if(CodeUtilsConfig.getBoolean("quicknumSound")) CodeUtilities.MC.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_HAT, SoundCategory.PLAYERS, 1, 0);
+                                            }
+                                        }else if(Screen.hasShiftDown()){
+                                            if(vertical > 0) {
+                                                bigDecimal = bigDecimal.add(BigDecimal.valueOf(CodeUtilsConfig.getDouble("quicknumTertiaryAmount")));
+                                                if(CodeUtilsConfig.getBoolean("quicknumSound")) CodeUtilities.MC.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_HAT, SoundCategory.PLAYERS, 1, 1);
+                                            }else {
+                                                bigDecimal = bigDecimal.subtract(BigDecimal.valueOf(CodeUtilsConfig.getDouble("quicknumTertiaryAmount")));
+                                                if(CodeUtilsConfig.getBoolean("quicknumSound")) CodeUtilities.MC.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_HAT, SoundCategory.PLAYERS, 1, 0);
+                                            }
+                                        }else {
+                                            if(vertical > 0) {
+                                                bigDecimal = bigDecimal.add(BigDecimal.valueOf(CodeUtilsConfig.getDouble("quicknumPrimaryAmount")));
+                                                if(CodeUtilsConfig.getBoolean("quicknumSound")) CodeUtilities.MC.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_HAT, SoundCategory.PLAYERS, 1, 1);
+                                            }else {
+                                                bigDecimal = bigDecimal.subtract(BigDecimal.valueOf(CodeUtilsConfig.getDouble("quicknumPrimaryAmount")));
+                                                if(CodeUtilsConfig.getBoolean("quicknumSound")) CodeUtilities.MC.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_HAT, SoundCategory.PLAYERS, 1, 0);
+                                            }
+                                        }
+
+                                        name = bigDecimal.toString();
+                                        if (name.endsWith(".0")) name = name.substring(0, name.length() - 2);
+
+                                        data.addProperty("name", name);
+                                        parsedJson.add("data", data);
+                                        publicBukkitValues.putString("hypercube:varitem", parsedJson.toString());
+                                        tag.put("PublicBukkitValues", publicBukkitValues);
+
+                                        itemStack.setTag(tag);
+                                        itemStack.setCustomName(new LiteralText(name)
+                                                .styled(style -> style.withColor(TextColor.fromFormatting(Formatting.RED)).withItalic(false)));
+
+                                        ItemUtil.setContainerItem(slot.id, itemStack);
+                                    }catch(NumberFormatException e) {
+                                        if(CodeUtilsConfig.getBoolean("quicknumSound")) CodeUtilities.MC.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_DIDGERIDOO, SoundCategory.PLAYERS, 1, 0);
                                     }
 
-                                    name = String.valueOf(bigDecimal);
-                                    if (name.endsWith(".0")) name = name.substring(0, name.length() - 2);
 
-                                    data.addProperty("name", name);
-                                    parsedJson.add("data", data);
-                                    publicBukkitValues.putString("hypercube:varitem", parsedJson.toString());
-                                    tag.put("PublicBukkitValues", publicBukkitValues);
-
-                                    itemStack.setTag(tag);
-                                    itemStack.setCustomName(new LiteralText(name)
-                                            .styled(style -> style.withColor(TextColor.fromFormatting(Formatting.RED)).withItalic(false)));
-
-                                    ItemUtil.setContainerItem(slot.id, itemStack);
-
-                                    if(CodeUtilsConfig.getBoolean("quicknumSound")) CodeUtilities.MC.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_HAT, 1, (vertical > 0) ? 1:0);
                                 }
                             }
                         }
