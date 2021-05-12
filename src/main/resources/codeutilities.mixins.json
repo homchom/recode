@@ -22,7 +22,8 @@
     "render.MixinSignBlockEntityRender",
     "screen.MixinOptionsScreen",
     "screen.MixinTitleScreen",
-    "misc.MixinMouse"
+    "misc.MixinMouse",
+    "misc.MixinWindow"
   ],
   "client": [],
   "server": [],
