@@ -3,6 +3,7 @@ package io.github.codeutilities.mixin.messages;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.github.codeutilities.config.CodeUtilsConfig;
+import io.github.codeutilities.features.social.chat.ConversationTimer;
 import io.github.codeutilities.util.chat.ChatType;
 import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.codeutilities.util.networking.DFInfo;
@@ -20,21 +21,21 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ClientPlayerEntity.class)
 public class MixinPlayerChatMessage {
     private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
-    private boolean stopTimer = false;
-    private final Thread conversationTimer = new Thread(() -> {
-        while (true) {
-            if (stopTimer) {
-                stopTimer = false;
-                stopConversationTimer();
-            }
-            if (System.currentTimeMillis() - CodeUtilsConfig.getLong("automsg_timeoutNumber") >= Long.parseLong(DFInfo.conversationUpdateTime)) {
-                ChatUtil.sendMessage("Your conversation with " + DFInfo.currentConversation + " was inactive and ended.", ChatType.INFO_BLUE);
-                DFInfo.currentConversation = null;
-                DFInfo.conversationUpdateTime = null;
-                stopConversationTimer();
-            }
-        }
-    });
+//    private boolean stopTimer = false;
+//    private final Thread conversationTimer = new Thread(() -> {
+//        while (true) {
+//            if (stopTimer) {
+//                stopTimer = false;
+//                stopConversationTimer();
+//            }
+//            if (System.currentTimeMillis() - CodeUtilsConfig.getLong("automsg_timeoutNumber") >= Long.parseLong(DFInfo.conversationUpdateTime)) {
+//                ChatUtil.sendMessage("Your conversation with " + DFInfo.currentConversation + " was inactive and ended.", ChatType.INFO_BLUE);
+//                DFInfo.currentConversation = null;
+//                DFInfo.conversationUpdateTime = null;
+//                stopConversationTimer();
+//            }
+//        }
+//    });
 
     @Inject(method = "Lnet/minecraft/client/network/ClientPlayerEntity;sendChatMessage(Ljava/lang/String;)V", at = @At("HEAD"), cancellable = true)
     public void onMessage(String string, CallbackInfo ci) {
@@ -104,45 +105,45 @@ public class MixinPlayerChatMessage {
         if (CodeUtilsConfig.getBoolean("automsg") && (string.startsWith("/msg ") || string.startsWith("/w "))) {
             if (args.length == 2) {
                 ci.cancel();
-                DFInfo.currentConversation = args[1];
-                DFInfo.conversationUpdateTime = String.valueOf(System.currentTimeMillis());
-                if (CodeUtilsConfig.getBoolean("automsg_timeout")) startConversationTimer();
-                ChatUtil.sendMessage("Started a conversation with " + DFInfo.currentConversation + "!", ChatType.SUCCESS);
+                ConversationTimer.currentConversation = args[1];
+                ConversationTimer.conversationUpdateTime = String.valueOf(System.currentTimeMillis());
+                if (CodeUtilsConfig.getBoolean("automsg_timeout")) ConversationTimer.isTimerOn = true;
+                ChatUtil.sendMessage("Started a conversation with " + ConversationTimer.currentConversation + "!", ChatType.SUCCESS);
 
             }
         }
         //end conversation
-        if (DFInfo.currentConversation != null && (string.startsWith("/chat ") || string.startsWith("/c "))) {
-            if (conversationTimer.getState() == Thread.State.RUNNABLE) stopTimer = true;
-            DFInfo.currentConversation = null;
+        if (ConversationTimer.currentConversation != null && (string.startsWith("/chat ") || string.startsWith("/c "))) {
+            ConversationTimer.currentConversation = null;
+            ConversationTimer.isTimerOn = false;
             ChatUtil.sendMessage("The conversation was ended.", ChatType.SUCCESS);
         }
     }
 
     private void conversationMessage(String message, CallbackInfo ci) {
-        if (DFInfo.currentConversation != null && (DFInfo.currentState != DFInfo.State.PLAY || !message.startsWith("@"))) {
+        if (ConversationTimer.currentConversation != null && (DFInfo.currentState != DFInfo.State.PLAY || !message.startsWith("@"))) {
             ci.cancel();
-            DFInfo.conversationUpdateTime = String.valueOf(System.currentTimeMillis());
-            minecraftClient.player.sendChatMessage("/msg " + DFInfo.currentConversation + " " + message);
+            ConversationTimer.conversationUpdateTime = String.valueOf(System.currentTimeMillis());
+            minecraftClient.player.sendChatMessage("/msg " + ConversationTimer.currentConversation + " " + message);
         }
     }
 
 
-    private void startConversationTimer() {
-        synchronized (conversationTimer) {
-            Thread.State timerState = conversationTimer.getState();
-            if (timerState == Thread.State.NEW) conversationTimer.start();
-            if (timerState == Thread.State.WAITING) conversationTimer.notify();
-        }
-    }
+//    private void startConversationTimer() {
+//        synchronized (conversationTimer) {
+//            Thread.State timerState = conversationTimer.getState();
+//            if (timerState == Thread.State.NEW) conversationTimer.start();
+//            if (timerState == Thread.State.WAITING) conversationTimer.notify();
+//        }
+//    }
 
-    private void stopConversationTimer() {
-        synchronized (conversationTimer) {
-            try {
-                conversationTimer.wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
+//    private void stopConversationTimer() {
+//        synchronized (conversationTimer) {
+//            try {
+//                conversationTimer.wait();
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 }

@@ -5,6 +5,7 @@ import io.github.codeutilities.config.CodeUtilsConfig;
 import io.github.codeutilities.config.ConfigSounds;
 import io.github.codeutilities.events.interfaces.ChatEvents;
 import io.github.codeutilities.features.external.DFDiscordRPC;
+import io.github.codeutilities.features.social.chat.ConversationTimer;
 import io.github.codeutilities.gui.CPU_UsageText;
 import io.github.codeutilities.util.chat.ChatType;
 import io.github.codeutilities.util.chat.ChatUtil;
@@ -77,8 +78,8 @@ public class ReceiveChatMessageEvent {
         }
 
         // update conversation end timer
-        if (DFInfo.currentConversation != null && text.toLowerCase().startsWith("[" + DFInfo.currentConversation.toLowerCase() + " → you] "))
-            DFInfo.conversationUpdateTime = String.valueOf(System.currentTimeMillis());
+        if (ConversationTimer.currentConversation != null && text.toLowerCase().startsWith("[" + ConversationTimer.currentConversation.toLowerCase() + " → you] "))
+            ConversationTimer.conversationUpdateTime = String.valueOf(System.currentTimeMillis());
 
         //LagSlayer enable/disable
         if (text.matches("^\\[LagSlayer\\] Now monitoring plot .*\\. Type /lagslayer to stop monitoring\\.$")) {
