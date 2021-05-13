@@ -33,8 +33,8 @@
     "config.codeutilities.option.loadTabStars.tooltip": "Shows other players that are using codeutilities.",
 
 
-    "config.codeutilities.subcategory.automation_automsg": "Auto /msg",
-    "config.codeutilities.subcategory.automation_automsg.tooltip": "Will set a conversation with someone when\ndoing /msg <player>, any message sent in chat\nwill automatically be sent to that person only.",
+    "config.codeutilities.subcategory.commands_automsg": "Auto /msg",
+    "config.codeutilities.subcategory.commands_automsg.tooltip": "Will set a conversation with someone when\ndoing /msg <player>, any message sent in chat\nwill automatically be sent to that person only.",
     "config.codeutilities.option.automsg": "Enabled",
     "config.codeutilities.option.automsg.tooltip": "Enable this feature.",
     "config.codeutilities.option.automsg_timeout": "Timeout Enabled",

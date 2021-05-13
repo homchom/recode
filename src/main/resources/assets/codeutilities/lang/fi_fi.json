@@ -180,8 +180,8 @@
     "codeutilities.template_search.cleared": "Haku nollattu!",
     "codeutilities.template_search.invalid_usage": "Väärä ohjelmapalikka %s",
 
-    "config.codeutilities.subcategory.automation_automsg": "Automattinen /msg",
-    "config.codeutilities.subcategory.automation_automsg.tooltip": "Aloittaa viestittelyn jonkun kanssa\nkuin teet /msg <pelaaja>, mikä tahansa viesti\nautomaattisesti lähetetään vain sille pelaajalle.",
+    "config.codeutilities.subcategory.commands_automsg": "Automattinen /msg",
+    "config.codeutilities.subcategory.commands_automsg.tooltip": "Aloittaa viestittelyn jonkun kanssa\nkuin teet /msg <pelaaja>, mikä tahansa viesti\nautomaattisesti lähetetään vain sille pelaajalle.",
     "config.codeutilities.option.automsg": "Käytössä",
     "config.codeutilities.option.automsg.tooltip": "Käytä tätä ominaisuutta.",
     "config.codeutilities.option.automsg_timeout": "Tauko Käytössä",
