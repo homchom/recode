@@ -12,12 +12,6 @@ public class AutomationGroup extends ConfigGroup {
 
     @Override
     public void initialize() {
-        // Automation
-        ConfigSubGroup autoMessage = new ConfigSubGroup("automsg");
-        autoMessage.register(new BooleanSetting("automsg", true));
-        autoMessage.register(new BooleanSetting("automsg_timeout", true));
-        autoMessage.register(new LongSetting("automsg_timeoutNumber", 300000L));
-        this.register(autoMessage);
 
         // Time
         ConfigSubGroup time = new ConfigSubGroup("time");
