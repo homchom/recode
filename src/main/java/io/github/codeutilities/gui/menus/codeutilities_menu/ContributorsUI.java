@@ -36,14 +36,14 @@ public class ContributorsUI extends LightweightGuiDescription implements IMenu {
 
         WPlainPanel root = new WPlainPanel();
         root.setHost(this);
-        root.setSize(230, 220);
+        root.setSize(300, 220);
 
         WPlainPanel panel = new WPlainPanel();
         root.add(new WLabel("Contributors"), 0, 0);
 
         WScrollPanel scrollPanel = new WScrollPanel(panel);
         scrollPanel.setHost(this);
-        root.add(scrollPanel, 0, 10, 230, 210);
+        root.add(scrollPanel, 0, 10, 300, 210);
 
         int y = 0;
         int x = 0;
@@ -76,13 +76,12 @@ public class ContributorsUI extends LightweightGuiDescription implements IMenu {
             panel.add(new WLabel(contributor.getName()), x + 35, y + 12);
 
 
-            if (x == 110) {
+            if (x == 150) {
                 x = 0;
                 y += 35;
             } else {
-                x = 110;
+                x = 150;
             }
-
         }
 
         panel.setHost(this);
