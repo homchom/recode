@@ -35,6 +35,7 @@ public class CommandHandler implements ClientCommandPlugin, IManager<Command> {
         register(
                 new CodeUtilitiesCommand(),
                 new BreakableCommand(),
+                new CountCommand(),
                 new UnpackCommand(),
                 new ItemdataCommand(),
                 new UuidCommand(),
