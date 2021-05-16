@@ -17,6 +17,7 @@ import io.github.codeutilities.features.external.AudioHandler;
 import io.github.codeutilities.features.external.DFDiscordRPC;
 import io.github.codeutilities.features.social.chat.ConversationTimer;
 import io.github.codeutilities.features.social.cosmetics.CosmeticHandler;
+import io.github.codeutilities.util.file.FileUtil;
 import io.github.codeutilities.util.gui.menus.CustomHeadMenu;
 import io.github.codeutilities.modules.Module;
 import io.github.codeutilities.modules.actions.Action;
@@ -57,6 +58,8 @@ public class CodeUtilities implements ModInitializer {
     public static final JsonParser JSON_PARSER = new JsonParser();
     public static final MinecraftClient MC = MinecraftClient.getInstance();
     public static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
+
+    //TODO public static final String OPTIONSTXT = FileUtil.readFile()
 
     public static Screen SCREEN_TO_OPEN;
 

@@ -77,8 +77,10 @@ public class Module {
 
                 // TODO Load translations
                 JSONObject translations = json.getJSONObject("translations");
-                //String lang = CodeUtilities.MC.getLanguageManager().getLanguage().getCode();
-                //translations = translations.getJSONObject(lang);
+                System.out.println(CodeUtilities.MC.getLanguageManager().getLanguage().getCode());
+                String lang = CodeUtilities.MC.options.language;
+                System.out.println(lang);
+                translations = translations.getJSONObject(lang);
 
                 System.out.println(translations);
 
