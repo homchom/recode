@@ -1,6 +1,5 @@
 package io.github.codeutilities.modules;
 
-import com.google.gson.stream.JsonReader;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.modules.tasks.Task;
 import io.github.codeutilities.modules.triggers.Trigger;
@@ -15,7 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
-import java.util.Arrays;
 
 public class Module {
 

@@ -2,8 +2,10 @@ package io.github.codeutilities.config.config;
 
 import io.github.codeutilities.config.structure.ConfigGroup;
 import io.github.codeutilities.config.structure.ConfigSubGroup;
-import io.github.codeutilities.config.types.*;
-import io.github.codeutilities.config.types.list.StringListSetting;
+import io.github.codeutilities.config.types.BooleanSetting;
+import io.github.codeutilities.config.types.DoubleSetting;
+import io.github.codeutilities.config.types.LongSetting;
+import io.github.codeutilities.config.types.StringSetting;
 
 public class MiscellaneousGroup extends ConfigGroup {
     public MiscellaneousGroup(String name) {
