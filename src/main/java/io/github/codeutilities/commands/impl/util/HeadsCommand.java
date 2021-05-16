@@ -5,7 +5,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.codeutilities.commands.sys.Command;
 import io.github.codeutilities.commands.sys.arguments.ArgBuilder;
 import io.github.codeutilities.config.CodeUtilsConfig;
-import io.github.codeutilities.util.gui.menus.CustomHeadMenu;
+import io.github.codeutilities.mixin.screen.gui.menus.CustomHeadMenu;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 

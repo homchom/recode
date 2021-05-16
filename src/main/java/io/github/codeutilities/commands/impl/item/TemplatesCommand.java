@@ -6,7 +6,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.commands.sys.Command;
 import io.github.codeutilities.commands.sys.arguments.ArgBuilder;
-import io.github.codeutilities.util.gui.menus.TemplateStorageUI;
+import io.github.codeutilities.mixin.screen.gui.menus.TemplateStorageUI;
 import io.github.codeutilities.util.chat.ChatType;
 import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.codeutilities.util.networking.WebUtil;
