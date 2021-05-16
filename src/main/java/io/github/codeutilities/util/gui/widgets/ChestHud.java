@@ -1,4 +1,4 @@
-package io.github.codeutilities.mixin.screen.gui.widgets;
+package io.github.codeutilities.util.gui.widgets;
 
 import com.google.common.collect.Lists;
 import io.github.codeutilities.CodeUtilities;

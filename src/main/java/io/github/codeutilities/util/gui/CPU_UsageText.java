@@ -1,4 +1,4 @@
-package io.github.codeutilities.mixin.screen.gui;
+package io.github.codeutilities.util.gui;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;

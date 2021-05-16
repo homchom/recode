@@ -3,7 +3,7 @@ package io.github.codeutilities.commands.impl.item;
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.codeutilities.commands.sys.Command;
 import io.github.codeutilities.commands.sys.arguments.ArgBuilder;
-import io.github.codeutilities.mixin.screen.gui.menus.ItemEditorGui;
+import io.github.codeutilities.util.gui.menus.ItemEditorGui;
 import io.github.codeutilities.util.chat.ChatType;
 import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;

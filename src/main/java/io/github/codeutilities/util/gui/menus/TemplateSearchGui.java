@@ -1,10 +1,10 @@
-package io.github.codeutilities.mixin.screen.gui.menus;
+package io.github.codeutilities.util.gui.menus;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import io.github.codeutilities.mixin.screen.gui.widgets.ClickableGiveItem;
-import io.github.codeutilities.mixin.screen.gui.widgets.ItemScrollablePanel;
+import io.github.codeutilities.util.gui.widgets.ClickableGiveItem;
+import io.github.codeutilities.util.gui.widgets.ItemScrollablePanel;
 import io.github.codeutilities.util.templates.TemplateUtils;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WGridPanel;

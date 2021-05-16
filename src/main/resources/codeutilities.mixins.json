@@ -9,8 +9,6 @@
     "item.MixinItemSlotUpdate",
     "messages.MixinGameMessageListener",
     "messages.MixinPlayerChatMessage",
-    "misc.MixinMouse",
-    "misc.MixinWindow",
     "packet.MixinInventoryPacketListener",
     "packet.MixinTimeUpdateListener",
     "player.ChatHudMixin",
@@ -23,7 +21,9 @@
     "render.MixinPlayerEntityRenderer",
     "render.MixinSignBlockEntityRender",
     "screen.MixinOptionsScreen",
-    "screen.MixinTitleScreen"
+    "screen.MixinTitleScreen",
+    "misc.MixinMouse",
+    "misc.MixinWindow"
   ],
   "client": [],
   "server": [],

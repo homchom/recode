@@ -75,8 +75,15 @@ public class Module {
                     Task.putActions(taskName, actions);
                 }
 
-                JSONObject config = json.getJSONObject("config");
+                // TODO Load translations
                 JSONObject translations = json.getJSONObject("translations");
+                //String lang = CodeUtilities.MC.getLanguageManager().getLanguage().getCode();
+                //translations = translations.getJSONObject(lang);
+
+                System.out.println(translations);
+
+                // TODO Load config
+                JSONObject config = json.getJSONObject("config");
 
             }
             CodeUtilities.log(Level.INFO, "Successfully loaded "+moduleFiles.length+" module"+(moduleFiles.length==1?"":"s")+"!");

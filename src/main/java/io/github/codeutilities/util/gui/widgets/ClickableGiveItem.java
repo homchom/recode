@@ -1,4 +1,4 @@
-package io.github.codeutilities.mixin.screen.gui.widgets;
+package io.github.codeutilities.util.gui.widgets;
 
 import io.github.codeutilities.util.misc.ItemUtil;
 import net.minecraft.client.MinecraftClient;

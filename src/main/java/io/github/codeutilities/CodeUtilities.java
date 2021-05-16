@@ -17,7 +17,7 @@ import io.github.codeutilities.features.external.AudioHandler;
 import io.github.codeutilities.features.external.DFDiscordRPC;
 import io.github.codeutilities.features.social.chat.ConversationTimer;
 import io.github.codeutilities.features.social.cosmetics.CosmeticHandler;
-import io.github.codeutilities.mixin.screen.gui.menus.CustomHeadMenu;
+import io.github.codeutilities.util.gui.menus.CustomHeadMenu;
 import io.github.codeutilities.modules.Module;
 import io.github.codeutilities.modules.actions.Action;
 import io.github.codeutilities.modules.triggers.Trigger;
