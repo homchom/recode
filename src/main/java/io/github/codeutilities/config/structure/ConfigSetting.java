@@ -1,12 +1,18 @@
 package io.github.codeutilities.config.structure;
 
-import java.util.List;
+import net.minecraft.text.LiteralText;
 
-public class ConfigSetting<Value> {
+import java.util.List;
+import java.util.Optional;
+
+public class ConfigSetting<Value> implements IRawTranslation<ConfigSetting<Value>> {
 
     protected final String key;
     protected Value value;
     protected Value defaultValue;
+
+    private LiteralText rawKey = null;
+    private LiteralText rawTooltip = null;
 
     public ConfigSetting() {
         this.key = "?";
@@ -20,6 +26,28 @@ public class ConfigSetting<Value> {
         this.key = key;
         this.defaultValue = defaultValue;
         this.value = defaultValue;
+    }
+
+    @Override
+    public ConfigSetting<Value> setRawKey(String key) {
+        this.rawKey = new LiteralText(key);
+        return this;
+    }
+
+    @Override
+    public Optional<LiteralText> getRawKey() {
+        return Optional.ofNullable(rawKey);
+    }
+
+    @Override
+    public ConfigSetting<Value> setRawTooltip(String key) {
+        this.rawTooltip = new LiteralText(key);
+        return this;
+    }
+
+    @Override
+    public Optional<LiteralText> getRawTooltip() {
+        return Optional.ofNullable(rawTooltip);
     }
 
     @SuppressWarnings("unchecked")
@@ -75,4 +103,5 @@ public class ConfigSetting<Value> {
     public Value getDefaultValue() {
         return defaultValue;
     }
+
 }
