@@ -3,7 +3,6 @@ package io.github.codeutilities.features.external;
 import com.google.gson.JsonObject;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.CodeUtilsConfig;
-import io.github.codeutilities.config.structure.ConfigManager;
 import io.github.codeutilities.util.file.ILoader;
 import io.github.codeutilities.util.render.ToasterUtil;
 import io.socket.client.IO;
