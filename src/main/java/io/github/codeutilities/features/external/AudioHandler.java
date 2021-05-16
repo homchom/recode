@@ -3,6 +3,7 @@ package io.github.codeutilities.features.external;
 import com.google.gson.JsonObject;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.CodeUtilsConfig;
+import io.github.codeutilities.config.structure.ConfigManager;
 import io.github.codeutilities.util.file.ILoader;
 import io.github.codeutilities.util.render.ToasterUtil;
 import io.socket.client.IO;
@@ -37,6 +38,11 @@ public class AudioHandler implements ILoader {
     @Override
     public void load() {
         try {
+            String os = System.getProperty("os.name");
+            if(!os.toLowerCase().contains("windows")) {
+                ToasterUtil.sendToaster("Not Supported","P:A is not supported on "+os+".",SystemToast.Type.NARRATOR_TOGGLE);
+                return;
+            }
             com.sun.javafx.application.PlatformImpl.startup(() -> {
                 URI uri = URI.create(CodeUtilsConfig.getString("audioUrl"));
                 String username = MinecraftClient.getInstance().getSession().getUsername();
