@@ -1,9 +1,9 @@
-package io.github.codeutilities.gui.menus.codeutilities_menu;
+package io.github.codeutilities.util.gui.menus.codeutilities_menu;
 
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.menu.ConfigScreen;
-import io.github.codeutilities.gui.IMenu;
-import io.github.codeutilities.gui.widgets.CImage;
+import io.github.codeutilities.util.gui.IMenu;
+import io.github.codeutilities.util.gui.widgets.CImage;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WButton;
 import io.github.cottonmc.cotton.gui.widget.WLabel;

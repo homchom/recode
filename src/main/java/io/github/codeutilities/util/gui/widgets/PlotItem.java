@@ -1,4 +1,4 @@
-package io.github.codeutilities.gui.widgets;
+package io.github.codeutilities.util.gui.widgets;
 
 import com.google.gson.JsonObject;
 import io.github.codeutilities.CodeUtilities;

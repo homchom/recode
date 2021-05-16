@@ -1,7 +1,7 @@
-package io.github.codeutilities.gui.menus;
+package io.github.codeutilities.util.gui.menus;
 
-import io.github.codeutilities.gui.IMenu;
-import io.github.codeutilities.gui.widgets.ItemScrollablePanel;
+import io.github.codeutilities.util.gui.IMenu;
+import io.github.codeutilities.util.gui.widgets.ItemScrollablePanel;
 import io.github.codeutilities.util.templates.TemplateItem;
 import io.github.codeutilities.util.templates.TemplateStorageHandler;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;

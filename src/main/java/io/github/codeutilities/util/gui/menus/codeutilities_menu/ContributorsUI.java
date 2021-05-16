@@ -1,11 +1,11 @@
-package io.github.codeutilities.gui.menus.codeutilities_menu;
+package io.github.codeutilities.util.gui.menus.codeutilities_menu;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.gui.IMenu;
-import io.github.codeutilities.gui.widgets.CImage;
+import io.github.codeutilities.util.gui.IMenu;
+import io.github.codeutilities.util.gui.widgets.CImage;
 import io.github.codeutilities.util.Contributor;
 import io.github.codeutilities.util.networking.WebUtil;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;

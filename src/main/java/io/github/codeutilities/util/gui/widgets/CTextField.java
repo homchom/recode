@@ -1,4 +1,4 @@
-package io.github.codeutilities.gui.widgets;
+package io.github.codeutilities.util.gui.widgets;
 
 import io.github.cottonmc.cotton.gui.widget.WTextField;
 import net.minecraft.text.Text;

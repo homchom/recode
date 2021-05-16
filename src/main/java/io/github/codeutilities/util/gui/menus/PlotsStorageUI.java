@@ -1,9 +1,9 @@
-package io.github.codeutilities.gui.menus;
+package io.github.codeutilities.util.gui.menus;
 
 import io.github.codeutilities.commands.impl.util.PlotsCommand;
-import io.github.codeutilities.gui.IMenu;
-import io.github.codeutilities.gui.widgets.ItemGridPanel;
-import io.github.codeutilities.gui.widgets.PlotItem;
+import io.github.codeutilities.util.gui.IMenu;
+import io.github.codeutilities.util.gui.widgets.ItemGridPanel;
+import io.github.codeutilities.util.gui.widgets.PlotItem;
 import io.github.codeutilities.util.chat.ChatType;
 import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.codeutilities.util.networking.DFInfo;

@@ -1,4 +1,4 @@
-package io.github.codeutilities.gui;
+package io.github.codeutilities.util.gui;
 
 import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
