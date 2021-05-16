@@ -20,7 +20,7 @@ public class Trigger {
     // triggerId, tasks
     private static HashMap<String, String[]> TRIGGER_TASKS = new HashMap<>();
 
-    public static void cacheModuleTriggers() {
+    public static void cacheTriggers() {
         for (Trigger trigger : TRIGGERS) {
             ID_TRIGGERS.put(trigger.getId(), trigger);
         }

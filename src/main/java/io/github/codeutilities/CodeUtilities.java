@@ -78,7 +78,7 @@ public class CodeUtilities implements ModInitializer {
 
         // Load modules
         Action.cacheActions();
-        Trigger.cacheModuleTriggers();
+        Trigger.cacheTriggers();
         Module.loadModules();
 
         // Initializes only if the given condition is met. (this case: config value)
