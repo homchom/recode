@@ -9,6 +9,7 @@ import io.github.codeutilities.commands.sys.Command;
 import io.github.codeutilities.commands.sys.arguments.ArgBuilder;
 import io.github.codeutilities.util.chat.ChatType;
 import io.github.codeutilities.util.chat.ChatUtil;
+import io.github.codeutilities.util.networking.WebUtil;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import org.apache.logging.log4j.Level;
@@ -26,21 +27,14 @@ public class CountCommand extends Command {
         cd.register(ArgBuilder.literal("count")
                 .executes(ctx -> {
                             new Thread(() -> {
+                                String jsonObject = null;
                                 try {
-                                    String sURL = "https://api.countapi.xyz/hit/CodeUtilitiesCounter";
-                                    URL url = new URL(sURL);
-                                    URLConnection request = url.openConnection();
-                                    request.connect();
-
-                                    JsonParser jp = new JsonParser();
-                                    JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent()));
-                                    JsonObject rootobj = root.getAsJsonObject();
-
-                                    String count = rootobj.get("value").getAsString();
+                                    jsonObject = WebUtil.getString("https://api.countapi.xyz/hit/CodeUtilitiesCounter");
+                                    String count = CodeUtilities.JSON_PARSER.parse(jsonObject).getAsJsonObject().get("value").getAsString();
                                     ChatUtil.sendMessage("The CodeUtilities community has typed this command §b" + count + "§f times!", ChatType.SUCCESS);
 
                                 } catch (IOException e) {
-                                    CodeUtilities.log(Level.ERROR, String.valueOf(e));
+                                    e.printStackTrace();
                                 }
 
                             }).start();
