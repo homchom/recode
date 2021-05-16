@@ -18,6 +18,9 @@ import io.github.codeutilities.features.external.DFDiscordRPC;
 import io.github.codeutilities.features.social.chat.ConversationTimer;
 import io.github.codeutilities.features.social.cosmetics.CosmeticHandler;
 import io.github.codeutilities.gui.menus.CustomHeadMenu;
+import io.github.codeutilities.modules.Module;
+import io.github.codeutilities.modules.actions.Action;
+import io.github.codeutilities.modules.triggers.Trigger;
 import io.github.codeutilities.util.networking.socket.SocketHandler;
 import io.github.codeutilities.util.templates.TemplateStorageHandler;
 import net.fabricmc.api.ModInitializer;
@@ -72,6 +75,11 @@ public class CodeUtilities implements ModInitializer {
         initializer.add(new ConversationTimer());
         initializer.add(new EventHandler());
         //initializer.add(new PlayerlistStarServer());
+
+        // Load modules
+        Action.cacheActions();
+        Trigger.cacheModuleTriggers();
+        Module.loadModules();
 
         // Initializes only if the given condition is met. (this case: config value)
         initializer.addIf(new AudioHandler(), CodeUtilsConfig.getBoolean("audio"));

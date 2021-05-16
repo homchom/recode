@@ -7,6 +7,8 @@ import io.github.codeutilities.events.interfaces.ChatEvents;
 import io.github.codeutilities.features.external.DFDiscordRPC;
 import io.github.codeutilities.features.social.chat.ConversationTimer;
 import io.github.codeutilities.gui.CPU_UsageText;
+import io.github.codeutilities.modules.triggers.Trigger;
+import io.github.codeutilities.modules.triggers.impl.MessageReceivedTrigger;
 import io.github.codeutilities.util.chat.ChatType;
 import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.codeutilities.util.chat.TextUtil;
@@ -51,6 +53,9 @@ public class ReceiveChatMessageEvent {
             cancelMsgs--;
             cancel = true;
         }
+
+        // module trigger
+        Trigger.execute(new MessageReceivedTrigger());
 
         // cancel rpc /locate message
         if (DFDiscordRPC.locating) {
