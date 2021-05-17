@@ -46,7 +46,15 @@ public class ConfigScreen implements ITranslatable {
             // Category
             ConfigGroup group = groups.get(i);
             String groupName = group.getName();
-            ConfigCategory category = builder.getOrCreateCategory(ITranslatable.get(CATEGORY_TEXT + groupName));
+
+            // Group translation
+            Text groupTranslation;
+            if (group.getRawKey().isPresent()) {
+                groupTranslation = group.getRawKey().get();
+            } else {
+                groupTranslation = ITranslatable.get(CATEGORY_TEXT + groupName);
+            }
+            ConfigCategory category = builder.getOrCreateCategory(groupTranslation);
 
             // These are group settings (the non sub-grouped ones)
             List<ConfigSetting<?>> groupSettings = group.getSettings();
@@ -55,8 +63,20 @@ public class ConfigScreen implements ITranslatable {
                 ConfigSetting<?> groupSetting = groupSettings.get(j);
                 String settingKey = groupSetting.getKey();
 
-                TranslatableText keyTranslation = ITranslatable.get(KEY_TEXT + settingKey);
-                TranslatableText tooltipTranslation = ITranslatable.get(KEY_TEXT + settingKey + TOOLTIP_TEXT);
+                // Get custom translations or standard ones
+                Text keyTranslation;
+                if (groupSetting.getRawKey().isPresent()) {
+                    keyTranslation = groupSetting.getRawKey().get();
+                } else {
+                    keyTranslation = ITranslatable.get(KEY_TEXT + settingKey);
+                }
+
+                Text tooltipTranslation;
+                if (groupSetting.getRawTooltip().isPresent()) {
+                    tooltipTranslation = groupSetting.getRawTooltip().get();
+                } else {
+                    tooltipTranslation = ITranslatable.get(KEY_TEXT + settingKey + TOOLTIP_TEXT);
+                }
                 category.addEntry(getEntry(entryBuilder, groupSetting, keyTranslation, tooltipTranslation));
             }
 
@@ -67,15 +87,42 @@ public class ConfigScreen implements ITranslatable {
                 // Sub Category
                 ConfigSubGroup subGroup = subGroups.get(j);
                 String subGroupName = subGroup.getName();
-                SubCategoryBuilder subBuilder = entryBuilder.startSubCategory(ITranslatable.get(SUB_CATEGORY_TEXT + groupName + "_" + subGroupName))
+
+                Text groupKey;
+                if (subGroup.getRawKey().isPresent()) {
+                    groupKey = subGroup.getRawKey().get();
+                } else {
+                    groupKey = ITranslatable.get(SUB_CATEGORY_TEXT + groupName + "_" + subGroupName);
+                }
+
+                Text groupTooltip;
+                if (subGroup.getRawTooltip().isPresent()) {
+                    groupTooltip = subGroup.getRawTooltip().get();
+                } else {
+                    groupTooltip = ITranslatable.get(SUB_CATEGORY_TEXT + groupName + "_" + subGroupName + TOOLTIP_TEXT);
+                }
+
+                SubCategoryBuilder subBuilder = entryBuilder.startSubCategory(groupKey)
                         .setExpanded(subGroup.isStartExpanded())
-                        .setTooltip(ITranslatable.get(SUB_CATEGORY_TEXT  + groupName + "_" + subGroupName + TOOLTIP_TEXT));
+                        .setTooltip(groupTooltip);
 
                 for (ConfigSetting<?> configSetting : subGroup.getRegistered()) {
                     String settingKey = configSetting.getKey();
 
-                    TranslatableText keyTranslation = ITranslatable.get(KEY_TEXT + settingKey);
-                    TranslatableText tooltipTranslation = ITranslatable.get(KEY_TEXT + settingKey + TOOLTIP_TEXT);
+                    Text keyTranslation;
+                    if (configSetting.getRawKey().isPresent()) {
+                        keyTranslation = configSetting.getRawKey().get();
+                    } else {
+                        keyTranslation = ITranslatable.get(KEY_TEXT + settingKey);
+                    }
+
+                    Text tooltipTranslation;
+                    if (configSetting.getRawTooltip().isPresent()) {
+                        tooltipTranslation = configSetting.getRawTooltip().get();
+                    } else {
+                        tooltipTranslation = ITranslatable.get(KEY_TEXT + settingKey + TOOLTIP_TEXT);
+                    }
+
                     subBuilder.add(getEntry(entryBuilder, configSetting, keyTranslation, tooltipTranslation));
                 }
 
@@ -86,7 +133,7 @@ public class ConfigScreen implements ITranslatable {
         return builder.build();
     }
 
-    private static AbstractConfigListEntry<?> getEntry(ConfigEntryBuilder builder, ConfigSetting<?> configSetting, TranslatableText title, TranslatableText tooltip) {
+    private static AbstractConfigListEntry<?> getEntry(ConfigEntryBuilder builder, ConfigSetting<?> configSetting, Text title, Text tooltip) {
 
         if (configSetting.isList()) {
             ListSetting<?> setting = configSetting.cast();

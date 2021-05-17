@@ -2,8 +2,6 @@ package io.github.codeutilities.config.config;
 
 import io.github.codeutilities.config.structure.ConfigGroup;
 import io.github.codeutilities.config.structure.ConfigSubGroup;
-import io.github.codeutilities.config.types.BooleanSetting;
-import io.github.codeutilities.config.types.LongSetting;
 
 public class ModulesGroup extends ConfigGroup {
     public ModulesGroup(String name) {
@@ -16,9 +14,11 @@ public class ModulesGroup extends ConfigGroup {
         // TODO
 
         // Modules
-        ConfigSubGroup time = new ConfigSubGroup("autofly");
+        ConfigSubGroup time = new ConfigSubGroup("autofly")
+                .setRawKey("fjhdsfhsdjf")
+                .setRawTooltip("fsdfsdf");
 
-        time.register(new BooleanSetting("autofly.enabled", false));
+        //time.register(new BooleanSetting("autofly.enabled", false));
         this.register(time);
 
     }
