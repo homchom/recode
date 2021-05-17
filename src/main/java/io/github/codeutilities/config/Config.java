@@ -6,7 +6,7 @@ import io.github.codeutilities.config.structure.ConfigSetting;
 import java.util.List;
 import java.util.Objects;
 
-public class CodeUtilsConfig {
+public class Config {
     private static final ConfigManager CONFIG = ConfigManager.getInstance();
 
     public static String getString(String key) {

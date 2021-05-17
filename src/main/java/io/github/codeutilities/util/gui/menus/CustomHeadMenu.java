@@ -2,7 +2,7 @@ package io.github.codeutilities.util.gui.menus;
 
 import com.google.gson.*;
 import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.config.CodeUtilsConfig;
+import io.github.codeutilities.config.Config;
 import io.github.codeutilities.util.gui.IMenu;
 import io.github.codeutilities.util.gui.widgets.CTextField;
 import io.github.codeutilities.util.gui.widgets.ItemScrollablePanel;
@@ -30,7 +30,7 @@ public class CustomHeadMenu extends LightweightGuiDescription implements IMenu, 
     private static final List<String> categories = new ArrayList<>();
     private static final HashMap<String, Integer> categoryCount = new HashMap<>();
     private static CustomHeadMenu instance;
-    private final int headMenuMaxRender = CodeUtilsConfig.getInteger("headMenuMaxRender");
+    private final int headMenuMaxRender = Config.getInteger("headMenuMaxRender");
 
     private ItemScrollablePanel panel;
     private WButton current;

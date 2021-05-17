@@ -3,7 +3,7 @@ package io.github.codeutilities;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
-import io.github.codeutilities.config.CodeUtilsConfig;
+import io.github.codeutilities.config.Config;
 import io.github.codeutilities.config.internal.ConfigFile;
 import io.github.codeutilities.config.internal.ConfigInstruction;
 import io.github.codeutilities.config.internal.gson.ConfigSerializer;
@@ -80,6 +80,16 @@ public class CodeUtilities implements ModInitializer {
         log(Level.INFO, "Initializing");
         Runtime.getRuntime().addShutdownHook(new Thread(this::onClose));
 
+        // Get lang
+        Pattern regex = Pattern.compile("\nlang:.*");
+        Matcher m = regex.matcher(OPTIONSTXT);
+        while (m.find()) CLIENT_LANG = m.group(0).replaceAll("^\nlang:", "");
+
+        // Load modules
+        Action.cacheActions();
+        Trigger.cacheTriggers();
+        Module.loadModules();
+
         // Initialize.
         CodeInitializer initializer = new CodeInitializer();
         initializer.add(new ConfigFile());
@@ -91,20 +101,12 @@ public class CodeUtilities implements ModInitializer {
         initializer.add(new EventHandler());
         //initializer.add(new PlayerlistStarServer());
 
-        // Get lang
-        Pattern regex = Pattern.compile("\nlang:.*");
-        Matcher m = regex.matcher(OPTIONSTXT);
-        while (m.find()) CLIENT_LANG = m.group(0).replaceAll("^\nlang:", "");
-
-        // Load modules
-        Action.cacheActions();
-        Trigger.cacheTriggers();
-        Module.loadModules();
-
         // Initializes only if the given condition is met. (this case: config value)
-        initializer.addIf(new AudioHandler(), CodeUtilsConfig.getBoolean("audio"));
-        initializer.addIf(new SocketHandler(), CodeUtilsConfig.getBoolean("itemApi"));
+        initializer.addIf(new AudioHandler(), Config.getBoolean("audio"));
+        initializer.addIf(new SocketHandler(), Config.getBoolean("itemApi"));
         MC.send(CosmeticHandler.INSTANCE::load);
+
+        log(Level.INFO, "Initialized successfully!");
     }
 
     public void onClose() {

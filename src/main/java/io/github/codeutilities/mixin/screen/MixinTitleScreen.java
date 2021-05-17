@@ -1,7 +1,7 @@
 package io.github.codeutilities.mixin.screen;
 
 import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.config.CodeUtilsConfig;
+import io.github.codeutilities.config.Config;
 import io.github.codeutilities.util.render.BlendableTexturedButtonWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ConnectScreen;
@@ -32,8 +32,8 @@ public class MixinTitleScreen extends Screen {
 
     @Inject(at = @At("RETURN"), method = "initWidgetsNormal")
     public void drawMenuButton(int y, int spacingY, CallbackInfo info) {
-        if (CodeUtilsConfig.getBoolean("dfButton")) {
-            if (!CodeUtilsConfig.getBoolean("dfNodeButtons")) {
+        if (Config.getBoolean("dfButton")) {
+            if (!Config.getBoolean("dfNodeButtons")) {
                 this.addButton(new BlendableTexturedButtonWidget(this.width / 2 - 100 + 205, y + spacingY, 20, 20, 0, 0, 20, identifier_main, 20, 40,
                         (button) -> {
                             MinecraftClient mc = MinecraftClient.getInstance();
@@ -43,7 +43,7 @@ public class MixinTitleScreen extends Screen {
             }
         }
 
-        if (CodeUtilsConfig.getBoolean("dfNodeButtons")) {
+        if (Config.getBoolean("dfNodeButtons")) {
             this.addButton(new BlendableTexturedButtonWidget(this.width / 2 - 100 + 205, y + spacingY - 44, 20, 20, 0, 0, 20, identifier_main, 20, 40,
                     (button) -> {
                         MinecraftClient mc = MinecraftClient.getInstance();

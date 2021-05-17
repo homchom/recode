@@ -10,7 +10,7 @@ import io.github.codeutilities.commands.impl.item.template.WebviewCommand;
 import io.github.codeutilities.commands.impl.nbs.impl.NBSCommand;
 import io.github.codeutilities.commands.impl.schem.impl.SchemCommand;
 import io.github.codeutilities.commands.impl.util.*;
-import io.github.codeutilities.config.CodeUtilsConfig;
+import io.github.codeutilities.config.Config;
 import io.github.cottonmc.clientcommands.ClientCommandPlugin;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 
@@ -50,7 +50,7 @@ public class CommandHandler implements ClientCommandPlugin, IManager<Command> {
                 new DebugCommand()
         );
 
-        if (CodeUtilsConfig.getBoolean("dfCommands")) {
+        if (Config.getBoolean("dfCommands")) {
             register(
                     new GiveCommand(),
                     new NodeCommand(),

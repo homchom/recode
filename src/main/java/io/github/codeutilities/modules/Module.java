@@ -1,6 +1,7 @@
 package io.github.codeutilities.modules;
 
 import io.github.codeutilities.CodeUtilities;
+import io.github.codeutilities.config.Config;
 import io.github.codeutilities.modules.tasks.Task;
 import io.github.codeutilities.modules.translations.Translation;
 import io.github.codeutilities.modules.triggers.Trigger;
@@ -45,11 +46,12 @@ public class Module {
                 try { jsonString = FileUtil.readFile(String.valueOf(file.toPath()), Charset.defaultCharset());
                 } catch (IOException e) { e.printStackTrace(); }
 
-                JSONObject json = new JSONObject();
+                JSONObject json;
                 try { json = new JSONObject(jsonString);
                 } catch (JSONException e) {
                     CodeUtilities.log(Level.ERROR, "Error while loading module '"+file.getName()+"'. Stack Trace:");
                     e.printStackTrace();
+                    continue;
                 }
 
                 MODULES.add(json);
@@ -59,6 +61,8 @@ public class Module {
                 // Load meta
                 JSONObject meta = json.getJSONObject("meta");
                 String moduleId = meta.getString("id");
+
+                if (!Config.getBoolean("module.super."+moduleId+".enabled")) continue;
 
                 Iterator<String> keys = meta.keys();
                 while (keys.hasNext()) {
@@ -101,6 +105,7 @@ public class Module {
                         String key = keys.next();
                         Translation.put("module."+moduleId+"."+key, lang.getString(key));
                     }
+                    if (!translations.has(CodeUtilities.CLIENT_LANG)) break;
                     lang = translations.getJSONObject(CodeUtilities.CLIENT_LANG);
                     keys = lang.keys();
                 }

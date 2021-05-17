@@ -1,6 +1,6 @@
 package io.github.codeutilities.mixin.render;
 
-import io.github.codeutilities.config.CodeUtilsConfig;
+import io.github.codeutilities.config.Config;
 import io.github.codeutilities.util.networking.DFInfo;
 import io.github.codeutilities.util.templates.SearchUtil;
 import net.minecraft.block.BlockState;
@@ -42,7 +42,7 @@ public class MixinSignBlockEntityRender {
      */
     @Overwrite
     public void render(SignBlockEntity signBlockEntity, float f, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, int j) {
-        if (!signBlockEntity.getPos().isWithinDistance(mc.cameraEntity.getBlockPos(), CodeUtilsConfig.getInteger("signRenderDistance")))
+        if (!signBlockEntity.getPos().isWithinDistance(mc.cameraEntity.getBlockPos(), Config.getInteger("signRenderDistance")))
             return;
 
         TextRenderer textRenderer = mc.textRenderer;

@@ -1,7 +1,7 @@
 package io.github.codeutilities.mixin.item;
 
 import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.config.CodeUtilsConfig;
+import io.github.codeutilities.config.Config;
 import io.github.codeutilities.events.register.ReceiveChatMessageEvent;
 import io.github.codeutilities.features.keybinds.FlightspeedToggle;
 import io.github.codeutilities.util.gui.CPU_UsageText;
@@ -49,7 +49,7 @@ public class MixinItemSlotUpdate {
                     DFInfo.currentState = DFInfo.State.LOBBY;
 
                     // Auto fly
-                    if (CodeUtilsConfig.getBoolean("autofly")) {
+                    if (Config.getBoolean("autofly")) {
                         if (System.currentTimeMillis() > lobbyTime) { // theres a bug with /fly running twice this is a temp fix.
                             mc.player.sendChatMessage("/fly");
                             ReceiveChatMessageEvent.cancelFlyMsg = true;
@@ -75,7 +75,7 @@ public class MixinItemSlotUpdate {
                     DFInfo.plotCorner = mc.player.getPos().add(10, -50, -10);
 
                     // Auto LagSlayer
-                    if (!CPU_UsageText.lagSlayerEnabled && CodeUtilsConfig.getBoolean("autolagslayer")) {
+                    if (!CPU_UsageText.lagSlayerEnabled && Config.getBoolean("autolagslayer")) {
                         mc.player.sendChatMessage("/lagslayer");
                         ReceiveChatMessageEvent.cancelLagSlayerMsg = true;
                     }
@@ -89,14 +89,14 @@ public class MixinItemSlotUpdate {
                         new Thread(() -> {
                             try {
                                 Thread.sleep(10);
-                                if (CodeUtilsConfig.getBoolean("autoRC")) {
+                                if (Config.getBoolean("autoRC")) {
                                     mc.player.sendChatMessage("/rc");
                                 }
-                                if (CodeUtilsConfig.getBoolean("autotime")) {
-                                    mc.player.sendChatMessage("/time " + CodeUtilsConfig.getLong("autotimeval"));
+                                if (Config.getBoolean("autotime")) {
+                                    mc.player.sendChatMessage("/time " + Config.getLong("autotimeval"));
                                     ReceiveChatMessageEvent.cancelTimeMsg = true;
                                 }
-                                if (CodeUtilsConfig.getBoolean("autonightvis")) {
+                                if (Config.getBoolean("autonightvis")) {
                                     mc.player.sendChatMessage("/nightvis");
                                     ReceiveChatMessageEvent.cancelNVisionMsg = true;
                                 }

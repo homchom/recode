@@ -1,6 +1,6 @@
 package io.github.codeutilities.features.social.chat;
 
-import io.github.codeutilities.config.CodeUtilsConfig;
+import io.github.codeutilities.config.Config;
 import io.github.codeutilities.util.chat.ChatType;
 import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.codeutilities.util.file.ILoader;
@@ -14,13 +14,13 @@ public class ConversationTimer implements ILoader {
     @Override
     public void load() {
         ClientTickEvents.START_CLIENT_TICK.register(mc -> {
-            if (currentConversation != null && !CodeUtilsConfig.getBoolean("automsg")) {
+            if (currentConversation != null && !Config.getBoolean("automsg")) {
                 currentConversation = null;
                 conversationUpdateTime = null;
                 return;
             }
-            if (!isTimerOn || !CodeUtilsConfig.getBoolean("automsg_timeout")) return;
-            if (System.currentTimeMillis() - CodeUtilsConfig.getLong("automsg_timeoutNumber") >= Long.parseLong(conversationUpdateTime)) {
+            if (!isTimerOn || !Config.getBoolean("automsg_timeout")) return;
+            if (System.currentTimeMillis() - Config.getLong("automsg_timeoutNumber") >= Long.parseLong(conversationUpdateTime)) {
                 ChatUtil.sendMessage("Your conversation with " + currentConversation + " was inactive and ended.", ChatType.INFO_BLUE);
                 currentConversation = null;
                 conversationUpdateTime = null;

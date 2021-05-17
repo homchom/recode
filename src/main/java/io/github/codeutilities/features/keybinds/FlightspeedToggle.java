@@ -1,6 +1,6 @@
 package io.github.codeutilities.features.keybinds;
 
-import io.github.codeutilities.config.CodeUtilsConfig;
+import io.github.codeutilities.config.Config;
 import net.minecraft.client.MinecraftClient;
 
 public class FlightspeedToggle {
@@ -14,12 +14,12 @@ public class FlightspeedToggle {
             fs_is_normal = false;
             switch (mode) {
                 case "medium":
-                    mc.player.sendChatMessage("/fs " + CodeUtilsConfig.getInteger("fsMed"));
+                    mc.player.sendChatMessage("/fs " + Config.getInteger("fsMed"));
                     return;
                 case "fast":
-                    mc.player.sendChatMessage("/fs " + CodeUtilsConfig.getInteger("fsFast"));
+                    mc.player.sendChatMessage("/fs " + Config.getInteger("fsFast"));
             }
-        } else mc.player.sendChatMessage("/fs " + CodeUtilsConfig.getInteger("fsNormal"));
+        } else mc.player.sendChatMessage("/fs " + Config.getInteger("fsNormal"));
         fs_is_normal = true;
     }
 }

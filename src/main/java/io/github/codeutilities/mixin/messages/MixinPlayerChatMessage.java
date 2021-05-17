@@ -2,7 +2,7 @@ package io.github.codeutilities.mixin.messages;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import io.github.codeutilities.config.CodeUtilsConfig;
+import io.github.codeutilities.config.Config;
 import io.github.codeutilities.features.social.chat.ConversationTimer;
 import io.github.codeutilities.util.chat.ChatType;
 import io.github.codeutilities.util.chat.ChatUtil;
@@ -47,7 +47,7 @@ public class MixinPlayerChatMessage {
                     CompoundTag tag = mainHand.getTag();
                     CompoundTag publicBukkitValues = tag.getCompound("PublicBukkitValues");
                     if (tag.contains("PublicBukkitValues") && publicBukkitValues.contains("hypercube:varitem")) {
-                        if ((string.endsWith(" -l") || string.endsWith(" -s") || string.endsWith(" -g")) && CodeUtilsConfig.getBoolean("quickVarScope")) {
+                        if ((string.endsWith(" -l") || string.endsWith(" -s") || string.endsWith(" -g")) && Config.getBoolean("quickVarScope")) {
                             String varItem = publicBukkitValues.getString("hypercube:varitem");
                             try {
                                 JsonObject jsonObject = new JsonParser().parse(varItem).getAsJsonObject();
@@ -102,12 +102,12 @@ public class MixinPlayerChatMessage {
             }
         }
         //start conversation
-        if (CodeUtilsConfig.getBoolean("automsg") && (string.startsWith("/msg ") || string.startsWith("/w "))) {
+        if (Config.getBoolean("automsg") && (string.startsWith("/msg ") || string.startsWith("/w "))) {
             if (args.length == 2) {
                 ci.cancel();
                 ConversationTimer.currentConversation = args[1];
                 ConversationTimer.conversationUpdateTime = String.valueOf(System.currentTimeMillis());
-                if (CodeUtilsConfig.getBoolean("automsg_timeout")) ConversationTimer.isTimerOn = true;
+                if (Config.getBoolean("automsg_timeout")) ConversationTimer.isTimerOn = true;
                 ChatUtil.sendMessage("Started a conversation with " + ConversationTimer.currentConversation + "!", ChatType.SUCCESS);
 
             }

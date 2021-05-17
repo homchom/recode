@@ -1,6 +1,6 @@
 package io.github.codeutilities.mixin.render;
 
-import io.github.codeutilities.config.CodeUtilsConfig;
+import io.github.codeutilities.config.Config;
 import io.github.codeutilities.util.networking.TPSUtil;
 import net.minecraft.client.gui.hud.DebugHud;
 import net.minecraft.util.Formatting;
@@ -16,7 +16,7 @@ public class MixinDebugHud {
 
     @Inject(method = "getLeftText", at = @At("RETURN"), cancellable = true)
     protected void getLeftText(CallbackInfoReturnable<List<String>> callbackInfoReturnable) {
-        if (!CodeUtilsConfig.getBoolean("f3Tps")) {
+        if (!Config.getBoolean("f3Tps")) {
             return;
         }
 

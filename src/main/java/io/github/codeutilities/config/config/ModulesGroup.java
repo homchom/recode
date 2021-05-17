@@ -2,7 +2,11 @@ package io.github.codeutilities.config.config;
 
 import io.github.codeutilities.config.structure.ConfigGroup;
 import io.github.codeutilities.config.structure.ConfigSubGroup;
+import io.github.codeutilities.config.types.BooleanSetting;
 import io.github.codeutilities.modules.Module;
+import io.github.codeutilities.modules.translations.Translation;
+import net.minecraft.client.resource.language.I18n;
+import net.minecraft.text.TranslatableText;
 import org.json.JSONObject;
 
 public class ModulesGroup extends ConfigGroup {
@@ -17,12 +21,30 @@ public class ModulesGroup extends ConfigGroup {
 
         // Modules config
         for (JSONObject json : Module.MODULES) {
+            // get module data
             JSONObject meta = json.getJSONObject("meta");
             String moduleId = meta.getString("id");
 
+            String name = Translation.get(moduleId, "meta.name");
+            String author = Translation.get(moduleId, "meta.author");
+            String description = Translation.get(moduleId, "meta.description");
+            String version = Translation.get(moduleId, "meta.version");
+
+            // set presets
             ConfigSubGroup subGroup = new ConfigSubGroup(moduleId)
-                    .setRawKey("test")
-                    .setRawTooltip("fsdfsdf");
+                    .setRawKey(name+" - by "+author)
+                    .setRawTooltip(name+" ("+version+")\n"+
+                            Translation.getExternal("config.codeutilities.category.modules.madeby").replaceAll("\\$author\\$", author)+
+                            "\n\n"+description+"\n\n⚠ "+Translation.getExternal("config.codeutilities.category.modules.warning"));
+            subGroup.setStartExpanded(false);
+            //subGroup.register(new DescriptionSetting( ....
+            subGroup.register(new BooleanSetting("enabled", true)
+                    //.setKey("module.super."+moduleId+".enabled")
+                    .setRawKey(Translation.getExternal("config.codeutilities.category.modules.enabled"))
+                    .setRawTooltip(Translation.getExternal("config.codeutilities.category.modules.enabled.tooltip")));
+
+            //repeat over each custom config entry for the module
+
             this.register(subGroup);
         }
 

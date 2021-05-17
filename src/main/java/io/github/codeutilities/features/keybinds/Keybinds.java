@@ -1,6 +1,6 @@
 package io.github.codeutilities.features.keybinds;
 
-import io.github.codeutilities.config.CodeUtilsConfig;
+import io.github.codeutilities.config.Config;
 import io.github.codeutilities.util.networking.DFInfo;
 import io.github.codeutilities.util.templates.SearchUtil;
 import net.fabricmc.api.ClientModInitializer;
@@ -205,18 +205,18 @@ public class Keybinds implements ClientModInitializer {
 
             // fs normal
             while (fs_normal.wasPressed()) {
-                sendChat("/fs " + CodeUtilsConfig.getInteger("fsNormal"));
+                sendChat("/fs " + Config.getInteger("fsNormal"));
                 FlightspeedToggle.fs_is_normal = true;
             }
 
             // fs med
             while (fs_med.wasPressed()) {
-                sendChat("/fs " + CodeUtilsConfig.getInteger("fsMed"));
+                sendChat("/fs " + Config.getInteger("fsMed"));
             }
 
             // fs fast
             while (fs_fast.wasPressed()) {
-                sendChat("/fs " + CodeUtilsConfig.getInteger("fsFast"));
+                sendChat("/fs " + Config.getInteger("fsFast"));
             }
 
             // toggle fs normal med

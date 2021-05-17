@@ -76,7 +76,7 @@
     "config.codeutilities.option.functionProcessSearch.tooltip": "Zeigt alle umliegenden Verwendungen einer Funktion oder eines.",
 
     "config.codeutilities.subcategory.keybinds_flightspeed": "Fluggeschwindigkeit Tastenkombinations Werte",
-    "config.codeutilities.subcategory.keybinds_flightspeed.tooltip": "Werte zum Regeln der FLuggeschwindigkeit in\n \Optionen -> Steuerung -> CodeUtilities\.",
+    "config.codeutilities.subcategory.keybinds_flightspeed.tooltip": "Werte zum Regeln der FLuggeschwindigkeit in\n \"Optionen -> Steuerung -> CodeUtilities\".",
     "config.codeutilities.option.fsNormal": "Fluggeschwindigkeit Normal",
     "config.codeutilities.option.fsNormal.tooltip": "Fluggeschwindigkeit benutzt für die \"Flight Speed Normal\" Tastenkombination.",
     "config.codeutilities.option.fsMed": "Fluggeschwindigkeit Mittel",

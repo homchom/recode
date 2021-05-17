@@ -5,7 +5,7 @@ import com.jagrosh.discordipc.IPCListener;
 import com.jagrosh.discordipc.entities.RichPresence;
 import com.jagrosh.discordipc.exceptions.NoDiscordClientException;
 import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.config.CodeUtilsConfig;
+import io.github.codeutilities.config.Config;
 import io.github.codeutilities.events.register.ReceiveChatMessageEvent;
 import io.github.codeutilities.util.file.ILoader;
 import io.github.codeutilities.util.networking.DFInfo;
@@ -161,10 +161,10 @@ public class DFDiscordRPC implements ILoader {
         if (firstUpdate) {
             time = OffsetDateTime.now();
         }
-        if (CodeUtilsConfig.getBoolean("discordRPCShowElapsed")) presence.setStartTimestamp(time);
+        if (Config.getBoolean("discordRPCShowElapsed")) presence.setStartTimestamp(time);
         oldMode = mode;
 
-        if (CodeUtilsConfig.getBoolean("discordRPC")) client.sendRichPresence(presence.build());
+        if (Config.getBoolean("discordRPC")) client.sendRichPresence(presence.build());
     }
 
     public DFRPCThread getThread() {
@@ -196,7 +196,7 @@ public class DFDiscordRPC implements ILoader {
                     }
                 }
 
-                if (!CodeUtilsConfig.getBoolean("discordRPC")) {
+                if (!Config.getBoolean("discordRPC")) {
                     firstLocate = true;
                     firstUpdate = true;
                     try {
@@ -233,11 +233,11 @@ public class DFDiscordRPC implements ILoader {
 
         public void locateRequest() {
             if (mc.player != null) {
-                if (CodeUtilsConfig.getBoolean("discordRPC")) {
+                if (Config.getBoolean("discordRPC")) {
                     mc.player.sendChatMessage("/locate");
                 }
                 locating = true;
-                for (int i = 0; i < CodeUtilsConfig.getLong("discordRPCTimeout"); i++) {
+                for (int i = 0; i < Config.getLong("discordRPCTimeout"); i++) {
                     try {
                         DFRPCThread.sleep(1);
                     } catch (InterruptedException e) {

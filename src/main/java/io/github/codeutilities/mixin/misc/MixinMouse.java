@@ -2,7 +2,7 @@ package io.github.codeutilities.mixin.misc;
 
 import com.google.gson.JsonObject;
 import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.config.CodeUtilsConfig;
+import io.github.codeutilities.config.Config;
 import io.github.codeutilities.util.misc.ItemUtil;
 import net.minecraft.client.Mouse;
 import net.minecraft.client.gui.screen.Screen;
@@ -38,7 +38,7 @@ public class MixinMouse {
     @Inject(method = "onMouseScroll(JDD)V", at = @At("HEAD"))
     private void onMouseScroll(long window, double horiz, double vertical, CallbackInfo ci) {
         Screen screen = CodeUtilities.MC.currentScreen;
-        if(screen instanceof GenericContainerScreen && CodeUtilsConfig.getBoolean("quicknum")) {
+        if(screen instanceof GenericContainerScreen && Config.getBoolean("quicknum")) {
             ScreenHandler handler = ((GenericContainerScreen) screen).getScreenHandler();
             List<Slot> slotList = handler.slots;
 
@@ -80,27 +80,27 @@ public class MixinMouse {
 
                                         if(Screen.hasControlDown()) {
                                             if(vertical > 0) {
-                                                bigDecimal = bigDecimal.add(BigDecimal.valueOf(CodeUtilsConfig.getDouble("quicknumSecondaryAmount")));
-                                                if(CodeUtilsConfig.getBoolean("quicknumSound")) CodeUtilities.MC.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_HAT, SoundCategory.PLAYERS, 1, 1);
+                                                bigDecimal = bigDecimal.add(BigDecimal.valueOf(Config.getDouble("quicknumSecondaryAmount")));
+                                                if(Config.getBoolean("quicknumSound")) CodeUtilities.MC.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_HAT, SoundCategory.PLAYERS, 1, 1);
                                             }else {
-                                                bigDecimal = bigDecimal.subtract(BigDecimal.valueOf(CodeUtilsConfig.getDouble("quicknumSecondaryAmount")));
-                                                if(CodeUtilsConfig.getBoolean("quicknumSound")) CodeUtilities.MC.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_HAT, SoundCategory.PLAYERS, 1, 0);
+                                                bigDecimal = bigDecimal.subtract(BigDecimal.valueOf(Config.getDouble("quicknumSecondaryAmount")));
+                                                if(Config.getBoolean("quicknumSound")) CodeUtilities.MC.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_HAT, SoundCategory.PLAYERS, 1, 0);
                                             }
                                         }else if(Screen.hasShiftDown()){
                                             if(vertical > 0) {
-                                                bigDecimal = bigDecimal.add(BigDecimal.valueOf(CodeUtilsConfig.getDouble("quicknumTertiaryAmount")));
-                                                if(CodeUtilsConfig.getBoolean("quicknumSound")) CodeUtilities.MC.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_HAT, SoundCategory.PLAYERS, 1, 1);
+                                                bigDecimal = bigDecimal.add(BigDecimal.valueOf(Config.getDouble("quicknumTertiaryAmount")));
+                                                if(Config.getBoolean("quicknumSound")) CodeUtilities.MC.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_HAT, SoundCategory.PLAYERS, 1, 1);
                                             }else {
-                                                bigDecimal = bigDecimal.subtract(BigDecimal.valueOf(CodeUtilsConfig.getDouble("quicknumTertiaryAmount")));
-                                                if(CodeUtilsConfig.getBoolean("quicknumSound")) CodeUtilities.MC.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_HAT, SoundCategory.PLAYERS, 1, 0);
+                                                bigDecimal = bigDecimal.subtract(BigDecimal.valueOf(Config.getDouble("quicknumTertiaryAmount")));
+                                                if(Config.getBoolean("quicknumSound")) CodeUtilities.MC.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_HAT, SoundCategory.PLAYERS, 1, 0);
                                             }
                                         }else {
                                             if(vertical > 0) {
-                                                bigDecimal = bigDecimal.add(BigDecimal.valueOf(CodeUtilsConfig.getDouble("quicknumPrimaryAmount")));
-                                                if(CodeUtilsConfig.getBoolean("quicknumSound")) CodeUtilities.MC.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_HAT, SoundCategory.PLAYERS, 1, 1);
+                                                bigDecimal = bigDecimal.add(BigDecimal.valueOf(Config.getDouble("quicknumPrimaryAmount")));
+                                                if(Config.getBoolean("quicknumSound")) CodeUtilities.MC.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_HAT, SoundCategory.PLAYERS, 1, 1);
                                             }else {
-                                                bigDecimal = bigDecimal.subtract(BigDecimal.valueOf(CodeUtilsConfig.getDouble("quicknumPrimaryAmount")));
-                                                if(CodeUtilsConfig.getBoolean("quicknumSound")) CodeUtilities.MC.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_HAT, SoundCategory.PLAYERS, 1, 0);
+                                                bigDecimal = bigDecimal.subtract(BigDecimal.valueOf(Config.getDouble("quicknumPrimaryAmount")));
+                                                if(Config.getBoolean("quicknumSound")) CodeUtilities.MC.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_HAT, SoundCategory.PLAYERS, 1, 0);
                                             }
                                         }
 
@@ -118,7 +118,7 @@ public class MixinMouse {
 
                                         ItemUtil.setContainerItem(slot.id, itemStack);
                                     }catch(NumberFormatException e) {
-                                        if(CodeUtilsConfig.getBoolean("quicknumSound")) CodeUtilities.MC.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_DIDGERIDOO, SoundCategory.PLAYERS, 1, 0);
+                                        if(Config.getBoolean("quicknumSound")) CodeUtilities.MC.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_DIDGERIDOO, SoundCategory.PLAYERS, 1, 0);
                                     }
 
 

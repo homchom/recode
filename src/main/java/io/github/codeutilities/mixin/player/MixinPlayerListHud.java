@@ -1,6 +1,6 @@
 package io.github.codeutilities.mixin.player;
 
-import io.github.codeutilities.config.CodeUtilsConfig;
+import io.github.codeutilities.config.Config;
 import io.github.codeutilities.features.social.tab.PlayerlistStarServer;
 import net.minecraft.client.gui.hud.PlayerListHud;
 import net.minecraft.client.network.PlayerListEntry;
@@ -21,7 +21,7 @@ public class MixinPlayerListHud {
 
     @Inject(method = "getPlayerName", at = @At("RETURN"), cancellable = true)
     public void getPlayerName(PlayerListEntry entry, CallbackInfoReturnable<Text> cir) {
-        if (!CodeUtilsConfig.getBoolean("loadTabStars")) {
+        if (!Config.getBoolean("loadTabStars")) {
             return;
         }
 

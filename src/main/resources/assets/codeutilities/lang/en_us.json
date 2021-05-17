@@ -10,6 +10,12 @@
     "config.codeutilities.category.screen": "Screen",
     "config.codeutilities.category.social": "Social Features",
     "config.codeutilities.category.highlight": "Highlighting",
+    "config.codeutilities.category.modules": "Modules",
+
+    "config.codeutilities.category.modules.warning": "Modules may be malicious, use them at your own risk.",
+    "config.codeutilities.category.modules.madeby": "Made by $author$",
+    "config.codeutilities.category.modules.enabled": "Enabled",
+    "config.codeutilities.category.modules.enabled.tooltip": "Enable this module.",
 
     "config.codeutilities.subcategory.screen_world_rendering": "World Rendering",
     "config.codeutilities.subcategory.screen_world_rendering.tooltip": "Features related to rendering a world.",

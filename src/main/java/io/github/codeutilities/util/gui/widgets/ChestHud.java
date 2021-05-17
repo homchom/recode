@@ -2,7 +2,7 @@ package io.github.codeutilities.util.gui.widgets;
 
 import com.google.common.collect.Lists;
 import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.config.CodeUtilsConfig;
+import io.github.codeutilities.config.Config;
 import io.github.codeutilities.util.networking.DFInfo;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.MinecraftClient;
@@ -33,8 +33,8 @@ public class ChestHud {
 
     private static void afterContainerRender(Screen screen, MatrixStack matrices, int mouseX, int mouseY, float tickDelta) {
 
-        if (DFInfo.currentState == DFInfo.State.DEV && CodeUtilsConfig.getBoolean("chestToolTip")) {
-            if (CodeUtilsConfig.getBoolean("chestToolTipType")) {
+        if (DFInfo.currentState == DFInfo.State.DEV && Config.getBoolean("chestToolTip")) {
+            if (Config.getBoolean("chestToolTipType")) {
                 ItemStack item = CodeUtilities.MC.player.inventory.getStack(17);
 
                 int i = ((screen.width) / 2) + 85;

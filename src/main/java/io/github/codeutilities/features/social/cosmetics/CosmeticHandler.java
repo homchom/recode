@@ -4,7 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.config.CodeUtilsConfig;
+import io.github.codeutilities.config.Config;
 import io.github.codeutilities.features.social.cosmetics.type.CosmeticType;
 import io.github.codeutilities.util.file.ILoader;
 import io.github.codeutilities.util.networking.WebUtil;
@@ -25,7 +25,7 @@ public class CosmeticHandler implements ILoader {
     private final HashSet<UUID> specialUsers = new HashSet<>();
 
     public void applyCosmetics(UUID uuid) {
-        if (!CodeUtilsConfig.getBoolean("cosmeticsEnabled")) {
+        if (!Config.getBoolean("cosmeticsEnabled")) {
             return;
         }
 
@@ -51,7 +51,7 @@ public class CosmeticHandler implements ILoader {
     private JsonObject getPlayerCosmetics(UUID uuid) {
         JsonObject playerCosmetics = getObject("https://codeutilities.github.io/data/cosmetics/players/" + uuid.toString() + ".json");
         if (playerCosmetics == null) {
-            if (CodeUtilsConfig.getBoolean("cosmeticsEnabled")) {
+            if (Config.getBoolean("cosmeticsEnabled")) {
                 if (CACHED_DEFAULTS == null) {
                     CACHED_DEFAULTS = getObject("https://codeutilities.github.io/data/cosmetics/players/default.json");
                 }

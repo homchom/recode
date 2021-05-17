@@ -1,7 +1,7 @@
 package io.github.codeutilities.mixin.packet;
 
 import io.github.codeutilities.commands.impl.util.PlotsCommand;
-import io.github.codeutilities.config.CodeUtilsConfig;
+import io.github.codeutilities.config.Config;
 import io.github.codeutilities.util.chat.ChatType;
 import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.codeutilities.util.file.ExternalFile;
@@ -30,7 +30,7 @@ public class MixinInventoryPacketListener {
 
     @Inject(method = "onInventory", at = @At("RETURN"))
     private void onInventory(InventoryS2CPacket packet, CallbackInfo ci) {
-        if (!CodeUtilsConfig.getBoolean("cmdLoadPlots")) {
+        if (!Config.getBoolean("cmdLoadPlots")) {
             return;
         }
 

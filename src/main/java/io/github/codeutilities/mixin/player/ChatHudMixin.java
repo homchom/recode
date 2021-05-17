@@ -1,6 +1,6 @@
 package io.github.codeutilities.mixin.player;
 
-import io.github.codeutilities.config.CodeUtilsConfig;
+import io.github.codeutilities.config.Config;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.text.LiteralText;
@@ -33,7 +33,7 @@ public abstract class ChatHudMixin {
 
     @Inject(method = "addMessage(Lnet/minecraft/text/Text;I)V", at = @At("HEAD"), cancellable = true)
     private void addMessage(Text msg, int id, CallbackInfo ci) {
-        if (CodeUtilsConfig.getBoolean("stackDuplicateMsgs")) {
+        if (Config.getBoolean("stackDuplicateMsgs")) {
             if (msg.getString().equals(lastmsg.getString())) {
                 stackcount++;
                 msg = new LiteralText("").append(msg).append(" §3§lx" + stackcount);
