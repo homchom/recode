@@ -41,7 +41,7 @@ public class ConfigFile implements ILoader, ISave {
             try {
                 JsonReader reader = new JsonReader(new FileReader(file));
                 jsonObject = CodeUtilities.JSON_PARSER.parse(reader).getAsJsonObject();
-            } catch (FileNotFoundException e) {
+            } catch (FileNotFoundException | RuntimeException e) {
                 e.printStackTrace();
             }
         }
