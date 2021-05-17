@@ -15,11 +15,15 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class Module {
 
     private static final FabricLoader FABRIC_LOADER = FabricLoader.getInstance();
+
+    public static List<JSONObject> MODULES = new ArrayList<>();
 
     public static void loadModules() {
         Path modFolder = FABRIC_LOADER.getGameDir().resolve("CodeUtilities");
@@ -48,11 +52,21 @@ public class Module {
                     e.printStackTrace();
                 }
 
+                MODULES.add(json);
+
                 // --------- Load objects
 
                 // Load meta
                 JSONObject meta = json.getJSONObject("meta");
                 String moduleId = meta.getString("id");
+
+                Iterator<String> keys = meta.keys();
+                while (keys.hasNext()) {
+                    String key = keys.next();
+                    String value = meta.getString(key);
+
+                    Translation.put("module."+moduleId+".meta."+key, value);
+                }
 
                 // Load triggers
                 JSONArray triggers = json.getJSONArray("triggers");
@@ -81,7 +95,7 @@ public class Module {
                 JSONObject translations = json.getJSONObject("translations");
 
                 JSONObject lang = translations.getJSONObject("en_us");
-                Iterator<String> keys = lang.keys();
+                keys = lang.keys();
                 for (int i = 0; i < 2; i++) {
                     while (keys.hasNext()) {
                         String key = keys.next();
@@ -100,6 +114,10 @@ public class Module {
             CodeUtilities.log(Level.INFO, "No modules found.");
         }
 
+    }
+
+    public List<JSONObject> getModules() {
+        return MODULES;
     }
 
 }
