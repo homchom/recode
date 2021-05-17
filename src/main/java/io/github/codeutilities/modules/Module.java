@@ -2,6 +2,7 @@ package io.github.codeutilities.modules;
 
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.modules.tasks.Task;
+import io.github.codeutilities.modules.translations.Translation;
 import io.github.codeutilities.modules.triggers.Trigger;
 import io.github.codeutilities.util.file.FileUtil;
 import net.fabricmc.loader.api.FabricLoader;
@@ -14,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
+import java.util.Iterator;
 
 public class Module {
 
@@ -28,7 +30,7 @@ public class Module {
             modulesFile.mkdir();
         }
 
-        CodeUtilities.log(Level.INFO, "Loading Modules...");
+        CodeUtilities.log(Level.INFO, "Loading modules...");
 
         File[] moduleFiles = modulesFile.listFiles();
         if (moduleFiles != null) {
@@ -75,14 +77,19 @@ public class Module {
                     Task.putActions(taskName, actions);
                 }
 
-                // TODO Load translations
+                // Load translations
                 JSONObject translations = json.getJSONObject("translations");
-                System.out.println(CodeUtilities.MC.getLanguageManager().getLanguage().getCode());
-                String lang = CodeUtilities.MC.options.language;
-                System.out.println(lang);
-                translations = translations.getJSONObject(lang);
 
-                System.out.println(translations);
+                JSONObject lang = translations.getJSONObject("en_us");
+                Iterator<String> keys = lang.keys();
+                for (int i = 0; i < 2; i++) {
+                    while (keys.hasNext()) {
+                        String key = keys.next();
+                        Translation.put("module."+moduleId+"."+key, lang.getString(key));
+                    }
+                    lang = translations.getJSONObject(CodeUtilities.CLIENT_LANG);
+                    keys = lang.keys();
+                }
 
                 // TODO Load config
                 JSONObject config = json.getJSONObject("config");

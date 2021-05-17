@@ -25,15 +25,21 @@ import io.github.codeutilities.modules.triggers.Trigger;
 import io.github.codeutilities.util.networking.socket.SocketHandler;
 import io.github.codeutilities.util.templates.TemplateStorageHandler;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Path;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CodeUtilities implements ModInitializer {
 
@@ -58,10 +64,16 @@ public class CodeUtilities implements ModInitializer {
     public static final JsonParser JSON_PARSER = new JsonParser();
     public static final MinecraftClient MC = MinecraftClient.getInstance();
     public static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
-
-    //TODO public static final String OPTIONSTXT = FileUtil.readFile()
-
     public static Screen SCREEN_TO_OPEN;
+
+    private static Path optionsTxtPath = FabricLoader.getInstance().getGameDir().resolve("options.txt");
+    public static String OPTIONSTXT = "";
+    public static String CLIENT_LANG = "unknown";
+
+    static {
+        try { OPTIONSTXT = FileUtil.readFile(optionsTxtPath.toString(), Charset.defaultCharset());
+        } catch (IOException e) { e.printStackTrace(); }
+    }
 
     @Override
     public void onInitialize() {
@@ -78,6 +90,11 @@ public class CodeUtilities implements ModInitializer {
         initializer.add(new ConversationTimer());
         initializer.add(new EventHandler());
         //initializer.add(new PlayerlistStarServer());
+
+        // Get lang
+        Pattern regex = Pattern.compile("\nlang:.*");
+        Matcher m = regex.matcher(OPTIONSTXT);
+        while (m.find()) CLIENT_LANG = m.group(0).replaceAll("^\nlang:", "");
 
         // Load modules
         Action.cacheActions();

@@ -44,7 +44,7 @@ public class Trigger {
     }
 
     public static String[] getTasks(Trigger trigger) {
-        return TRIGGER_TASKS.get(trigger.getId());
+        return TRIGGER_TASKS.containsKey(trigger.getId()) ? TRIGGER_TASKS.get(trigger.getId()) : new String[]{};
     }
 
     public static void execute(Trigger trigger) {

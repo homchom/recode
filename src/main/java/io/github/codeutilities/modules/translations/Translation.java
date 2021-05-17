@@ -10,4 +10,8 @@ public class Translation {
         return TRANSLATIONS.get(key);
     }
 
+    public static void put(String key, String value) {
+        TRANSLATIONS.put(key, value);
+    }
+
 }
