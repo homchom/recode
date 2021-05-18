@@ -17,6 +17,8 @@ public class TextUtil {
     public static String textComponentToColorCodes(Text message) {
         List<Text> siblings = message.getSiblings();
 
+        //System.out.println(message);
+
         StringBuilder newMsg = new StringBuilder();
         String currentText;
 
