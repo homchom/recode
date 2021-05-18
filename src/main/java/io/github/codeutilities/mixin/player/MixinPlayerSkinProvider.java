@@ -45,7 +45,7 @@ public class MixinPlayerSkinProvider {
                 callback.onSkinTextureAvailable(type, identifier, profileTexture);
             }
         } else {
-            if (loadingTexture < System.currentTimeMillis() - 5000) {   
+            if (loadingTexture < System.currentTimeMillis() - 5000) {
                 loadingTexture = System.currentTimeMillis();
                 File file = new File(skinCacheDir, string.length() > 2 ? string.substring(0, 2) : "xx");
                 File file2 = new File(file, string);

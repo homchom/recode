@@ -3,7 +3,6 @@ package io.github.codeutilities.modules.triggers;
 import io.github.codeutilities.modules.tasks.Task;
 import io.github.codeutilities.modules.triggers.impl.MessageReceivedTrigger;
 import io.github.codeutilities.modules.triggers.impl.StateChangeTrigger;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,12 +11,12 @@ import java.util.List;
 
 public class Trigger {
 
-    private static Trigger[] TRIGGERS = new Trigger[]{ new StateChangeTrigger(), new MessageReceivedTrigger()};
+    private static final Trigger[] TRIGGERS = new Trigger[]{new StateChangeTrigger(), new MessageReceivedTrigger()};
     // triggerId, trigger
-    private static HashMap<String, Trigger> ID_TRIGGERS = new HashMap<>();
+    private static final HashMap<String, Trigger> ID_TRIGGERS = new HashMap<>();
 
     // triggerId, tasks
-    private static HashMap<String, String[]> TRIGGER_TASKS = new HashMap<>();
+    private static final HashMap<String, String[]> TRIGGER_TASKS = new HashMap<>();
 
     public static void cacheTriggers() {
         for (Trigger trigger : TRIGGERS) {
@@ -38,7 +37,7 @@ public class Trigger {
     }
 
     public static void putTask(Trigger trigger, String taskName, String moduleId) {
-        taskName = moduleId+"."+taskName;
+        taskName = moduleId + "." + taskName;
 
         TRIGGER_TASKS.putIfAbsent(trigger.getId(), new String[]{});
         List<String> currentTasks = new ArrayList<>(Arrays.asList(TRIGGER_TASKS.get(trigger.getId())));
