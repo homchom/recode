@@ -54,7 +54,7 @@ public class ConfigManager implements IManager<ConfigGroup> {
             ConfigSetting<?> instruction = entry.getValue();
 
             // In-memory
-            ConfigSetting<?> memory = this.find(key);
+            ConfigSetting<?> memory = this.find(key, true);
 
             // This is only for lists
             if (memory.isList()) {
@@ -128,15 +128,28 @@ public class ConfigManager implements IManager<ConfigGroup> {
     }
 
     public ConfigSetting<?> find(String key) {
+        return this.find(key, false);
+    }
+
+    public ConfigSetting<?> find(String key, boolean customKeyNames) {
         for (ConfigGroup group : groups) {
             for (ConfigSetting<?> setting : group.getSettings()) {
-                if (setting.getCustomKey().equalsIgnoreCase(key)) {
+                String customKey = setting.getCustomKey();
+                if (customKeyNames && setting.getKeyName().orElse(customKey).equalsIgnoreCase(key)) {
+                    return setting;
+                }
+                if (customKey.equalsIgnoreCase(key)) {
                     return setting;
                 }
             }
             for (ConfigSubGroup configSubGroup : group.getRegistered()) {
                 for (ConfigSetting<?> configSetting : configSubGroup.getRegistered()) {
-                    if (configSetting.getCustomKey().equalsIgnoreCase(key)) {
+                    String customKey = configSetting.getCustomKey();
+                    if (customKeyNames && configSetting.getKeyName().orElse(customKey).equalsIgnoreCase(key)) {
+                        return configSetting;
+                    }
+
+                    if (customKey.equalsIgnoreCase(key)) {
                         return configSetting;
                     }
                 }
