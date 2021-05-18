@@ -38,8 +38,8 @@ public class AudioHandler implements ILoader {
     public void load() {
         try {
             String os = System.getProperty("os.name");
-            if(!os.toLowerCase().contains("windows")) {
-                ToasterUtil.sendToaster("Not Supported","P:A is not supported on "+os+".",SystemToast.Type.NARRATOR_TOGGLE);
+            if (!os.toLowerCase().contains("windows")) {
+                ToasterUtil.sendToaster("Not Supported", "P:A is not supported on " + os + ".", SystemToast.Type.NARRATOR_TOGGLE);
                 return;
             }
             com.sun.javafx.application.PlatformImpl.startup(() -> {

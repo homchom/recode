@@ -3,8 +3,6 @@ package io.github.codeutilities.modules.actions.impl;
 import io.github.codeutilities.modules.actions.Action;
 import io.github.codeutilities.modules.actions.json.ActionJson;
 
-import java.util.concurrent.TimeUnit;
-
 public class WaitAction extends Action {
 
     @Override
@@ -14,8 +12,11 @@ public class WaitAction extends Action {
 
     @Override
     public void execute(ActionJson params) {
-        try { Thread.sleep(params.getInt("amount"));
-        } catch (InterruptedException e) { e.printStackTrace(); }
+        try {
+            Thread.sleep(params.getInt("amount"));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 }

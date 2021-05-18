@@ -2,7 +2,6 @@ package io.github.codeutilities.modules.translations;
 
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.util.file.FileUtil;
-import org.apache.logging.log4j.Level;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -14,15 +13,15 @@ import java.util.HashMap;
 
 public class Translation {
 
-    private static HashMap<String, String> TRANSLATIONS = new HashMap<>();
-    private static HashMap<String, String> CLIENT_TRANSLATIONS = new HashMap<>();
+    private static final HashMap<String, String> TRANSLATIONS = new HashMap<>();
+    private static final HashMap<String, String> CLIENT_TRANSLATIONS = new HashMap<>();
 
     public static String get(String key) {
         return TRANSLATIONS.getOrDefault(key, key);
     }
 
     public static String get(String moduleId, String key) {
-        return get("module."+moduleId+"."+key);
+        return get("module." + moduleId + "." + key);
     }
 
     public static void put(String key, String value) {
@@ -41,19 +40,31 @@ public class Translation {
 
             // get client lang json
             String jsonString = "";
-            try { jsonString = FileUtil.readFile(String.valueOf(path), Charset.defaultCharset());
-            } catch (IOException e) { e.printStackTrace(); }
+            try {
+                jsonString = FileUtil.readFile(String.valueOf(path), Charset.defaultCharset());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             JSONObject json = new JSONObject();
-            try { json = new JSONObject(jsonString);
-            } catch (JSONException e) { e.printStackTrace(); }
+            try {
+                json = new JSONObject(jsonString);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
             // get fallback lang json
             jsonString = "";
-            try { jsonString = FileUtil.readFile(String.valueOf(fallbackPath), Charset.defaultCharset());
-            } catch (IOException e) { e.printStackTrace(); }
+            try {
+                jsonString = FileUtil.readFile(String.valueOf(fallbackPath), Charset.defaultCharset());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             JSONObject fallbackJson = new JSONObject();
-            try { fallbackJson = new JSONObject(jsonString);
-            } catch (JSONException e) { e.printStackTrace(); }
+            try {
+                fallbackJson = new JSONObject(jsonString);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
             // get value from client lang or fallback lang json
             if (json.has(key)) {

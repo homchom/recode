@@ -6,12 +6,12 @@ import io.github.codeutilities.config.ConfigSounds;
 import io.github.codeutilities.events.interfaces.ChatEvents;
 import io.github.codeutilities.features.external.DFDiscordRPC;
 import io.github.codeutilities.features.social.chat.ConversationTimer;
-import io.github.codeutilities.util.gui.CPU_UsageText;
 import io.github.codeutilities.modules.triggers.Trigger;
 import io.github.codeutilities.modules.triggers.impl.MessageReceivedTrigger;
 import io.github.codeutilities.util.chat.ChatType;
 import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.codeutilities.util.chat.TextUtil;
+import io.github.codeutilities.util.gui.CPU_UsageText;
 import io.github.codeutilities.util.networking.DFInfo;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
@@ -150,7 +150,7 @@ public class ReceiveChatMessageEvent {
         if (Config.getBoolean("highlight")) {
             String highlightMatcher = Config.getString("highlightMatcher").replaceAll("\\{name}", mc.player.getName().getString());
 
-            if (( DFInfo.currentState != DFInfo.State.PLAY && msgWithoutColor.matches("^[^0-z]+.*[a-zA-Z]+: .*"))
+            if ((DFInfo.currentState != DFInfo.State.PLAY && msgWithoutColor.matches("^[^0-z]+.*[a-zA-Z]+: .*"))
                     || (DFInfo.currentState == DFInfo.State.PLAY && msgWithoutColor.matches("^.*[a-zA-Z]+: .*"))) {
                 if ((!msgWithoutColor.matches("^.*" + highlightMatcher + ": .*")) || Config.getBoolean("highlightIgnoreSender")) {
                     if (msgWithoutColor.contains(highlightMatcher)) {

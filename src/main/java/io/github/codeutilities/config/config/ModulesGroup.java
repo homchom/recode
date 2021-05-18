@@ -5,8 +5,6 @@ import io.github.codeutilities.config.structure.ConfigSubGroup;
 import io.github.codeutilities.config.types.BooleanSetting;
 import io.github.codeutilities.modules.Module;
 import io.github.codeutilities.modules.translations.Translation;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.text.TranslatableText;
 import org.json.JSONObject;
 
 public class ModulesGroup extends ConfigGroup {
@@ -30,10 +28,10 @@ public class ModulesGroup extends ConfigGroup {
 
             // set presets
             ConfigSubGroup subGroup = new ConfigSubGroup(moduleId)
-                    .setRawKey(name+" - by "+author)
-                    .setRawTooltip(name+" ("+version+")\n"+
-                            Translation.getExternal("config.codeutilities.category.modules.madeby").replaceAll("\\$author\\$", author)+
-                            "\n\n"+description+"\n\n⚠ "+Translation.getExternal("config.codeutilities.category.modules.warning"))
+                    .setRawKey(name + " - by " + author)
+                    .setRawTooltip(name + " (" + version + ")\n" +
+                            Translation.getExternal("config.codeutilities.category.modules.madeby").replaceAll("\\$author\\$", author) +
+                            "\n\n" + description + "\n\n⚠ " + Translation.getExternal("config.codeutilities.category.modules.warning"))
                     .setStartExpanded(false);
             //subGroup.register(new DescriptionSetting( .... TODO
             subGroup.register(new BooleanSetting("enabled", true)
