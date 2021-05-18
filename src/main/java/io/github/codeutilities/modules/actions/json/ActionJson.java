@@ -55,6 +55,11 @@ public class ActionJson extends JSONObject {
         return value;
     }
 
+    @Override
+    public int getInt(String key) {
+        return Integer.parseInt(getString(key));
+    }
+
     public void setVars(HashMap<String, Object> variableMap) {
         this.VARIABLES = variableMap;
     }
