@@ -35,7 +35,7 @@ public class MixinInventoryPacketListener {
         }
 
         List<ItemStack> contents = packet.getContents();
-        if (DFInfo.currentState != DFInfo.State.LOBBY) return;
+        if (DFInfo.currentState != DFInfo.State.SPAWN) return;
         if (!MinecraftClient.getInstance().player.getMainHandStack().getName().getString().equals("◇ My Plots ◇"))
             return;
         boolean correctInventory = false;

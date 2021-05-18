@@ -1,13 +1,19 @@
 package io.github.codeutilities.modules.actions;
 
-import io.github.codeutilities.modules.actions.impl.MessageAction;
+import io.github.codeutilities.modules.actions.impl.*;
 import io.github.codeutilities.modules.actions.json.ActionJson;
 
 import java.util.HashMap;
 
 public class Action {
 
-    private static final Action[] ACTIONS = new Action[]{ new MessageAction() };
+    private static final Action[] ACTIONS = new Action[]{
+            new MessageAction(),
+            new SendMessageAction(),
+            new StopIfEqualAction(),
+            new ContinueIfEqual(),
+            new WaitAction()
+    };
     // actionId, action
     private static HashMap<String, Action> ACTION_IDS = new HashMap<>();
 

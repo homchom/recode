@@ -6,13 +6,15 @@ import io.github.codeutilities.modules.actions.json.ActionJson;
 import io.github.codeutilities.modules.actions.json.ModuleJson;
 import io.github.codeutilities.modules.triggers.Trigger;
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Task {
 
-    private static HashMap<String, JSONArray> TASK_ACTIONS = new HashMap<>();
+    private static final HashMap<String, JSONArray> TASK_ACTIONS = new HashMap<>();
+    public static ExecutorService SERVICE;
 
     public static void execute(String[] tasks, Trigger trigger, Object[] eventVars) {
         for (String task : tasks) {
@@ -30,27 +32,52 @@ public class Task {
     }
 
     public static void execute(JSONArray actions, ModuleJson module, Trigger trigger, Object[] eventVars) {
-        // --- load variables
-        HashMap<String, Object> VARIABLES = new HashMap<>();
+        SERVICE = Executors.newSingleThreadExecutor();
+        TaskExecutorThread thread = new TaskExecutorThread(actions, module, trigger, eventVars, 1);
+        SERVICE.submit(thread);
+    }
 
-        // load event vars
-        String[] eventVarNames = trigger.getEventVars();
-        int i = 0;
-        for (Object var : eventVars) {
-            VARIABLES.put("event."+eventVarNames[i], var);
-            i++;
+    public static class TaskExecutorThread extends Thread {
+        public TaskExecutorThread(JSONArray actions, ModuleJson module, Trigger trigger, Object[] eventVars, int status) {
+            this.actions = actions;
+            this.module = module;
+            this.trigger = trigger;
+            this.eventVars = eventVars;
+            this.status = 1;
         }
 
-        // --- executor
-        for (i = 0; i < actions.length(); i++) {
-            ActionJson actionObj = new ActionJson(actions.getJSONObject(i));
-            String actionId = actionObj.getId();
+        private final JSONArray actions;
+        private final ModuleJson module;
+        private final Trigger trigger;
+        private final Object[] eventVars;
+        public static int status;
 
-            actionObj.setVars(VARIABLES);
-            actionObj.setModule(module);
+        @Override
+        public void run() {
+            // --- load variables
+            HashMap<String, Object> VARIABLES = new HashMap<>();
 
-            Action action = Action.getAction(actionId);
-            action.execute(actionObj);
+            // load event vars
+            String[] eventVarNames = trigger.getEventVars();
+            int i = 0;
+            for (Object var : eventVars) {
+                VARIABLES.put("event." + eventVarNames[i], var);
+                i++;
+            }
+
+            // --- executor
+            for (i = 0; i < actions.length(); i++) {
+                ActionJson actionObj = new ActionJson(actions.getJSONObject(i));
+                String actionId = actionObj.getId();
+
+                actionObj.setVars(VARIABLES);
+                actionObj.setModule(module);
+
+                Action action = Action.getAction(actionId);
+                action.execute(actionObj);
+
+                if (status == -1) break;
+            }
         }
     }
 

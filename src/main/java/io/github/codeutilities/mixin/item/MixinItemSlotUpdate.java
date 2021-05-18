@@ -45,8 +45,8 @@ public class MixinItemSlotUpdate {
                     && lore.toText().getString().contains("\"Click to open the Game Menu.\"")
                     && lore.toText().getString().contains("\"Hold and type in chat to search.\"")) {
 
-                if (DFInfo.currentState != DFInfo.State.LOBBY) {
-                    DFInfo.currentState = DFInfo.State.LOBBY;
+                if (DFInfo.currentState != DFInfo.State.SPAWN) {
+                    DFInfo.currentState = DFInfo.State.SPAWN;
 
                     // Auto fly
                     if (Config.getBoolean("autofly")) {
