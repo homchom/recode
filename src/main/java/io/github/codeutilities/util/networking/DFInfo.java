@@ -44,9 +44,17 @@ public class DFInfo {
     }
 
     public enum State {
-        LOBBY,
+        SPAWN,
         PLAY,
         BUILD,
-        DEV
+        DEV;
+
+        public String getName() {
+            if (this == State.SPAWN) return "Spawn";
+            if (this == State.PLAY) return "Play";
+            if (this == State.BUILD) return "Build";
+            if (this == State.DEV) return "Dev";
+            return "null";
+        }
     }
 }

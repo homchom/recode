@@ -1,6 +1,8 @@
 package io.github.codeutilities.modules.actions;
 
 import io.github.codeutilities.modules.actions.impl.MessageAction;
+import io.github.codeutilities.modules.actions.impl.StopIfEqualAction;
+import io.github.codeutilities.modules.actions.impl.StopIfNotEqualAction;
 import io.github.codeutilities.modules.actions.impl.WaitAction;
 import io.github.codeutilities.modules.actions.json.ActionJson;
 
@@ -10,6 +12,8 @@ public class Action {
 
     private static final Action[] ACTIONS = new Action[]{
             new MessageAction(),
+            new StopIfEqualAction(),
+            new StopIfNotEqualAction(),
             new WaitAction()
     };
     // actionId, action

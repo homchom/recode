@@ -14,6 +14,7 @@ import java.util.concurrent.Executors;
 public class Task {
 
     private static final HashMap<String, JSONArray> TASK_ACTIONS = new HashMap<>();
+    public static ExecutorService SERVICE;
 
     public static void execute(String[] tasks, Trigger trigger, Object[] eventVars) {
         for (String task : tasks) {
@@ -31,23 +32,25 @@ public class Task {
     }
 
     public static void execute(JSONArray actions, ModuleJson module, Trigger trigger, Object[] eventVars) {
-        ExecutorService service = Executors.newSingleThreadExecutor();
-        TaskExecutorThread thread = new TaskExecutorThread(actions, module, trigger, eventVars);
-        service.submit(thread);
+        SERVICE = Executors.newSingleThreadExecutor();
+        TaskExecutorThread thread = new TaskExecutorThread(actions, module, trigger, eventVars, 1);
+        SERVICE.submit(thread);
     }
 
     public static class TaskExecutorThread extends Thread {
-        public TaskExecutorThread(JSONArray actions, ModuleJson module, Trigger trigger, Object[] eventVars) {
+        public TaskExecutorThread(JSONArray actions, ModuleJson module, Trigger trigger, Object[] eventVars, int status) {
             this.actions = actions;
             this.module = module;
             this.trigger = trigger;
             this.eventVars = eventVars;
+            this.status = 1;
         }
 
         private final JSONArray actions;
         private final ModuleJson module;
         private final Trigger trigger;
         private final Object[] eventVars;
+        public static int status;
 
         @Override
         public void run() {
@@ -72,6 +75,8 @@ public class Task {
 
                 Action action = Action.getAction(actionId);
                 action.execute(actionObj);
+
+                if (status == -1) break;
             }
         }
     }

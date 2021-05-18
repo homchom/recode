@@ -9,4 +9,12 @@ public class StateChangeTrigger extends Trigger {
         return "stateChange";
     }
 
+    @Override
+    public String[] getEventVars() {
+        return new String[]{
+                "from",
+                "to"
+        };
+    }
+
 }

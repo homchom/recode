@@ -75,7 +75,7 @@ public class ReceiveChatMessageEvent {
 
 
         // detect if player is in beta
-        if (DFInfo.currentState == DFInfo.State.LOBBY && text.equals("◆ Welcome back to DiamondFire! ◆")) {
+        if (DFInfo.currentState == DFInfo.State.SPAWN && text.equals("◆ Welcome back to DiamondFire! ◆")) {
             DFInfo.isInBeta = false;
             Collection<String> lines = mc.world.getScoreboard().getKnownPlayers();
             for (String line : lines) {

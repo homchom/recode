@@ -37,7 +37,7 @@ public class ActionJson extends JSONObject {
                 if (varname.startsWith("config.")) {
                     result = Config.getString(noprefix);
                 } else if (varname.startsWith("translation.")) {
-                    result = Translation.get("module."+moduleId+"."+noprefix);
+                    result = Translation.get("module." + moduleId + "." + noprefix);
                 } else if (varname.startsWith("meta.")) {
                     result = Translation.get("module." + moduleId + ".meta." + noprefix);
                 } else if (varname.startsWith("event.")) {

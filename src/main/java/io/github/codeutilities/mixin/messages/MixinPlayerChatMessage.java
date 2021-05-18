@@ -95,7 +95,7 @@ public class MixinPlayerChatMessage {
                             }
                         }
                     } else {
-                        if (DFInfo.currentState != DFInfo.State.LOBBY || !mainHand.getName().getString().equals("◇ Game Menu ◇"))
+                        if (DFInfo.currentState != DFInfo.State.SPAWN || !mainHand.getName().getString().equals("◇ Game Menu ◇"))
                             conversationMessage(string, ci);
                     }
                 } else conversationMessage(string, ci);
