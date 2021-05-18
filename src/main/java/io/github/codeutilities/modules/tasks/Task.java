@@ -6,7 +6,9 @@ import io.github.codeutilities.modules.actions.json.ActionJson;
 import io.github.codeutilities.modules.actions.json.ModuleJson;
 import io.github.codeutilities.modules.triggers.Trigger;
 import org.json.JSONArray;
+import org.lwjgl.system.CallbackI;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -25,7 +27,7 @@ public class Task {
     public static void execute(String task, Trigger trigger, Object[] eventVars) {
         JSONArray actions = TASK_ACTIONS.get(task);
 
-        String moduleId = task.replaceAll("\\..*$", "");
+        String moduleId = task.replaceAll("\\.(?:.(?!\\.))+$", "");
         ModuleJson module = Module.getModule(moduleId);
 
         execute(actions, module, trigger, eventVars);
@@ -67,11 +69,8 @@ public class Task {
 
             // --- executor
             for (i = 0; i < actions.length(); i++) {
-                ActionJson actionObj = new ActionJson(actions.getJSONObject(i));
+                ActionJson actionObj = new ActionJson(actions.getJSONObject(i), module, VARIABLES);
                 String actionId = actionObj.getId();
-
-                actionObj.setVars(VARIABLES);
-                actionObj.setModule(module);
 
                 Action action = Action.getAction(actionId);
                 action.execute(actionObj);
