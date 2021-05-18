@@ -3,6 +3,7 @@ package io.github.codeutilities.modules.triggers;
 import io.github.codeutilities.modules.tasks.Task;
 import io.github.codeutilities.modules.triggers.impl.MessageReceivedTrigger;
 import io.github.codeutilities.modules.triggers.impl.StateChangeTrigger;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;

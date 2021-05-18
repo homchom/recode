@@ -1,6 +1,8 @@
 package io.github.codeutilities.modules.tasks;
 
+import io.github.codeutilities.modules.Module;
 import io.github.codeutilities.modules.actions.Action;
+import io.github.codeutilities.modules.actions.json.ActionJson;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -18,12 +20,22 @@ public class Task {
 
     public static void execute(String task) {
         JSONArray actions = TASK_ACTIONS.get(task);
-        execute(actions);
+
+        String moduleId = task.replaceAll("\\..*$", "");
+        JSONObject module = Module.getModule(moduleId);
+
+        execute(actions, module);
     }
 
-    public static void execute(JSONArray actions) {
+    public static void execute(JSONArray actions, JSONObject module) {
+        // load variables
+        HashMap<String, Object> VARIABLES = new HashMap<>();
+        // TODO
+
+        // executor
         for (int i = 0; i < actions.length(); i++) {
-            JSONObject actionObj = actions.getJSONObject(i);
+            ActionJson actionObj = (ActionJson) actions.getJSONObject(i);
+            actionObj.setVars(VARIABLES);
             String actionId = actionObj.getString("action");
 
             Action action = Action.getAction(actionId);

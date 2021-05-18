@@ -45,8 +45,9 @@ public class ConfigSubGroup implements IManager<ConfigSetting<?>>, IRawTranslati
         return name;
     }
 
-    public void setStartExpanded(boolean startExpanded) {
+    public ConfigSubGroup setStartExpanded(boolean startExpanded) {
         this.startExpanded = startExpanded;
+        return this;
     }
 
     public boolean isStartExpanded() {

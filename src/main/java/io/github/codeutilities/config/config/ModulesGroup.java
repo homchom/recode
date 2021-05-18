@@ -17,8 +17,6 @@ public class ModulesGroup extends ConfigGroup {
     @Override
     public void initialize() {
 
-        // TODO
-
         // Modules config
         for (JSONObject json : Module.MODULES) {
             // get module data
@@ -35,15 +33,15 @@ public class ModulesGroup extends ConfigGroup {
                     .setRawKey(name+" - by "+author)
                     .setRawTooltip(name+" ("+version+")\n"+
                             Translation.getExternal("config.codeutilities.category.modules.madeby").replaceAll("\\$author\\$", author)+
-                            "\n\n"+description+"\n\n⚠ "+Translation.getExternal("config.codeutilities.category.modules.warning"));
-            subGroup.setStartExpanded(false);
-            //subGroup.register(new DescriptionSetting( ....
+                            "\n\n"+description+"\n\n⚠ "+Translation.getExternal("config.codeutilities.category.modules.warning"))
+                    .setStartExpanded(false);
+            //subGroup.register(new DescriptionSetting( .... TODO
             subGroup.register(new BooleanSetting("enabled", true)
                     //.setKey("module.super."+moduleId+".enabled")
                     .setRawKey(Translation.getExternal("config.codeutilities.category.modules.enabled"))
                     .setRawTooltip(Translation.getExternal("config.codeutilities.category.modules.enabled.tooltip")));
 
-            //repeat over each custom config entry for the module
+            //repeat over each custom config entry for the module TODO
 
             this.register(subGroup);
         }

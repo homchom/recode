@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -25,6 +26,11 @@ public class Module {
     private static final FabricLoader FABRIC_LOADER = FabricLoader.getInstance();
 
     public static List<JSONObject> MODULES = new ArrayList<>();
+    private static HashMap<String, JSONObject> KEY_MODULES = new HashMap<>();
+
+    public static JSONObject getModule(String moduleId) {
+        return KEY_MODULES.get(moduleId);
+    }
 
     public static void loadModules() {
         Path modFolder = FABRIC_LOADER.getGameDir().resolve("CodeUtilities");
@@ -61,6 +67,8 @@ public class Module {
                 // Load meta
                 JSONObject meta = json.getJSONObject("meta");
                 String moduleId = meta.getString("id");
+
+                KEY_MODULES.put(moduleId, json);
 
                 if (!Config.getBoolean("module.super."+moduleId+".enabled")) continue;
 

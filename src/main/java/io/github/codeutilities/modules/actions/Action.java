@@ -1,7 +1,7 @@
 package io.github.codeutilities.modules.actions;
 
 import io.github.codeutilities.modules.actions.impl.MessageAction;
-import org.json.JSONObject;
+import io.github.codeutilities.modules.actions.json.ActionJson;
 
 import java.util.HashMap;
 
@@ -21,7 +21,7 @@ public class Action {
         return null;
     }
 
-    public void execute(JSONObject params) {
+    public void execute(ActionJson params) {
     }
 
     public static Action getAction(String id) {
