@@ -28,4 +28,8 @@ public class ModuleJson extends JSONObject {
         return this.getJSONObject("config");
     }
 
+    public String getId() {
+        return getMeta().getString("id");
+    }
+
 }

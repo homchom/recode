@@ -29,6 +29,10 @@ public class Trigger {
         return null;
     }
 
+    public String[] getEventVars() {
+        return null;
+    }
+
     public static Trigger getTrigger(String id) {
         return ID_TRIGGERS.get(id);
     }
@@ -48,9 +52,9 @@ public class Trigger {
         return TRIGGER_TASKS.containsKey(trigger.getId()) ? TRIGGER_TASKS.get(trigger.getId()) : new String[]{};
     }
 
-    public static void execute(Trigger trigger) {
+    public static void execute(Trigger trigger, Object... eventVars) {
         String[] tasks = getTasks(trigger);
-        Task.execute(tasks);
+        Task.execute(tasks, trigger, eventVars);
     }
 
 }

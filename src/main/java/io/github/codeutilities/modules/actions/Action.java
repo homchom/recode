@@ -21,8 +21,7 @@ public class Action {
         return null;
     }
 
-    public void execute(ActionJson params) {
-    }
+    public void execute(ActionJson params) {}
 
     public static Action getAction(String id) {
         return ACTION_IDS.get(id);

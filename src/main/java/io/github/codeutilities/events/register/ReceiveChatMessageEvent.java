@@ -54,8 +54,14 @@ public class ReceiveChatMessageEvent {
             cancel = true;
         }
 
+        String msgToString = message.toString();
+        String msgGetString = message.getString();
+
+        String msgWithColor = TextUtil.textComponentToColorCodes(message);
+        String msgWithoutColor = msgWithColor.replaceAll("§.", "");
+
         // module trigger
-        Trigger.execute(new MessageReceivedTrigger());
+        Trigger.execute(new MessageReceivedTrigger(), msgWithColor, msgWithoutColor);
 
         // cancel rpc /locate message
         if (DFDiscordRPC.locating) {
@@ -139,12 +145,6 @@ public class ReceiveChatMessageEvent {
                 pjoin = false;
             }
         }
-
-        String msgToString = message.toString();
-        String msgGetString = message.getString();
-
-        String msgWithColor = TextUtil.textComponentToColorCodes(message);
-        String msgWithoutColor = msgWithColor.replaceAll("§.", "");
 
         // highlight name
         if (Config.getBoolean("highlight")) {

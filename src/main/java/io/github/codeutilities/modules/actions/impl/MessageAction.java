@@ -6,6 +6,8 @@ import io.github.codeutilities.modules.actions.json.ActionJson;
 import io.github.codeutilities.util.chat.TextUtil;
 import net.minecraft.text.Text;
 
+import java.util.HashMap;
+
 public class MessageAction extends Action {
 
     @Override

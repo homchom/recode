@@ -47,6 +47,8 @@ public class Module {
         File[] moduleFiles = modulesFile.listFiles();
         if (moduleFiles != null) {
             CodeUtilities.log(Level.INFO, moduleFiles.length+" module"+(moduleFiles.length==1?"":"s")+" found.");
+
+            int successfulLoads = 0;
             for (File file : moduleFiles) {
                 // Load file
                 String jsonString = "";
@@ -72,7 +74,7 @@ public class Module {
 
                 KEY_MODULES.put(moduleId, json);
 
-                if (!Config.getBoolean("module.super."+moduleId+".enabled")) continue;
+                //if (!Config.getBoolean("module.super."+moduleId+".enabled")) continue; TODO
 
                 Iterator<String> keys = meta.keys();
                 while (keys.hasNext()) {
@@ -123,8 +125,9 @@ public class Module {
                 // TODO Load config
                 JSONObject config = json.getConfig();
 
+                successfulLoads++;
             }
-            CodeUtilities.log(Level.INFO, "Successfully loaded "+moduleFiles.length+" module"+(moduleFiles.length==1?"":"s")+"!");
+            CodeUtilities.log(Level.INFO, "Successfully loaded "+successfulLoads+" ("+successfulLoads+"/"+moduleFiles.length+") module"+(successfulLoads==1?"":"s")+"!");
         } else {
             CodeUtilities.log(Level.INFO, "No modules found.");
         }
