@@ -130,13 +130,13 @@ public class ConfigManager implements IManager<ConfigGroup> {
     public ConfigSetting<?> find(String key) {
         for (ConfigGroup group : groups) {
             for (ConfigSetting<?> setting : group.getSettings()) {
-                if (setting.getKey().equalsIgnoreCase(key)) {
+                if (setting.getCustomKey().equalsIgnoreCase(key)) {
                     return setting;
                 }
             }
             for (ConfigSubGroup configSubGroup : group.getRegistered()) {
                 for (ConfigSetting<?> configSetting : configSubGroup.getRegistered()) {
-                    if (configSetting.getKey().equalsIgnoreCase(key)) {
+                    if (configSetting.getCustomKey().equalsIgnoreCase(key)) {
                         return configSetting;
                     }
                 }

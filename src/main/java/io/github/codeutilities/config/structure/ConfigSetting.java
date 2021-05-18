@@ -13,6 +13,7 @@ public class ConfigSetting<Value> implements IRawTranslation<ConfigSetting<Value
 
     private LiteralText rawKey = null;
     private LiteralText rawTooltip = null;
+    private String keyName = null;
 
     public ConfigSetting() {
         this.key = "?";
@@ -26,6 +27,17 @@ public class ConfigSetting<Value> implements IRawTranslation<ConfigSetting<Value
         this.key = key;
         this.defaultValue = defaultValue;
         this.value = defaultValue;
+    }
+
+    @Override
+    public ConfigSetting<Value> setKeyName(String key) {
+        this.keyName = key;
+        return this;
+    }
+
+    @Override
+    public Optional<String> getKeyName() {
+        return Optional.ofNullable(keyName);
     }
 
     @Override
@@ -87,7 +99,7 @@ public class ConfigSetting<Value> implements IRawTranslation<ConfigSetting<Value
         return value instanceof Boolean;
     }
 
-    public String getKey() {
+    public String getCustomKey() {
         return key;
     }
 

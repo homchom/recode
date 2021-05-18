@@ -3,13 +3,17 @@ package io.github.codeutilities.config.internal;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 import io.github.codeutilities.CodeUtilities;
+import io.github.codeutilities.config.structure.ConfigGroup;
 import io.github.codeutilities.config.structure.ConfigManager;
+import io.github.codeutilities.config.structure.ConfigSetting;
+import io.github.codeutilities.config.structure.ConfigSubGroup;
 import io.github.codeutilities.util.file.ILoader;
 import io.github.codeutilities.util.file.ISave;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.*;
 import java.nio.file.Path;
+import java.util.Optional;
 
 public class ConfigFile implements ILoader, ISave {
     private static final FabricLoader FABRIC_LOADER = FabricLoader.getInstance();
@@ -54,13 +58,18 @@ public class ConfigFile implements ILoader, ISave {
         ConfigInstruction instruction = new ConfigInstruction();
 
         // Getting all the settings
-        ConfigManager.getInstance().getRegistered().forEach(group -> {
-            group.getSettings()
-                    .forEach(setting -> instruction.put(setting.getKey(), setting));
-            group.getRegistered().stream()
-                    .flatMap(configSubGroup -> configSubGroup.getRegistered().stream())
-                    .forEachOrdered(configSetting -> instruction.put(configSetting.getKey(), configSetting));
-        });
+        for (ConfigGroup group : ConfigManager.getInstance().getRegistered()) {
+            for (ConfigSetting<?> setting : group.getSettings()) {
+                Optional<String> keyName = setting.getKeyName();
+                instruction.put(keyName.orElseGet(setting::getCustomKey), setting);
+            }
+            for (ConfigSubGroup configSubGroup : group.getRegistered()) {
+                for (ConfigSetting<?> configSetting : configSubGroup.getRegistered()) {
+                    Optional<String> keyName = configSetting.getKeyName();
+                    instruction.put(keyName.orElseGet(configSetting::getCustomKey), configSetting);
+                }
+            }
+        }
 
         try {
             FileWriter configWriter = new FileWriter(this.configPath.toFile());
