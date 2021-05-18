@@ -11,7 +11,7 @@ public class Action {
             new MessageAction(),
             new SendMessageAction(),
             new StopIfEqualAction(),
-            new StopIfNotEqualAction(),
+            new ContinueIfEqual(),
             new WaitAction()
     };
     // actionId, action

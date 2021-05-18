@@ -4,11 +4,11 @@ import io.github.codeutilities.modules.actions.Action;
 import io.github.codeutilities.modules.actions.json.ActionJson;
 import io.github.codeutilities.modules.tasks.Task.TaskExecutorThread;
 
-public class StopIfNotEqualAction extends Action {
+public class ContinueIfEqual extends Action {
 
     @Override
     public String getId() {
-        return "stopIfNotEqual";
+        return "continueIfEqual";
     }
 
     @Override
