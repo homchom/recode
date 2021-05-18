@@ -2,6 +2,7 @@ package io.github.codeutilities.modules;
 
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.Config;
+import io.github.codeutilities.modules.actions.json.ModuleJson;
 import io.github.codeutilities.modules.tasks.Task;
 import io.github.codeutilities.modules.translations.Translation;
 import io.github.codeutilities.modules.triggers.Trigger;
@@ -25,10 +26,10 @@ public class Module {
 
     private static final FabricLoader FABRIC_LOADER = FabricLoader.getInstance();
 
-    public static List<JSONObject> MODULES = new ArrayList<>();
-    private static HashMap<String, JSONObject> KEY_MODULES = new HashMap<>();
+    public static List<ModuleJson> MODULES = new ArrayList<>();
+    private static HashMap<String, ModuleJson> KEY_MODULES = new HashMap<>();
 
-    public static JSONObject getModule(String moduleId) {
+    public static ModuleJson getModule(String moduleId) {
         return KEY_MODULES.get(moduleId);
     }
 
@@ -52,20 +53,21 @@ public class Module {
                 try { jsonString = FileUtil.readFile(String.valueOf(file.toPath()), Charset.defaultCharset());
                 } catch (IOException e) { e.printStackTrace(); }
 
-                JSONObject json;
-                try { json = new JSONObject(jsonString);
+                JSONObject jsonRead;
+                try { jsonRead = new JSONObject(jsonString);
                 } catch (JSONException e) {
                     CodeUtilities.log(Level.ERROR, "Error while loading module '"+file.getName()+"'. Stack Trace:");
                     e.printStackTrace();
                     continue;
                 }
+                ModuleJson json = new ModuleJson(jsonRead);
 
                 MODULES.add(json);
 
                 // --------- Load objects
 
                 // Load meta
-                JSONObject meta = json.getJSONObject("meta");
+                JSONObject meta = json.getMeta();
                 String moduleId = meta.getString("id");
 
                 KEY_MODULES.put(moduleId, json);
@@ -81,7 +83,7 @@ public class Module {
                 }
 
                 // Load triggers
-                JSONArray triggers = json.getJSONArray("triggers");
+                JSONArray triggers = json.getTriggers();
                 for (int i = 0; i < triggers.length(); i++) {
                     JSONObject trigger = triggers.getJSONObject(i);
 
@@ -93,7 +95,7 @@ public class Module {
                 }
 
                 // Load tasks
-                JSONArray tasks = json.getJSONArray("tasks");
+                JSONArray tasks = json.getTasks();
                 for (int i = 0; i < tasks.length(); i++) {
                     JSONObject task = tasks.getJSONObject(i);
 
@@ -104,7 +106,7 @@ public class Module {
                 }
 
                 // Load translations
-                JSONObject translations = json.getJSONObject("translations");
+                JSONObject translations = json.getTranslations();
 
                 JSONObject lang = translations.getJSONObject("en_us");
                 keys = lang.keys();
@@ -119,7 +121,7 @@ public class Module {
                 }
 
                 // TODO Load config
-                JSONObject config = json.getJSONObject("config");
+                JSONObject config = json.getConfig();
 
             }
             CodeUtilities.log(Level.INFO, "Successfully loaded "+moduleFiles.length+" module"+(moduleFiles.length==1?"":"s")+"!");
@@ -129,7 +131,7 @@ public class Module {
 
     }
 
-    public List<JSONObject> getModules() {
+    public List<ModuleJson> getModules() {
         return MODULES;
     }
 

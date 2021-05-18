@@ -3,6 +3,7 @@ package io.github.codeutilities.modules.tasks;
 import io.github.codeutilities.modules.Module;
 import io.github.codeutilities.modules.actions.Action;
 import io.github.codeutilities.modules.actions.json.ActionJson;
+import io.github.codeutilities.modules.actions.json.ModuleJson;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -22,15 +23,15 @@ public class Task {
         JSONArray actions = TASK_ACTIONS.get(task);
 
         String moduleId = task.replaceAll("\\..*$", "");
-        JSONObject module = Module.getModule(moduleId);
+        ModuleJson module = Module.getModule(moduleId);
 
         execute(actions, module);
     }
 
-    public static void execute(JSONArray actions, JSONObject module) {
+    public static void execute(JSONArray actions, ModuleJson module) {
         // load variables
         HashMap<String, Object> VARIABLES = new HashMap<>();
-        // TODO
+
 
         // executor
         for (int i = 0; i < actions.length(); i++) {

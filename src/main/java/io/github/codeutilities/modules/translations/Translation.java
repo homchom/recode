@@ -58,7 +58,11 @@ public class Translation {
             // get value from client lang or fallback lang json
             if (json.has(key)) {
                 value = json.getString(key);
-            } else value = fallbackJson.getString(key);
+            } else {
+                if (fallbackJson.has(key)) {
+                    value = fallbackJson.getString(key);
+                } else value = key;
+            }
 
             // cache and return result
             CLIENT_TRANSLATIONS.put(key, value);
