@@ -61,7 +61,7 @@ public class ConfigScreen implements ITranslatable {
             // Optimized loop
             for (int j = 0, groupSettingsSize = groupSettings.size(); j < groupSettingsSize; j++) {
                 ConfigSetting<?> groupSetting = groupSettings.get(j);
-                String settingKey = groupSetting.getKey();
+                String settingKey = groupSetting.getCustomKey();
 
                 // Get custom translations or standard ones
                 Text keyTranslation;
@@ -107,7 +107,7 @@ public class ConfigScreen implements ITranslatable {
                         .setTooltip(groupTooltip);
 
                 for (ConfigSetting<?> configSetting : subGroup.getRegistered()) {
-                    String settingKey = configSetting.getKey();
+                    String settingKey = configSetting.getCustomKey();
 
                     Text keyTranslation;
                     if (configSetting.getRawKey().isPresent()) {

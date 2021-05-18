@@ -38,7 +38,7 @@ public class MixinMouse {
     @Inject(method = "onMouseScroll(JDD)V", at = @At("HEAD"))
     private void onMouseScroll(long window, double horiz, double vertical, CallbackInfo ci) {
         Screen screen = CodeUtilities.MC.currentScreen;
-        if(screen instanceof GenericContainerScreen && Config.getBoolean("quicknum")) {
+        if (screen instanceof GenericContainerScreen && Config.getBoolean("quicknum")) {
             ScreenHandler handler = ((GenericContainerScreen) screen).getScreenHandler();
             List<Slot> slotList = handler.slots;
 
@@ -48,24 +48,24 @@ public class MixinMouse {
             double mouseY = y;
 
 
-            for(Slot slot:slotList) {
+            for (Slot slot : slotList) {
                 double sX = Math.floor(((double) (screen.width - 176) / 2) + slot.x);
                 double sY = Math.floor(((double) (screen.height - 166) / 2) + slot.y);
                 sX *= scale;
                 sY *= scale;
 
 
-                if(sX < mouseX && mouseX < sX + (16 * scale)) {
+                if (sX < mouseX && mouseX < sX + (16 * scale)) {
                     if (sY < mouseY && mouseY < sY + (16 * scale)) {
-                        if(System.currentTimeMillis() >= cd) {
+                        if (System.currentTimeMillis() >= cd) {
                             if (CodeUtilities.MC.player != null && CodeUtilities.MC.interactionManager != null && ItemUtil.isVar(slot.getStack(), "num")) {
-                                if(CodeUtilities.MC.player.isCreative()) {
+                                if (CodeUtilities.MC.player.isCreative()) {
                                     cd = System.currentTimeMillis() + 250;
                                     ItemStack itemStack = slot.getStack().copy();
 
                                     CompoundTag tag = itemStack.getTag();
 
-                                    if(tag == null) return;
+                                    if (tag == null) return;
 
                                     CompoundTag publicBukkitValues = tag.getCompound("PublicBukkitValues");
                                     String varItem = publicBukkitValues.getString("hypercube:varitem");
@@ -78,29 +78,35 @@ public class MixinMouse {
                                     try {
                                         BigDecimal bigDecimal = new BigDecimal(name);
 
-                                        if(Screen.hasControlDown()) {
-                                            if(vertical > 0) {
+                                        if (Screen.hasControlDown()) {
+                                            if (vertical > 0) {
                                                 bigDecimal = bigDecimal.add(BigDecimal.valueOf(Config.getDouble("quicknumSecondaryAmount")));
-                                                if(Config.getBoolean("quicknumSound")) CodeUtilities.MC.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_HAT, SoundCategory.PLAYERS, 1, 1);
-                                            }else {
+                                                if (Config.getBoolean("quicknumSound"))
+                                                    CodeUtilities.MC.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_HAT, SoundCategory.PLAYERS, 1, 1);
+                                            } else {
                                                 bigDecimal = bigDecimal.subtract(BigDecimal.valueOf(Config.getDouble("quicknumSecondaryAmount")));
-                                                if(Config.getBoolean("quicknumSound")) CodeUtilities.MC.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_HAT, SoundCategory.PLAYERS, 1, 0);
+                                                if (Config.getBoolean("quicknumSound"))
+                                                    CodeUtilities.MC.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_HAT, SoundCategory.PLAYERS, 1, 0);
                                             }
-                                        }else if(Screen.hasShiftDown()){
-                                            if(vertical > 0) {
+                                        } else if (Screen.hasShiftDown()) {
+                                            if (vertical > 0) {
                                                 bigDecimal = bigDecimal.add(BigDecimal.valueOf(Config.getDouble("quicknumTertiaryAmount")));
-                                                if(Config.getBoolean("quicknumSound")) CodeUtilities.MC.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_HAT, SoundCategory.PLAYERS, 1, 1);
-                                            }else {
+                                                if (Config.getBoolean("quicknumSound"))
+                                                    CodeUtilities.MC.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_HAT, SoundCategory.PLAYERS, 1, 1);
+                                            } else {
                                                 bigDecimal = bigDecimal.subtract(BigDecimal.valueOf(Config.getDouble("quicknumTertiaryAmount")));
-                                                if(Config.getBoolean("quicknumSound")) CodeUtilities.MC.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_HAT, SoundCategory.PLAYERS, 1, 0);
+                                                if (Config.getBoolean("quicknumSound"))
+                                                    CodeUtilities.MC.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_HAT, SoundCategory.PLAYERS, 1, 0);
                                             }
-                                        }else {
-                                            if(vertical > 0) {
+                                        } else {
+                                            if (vertical > 0) {
                                                 bigDecimal = bigDecimal.add(BigDecimal.valueOf(Config.getDouble("quicknumPrimaryAmount")));
-                                                if(Config.getBoolean("quicknumSound")) CodeUtilities.MC.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_HAT, SoundCategory.PLAYERS, 1, 1);
-                                            }else {
+                                                if (Config.getBoolean("quicknumSound"))
+                                                    CodeUtilities.MC.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_HAT, SoundCategory.PLAYERS, 1, 1);
+                                            } else {
                                                 bigDecimal = bigDecimal.subtract(BigDecimal.valueOf(Config.getDouble("quicknumPrimaryAmount")));
-                                                if(Config.getBoolean("quicknumSound")) CodeUtilities.MC.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_HAT, SoundCategory.PLAYERS, 1, 0);
+                                                if (Config.getBoolean("quicknumSound"))
+                                                    CodeUtilities.MC.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_HAT, SoundCategory.PLAYERS, 1, 0);
                                             }
                                         }
 
@@ -117,8 +123,9 @@ public class MixinMouse {
                                                 .styled(style -> style.withColor(TextColor.fromFormatting(Formatting.RED)).withItalic(false)));
 
                                         ItemUtil.setContainerItem(slot.id, itemStack);
-                                    }catch(NumberFormatException e) {
-                                        if(Config.getBoolean("quicknumSound")) CodeUtilities.MC.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_DIDGERIDOO, SoundCategory.PLAYERS, 1, 0);
+                                    } catch (NumberFormatException e) {
+                                        if (Config.getBoolean("quicknumSound"))
+                                            CodeUtilities.MC.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_DIDGERIDOO, SoundCategory.PLAYERS, 1, 0);
                                     }
 
 

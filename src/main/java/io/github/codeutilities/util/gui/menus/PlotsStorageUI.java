@@ -1,11 +1,11 @@
 package io.github.codeutilities.util.gui.menus;
 
 import io.github.codeutilities.commands.impl.util.PlotsCommand;
+import io.github.codeutilities.util.chat.ChatType;
+import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.codeutilities.util.gui.IMenu;
 import io.github.codeutilities.util.gui.widgets.ItemGridPanel;
 import io.github.codeutilities.util.gui.widgets.PlotItem;
-import io.github.codeutilities.util.chat.ChatType;
-import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.codeutilities.util.networking.DFInfo;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import net.minecraft.item.ItemStack;

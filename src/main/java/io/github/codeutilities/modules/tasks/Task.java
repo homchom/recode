@@ -45,7 +45,7 @@ public class Task {
             this.module = module;
             this.trigger = trigger;
             this.eventVars = eventVars;
-            this.status = 1;
+            TaskExecutorThread.status = 1;
         }
 
         private final JSONArray actions;

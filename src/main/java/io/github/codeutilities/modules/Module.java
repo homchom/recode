@@ -1,7 +1,6 @@
 package io.github.codeutilities.modules;
 
 import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.config.Config;
 import io.github.codeutilities.modules.actions.json.ModuleJson;
 import io.github.codeutilities.modules.tasks.Task;
 import io.github.codeutilities.modules.translations.Translation;
@@ -27,7 +26,7 @@ public class Module {
     private static final FabricLoader FABRIC_LOADER = FabricLoader.getInstance();
 
     public static List<ModuleJson> MODULES = new ArrayList<>();
-    private static HashMap<String, ModuleJson> KEY_MODULES = new HashMap<>();
+    private static final HashMap<String, ModuleJson> KEY_MODULES = new HashMap<>();
 
     public static ModuleJson getModule(String moduleId) {
         return KEY_MODULES.get(moduleId);
@@ -46,19 +45,23 @@ public class Module {
 
         File[] moduleFiles = modulesFile.listFiles();
         if (moduleFiles != null) {
-            CodeUtilities.log(Level.INFO, moduleFiles.length+" module"+(moduleFiles.length==1?"":"s")+" found.");
+            CodeUtilities.log(Level.INFO, moduleFiles.length + " module" + (moduleFiles.length == 1 ? "" : "s") + " found.");
 
             int successfulLoads = 0;
             for (File file : moduleFiles) {
                 // Load file
                 String jsonString = "";
-                try { jsonString = FileUtil.readFile(String.valueOf(file.toPath()), Charset.defaultCharset());
-                } catch (IOException e) { e.printStackTrace(); }
+                try {
+                    jsonString = FileUtil.readFile(String.valueOf(file.toPath()), Charset.defaultCharset());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
                 JSONObject jsonRead;
-                try { jsonRead = new JSONObject(jsonString);
+                try {
+                    jsonRead = new JSONObject(jsonString);
                 } catch (JSONException e) {
-                    CodeUtilities.log(Level.ERROR, "Error while loading module '"+file.getName()+"'. Stack Trace:");
+                    CodeUtilities.log(Level.ERROR, "Error while loading module '" + file.getName() + "'. Stack Trace:");
                     e.printStackTrace();
                     continue;
                 }
@@ -81,7 +84,7 @@ public class Module {
                     String key = keys.next();
                     String value = meta.getString(key);
 
-                    Translation.put("module."+moduleId+".meta."+key, value);
+                    Translation.put("module." + moduleId + ".meta." + key, value);
                 }
 
                 // Load triggers
@@ -101,7 +104,7 @@ public class Module {
                 for (int i = 0; i < tasks.length(); i++) {
                     JSONObject task = tasks.getJSONObject(i);
 
-                    String taskName = moduleId+"."+task.getString("name");
+                    String taskName = moduleId + "." + task.getString("name");
                     JSONArray actions = task.getJSONArray("actions");
 
                     Task.putActions(taskName, actions);
@@ -115,7 +118,7 @@ public class Module {
                 for (int i = 0; i < 2; i++) {
                     while (keys.hasNext()) {
                         String key = keys.next();
-                        Translation.put("module."+moduleId+"."+key, lang.getString(key));
+                        Translation.put("module." + moduleId + "." + key, lang.getString(key));
                     }
                     if (!translations.has(CodeUtilities.CLIENT_LANG)) break;
                     lang = translations.getJSONObject(CodeUtilities.CLIENT_LANG);
@@ -127,7 +130,7 @@ public class Module {
 
                 successfulLoads++;
             }
-            CodeUtilities.log(Level.INFO, "Successfully loaded "+successfulLoads+" ("+successfulLoads+"/"+moduleFiles.length+") module"+(successfulLoads==1?"":"s")+"!");
+            CodeUtilities.log(Level.INFO, "Successfully loaded " + successfulLoads + " (" + successfulLoads + "/" + moduleFiles.length + ") module" + (successfulLoads == 1 ? "" : "s") + "!");
         } else {
             CodeUtilities.log(Level.INFO, "No modules found.");
         }

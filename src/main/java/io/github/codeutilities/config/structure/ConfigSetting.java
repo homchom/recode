@@ -13,6 +13,8 @@ public class ConfigSetting<Value> implements IRawTranslation<ConfigSetting<Value
 
     private LiteralText rawKey = null;
     private LiteralText rawTooltip = null;
+    private String keyName = null;
+    private String description = null;
 
     public ConfigSetting() {
         this.key = "?";
@@ -26,6 +28,26 @@ public class ConfigSetting<Value> implements IRawTranslation<ConfigSetting<Value
         this.key = key;
         this.defaultValue = defaultValue;
         this.value = defaultValue;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    public Optional<String> getDescription() {
+        return Optional.ofNullable(description);
+    }
+
+    @Override
+    public ConfigSetting<Value> setKeyName(String key) {
+        this.keyName = key;
+        return this;
+    }
+
+    @Override
+    public Optional<String> getKeyName() {
+        return Optional.ofNullable(keyName);
     }
 
     @Override
@@ -87,7 +109,7 @@ public class ConfigSetting<Value> implements IRawTranslation<ConfigSetting<Value
         return value instanceof Boolean;
     }
 
-    public String getKey() {
+    public String getCustomKey() {
         return key;
     }
 

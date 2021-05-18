@@ -17,11 +17,11 @@ import io.github.codeutilities.features.external.AudioHandler;
 import io.github.codeutilities.features.external.DFDiscordRPC;
 import io.github.codeutilities.features.social.chat.ConversationTimer;
 import io.github.codeutilities.features.social.cosmetics.CosmeticHandler;
-import io.github.codeutilities.util.file.FileUtil;
-import io.github.codeutilities.util.gui.menus.CustomHeadMenu;
 import io.github.codeutilities.modules.Module;
 import io.github.codeutilities.modules.actions.Action;
 import io.github.codeutilities.modules.triggers.Trigger;
+import io.github.codeutilities.util.file.FileUtil;
+import io.github.codeutilities.util.gui.menus.CustomHeadMenu;
 import io.github.codeutilities.util.networking.socket.SocketHandler;
 import io.github.codeutilities.util.templates.TemplateStorageHandler;
 import net.fabricmc.api.ModInitializer;
@@ -66,13 +66,16 @@ public class CodeUtilities implements ModInitializer {
     public static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
     public static Screen SCREEN_TO_OPEN;
 
-    private static Path optionsTxtPath = FabricLoader.getInstance().getGameDir().resolve("options.txt");
+    private static final Path optionsTxtPath = FabricLoader.getInstance().getGameDir().resolve("options.txt");
     public static String OPTIONSTXT = "";
     public static String CLIENT_LANG = "unknown";
 
     static {
-        try { OPTIONSTXT = FileUtil.readFile(optionsTxtPath.toString(), Charset.defaultCharset());
-        } catch (IOException e) { e.printStackTrace(); }
+        try {
+            OPTIONSTXT = FileUtil.readFile(optionsTxtPath.toString(), Charset.defaultCharset());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

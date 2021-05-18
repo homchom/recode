@@ -16,7 +16,7 @@ public class Action {
             new WaitAction()
     };
     // actionId, action
-    private static HashMap<String, Action> ACTION_IDS = new HashMap<>();
+    private static final HashMap<String, Action> ACTION_IDS = new HashMap<>();
 
     public static void cacheActions() {
         for (Action action : ACTIONS) {
@@ -28,7 +28,8 @@ public class Action {
         return null;
     }
 
-    public void execute(ActionJson params) {}
+    public void execute(ActionJson params) {
+    }
 
     public static Action getAction(String id) {
         return ACTION_IDS.get(id);

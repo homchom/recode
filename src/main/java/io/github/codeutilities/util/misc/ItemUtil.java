@@ -53,14 +53,15 @@ public class ItemUtil {
 
     /**
      * Sets the item at a container slot. (Only works in creative)
-     * @param slot The slot you want to change.
+     *
+     * @param slot      The slot you want to change.
      * @param itemStack The item stack to replace it with
      */
     public static void setContainerItem(int slot, ItemStack itemStack) {
         MinecraftClient mc = CodeUtilities.MC;
 
         // this method kinda doesnt work in survival mode so let's throw an exception if this happens.
-        if(!mc.player.isCreative()) {
+        if (!mc.player.isCreative()) {
             throw new IllegalStateException("Player is not in creative mode.");
         }
 

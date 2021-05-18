@@ -18,21 +18,21 @@ public class CountCommand extends Command {
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("count")
                 .executes(ctx -> {
-                            new Thread(() -> {
-                                String jsonObject = null;
-                                try {
-                                    jsonObject = WebUtil.getString("https://api.countapi.xyz/hit/CodeUtilitiesCounter");
-                                    String count = CodeUtilities.JSON_PARSER.parse(jsonObject).getAsJsonObject().get("value").getAsString();
-                                    ChatUtil.sendMessage("The CodeUtilities community has typed this command §b" + count + "§f times!", ChatType.SUCCESS);
+                    new Thread(() -> {
+                        String jsonObject = null;
+                        try {
+                            jsonObject = WebUtil.getString("https://api.countapi.xyz/hit/CodeUtilitiesCounter");
+                            String count = CodeUtilities.JSON_PARSER.parse(jsonObject).getAsJsonObject().get("value").getAsString();
+                            ChatUtil.sendMessage("The CodeUtilities community has typed this command §b" + count + "§f times!", ChatType.SUCCESS);
 
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
 
-                            }).start();
-                            return 1;
+                    }).start();
+                    return 1;
 
-                            })
+                })
         );
     }
 }
