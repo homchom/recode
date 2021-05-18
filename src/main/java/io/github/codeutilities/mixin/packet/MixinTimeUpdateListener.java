@@ -30,7 +30,10 @@ public class MixinTimeUpdateListener {
         if (oldState == null) oldStateName = "null"; else oldStateName = oldState.getName();
         if (newState == null) newStateName = "null"; else newStateName = newState.getName();
 
-        if (newState != oldState) Trigger.execute(new StateChangeTrigger(), oldStateName, newStateName);
+        if (newState != oldState) {
+            oldState = newState;
+            Trigger.execute(new StateChangeTrigger(), oldStateName, newStateName);
+        }
 
         oldState = newState;
 
