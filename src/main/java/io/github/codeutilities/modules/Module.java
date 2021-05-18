@@ -70,7 +70,7 @@ public class Module {
 
                 // Load meta
                 JSONObject meta = json.getMeta();
-                String moduleId = meta.getString("id");
+                String moduleId = json.getId();
 
                 KEY_MODULES.put(moduleId, json);
 

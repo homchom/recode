@@ -29,7 +29,7 @@ public class ModuleJson extends JSONObject {
     }
 
     public String getId() {
-        return getMeta().getString("id");
+        return this.getMeta().getString("id");
     }
 
 }

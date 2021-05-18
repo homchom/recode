@@ -9,6 +9,7 @@ public class Action {
 
     private static final Action[] ACTIONS = new Action[]{
             new MessageAction(),
+            new CancelNextMessagesAction(),
             new SendMessageAction(),
             new StopIfEqualAction(),
             new ContinueIfEqual(),
