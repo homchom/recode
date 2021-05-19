@@ -29,6 +29,7 @@ public class AudioHandler implements ILoader {
 
     private String currentPlotId = "";
     private final Map<String, Set<MediaPlayer>> tracks = new HashMap<>();
+    private boolean isActive = true;
 
     public AudioHandler() {
         instance = this;
@@ -51,6 +52,7 @@ public class AudioHandler implements ILoader {
 
                 Socket socket = IO.socket(uri, options);
                 socket.on("message", args -> {
+                    if (!isActive) return;
                     String jsonText = args[0].toString();
                     JsonObject json = CodeUtilities.JSON_PARSER.parse(jsonText).getAsJsonObject();
                     String action = json.get("action").getAsString();
@@ -129,6 +131,17 @@ public class AudioHandler implements ILoader {
             });
         } catch (Exception err) {
             err.printStackTrace();
+        }
+    }
+
+    public void setActive(boolean isActive) {
+        if (this.isActive != isActive) {
+            this.isActive = isActive;
+            if (!isActive) for (Map.Entry<String, Set<MediaPlayer>> trackList : tracks.entrySet()) {
+                for (MediaPlayer audio : trackList.getValue()) {
+                    audio.stop();
+                }
+            }
         }
     }
 
