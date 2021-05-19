@@ -42,6 +42,7 @@ public class Translation {
             String jsonString = "";
             try { jsonString = FileUtil.readFile(String.valueOf(path), Charset.defaultCharset());
             } catch (IOException e) { e.printStackTrace(); }
+
             JSONObject json = new JSONObject();
             try { json = new JSONObject(jsonString);
             } catch (JSONException e) { e.printStackTrace(); }
@@ -49,8 +50,8 @@ public class Translation {
             // get fallback lang json
             jsonString = "";
             try { jsonString = FileUtil.readFile(String.valueOf(fallbackPath), Charset.defaultCharset());
-            } catch (IOException e) { e.printStackTrace();
-            }
+            } catch (IOException e) { e.printStackTrace(); }
+
             JSONObject fallbackJson = new JSONObject();
             try { fallbackJson = new JSONObject(jsonString);
             } catch (JSONException e) { e.printStackTrace(); }

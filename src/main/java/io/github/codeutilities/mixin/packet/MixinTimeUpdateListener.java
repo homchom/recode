@@ -27,6 +27,8 @@ public class MixinTimeUpdateListener {
         // StateChangeTrigger
         newState = DFInfo.currentState;
 
+        if (!DFInfo.isOnDF()) DFInfo.currentState = null;
+
         if (oldState == null) oldStateName = "null";
         else oldStateName = oldState.getName();
         if (newState == null) newStateName = "null";
@@ -38,7 +40,5 @@ public class MixinTimeUpdateListener {
         }
 
         oldState = newState;
-
-        if (!DFInfo.isOnDF()) DFInfo.currentState = null;
     }
 }

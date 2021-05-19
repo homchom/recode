@@ -27,9 +27,6 @@ public class ActionJson extends JSONObject {
         String value = (String) this.get(key);
 
         if (value.contains("${")) {
-
-            System.out.println("was "+value);
-
             Pattern pattern = Pattern.compile("\\$\\{([a-z]|\\.)+}");
             Matcher matcher = pattern.matcher(value);
 
@@ -39,22 +36,13 @@ public class ActionJson extends JSONObject {
             while (matcher.find()) {
                 String match = matcher.group(i);
                 matches.add(match);
-                System.out.println("match "+match);
             }
             for (String match : matches) {
                 String result = "null";
-
-                System.out.println("module "+module);
                 String moduleId = module.getId();
-                System.out.println("moduleId "+moduleId);
-
-                System.out.println("vars "+variables.keySet());
 
                 String varname = match.replaceAll("^\\$\\{|}$", "");
-                System.out.println("varname "+varname);
                 String noprefix = varname.replaceFirst("^[a-z]+.", "");
-
-                System.out.println("noprefix "+noprefix);
 
                 if (varname.startsWith("config.")) {
                     result = Config.getString(noprefix);
@@ -68,16 +56,11 @@ public class ActionJson extends JSONObject {
                     result = (String) variables.get(varname);
                 }
 
-                System.out.println("result "+result);
-
                 value = Pattern.compile(match, Pattern.LITERAL).
                         matcher(value).replaceFirst(Matcher.quoteReplacement(result));
                 i++;
-
-                System.out.println("newValue "+value);
             }
 
-            System.out.println("is "+value);
         }
 
         return value;

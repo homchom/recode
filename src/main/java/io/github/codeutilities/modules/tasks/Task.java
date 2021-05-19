@@ -6,9 +6,7 @@ import io.github.codeutilities.modules.actions.json.ActionJson;
 import io.github.codeutilities.modules.actions.json.ModuleJson;
 import io.github.codeutilities.modules.triggers.Trigger;
 import org.json.JSONArray;
-import org.lwjgl.system.CallbackI;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -40,11 +38,14 @@ public class Task {
     }
 
     public static class TaskExecutorThread extends Thread {
+        private HashMap<String, Object> VARIABLES;
+
         public TaskExecutorThread(JSONArray actions, ModuleJson module, Trigger trigger, Object[] eventVars, int status) {
             this.actions = actions;
             this.module = module;
             this.trigger = trigger;
             this.eventVars = eventVars;
+            this.VARIABLES = new HashMap<>();
             TaskExecutorThread.status = 1;
         }
 
@@ -57,26 +58,32 @@ public class Task {
         @Override
         public void run() {
             // --- load variables
-            HashMap<String, Object> VARIABLES = new HashMap<>();
+            this.VARIABLES = new HashMap<>();
 
             // load event vars
             String[] eventVarNames = trigger.getEventVars();
             int i = 0;
             for (Object var : eventVars) {
-                VARIABLES.put("event." + eventVarNames[i], var);
+                this.VARIABLES.put("event."+eventVarNames[i], var);
                 i++;
             }
 
             // --- executor
             for (i = 0; i < actions.length(); i++) {
-                ActionJson actionObj = new ActionJson(actions.getJSONObject(i), module, VARIABLES);
+                ActionJson actionObj = new ActionJson(actions.getJSONObject(i), module, this.VARIABLES);
                 String actionId = actionObj.getId();
+
+                actionObj.put("_thread", this);
 
                 Action action = Action.getAction(actionId);
                 action.execute(actionObj);
 
                 if (status == -1) break;
             }
+        }
+
+        public void putVariable(String key, Object value) {
+            this.VARIABLES.put(key, value);
         }
     }
 

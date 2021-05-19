@@ -12,11 +12,8 @@ public class WaitAction extends Action {
 
     @Override
     public void execute(ActionJson params) {
-        try {
-            Thread.sleep(params.getInt("amount"));
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        try { Thread.sleep(params.getInt("amount"));
+        } catch (InterruptedException e) { e.printStackTrace(); }
     }
 
 }
