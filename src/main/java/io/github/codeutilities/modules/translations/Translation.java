@@ -40,31 +40,20 @@ public class Translation {
 
             // get client lang json
             String jsonString = "";
-            try {
-                jsonString = FileUtil.readFile(String.valueOf(path), Charset.defaultCharset());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            try { jsonString = FileUtil.readFile(String.valueOf(path), Charset.defaultCharset());
+            } catch (IOException e) { e.printStackTrace(); }
             JSONObject json = new JSONObject();
-            try {
-                json = new JSONObject(jsonString);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            try { json = new JSONObject(jsonString);
+            } catch (JSONException e) { e.printStackTrace(); }
 
             // get fallback lang json
             jsonString = "";
-            try {
-                jsonString = FileUtil.readFile(String.valueOf(fallbackPath), Charset.defaultCharset());
-            } catch (IOException e) {
-                e.printStackTrace();
+            try { jsonString = FileUtil.readFile(String.valueOf(fallbackPath), Charset.defaultCharset());
+            } catch (IOException e) { e.printStackTrace();
             }
             JSONObject fallbackJson = new JSONObject();
-            try {
-                fallbackJson = new JSONObject(jsonString);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            try { fallbackJson = new JSONObject(jsonString);
+            } catch (JSONException e) { e.printStackTrace(); }
 
             // get value from client lang or fallback lang json
             if (json.has(key)) {
