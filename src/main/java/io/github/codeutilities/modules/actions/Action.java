@@ -13,7 +13,8 @@ public class Action {
             new SendMessageAction(),
             new StopIfEqualAction(),
             new ContinueIfEqual(),
-            new WaitAction()
+            new WaitAction(),
+            new GrabMessagesAction()
     };
     // actionId, action
     private static final HashMap<String, Action> ACTION_IDS = new HashMap<>();
