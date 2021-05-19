@@ -23,7 +23,7 @@ public class ConfigManager implements IManager<ConfigGroup> {
     @Override
     public void initialize() {
         // Initial settings and creation of memory placements
-        this.register(new ModulesGroup("modules"));
+        //this.register(new ModulesGroup("modules"));
         this.register(new AutomationGroup("automation"));
         this.register(new CommandsGroup("commands"));
         this.register(new HidingGroup("hiding"));
