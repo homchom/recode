@@ -13,7 +13,6 @@ import io.github.codeutilities.config.structure.ConfigManager;
 import io.github.codeutilities.config.types.*;
 import io.github.codeutilities.config.types.list.StringListSetting;
 import io.github.codeutilities.events.EventHandler;
-import io.github.codeutilities.features.external.AudioHandler;
 import io.github.codeutilities.features.external.DFDiscordRPC;
 import io.github.codeutilities.features.social.chat.ConversationTimer;
 import io.github.codeutilities.features.social.cosmetics.CosmeticHandler;
@@ -105,7 +104,7 @@ public class CodeUtilities implements ModInitializer {
         //initializer.add(new PlayerlistStarServer());
 
         // Initializes only if the given condition is met. (this case: config value)
-        initializer.addIf(new AudioHandler(), Config.getBoolean("audio"));
+//        initializer.addIf(new AudioHandler(), Config.getBoolean("audio"));
         initializer.addIf(new SocketHandler(), Config.getBoolean("itemApi"));
         MC.send(CosmeticHandler.INSTANCE::load);
 
