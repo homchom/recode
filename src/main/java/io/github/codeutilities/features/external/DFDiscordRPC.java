@@ -108,7 +108,7 @@ public class DFDiscordRPC implements ILoader {
             if (state.isInSession()) presence.setSmallImage("supportsession", "In Support Session");
             else presence.setSmallImage(null, null);
             presence.setLargeImage("diamondfirelogo", "mcdiamondfire.com");
-        } else {
+        } else if(state.getPlot() != null && state.getNode() != null) {
             // BUILD RICH PRESENCE
             presence.setState("Plot ID: " + state.getPlot().getId() + " - Node " + (state.getNode() != null ? state.getNode().getIdentifier() : "?"));
             presence.setDetails(state.getPlot().getName() + " ");
@@ -117,6 +117,9 @@ public class DFDiscordRPC implements ILoader {
                 if (state.isInSession()) presence.setSmallImage("supportsession", "In Support Session (" + state.getMode().getContinuousVerb() + ")");
             }
             presence.setLargeImage("diamondfirelogo", state.getPlot().getStatus().equals("") ? "mcdiamondfire.com" : state.getPlot().getStatus());
+        } else {
+            close();
+            return;
         }
 
         if (!oldMode.equals(mode)) {
