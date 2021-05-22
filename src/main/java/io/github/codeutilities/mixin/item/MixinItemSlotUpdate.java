@@ -6,6 +6,7 @@ import io.github.codeutilities.events.register.ReceiveChatMessageEvent;
 import io.github.codeutilities.features.keybinds.FlightspeedToggle;
 import io.github.codeutilities.util.gui.CPU_UsageText;
 import io.github.codeutilities.util.networking.DFInfo;
+import io.github.codeutilities.util.networking.State;
 import io.github.codeutilities.util.templates.TemplateStorageHandler;
 import io.github.codeutilities.util.templates.TemplateUtils;
 import net.minecraft.client.MinecraftClient;
@@ -45,8 +46,8 @@ public class MixinItemSlotUpdate {
                     && lore.toText().getString().contains("\"Click to open the Game Menu.\"")
                     && lore.toText().getString().contains("\"Hold and type in chat to search.\"")) {
 
-                if (DFInfo.currentState != DFInfo.State.SPAWN) {
-                    DFInfo.currentState = DFInfo.State.SPAWN;
+                if (DFInfo.currentState.getMode() != State.Mode.SPAWN) {
+                    DFInfo.currentState.sendLocate();
 
                     // Auto fly
                     if (Config.getBoolean("autofly")) {
@@ -70,8 +71,8 @@ public class MixinItemSlotUpdate {
                     && lore.toText().getString().contains("\"is done by (or happens to) a player.\"")
                     && lore.toText().getString().contains("\"Example:\"")) {
 
-                if (DFInfo.currentState != DFInfo.State.DEV) {
-                    DFInfo.currentState = DFInfo.State.DEV;
+                if (DFInfo.currentState.getMode() != State.Mode.DEV) {
+                    DFInfo.currentState.sendLocate();
                     DFInfo.plotCorner = mc.player.getPos().add(10, -50, -10);
 
                     // Auto LagSlayer

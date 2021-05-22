@@ -2,6 +2,7 @@ package io.github.codeutilities.features.keybinds;
 
 import io.github.codeutilities.config.Config;
 import io.github.codeutilities.util.networking.DFInfo;
+import io.github.codeutilities.util.networking.State;
 import io.github.codeutilities.util.templates.SearchUtil;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -160,12 +161,12 @@ public class Keybinds implements ClientModInitializer {
 
             // toggle play dev
             while (toggle_play_dev.wasPressed()) {
-                sendChat(DFInfo.currentState == DFInfo.State.PLAY ? "/dev" : "/play");
+                sendChat(DFInfo.currentState.getMode() == State.Mode.PLAY ? "/dev" : "/play");
             }
 
             // toggle play build
             while (toggle_play_build.wasPressed()) {
-                sendChat(DFInfo.currentState == DFInfo.State.PLAY ? "/build" : "/play");
+                sendChat(DFInfo.currentState.getMode() == State.Mode.PLAY ? "/build" : "/play");
             }
 
             // spawn
@@ -276,7 +277,7 @@ public class Keybinds implements ClientModInitializer {
 
             // search
             while (searchFunction.wasPressed()) {
-                if (DFInfo.isOnDF() && DFInfo.currentState == DFInfo.State.DEV && mc.player.isCreative()) {
+                if (DFInfo.isOnDF() && DFInfo.currentState.getMode() == State.Mode.DEV && mc.player.isCreative()) {
                     BlockEntity blockEntity = mc.world.getBlockEntity(new BlockPos(mc.crosshairTarget.getPos()));
 
                     if (blockEntity != null) {

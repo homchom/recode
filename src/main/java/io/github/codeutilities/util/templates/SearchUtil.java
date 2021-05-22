@@ -52,21 +52,22 @@ public class SearchUtil {
     }
 
     public enum SearchType {
-        FUNCTION(Arrays.asList("CALL FUNCTION", "FUNCTION")),
-        PROCESS(Arrays.asList("START PROCESS", "PROCESS")),
-        PLAYER_EVENT(Collections.singletonList("PLAYER EVENT")),
         PLAYER_ACTION(Collections.singletonList("PLAYER ACTION")),
         IF_PLAYER(Collections.singletonList("IF PLAYER")),
-        SET_VARIABLE(Collections.singletonList("SET VARIABLE")),
-        IF_VARIABLE(Collections.singletonList("IF VARIABLE")),
-        GAME_ACTION(Collections.singletonList("GAME ACTION")),
-        IF_GAME(Collections.singletonList("IF GAME")),
-        ENTITY_ACTION(Collections.singletonList("ENTITY ACTION")),
+        FUNC(Arrays.asList("CALL FUNCTION", "FUNCTION")),
         ENTITY_EVENT(Collections.singletonList("ENTITY EVENT")),
+        SET_VAR(Collections.singletonList("SET VARIABLE")),
         IF_ENTITY(Collections.singletonList("IF ENTITY")),
+        ENTITY_ACTION(Collections.singletonList("ENTITY ACTION")),
+        IF_VAR(Collections.singletonList("IF VARIABLE")),
+        SELECT_OBJ(Collections.singletonList("SELECT OBJECT")),
+        EVENT(Collections.singletonList("PLAYER EVENT")),
+        GAME_ACTION(Collections.singletonList("GAME ACTION")),
+        ELSE(Collections.singletonList("ELSE")),
+        PROCESS(Arrays.asList("START PROCESS", "PROCESS")),
         CONTROL(Collections.singletonList("CONTROL")),
-        SELECT_OBJECT(Collections.singletonList("SELECT OBJECT")),
-        REPEAT(Collections.singletonList("REPEAT"));
+        REPEAT(Collections.singletonList("REPEAT")),
+        IF_GAME(Collections.singletonList("IF GAME"));
 
         public final List<String> signText;
 

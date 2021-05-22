@@ -1,5 +1,6 @@
 package io.github.codeutilities.util.misc;
 
+import com.google.gson.JsonArray;
 import io.github.codeutilities.CodeUtilities;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Style;
@@ -7,8 +8,13 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
 
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.StringSelection;
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.HashSet;
 
 public class StringUtil {
 
@@ -98,4 +104,35 @@ public class StringUtil {
 
         return out.toString();
     }
+
+    public static void copyToClipboard(String contents){
+        StringSelection stringSelection = new StringSelection(contents);
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(stringSelection, null);
+    }
+
+    public static String[] toStringArray(JsonArray array) {
+        if(array == null)
+            return null;
+        if(array.size() == 0)
+            return new String[0];
+
+        String[] arr = new String[array.size()];
+        for(int i = 0; i < arr.length; i++) {
+            arr[i] = array.get(i).getAsString();
+        }
+        return arr;
+    }
+
+    public static HashSet<String[]> toStringListHashSet(JsonArray array) {
+        if(array == null)
+            return null;
+
+        HashSet<String[]> arr = new HashSet<String[]>();
+        for(int i = 0; i < array.size(); i++) {
+            arr.add(toStringArray(array.get(i).getAsJsonArray()));
+        }
+        return arr;
+    }
+
 }

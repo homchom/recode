@@ -193,7 +193,8 @@
     "codeutilities.command.require_dev_mode": "You must be in dev mode to use this command!",
 
     "codeutilities.template_search.cleared": "Search Cleared!",
-    "codeutilities.template_search.invalid_usage": "Invalid Codeblock: %s",
+    "codeutilities.template_search.invalid": "Invalid Action '%s'.",
+    "codeutilities.template_search.begin_search": "Results of '%s'",
 
     "key.category.codeutilities": "CodeUtilities",
 
@@ -230,6 +231,7 @@
     "key.codeutilities.node3": "Node 3",
     "key.codeutilities.node4": "Node 4",
     "key.codeutilities.node5": "Node 5",
-    "key.codeutilities.node_beta": "Node Beta"
+    "key.codeutilities.node_beta": "Node Beta",
 
+    "key.codeutilities.colors.recent_colors": "Recent Colors"
   }

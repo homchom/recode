@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import io.github.codeutilities.commands.sys.Command;
 import io.github.codeutilities.commands.sys.arguments.ArgBuilder;
 import io.github.codeutilities.config.Config;
+import io.github.codeutilities.util.gui.menus.ColorsGui;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.*;
@@ -16,7 +17,9 @@ public class ColorsCommand extends Command {
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("colors").executes((context) -> {
-            showColorPalette(1);
+            ColorsGui colorsGui = new ColorsGui();
+            colorsGui.scheduleOpenGui(colorsGui, "");
+            //showColorPalette(1);
             return 1;
         })
                 .then(ArgBuilder.argument("Saturation(%)", IntegerArgumentType.integer(0, 100)).executes((context) -> {

@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.Config;
 import io.github.codeutilities.util.networking.DFInfo;
+import io.github.codeutilities.util.networking.State;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -33,7 +34,7 @@ public class ChestHud {
 
     private static void afterContainerRender(Screen screen, MatrixStack matrices, int mouseX, int mouseY, float tickDelta) {
 
-        if (DFInfo.currentState == DFInfo.State.DEV && Config.getBoolean("chestToolTip")) {
+        if (DFInfo.currentState.getMode() == State.Mode.DEV && Config.getBoolean("chestToolTip")) {
             if (Config.getBoolean("chestToolTipType")) {
                 ItemStack item = CodeUtilities.MC.player.inventory.getStack(17);
 

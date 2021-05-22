@@ -49,11 +49,11 @@ public class CosmeticHandler implements ILoader {
     }
 
     private JsonObject getPlayerCosmetics(UUID uuid) {
-        JsonObject playerCosmetics = getObject("https://codeutilities.github.io/data/cosmetics/players/" + uuid.toString() + ".json");
+        JsonObject playerCosmetics = WebUtil.getObject("https://codeutilities.github.io/data/cosmetics/players/" + uuid.toString() + ".json");
         if (playerCosmetics == null) {
             if (Config.getBoolean("cosmeticsEnabled")) {
                 if (CACHED_DEFAULTS == null) {
-                    CACHED_DEFAULTS = getObject("https://codeutilities.github.io/data/cosmetics/players/default.json");
+                    CACHED_DEFAULTS = WebUtil.getObject("https://codeutilities.github.io/data/cosmetics/players/default.json");
                 }
                 return CACHED_DEFAULTS;
             }
@@ -64,16 +64,6 @@ public class CosmeticHandler implements ILoader {
         }
     }
 
-    private JsonObject getObject(String url) {
-        try {
-            String jsonObject = WebUtil.getString(url);
-            return CodeUtilities.JSON_PARSER.parse(jsonObject).getAsJsonObject();
-        } catch (JsonSyntaxException | IOException ignored) {
-        }
-
-        return null;
-    }
-
     public void shutdownExecutorService() {
         executorService.shutdown();
     }
@@ -81,7 +71,7 @@ public class CosmeticHandler implements ILoader {
     @Override
     public void load() {
         try {
-            JsonObject object = getObject("https://raw.githubusercontent.com/CodeUtilities/data/main/cosmetics/players/registry.json");
+            JsonObject object = WebUtil.getObject("https://raw.githubusercontent.com/CodeUtilities/data/main/cosmetics/players/registry.json");
             for (JsonElement element : object.getAsJsonArray("registry")) {
                 specialUsers.add(UUID.fromString(element.getAsString()));
             }

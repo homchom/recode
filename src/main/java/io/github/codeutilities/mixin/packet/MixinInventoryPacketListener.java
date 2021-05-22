@@ -7,6 +7,7 @@ import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.codeutilities.util.file.ExternalFile;
 import io.github.codeutilities.util.misc.ItemUtil;
 import io.github.codeutilities.util.networking.DFInfo;
+import io.github.codeutilities.util.networking.State;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.item.ItemStack;
@@ -35,7 +36,7 @@ public class MixinInventoryPacketListener {
         }
 
         List<ItemStack> contents = packet.getContents();
-        if (DFInfo.currentState != DFInfo.State.SPAWN) return;
+        if (DFInfo.currentState.getMode() != State.Mode.SPAWN) return;
         if (!MinecraftClient.getInstance().player.getMainHandStack().getName().getString().equals("◇ My Plots ◇"))
             return;
         boolean correctInventory = false;

@@ -51,7 +51,7 @@ public class CItem extends WItem {
         super.renderTooltip(matrices, x, y, tX, tY);
 
         /* Feature temporarily disabled
-        if (CodeUtilsConfig.getBoolean("previewHeadSkin")) {
+        if (Config.getBoolean("previewHeadSkin")) {
             if (item.getItem() == Items.PLAYER_HEAD) {
                 try {
                     CompoundTag nbt = item.getTag();

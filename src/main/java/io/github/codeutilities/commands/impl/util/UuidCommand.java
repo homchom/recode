@@ -11,6 +11,7 @@ import io.github.codeutilities.util.chat.ChatType;
 import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.codeutilities.util.misc.StringUtil;
 import io.github.codeutilities.util.networking.DFInfo;
+import io.github.codeutilities.util.networking.State;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.ClickEvent;
@@ -50,7 +51,7 @@ public class UuidCommand extends Command {
                                             ).withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, fullUUID)));
                                     this.sendMessage(mc, text);
 
-                                    if (this.isCreative(mc) && DFInfo.isOnDF() && DFInfo.currentState == DFInfo.State.DEV) {
+                                    if (this.isCreative(mc) && DFInfo.isOnDF() && DFInfo.currentState.getMode() == State.Mode.DEV) {
                                         this.sendChatMessage(mc, "/txt " + fullUUID);
                                     }
                                 } catch (IOException e) {

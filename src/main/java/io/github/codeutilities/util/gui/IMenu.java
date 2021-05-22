@@ -1,14 +1,19 @@
 package io.github.codeutilities.util.gui;
 
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import net.minecraft.client.MinecraftClient;
 
 public interface IMenu {
     default void scheduleOpenGui(LightweightGuiDescription gui, String... args) {
-        this.open(args);
-        MinecraftClient.getInstance().send(() -> MinecraftClient.getInstance().openScreen(new CottonClientScreen(gui)));
+        try{
+            this.open(args);
+            MinecraftClient.getInstance().send(() -> MinecraftClient.getInstance().openScreen(new CottonClientScreen(gui)));
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
-    void open(String... args);
+    void open(String... args) throws CommandSyntaxException;
 }

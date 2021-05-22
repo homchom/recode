@@ -10,6 +10,7 @@ import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.codeutilities.util.networking.DFInfo;
 import io.github.codeutilities.util.render.color.HSLColor;
 import io.github.codeutilities.util.render.color.MinecraftColors;
+import io.github.codeutilities.util.networking.State;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.*;
@@ -111,7 +112,7 @@ public class GradientCommand extends Command {
                                             ChatUtil.sendMessage("Copied text!", ChatType.SUCCESS);
                                             mc.player.sendMessage(base, false);
 
-                                            if (DFInfo.currentState == DFInfo.State.DEV) {
+                                            if (DFInfo.currentState.getMode() == State.Mode.DEV) {
                                                 mc.player.sendChatMessage("/txt " + sb);
                                             }
 

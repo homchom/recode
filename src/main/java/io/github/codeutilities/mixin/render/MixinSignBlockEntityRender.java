@@ -2,6 +2,7 @@ package io.github.codeutilities.mixin.render;
 
 import io.github.codeutilities.config.Config;
 import io.github.codeutilities.util.networking.DFInfo;
+import io.github.codeutilities.util.networking.State;
 import io.github.codeutilities.util.templates.SearchUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SignBlock;
@@ -39,6 +40,7 @@ public class MixinSignBlockEntityRender {
 
     /**
      * @author CodeUtilities
+     * @reason yea
      */
     @Overwrite
     public void render(SignBlockEntity signBlockEntity, float f, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, int j) {
@@ -47,7 +49,7 @@ public class MixinSignBlockEntityRender {
 
         TextRenderer textRenderer = mc.textRenderer;
 
-        if (SearchUtil.shouldGlow(signBlockEntity) && DFInfo.currentState == DFInfo.State.DEV && mc.player.isCreative()) {
+        if (SearchUtil.shouldGlow(signBlockEntity) && DFInfo.currentState.getMode() == State.Mode.DEV && mc.player.isCreative()) {
             double distance = Math.sqrt(signBlockEntity.getPos().getSquaredDistance(mc.cameraEntity.getBlockPos()));
             double dist = MathHelper.clamp(distance, 1, 15);
 

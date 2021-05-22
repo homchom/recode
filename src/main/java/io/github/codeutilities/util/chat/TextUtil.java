@@ -6,6 +6,7 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -13,6 +14,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TextUtil {
+
+    public static String EMPTY_TEXT = "{\"text\":\"\"}";
 
     public static String textComponentToColorCodes(Text message) {
         List<Text> siblings = message.getSiblings();
@@ -46,6 +49,7 @@ public class TextUtil {
     }
 
     public static Text colorCodesToTextComponent(String message) {
+        if(message.equals("")) return Text.Serializer.fromJson("{\"text\": \"\"}");
         message = "§f" + message;
         Matcher siblings = null;
         String sibling, literalColorCodes = null, color = null, prevcolor = "reset", text;
@@ -109,6 +113,29 @@ public class TextUtil {
         }
 
         return result;
+    }
+
+    public static String toString(Text text){
+        if(text.getString().equals("")) return "{\"text\": \"\"}";
+        return "{\"extra\":[" + String.join(",", toExtraString(text.getSiblings())) + "],\"text\":\"\"}";
+    }
+
+    private static ArrayList<String> toExtraString(List<Text> siblings){
+        ArrayList<String> result = new ArrayList<>();
+        for(Text sibling : siblings){
+            result.add("{\"text\": \"" + sibling.getString() +
+                    "\", \"color\": \"" + sibling.getStyle().getColor() +
+                    "\", \"bold\": " + sibling.getStyle().isBold() +
+                    ", \"italic\": " + sibling.getStyle().isItalic() +
+                    ", \"underlined\": " + sibling.getStyle().isUnderlined() +
+                    ", \"strikethrough\": " + sibling.getStyle().isStrikethrough() +
+                    ", \"obfuscated\": " + sibling.getStyle().isObfuscated() + "}");
+        }
+        return result;
+    }
+
+    public static String toTextString(String text){
+        return TextUtil.toString(TextUtil.colorCodesToTextComponent(text.replaceAll("&", "§").replaceAll("\"", "''"))).replaceAll("''", "\\\\\"");
     }
 
 }

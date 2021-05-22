@@ -7,10 +7,11 @@ import io.github.codeutilities.events.interfaces.ChatEvents;
 import io.github.codeutilities.events.register.ReceiveChatMessageEvent;
 import io.github.codeutilities.features.external.DFDiscordRPC;
 import io.github.codeutilities.features.keybinds.FlightspeedToggle;
-import io.github.codeutilities.util.chat.MessageGrabber;
 import io.github.codeutilities.util.gui.CPU_UsageText;
+import io.github.codeutilities.util.chat.MessageGrabber;
 import io.github.codeutilities.util.networking.DFInfo;
 import io.github.codeutilities.util.networking.WebUtil;
+import io.github.codeutilities.util.networking.State;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.MessageType;
@@ -40,10 +41,10 @@ public class MixinGameMessageListener {
 
     @Inject(method = "onGameMessage", at = @At("HEAD"), cancellable = true)
     private void onGameMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
-        if (MessageGrabber.isActive()) {
+        if(MessageGrabber.isActive()) {
             MessageGrabber.supply(packet.getMessage());
 
-            if (MessageGrabber.isSilent()) {
+            if(MessageGrabber.isSilent()) {
                 ci.cancel();
                 CodeUtilities.log(Level.INFO, "[CANCELLED] " + packet.getMessage().getString());
             }
@@ -111,14 +112,14 @@ public class MixinGameMessageListener {
 
                     DFInfo.isPatchNewer(patchText, "0"); //very lazy validation lol
                     DFInfo.patchId = patchText;
-                    DFInfo.currentState = null;
+                    DFInfo.currentState.sendLocate();
                     CodeUtilities.log(Level.INFO, "DiamondFire Patch " + DFInfo.patchId + " detected!");
 
                     lastPatchCheck = time;
 
                     // update rpc on server join
                     DFDiscordRPC.delayRPC = true;
-                    DFDiscordRPC.supportSession = false;
+                    DFInfo.currentState.setInSession(false);
 
                     // auto chat local
                     if (Config.getBoolean("autoChatLocal")) {
@@ -145,7 +146,7 @@ public class MixinGameMessageListener {
 
         // Play Mode
         if (text.matches("^Joined game: .* by .*$")) {
-            DFInfo.currentState = DFInfo.State.PLAY;
+            DFInfo.currentState.sendLocate();
 
             // Auto LagSlayer
             System.out.println(CPU_UsageText.lagSlayerEnabled);
@@ -160,42 +161,30 @@ public class MixinGameMessageListener {
 
         // Enter Session
         if (text.matches("^You have entered a session with .*\\.$")) {
-            if (!DFDiscordRPC.supportSession) {
-                DFDiscordRPC.supportSession = true;
-                if (Config.getBoolean("discordRPC")) {
-                    new Thread(() -> {
-                        DFDiscordRPC.getInstance().getThread().locateRequest();
-                    }).start();
-                }
+            if (!DFInfo.currentState.isInSession()) {
+                DFInfo.currentState.setInSession(true);
+                DFInfo.currentState.sendLocate();
             }
         }
 
         // End Session
         if (text.matches("^" + minecraftClient.player.getName().asString() + " finished a session with .*\\. ▶ .*$")) {
-            if (DFDiscordRPC.supportSession) {
-                DFDiscordRPC.supportSession = false;
-                if (Config.getBoolean("discordRPC")) {
-                    new Thread(() -> {
-                        DFDiscordRPC.getInstance().getThread().locateRequest();
-                    }).start();
-                }
+            if (DFInfo.currentState.isInSession()) {
+                DFInfo.currentState.setInSession(false);
+                DFInfo.currentState.sendLocate();
             }
         }
         if (text.matches("^Your session with .* has ended\\.$")) {
-            if (DFDiscordRPC.supportSession) {
-                DFDiscordRPC.supportSession = false;
-                if (Config.getBoolean("discordRPC")) {
-                    new Thread(() -> {
-                        DFDiscordRPC.getInstance().getThread().locateRequest();
-                    }).start();
-                }
+            if (DFInfo.currentState.isInSession()) {
+                DFInfo.currentState.setInSession(false);
+                DFInfo.currentState.sendLocate();
             }
         }
 
         // Build Mode
         if (minecraftClient.player.isCreative() && text.matches("^» You are now in build mode\\.$")) {
-            if (DFInfo.currentState != DFInfo.State.BUILD) {
-                DFInfo.currentState = DFInfo.State.BUILD;
+            if (DFInfo.currentState.getMode() != State.Mode.BUILD) {
+                DFInfo.currentState.sendLocate();
             }
 
             // Auto LagSlayer

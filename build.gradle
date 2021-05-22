@@ -40,6 +40,9 @@ dependencies {
     //dfrpc
     compile 'com.jagrosh:DiscordIPC:0.4'
 
+    //websocket client
+    compile "org.java-websocket:Java-WebSocket:1.5.1"
+
     //to change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"

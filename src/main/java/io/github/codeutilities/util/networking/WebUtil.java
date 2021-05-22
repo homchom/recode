@@ -2,6 +2,7 @@ package io.github.codeutilities.util.networking;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import io.github.codeutilities.CodeUtilities;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -83,6 +84,16 @@ public class WebUtil {
 
     public static JsonElement getJson(String url) throws IOException {
         return CodeUtilities.JSON_PARSER.parse(getString(url));
+    }
+
+    public static JsonObject getObject(String url) {
+        try {
+            String jsonObject = WebUtil.getString(url);
+            return CodeUtilities.JSON_PARSER.parse(jsonObject).getAsJsonObject();
+        } catch (JsonSyntaxException | IOException ignored) {
+        }
+
+        return null;
     }
 
 }

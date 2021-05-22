@@ -1,7 +1,9 @@
 package io.github.codeutilities.events;
 
 import io.github.codeutilities.commands.sys.IManager;
+import io.github.codeutilities.events.register.ChangeStateEvent;
 import io.github.codeutilities.events.register.ReceiveChatMessageEvent;
+import io.github.codeutilities.events.register.TickEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +14,9 @@ public class EventHandler implements IManager<Object> {
     @Override
     public void initialize() {
         register(
-                new ReceiveChatMessageEvent()
+                new ReceiveChatMessageEvent(),
+                new ChangeStateEvent(),
+                new TickEvent()
         );
     }
 

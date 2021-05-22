@@ -7,6 +7,7 @@ import io.github.codeutilities.features.social.chat.ConversationTimer;
 import io.github.codeutilities.util.chat.ChatType;
 import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.codeutilities.util.networking.DFInfo;
+import io.github.codeutilities.util.networking.State;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -28,7 +29,7 @@ public class MixinPlayerChatMessage {
 //                stopTimer = false;
 //                stopConversationTimer();
 //            }
-//            if (System.currentTimeMillis() - CodeUtilsConfig.getLong("automsg_timeoutNumber") >= Long.parseLong(DFInfo.conversationUpdateTime)) {
+//            if (System.currentTimeMillis() - Config.getLong("automsg_timeoutNumber") >= Long.parseLong(DFInfo.conversationUpdateTime)) {
 //                ChatUtil.sendMessage("Your conversation with " + DFInfo.currentConversation + " was inactive and ended.", ChatType.INFO_BLUE);
 //                DFInfo.currentConversation = null;
 //                DFInfo.conversationUpdateTime = null;
@@ -95,7 +96,7 @@ public class MixinPlayerChatMessage {
                             }
                         }
                     } else {
-                        if (DFInfo.currentState != DFInfo.State.SPAWN || !mainHand.getName().getString().equals("◇ Game Menu ◇"))
+                        if (DFInfo.currentState.getMode() != State.Mode.SPAWN || !mainHand.getName().getString().equals("◇ Game Menu ◇"))
                             conversationMessage(string, ci);
                     }
                 } else conversationMessage(string, ci);
@@ -121,7 +122,7 @@ public class MixinPlayerChatMessage {
     }
 
     private void conversationMessage(String message, CallbackInfo ci) {
-        if (ConversationTimer.currentConversation != null && (DFInfo.currentState != DFInfo.State.PLAY || !message.startsWith("@"))) {
+        if (ConversationTimer.currentConversation != null && (DFInfo.currentState.getMode() != State.Mode.PLAY || !message.startsWith("@"))) {
             ci.cancel();
             ConversationTimer.conversationUpdateTime = String.valueOf(System.currentTimeMillis());
             minecraftClient.player.sendChatMessage("/msg " + ConversationTimer.currentConversation + " " + message);

@@ -13,17 +13,24 @@ import io.github.codeutilities.config.structure.ConfigManager;
 import io.github.codeutilities.config.types.*;
 import io.github.codeutilities.config.types.list.StringListSetting;
 import io.github.codeutilities.events.EventHandler;
+import io.github.codeutilities.events.interfaces.OtherEvents;
+import io.github.codeutilities.features.external.AudioHandler;
 import io.github.codeutilities.features.external.DFDiscordRPC;
 import io.github.codeutilities.features.social.chat.ConversationTimer;
 import io.github.codeutilities.features.social.cosmetics.CosmeticHandler;
+import io.github.codeutilities.features.social.tab.Client;
 import io.github.codeutilities.modules.Module;
 import io.github.codeutilities.modules.actions.Action;
 import io.github.codeutilities.modules.triggers.Trigger;
 import io.github.codeutilities.util.file.FileUtil;
 import io.github.codeutilities.util.gui.menus.CustomHeadMenu;
+import io.github.codeutilities.util.actiondump.ActionDump;
+import io.github.codeutilities.util.networking.State;
 import io.github.codeutilities.util.networking.socket.SocketHandler;
 import io.github.codeutilities.util.templates.TemplateStorageHandler;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.networking.v1.C2SPlayChannelEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -81,6 +88,7 @@ public class CodeUtilities implements ModInitializer {
     public void onInitialize() {
         log(Level.INFO, "Initializing");
         Runtime.getRuntime().addShutdownHook(new Thread(this::onClose));
+        System.setProperty("java.awt.headless", "false");
 
         // Get lang
         Pattern regex = Pattern.compile("\nlang:.*");
@@ -99,14 +107,17 @@ public class CodeUtilities implements ModInitializer {
         initializer.add(new TemplateStorageHandler());
         initializer.add(new CustomHeadMenu());
         initializer.add(new DFDiscordRPC());
-        initializer.add(new ConversationTimer());
+        initializer.add(new Client());
+        initializer.add(new ActionDump());
         initializer.add(new EventHandler());
-        //initializer.add(new PlayerlistStarServer());
+        initializer.add(new State.Locater());
 
         // Initializes only if the given condition is met. (this case: config value)
-//        initializer.addIf(new AudioHandler(), Config.getBoolean("audio"));
+        initializer.addIf(new AudioHandler(), Config.getBoolean("audio"));
         initializer.addIf(new SocketHandler(), Config.getBoolean("itemApi"));
         MC.send(CosmeticHandler.INSTANCE::load);
+
+        ClientTickEvents.START_CLIENT_TICK.register(client -> OtherEvents.TICK.invoker().tick(client));
 
         log(Level.INFO, "Initialized successfully!");
     }
