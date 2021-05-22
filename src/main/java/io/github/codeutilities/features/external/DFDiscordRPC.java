@@ -74,8 +74,10 @@ public class DFDiscordRPC implements ILoader {
     }
 
     public void close() {
-        client.close();
-        connected = false;
+        if(connected) {
+            client.close();
+            connected = false;
+        }
     }
 
     public void update(State state) {
@@ -116,6 +118,7 @@ public class DFDiscordRPC implements ILoader {
             }
             presence.setLargeImage("diamondfirelogo", state.getPlot().getStatus().equals("") ? "mcdiamondfire.com" : state.getPlot().getStatus());
         } else {
+            close();
             return;
         }
 
