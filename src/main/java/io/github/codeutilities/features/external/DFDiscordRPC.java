@@ -116,7 +116,6 @@ public class DFDiscordRPC implements ILoader {
             }
             presence.setLargeImage("diamondfirelogo", state.getPlot().getStatus().equals("") ? "mcdiamondfire.com" : state.getPlot().getStatus());
         } else {
-            close();
             return;
         }
 
