@@ -34,13 +34,12 @@ public class ImageToParticle {
 
         StringBuilder currentData = new StringBuilder();
         for (int i = 0; i < height; i++) {
-            String hex = "";
+            String hex;
             String previousHex = "";
             int repeatCount = 0;
             for (int j = 0; j < width; j++) {
                 repeatCount++;
                 int rgb = image.getRGB(j, i);
-                Color color = new Color(rgb, true);
                 hex = Integer.toHexString(rgb).substring(2);
                 if (!hex.equals(previousHex)) {
                     previousHex = hex;

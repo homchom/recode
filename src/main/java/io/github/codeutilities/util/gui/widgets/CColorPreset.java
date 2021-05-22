@@ -11,8 +11,8 @@ import java.awt.*;
 
 public class CColorPreset extends WButton {
 
-    private Color color = Color.white;
-    private CColorPicker picker;
+    private final Color color;
+    private final CColorPicker picker;
 
     public CColorPreset(Color color, CColorPicker picker) {
         this.color = color;
@@ -21,7 +21,7 @@ public class CColorPreset extends WButton {
 
     @Override
     public void paint(MatrixStack matrices, int x, int y, int mouseX, int mouseY) {
-        RenderUtil.drawRect(matrices, x-1, y-1, x+11, y+11, color.black);
+        RenderUtil.drawRect(matrices, x-1, y-1, x+11, y+11, Color.black);
         RenderUtil.drawRect(matrices, x, y, x+10, y+10, this.color);
     }
 

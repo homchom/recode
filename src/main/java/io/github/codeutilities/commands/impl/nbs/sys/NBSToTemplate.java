@@ -18,7 +18,6 @@ public class NBSToTemplate {
     final int customInstrumentCount;
     String name;
     String author;
-    boolean multipleChests = false;
 
     public NBSToTemplate(SongData song) {
 
@@ -122,7 +121,6 @@ public class NBSToTemplate {
                 noteCount = 0;
                 finalNote = false;
                 chestCount++;
-                closeChest = false;
                 slot = 1;
             }
         }

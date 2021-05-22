@@ -40,7 +40,7 @@ public class FeaturesUI extends LightweightGuiDescription implements IMenu {
                     new InputStreamReader(oracle.openStream()));
 
             String inputLine;
-            Integer y = 14;
+            int y = 14;
 
             while ((inputLine = in.readLine()) != null) {
                 y += 10;

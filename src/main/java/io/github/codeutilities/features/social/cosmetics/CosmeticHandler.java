@@ -2,14 +2,10 @@ package io.github.codeutilities.features.social.cosmetics;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
-import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.Config;
 import io.github.codeutilities.features.social.cosmetics.type.CosmeticType;
 import io.github.codeutilities.util.file.ILoader;
 import io.github.codeutilities.util.networking.WebUtil;
-
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;

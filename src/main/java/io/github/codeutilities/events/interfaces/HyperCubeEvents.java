@@ -3,7 +3,6 @@ package io.github.codeutilities.events.interfaces;
 import io.github.codeutilities.util.networking.State;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 
 public interface HyperCubeEvents extends CustomEvent {

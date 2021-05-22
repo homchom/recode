@@ -338,16 +338,15 @@ public class State {
 
     public static class Locater implements ILoader {
 
-        private Thread thread;
-
         @Override
         public void load() {
-            thread = new Thread(() -> {
-                while(true){
-                    if(DFInfo.isOnDF() && mc.player != null){
+            Thread thread = new Thread(() -> {
+                while (true) {
+                    if (DFInfo.isOnDF() && mc.player != null) {
                         DFInfo.currentState.sendLocate();
                     }
-                    if(!Client.connected) Client.connect();
+                    if (!Client.connected)
+                        Client.connect();
                     try {
                         Thread.sleep(5000);
                     } catch (InterruptedException e) {
@@ -364,8 +363,6 @@ public class State {
     public static class CurrentState extends State {
 
         private final HyperCubeEvents invoker = HyperCubeEvents.CHANGE_STATE.invoker();
-        private static final String EMPTY = "                                       ";
-        private static final MinecraftClient mc = MinecraftClient.getInstance();
 
         public CurrentState() {
             super();

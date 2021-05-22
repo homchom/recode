@@ -17,7 +17,7 @@ public class MixinMinecraftClient {
      * @author CodeUtilities
      * @reason yea
      */
-    @Inject(method = "Lnet/minecraft/client/MinecraftClient;openScreen(Lnet/minecraft/client/gui/screen/Screen;)V", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "openScreen(Lnet/minecraft/client/gui/screen/Screen;)V", at = @At("HEAD"), cancellable = true)
     public void openScreen(@Nullable Screen screen, CallbackInfo cbi) {
         if(MinecraftClient.getInstance().player == null) {
             DFInfo.currentState.setMode(State.Mode.OFFLINE);

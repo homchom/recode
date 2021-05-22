@@ -1,15 +1,13 @@
 package io.github.codeutilities.modules.actions.json;
 
 import io.github.codeutilities.config.Config;
-import io.github.codeutilities.modules.actions.Action;
 import io.github.codeutilities.modules.translations.Translation;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.json.JSONObject;
 
 public class ActionJson extends JSONObject {
     public ActionJson(JSONObject json, ModuleJson module, HashMap<String, Object> variables) {
@@ -19,8 +17,8 @@ public class ActionJson extends JSONObject {
         this.variables = variables;
     }
 
-    private HashMap<String, Object> variables;
-    private ModuleJson module;
+    private final HashMap<String, Object> variables;
+    private final ModuleJson module;
 
     @Override
     public String getString(String key) {

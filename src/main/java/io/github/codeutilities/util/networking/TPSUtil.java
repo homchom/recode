@@ -2,11 +2,8 @@ package io.github.codeutilities.util.networking;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import java.math.BigDecimal;
-
 public class TPSUtil {
 
-    private static final BigDecimal dValue = new BigDecimal(1000);
     public static float TPS = 0.0f;
     private static long lastTpsTimestamp = 0;
 

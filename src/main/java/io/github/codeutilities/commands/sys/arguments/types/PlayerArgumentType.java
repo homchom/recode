@@ -5,14 +5,11 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import net.minecraft.client.MinecraftClient;
+import java.util.concurrent.CompletableFuture;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.EntitySelectorReader;
 
-import java.util.concurrent.CompletableFuture;
-
 public class PlayerArgumentType implements ArgumentType<String> {
-    private static final MinecraftClient mc = MinecraftClient.getInstance();
 
     public PlayerArgumentType() {
     }
@@ -35,8 +32,6 @@ public class PlayerArgumentType implements ArgumentType<String> {
         if (context.getSource() instanceof CommandSource) {
             StringReader stringReader = new StringReader(builder.getInput());
             stringReader.setCursor(builder.getStart());
-            EntitySelectorReader entitySelectorReader = new EntitySelectorReader(stringReader);
-
             return CommandSource.suggestMatching(((CommandSource) context.getSource()).getPlayerNames(), builder);
         } else {
             return Suggestions.empty();

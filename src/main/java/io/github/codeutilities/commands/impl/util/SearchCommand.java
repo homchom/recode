@@ -52,7 +52,6 @@ public class SearchCommand extends Command {
                             mc.player.sendMessage(new LiteralText(""), false);
                             for(Action action : actions){
                                 try {
-                                    SearchUtil.SearchType searchType = SearchUtil.SearchType.valueOf(action.getCodeBlock().getIdentifier().toUpperCase());
                                     mc.player.sendMessage(createMessage(action.getCodeBlock().getIdentifier(), action.getName(), action.getCodeBlock().getItem().toItemStack(), action.getIcon().toItemStack()), false);
                                 }catch(Exception e){
                                     e.printStackTrace();

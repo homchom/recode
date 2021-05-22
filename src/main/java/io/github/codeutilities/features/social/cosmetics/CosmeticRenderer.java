@@ -32,7 +32,6 @@ public class CosmeticRenderer extends FeatureRenderer<AbstractClientPlayerEntity
                 Vector3f translation = model.getTransformation().head.translation;
                 Vector3f scale = model.getTransformation().head.scale;
                 ModelPart head = getContextModel().head;
-                Vector3f rotation = model.getTransformation().head.rotation;
                 float scalex = scale.getX() - 0.333333333f;
                 float scaley = scale.getY() - 0.333333333f;
                 float scalez = scale.getZ() - 0.333333333f;

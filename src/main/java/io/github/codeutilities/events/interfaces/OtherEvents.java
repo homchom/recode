@@ -1,7 +1,5 @@
 package io.github.codeutilities.events.interfaces;
 
-import io.github.codeutilities.util.networking.State;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.MinecraftClient;

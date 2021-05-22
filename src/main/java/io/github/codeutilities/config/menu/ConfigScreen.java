@@ -41,10 +41,9 @@ public class ConfigScreen implements ITranslatable {
 
         List<ConfigGroup> groups = CONFIG.getRegistered();
         // Optimized loop
-        for (int i = 0, groupsSize = groups.size(); i < groupsSize; i++) {
+        for (ConfigGroup group : groups) {
 
             // Category
-            ConfigGroup group = groups.get(i);
             String groupName = group.getName();
 
             // Group translation
@@ -59,8 +58,7 @@ public class ConfigScreen implements ITranslatable {
             // These are group settings (the non sub-grouped ones)
             List<ConfigSetting<?>> groupSettings = group.getSettings();
             // Optimized loop
-            for (int j = 0, groupSettingsSize = groupSettings.size(); j < groupSettingsSize; j++) {
-                ConfigSetting<?> groupSetting = groupSettings.get(j);
+            for (ConfigSetting<?> groupSetting : groupSettings) {
                 String settingKey = groupSetting.getCustomKey();
 
                 // Get custom translations or standard ones
@@ -77,34 +75,36 @@ public class ConfigScreen implements ITranslatable {
                 } else {
                     tooltipTranslation = ITranslatable.get(KEY_TEXT + settingKey + TOOLTIP_TEXT);
                 }
-                category.addEntry(getEntry(entryBuilder, groupSetting, keyTranslation, tooltipTranslation));
+                category.addEntry(
+                    getEntry(entryBuilder, groupSetting, keyTranslation, tooltipTranslation));
             }
 
             List<ConfigSubGroup> subGroups = group.getRegistered();
             // Optimized loop
-            for (int j = 0, subGroupsSize = subGroups.size(); j < subGroupsSize; j++) {
+            for (ConfigSubGroup subGroup : subGroups) {
 
                 // Sub Category
-                ConfigSubGroup subGroup = subGroups.get(j);
                 String subGroupName = subGroup.getName();
 
                 Text groupKey;
                 if (subGroup.getRawKey().isPresent()) {
                     groupKey = subGroup.getRawKey().get();
                 } else {
-                    groupKey = ITranslatable.get(SUB_CATEGORY_TEXT + groupName + "_" + subGroupName);
+                    groupKey = ITranslatable
+                        .get(SUB_CATEGORY_TEXT + groupName + "_" + subGroupName);
                 }
 
                 Text groupTooltip;
                 if (subGroup.getRawTooltip().isPresent()) {
                     groupTooltip = subGroup.getRawTooltip().get();
                 } else {
-                    groupTooltip = ITranslatable.get(SUB_CATEGORY_TEXT + groupName + "_" + subGroupName + TOOLTIP_TEXT);
+                    groupTooltip = ITranslatable
+                        .get(SUB_CATEGORY_TEXT + groupName + "_" + subGroupName + TOOLTIP_TEXT);
                 }
 
                 SubCategoryBuilder subBuilder = entryBuilder.startSubCategory(groupKey)
-                        .setExpanded(subGroup.isStartExpanded())
-                        .setTooltip(groupTooltip);
+                    .setExpanded(subGroup.isStartExpanded())
+                    .setTooltip(groupTooltip);
 
                 for (ConfigSetting<?> configSetting : subGroup.getRegistered()) {
                     String settingKey = configSetting.getCustomKey();
@@ -120,10 +120,12 @@ public class ConfigScreen implements ITranslatable {
                     if (configSetting.getRawTooltip().isPresent()) {
                         tooltipTranslation = configSetting.getRawTooltip().get();
                     } else {
-                        tooltipTranslation = ITranslatable.get(KEY_TEXT + settingKey + TOOLTIP_TEXT);
+                        tooltipTranslation = ITranslatable
+                            .get(KEY_TEXT + settingKey + TOOLTIP_TEXT);
                     }
 
-                    subBuilder.add(getEntry(entryBuilder, configSetting, keyTranslation, tooltipTranslation));
+                    subBuilder.add(
+                        getEntry(entryBuilder, configSetting, keyTranslation, tooltipTranslation));
                 }
 
                 // Finally add the sub group

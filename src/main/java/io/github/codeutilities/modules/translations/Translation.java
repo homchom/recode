@@ -67,9 +67,9 @@ public class Translation {
 
             // cache and return result
             CLIENT_TRANSLATIONS.put(key, value);
-            return value;
 
-        } else return value;
+        }
+        return value;
     }
 
 }

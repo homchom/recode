@@ -3,22 +3,22 @@ package io.github.codeutilities.util.actiondump;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.stream.JsonToken;
 import io.github.codeutilities.util.file.ILoader;
 import io.github.codeutilities.util.networking.WebUtil;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ActionDump implements ILoader {
-    private static JsonObject actionDump;
+
     private static JsonObject types;
-    private static HashMap<String, Action> actions = new HashMap<String, Action>();
-    private static HashMap<String, CodeBlock> codeblocks = new HashMap<String, CodeBlock>();
+    private static final HashMap<String, Action> actions = new HashMap<>();
+    private static final HashMap<String, CodeBlock> codeblocks = new HashMap<>();
 
     @Override
     public void load() {
         try{
-            actionDump = WebUtil.getObject("https://raw.githubusercontent.com/CodeUtilities/data/main/actiondump/db.json");
+            JsonObject actionDump = WebUtil.getObject(
+                "https://raw.githubusercontent.com/CodeUtilities/data/main/actiondump/db.json");
             if(!actionDump.isJsonNull()){
                 //gather codeblocks
                 JsonArray codeblockArray = actionDump.getAsJsonArray("codeblocks");
@@ -47,7 +47,7 @@ public class ActionDump implements ILoader {
     public static ArrayList<Action> getActions(String action){
         ArrayList<String> queries = autoCompleteActions(action);
 
-        ArrayList<Action> results = new ArrayList<Action>();
+        ArrayList<Action> results = new ArrayList<>();
         for(String query : queries){
             results.add(actions.get(query));
         }
@@ -58,7 +58,7 @@ public class ActionDump implements ILoader {
     public static ArrayList<CodeBlock> getCodeBlock(String codeblock){
         ArrayList<String> queries = autoCompleteCodeBlocks(codeblock);
 
-        ArrayList<CodeBlock> results = new ArrayList<CodeBlock>();
+        ArrayList<CodeBlock> results = new ArrayList<>();
         for(String query : queries){
             results.add(codeblocks.get(query));
         }
@@ -67,7 +67,7 @@ public class ActionDump implements ILoader {
     }
 
     private static ArrayList<String> autoCompleteActions(String query){
-        ArrayList<String> results = new ArrayList<String>();
+        ArrayList<String> results = new ArrayList<>();
         for(String s : actions.keySet()){
             if(!actions.get(s).getIcon().getName().equals("")){
                 if(s.equalsIgnoreCase(query) || actions.get(s).getIcon().getName().equalsIgnoreCase(query)){
@@ -84,12 +84,12 @@ public class ActionDump implements ILoader {
                     }
                 }
             }
-        };
+        }
         return results;
     }
 
     private static ArrayList<String> autoCompleteCodeBlocks(String query){
-        ArrayList<String> results = new ArrayList<String>();
+        ArrayList<String> results = new ArrayList<>();
         for(String s : codeblocks.keySet()){
             if(s.equalsIgnoreCase(query)){
                 results.add(0, s);
@@ -97,7 +97,7 @@ public class ActionDump implements ILoader {
             if(s.toLowerCase().contains(query.toLowerCase())){
                 results.add(s);
             }
-        };
+        }
         return results;
     }
 

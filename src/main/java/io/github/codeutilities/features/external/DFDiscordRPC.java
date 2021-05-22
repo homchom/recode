@@ -15,8 +15,6 @@ import java.time.OffsetDateTime;
 
 public class DFDiscordRPC implements ILoader {
 
-    // this looks weird
-    private static final String EMPTY = "                                       ";
     public static boolean delayRPC = false;
 
     public static boolean connected = false;

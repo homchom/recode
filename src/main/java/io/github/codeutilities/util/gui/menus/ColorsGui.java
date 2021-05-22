@@ -31,8 +31,6 @@ public class ColorsGui extends LightweightGuiDescription implements IMenu {
     public CTextField rInput;
     public CTextField gInput;
     public CTextField bInput;
-    private WText hexText;
-    private WText rgbText;
     private final MinecraftClient mc = MinecraftClient.getInstance();
 
     @Override
@@ -68,13 +66,13 @@ public class ColorsGui extends LightweightGuiDescription implements IMenu {
                 int recentTextWidth = MinecraftClient.getInstance().textRenderer.getWidth(recentTextString);
                 recentText = new WText(new LiteralText(recentTextString));
                 recentText.setColor(Color.black.getRGB(), Color.white.getRGB());
-                root.add(recentText, (int) (200-(recentTextWidth/2)), 85, recentTextWidth, 8);
+                root.add(recentText, 200-(recentTextWidth/2), 85, recentTextWidth, 8);
             }
 
             int hexTextWidth = MinecraftClient.getInstance().textRenderer.getWidth("HEX");
-            hexText = new WText(new LiteralText("HEX"));
+            WText hexText = new WText(new LiteralText("HEX"));
             hexText.setColor(Color.black.getRGB(), Color.white.getRGB());
-            root.add(hexText, (int) (60-(hexTextWidth/2)), 200, hexTextWidth, 8);
+            root.add(hexText, 60-(hexTextWidth/2), 200, hexTextWidth, 8);
             hexInput = new CTextField(new LiteralText("HEX")).setMaxLength(7);
             hexInput.setText("#FF0000");
             root.add(hexInput, 32, 212, 56, 10);
@@ -82,7 +80,7 @@ public class ColorsGui extends LightweightGuiDescription implements IMenu {
             int rgbTextWidth = MinecraftClient.getInstance().textRenderer.getWidth("RGB");
             hexText = new WText(new LiteralText("RGB"));
             hexText.setColor(Color.black.getRGB(), Color.white.getRGB());
-            root.add(hexText, (int) (183-(rgbTextWidth/2)), 200, rgbTextWidth, 8);
+            root.add(hexText, 183-(rgbTextWidth/2), 200, rgbTextWidth, 8);
             rInput = new CTextField(new LiteralText("Red")).setMaxLength(3);
             gInput = new CTextField(new LiteralText("Green")).setMaxLength(3);
             bInput = new CTextField(new LiteralText("Blue")).setMaxLength(3);

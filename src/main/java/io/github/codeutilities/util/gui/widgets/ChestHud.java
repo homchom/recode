@@ -57,8 +57,8 @@ public class ChestHud {
                 Inventory inventory = player.inventory;
                 ItemStack item = inventory.getStack(17);
 
-                Integer x = 20;
-                Integer y = 20;
+                int x = 20;
+                int y = 20;
 
                 // check if block in dev area later.
                 for (Text text : item.getTooltip(player, TooltipContext.Default.NORMAL)) {

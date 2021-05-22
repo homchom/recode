@@ -10,6 +10,6 @@ public class StringUtils {
         List<String> list = Arrays.asList(elements);
         return IntStream.range(0, (list.size() + iterations - 1) / iterations)
                 .mapToObj(i -> String.join(delimiter, list.subList(i * iterations, Math.min(iterations * (i + 1), list.size()))))
-                .toArray(size -> new String[size]);
+                .toArray(String[]::new);
     }
 }

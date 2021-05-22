@@ -136,7 +136,7 @@ public class DisplayItem {
 
             if (this.deprecatedNote.length == 0) {
 
-                Boolean optional = false;
+                boolean optional = false;
 
                 if (this.arguments != null || this.tags > 0) {
                     lore.add(TextUtil.toTextString(""));
@@ -204,10 +204,8 @@ public class DisplayItem {
                 if (this.example.length > 0) {
                     lore.add(TextUtil.toTextString(""));
                     lore.add(TextUtil.toTextString("§fExamples:"));
-                    int i = 0;
                     for (String ex : this.example) {
                         lore.add(TextUtil.toTextString("§7" + ex));
-                        i++;
                     }
                 }
 

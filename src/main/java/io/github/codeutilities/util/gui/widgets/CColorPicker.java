@@ -1,19 +1,16 @@
 package io.github.codeutilities.util.gui.widgets;
 
-import io.github.codeutilities.util.gui.menus.ColorsGui;
 import io.github.codeutilities.util.color.ColorUtil;
 import io.github.codeutilities.util.color.HSBColor;
+import io.github.codeutilities.util.gui.menus.ColorsGui;
 import io.github.codeutilities.util.render.RenderUtil;
 import io.github.cottonmc.cotton.gui.widget.WWidget;
-import net.minecraft.client.MinecraftClient;
+import java.awt.Color;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
-import java.awt.*;
-
 public class CColorPicker extends WWidget {
 
-    private final MinecraftClient mc = MinecraftClient.getInstance();
     private HSBColor pickedColor;
     private boolean leftClickDown = false;
     private final float scale;

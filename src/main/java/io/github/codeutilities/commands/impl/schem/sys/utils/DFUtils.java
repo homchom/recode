@@ -67,7 +67,8 @@ public class DFUtils {
         String json = "{\"id\":\"block\",\"block\":\"set_var\",\"args\":{\"items\":[";
 
         json += "{\"item\":" + "{\"id\":\"var\",\"data\":{\"name\":\"SchemData\",\"scope\":\"local\"}}" + ",\"slot\":0},";
-        json += "{\"item\":" + new DFText(schematic.name == "Unnamed" ? schematic.name : fallbackName).asJson() + ",\"slot\":1},";
+        json += "{\"item\":" + new DFText(
+            schematic.name.equals("Unnamed") ? schematic.name : fallbackName).asJson() + ",\"slot\":1},";
         json += "{\"item\":" + new DFText(schematic.author).asJson() + ",\"slot\":2},";
         json += "{\"item\":" + new DFText(schematic.description).asJson() + ",\"slot\":3},";
         json += "{\"item\":" + new DFNumber(schematic.creationTime).asJson() + ",\"slot\":4},";
@@ -91,7 +92,8 @@ public class DFUtils {
         String schemDataJson = DFUtils.GenerateSchematicData(schematic, fallbackName);
         String paletteJson = DFUtils.GeneratePaletteList(schematic.getPaletteTexts());
         String blocksJson = DFUtils.GenerateBlockDataList(schematic.getBlocksTexts());
-        String functionHeader = DFUtils.GenerateFunctionHeader(schematic.name == "Unnamed" ? schematic.name : fallbackName);
+        String functionHeader = DFUtils.GenerateFunctionHeader(
+            schematic.name.equals("Unnamed") ? schematic.name : fallbackName);
 
         return SplitJson(functionHeader + "," + schemDataJson + "," + paletteJson + "," + blocksJson);
     }
@@ -110,6 +112,6 @@ public class DFUtils {
     public static DFText[] JoinString(int iterations, CharSequence delimiter, List<String> list) {
         return IntStream.range(0, (list.size() + iterations - 1) / iterations)
                 .mapToObj(i -> new DFText(String.join(delimiter, list.subList(i * iterations, Math.min(iterations * (i + 1), list.size())))))
-                .toArray(size -> new DFText[size]);
+                .toArray(DFText[]::new);
     }
 }

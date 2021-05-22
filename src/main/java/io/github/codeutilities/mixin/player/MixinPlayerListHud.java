@@ -1,21 +1,15 @@
 package io.github.codeutilities.mixin.player;
 
-import com.google.gson.JsonObject;
-import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.config.Config;
 import io.github.codeutilities.features.social.tab.CodeUtilitiesServer;
 import io.github.codeutilities.features.social.tab.User;
-import io.github.codeutilities.util.networking.WebUtil;
-
-import java.util.*;
-
+import java.util.UUID;
 import net.minecraft.client.gui.hud.PlayerListHud;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.world.GameMode;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,8 +20,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(PlayerListHud.class)
 public class MixinPlayerListHud {
 
-    LiteralText userStar = new LiteralText(" §7⭐ ");
-    LiteralText devStar = new LiteralText(" §a⭐ ");
+    LiteralText userStar = new LiteralText("§a⭐ ");
+    LiteralText devStar = new LiteralText("§d⭐ ");
 
     @Inject(method = "getPlayerName", at = @At("RETURN"), cancellable = true)
     public void getPlayerName(PlayerListEntry entry, CallbackInfoReturnable<Text> cir) {

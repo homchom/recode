@@ -1,35 +1,18 @@
 package io.github.codeutilities.features.social.tab;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.file.Paths;
-import java.security.KeyStore;
-import java.util.concurrent.Executors;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManagerFactory;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.util.chat.TextUtil;
-import io.github.codeutilities.util.networking.DFInfo;
+import java.net.URI;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.util.Session;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
 public class CodeUtilitiesServer extends WebSocketClient {
 
     private static JsonArray users = new JsonArray();
-    private static int reconnectDelay = 2000;
 
     public CodeUtilitiesServer(URI serverUri) {
         super(serverUri);

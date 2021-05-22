@@ -51,9 +51,7 @@ public class CodeUtilitiesUI extends LightweightGuiDescription implements IMenu 
 
         // ------------------------ Bug Report Button ------------------------
         WButton bugReport = new WButton(new LiteralText("Bug Report"));
-        bugReport.setOnClick(() -> {
-            Util.getOperatingSystem().open("https://github.com/CodeUtilities/CodeUtilities/issues");
-        });
+        bugReport.setOnClick(() -> Util.getOperatingSystem().open("https://github.com/CodeUtilities/CodeUtilities/issues"));
         panel.add(bugReport, 60, 192, 100, 20);
 
         // ------------------------ Options Button ------------------------

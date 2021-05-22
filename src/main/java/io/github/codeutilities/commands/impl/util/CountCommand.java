@@ -19,7 +19,7 @@ public class CountCommand extends Command {
         cd.register(ArgBuilder.literal("count")
                 .executes(ctx -> {
                     new Thread(() -> {
-                        String jsonObject = null;
+                        String jsonObject;
                         try {
                             jsonObject = WebUtil.getString("https://api.countapi.xyz/hit/CodeUtilitiesCounter");
                             String count = CodeUtilities.JSON_PARSER.parse(jsonObject).getAsJsonObject().get("value").getAsString();

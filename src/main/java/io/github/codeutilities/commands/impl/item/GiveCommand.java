@@ -47,6 +47,10 @@ public class GiveCommand extends Command {
                                 clipboard = clipboard.substring(1);
                             }
 
+                            if (clipboard.startsWith("df")) {
+                                clipboard = clipboard.substring(2);
+                            }
+
                             if (clipboard.startsWith("give ")) {
                                 clipboard = clipboard.substring(5);
                             }

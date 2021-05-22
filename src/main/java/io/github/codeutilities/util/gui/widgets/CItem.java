@@ -15,11 +15,9 @@ import net.minecraft.text.Text;
 public class CItem extends WItem {
 
     private Text[] texts = new Text[0];
-    private final ItemStack item;
 
     public CItem(ItemStack stack) {
         super(stack);
-        item = stack;
         setTooltip(stack.getTooltip(null, Default.NORMAL).toArray(new Text[0]));
     }
 

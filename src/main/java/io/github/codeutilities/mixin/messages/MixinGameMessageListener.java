@@ -53,7 +53,6 @@ public class MixinGameMessageListener {
             if (packet.getLocation() == MessageType.CHAT || packet.getLocation() == MessageType.SYSTEM) {
                 if (RenderSystem.isOnRenderThread()) {
                     if (invoker.receive(packet.getMessage()).equals(ActionResult.SUCCESS)) ci.cancel();
-                    String text = packet.getMessage().getString();
                     try {
                         this.updateVersion(packet.getMessage());
                         this.updateState(packet.getMessage());

@@ -33,14 +33,15 @@ public class Task {
 
     public static void execute(JSONArray actions, ModuleJson module, Trigger trigger, Object[] eventVars) {
         SERVICE = Executors.newSingleThreadExecutor();
-        TaskExecutorThread thread = new TaskExecutorThread(actions, module, trigger, eventVars, 1);
+        TaskExecutorThread thread = new TaskExecutorThread(actions, module, trigger, eventVars);
         SERVICE.submit(thread);
     }
 
     public static class TaskExecutorThread extends Thread {
         private HashMap<String, Object> VARIABLES;
 
-        public TaskExecutorThread(JSONArray actions, ModuleJson module, Trigger trigger, Object[] eventVars, int status) {
+        public TaskExecutorThread(JSONArray actions, ModuleJson module, Trigger trigger,
+            Object[] eventVars) {
             this.actions = actions;
             this.module = module;
             this.trigger = trigger;

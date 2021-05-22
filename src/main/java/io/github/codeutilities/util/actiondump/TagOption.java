@@ -1,6 +1,5 @@
 package io.github.codeutilities.util.actiondump;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 public class TagOption {

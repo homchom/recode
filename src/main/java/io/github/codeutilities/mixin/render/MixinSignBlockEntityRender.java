@@ -60,7 +60,6 @@ public class MixinSignBlockEntityRender {
 
         BlockState blockState = signBlockEntity.getCachedState();
         matrixStack.push();
-        float g = 0.6666667F;
         float h;
         if (blockState.getBlock() instanceof SignBlock) {
             matrixStack.translate(0.5D, 0.5D, 0.5D);
@@ -84,11 +83,9 @@ public class MixinSignBlockEntityRender {
         this.model.field.render(matrixStack, vertexConsumer, i, j);
         this.model.foot.render(matrixStack, vertexConsumer, i, j);
         matrixStack.pop();
-        float l = 0.010416667F;
         matrixStack.translate(0.0D, 0.3333333432674408D, 0.046666666865348816D);
         matrixStack.scale(0.010416667F, -0.010416667F, 0.010416667F);
         int m = signBlockEntity.getTextColor().getSignColor();
-        double d = 0.4D;
         int n = (int) ((double) NativeImage.getRed(m) * 0.4D);
         int o = (int) ((double) NativeImage.getGreen(m) * 0.4D);
         int p = (int) ((double) NativeImage.getBlue(m) * 0.4D);

@@ -38,7 +38,7 @@ public class MixinPlayerChatMessage {
 //        }
 //    });
 
-    @Inject(method = "Lnet/minecraft/client/network/ClientPlayerEntity;sendChatMessage(Ljava/lang/String;)V", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "sendChatMessage(Ljava/lang/String;)V", at = @At("HEAD"), cancellable = true)
     public void onMessage(String string, CallbackInfo ci) {
         String[] args = string.split(" ");
         if (minecraftClient.player != null) {

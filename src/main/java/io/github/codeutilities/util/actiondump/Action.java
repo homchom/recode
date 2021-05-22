@@ -2,7 +2,6 @@ package io.github.codeutilities.util.actiondump;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import io.github.codeutilities.util.actiondump.Tag;
 import io.github.codeutilities.util.misc.StringUtil;
 
 public class Action {

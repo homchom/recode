@@ -51,9 +51,8 @@ public class TextUtil {
     public static Text colorCodesToTextComponent(String message) {
         if(message.equals("")) return Text.Serializer.fromJson("{\"text\": \"\"}");
         message = "§f" + message;
-        Matcher siblings = null;
-        String sibling, literalColorCodes = null, color = null, prevcolor = "reset", text;
-        String bold = "null", italic = "null", underlined = "null", strikethrough = "null", obfuscated = "null";
+        String sibling, literalColorCodes, color = null, text;
+        String bold, italic, underlined, strikethrough, obfuscated;
         List<String> sections = new java.util.ArrayList<>(Collections.emptyList());
         List<String> literalColorSections = new java.util.ArrayList<>(Collections.emptyList());
         MutableText result = Text.Serializer.fromJson("{\"text\": \"\"}");
