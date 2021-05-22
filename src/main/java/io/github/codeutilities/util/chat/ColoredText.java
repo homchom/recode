@@ -8,4 +8,8 @@ public class ColoredText extends LiteralText {
         super(string);
         this.styled(style -> style.withColor(TextColor.fromRgb(color)));
     }
+
+    public ColoredText(String hex, String string) {
+        this(Integer.parseInt(hex, 16), string);
+    }
 }
