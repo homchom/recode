@@ -6,6 +6,7 @@ import io.github.codeutilities.features.social.tab.Client;
 import io.github.codeutilities.util.file.ILoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
+import org.java_websocket.enums.ReadyState;
 
 import java.util.Objects;
 import java.util.concurrent.Executors;
@@ -69,10 +70,12 @@ public class State {
         }
 
         public String getIdentifier() {
+            if(this == null) return null;
             return identifier;
         }
 
         public String getContinuousVerb() {
+            if(this == null) return null;
             return continuousVerb;
         }
 
@@ -82,7 +85,7 @@ public class State {
                     return mode;
                 }
             }
-            return null;
+            return OFFLINE;
         }
 
         @Override
@@ -106,7 +109,9 @@ public class State {
         NINE("9"),
         BETA("Beta"),
         DEV("Dev"),
-        DEV2("Dev2");
+        DEV2("Dev2"),
+
+        UNKNOWN("?");
 
         private final String identifier;
 
@@ -115,6 +120,7 @@ public class State {
         }
 
         public String getIdentifier() {
+            if(this == null) return null;
             return identifier;
         }
 
@@ -124,7 +130,7 @@ public class State {
                     return node;
                 }
             }
-            return null;
+            return UNKNOWN;
         }
 
         @Override
@@ -147,14 +153,17 @@ public class State {
         }
 
         public String getId() {
+            if(this == null) return null;
             return id;
         }
 
         public String getName() {
+            if(this == null) return null;
             return name;
         }
 
         public String getStatus() {
+            if(this == null) return null;
             return status;
         }
 
@@ -184,18 +193,22 @@ public class State {
     }
 
     public Mode getMode() {
+        if(this == null) return null;
         return mode;
     }
 
     public Node getNode() {
+        if(this == null) return null;
         return node;
     }
 
     public Plot getPlot() {
+        if(this == null) return null;
         return plot;
     }
 
     public boolean isInSession() {
+        if(this == null) return false;
         return session;
     }
 
@@ -236,7 +249,6 @@ public class State {
         if (o == null || getClass() != o.getClass()) return false;
         State state = (State) o;
         return session == state.session &&
-                Objects.equals(invoker, state.invoker) &&
                 Objects.equals(plot, state.plot) &&
                 mode == state.mode &&
                 node == state.node;
@@ -316,6 +328,8 @@ public class State {
                 finalstate.setMode(Mode.BUILD);
             } else if (text.startsWith(EMPTY + "\nYou are currently coding on:")) {
                 finalstate.setMode(Mode.DEV);
+            } else {
+                finalstate.setMode(Mode.OFFLINE);
             }
 
         }
@@ -345,8 +359,7 @@ public class State {
                     if (DFInfo.isOnDF() && mc.player != null) {
                         DFInfo.currentState.sendLocate();
                     }
-                    if (!Client.connected)
-                        Client.connect();
+                    if (!Client.client.isOpen() && !(Client.client.getReadyState() == ReadyState.NOT_YET_CONNECTED)) Client.connect();
                     try {
                         Thread.sleep(5000);
                     } catch (InterruptedException e) {
@@ -394,8 +407,8 @@ public class State {
             State old = this.copy();
             boolean update = false;
             if(this.mode != mode) update = true;
-            if(mode == Mode.SPAWN || mode == Mode.OFFLINE) this.setPlot(null);
-            if(mode == Mode.OFFLINE) this.setNode(null);
+            if(mode == Mode.SPAWN || mode == Mode.OFFLINE) this.plot = null;
+            if(mode == Mode.OFFLINE) this.node = null;
             this.mode = mode;
             if(update) invoker.update(this, old);
         }

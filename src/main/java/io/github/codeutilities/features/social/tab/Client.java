@@ -6,11 +6,11 @@ import java.net.URI;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.Session;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.java_websocket.enums.ReadyState;
 
 public class Client implements ILoader {
 
     public static CodeUtilitiesServer client;
-    public static boolean connected = false;
 
     @Override
     public void load() {
@@ -24,7 +24,7 @@ public class Client implements ILoader {
 
             String serverid = RandomStringUtils.randomAlphabetic(20);
             mc.getSessionService().joinServer(session.getProfile(), session.getAccessToken(), serverid);
-            String url = "wss://codeutilities.vatten.dev/?username=" + session.getUsername() + "&serverid=" + serverid + "&version=" + CodeUtilities.MOD_VERSION;
+            String url = "wss://codeutilities.vatten.dev/?username=" + session.getUsername() + "&serverid=" + serverid + "&version=" + CodeUtilities.MOD_VERSION + (CodeUtilities.BETA ? "-BETA" : "");
 
             client = new CodeUtilitiesServer(new URI(url));
             client.connect();

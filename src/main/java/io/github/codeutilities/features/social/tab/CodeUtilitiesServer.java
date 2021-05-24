@@ -20,11 +20,12 @@ public class CodeUtilitiesServer extends WebSocketClient {
 
     @Override
     public void onOpen(ServerHandshake handshakedata) {
-        Client.connected = true;
+
     }
 
     @Override
     public void onMessage(String message) {
+        System.out.println(message);
         JsonObject jsonObject = CodeUtilities.JSON_PARSER.parse(message).getAsJsonObject();
         if(jsonObject.get("type").getAsString().equals("users")){
             users = jsonObject.get("content").getAsJsonArray();
@@ -39,13 +40,11 @@ public class CodeUtilitiesServer extends WebSocketClient {
     @Override
     public void onClose(int code, String reason, boolean remote) {
         users = new JsonArray();
-        Client.connected = false;
     }
 
     @Override
     public void onError(Exception ex) {
         ex.printStackTrace();
-        Client.connected = false;
     }
 
     public static User getUser(String query){

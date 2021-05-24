@@ -12,8 +12,12 @@ public class ChangeStateEvent {
     }
 
     private ActionResult run(State newstate, State oldstate) {
-        DFDiscordRPC.getInstance().update(newstate);
-        if(Client.connected) Client.client.send("{\"content\":" + newstate.toJson() + ",\"type\":\"state\"}");
+        try{
+            DFDiscordRPC.getInstance().update(newstate);
+            if(Client.client.isOpen()) Client.client.send("{\"content\":" + newstate.toJson() + ",\"type\":\"state\"}");
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         return ActionResult.PASS;
     }
 }
