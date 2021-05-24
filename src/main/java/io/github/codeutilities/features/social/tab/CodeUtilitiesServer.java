@@ -25,7 +25,6 @@ public class CodeUtilitiesServer extends WebSocketClient {
 
     @Override
     public void onMessage(String message) {
-        System.out.println(message);
         JsonObject jsonObject = CodeUtilities.JSON_PARSER.parse(message).getAsJsonObject();
         if(jsonObject.get("type").getAsString().equals("users")){
             users = jsonObject.get("content").getAsJsonArray();
