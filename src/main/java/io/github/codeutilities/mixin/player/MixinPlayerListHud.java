@@ -20,9 +20,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(PlayerListHud.class)
 public class MixinPlayerListHud {
 
-    LiteralText userStar = new LiteralText("§a⭐ ");
-    LiteralText devStar = new LiteralText("§d⭐ ");
-
     @Inject(method = "getPlayerName", at = @At("RETURN"), cancellable = true)
     public void getPlayerName(PlayerListEntry entry, CallbackInfoReturnable<Text> cir) {
         if(!Config.getBoolean("loadTabStars")) return;
@@ -33,11 +30,8 @@ public class MixinPlayerListHud {
         User user = CodeUtilitiesServer.getUser(id.toString());
 
         if (user != null) {
-            String role = user.getRole();
-            if (role.equals("None") || role.equals("Developer")) {
-                Text star = (role.equals("Developer") ? devStar : userStar);
-                name = star.shallowCopy().append(name);
-            }
+            LiteralText star = new LiteralText(" " + user.getStar() + " ");
+            name = star.shallowCopy().append(name);
         }
         cir.setReturnValue(name);
     }
