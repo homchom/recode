@@ -30,7 +30,7 @@ public class MixinPlayerListHud {
         User user = CodeUtilitiesServer.getUser(id.toString());
 
         if (user != null) {
-            LiteralText star = new LiteralText(" " + user.getStar() + " ");
+            LiteralText star = new LiteralText(user.getStar());
             name = star.shallowCopy().append(name);
         }
         cir.setReturnValue(name);
