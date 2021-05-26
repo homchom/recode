@@ -7,16 +7,19 @@ import io.github.codeutilities.commands.sys.Command;
 import io.github.codeutilities.commands.sys.arguments.ArgBuilder;
 import io.github.codeutilities.util.chat.ChatType;
 import io.github.codeutilities.util.chat.ChatUtil;
-import io.github.cottonmc.clientcommands.CottonClientCommandSource;
+import java.awt.Color;
+import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.*;
-
-import java.awt.*;
+import net.minecraft.text.ClickEvent;
+import net.minecraft.text.HoverEvent;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Style;
+import net.minecraft.text.TextColor;
 
 public class ColorCommand extends Command {
 
     @Override
-    public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
+    public void register(MinecraftClient mc, CommandDispatcher<FabricClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("color")
                 /*
                 .then(ArgBuilder.literal("pick")).executes((context -> {

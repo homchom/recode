@@ -7,7 +7,7 @@ import io.github.codeutilities.commands.sys.arguments.ArgBuilder;
 import io.github.codeutilities.util.chat.ChatType;
 import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.codeutilities.util.misc.ItemUtil;
-import io.github.cottonmc.clientcommands.CottonClientCommandSource;
+import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.argument.ItemStackArgument;
 import net.minecraft.command.argument.ItemStackArgumentType;
@@ -17,7 +17,7 @@ import net.minecraft.text.LiteralText;
 public class GiveCommand extends Command {
 
     @Override
-    public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
+    public void register(MinecraftClient mc, CommandDispatcher<FabricClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("dfgive")
                 .then(ArgBuilder.argument("item", ItemStackArgumentType.itemStack())
                         .then(ArgBuilder.argument("count", IntegerArgumentType.integer())

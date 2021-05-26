@@ -6,16 +6,21 @@ import io.github.codeutilities.commands.sys.Command;
 import io.github.codeutilities.commands.sys.arguments.ArgBuilder;
 import io.github.codeutilities.config.Config;
 import io.github.codeutilities.util.gui.menus.ColorsGui;
-import io.github.cottonmc.clientcommands.CottonClientCommandSource;
+import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.*;
+import net.minecraft.text.ClickEvent;
+import net.minecraft.text.HoverEvent;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Style;
+import net.minecraft.text.Text;
+import net.minecraft.text.TextColor;
 
 public class ColorsCommand extends Command {
 
     private final MinecraftClient mc = MinecraftClient.getInstance();
 
     @Override
-    public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
+    public void register(MinecraftClient mc, CommandDispatcher<FabricClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("colors").executes((context) -> {
             ColorsGui colorsGui = new ColorsGui();
             colorsGui.scheduleOpenGui(colorsGui, "");

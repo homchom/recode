@@ -15,16 +15,20 @@ import io.github.codeutilities.util.misc.ItemUtil;
 import io.github.codeutilities.util.networking.DFInfo;
 import io.github.codeutilities.util.networking.State;
 import io.github.codeutilities.util.templates.SearchUtil;
-import io.github.cottonmc.clientcommands.CottonClientCommandSource;
+import java.util.ArrayList;
+import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.*;
-
-import java.util.ArrayList;
+import net.minecraft.text.ClickEvent;
+import net.minecraft.text.HoverEvent;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 
 public class SearchCommand extends Command {
     @Override
-    public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
+    public void register(MinecraftClient mc, CommandDispatcher<FabricClientCommandSource> cd) {
         String[] allcodeblocks = new String[SearchUtil.SearchType.values().length];
         int i = 0;
         for(SearchUtil.SearchType searchType : SearchUtil.SearchType.values()) {

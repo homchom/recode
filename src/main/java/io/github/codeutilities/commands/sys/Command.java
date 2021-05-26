@@ -3,14 +3,14 @@ package io.github.codeutilities.commands.sys;
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.codeutilities.util.chat.ChatType;
 import io.github.codeutilities.util.chat.ChatUtil;
-import io.github.cottonmc.clientcommands.CottonClientCommandSource;
+import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class Command {
-    public abstract void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd);
+    public abstract void register(MinecraftClient mc, CommandDispatcher<FabricClientCommandSource> cd);
 
     protected boolean isCreative(MinecraftClient mc) {
         ClientPlayerEntity player = mc.player;

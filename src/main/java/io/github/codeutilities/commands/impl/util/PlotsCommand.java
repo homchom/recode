@@ -6,15 +6,14 @@ import io.github.codeutilities.commands.sys.arguments.ArgBuilder;
 import io.github.codeutilities.util.file.ExternalFile;
 import io.github.codeutilities.util.gui.menus.PlotsStorageUI;
 import io.github.codeutilities.util.misc.ItemUtil;
-import io.github.cottonmc.clientcommands.CottonClientCommandSource;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
 
 public class PlotsCommand extends Command {
     private static final File FILE = ExternalFile.PLOTS_DB.getFile();
@@ -26,7 +25,7 @@ public class PlotsCommand extends Command {
     }
 
     @Override
-    public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
+    public void register(MinecraftClient mc, CommandDispatcher<FabricClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("plots").executes(ctx -> {
             try {
                 PlotsStorageUI plotsStorageUI = new PlotsStorageUI();

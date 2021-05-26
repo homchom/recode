@@ -7,13 +7,13 @@ import io.github.codeutilities.commands.sys.arguments.types.PlayerArgumentType;
 import io.github.codeutilities.events.register.ReceiveChatMessageEvent;
 import io.github.codeutilities.util.chat.ChatType;
 import io.github.codeutilities.util.chat.ChatUtil;
-import io.github.cottonmc.clientcommands.CottonClientCommandSource;
+import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 
 public class PJoinCommand extends Command {
 
     @Override
-    public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
+    public void register(MinecraftClient mc, CommandDispatcher<FabricClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("pjoin")
                 .then(ArgBuilder.argument("player", PlayerArgumentType.player())
                         .executes(ctx -> {

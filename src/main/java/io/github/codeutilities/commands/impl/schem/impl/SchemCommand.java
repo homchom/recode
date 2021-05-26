@@ -17,8 +17,11 @@ import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.codeutilities.util.misc.ItemUtil;
 import io.github.codeutilities.util.render.ToasterUtil;
 import io.github.codeutilities.util.templates.TemplateUtils;
-import io.github.cottonmc.clientcommands.ArgumentBuilders;
-import io.github.cottonmc.clientcommands.CottonClientCommandSource;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.zip.GZIPInputStream;
+import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.item.ItemStack;
@@ -26,23 +29,18 @@ import net.minecraft.item.Items;
 import net.minecraft.text.LiteralText;
 import org.apache.commons.io.FilenameUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.zip.GZIPInputStream;
-
 public class SchemCommand extends Command {
 
     @Override
-    public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
+    public void register(MinecraftClient mc, CommandDispatcher<FabricClientCommandSource> cd) {
         cd.register(subcommand(mc, ArgBuilder.literal("schem")));
         cd.register(subcommand(mc, ArgBuilder.literal("litematic")));
         cd.register(subcommand(mc, ArgBuilder.literal("schematic")));
     }
 
-    public LiteralArgumentBuilder<CottonClientCommandSource> subcommand(MinecraftClient mc, LiteralArgumentBuilder<CottonClientCommandSource> literal) {
+    public LiteralArgumentBuilder<FabricClientCommandSource> subcommand(MinecraftClient mc, LiteralArgumentBuilder<FabricClientCommandSource> literal) {
         literal.then(ArgBuilder.literal("load")
-                .then(ArgumentBuilders.argument("filepath", StringArgumentType.greedyString())
+                .then(ArgBuilder.argument("filepath", StringArgumentType.greedyString())
                         .executes(ctx -> {
                             if (this.isCreative(mc)) {
                                 String arg = StringArgumentType.getString(ctx, "filepath");

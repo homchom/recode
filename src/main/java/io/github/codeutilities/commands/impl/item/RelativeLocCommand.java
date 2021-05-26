@@ -6,7 +6,8 @@ import io.github.codeutilities.commands.sys.Command;
 import io.github.codeutilities.commands.sys.arguments.ArgBuilder;
 import io.github.codeutilities.commands.sys.arguments.types.StringListArgumentType;
 import io.github.codeutilities.util.misc.ItemUtil;
-import io.github.cottonmc.clientcommands.CottonClientCommandSource;
+import java.util.Arrays;
+import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -18,14 +19,12 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-import java.util.Arrays;
-
 public class RelativeLocCommand extends Command {
 
     private static final String[] TARGET_TYPES = {"selection", "default", "damager", "killer", "victim", "shooter", "projectile"};
 
     @Override
-    public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
+    public void register(MinecraftClient mc, CommandDispatcher<FabricClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("relativeloc")
                 .then(ArgBuilder.argument("target", StringListArgumentType.string(TARGET_TYPES))
                         .then(ArgBuilder.argument("forwards", FloatArgumentType.floatArg())

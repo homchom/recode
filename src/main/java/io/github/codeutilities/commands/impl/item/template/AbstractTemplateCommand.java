@@ -6,7 +6,7 @@ import io.github.codeutilities.commands.sys.arguments.ArgBuilder;
 import io.github.codeutilities.util.chat.ChatType;
 import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.codeutilities.util.templates.TemplateUtils;
-import io.github.cottonmc.clientcommands.CottonClientCommandSource;
+import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 
@@ -14,7 +14,7 @@ public abstract class AbstractTemplateCommand extends Command {
 
 
     @Override
-    public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
+    public void register(MinecraftClient mc, CommandDispatcher<FabricClientCommandSource> cd) {
         cd.register(ArgBuilder.literal(getName())
                 .executes(ctx -> {
                     ItemStack item = mc.player.getMainHandStack();

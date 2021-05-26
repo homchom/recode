@@ -4,11 +4,10 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.github.codeutilities.commands.sys.Command;
 import io.github.codeutilities.commands.sys.arguments.ArgBuilder;
-import io.github.cottonmc.clientcommands.CottonClientCommandSource;
-import net.minecraft.client.MinecraftClient;
-
 import java.util.HashMap;
 import java.util.Map;
+import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import net.minecraft.client.MinecraftClient;
 
 public class NodeCommand extends Command {
 
@@ -24,8 +23,8 @@ public class NodeCommand extends Command {
     }
 
     @Override
-    public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
-        LiteralArgumentBuilder<CottonClientCommandSource> cmd = ArgBuilder.literal("node");
+    public void register(MinecraftClient mc, CommandDispatcher<FabricClientCommandSource> cd) {
+        LiteralArgumentBuilder<FabricClientCommandSource> cmd = ArgBuilder.literal("node");
 
         for (Map.Entry<String, String> node : NODE_MAP.entrySet()) {
             cmd.then(ArgBuilder.literal(node.getKey()).executes((context) -> {

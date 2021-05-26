@@ -10,12 +10,11 @@ import io.github.codeutilities.util.chat.ChatType;
 import io.github.codeutilities.util.chat.ChatUtil;
 import io.github.codeutilities.util.gui.menus.TemplateStorageUI;
 import io.github.codeutilities.util.networking.WebUtil;
-import io.github.cottonmc.clientcommands.CottonClientCommandSource;
-import net.minecraft.client.MinecraftClient;
-import org.apache.http.HttpResponse;
-
 import java.io.IOException;
 import java.util.Random;
+import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import net.minecraft.client.MinecraftClient;
+import org.apache.http.HttpResponse;
 
 public class TemplatesCommand extends Command {
 
@@ -53,7 +52,7 @@ public class TemplatesCommand extends Command {
     }
 
     @Override
-    public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
+    public void register(MinecraftClient mc, CommandDispatcher<FabricClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("templates")
                 .executes(ctx -> {
                     if (this.isCreative(mc)) {

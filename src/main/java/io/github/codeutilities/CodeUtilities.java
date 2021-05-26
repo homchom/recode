@@ -3,6 +3,7 @@ package io.github.codeutilities;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
+import io.github.codeutilities.commands.sys.CommandHandler;
 import io.github.codeutilities.config.Config;
 import io.github.codeutilities.config.internal.ConfigFile;
 import io.github.codeutilities.config.internal.ConfigInstruction;
@@ -121,6 +122,7 @@ public class CodeUtilities implements ModInitializer {
         initializer.add(new ActionDump());
         initializer.add(new EventHandler());
         initializer.add(new State.Locater());
+        initializer.add(new CommandHandler());
 
         // Initializes only if the given condition is met. (this case: config value)
         initializer.addIf(new AudioHandler(), Config.getBoolean("audio"));

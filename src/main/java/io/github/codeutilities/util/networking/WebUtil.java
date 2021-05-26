@@ -83,6 +83,7 @@ public class WebUtil {
     }
 
     public static JsonElement getJson(String url) throws IOException {
+        System.out.println(getString(url));
         return CodeUtilities.JSON_PARSER.parse(getString(url));
     }
 

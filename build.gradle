@@ -49,8 +49,6 @@ dependencies {
 
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
-    //https://github.com/CottonMC/ClientCommands //NO API
-    modImplementation "io.github.cottonmc:cotton-client-commands:1.0.1+1.16-rc1"
     //https://github.com/CottonMC/LibGui/releases //API
     modImplementation "io.github.cottonmc:LibGui:3.2.2+1.16.3"
     modImplementation "javax.websocket:javax.websocket-api:1.1"
@@ -62,7 +60,6 @@ dependencies {
 	modImplementation "me.shedaniel.cloth:cloth-config-fabric:4.11.19"
 
     //include "com.google.code.gson:gson:2.8.6"
-    include "io.github.cottonmc:cotton-client-commands:1.0.1+1.16-rc1"
     include "io.github.cottonmc:LibGui:3.2.2+1.16.3"
 	include "me.shedaniel.cloth:cloth-config-fabric:4.11.19"
     //websocket things

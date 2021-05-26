@@ -5,7 +5,7 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.github.codeutilities.util.chat.ChatType;
 import io.github.codeutilities.util.chat.ChatUtil;
-import io.github.cottonmc.clientcommands.CottonClientCommandSource;
+import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 
 //These argument classes will eventually become our own command dispatcher, removing the dependency for Cotton Client Commands.
 public final class ArgBuilder {
@@ -13,11 +13,11 @@ public final class ArgBuilder {
     private ArgBuilder() {
     }
 
-    public static LiteralArgumentBuilder<CottonClientCommandSource> literal(String name) {
+    public static LiteralArgumentBuilder<FabricClientCommandSource> literal(String name) {
         return LiteralArgument.literal(name);
     }
 
-    public static <T> RequiredArgument<CottonClientCommandSource, T> argument(String name, ArgumentType<T> type) {
+    public static <T> RequiredArgument<FabricClientCommandSource, T> argument(String name, ArgumentType<T> type) {
         return RequiredArgument.argument(name, type);
     }
 

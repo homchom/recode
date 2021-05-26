@@ -15,16 +15,15 @@ import io.github.codeutilities.util.file.ExternalFile;
 import io.github.codeutilities.util.misc.ItemUtil;
 import io.github.codeutilities.util.render.ToasterUtil;
 import io.github.codeutilities.util.templates.TemplateUtils;
-import io.github.cottonmc.clientcommands.CottonClientCommandSource;
+import java.io.File;
+import java.io.IOException;
+import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.LiteralText;
-
-import java.io.File;
-import java.io.IOException;
 
 public class NBSCommand extends Command {
 
@@ -59,7 +58,7 @@ public class NBSCommand extends Command {
     }
 
     @Override
-    public void register(MinecraftClient mc, CommandDispatcher<CottonClientCommandSource> cd) {
+    public void register(MinecraftClient mc, CommandDispatcher<FabricClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("nbs")
                 .then(ArgBuilder.literal("load")
                         .then(ArgBuilder.argument("filename", StringArgumentType.greedyString())
