@@ -32,8 +32,6 @@ public class CPU_UsageText {
 
         barsText = packet.getText();
 
-        System.out.println(barsText);
-
         int sibs = barsText.getSiblings().size();
 
         Text pText = barsText.getSiblings().get(sibs - 2);
