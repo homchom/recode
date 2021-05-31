@@ -29,7 +29,6 @@ public class MiscellaneousGroup extends ConfigGroup {
         ConfigSubGroup audio = new ConfigSubGroup("audio");
         audio.register(new BooleanSetting("audio", false));
         audio.register(new StringSetting("audioUrl", "https://audio.tomoli.me/"));
-        audio.register(new BooleanSetting("audioAlerts", false));
         this.register(audio);
 
         // Quick Number Change
