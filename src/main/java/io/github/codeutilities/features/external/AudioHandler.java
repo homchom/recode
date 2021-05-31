@@ -27,7 +27,6 @@ public class AudioHandler implements ILoader {
     private static AudioHandler instance;
     private static final ScheduledExecutorService SERVICE = Executors.newScheduledThreadPool(1);
 
-    private String currentPlotId = "";
     private final Map<String, Set<MediaPlayer>> tracks = new HashMap<>();
     private boolean isActive = true;
 
@@ -65,17 +64,6 @@ public class AudioHandler implements ILoader {
                             String title = json.get("title").getAsString();
                             boolean loop = json.get("loop").getAsBoolean();
 
-                            if (!currentPlotId.equals(plotId)) {
-                                // enable to show when plot takes control of session
-                                if (Config.getBoolean("audioAlerts")) {
-                                    ToasterUtil.sendToaster("Now Playing", "Plot " + plotId, SystemToast.Type.NARRATOR_TOGGLE);
-                                }
-                                currentPlotId = plotId;
-                            }
-                            if (CodeUtilities.BETA) {
-                                ToasterUtil.sendToaster("Debug Playback - " + plotId, title, SystemToast.Type.NARRATOR_TOGGLE);
-                            }
-
                             Media mediaSource = new Media(source);
                             MediaPlayer player = new MediaPlayer(mediaSource);
                             if (loop) {
@@ -96,10 +84,6 @@ public class AudioHandler implements ILoader {
                     if (action.equals("stop")) {
                         String plotId = json.get("plot").getAsString();
                         String track = json.get("track").getAsString();
-                        if (!currentPlotId.equals(plotId)) {
-                            ToasterUtil.sendToaster("Now Playing", "Plot " + plotId, SystemToast.Type.NARRATOR_TOGGLE);
-                            currentPlotId = plotId;
-                        }
                         if (track.equals("all")) {
                             for (Map.Entry<String, Set<MediaPlayer>> trackList : tracks.entrySet()) {
                                 for (MediaPlayer audio : trackList.getValue()) {
