@@ -15,16 +15,16 @@
   "icon": "assets/codeutilities/icon.png",
   "entrypoints": {
     "cotton-client-commands": [
-      "io.github.codeutilities.commands.sys.CommandHandler"
+      "io.github.codeutilities.sys.commands.CommandHandler"
     ],
     "main": [
       "io.github.codeutilities.CodeUtilities"
     ],
     "modmenu": [
-      "io.github.codeutilities.config.ModMenuIntegration"
+      "io.github.codeutilities.mod.config.ModMenuIntegration"
     ],
     "client": [
-      "io.github.codeutilities.features.keybinds.Keybinds"
+      "io.github.codeutilities.mod.features.keybinds.Keybinds"
     ],
     "server": []
   },

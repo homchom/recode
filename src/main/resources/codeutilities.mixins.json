@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "io.github.codeutilities.mixin",
+  "package": "io.github.codeutilities.mod.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "item.MixinHeldItemTooltip",
@@ -23,7 +23,7 @@
     "screen.MixinOptionsScreen",
     "screen.MixinTitleScreen",
     "misc.MixinMouse",
-    "misc.MixinWindow",
+    "misc.MixinWindow"
   ],
   "client": [],
   "server": [],
