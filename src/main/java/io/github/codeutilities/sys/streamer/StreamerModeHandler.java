@@ -2,11 +2,9 @@ package io.github.codeutilities.sys.streamer;
 
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.config.Config;
-import io.github.codeutilities.mod.events.impl.ReceiveChatMessageEvent;
 import io.github.codeutilities.mod.events.impl.ReceiveSoundEvent;
 import io.github.codeutilities.sys.util.chat.MessageGrabber;
 import io.github.codeutilities.sys.util.chat.TextUtil;
-import io.github.codeutilities.sys.util.misc.TimerUtil;
 import io.github.codeutilities.sys.util.networking.State;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 import net.minecraft.text.Text;

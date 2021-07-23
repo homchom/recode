@@ -34,6 +34,7 @@ public class CommandsGroup extends ConfigGroup {
         ConfigSubGroup colors = new ConfigSubGroup("colors");
         colors.register(new IntegerSetting("colorMaxRender", 158));
         colors.register(new IntegerSetting("colorLines", 5));
+        colors.register(new BooleanSetting("colorReplacePicker", false));
         this.register(colors);
 
         // Non sub-grouped

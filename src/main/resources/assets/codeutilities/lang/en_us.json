@@ -95,6 +95,8 @@
     "config.codeutilities.option.colorMaxRender.tooltip": "Amount of color bars to display in one color line.",
     "config.codeutilities.option.colorLines": "Maximum Rows",
     "config.codeutilities.option.colorLines.tooltip": "Amount of rows to show in /color.",
+    "config.codeutilities.option.colorReplacePicker": "Replace Color Picker",
+    "config.codeutilities.option.colorReplacePicker.tooltip": "Replaces the color picker with\na color menu equivalent of \"/colors 100\".",
 
     "config.codeutilities.option.cmdLoadPlots": "/plots loading",
     "config.codeutilities.option.cmdLoadPlots.tooltip": "Should plots be cached or not for /plots.",

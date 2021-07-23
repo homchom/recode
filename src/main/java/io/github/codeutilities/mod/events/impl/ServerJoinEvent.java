@@ -12,7 +12,7 @@ public class ServerJoinEvent {
         if (DFInfo.isOnDF()) {
             TimerUtil.setTimeout(() -> {
                 StreamerModeHandler.handleServerJoin(packet, ci);
-            }, 2000);
+            }, 2500);
         }
     }
 }

@@ -17,9 +17,13 @@ public class ColorsCommand extends Command {
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<FabricClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("colors").executes((context) -> {
-            ColorsGui colorsGui = new ColorsGui();
-            colorsGui.scheduleOpenGui(colorsGui, "");
-            //showColorPalette(1);
+            if (Config.getBoolean("colorReplacePicker")) {
+                showColorPalette(1);
+            } else {
+                ColorsGui colorsGui = new ColorsGui();
+                colorsGui.scheduleOpenGui(colorsGui, "");
+                //showColorPalette(1);
+            }
             return 1;
         })
                 .then(ArgBuilder.argument("Saturation(%)", IntegerArgumentType.integer(0, 100)).executes((context) -> {
