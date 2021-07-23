@@ -1,4 +1,4 @@
-package io.github.codeutilities.mod.mixin.misc;
+package io.github.codeutilities.mod.mixin.message;
 
 import io.github.codeutilities.mod.events.impl.ReceiveSoundEvent;
 import net.minecraft.client.MinecraftClient;
@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPlayNetworkHandler.class)
-public class MixinReceivedSound {
+public class MReceivedSound {
     private final MinecraftClient mc = MinecraftClient.getInstance();
 
     @Inject(method = "onPlaySound", at = @At("HEAD"), cancellable = true)

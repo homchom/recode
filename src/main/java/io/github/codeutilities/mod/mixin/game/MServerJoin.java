@@ -1,4 +1,4 @@
-package io.github.codeutilities.mod.mixin.misc;
+package io.github.codeutilities.mod.mixin.game;
 
 import io.github.codeutilities.mod.events.impl.ServerJoinEvent;
 import net.minecraft.client.MinecraftClient;
@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPlayNetworkHandler.class)
-public class MixinJoinServer {
+public class MServerJoin {
     private final MinecraftClient mc = MinecraftClient.getInstance();
 
     @Inject(method = "onGameJoin", at = @At("RETURN"), cancellable = true)

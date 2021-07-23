@@ -30,7 +30,7 @@ import java.util.List;
 import static net.minecraft.client.render.block.entity.SignBlockEntityRenderer.getModelTexture;
 
 @Mixin(SignBlockEntityRenderer.class)
-public class MixinSignBlockEntityRender {
+public class MSignRenderer {
 
     private final MinecraftClient mc = MinecraftClient.getInstance();
 

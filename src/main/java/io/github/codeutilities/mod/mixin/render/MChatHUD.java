@@ -1,4 +1,4 @@
-package io.github.codeutilities.mod.mixin.player;
+package io.github.codeutilities.mod.mixin.render;
 
 import io.github.codeutilities.mod.config.Config;
 import net.minecraft.client.MinecraftClient;
@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ChatHud.class)
-public abstract class ChatHudMixin {
+public abstract class MChatHUD {
 
     @Shadow
     @Final

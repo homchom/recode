@@ -1,4 +1,4 @@
-package io.github.codeutilities.mod.mixin.packet;
+package io.github.codeutilities.mod.mixin.inventory;
 
 import io.github.codeutilities.mod.commands.impl.other.PlotsCommand;
 import io.github.codeutilities.mod.config.Config;
@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Mixin(ClientPlayNetworkHandler.class)
-public class MixinInventoryPacketListener {
+public class MInventoryListener {
     private static final File FILE = ExternalFile.PLOTS_DB.getFile();
     private CompoundTag lastTag = null;
 

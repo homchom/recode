@@ -1,4 +1,4 @@
-package io.github.codeutilities.mod.mixin.render;
+package io.github.codeutilities.mod.mixin.render.player;
 
 import io.github.codeutilities.mod.features.social.cosmetics.BlazeCosmeticRenderer;
 import io.github.codeutilities.mod.features.social.cosmetics.CosmeticRenderer;
@@ -13,9 +13,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PlayerEntityRenderer.class)
-public abstract class MixinPlayerEntityRenderer extends LivingEntityRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
+public abstract class MPlayerRenderer extends LivingEntityRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
 
-    public MixinPlayerEntityRenderer(EntityRenderDispatcher dispatcher, PlayerEntityModel<AbstractClientPlayerEntity> model, float shadowRadius) {
+    public MPlayerRenderer(EntityRenderDispatcher dispatcher, PlayerEntityModel<AbstractClientPlayerEntity> model, float shadowRadius) {
         super(dispatcher, model, shadowRadius);
     }
 

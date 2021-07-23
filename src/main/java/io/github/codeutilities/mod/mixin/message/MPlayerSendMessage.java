@@ -1,4 +1,4 @@
-package io.github.codeutilities.mod.mixin.messages;
+package io.github.codeutilities.mod.mixin.message;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPlayerEntity.class)
-public class MixinPlayerChatMessage {
+public class MPlayerSendMessage {
     private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
 //    private boolean stopTimer = false;
 //    private final Thread conversationTimer = new Thread(() -> {

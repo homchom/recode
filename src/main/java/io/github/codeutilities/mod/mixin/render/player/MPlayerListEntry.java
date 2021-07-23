@@ -1,4 +1,4 @@
-package io.github.codeutilities.mod.mixin.player;
+package io.github.codeutilities.mod.mixin.render.player;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import java.util.Map;
 
 @Mixin(PlayerListEntry.class)
-public class MixinPlayerListEntry {
+public class MPlayerListEntry {
     @Shadow
     @Final
     private Map<MinecraftProfileTexture.Type, Identifier> textures;

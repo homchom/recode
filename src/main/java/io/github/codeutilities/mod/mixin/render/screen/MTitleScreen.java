@@ -1,4 +1,4 @@
-package io.github.codeutilities.mod.mixin.screen;
+package io.github.codeutilities.mod.mixin.render.screen;
 
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.config.Config;
@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(TitleScreen.class)
-public class MixinTitleScreen extends Screen {
+public class MTitleScreen extends Screen {
 
     private final Identifier identifier_main = new Identifier(CodeUtilities.MOD_ID + ":df.png");
     private final Identifier identifier_beta = new Identifier(CodeUtilities.MOD_ID + ":beta.png");
@@ -26,7 +26,7 @@ public class MixinTitleScreen extends Screen {
     private final Identifier identifier_node4 = new Identifier(CodeUtilities.MOD_ID + ":node4.png");
     private final Identifier identifier_node5 = new Identifier(CodeUtilities.MOD_ID + ":node5.png");
 
-    protected MixinTitleScreen(LiteralText title) {
+    protected MTitleScreen(LiteralText title) {
         super(title);
     }
 

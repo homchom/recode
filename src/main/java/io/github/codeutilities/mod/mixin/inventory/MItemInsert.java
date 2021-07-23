@@ -1,4 +1,4 @@
-package io.github.codeutilities.mod.mixin.item;
+package io.github.codeutilities.mod.mixin.inventory;
 
 import io.github.codeutilities.sys.templates.TemplateStorageHandler;
 import io.github.codeutilities.sys.templates.TemplateUtils;
@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPlayNetworkHandler.class)
-public class MixinItemInsert {
+public class MItemInsert {
 
     @Inject(method = "onInventory", at = @At("HEAD"))
     public void onCreativeInventoryAction(InventoryS2CPacket packet, CallbackInfo ci) {

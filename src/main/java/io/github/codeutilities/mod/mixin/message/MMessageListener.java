@@ -1,4 +1,4 @@
-package io.github.codeutilities.mod.mixin.messages;
+package io.github.codeutilities.mod.mixin.message;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.codeutilities.CodeUtilities;
@@ -32,7 +32,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.io.IOException;
 
 @Mixin(ClientPlayNetworkHandler.class)
-public class MixinGameMessageListener {
+public class MMessageListener {
     private static long lastPatchCheck = 0;
     private static long lastBuildCheck = 0;
     private final MinecraftClient minecraftClient = MinecraftClient.getInstance();

@@ -1,4 +1,4 @@
-package io.github.codeutilities.mod.mixin.item;
+package io.github.codeutilities.mod.mixin.inventory;
 
 
 import com.google.gson.JsonObject;
@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Mixin(InGameHud.class)
-public class MixinHeldItemTooltip {
+public class MHeldItemTooltip {
     private static final Map<String, MutableText> scopes = new HashMap<>();
 
     static {

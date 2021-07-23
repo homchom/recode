@@ -1,4 +1,4 @@
-package io.github.codeutilities.mod.mixin.player;
+package io.github.codeutilities.mod.mixin.game;
 
 import blue.endless.jankson.annotation.Nullable;
 import io.github.codeutilities.sys.player.DFInfo;
@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MinecraftClient.class)
-public class MixinMinecraftClient {
+public class MClient {
 
     /**
      * @author CodeUtilities

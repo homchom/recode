@@ -1,4 +1,4 @@
-package io.github.codeutilities.mod.mixin.player;
+package io.github.codeutilities.mod.mixin.render.player;
 
 import com.google.common.hash.Hashing;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.io.File;
 
 @Mixin(PlayerSkinProvider.class)
-public class MixinPlayerSkinProvider {
+public class MPlayerSkinProvider {
 
     long loadingTexture = 0;
     @Shadow

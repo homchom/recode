@@ -1,4 +1,4 @@
-package io.github.codeutilities.mod.mixin.misc;
+package io.github.codeutilities.mod.mixin.render;
 
 import com.google.gson.JsonObject;
 import io.github.codeutilities.CodeUtilities;
@@ -26,7 +26,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Mixin(Mouse.class)
-public class MixinMouse {
+public class MMouse {
     @Shadow
     private double x;
 

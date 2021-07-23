@@ -18,10 +18,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ChestBlockEntityRenderer.class)
-public abstract class MixinChestBlockEntityRenderer<T extends BlockEntity & ChestAnimationProgress> extends
+public abstract class MChestRenderer<T extends BlockEntity & ChestAnimationProgress> extends
         BlockEntityRenderer<T> {
 
-    public MixinChestBlockEntityRenderer(BlockEntityRenderDispatcher dispatcher) {
+    public MChestRenderer(BlockEntityRenderDispatcher dispatcher) {
         super(dispatcher);
     }
 

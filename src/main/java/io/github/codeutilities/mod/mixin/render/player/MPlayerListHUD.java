@@ -1,4 +1,4 @@
-package io.github.codeutilities.mod.mixin.player;
+package io.github.codeutilities.mod.mixin.render.player;
 
 import io.github.codeutilities.mod.config.Config;
 import io.github.codeutilities.mod.features.social.tab.CodeUtilitiesServer;
@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.UUID;
 
 @Mixin(PlayerListHud.class)
-public class MixinPlayerListHud {
+public class MPlayerListHUD {
 
     @Inject(method = "getPlayerName", at = @At("RETURN"), cancellable = true)
     public void getPlayerName(PlayerListEntry entry, CallbackInfoReturnable<Text> cir) {
