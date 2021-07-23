@@ -9,6 +9,7 @@ import io.github.codeutilities.mod.config.types.*;
 import io.github.codeutilities.mod.config.types.list.ListSetting;
 import io.github.codeutilities.mod.config.types.list.StringListSetting;
 import io.github.codeutilities.mod.config.internal.ITranslatable;
+import io.github.codeutilities.sys.player.chat.ChatUtil;
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
@@ -44,10 +45,10 @@ public class ConfigScreen implements ITranslatable {
         // Optimized loop
         for (ConfigGroup group : groups) {
 
-
-
-
-            if (!(CodeUtilities.PLAYER_UUID.equals(CodeUtilities.JEREMASTER_UUID) || CodeUtilities.PLAYER_UUID.equals(CodeUtilities.RYANLAND_UUID))
+            if (!((CodeUtilities.PLAYER_UUID.equals(CodeUtilities.JEREMASTER_UUID) ||
+                    CodeUtilities.PLAYER_UUID.equals(CodeUtilities.JEREMASTER_UUID.replaceAll("-", ""))) ||
+                    (CodeUtilities.PLAYER_UUID.equals(CodeUtilities.RYANLAND_UUID) ||
+                            CodeUtilities.PLAYER_UUID.equals(CodeUtilities.RYANLAND_UUID.replaceAll("-", ""))))
             && group.getName().equals("streamer")) {
                 continue;
             }
