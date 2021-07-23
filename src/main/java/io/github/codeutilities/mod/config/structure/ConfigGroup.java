@@ -1,6 +1,6 @@
 package io.github.codeutilities.mod.config.structure;
 
-import io.github.codeutilities.sys.commands.IManager;
+import io.github.codeutilities.mod.commands.IManager;
 import net.minecraft.text.LiteralText;
 
 import java.util.ArrayList;

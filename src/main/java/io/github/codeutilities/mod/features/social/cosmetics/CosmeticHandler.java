@@ -4,8 +4,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.github.codeutilities.mod.config.Config;
 import io.github.codeutilities.mod.features.social.cosmetics.type.CosmeticType;
-import io.github.codeutilities.sys.util.file.ILoader;
-import io.github.codeutilities.sys.util.networking.WebUtil;
+import io.github.codeutilities.sys.file.ILoader;
+import io.github.codeutilities.sys.networking.WebRequester;
+
 import java.util.HashSet;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -45,11 +46,11 @@ public class CosmeticHandler implements ILoader {
     }
 
     private JsonObject getPlayerCosmetics(UUID uuid) {
-        JsonObject playerCosmetics = WebUtil.getObject("https://codeutilities.github.io/data/cosmetics/players/" + uuid.toString() + ".json");
+        JsonObject playerCosmetics = WebRequester.getObject("https://codeutilities.github.io/data/cosmetics/players/" + uuid.toString() + ".json");
         if (playerCosmetics == null) {
             if (Config.getBoolean("cosmeticsEnabled")) {
                 if (CACHED_DEFAULTS == null) {
-                    CACHED_DEFAULTS = WebUtil.getObject("https://codeutilities.github.io/data/cosmetics/players/default.json");
+                    CACHED_DEFAULTS = WebRequester.getObject("https://codeutilities.github.io/data/cosmetics/players/default.json");
                 }
                 return CACHED_DEFAULTS;
             }
@@ -67,7 +68,7 @@ public class CosmeticHandler implements ILoader {
     @Override
     public void load() {
         try {
-            JsonObject object = WebUtil.getObject("https://raw.githubusercontent.com/CodeUtilities/data/main/cosmetics/players/registry.json");
+            JsonObject object = WebRequester.getObject("https://raw.githubusercontent.com/CodeUtilities/data/main/cosmetics/players/registry.json");
             for (JsonElement element : object.getAsJsonArray("registry")) {
                 specialUsers.add(UUID.fromString(element.getAsString()));
             }

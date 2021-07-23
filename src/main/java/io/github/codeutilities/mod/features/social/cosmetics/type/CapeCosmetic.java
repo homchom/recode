@@ -2,7 +2,7 @@ package io.github.codeutilities.mod.features.social.cosmetics.type;
 
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.mod.mixin.player.TextureMapAccessor;
+import io.github.codeutilities.mod.mixin.render.TextureMapAccessor;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;

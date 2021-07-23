@@ -1,9 +1,9 @@
 package io.github.codeutilities.mod.features.social.chat;
 
 import io.github.codeutilities.mod.config.Config;
-import io.github.codeutilities.sys.util.chat.ChatType;
-import io.github.codeutilities.sys.util.chat.ChatUtil;
-import io.github.codeutilities.sys.util.file.ILoader;
+import io.github.codeutilities.sys.player.chat.ChatType;
+import io.github.codeutilities.sys.player.chat.ChatUtil;
+import io.github.codeutilities.sys.file.ILoader;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
 public class ConversationTimer implements ILoader {

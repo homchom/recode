@@ -7,7 +7,7 @@ import io.github.codeutilities.mod.config.structure.ConfigSubGroup;
 import io.github.codeutilities.mod.config.types.*;
 import io.github.codeutilities.mod.config.types.list.ListSetting;
 import io.github.codeutilities.mod.config.types.list.StringListSetting;
-import io.github.codeutilities.sys.util.translation.ITranslatable;
+import io.github.codeutilities.mod.config.internal.ITranslatable;
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;

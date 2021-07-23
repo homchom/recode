@@ -1,6 +1,6 @@
 package io.github.codeutilities.mod.events.interfaces;
 
-import io.github.codeutilities.sys.util.networking.State;
+import io.github.codeutilities.sys.networking.State;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.util.ActionResult;
