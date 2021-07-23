@@ -25,7 +25,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class QueueCommand extends Command {
-    private final String TWITCH_PLOT_QUEUE_URL = "http://twitch.center/customapi/quote/list?token=18a3878c";
+    private final String TWITCH_PLOT_QUEUE_URL = "https://twitch.center/customapi/quote/list?token=18a3878c";
 
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<FabricClientCommandSource> cd) {
@@ -40,6 +40,9 @@ public class QueueCommand extends Command {
                         e.printStackTrace();
                         return 0;
                     }
+
+                    //TODO fix this ssl crap...
+                    ChatUtil.sendMessage(rawQueue);
 
                     String[] splitQueue = rawQueue.replaceFirst("\\n", "").split("\\n");
                     LinkedHashSet<QueueEntry> queue = new LinkedHashSet<>();

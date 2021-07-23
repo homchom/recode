@@ -44,6 +44,9 @@ public class ConfigScreen implements ITranslatable {
         // Optimized loop
         for (ConfigGroup group : groups) {
 
+
+
+
             if (!(CodeUtilities.PLAYER_UUID.equals(CodeUtilities.JEREMASTER_UUID) || CodeUtilities.PLAYER_UUID.equals(CodeUtilities.RYANLAND_UUID))
             && group.getName().equals("streamer")) {
                 continue;
