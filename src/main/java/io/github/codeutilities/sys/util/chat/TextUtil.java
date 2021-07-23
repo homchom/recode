@@ -15,37 +15,53 @@ import java.util.regex.Pattern;
 
 public class TextUtil {
 
-    public static String EMPTY_TEXT = "{\"text\":\"\"}";
-
     public static String textComponentToColorCodes(Text message) {
         List<Text> siblings = message.getSiblings();
 
-        //System.out.println(message);
+        System.out.println(message);
 
         StringBuilder newMsg = new StringBuilder();
-        String currentText;
+        String currentText = "";
 
+        translateSibling(message, newMsg, currentText);
         for (Text sibling : siblings) {
-            Style style = sibling.getStyle();
-
-            // color
-            TextColor color = style.getColor();
-            String literalColor = String.valueOf(color);
-            String code = MinecraftColors.getMcFromFormatting(color);
-            if (code == null) currentText = MinecraftColors.hexToMc(literalColor);
-            else currentText = code;
-
-            if (style.isBold()) currentText = currentText + "§l";
-            if (style.isItalic()) currentText = currentText + "§o";
-            if (style.isStrikethrough()) currentText = currentText + "§m";
-            if (style.isUnderlined()) currentText = currentText + "§n";
-            if (style.isObfuscated()) currentText = currentText + "§k";
-
-            currentText = currentText + sibling.getString();
-            newMsg.append(currentText);
+            translateSibling(sibling, newMsg, currentText);
+            for (Text sibling2 : sibling.getSiblings()) {
+                translateSibling(sibling2, newMsg, currentText);
+                for (Text sibling3 : sibling2.getSiblings()) {
+                    translateSibling(sibling3, newMsg, currentText);
+                }
+            }
         }
 
+        System.out.println("RESULT = "+newMsg);
         return newMsg.toString();
+    }
+
+    private static void translateSibling(Text sibling, StringBuilder newMsg, String currentText) {
+        Style style = sibling.getStyle();
+
+        System.out.println("Sibling = "+sibling);
+        System.out.println("Style = "+style);
+        // color
+        TextColor color = style.getColor();
+        if (color == null && sibling.getSiblings().size() > 0) return;
+        System.out.println("!!!!!! Color "+color);
+        String code = MinecraftColors.getMcFromFormatting(color);
+        if (code == null) {
+            currentText = MinecraftColors.hexToMc(String.valueOf(color));
+        }
+        else currentText = code;
+        System.out.println("text "+currentText);
+
+        if (style.isBold()) currentText += "§l";
+        if (style.isItalic()) currentText += "§o";
+        if (style.isStrikethrough()) currentText += "§m";
+        if (style.isUnderlined()) currentText += "§n";
+        if (style.isObfuscated()) currentText += "§k";
+
+        currentText += sibling.getString();
+        newMsg.append(currentText);
     }
 
     public static Text colorCodesToTextComponent(String message) {
