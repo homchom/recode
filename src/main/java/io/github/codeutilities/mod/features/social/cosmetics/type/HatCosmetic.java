@@ -3,7 +3,7 @@ package io.github.codeutilities.mod.features.social.cosmetics.type;
 import com.google.gson.JsonObject;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.features.social.cosmetics.CosmeticModel;
-import io.github.codeutilities.sys.util.networking.WebUtil;
+import io.github.codeutilities.sys.networking.WebRequester;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.ModelLoader;
@@ -41,7 +41,7 @@ public class HatCosmetic implements CosmeticType {
         CosmeticModel cosmeticModel = null;
         if (!hatRegistry.containsKey(cosmeticId)) {
             try {
-                String hatData = WebUtil.getString("https://codeutilities.github.io/data/cosmetics/hats/" + cosmeticId);
+                String hatData = WebRequester.getString("https://codeutilities.github.io/data/cosmetics/hats/" + cosmeticId);
                 JsonObject hatJson = CodeUtilities.JSON_PARSER.parse(hatData).getAsJsonObject();
                 JsonObject attributes = hatJson.get("attributes").getAsJsonObject();
 

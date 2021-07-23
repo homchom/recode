@@ -1,9 +1,9 @@
 package io.github.codeutilities.mod.mixin.render;
 
 import io.github.codeutilities.mod.config.Config;
-import io.github.codeutilities.sys.util.networking.DFInfo;
-import io.github.codeutilities.sys.util.networking.State;
-import io.github.codeutilities.sys.util.templates.SearchUtil;
+import io.github.codeutilities.sys.player.DFInfo;
+import io.github.codeutilities.sys.networking.State;
+import io.github.codeutilities.mod.features.commands.CodeSearcher;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SignBlock;
 import net.minecraft.block.WallSignBlock;
@@ -49,7 +49,7 @@ public class MixinSignBlockEntityRender {
 
         TextRenderer textRenderer = mc.textRenderer;
 
-        if (SearchUtil.shouldGlow(signBlockEntity) && DFInfo.currentState.getMode() == State.Mode.DEV && mc.player.isCreative()) {
+        if (CodeSearcher.shouldGlow(signBlockEntity) && DFInfo.currentState.getMode() == State.Mode.DEV && mc.player.isCreative()) {
             double distance = Math.sqrt(signBlockEntity.getPos().getSquaredDistance(mc.cameraEntity.getBlockPos()));
             double dist = MathHelper.clamp(distance, 1, 15);
 

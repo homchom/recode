@@ -4,7 +4,7 @@ package io.github.codeutilities.mod.mixin.item;
 import com.google.gson.JsonObject;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.config.Config;
-import io.github.codeutilities.sys.util.misc.ItemUtil;
+import io.github.codeutilities.sys.util.ItemUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.util.math.MatrixStack;

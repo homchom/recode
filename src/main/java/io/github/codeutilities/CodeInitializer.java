@@ -1,7 +1,7 @@
 package io.github.codeutilities;
 
-import io.github.codeutilities.sys.commands.IManager;
-import io.github.codeutilities.sys.util.file.ILoader;
+import io.github.codeutilities.mod.commands.IManager;
+import io.github.codeutilities.sys.file.ILoader;
 
 import java.util.Arrays;
 

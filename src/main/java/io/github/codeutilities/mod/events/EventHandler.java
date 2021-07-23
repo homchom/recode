@@ -3,7 +3,7 @@ package io.github.codeutilities.mod.events;
 import io.github.codeutilities.mod.events.impl.ChangeStateEvent;
 import io.github.codeutilities.mod.events.impl.ReceiveChatMessageEvent;
 import io.github.codeutilities.mod.events.impl.TickEvent;
-import io.github.codeutilities.sys.commands.IManager;
+import io.github.codeutilities.mod.commands.IManager;
 
 import java.util.ArrayList;
 import java.util.List;

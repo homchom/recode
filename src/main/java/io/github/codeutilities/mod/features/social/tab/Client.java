@@ -1,7 +1,7 @@
 package io.github.codeutilities.mod.features.social.tab;
 
 import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.sys.util.file.ILoader;
+import io.github.codeutilities.sys.file.ILoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.Session;
 import org.apache.commons.lang3.RandomStringUtils;

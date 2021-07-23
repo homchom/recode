@@ -3,8 +3,8 @@ package io.github.codeutilities.mod.config.impl;
 import io.github.codeutilities.mod.config.structure.ConfigGroup;
 import io.github.codeutilities.mod.config.structure.ConfigSubGroup;
 import io.github.codeutilities.mod.config.types.BooleanSetting;
-import io.github.codeutilities.sys.modules.Module;
-import io.github.codeutilities.sys.modules.translations.Translation;
+import io.github.codeutilities.mod.features.modules.Module;
+import io.github.codeutilities.mod.features.modules.translations.Translation;
 import org.json.JSONObject;
 
 public class ModulesGroup extends ConfigGroup {

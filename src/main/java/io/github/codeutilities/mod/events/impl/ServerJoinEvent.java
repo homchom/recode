@@ -1,8 +1,8 @@
 package io.github.codeutilities.mod.events.impl;
 
-import io.github.codeutilities.sys.streamer.StreamerModeHandler;
-import io.github.codeutilities.sys.util.misc.TimerUtil;
-import io.github.codeutilities.sys.util.networking.DFInfo;
+import io.github.codeutilities.mod.features.StreamerModeHandler;
+import io.github.codeutilities.sys.util.TimerUtil;
+import io.github.codeutilities.sys.player.DFInfo;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 

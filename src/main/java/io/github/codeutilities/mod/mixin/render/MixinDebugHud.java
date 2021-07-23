@@ -1,7 +1,7 @@
 package io.github.codeutilities.mod.mixin.render;
 
 import io.github.codeutilities.mod.config.Config;
-import io.github.codeutilities.sys.util.networking.TPSUtil;
+import io.github.codeutilities.sys.player.DFInfo;
 import net.minecraft.client.gui.hud.DebugHud;
 import net.minecraft.util.Formatting;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,7 +24,7 @@ public class MixinDebugHud {
             List<String> leftText = callbackInfoReturnable.getReturnValue();
             leftText.add("");
             leftText.add(Formatting.UNDERLINE + "CodeUtilities");
-            leftText.add("Client TPS: " + TPSUtil.TPS);
+            leftText.add("Client TPS: " + DFInfo.TPS);
 
             callbackInfoReturnable.setReturnValue(leftText);
         } catch (Exception e) {

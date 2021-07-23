@@ -7,7 +7,7 @@ import io.github.codeutilities.mod.config.internal.ConfigInstruction;
 import io.github.codeutilities.mod.config.types.*;
 import io.github.codeutilities.mod.config.types.hud.PositionSetting;
 import io.github.codeutilities.mod.config.types.list.StringListSetting;
-import io.github.codeutilities.sys.commands.IManager;
+import io.github.codeutilities.mod.commands.IManager;
 
 import java.util.ArrayList;
 import java.util.List;

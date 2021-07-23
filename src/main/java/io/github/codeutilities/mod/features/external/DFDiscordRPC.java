@@ -7,8 +7,8 @@ import com.jagrosh.discordipc.entities.pipe.PipeStatus;
 import com.jagrosh.discordipc.exceptions.NoDiscordClientException;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.config.Config;
-import io.github.codeutilities.sys.util.file.ILoader;
-import io.github.codeutilities.sys.util.networking.State;
+import io.github.codeutilities.sys.file.ILoader;
+import io.github.codeutilities.sys.networking.State;
 import org.apache.logging.log4j.Level;
 
 import java.time.OffsetDateTime;

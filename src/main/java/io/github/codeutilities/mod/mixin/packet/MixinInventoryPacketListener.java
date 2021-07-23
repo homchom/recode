@@ -1,13 +1,13 @@
 package io.github.codeutilities.mod.mixin.packet;
 
-import io.github.codeutilities.mod.commands.other.PlotsCommand;
+import io.github.codeutilities.mod.commands.impl.other.PlotsCommand;
 import io.github.codeutilities.mod.config.Config;
-import io.github.codeutilities.sys.util.chat.ChatType;
-import io.github.codeutilities.sys.util.chat.ChatUtil;
-import io.github.codeutilities.sys.util.file.ExternalFile;
-import io.github.codeutilities.sys.util.misc.ItemUtil;
-import io.github.codeutilities.sys.util.networking.DFInfo;
-import io.github.codeutilities.sys.util.networking.State;
+import io.github.codeutilities.sys.player.chat.ChatType;
+import io.github.codeutilities.sys.player.chat.ChatUtil;
+import io.github.codeutilities.sys.file.ExternalFile;
+import io.github.codeutilities.sys.util.ItemUtil;
+import io.github.codeutilities.sys.player.DFInfo;
+import io.github.codeutilities.sys.networking.State;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.item.ItemStack;

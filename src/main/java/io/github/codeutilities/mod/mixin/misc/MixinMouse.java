@@ -3,7 +3,7 @@ package io.github.codeutilities.mod.mixin.misc;
 import com.google.gson.JsonObject;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.config.Config;
-import io.github.codeutilities.sys.util.misc.ItemUtil;
+import io.github.codeutilities.sys.util.ItemUtil;
 import net.minecraft.client.Mouse;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;

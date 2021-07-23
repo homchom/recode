@@ -7,8 +7,8 @@ import io.github.codeutilities.mod.config.structure.ConfigGroup;
 import io.github.codeutilities.mod.config.structure.ConfigManager;
 import io.github.codeutilities.mod.config.structure.ConfigSetting;
 import io.github.codeutilities.mod.config.structure.ConfigSubGroup;
-import io.github.codeutilities.sys.util.file.ILoader;
-import io.github.codeutilities.sys.util.file.ISave;
+import io.github.codeutilities.sys.file.ILoader;
+import io.github.codeutilities.sys.file.ISave;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.*;

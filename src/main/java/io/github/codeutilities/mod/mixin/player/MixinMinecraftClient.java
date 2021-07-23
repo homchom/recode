@@ -1,8 +1,8 @@
 package io.github.codeutilities.mod.mixin.player;
 
 import blue.endless.jankson.annotation.Nullable;
-import io.github.codeutilities.sys.util.networking.DFInfo;
-import io.github.codeutilities.sys.util.networking.State;
+import io.github.codeutilities.sys.player.DFInfo;
+import io.github.codeutilities.sys.networking.State;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import org.spongepowered.asm.mixin.Mixin;

@@ -3,8 +3,8 @@ package io.github.codeutilities.mod.events.impl;
 import io.github.codeutilities.mod.events.interfaces.HyperCubeEvents;
 import io.github.codeutilities.mod.features.external.DFDiscordRPC;
 import io.github.codeutilities.mod.features.social.tab.Client;
-import io.github.codeutilities.sys.streamer.StreamerModeHandler;
-import io.github.codeutilities.sys.util.networking.State;
+import io.github.codeutilities.mod.features.StreamerModeHandler;
+import io.github.codeutilities.sys.networking.State;
 import net.minecraft.util.ActionResult;
 
 public class ChangeStateEvent {

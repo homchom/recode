@@ -2,7 +2,7 @@ package io.github.codeutilities.mod.mixin.screen;
 
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.config.Config;
-import io.github.codeutilities.sys.util.render.BlendableTexturedButtonWidget;
+import io.github.codeutilities.sys.renderer.BlendableTexturedButtonWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ConnectScreen;
 import net.minecraft.client.gui.screen.Screen;
