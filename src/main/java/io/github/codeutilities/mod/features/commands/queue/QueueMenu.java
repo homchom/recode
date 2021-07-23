@@ -30,7 +30,7 @@ public class QueueMenu extends LightweightGuiDescription implements IMenu {
     @Override
     public void open(String... args) {
         WPlainPanel root = new WPlainPanel();
-        root.setSize(520, 220);
+        root.setSize(360, 220);
 
         CImage cImage = new CImage(CODEUTILS_LOGO);
         cImage.setSize(74, 74);
