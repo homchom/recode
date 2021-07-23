@@ -25,9 +25,7 @@ public class ConfigManager implements IManager<ConfigGroup> {
     public void initialize() {
         // Initial settings and creation of memory placements
         // NOTICE: Hi hacker! If you are willing to add your name below, please refrain from doing so as it is against the DiamondFire rules.
-        if (CodeUtilities.PLAYER_UUID.equals(CodeUtilities.JEREMASTER_UUID) || CodeUtilities.PLAYER_UUID.equals(CodeUtilities.RYANLAND_UUID)) {
-            this.register(new StreamerModeGroup("streamer"));
-        }
+        this.register(new StreamerModeGroup("streamer"));
         //this.register(new ModulesGroup("modules"));
         this.register(new AutomationGroup("automation"));
         this.register(new CommandsGroup("commands"));

@@ -1,5 +1,6 @@
 package io.github.codeutilities.mod.config.menu;
 
+import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.config.structure.ConfigGroup;
 import io.github.codeutilities.mod.config.structure.ConfigManager;
 import io.github.codeutilities.mod.config.structure.ConfigSetting;
@@ -43,7 +44,12 @@ public class ConfigScreen implements ITranslatable {
         // Optimized loop
         for (ConfigGroup group : groups) {
 
-            // Category
+            if (!(CodeUtilities.PLAYER_UUID.equals(CodeUtilities.JEREMASTER_UUID) || CodeUtilities.PLAYER_UUID.equals(CodeUtilities.RYANLAND_UUID))
+            && group.getName().equals("streamer")) {
+                continue;
+            }
+
+                // Category
             String groupName = group.getName();
 
             // Group translation
