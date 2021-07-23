@@ -18,8 +18,6 @@ public class TextUtil {
     public static String textComponentToColorCodes(Text message) {
         List<Text> siblings = message.getSiblings();
 
-        System.out.println(message);
-
         StringBuilder newMsg = new StringBuilder();
         String currentText = "";
 
@@ -34,25 +32,23 @@ public class TextUtil {
             }
         }
 
-        System.out.println("RESULT = "+newMsg);
         return newMsg.toString();
     }
 
     private static void translateSibling(Text sibling, StringBuilder newMsg, String currentText) {
         Style style = sibling.getStyle();
 
-        System.out.println("Sibling = "+sibling);
-        System.out.println("Style = "+style);
         // color
         TextColor color = style.getColor();
         if (color == null && sibling.getSiblings().size() > 0) return;
-        System.out.println("!!!!!! Color "+color);
+
         String code = MinecraftColors.getMcFromFormatting(color);
         if (code == null) {
             currentText = MinecraftColors.hexToMc(String.valueOf(color));
         }
-        else currentText = code;
-        System.out.println("text "+currentText);
+        else {
+            currentText = code;
+        }
 
         if (style.isBold()) currentText += "§l";
         if (style.isItalic()) currentText += "§o";
