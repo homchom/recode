@@ -46,6 +46,14 @@ public class QueueEntry {
         return description;
     }
 
+    public String getStrippedDescription() {
+        try {
+            return getDescription().replaceAll(getPlotId().toString(), "");
+        } catch (NullPointerException e) {
+            return getDescription();
+        }
+    }
+
     public void setDescription(String description) {
         this.description = description;
     }

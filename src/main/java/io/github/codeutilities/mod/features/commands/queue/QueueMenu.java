@@ -4,8 +4,11 @@ import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.config.menu.ConfigScreen;
 import io.github.codeutilities.mod.features.commands.codeutilities.ContributorsUI;
 import io.github.codeutilities.mod.features.commands.codeutilities.FeaturesUI;
+import io.github.codeutilities.sys.player.chat.ChatType;
+import io.github.codeutilities.sys.player.chat.ChatUtil;
 import io.github.codeutilities.sys.renderer.IMenu;
 import io.github.codeutilities.sys.renderer.widgets.CImage;
+import io.github.codeutilities.sys.util.TextUtil;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WButton;
 import io.github.cottonmc.cotton.gui.widget.WLabel;
@@ -29,6 +32,7 @@ public class QueueMenu extends LightweightGuiDescription implements IMenu {
 
     @Override
     public void open(String... args) {
+
         WPlainPanel root = new WPlainPanel();
         root.setSize(360, 220);
 

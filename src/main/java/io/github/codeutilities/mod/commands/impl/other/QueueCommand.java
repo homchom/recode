@@ -2,6 +2,7 @@ package io.github.codeutilities.mod.commands.impl.other;
 
 
 import com.mojang.brigadier.CommandDispatcher;
+import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.commands.Command;
 import io.github.codeutilities.mod.commands.arguments.ArgBuilder;
 import io.github.codeutilities.mod.features.commands.queue.QueueEntry;
@@ -10,6 +11,9 @@ import io.github.codeutilities.sys.networking.WebUtil;
 import io.github.codeutilities.sys.player.chat.ChatUtil;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.TextColor;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -43,9 +47,41 @@ public class QueueCommand extends Command {
                         );
                     }
 
+                    CodeUtilities.MC.player.playSound(SoundEvents.UI_TOAST_IN, 2F, 0.3F);
+
+                    // Temporary: Show in chat instead of menu
+                    ChatUtil.sendMessage(
+                            new LiteralText("\n§r §r §r §r §r §r §r §r §r §r §r §r ").append(
+                            new LiteralText("⏪  ")
+                                    .styled(style -> style.withColor(TextColor.fromRgb(0x1f9947))).append(
+                            new LiteralText("CodeUtilities Twitch Plot Queue  ")
+                                    .styled(style -> style.withColor(TextColor.fromRgb(0x33ffa7))).append(
+                            new LiteralText("⏩")
+                                    .styled(style -> style.withColor(TextColor.fromRgb(0x1f9947)))
+                    ))), null);
+
+                    for (QueueEntry entry : queue) {
+                        ChatUtil.sendMessage(
+                                new LiteralText("#" + entry.getPosition())
+                                        .styled(style -> style.withColor(TextColor.fromRgb(0x00bbff))).append(
+                                new LiteralText("§8 - ").append(
+                                new LiteralText(entry.getPlotId()==null?"?":entry.getPlotId().toString())
+                                        .styled(style -> style.withColor(TextColor.fromRgb(0x66e6ff))).append(
+                                new LiteralText("§8 - ").append(
+                                new LiteralText(entry.getStrippedDescription())
+                                        .styled(style -> style.withColor(TextColor.fromRgb(0xbff9ff)))
+                        )))), null);
+                    }
+
+                    ChatUtil.sendMessage("");
+                    return 1;
+
+/*
                     QueueMenu menu = new QueueMenu(queue);
                     menu.scheduleOpenGui(menu);
                     return 1;
+
+ */
                 })
         );
     }
