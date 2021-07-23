@@ -12,6 +12,8 @@ import io.github.codeutilities.sys.player.chat.ChatUtil;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.ClickEvent;
+import net.minecraft.text.HoverEvent;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.TextColor;
 
@@ -66,8 +68,22 @@ public class QueueCommand extends Command {
                                         .styled(style -> style.withColor(TextColor.fromRgb(0x00bbff))).append(
                                 new LiteralText("§8 - ").append(
                                 new LiteralText(entry.getPlotId()==null?"?":entry.getPlotId().toString())
-                                        .styled(style -> style.withColor(TextColor.fromRgb(0x66e6ff))).append(
-                                new LiteralText("§8 - ").append(
+                                        .styled(style -> style.withColor(TextColor.fromRgb(0x66e6ff))
+                                                .withClickEvent(
+                                                        new ClickEvent(
+                                                                ClickEvent.Action.RUN_COMMAND,
+                                                                "/join "+entry.getPlotId()
+                                                        ))
+                                            .withHoverEvent(
+                                                    new HoverEvent(
+                                                            HoverEvent.Action.SHOW_TEXT,
+                                                            new LiteralText("§7Click to join!")
+                                                    )
+                                            )).append(
+                                new LiteralText("§8 - ")
+                                        .styled(style -> style.withHoverEvent(
+                                                new HoverEvent(HoverEvent.Action.SHOW_TEXT, null))
+                                        ).append(
                                 new LiteralText(entry.getStrippedDescription())
                                         .styled(style -> style.withColor(TextColor.fromRgb(0xbff9ff)))
                         )))), null);
