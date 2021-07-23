@@ -49,7 +49,7 @@ public class QueueCommand extends Command {
                         );
                     }
 
-                    CodeUtilities.MC.player.playSound(SoundEvents.UI_TOAST_IN, 2F, 0.3F);
+                    CodeUtilities.MC.player.playSound(SoundEvents.UI_TOAST_IN, 2F, 1F);
 
                     // Temporary: Show in chat instead of menu
                     ChatUtil.sendMessage(
@@ -65,25 +65,23 @@ public class QueueCommand extends Command {
                     for (QueueEntry entry : queue) {
                         ChatUtil.sendMessage(
                                 new LiteralText("#" + entry.getPosition())
-                                        .styled(style -> style.withColor(TextColor.fromRgb(0x00bbff))).append(
+                                        .styled(style -> style.withColor(TextColor.fromRgb(0x00bbff)
+                                        ).withClickEvent(
+                                                new ClickEvent(
+                                                        ClickEvent.Action.RUN_COMMAND,
+                                                        "/join "+entry.getPlotId()
+                                                ))
+                                                .withHoverEvent(
+                                                        new HoverEvent(
+                                                                HoverEvent.Action.SHOW_TEXT,
+                                                                new LiteralText("§7Click to join!")
+                                                        )
+                                                )
+                                        ).append(
                                 new LiteralText("§8 - ").append(
                                 new LiteralText(entry.getPlotId()==null?"?":entry.getPlotId().toString())
-                                        .styled(style -> style.withColor(TextColor.fromRgb(0x66e6ff))
-                                                .withClickEvent(
-                                                        new ClickEvent(
-                                                                ClickEvent.Action.RUN_COMMAND,
-                                                                "/join "+entry.getPlotId()
-                                                        ))
-                                            .withHoverEvent(
-                                                    new HoverEvent(
-                                                            HoverEvent.Action.SHOW_TEXT,
-                                                            new LiteralText("§7Click to join!")
-                                                    )
-                                            )).append(
-                                new LiteralText("§8 - ")
-                                        .styled(style -> style.withHoverEvent(
-                                                new HoverEvent(HoverEvent.Action.SHOW_TEXT, null))
-                                        ).append(
+                                        .styled(style -> style.withColor(TextColor.fromRgb(0x66e6ff))).append(
+                                new LiteralText("§8 - ").append(
                                 new LiteralText(entry.getStrippedDescription())
                                         .styled(style -> style.withColor(TextColor.fromRgb(0xbff9ff)))
                         )))), null);
