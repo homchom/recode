@@ -7,7 +7,7 @@ import io.github.codeutilities.sys.file.ILoader;
 import io.github.codeutilities.sys.renderer.IMenu;
 import io.github.codeutilities.sys.renderer.widgets.CTextField;
 import io.github.codeutilities.sys.renderer.widgets.ItemScrollablePanel;
-import io.github.codeutilities.sys.networking.WebRequester;
+import io.github.codeutilities.sys.networking.WebUtil;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WButton;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
@@ -116,7 +116,7 @@ public class HeadsMenu extends LightweightGuiDescription implements IMenu, ILoad
             };
             for (String db : sources) {
                 try {
-                    String response = WebRequester.getString(db);
+                    String response = WebUtil.getString(db);
                     String cat = StringUtils.substringBetween(db, "?cat=", "&tags=true");
 
                     if (cat.equals("food-drinks")) {

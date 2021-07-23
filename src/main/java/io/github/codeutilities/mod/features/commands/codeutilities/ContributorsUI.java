@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.sys.renderer.IMenu;
 import io.github.codeutilities.sys.renderer.widgets.CImage;
-import io.github.codeutilities.sys.networking.WebRequester;
+import io.github.codeutilities.sys.networking.WebUtil;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WLabel;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
@@ -48,7 +48,7 @@ public class ContributorsUI extends LightweightGuiDescription implements IMenu {
         int x = 0;
 
         try {
-            JsonArray array = WebRequester.getJson("https://api.github.com/repos/CodeUtilities/CodeUtilities/contributors").getAsJsonArray();
+            JsonArray array = WebUtil.getJson("https://api.github.com/repos/CodeUtilities/CodeUtilities/contributors").getAsJsonArray();
             for (JsonElement element : array) {
                 JsonObject object = element.getAsJsonObject();
                 this.contributors.add(new Contributor(object.get("login").getAsString(), object.get("id").getAsInt(), object.get("contributions").getAsInt(), object.get("avatar_url").getAsString()));

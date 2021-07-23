@@ -11,7 +11,7 @@ import io.github.codeutilities.sys.player.chat.MessageGrabber;
 import io.github.codeutilities.mod.features.CPU_UsageText;
 import io.github.codeutilities.sys.player.DFInfo;
 import io.github.codeutilities.sys.networking.State;
-import io.github.codeutilities.sys.networking.WebRequester;
+import io.github.codeutilities.sys.networking.WebUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.MessageType;
@@ -92,12 +92,12 @@ public class MMessageListener {
 
                     if (!motdShown) {
                         try {
-                            String str = WebRequester.getString("https://codeutilities.github.io/data/motd.txt");
+                            String str = WebUtil.getString("https://codeutilities.github.io/data/motd.txt");
                             for (String string : str.split("\n")) {
                                 minecraftClient.player.sendMessage(new LiteralText(string).styled(style -> style.withColor(TextColor.fromFormatting(Formatting.AQUA))), false);
                             }
 
-                            String version = WebRequester.getString("https://codeutilities.github.io/data/currentversion.txt").replaceAll("\n", "");
+                            String version = WebUtil.getString("https://codeutilities.github.io/data/currentversion.txt").replaceAll("\n", "");
                             if (!CodeUtilities.MOD_VERSION.equals(version) && !CodeUtilities.BETA) {
                                 minecraftClient.player.sendMessage(new LiteralText(String.format("A new version of CodeUtilities (%s) is available! Click here to download!", version)).styled(style ->
                                         style.withColor(TextColor.fromFormatting(Formatting.YELLOW))).styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://codeutilities.github.io/"))), false);

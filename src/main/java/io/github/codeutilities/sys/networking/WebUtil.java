@@ -20,7 +20,7 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 
-public class WebRequester {
+public class WebUtil {
     private static final TrustManager[] trustAllCerts = {
             new X509TrustManager() {
                 public X509Certificate[] getAcceptedIssuers() {
@@ -83,13 +83,12 @@ public class WebRequester {
     }
 
     public static JsonElement getJson(String url) throws IOException {
-        System.out.println(getString(url));
         return CodeUtilities.JSON_PARSER.parse(getString(url));
     }
 
     public static JsonObject getObject(String url) {
         try {
-            String jsonObject = WebRequester.getString(url);
+            String jsonObject = WebUtil.getString(url);
             return CodeUtilities.JSON_PARSER.parse(jsonObject).getAsJsonObject();
         } catch (JsonSyntaxException | IOException ignored) {
         }

@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import io.github.codeutilities.sys.file.ILoader;
-import io.github.codeutilities.sys.networking.WebRequester;
+import io.github.codeutilities.sys.networking.WebUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,7 +18,7 @@ public class ActionDump implements ILoader {
     @Override
     public void load() {
         try{
-            JsonObject actionDump = WebRequester.getObject(
+            JsonObject actionDump = WebUtil.getObject(
                 "https://raw.githubusercontent.com/CodeUtilities/data/main/actiondump/db.json");
             if(!actionDump.isJsonNull()){
                 //gather codeblocks
@@ -39,7 +39,7 @@ public class ActionDump implements ILoader {
                 });
             }
 
-            types = WebRequester.getObject("https://raw.githubusercontent.com/CodeUtilities/data/main/actiondump/types.json");
+            types = WebUtil.getObject("https://raw.githubusercontent.com/CodeUtilities/data/main/actiondump/types.json");
         }catch(Exception e){
             e.printStackTrace();
         }

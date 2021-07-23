@@ -9,7 +9,7 @@ import io.github.codeutilities.mod.commands.arguments.ArgBuilder;
 import io.github.codeutilities.sys.player.chat.ChatType;
 import io.github.codeutilities.sys.player.chat.ChatUtil;
 import io.github.codeutilities.mod.features.commands.TemplatesMenu;
-import io.github.codeutilities.sys.networking.WebRequester;
+import io.github.codeutilities.sys.networking.WebUtil;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import org.apache.http.HttpResponse;
@@ -33,11 +33,11 @@ public class TemplatesCommand extends Command {
         data.addProperty("selectedProfile", mc.getSession().getUuid().replace("-", ""));
         data.addProperty("serverId", serverId);
 
-        HttpResponse res = WebRequester.makePost("https://sessionserver.mojang.com/session/minecraft/join", data);
+        HttpResponse res = WebUtil.makePost("https://sessionserver.mojang.com/session/minecraft/join", data);
         if (res.getStatusLine().getStatusCode() == 204) {
             JsonObject response;
             try {
-                response = jsonParser.parse(WebRequester.getString(
+                response = jsonParser.parse(WebUtil.getString(
                         TEMPLATE_SERVER + "authenticate?username=" + mc.getSession().getUsername()
                                 + "&serverId=" + serverId)).getAsJsonObject();
             } catch (IOException e) {
@@ -78,7 +78,7 @@ public class TemplatesCommand extends Command {
                 return null;
             }
 
-            JsonObject response = CodeUtilities.JSON_PARSER.parse(WebRequester.getString(url)).getAsJsonObject();
+            JsonObject response = CodeUtilities.JSON_PARSER.parse(WebUtil.getString(url)).getAsJsonObject();
             System.out.println(response);
             if (response.get("success").getAsBoolean()) {
                 return response;
