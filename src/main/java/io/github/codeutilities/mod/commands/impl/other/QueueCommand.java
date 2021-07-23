@@ -37,6 +37,7 @@ public class QueueCommand extends Command {
                         rawQueue = WebUtil.getString(TWITCH_PLOT_QUEUE_URL);
                     } catch (IOException e) {
                         ChatUtil.sendMessage("Error while requesting");
+                        e.printStackTrace();
                         return 0;
                     }
 
