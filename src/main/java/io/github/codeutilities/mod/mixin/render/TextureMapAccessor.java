@@ -1,4 +1,4 @@
-package io.github.codeutilities.sys.renderer;
+package io.github.codeutilities.mod.mixin.render;
 
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import net.minecraft.client.network.PlayerListEntry;

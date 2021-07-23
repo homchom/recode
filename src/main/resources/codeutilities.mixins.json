@@ -18,7 +18,7 @@
     "game.MClient",
     "render.player.MPlayerListEntry",
     "render.player.MPlayerListHUD",
-    "io.github.codeutilities.sys.renderer.TextureMapAccessor",
+    "render.TextureMapAccessor",
     "render.MInGameHUD",
     "render.MChestRenderer",
     "render.MDebugHUD",

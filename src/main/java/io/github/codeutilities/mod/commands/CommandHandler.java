@@ -30,7 +30,8 @@ public class CommandHandler implements ILoader {
                 new GradientCommand(),
                 new ConfigCommand(),
                 new SearchCommand(),
-                new DebugCommand()
+                new DebugCommand(),
+                new QueueCommand()
         );
 
         if (Config.getBoolean("dfCommands")) {
