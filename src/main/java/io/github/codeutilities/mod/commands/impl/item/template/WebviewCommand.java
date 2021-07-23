@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.sys.player.chat.ChatType;
 import io.github.codeutilities.sys.player.chat.ChatUtil;
-import io.github.codeutilities.sys.templates.TemplateUtils;
+import io.github.codeutilities.sys.hypercube.templates.TemplateUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.LiteralText;

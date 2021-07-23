@@ -1,4 +1,4 @@
-package io.github.codeutilities.sys.codeaction;
+package io.github.codeutilities.sys.hypercube.codeaction;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;

@@ -1,4 +1,4 @@
-package io.github.codeutilities.sys.templates;
+package io.github.codeutilities.sys.hypercube.templates;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;

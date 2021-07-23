@@ -7,7 +7,7 @@ import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.features.commands.schem.loaders.LitematicaBitArray;
 import io.github.codeutilities.mod.features.commands.schem.utils.DFText;
 import io.github.codeutilities.mod.features.commands.schem.utils.DFUtils;
-import io.github.codeutilities.sys.templates.TemplateUtils;
+import io.github.codeutilities.sys.hypercube.templates.TemplateUtils;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;

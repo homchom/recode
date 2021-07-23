@@ -1,4 +1,4 @@
-package io.github.codeutilities.sys.codeaction;
+package io.github.codeutilities.sys.hypercube.codeaction;
 
 public class Types {
     private final String id;

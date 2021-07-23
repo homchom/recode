@@ -1,4 +1,4 @@
-package io.github.codeutilities.sys.templates;
+package io.github.codeutilities.sys.hypercube.templates;
 
 import io.github.codeutilities.mod.commands.IManager;
 import io.github.codeutilities.sys.file.ExternalFile;

@@ -2,7 +2,7 @@ package io.github.codeutilities.sys.networking.websocket.client.type;
 
 import com.google.gson.JsonObject;
 import io.github.codeutilities.CodeUtilities;
-import io.github.codeutilities.sys.templates.TemplateUtils;
+import io.github.codeutilities.sys.hypercube.templates.TemplateUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;

@@ -1,6 +1,6 @@
 package io.github.codeutilities.sys.networking.websocket.client.type;
 
-import io.github.codeutilities.sys.templates.CompressionUtil;
+import io.github.codeutilities.sys.hypercube.templates.CompressionUtil;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

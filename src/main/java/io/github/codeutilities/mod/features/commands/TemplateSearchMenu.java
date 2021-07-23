@@ -5,7 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.github.codeutilities.sys.renderer.widgets.ClickableGiveItem;
 import io.github.codeutilities.sys.renderer.widgets.ItemScrollablePanel;
-import io.github.codeutilities.sys.templates.TemplateUtils;
+import io.github.codeutilities.sys.hypercube.templates.TemplateUtils;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WGridPanel;
 import net.fabricmc.fabric.api.util.TriState;

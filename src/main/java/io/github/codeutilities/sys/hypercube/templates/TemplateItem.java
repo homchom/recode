@@ -1,4 +1,4 @@
-package io.github.codeutilities.sys.templates;
+package io.github.codeutilities.sys.hypercube.templates;
 
 import net.minecraft.item.ItemStack;
 

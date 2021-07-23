@@ -1,7 +1,7 @@
 package io.github.codeutilities.mod.mixin.inventory;
 
-import io.github.codeutilities.sys.templates.TemplateStorageHandler;
-import io.github.codeutilities.sys.templates.TemplateUtils;
+import io.github.codeutilities.sys.hypercube.templates.TemplateStorageHandler;
+import io.github.codeutilities.sys.hypercube.templates.TemplateUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
 import net.minecraft.server.network.ServerPlayNetworkHandler;

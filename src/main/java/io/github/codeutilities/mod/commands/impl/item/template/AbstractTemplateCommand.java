@@ -5,7 +5,7 @@ import io.github.codeutilities.mod.commands.Command;
 import io.github.codeutilities.mod.commands.arguments.ArgBuilder;
 import io.github.codeutilities.sys.player.chat.ChatType;
 import io.github.codeutilities.sys.player.chat.ChatUtil;
-import io.github.codeutilities.sys.templates.TemplateUtils;
+import io.github.codeutilities.sys.hypercube.templates.TemplateUtils;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;

@@ -9,7 +9,7 @@ import io.github.codeutilities.sys.player.chat.ChatType;
 import io.github.codeutilities.sys.player.chat.ChatUtil;
 import io.github.codeutilities.sys.file.ExternalFile;
 import io.github.codeutilities.sys.util.ItemUtil;
-import io.github.codeutilities.sys.templates.TemplateUtils;
+import io.github.codeutilities.sys.hypercube.templates.TemplateUtils;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;

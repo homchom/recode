@@ -2,8 +2,8 @@ package io.github.codeutilities.mod.features.commands;
 
 import io.github.codeutilities.sys.renderer.IMenu;
 import io.github.codeutilities.sys.renderer.widgets.ItemScrollablePanel;
-import io.github.codeutilities.sys.templates.TemplateItem;
-import io.github.codeutilities.sys.templates.TemplateStorageHandler;
+import io.github.codeutilities.sys.hypercube.templates.TemplateItem;
+import io.github.codeutilities.sys.hypercube.templates.TemplateStorageHandler;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import net.minecraft.item.ItemStack;
