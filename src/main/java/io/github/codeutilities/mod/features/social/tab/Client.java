@@ -2,10 +2,11 @@ package io.github.codeutilities.mod.features.social.tab;
 
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.sys.util.file.ILoader;
-import java.net.URI;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.Session;
 import org.apache.commons.lang3.RandomStringUtils;
+
+import java.net.URI;
 
 public class Client implements ILoader {
 

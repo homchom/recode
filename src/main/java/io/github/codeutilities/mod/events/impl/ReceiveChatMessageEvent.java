@@ -1,16 +1,17 @@
-package io.github.codeutilities.mod.events.register;
+package io.github.codeutilities.mod.events.impl;
 
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.config.Config;
 import io.github.codeutilities.mod.config.ConfigSounds;
 import io.github.codeutilities.mod.events.interfaces.ChatEvents;
 import io.github.codeutilities.mod.features.social.chat.ConversationTimer;
-import io.github.codeutilities.sys.util.gui.CPU_UsageText;
 import io.github.codeutilities.sys.modules.triggers.Trigger;
 import io.github.codeutilities.sys.modules.triggers.impl.MessageReceivedTrigger;
+import io.github.codeutilities.sys.streamer.StreamerModeHandler;
 import io.github.codeutilities.sys.util.chat.ChatType;
 import io.github.codeutilities.sys.util.chat.ChatUtil;
 import io.github.codeutilities.sys.util.chat.TextUtil;
+import io.github.codeutilities.sys.util.gui.CPU_UsageText;
 import io.github.codeutilities.sys.util.networking.DFInfo;
 import io.github.codeutilities.sys.util.networking.State;
 import net.minecraft.client.MinecraftClient;
@@ -52,6 +53,17 @@ public class ReceiveChatMessageEvent {
         if (cancelMsgs > 0) {
             cancelMsgs--;
             cancel = true;
+        }
+
+        // Streamer mode
+        if (StreamerModeHandler.handleMessage(message)) {
+            cancel = true;
+        };
+
+        // Debug mode
+        if (Config.getBoolean("debugMode")) {
+            System.out.println(message);
+            // Doesn't work? > CodeUtilities.log(Level.DEBUG, message.toString());
         }
 
         // module trigger

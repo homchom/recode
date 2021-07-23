@@ -1,4 +1,4 @@
-package io.github.codeutilities.mod.config.config;
+package io.github.codeutilities.mod.config.impl;
 
 import io.github.codeutilities.mod.config.structure.ConfigGroup;
 import io.github.codeutilities.mod.config.structure.ConfigSubGroup;
@@ -17,6 +17,7 @@ public class MiscellaneousGroup extends ConfigGroup {
         // Non sub-grouped
         this.register(new BooleanSetting("itemApi", true));
         this.register(new BooleanSetting("quickVarScope", true));
+        this.register(new BooleanSetting("debugMode", false));
 
         // Discord
         ConfigSubGroup discord = new ConfigSubGroup("discordrpc");

@@ -4,10 +4,11 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.github.codeutilities.sys.commands.Command;
 import io.github.codeutilities.sys.commands.arguments.ArgBuilder;
-import java.util.HashMap;
-import java.util.Map;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class NodeCommand extends Command {
 

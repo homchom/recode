@@ -6,6 +6,7 @@ import io.github.codeutilities.mod.config.Config;
 import io.github.codeutilities.mod.features.social.cosmetics.type.CosmeticType;
 import io.github.codeutilities.sys.util.file.ILoader;
 import io.github.codeutilities.sys.util.networking.WebUtil;
+
 import java.util.HashSet;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;

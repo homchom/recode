@@ -1,6 +1,6 @@
 package io.github.codeutilities.sys.modules.actions.impl;
 
-import io.github.codeutilities.mod.events.register.ReceiveChatMessageEvent;
+import io.github.codeutilities.mod.events.impl.ReceiveChatMessageEvent;
 import io.github.codeutilities.sys.modules.actions.Action;
 import io.github.codeutilities.sys.modules.actions.json.ActionJson;
 

@@ -11,14 +11,11 @@ import io.github.codeutilities.sys.util.networking.DFInfo;
 import io.github.codeutilities.sys.util.networking.State;
 import io.github.codeutilities.sys.util.render.color.HSLColor;
 import io.github.codeutilities.sys.util.render.color.MinecraftColors;
-import java.awt.Color;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.HoverEvent;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Style;
-import net.minecraft.text.TextColor;
+import net.minecraft.text.*;
+
+import java.awt.*;
 
 public class GradientCommand extends Command {
     @Override

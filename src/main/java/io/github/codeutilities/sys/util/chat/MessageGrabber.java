@@ -28,6 +28,10 @@ public class MessageGrabber {
         silent = true;
     }
 
+    public static void hideSilently(int messages) {
+        grabSilently(messages, ignored -> {});
+    }
+
     public static void supply(Text message) {
         currentMessages.add(message);
 

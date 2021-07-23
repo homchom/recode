@@ -6,7 +6,6 @@ import io.github.codeutilities.sys.commands.Command;
 import io.github.codeutilities.sys.commands.arguments.ArgBuilder;
 import io.github.codeutilities.sys.commands.arguments.types.StringListArgumentType;
 import io.github.codeutilities.sys.util.misc.ItemUtil;
-import java.util.Arrays;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
@@ -18,6 +17,8 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+
+import java.util.Arrays;
 
 public class RelativeLocCommand extends Command {
 

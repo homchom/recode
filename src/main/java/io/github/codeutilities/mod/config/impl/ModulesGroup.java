@@ -1,4 +1,4 @@
-package io.github.codeutilities.mod.config.config;
+package io.github.codeutilities.mod.config.impl;
 
 import io.github.codeutilities.mod.config.structure.ConfigGroup;
 import io.github.codeutilities.mod.config.structure.ConfigSubGroup;

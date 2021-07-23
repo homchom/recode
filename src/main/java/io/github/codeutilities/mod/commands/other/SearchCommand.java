@@ -15,16 +15,12 @@ import io.github.codeutilities.sys.util.misc.ItemUtil;
 import io.github.codeutilities.sys.util.networking.DFInfo;
 import io.github.codeutilities.sys.util.networking.State;
 import io.github.codeutilities.sys.util.templates.SearchUtil;
-import java.util.ArrayList;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.HoverEvent;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.*;
+
+import java.util.ArrayList;
 
 public class SearchCommand extends Command {
     @Override

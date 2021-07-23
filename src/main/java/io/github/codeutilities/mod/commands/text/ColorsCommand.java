@@ -2,18 +2,13 @@ package io.github.codeutilities.mod.commands.text;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import io.github.codeutilities.mod.config.Config;
 import io.github.codeutilities.sys.commands.Command;
 import io.github.codeutilities.sys.commands.arguments.ArgBuilder;
-import io.github.codeutilities.mod.config.Config;
 import io.github.codeutilities.sys.util.gui.menus.ColorsGui;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.HoverEvent;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
+import net.minecraft.text.*;
 
 public class ColorsCommand extends Command {
 

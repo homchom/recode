@@ -2,7 +2,7 @@ package io.github.codeutilities.mod.mixin.item;
 
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.config.Config;
-import io.github.codeutilities.mod.events.register.ReceiveChatMessageEvent;
+import io.github.codeutilities.mod.events.impl.ReceiveChatMessageEvent;
 import io.github.codeutilities.mod.features.keybinds.FlightspeedToggle;
 import io.github.codeutilities.sys.util.gui.CPU_UsageText;
 import io.github.codeutilities.sys.util.networking.DFInfo;

@@ -2,9 +2,9 @@ package io.github.codeutilities.mod.commands.item;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import io.github.codeutilities.mod.config.Config;
 import io.github.codeutilities.sys.commands.Command;
 import io.github.codeutilities.sys.commands.arguments.ArgBuilder;
-import io.github.codeutilities.mod.config.Config;
 import io.github.codeutilities.sys.util.gui.menus.CustomHeadMenu;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;

@@ -12,9 +12,6 @@ import io.github.codeutilities.sys.util.chat.ChatUtil;
 import io.github.codeutilities.sys.util.misc.StringUtil;
 import io.github.codeutilities.sys.util.networking.DFInfo;
 import io.github.codeutilities.sys.util.networking.State;
-import java.io.IOException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.ClickEvent;
@@ -22,6 +19,10 @@ import net.minecraft.text.HoverEvent;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import org.apache.commons.io.IOUtils;
+
+import java.io.IOException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 public class UuidCommand extends Command {
 

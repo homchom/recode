@@ -3,6 +3,8 @@ package io.github.codeutilities.mod.commands.other;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import io.github.codeutilities.sys.commands.Command;
+import io.github.codeutilities.sys.commands.arguments.ArgBuilder;
 import io.github.codeutilities.sys.schem.Schematic;
 import io.github.codeutilities.sys.schem.loaders.LitematicaLoader;
 import io.github.codeutilities.sys.schem.loaders.MCEditSchematicLoader;
@@ -10,17 +12,11 @@ import io.github.codeutilities.sys.schem.loaders.MSchematicReader;
 import io.github.codeutilities.sys.schem.loaders.MSpongeSchematicReader;
 import io.github.codeutilities.sys.schem.sk89q.jnbt.NBTInputStream;
 import io.github.codeutilities.sys.schem.utils.DFUtils;
-import io.github.codeutilities.sys.commands.Command;
-import io.github.codeutilities.sys.commands.arguments.ArgBuilder;
 import io.github.codeutilities.sys.util.chat.ChatType;
 import io.github.codeutilities.sys.util.chat.ChatUtil;
 import io.github.codeutilities.sys.util.misc.ItemUtil;
 import io.github.codeutilities.sys.util.render.ToasterUtil;
 import io.github.codeutilities.sys.util.templates.TemplateUtils;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.zip.GZIPInputStream;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.toast.SystemToast;
@@ -28,6 +24,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.LiteralText;
 import org.apache.commons.io.FilenameUtils;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.zip.GZIPInputStream;
 
 public class SchemCommand extends Command {
 

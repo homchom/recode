@@ -1,12 +1,13 @@
 package io.github.codeutilities.mod.config.structure;
 
-import io.github.codeutilities.sys.commands.IManager;
-import io.github.codeutilities.mod.config.config.*;
+import io.github.codeutilities.CodeUtilities;
+import io.github.codeutilities.mod.config.impl.*;
 import io.github.codeutilities.mod.config.internal.ConfigFile;
 import io.github.codeutilities.mod.config.internal.ConfigInstruction;
 import io.github.codeutilities.mod.config.types.*;
 import io.github.codeutilities.mod.config.types.hud.PositionSetting;
 import io.github.codeutilities.mod.config.types.list.StringListSetting;
+import io.github.codeutilities.sys.commands.IManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,10 @@ public class ConfigManager implements IManager<ConfigGroup> {
     @Override
     public void initialize() {
         // Initial settings and creation of memory placements
+        // NOTICE: Hi hacker! If you are willing to add your name below, please refrain from doing so as it is against the DiamondFire rules.
+        if (CodeUtilities.PLAYER_UUID.equals(CodeUtilities.JEREMASTER_UUID) || CodeUtilities.PLAYER_UUID.equals(CodeUtilities.RYANLAND_UUID)) {
+            this.register(new StreamerModeGroup("streamer"));
+        }
         //this.register(new ModulesGroup("modules"));
         this.register(new AutomationGroup("automation"));
         this.register(new CommandsGroup("commands"));

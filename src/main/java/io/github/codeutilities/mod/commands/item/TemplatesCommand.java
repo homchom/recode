@@ -10,11 +10,12 @@ import io.github.codeutilities.sys.util.chat.ChatType;
 import io.github.codeutilities.sys.util.chat.ChatUtil;
 import io.github.codeutilities.sys.util.gui.menus.TemplateStorageUI;
 import io.github.codeutilities.sys.util.networking.WebUtil;
-import java.io.IOException;
-import java.util.Random;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import org.apache.http.HttpResponse;
+
+import java.io.IOException;
+import java.util.Random;
 
 public class TemplatesCommand extends Command {
 

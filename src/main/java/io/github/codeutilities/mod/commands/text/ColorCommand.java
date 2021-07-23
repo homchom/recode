@@ -7,14 +7,11 @@ import io.github.codeutilities.sys.commands.Command;
 import io.github.codeutilities.sys.commands.arguments.ArgBuilder;
 import io.github.codeutilities.sys.util.chat.ChatType;
 import io.github.codeutilities.sys.util.chat.ChatUtil;
-import java.awt.Color;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.HoverEvent;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Style;
-import net.minecraft.text.TextColor;
+import net.minecraft.text.*;
+
+import java.awt.*;
 
 public class ColorCommand extends Command {
 

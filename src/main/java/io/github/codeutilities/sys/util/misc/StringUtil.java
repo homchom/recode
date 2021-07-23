@@ -2,17 +2,18 @@ package io.github.codeutilities.sys.util.misc;
 
 import com.google.gson.JsonArray;
 import io.github.codeutilities.CodeUtilities;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.HashSet;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
+
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.HashSet;
 
 public class StringUtil {
 

@@ -1,8 +1,9 @@
-package io.github.codeutilities.mod.events.register;
+package io.github.codeutilities.mod.events.impl;
 
 import io.github.codeutilities.mod.events.interfaces.HyperCubeEvents;
 import io.github.codeutilities.mod.features.external.DFDiscordRPC;
 import io.github.codeutilities.mod.features.social.tab.Client;
+import io.github.codeutilities.sys.streamer.StreamerModeHandler;
 import io.github.codeutilities.sys.util.networking.State;
 import net.minecraft.util.ActionResult;
 
@@ -12,6 +13,8 @@ public class ChangeStateEvent {
     }
 
     private ActionResult run(State newstate, State oldstate) {
+        StreamerModeHandler.handleStateChange(oldstate, newstate);
+
         try{
             DFDiscordRPC.getInstance().update(newstate);
             if(Client.client.isOpen()) Client.client.send("{\"content\":" + newstate.toJson() + ",\"type\":\"state\"}");

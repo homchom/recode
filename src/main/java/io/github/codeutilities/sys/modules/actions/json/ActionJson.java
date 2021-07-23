@@ -2,12 +2,13 @@ package io.github.codeutilities.sys.modules.actions.json;
 
 import io.github.codeutilities.mod.config.Config;
 import io.github.codeutilities.sys.modules.translations.Translation;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.json.JSONObject;
 
 public class ActionJson extends JSONObject {
     public ActionJson(JSONObject json, ModuleJson module, HashMap<String, Object> variables) {

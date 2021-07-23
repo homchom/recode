@@ -1,10 +1,10 @@
 package io.github.codeutilities.mod.commands.other;
 
 import com.mojang.brigadier.CommandDispatcher;
+import io.github.codeutilities.mod.events.impl.ReceiveChatMessageEvent;
 import io.github.codeutilities.sys.commands.Command;
 import io.github.codeutilities.sys.commands.arguments.ArgBuilder;
 import io.github.codeutilities.sys.commands.arguments.types.PlayerArgumentType;
-import io.github.codeutilities.mod.events.register.ReceiveChatMessageEvent;
 import io.github.codeutilities.sys.util.chat.ChatType;
 import io.github.codeutilities.sys.util.chat.ChatUtil;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;

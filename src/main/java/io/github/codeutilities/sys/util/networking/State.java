@@ -1,7 +1,7 @@
 package io.github.codeutilities.sys.util.networking;
 
+import io.github.codeutilities.mod.events.impl.ReceiveChatMessageEvent;
 import io.github.codeutilities.mod.events.interfaces.HyperCubeEvents;
-import io.github.codeutilities.mod.events.register.ReceiveChatMessageEvent;
 import io.github.codeutilities.mod.features.social.tab.Client;
 import io.github.codeutilities.sys.util.file.ILoader;
 import net.minecraft.client.MinecraftClient;

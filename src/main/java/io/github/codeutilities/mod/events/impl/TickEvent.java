@@ -1,4 +1,4 @@
-package io.github.codeutilities.mod.events.register;
+package io.github.codeutilities.mod.events.impl;
 
 import io.github.codeutilities.mod.events.interfaces.OtherEvents;
 import net.minecraft.client.MinecraftClient;

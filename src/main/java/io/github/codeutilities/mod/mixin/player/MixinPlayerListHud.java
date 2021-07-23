@@ -3,7 +3,6 @@ package io.github.codeutilities.mod.mixin.player;
 import io.github.codeutilities.mod.config.Config;
 import io.github.codeutilities.mod.features.social.tab.CodeUtilitiesServer;
 import io.github.codeutilities.mod.features.social.tab.User;
-import java.util.UUID;
 import net.minecraft.client.gui.hud.PlayerListHud;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.scoreboard.Team;
@@ -16,6 +15,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.UUID;
 
 @Mixin(PlayerListHud.class)
 public class MixinPlayerListHud {
