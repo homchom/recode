@@ -51,8 +51,6 @@ public class FeaturesUI extends LightweightGuiDescription implements IMenu {
                     String[] colors = {"§x§C§C§5§D§0§0", "§x§3§3§0§3§0§0", "§x§C§C§5§2§0§0"};
                     Text txt = TextUtil.colorCodesToTextComponent(colors[0]+inls[0]+colors[1]+" - "+colors[2]+inls[1]);
                     panel.add(new WLabel(txt), 4, y);
-                } else {
-                    CodeUtilities.log(Level.INFO, inputLine+" does not contain a \"-\" character.");
                 }
             }
 
