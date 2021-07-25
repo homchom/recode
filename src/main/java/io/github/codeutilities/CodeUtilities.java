@@ -95,6 +95,7 @@ public class CodeUtilities implements ModInitializer {
         log(Level.INFO, "Initializing");
         Runtime.getRuntime().addShutdownHook(new Thread(this::onClose));
         System.setProperty("java.awt.headless", "false");
+        //System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2,TLSv1.3");
 
         // Get lang
         Pattern regex = Pattern.compile("\nlang:.*");

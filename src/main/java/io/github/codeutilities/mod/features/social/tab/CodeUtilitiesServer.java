@@ -1,5 +1,6 @@
 package io.github.codeutilities.mod.features.social.tab;
 
+import com.google.common.base.Strings;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -10,13 +11,20 @@ import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class CodeUtilitiesServer extends WebSocketClient {
 
     private static JsonArray users = new JsonArray();
+    private static HashMap<String, Requester> requests = new HashMap<>();
+    private final CodeUtilitiesServer instance;
 
     public CodeUtilitiesServer(URI serverUri) {
         super(serverUri);
+        this.instance = this;
     }
 
     @Override
@@ -27,13 +35,19 @@ public class CodeUtilitiesServer extends WebSocketClient {
     @Override
     public void onMessage(String message) {
         JsonObject jsonObject = CodeUtilities.JSON_PARSER.parse(message).getAsJsonObject();
-        if(jsonObject.get("type").getAsString().equals("users")){
+        Message msg = new Message(jsonObject.get("type").getAsString(), jsonObject.get("content"), jsonObject.get("id").getAsString());
+        if(msg.getType().equals("users")){
             users = jsonObject.get("content").getAsJsonArray();
         }
-        if(jsonObject.get("type").getAsString().equals("chat")){
+        if(msg.getType().equals("chat")){
             if(MinecraftClient.getInstance().player != null){
-                MinecraftClient.getInstance().player.sendMessage(TextUtil.colorCodesToTextComponent(jsonObject.get("content").getAsString()), false);
+                MinecraftClient.getInstance().player.sendMessage(TextUtil.colorCodesToTextComponent((String) msg.getContent()), false);
             }
+        }
+        Requester req = requests.get(msg.getId());
+        if(req != null) {
+            requests.remove(msg.getId());
+            req.run(new Message(msg.getType(), msg.getContent(), msg.getId()));
         }
     }
 
@@ -62,6 +76,13 @@ public class CodeUtilitiesServer extends WebSocketClient {
 
     public static int getUserAmount(){
         return users.size();
+    }
+
+    public static void requestMessage(Message message, Requester request) {
+        if(Client.client.isOpen()){
+            requests.put(message.getId(), request);
+            Client.client.send(message.build());
+        }
     }
 
 }
