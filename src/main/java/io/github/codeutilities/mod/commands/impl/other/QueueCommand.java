@@ -39,7 +39,7 @@ public class QueueCommand extends Command {
                     try {
                         CodeUtilitiesServer.requestMessage(new Message("twitch-queue"), message -> {
 
-                            String[] splitQueue = ((JsonPrimitive) message.getContent()).getAsString().split("\\n");
+                            String[] splitQueue = message.getContent().getAsString().split("\\n");
                             LinkedHashSet<QueueEntry> queue = new LinkedHashSet<>();
 
                             int i = 0;

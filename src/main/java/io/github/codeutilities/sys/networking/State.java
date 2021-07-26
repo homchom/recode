@@ -1,5 +1,7 @@
 package io.github.codeutilities.sys.networking;
 
+import com.google.gson.JsonElement;
+import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.events.impl.ReceiveChatMessageEvent;
 import io.github.codeutilities.mod.events.interfaces.HyperCubeEvents;
 import io.github.codeutilities.mod.features.social.tab.Client;
@@ -338,8 +340,8 @@ public class State {
         return finalstate;
     }
 
-    public String toJson() {
-        return this == null ? "null" : "{\"mode\":"+(this.getMode() == null ? "null" : ("{\"identifier\":\""+this.getMode().getIdentifier()+"\",\"verb\":\""+this.getMode().getContinuousVerb()+"\"}"))+",\"node\":"+(this.getNode() == null ? "null" : ("{\"identifier\":\""+this.getNode().getIdentifier()+"\"}"))+",\"plot\":"+ (this.getPlot() == null ? "null" : ("{\"id\":\""+this.getPlot().getId()+"\",\"name\":\""+this.getPlot().getName()+"\",\"status\":\""+this.getPlot().getStatus()+"\"}"))+"}";
+    public JsonElement toJson() {
+        return CodeUtilities.JSON_PARSER.parse(this == null ? "null" : "{\"mode\":"+(this.getMode() == null ? "null" : ("{\"identifier\":\""+this.getMode().getIdentifier()+"\",\"verb\":\""+this.getMode().getContinuousVerb()+"\"}"))+",\"node\":"+(this.getNode() == null ? "null" : ("{\"identifier\":\""+this.getNode().getIdentifier()+"\"}"))+",\"plot\":"+ (this.getPlot() == null ? "null" : ("{\"id\":\""+this.getPlot().getId()+"\",\"name\":\""+this.getPlot().getName()+"\",\"status\":\""+this.getPlot().getStatus()+"\"}"))+"}");
     }
 
     public void sendLocate() {

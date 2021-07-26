@@ -37,11 +37,11 @@ public class CodeUtilitiesServer extends WebSocketClient {
         JsonObject jsonObject = CodeUtilities.JSON_PARSER.parse(message).getAsJsonObject();
         Message msg = new Message(jsonObject.get("type").getAsString(), jsonObject.get("content"), jsonObject.get("id").getAsString());
         if(msg.getType().equals("users")){
-            users = jsonObject.get("content").getAsJsonArray();
+            users = msg.getContent().getAsJsonArray();
         }
         if(msg.getType().equals("chat")){
             if(MinecraftClient.getInstance().player != null){
-                MinecraftClient.getInstance().player.sendMessage(TextUtil.colorCodesToTextComponent((String) msg.getContent()), false);
+                MinecraftClient.getInstance().player.sendMessage(TextUtil.colorCodesToTextComponent(msg.getContent().getAsString()), false);
             }
         }
         Requester req = requests.get(msg.getId());

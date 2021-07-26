@@ -1,45 +1,85 @@
 package io.github.codeutilities.mod.features.social.tab;
 
-import com.google.common.base.Strings;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
+import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.sys.util.StringUtil;
 
 public class Message {
     private final String type;
-    private final Object content;
+    private final JsonElement content;
     private final String id;
 
+    /**
+     * content can be either {@link String}, {@link Number}, {@link Boolean} or some type of {@link JsonElement}
+     * @param type
+     * @param content
+     * @param id
+     */
     public Message(String type, Object content, String id) {
         this.type = type;
-        this.content = content;
+        this.content = parseContent(content);
         this.id = id == null ? StringUtil.generateKey(6) : id;
     }
 
+    /**
+     * content can be either {@link String}, {@link Number}, {@link Boolean} or some type of {@link JsonElement}
+     * @param type
+     * @param content
+     */
     public Message(String type, Object content) {
         this.type = type;
-        this.content = content;
+        this.content = parseContent(content);
         this.id = StringUtil.generateKey(6);
     }
 
     public Message(String type) {
         this.type = type;
-        this.content = null;
+        this.content = parseContent("");
         this.id = StringUtil.generateKey(6);
     }
 
     public String build() {
-        boolean isString = this.content instanceof String && !((String) this.content).startsWith("{") && !((String) this.content).endsWith("}") && !((String) this.content).startsWith("[") && !((String) this.content).endsWith("]");
-        return "{\"type\":\"" + this.type + "\"" + (Strings.isNullOrEmpty((String) this.content) ? "" : ",\"content\":" + (isString ? "\"" : "") + this.content + (isString ? "\"" : "")) + ",\"id\":\"" + this.id + "\"" + "}";
+        return "{\"type\":\"" + this.type + "\",\"content\":" + this.content.toString() + ",\"id\":\"" + this.id + "\"" + "}";
+    }
+
+    private JsonElement parseContent(Object content) {
+        if(content instanceof String) {
+            //if((((String) content).startsWith("{") && ((String) content).endsWith("}")) || (((String) content).startsWith("[") && ((String) content).endsWith("]"))) {
+                //return CodeUtilities.JSON_PARSER.parse((String) content);
+            //} else {
+                return (JsonElement) new JsonPrimitive((String) content);
+            //}
+        } else if(content instanceof Number) {
+            return (JsonElement) new JsonPrimitive((Number) content);
+        } else if(content instanceof Boolean) {
+            return (JsonElement) new JsonPrimitive((Boolean) content);
+        } else if(content instanceof JsonElement) {
+            return CodeUtilities.JSON_PARSER.parse(((JsonElement) content).toString());
+        }
+        return null;
     }
 
     public String getType() {
         return type;
     }
 
-    public Object getContent() {
+    /**
+     * Content is a JsonElement which means it has many different types
+     * u can use like {@link JsonElement#getAsInt()} or {@link JsonElement#getAsJsonObject()}
+     * but do not use the wrong one for the wrong type (thats bad)
+     * 👍👍👍👍👍👍👍👍👍👍
+     */
+    public JsonElement getContent() {
         return content;
     }
 
     public String getId() {
         return id;
+    }
+
+    @Override
+    public String toString() {
+        return this.build();
     }
 }
