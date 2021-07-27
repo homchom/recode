@@ -1,20 +1,16 @@
 package io.github.codeutilities.mod.features.social.tab;
 
-import com.google.common.base.Strings;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.sys.util.TextUtil;
+import java.net.URI;
+import java.util.HashMap;
+import java.util.concurrent.FutureTask;
 import net.minecraft.client.MinecraftClient;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
-
-import java.net.URI;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class CodeUtilitiesServer extends WebSocketClient {
 
@@ -82,6 +78,22 @@ public class CodeUtilitiesServer extends WebSocketClient {
         if(Client.client.isOpen()){
             requests.put(message.getId(), request);
             Client.client.send(message.build());
+        }
+    }
+    public static String requestURL(String url) {
+        try {
+            FutureTask<Object> ft = new FutureTask<>(() -> {
+            }, new Object());
+            String[] response = new String[1];
+            requestMessage(new Message("req-proxy",url),msg -> {
+                response[0] = msg.getContent().getAsString();
+                ft.run();
+            });
+            ft.get();
+            return response[0];
+        } catch (Exception err) {
+            err.printStackTrace();
+            return "";
         }
     }
 

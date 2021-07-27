@@ -49,7 +49,8 @@ public class CommandHandler implements ILoader {
                     new ImageParticleCommand(),
                     new SchemCommand(),
                     new RelativeLocCommand(),
-                    new PlotsCommand()
+                    new PlotsCommand(),
+                    new NBSSearchCommand()
             );
         }
     }
