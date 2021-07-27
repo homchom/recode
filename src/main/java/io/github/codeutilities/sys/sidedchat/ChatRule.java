@@ -6,7 +6,7 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 import java.util.function.Predicate;
 
@@ -61,8 +61,8 @@ public class ChatRule {
         chatSide = chatSide.next();
     }
 
-    public static List<ChatRule> getChatRules() {
-        return Lists.newArrayList(chatRuleMap.values());
+    public static Collection<ChatRule> getChatRules() {
+        return chatRuleMap.values();
     }
 
     public static ChatRule getChatRule(ChatRuleType chatRuleType) {
