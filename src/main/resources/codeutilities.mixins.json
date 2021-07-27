@@ -25,7 +25,8 @@
     "render.player.MPlayerRenderer",
     "render.MSignRenderer",
     "render.screen.MOptionsScreen",
-    "render.screen.MTitleScreen"
+    "render.screen.MTitleScreen",
+    "render.MSideChatHUD"
   ],
   "client": [],
   "server": [],
