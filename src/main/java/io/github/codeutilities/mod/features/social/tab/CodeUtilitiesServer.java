@@ -82,17 +82,7 @@ public class CodeUtilitiesServer extends WebSocketClient {
         }
     }
 
-//    public static void requestURL(String url, Consumer<String> callback) {
-//        System.out.println("why am i not being executed");
-//        System.out.println("URL: " + url);
-//        requestMessage(new Message("req-proxy",url),msg -> {
-//            callback.accept(msg.getContent().getAsString());
-//        });
-//    }
-
-    /*public static String requestURL(String url) {
-        System.out.println("why am i not being executed");
-        System.out.println("Request: " + url);
+    public static String requestURL(String url) {
         try {
             FutureTask<Object> ft = new FutureTask<>(() -> {
             }, new Object());
@@ -108,7 +98,7 @@ public class CodeUtilitiesServer extends WebSocketClient {
             err.printStackTrace();
             return "";
         }
-    }*/
+    }
 
 }
 
