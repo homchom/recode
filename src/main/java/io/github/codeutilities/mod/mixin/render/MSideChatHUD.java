@@ -3,6 +3,7 @@ package io.github.codeutilities.mod.mixin.render;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.codeutilities.sys.sidedchat.ChatRule;
+import io.github.codeutilities.sys.util.SoundUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.client.gui.hud.ChatHudLine;
@@ -179,13 +180,12 @@ public abstract class MSideChatHUD {
             if (chatRule.matches(message)) {
                 // also don't add to chat if the chat side is either
                 if (!matchedARule && chatRule.getChatSide() != ChatRule.ChatSide.EITHER) {
-                    LOGGER.error("matched!!");
                     addToChat(chatRule.getChatSide(), message, messageId, timestamp);
                     matchedARule = true;
                 }
 
                 if (chatRule.getChatSound() != ChatRule.ChatSound.NONE) {
-//                    Util.playSound(chatRule.getChatSound().getSoundEvent());
+                    SoundUtil.playSound(chatRule.getChatSound().getSoundEvent());
                 }
             }
         }
