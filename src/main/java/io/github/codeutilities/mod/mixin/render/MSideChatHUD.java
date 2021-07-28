@@ -66,6 +66,7 @@ public abstract class MSideChatHUD {
      * @param displayY Y to display at
      * @return The amount of lines actually rendered. Other parts of rendering need to know this
      */
+    @SuppressWarnings("deprecation")
     private int renderChat(MatrixStack matrices, int tickDelta, List<ChatHudLine<OrderedText>> visibleMessages, int displayX, int displayY) {
         // will apologise - most code is taken from deobfuscated minecraft jar
         // have attempted to make it as readable as possible but some lines idk man no clue
@@ -115,6 +116,7 @@ public abstract class MSideChatHUD {
         return renderedLines;
     }
 
+    @SuppressWarnings("deprecation")
     private void renderOthers(MatrixStack matrices, int renderedLines) {
         int visibleMessagesSize = this.visibleMessages.size();
         if (visibleMessagesSize == 0) return;
