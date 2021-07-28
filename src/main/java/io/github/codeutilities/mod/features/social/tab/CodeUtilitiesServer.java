@@ -8,6 +8,7 @@ import io.github.codeutilities.sys.util.TextUtil;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.concurrent.FutureTask;
+import java.util.function.Consumer;
 import net.minecraft.client.MinecraftClient;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
@@ -80,13 +81,25 @@ public class CodeUtilitiesServer extends WebSocketClient {
             Client.client.send(message.build());
         }
     }
-    public static String requestURL(String url) {
+
+//    public static void requestURL(String url, Consumer<String> callback) {
+//        System.out.println("why am i not being executed");
+//        System.out.println("URL: " + url);
+//        requestMessage(new Message("req-proxy",url),msg -> {
+//            callback.accept(msg.getContent().getAsString());
+//        });
+//    }
+
+    /*public static String requestURL(String url) {
+        System.out.println("why am i not being executed");
+        System.out.println("Request: " + url);
         try {
             FutureTask<Object> ft = new FutureTask<>(() -> {
             }, new Object());
             String[] response = new String[1];
             requestMessage(new Message("req-proxy",url),msg -> {
                 response[0] = msg.getContent().getAsString();
+                System.out.println("Response: " + response[0]);
                 ft.run();
             });
             ft.get();
@@ -95,7 +108,7 @@ public class CodeUtilitiesServer extends WebSocketClient {
             err.printStackTrace();
             return "";
         }
-    }
+    }*/
 
 }
 
