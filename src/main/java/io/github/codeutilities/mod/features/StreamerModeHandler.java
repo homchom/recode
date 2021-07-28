@@ -126,7 +126,7 @@ public class StreamerModeHandler {
         }
 
         // Hide spies (Session spy, Muted spy, DM spy)
-        if (spies() && stripped.startsWith("* ")) {
+        if (spies() && stripped.startsWith("*")) {
             return true;
         }
 
