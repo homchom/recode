@@ -1,6 +1,5 @@
 package io.github.codeutilities.mod.mixin.render.player;
 
-import io.github.codeutilities.mod.features.social.cosmetics.BlazeCosmeticRenderer;
 import io.github.codeutilities.mod.features.social.cosmetics.CosmeticRenderer;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
@@ -22,7 +21,7 @@ public abstract class MPlayerRenderer extends LivingEntityRenderer<AbstractClien
     @Inject(method = "<init>(Lnet/minecraft/client/render/entity/EntityRenderDispatcher;Z)V", at = @At("RETURN"))
     public void init(EntityRenderDispatcher dispatcher, boolean bl, CallbackInfo ci) {
         this.addFeature(new CosmeticRenderer(this));
-        this.addFeature(new BlazeCosmeticRenderer(this));
+//        this.addFeature(new BlazeCosmeticRenderer(this));
     }
 
 }
