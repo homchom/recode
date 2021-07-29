@@ -20,6 +20,8 @@ public class MChatScreen {
     @Shadow
     protected TextFieldWidget chatField;
 
+    @Shadow private String originalChatText;
+
     @Inject(method = "render", at = @At("INVOKE"))
     private void render(MatrixStack matrices, int mouseX, int mouseY, float delta,
         CallbackInfo ci) {
@@ -36,7 +38,16 @@ public class MChatScreen {
                     text.startsWith("/txt") ||
                     text.startsWith("/text")
             )) {
-                return;
+                boolean r = true;
+                for (String o : VarSyntaxHighlighter.txtPreviews) {
+                    if (o.endsWith(" N")) o = o.replace(" N","");
+                    if (text.startsWith(o)) {
+                        r = false;
+                        break;
+                    }
+                }
+
+                if (r) return;
             }
 
             Text formatted = VarSyntaxHighlighter.highlight(text);

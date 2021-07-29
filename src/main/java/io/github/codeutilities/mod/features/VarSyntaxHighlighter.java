@@ -32,6 +32,19 @@ public class VarSyntaxHighlighter {
         "%math("
     );
 
+    public static final List<String> txtPreviews = Arrays.asList(
+        "/lore add ",
+        "/addlore ",
+        "/rename ",
+        "/lore set N",
+        "/i lore set N",
+        "/i lore add ",
+        "/item lore set N",
+        "/item lore add ",
+        "/ils N",
+        "/sll N"
+    );
+
     public static Text highlight(String msg) {
         ItemStack item = CodeUtilities.MC.player.getMainHandStack();
 
@@ -50,17 +63,38 @@ public class VarSyntaxHighlighter {
         } catch (Exception ignored) {
         }
 
+        boolean doTagsAndCount = true;
+
         if (msg.startsWith("/variable ")) {
             msg = msg.replaceFirst("/variable", "/var");
-        }
+        } else
         if (msg.startsWith("/number ")) {
             msg = msg.replaceFirst("/number", "/num");
-        }
+        } else
         if (msg.startsWith("/text ")) {
             msg = msg.replaceFirst("/text", "/txt");
+        } else {
+
+            for (String o : VarSyntaxHighlighter.txtPreviews) {
+                boolean num = false;
+                if (o.endsWith("N")) {
+                    o = o.replace("N","");
+                    num = true;
+                }
+                if (msg.startsWith(o)) {
+                    doTagsAndCount = false;
+                    msg = msg.substring(o.length());
+                    if (num) {
+                        if (!msg.contains(" ")) return null;
+                        msg = msg.substring(msg.indexOf(" "));
+                    } else msg = " " + msg;
+                    msg = "/txt" + msg;
+                    break;
+                }
+            }
         }
 
-        if (msg.startsWith("/")) {
+        if (msg.startsWith("/") && doTagsAndCount) {
             if (msg.endsWith(" -l") || msg.endsWith(" -s") || msg.endsWith(" -g")) {
                 msg = msg.substring(0,msg.length()-3);
             }
