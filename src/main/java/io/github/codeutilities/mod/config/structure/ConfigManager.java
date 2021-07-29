@@ -34,6 +34,7 @@ public class ConfigManager implements IManager<ConfigGroup> {
         this.register(new HighlightGroup("highlight"));
         this.register(new ScreenGroup("screen"));
         this.register(new MiscellaneousGroup("misc"));
+        this.register(new SidedChatGroup("sidedchat"));
 
         // Ignore this
         this.getRegistered().forEach(IManager::initialize);

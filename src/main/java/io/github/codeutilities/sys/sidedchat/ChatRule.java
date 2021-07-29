@@ -6,8 +6,7 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Predicate;
 
 /**
@@ -24,6 +23,7 @@ public class ChatRule {
 //    }
 
     private final String name;                   // display name
+    private final String internalName;
     private final Predicate<Text> predicate;     // predicate to use
     private ChatSide chatSide = ChatSide.SIDE;   // the side & sound this rule sends to
     private ChatSound chatSound = ChatSound.NONE;
@@ -48,8 +48,13 @@ public class ChatRule {
         this.chatSound = chatSound;
     }
 
+    public String getInternalName() {
+        return internalName;
+    }
+
     public ChatRule(String name, Predicate<Text> predicate) {
         this.name = name;
+        this.internalName = name.toLowerCase(Locale.ROOT);
         this.predicate = predicate;
     }
 
@@ -101,6 +106,10 @@ public class ChatRule {
             if (myIndex >= ChatSide.values().length) myIndex = 0;
             return ChatSide.values()[myIndex];
         }
+
+        public static String[] getValueNames() {
+            return Arrays.stream(ChatRule.ChatSide.values()).map(ChatRule.ChatSide::toString).toArray(String[]::new);
+        }
     }
 
     public enum ChatRuleType {
@@ -146,6 +155,10 @@ public class ChatRule {
             myIndex++;
             if (myIndex >= ChatSound.values().length) myIndex = 0;
             return ChatSound.values()[myIndex];
+        }
+
+        public static String[] getValueNames() {
+            return Arrays.stream(ChatRule.ChatSound.values()).map(ChatRule.ChatSound::toString).toArray(String[]::new);
         }
     }
 }
