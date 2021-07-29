@@ -147,7 +147,7 @@ public class MHeldItemTooltip {
                                             (float) x1,
                                             (float) y1, 16777215);
 
-                                        y2 += 20;
+                                        if (!type.equals("var")) y2 += 20;
 
                                         mc.textRenderer.drawWithShadow(matrices, formatted, x2, y2,
                                             0xffffff);
