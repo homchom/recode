@@ -12,11 +12,14 @@ import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.client.util.InputUtil.Type;
 import net.minecraft.util.math.BlockPos;
 
 public class Keybinds implements ClientModInitializer {
 
     final MinecraftClient mc = MinecraftClient.getInstance();
+
+    public static KeyBinding showTags;
 
     @Override
     public void onInitializeClient() {
@@ -124,6 +127,12 @@ public class Keybinds implements ClientModInitializer {
         // search
         KeyBinding searchFunction = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.codeutilities.search", InputUtil.Type.KEYSYM, -1, "key.category.codeutilities"));
+
+        // show tags
+
+        showTags = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+            "key.codeutilities.showTags", Type.KEYSYM, -1, "key.category.codeutilities"
+        ));
 
         // =======
 

@@ -14,7 +14,10 @@ import io.github.codeutilities.sys.util.TextUtil;
 import io.github.codeutilities.mod.features.CPU_UsageText;
 import io.github.codeutilities.sys.player.DFInfo;
 import io.github.codeutilities.sys.networking.State;
+import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ChatScreen;
+import net.minecraft.text.ClickEvent.Action;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import org.apache.logging.log4j.Level;
@@ -58,7 +61,7 @@ public class ReceiveChatMessageEvent {
         // Streamer mode
         if (StreamerModeHandler.handleMessage(message)) {
             cancel = true;
-        };
+        }
 
         // Debug mode
         if (Config.getBoolean("debugMode")) {
@@ -99,13 +102,13 @@ public class ReceiveChatMessageEvent {
             ConversationTimer.conversationUpdateTime = String.valueOf(System.currentTimeMillis());
 
         //LagSlayer enable/disable
-        if (text.matches("^\\[LagSlayer\\] Now monitoring plot .*\\. Type /lagslayer to stop monitoring\\.$")) {
+        if (text.matches("^\\[LagSlayer] Now monitoring plot .*\\. Type /lagslayer to stop monitoring\\.$")) {
             CPU_UsageText.lagSlayerEnabled = true;
             if (cancelLagSlayerMsg) cancel = true;
             cancelLagSlayerMsg = false;
         }
 
-        if (text.matches("^\\[LagSlayer\\] Stopped monitoring plot .*\\.$")) {
+        if (text.matches("^\\[LagSlayer] Stopped monitoring plot .*\\.$")) {
             CPU_UsageText.lagSlayerEnabled = false;
             if (cancelLagSlayerMsg) cancel = true;
             cancelLagSlayerMsg = false;
@@ -265,6 +268,13 @@ public class ReceiveChatMessageEvent {
             cancelAdminVanishMsg = false;
         }
 
+
+        if (Config.getBoolean("autoClickEditMsgs") && text.startsWith("⏵ Click to edit variable: ")) {
+            if (message.getStyle().getClickEvent().getAction() == Action.SUGGEST_COMMAND) {
+                String toOpen = message.getStyle().getClickEvent().getValue();
+                MinecraftClient.getInstance().send(() -> MinecraftClient.getInstance().openScreen(new ChatScreen(toOpen)));
+            }
+        }
 
 
         //Cancelling (set cancel to true)

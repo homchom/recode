@@ -10,6 +10,7 @@
     "inventory.MItemCreative",
     "inventory.MItemInsert",
     "inventory.MItemSlotUpdate",
+    "inventory.MItemStack",
     "message.MMessageListener",
     "message.MPlayerSendMessage",
     "message.MReceivedSound",
