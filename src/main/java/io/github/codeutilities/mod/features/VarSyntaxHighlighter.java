@@ -84,7 +84,7 @@ public class VarSyntaxHighlighter {
                             "§c" + percentm.group() + " needs brackets!");
                     } else {
                         return TextUtil.colorCodesToTextComponent(
-                            "§cInvalid %Code: " + percentm.group());
+                            "§cInvalid Text Code: " + percentm.group().replace("(",")"));
                     }
                 }
             }
@@ -94,7 +94,7 @@ public class VarSyntaxHighlighter {
 
             if (openb != closeb) {
                 return TextUtil.colorCodesToTextComponent(
-                    "§cInvalid Brackets! " + openb + "( and " + closeb + ")");
+                    "§cInvalid Brackets! " + openb + " ( and " + closeb + " )");
             }
 
             StringBuilder o = new StringBuilder();
