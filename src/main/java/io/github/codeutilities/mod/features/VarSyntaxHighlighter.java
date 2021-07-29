@@ -60,6 +60,17 @@ public class VarSyntaxHighlighter {
             msg = msg.replaceFirst("/text", "/txt");
         }
 
+        if (msg.startsWith("/")) {
+            if (msg.endsWith(" -l") || msg.endsWith(" -s") || msg.endsWith(" -g")) {
+                msg = msg.substring(0,msg.length()-3);
+            }
+            if (msg.matches(".+( \\d+)")) {
+                Matcher m = Pattern.compile(".+( \\d+)").matcher(msg);
+                m.find();
+                msg = msg.substring(0,msg.length()-m.group(1).length());
+            }
+        }
+
         if (msg.startsWith("/var ") || msg.startsWith("/num ")
             || Objects.equals(type, "var") || Objects.equals(type, "num")) {
 
