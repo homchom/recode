@@ -9,14 +9,18 @@ import io.github.codeutilities.mod.commands.Command;
 import io.github.codeutilities.sys.util.TextUtil;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
 public class TitleCommand extends Command {
 
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<FabricClientCommandSource> cd) {
-        cd.register(literal("previewtitle")
+        reg("previewtitle",mc,cd);
+        reg("titlepreview",mc,cd);
+    }
+
+    public void reg(String name, MinecraftClient mc, CommandDispatcher<FabricClientCommandSource> cd) {
+        cd.register(literal(name)
             .then(argument("message", StringArgumentType.greedyString())
                 .executes(ctx -> {
                     Text msg = TextUtil.colorCodesToTextComponent(
@@ -27,6 +31,10 @@ public class TitleCommand extends Command {
                     return 1;
                 })
             )
+            .executes(ctx -> {
+                mc.inGameHud.setTitles(mc.player.getMainHandStack().getName(), null, 20, 60, 20);
+                return 1;
+            })
         );
     }
 }

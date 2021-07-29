@@ -16,7 +16,12 @@ public class SubTitleCommand extends Command {
 
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<FabricClientCommandSource> cd) {
-        cd.register(literal("previewsubtitle")
+        reg("previewsubtitle",mc,cd);
+        reg("subtitlepreview",mc,cd);
+    }
+
+    public void reg(String name, MinecraftClient mc, CommandDispatcher<FabricClientCommandSource> cd) {
+        cd.register(literal(name)
             .then(argument("message", StringArgumentType.greedyString())
                 .executes(ctx -> {
                     Text msg = TextUtil.colorCodesToTextComponent(
@@ -28,6 +33,11 @@ public class SubTitleCommand extends Command {
                     return 1;
                 })
             )
+            .executes(ctx -> {
+                mc.inGameHud.setTitles(new LiteralText("§c"), null, 20, 60, 20);
+                mc.inGameHud.setTitles(null, mc.player.getMainHandStack().getName(), 0,0,0);
+                return 1;
+            })
         );
     }
 }

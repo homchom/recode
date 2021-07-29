@@ -15,7 +15,12 @@ public class ActionbarCommand extends Command {
 
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<FabricClientCommandSource> cd) {
-        cd.register(literal("previewactionbar")
+        reg("previewactionbar",mc,cd);
+        reg("actionbarpreview",mc,cd);
+    }
+
+    public void reg(String name, MinecraftClient mc, CommandDispatcher<FabricClientCommandSource> cd) {
+        cd.register(literal(name)
             .then(argument("message", StringArgumentType.greedyString())
                 .executes(ctx -> {
                     Text msg = TextUtil.colorCodesToTextComponent(
@@ -26,6 +31,10 @@ public class ActionbarCommand extends Command {
                     return 1;
                 })
             )
+            .executes(ctx -> {
+                mc.player.sendMessage(mc.player.getMainHandStack().getName(),true);
+                return 1;
+            })
         );
     }
 }
