@@ -109,6 +109,10 @@ public class ConfigSetting<Value> implements IRawTranslation<ConfigSetting<Value
         return value instanceof Boolean;
     }
 
+    public boolean isEnum() {
+        return value instanceof Enum;
+    }
+
     public String getCustomKey() {
         return key;
     }
