@@ -62,6 +62,7 @@ public class CodeUtilities implements ModInitializer {
         .registerTypeAdapter(LongSetting.class, new LongSerializer())
         .registerTypeAdapter(StringSetting.class, new StringSerializer())
         .registerTypeAdapter(StringListSetting.class, new StringListSerializer())
+        .registerTypeAdapter(EnumSetting.class, new EnumSerializer())
         .setPrettyPrinting()
         .create();
     public static final JsonParser JSON_PARSER = new JsonParser();
