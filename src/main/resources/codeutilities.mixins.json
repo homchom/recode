@@ -24,7 +24,6 @@
     "render.TextureMapAccessor",
     "render.player.MPlayerListEntry",
     "render.player.MPlayerListHUD",
-    "render.player.MPlayerRenderer",
     "render.screen.MOptionsScreen",
     "render.screen.MTitleScreen"
   ],
