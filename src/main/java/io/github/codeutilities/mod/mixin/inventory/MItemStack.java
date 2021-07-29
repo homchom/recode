@@ -1,14 +1,20 @@
 package io.github.codeutilities.mod.mixin.inventory;
 
+import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.features.keybinds.Keybinds;
 import java.util.List;
 import java.util.Set;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.options.KeyBinding;
+import net.minecraft.client.util.InputUtil;
+import net.minecraft.client.util.InputUtil.Key;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -32,27 +38,33 @@ public abstract class MItemStack {
 
         if (player == null) return;
 
-        if (Keybinds.showTags != null && Keybinds.showTags.wasPressed()) {
-            List<Text> t = cir.getReturnValue();
+        try {
+            int keycode = ((Key) FieldUtils.getField(KeyBinding.class,"boundKey",true).get(Keybinds.showTags)).getCode();
 
-            CompoundTag tags = getSubTag("PublicBukkitValues");
+            if (InputUtil.isKeyPressed(CodeUtilities.MC.getWindow().getHandle(),keycode)) {
+                List<Text> t = cir.getReturnValue();
 
-            if (tags != null) {
-                Set<String> keys = tags.getKeys();
-                if (keys.size() != 0) {
-                    t.add(new LiteralText(""));
+                CompoundTag tags = getSubTag("PublicBukkitValues");
 
-                    for (String key : keys) {
-                        String value = tags.get(key).asString();
-                        if (value.length()>20) value = value.substring(0,30)+"...";
-                        key = key.replaceFirst("hypercube:","");
+                if (tags != null) {
+                    Set<String> keys = tags.getKeys();
+                    if (keys.size() != 0) {
+                        t.add(new LiteralText(""));
 
-                        t.add(new LiteralText("§a" + key + " §7= §f" + value));
+                        for (String key : keys) {
+                            String value = tags.get(key).asString();
+                            if (value.length()>20) value = value.substring(0,30)+"...";
+                            key = key.replaceFirst("hypercube:","");
+
+                            t.add(new LiteralText("§a" + key + " §7= §f" + value));
+                        }
                     }
                 }
-            }
 
-            cir.setReturnValue(t);
+                cir.setReturnValue(t);
+            }
+        } catch (Exception err) {
+            err.printStackTrace();
         }
     }
 }
