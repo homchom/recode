@@ -42,6 +42,8 @@ public class ReceiveChatMessageEvent {
     public static int locating = 0;
     public static int cancelMsgs = 0;
 
+    public static String tipPlayer = "";
+
     private ActionResult run(Text message) {
         MinecraftClient mc = MinecraftClient.getInstance();
         String text = message.getString();
@@ -273,6 +275,14 @@ public class ReceiveChatMessageEvent {
             if (message.getStyle().getClickEvent().getAction() == Action.SUGGEST_COMMAND) {
                 String toOpen = message.getStyle().getClickEvent().getValue();
                 MinecraftClient.getInstance().send(() -> MinecraftClient.getInstance().openScreen(new ChatScreen(toOpen)));
+            }
+        }
+
+        if (Config.getBoolean("autoTip") && text.startsWith("⏵⏵ ")) {
+            if (msgWithColor.matches("§x§a§a§5§5§f§f⏵⏵ §f§l\\w+§7 is using a §x§f§f§f§f§a§a§l2§x§f§f§f§f§a§a§lx§7 booster.")) {
+                tipPlayer = text.split("§f§l")[1].split("§7")[0];
+            } else if (msgWithColor.matches("§x§a§a§5§5§f§f⏵⏵ §7Use §x§f§f§f§f§a§a\\/tip§7 to show your appreciation and receive a §x§f§f§d§4§2§a□ token notch§7!")) {
+                mc.player.sendChatMessage("/tip " + tipPlayer);
             }
         }
 
