@@ -8,7 +8,6 @@ import io.github.codeutilities.mod.commands.impl.item.EditItemCommand;
 import io.github.codeutilities.mod.commands.impl.item.GiveCommand;
 import io.github.codeutilities.mod.commands.impl.item.HeadsCommand;
 import io.github.codeutilities.mod.commands.impl.item.ItemdataCommand;
-import io.github.codeutilities.mod.commands.impl.item.NewlineCommand;
 import io.github.codeutilities.mod.commands.impl.item.RelativeLocCommand;
 import io.github.codeutilities.mod.commands.impl.item.TemplatesCommand;
 import io.github.codeutilities.mod.commands.impl.item.UnpackCommand;
@@ -78,8 +77,7 @@ public class CommandHandler implements ILoader {
                 new SchemCommand(),
                 new RelativeLocCommand(),
                 new PlotsCommand(),
-                new NBSSearchCommand(),
-                new NewlineCommand()
+                new NBSSearchCommand()
             );
         }
     }
