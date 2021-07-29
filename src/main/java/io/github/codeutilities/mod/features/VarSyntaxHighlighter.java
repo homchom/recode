@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.sys.util.TextUtil;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -11,8 +12,25 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.Text;
+import org.apache.commons.lang3.StringUtils;
 
 public class VarSyntaxHighlighter {
+
+    private static final List<String> percentcodes = Arrays.asList(
+        "%default",
+        "%damager",
+        "%killer",
+        "%shooter",
+        "%victim",
+        "%projectile",
+        "%uuid",
+        "%selected",
+        "%random(",
+        "%round(",
+        "%index(",
+        "%var(",
+        "%math("
+    );
 
     public static Text highlight(String msg) {
         ItemStack item = CodeUtilities.MC.player.getMainHandStack();
@@ -32,11 +50,51 @@ public class VarSyntaxHighlighter {
         } catch (Exception ignored) {
         }
 
+        if (msg.startsWith("/variable ")) {
+            msg = msg.replaceFirst("/variable", "/var");
+        }
+        if (msg.startsWith("/number ")) {
+            msg = msg.replaceFirst("/number", "/num");
+        }
+        if (msg.startsWith("/text ")) {
+            msg = msg.replaceFirst("/text", "/txt");
+        }
+
         if (msg.startsWith("/var ") || msg.startsWith("/num ")
             || Objects.equals(type, "var") || Objects.equals(type, "num")) {
 
-            if (msg.startsWith("/num ") || msg.startsWith("/var ")) {
+            if (msg.startsWith("/num ")) {
                 msg = msg.substring(5);
+                if (!msg.contains("%") && !msg.matches("-?\\d*(\\.\\d*)?")) {
+                    return TextUtil.colorCodesToTextComponent("§cNot a valid number!");
+                }
+            } else if (msg.startsWith("/var ")) {
+                msg = msg.substring(5);
+            }
+
+            Matcher percentm = Pattern.compile("%\\w+\\(?").matcher(msg);
+
+            while (percentm.find()) {
+                if (!percentcodes.contains(percentm.group())) {
+                    if (percentcodes.contains(percentm.group().replace("(", ""))) {
+                        return TextUtil.colorCodesToTextComponent(
+                            "§c" + percentm.group().replace("(", "") + " doesnt support brackets!");
+                    } else if (percentcodes.contains(percentm.group() + "(")) {
+                        return TextUtil.colorCodesToTextComponent(
+                            "§c" + percentm.group() + " needs brackets!");
+                    } else {
+                        return TextUtil.colorCodesToTextComponent(
+                            "§cInvalid %Code: " + percentm.group());
+                    }
+                }
+            }
+
+            int openb = StringUtils.countMatches(msg, "(");
+            int closeb = StringUtils.countMatches(msg, ")");
+
+            if (openb != closeb) {
+                return TextUtil.colorCodesToTextComponent(
+                    "§cInvalid Brackets! " + openb + "( and " + closeb + ")");
             }
 
             StringBuilder o = new StringBuilder();
@@ -68,7 +126,7 @@ public class VarSyntaxHighlighter {
                     percent = false;
                     continue;
                 } else {
-                    if (!(c+"").matches("\\w") && percent) {
+                    if (!(c + "").matches("\\w") && percent) {
                         percent = false;
                         depth--;
                         o.append(color(depth));
@@ -91,7 +149,7 @@ public class VarSyntaxHighlighter {
             Matcher matcher = p.matcher(msg);
             while (matcher.find()) {
                 out.append(msg, lastIndex, matcher.start())
-                    .append(matcher.group().replaceAll("&","§"));
+                    .append(matcher.group().replaceAll("&", "§"));
 
                 lastIndex = matcher.end();
             }
@@ -113,7 +171,7 @@ public class VarSyntaxHighlighter {
             "&x&5&e&7&7&f&7",
             "&x&c&a&6&4&f&a",
             "&x&f&f&4&2&4&2"
-        ).get(((depth % 7) + 7) % 7).replaceAll("&","§");
+        ).get(((depth % 7) + 7) % 7).replaceAll("&", "§");
         //complex bracket thing because apparently java's remainder can otherwise give negative nums
     }
 
