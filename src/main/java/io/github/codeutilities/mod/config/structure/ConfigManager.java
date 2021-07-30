@@ -1,6 +1,5 @@
 package io.github.codeutilities.mod.config.structure;
 
-import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.config.impl.*;
 import io.github.codeutilities.mod.config.internal.ConfigFile;
 import io.github.codeutilities.mod.config.internal.ConfigInstruction;
@@ -117,6 +116,13 @@ public class ConfigManager implements IManager<ConfigGroup> {
                 BooleanSetting setting = memory.cast();
                 BooleanSetting cast = instruction.cast();
                 setting.setValue(cast.getValue());
+            }
+            if (memory.isEnum()) {
+                // the instructor is deserialized to string since JSON has no enum
+                // oh well can do the conversion myself
+                EnumSetting<?> setting = memory.cast();
+                StringSetting cast = instruction.cast();
+                setting.setFromString(cast.getValue());
             }
         }
     }
