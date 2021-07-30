@@ -13,7 +13,7 @@ import java.util.function.Predicate;
  * Class that contains a rule for sorting messages. May test a text component.
  */
 public class ChatRule {
-    private static final Map<ChatRuleType, ChatRule> chatRuleMap = Maps.newHashMap();
+    private static final Map<ChatRuleType, ChatRule> chatRuleMap = Maps.newEnumMap(ChatRuleType.class);
 
 //    public static void loadFromConfig() {
 //        for (ChatRuleType chatRuleType : ChatRuleType.values()) {
@@ -87,12 +87,12 @@ public class ChatRule {
 
     // load the rules
     static {
-        chatRuleMap.put(ChatRuleType.CUSTOM, new ChatRule("Custom Chat", ChatPredicates.getCustomPredicate()));
-        chatRuleMap.put(ChatRuleType.MESSAGE, new ChatRule("Messages", ChatPredicates.getMessagePredicate()));
-        chatRuleMap.put(ChatRuleType.SUPPORT, new ChatRule("Support Chat", ChatPredicates.getSupportPredicate()));
-        chatRuleMap.put(ChatRuleType.SESSION, new ChatRule("Session Chat", ChatPredicates.getSessionPredicate()));
-        chatRuleMap.put(ChatRuleType.MOD, new ChatRule("Mod Chat", ChatPredicates.getModPredicate()));
-        chatRuleMap.put(ChatRuleType.ADMIN, new ChatRule("Admin Chat", ChatPredicates.getAdminPredicate()));
+        chatRuleMap.put(ChatRuleType.CUSTOM, new ChatRule("custom_chat", ChatPredicates.getCustomPredicate()));
+        chatRuleMap.put(ChatRuleType.MESSAGE, new ChatRule("messages", ChatPredicates.getMessagePredicate()));
+        chatRuleMap.put(ChatRuleType.SUPPORT, new ChatRule("support_chat", ChatPredicates.getSupportPredicate()));
+        chatRuleMap.put(ChatRuleType.SESSION, new ChatRule("session_chat", ChatPredicates.getSessionPredicate()));
+        chatRuleMap.put(ChatRuleType.MOD, new ChatRule("mod_chat", ChatPredicates.getModPredicate()));
+        chatRuleMap.put(ChatRuleType.ADMIN, new ChatRule("admin_chat", ChatPredicates.getAdminPredicate()));
     }
 
     public enum ChatSide {
