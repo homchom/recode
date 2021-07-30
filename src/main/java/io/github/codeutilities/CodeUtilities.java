@@ -14,6 +14,7 @@ import io.github.codeutilities.mod.config.types.*;
 import io.github.codeutilities.mod.config.types.list.StringListSetting;
 import io.github.codeutilities.mod.events.EventHandler;
 import io.github.codeutilities.mod.events.interfaces.OtherEvents;
+import io.github.codeutilities.mod.features.TemplatePeeker;
 import io.github.codeutilities.mod.features.external.DFDiscordRPC;
 import io.github.codeutilities.mod.features.social.cosmetics.CosmeticHandler;
 import io.github.codeutilities.mod.features.social.tab.Client;
@@ -126,6 +127,7 @@ public class CodeUtilities implements ModInitializer {
         initializer.add(new EventHandler());
         initializer.add(new State.Locater());
         initializer.add(new CommandHandler());
+        initializer.add(new TemplatePeeker());
 
         // Initializes only if the given condition is met. (this case: config value)
         // initializer.addIf(new AudioHandler(), Config.getBoolean("audio"));

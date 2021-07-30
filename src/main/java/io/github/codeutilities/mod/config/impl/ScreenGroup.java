@@ -28,5 +28,6 @@ public class ScreenGroup extends ConfigGroup {
         this.register(new BooleanSetting("cosmeticsEnabled", true));
         this.register(new BooleanSetting("loadTabStars", true));
         this.register(new BooleanSetting("highlightVarSyntax", true));
+        this.register(new BooleanSetting("templatePeeking", false));
     }
 }
