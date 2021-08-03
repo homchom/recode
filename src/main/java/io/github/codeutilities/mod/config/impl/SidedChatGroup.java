@@ -24,8 +24,8 @@ public class SidedChatGroup extends ConfigGroup {
             if (chatRule.getChatRuleType() == ChatRule.ChatRuleType.CUSTOM)
                 chatRuleSubGroup.register(new StringSetting("custom_filter"));
 
-            chatRuleSubGroup.register(new EnumSetting<>(String.format("%s.side",chatRule.getInternalName()), ChatRule.ChatSide.class, ChatRule.ChatSide.MAIN));
-            chatRuleSubGroup.register(new EnumSetting<>(String.format("%s.sound",chatRule.getInternalName()), ChatRule.ChatSound.class, ChatRule.ChatSound.NONE));
+            chatRuleSubGroup.register(new EnumSetting<>(ChatRule.getChatRuleConfigSideName(chatRule), ChatRule.ChatSide.class, ChatRule.ChatSide.MAIN));
+            chatRuleSubGroup.register(new EnumSetting<>(ChatRule.getChatRuleConfigSoundName(chatRule), ChatRule.ChatSound.class, ChatRule.ChatSound.NONE));
             this.register(chatRuleSubGroup);
         }
     }

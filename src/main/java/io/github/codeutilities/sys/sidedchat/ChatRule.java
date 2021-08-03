@@ -1,6 +1,7 @@
 package io.github.codeutilities.sys.sidedchat;
 
 import com.google.common.collect.Lists;
+import io.github.codeutilities.mod.config.Config;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
@@ -14,42 +15,25 @@ import java.util.function.Predicate;
 public class ChatRule {
     private static final List<ChatRule> chatRules = Lists.newLinkedList();
 
-//    public static void loadFromConfig() {
-//        for (ChatRuleType chatRuleType : ChatRuleType.values()) {
-//            getChatRule(chatRuleType).setChatSide(Config.getChatSide(chatRuleType));
-//            getChatRule(chatRuleType).setChatSound(Config.getChatSound(chatRuleType));
-//        }
-//    }
-
     private final String name;                   // display name
     private final String internalName;
     private final Predicate<Text> predicate;     // predicate to use
     private final ChatRuleType chatRuleType;
-    private ChatSide chatSide = ChatSide.SIDE;   // the side & sound this rule sends to
-    private ChatSound chatSound = ChatSound.NONE;
 
     public ChatRuleType getChatRuleType() {
         return chatRuleType;
     }
 
     public ChatSide getChatSide() {
-        return chatSide;
+        return Config.getEnum(getChatRuleConfigSideName(this),ChatSide.class);
     }
 
-    public void setChatSide(ChatSide chatSide) {
-        this.chatSide = chatSide;
+    public ChatSound getChatSound() {
+        return Config.getEnum(getChatRuleConfigSoundName(this),ChatSound.class);
     }
 
     public String getName() {
         return name;
-    }
-
-    public ChatSound getChatSound() {
-        return chatSound;
-    }
-
-    public void setChatSound(ChatSound chatSound) {
-        this.chatSound = chatSound;
     }
 
     public String getInternalName() {
@@ -67,10 +51,6 @@ public class ChatRule {
         return predicate.test(message);
     }
 
-    public void toggleChatSide() {
-        chatSide = chatSide.next();
-    }
-
     public static Collection<ChatRule> getChatRules() {
         return chatRules;
     }
@@ -83,15 +63,12 @@ public class ChatRule {
                 .orElse(null); // the else should never run (there is a chat for every type)
     }
 
-    /**
-     * Easy way to toggle a rule's chat side
-     * @param chatRuleType SUPPORT, EXPERT etc
-     * @return The new chat side
-     */
-    public static ChatSide toggleChatType(ChatRuleType chatRuleType) {
-        ChatRule chatRule = getChatRule(chatRuleType);
-        chatRule.setChatSide(chatRule.getChatSide().next());
-        return chatRule.getChatSide();
+    public static String getChatRuleConfigSideName(ChatRule chatRule) {
+        return String.format("%s.side",chatRule.getInternalName());
+    }
+
+    public static String getChatRuleConfigSoundName(ChatRule chatRule) {
+        return String.format("%s.sound",chatRule.getInternalName());
     }
 
     // load the rules

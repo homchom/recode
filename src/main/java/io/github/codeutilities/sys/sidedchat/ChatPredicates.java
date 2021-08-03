@@ -1,6 +1,7 @@
 package io.github.codeutilities.sys.sidedchat;
 
 import com.google.common.collect.Lists;
+import io.github.codeutilities.mod.config.Config;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
@@ -12,12 +13,14 @@ import java.util.stream.Collectors;
 public class ChatPredicates {
     private static final String CUSTOM_WORDS_DELIMINITER = ",";
 
-    private static List<String> customWords = Lists.newArrayList();
-
     //CUSTOM
     public static Predicate<Text> getCustomPredicate() {
         return iTextComponent -> {
-            if (customWords.size() == 0 || getCustomWords().trim().length()==0) return false; // do no checks if the input is empty
+            List<String> customWords = getCustomWords();
+
+            System.out.println(customWords.toString());
+
+            if (customWords.size() == 0 || getCustomWordsString().trim().length()==0) return false; // do no checks if the input is empty
 
 //            Main.log(new ChatPattern(iTextComponent).toString());
             for (String customWord : customWords) {
@@ -28,20 +31,16 @@ public class ChatPredicates {
         };
     }
 
-    public static void setCustomWords(String words) {
-        customWords = Lists.newArrayList(words.split(CUSTOM_WORDS_DELIMINITER))
+    public static String getCustomWordsString() {
+        return Config.getString("custom_filter");
+    }
+
+    private static List<String> getCustomWords() {
+        return Lists.newArrayList(getCustomWordsString().split(CUSTOM_WORDS_DELIMINITER))
                 .stream() // trim each word then collect
                 .map(String::trim)
                 .collect(Collectors.toList());
     }
-
-    public static String getCustomWords() {
-        return String.join(CUSTOM_WORDS_DELIMINITER, customWords);
-    }
-
-//    public static void loadFromConfig() {
-//        setCustomWords(Config.getCustomWords());
-//    }
 
     //MESSAGE
     private static final ChatPattern oldMessageChatPattern = new ChatPattern(
