@@ -1,7 +1,6 @@
 package io.github.codeutilities.sys.sidedchat;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
@@ -13,7 +12,7 @@ import java.util.function.Predicate;
  * Class that contains a rule for sorting messages. May test a text component.
  */
 public class ChatRule {
-    private static final Map<ChatRuleType, ChatRule> chatRuleMap = Maps.newEnumMap(ChatRuleType.class);
+    private static final List<ChatRule> chatRules = Lists.newLinkedList();
 
 //    public static void loadFromConfig() {
 //        for (ChatRuleType chatRuleType : ChatRuleType.values()) {
@@ -25,8 +24,13 @@ public class ChatRule {
     private final String name;                   // display name
     private final String internalName;
     private final Predicate<Text> predicate;     // predicate to use
+    private final ChatRuleType chatRuleType;
     private ChatSide chatSide = ChatSide.SIDE;   // the side & sound this rule sends to
     private ChatSound chatSound = ChatSound.NONE;
+
+    public ChatRuleType getChatRuleType() {
+        return chatRuleType;
+    }
 
     public ChatSide getChatSide() {
         return chatSide;
@@ -52,10 +56,11 @@ public class ChatRule {
         return internalName;
     }
 
-    public ChatRule(String name, Predicate<Text> predicate) {
+    public ChatRule(String name, Predicate<Text> predicate, ChatRuleType chatRuleType) {
         this.name = name;
         this.internalName = name.toLowerCase(Locale.ROOT);
         this.predicate = predicate;
+        this.chatRuleType = chatRuleType;
     }
 
     public boolean matches(Text message) {
@@ -67,11 +72,15 @@ public class ChatRule {
     }
 
     public static Collection<ChatRule> getChatRules() {
-        return chatRuleMap.values();
+        return chatRules;
     }
 
     public static ChatRule getChatRule(ChatRuleType chatRuleType) {
-        return chatRuleMap.get(chatRuleType);
+        return chatRules
+                .stream()
+                .filter(chatRule -> chatRule.chatRuleType == chatRuleType)
+                .findFirst()
+                .orElse(null); // the else should never run (there is a chat for every type)
     }
 
     /**
@@ -80,19 +89,19 @@ public class ChatRule {
      * @return The new chat side
      */
     public static ChatSide toggleChatType(ChatRuleType chatRuleType) {
-        ChatRule chatRule = chatRuleMap.get(chatRuleType);
+        ChatRule chatRule = getChatRule(chatRuleType);
         chatRule.setChatSide(chatRule.getChatSide().next());
         return chatRule.getChatSide();
     }
 
     // load the rules
     static {
-        chatRuleMap.put(ChatRuleType.CUSTOM, new ChatRule("custom_chat", ChatPredicates.getCustomPredicate()));
-        chatRuleMap.put(ChatRuleType.MESSAGE, new ChatRule("messages", ChatPredicates.getMessagePredicate()));
-        chatRuleMap.put(ChatRuleType.SUPPORT, new ChatRule("support_chat", ChatPredicates.getSupportPredicate()));
-        chatRuleMap.put(ChatRuleType.SESSION, new ChatRule("session_chat", ChatPredicates.getSessionPredicate()));
-        chatRuleMap.put(ChatRuleType.MOD, new ChatRule("mod_chat", ChatPredicates.getModPredicate()));
-        chatRuleMap.put(ChatRuleType.ADMIN, new ChatRule("admin_chat", ChatPredicates.getAdminPredicate()));
+        chatRules.add(new ChatRule("custom_chat", ChatPredicates.getCustomPredicate(), ChatRuleType.CUSTOM));
+        chatRules.add(new ChatRule("messages", ChatPredicates.getMessagePredicate(), ChatRuleType.MESSAGE));
+        chatRules.add(new ChatRule("support_chat", ChatPredicates.getSupportPredicate(), ChatRuleType.SUPPORT));
+        chatRules.add(new ChatRule("session_chat", ChatPredicates.getSessionPredicate(), ChatRuleType.SESSION));
+        chatRules.add(new ChatRule("mod_chat", ChatPredicates.getModPredicate(), ChatRuleType.MOD));
+        chatRules.add(new ChatRule("admin_chat", ChatPredicates.getAdminPredicate(), ChatRuleType.ADMIN));
     }
 
     public enum ChatSide {
