@@ -1,6 +1,7 @@
 package io.github.codeutilities.mod.config.structure;
 
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 
 import java.util.List;
 import java.util.Optional;
@@ -111,6 +112,10 @@ public class ConfigSetting<Value> implements IRawTranslation<ConfigSetting<Value
 
     public boolean isEnum() {
         return value instanceof Enum;
+    }
+
+    public boolean isText() {
+        return value instanceof Text;
     }
 
     public String getCustomKey() {

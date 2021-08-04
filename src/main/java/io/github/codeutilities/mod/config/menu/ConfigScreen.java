@@ -208,6 +208,10 @@ public class ConfigScreen implements ITranslatable {
                     .setSaveConsumer(setting::setValue)
                     .build();
         }
+        if (configSetting.isText()) {
+            return builder.startTextDescription(title)
+                    .build();
+        }
         if (configSetting.isEnum()) {
             EnumSetting<?> setting = configSetting.cast();
 

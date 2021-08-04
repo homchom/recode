@@ -5,6 +5,7 @@ import io.github.codeutilities.mod.config.structure.ConfigSubGroup;
 import io.github.codeutilities.mod.config.types.BooleanSetting;
 import io.github.codeutilities.mod.config.types.DynamicStringSetting;
 import io.github.codeutilities.mod.config.types.EnumSetting;
+import io.github.codeutilities.mod.config.types.TextDescription;
 import io.github.codeutilities.mod.features.discordrpc.RPCElapsedOption;
 
 public class DiscordRPCGroup extends ConfigGroup {
@@ -14,6 +15,9 @@ public class DiscordRPCGroup extends ConfigGroup {
 
     @Override
     public void initialize() {
+
+        this.register(new TextDescription("discordRPCDescription"));
+
         this.register(new BooleanSetting("discordRPC", true));
         this.register(new BooleanSetting("discordRPCShowSession", true));
 
