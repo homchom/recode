@@ -185,6 +185,7 @@
     "config.codeutilities.option.chestToolTipType": "Chest Tooltip Style",
     "config.codeutilities.option.chestToolTipType.tooltip": "Choose between regular Minecraft tooltip style \nor raw text in the top left corner.",
 
+    "config.codeutilities.option.streamerDescription": "Streamer Mode\n\nBelow are options to help make the stream experience better.\nExclusive to Jeremaster.",
     "config.codeutilities.option.streamer": "Enabled",
     "config.codeutilities.option.streamer.tooltip": "Enable Streamer Mode.\nTurning this option off will make\nall other options no longer work.",
     "config.codeutilities.subcategory.streamer_streamerModules": "Modules",
@@ -212,7 +213,7 @@
     "config.codeutilities.option.streamerHideRegexEnabled": "Enabled",
     "config.codeutilities.option.streamerHideRegexEnabled.tooltip": "Enable this feature. Effective only if streamer mode is on.",
     "config.codeutilities.option.streamerHideRegex": "Regex",
-    "config.codeutilities.option.streamerHideRegex.tooltip": "Regex the message has to match.",
+    "config.codeutilities.option.streamerHideRegex.tooltip": "Regex the message has to fully match.",
 
     "config.codeutilities.option.discordRPCDescription": "Discord Rich Presence\n\nShows where you are in DiamondFire on your Discord user profile.\nThe text fields support a few variables:\n- ${plot.name}\n- ${plot.id}\n- ${plot.status}\n- ${node.id}",
     "config.codeutilities.option.discordRPC": "Enabled",

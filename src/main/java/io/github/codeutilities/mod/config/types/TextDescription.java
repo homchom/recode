@@ -5,8 +5,6 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
 public class TextDescription extends ConfigSetting<Text> {
-    public TextDescription() {
-    }
 
     public TextDescription(String key) {
         super(key, new LiteralText(""));
