@@ -4,7 +4,6 @@ import io.github.codeutilities.mod.config.structure.ConfigGroup;
 import io.github.codeutilities.mod.config.structure.ConfigSubGroup;
 import io.github.codeutilities.mod.config.types.BooleanSetting;
 import io.github.codeutilities.mod.config.types.DoubleSetting;
-import io.github.codeutilities.mod.config.types.LongSetting;
 import io.github.codeutilities.mod.config.types.StringSetting;
 
 public class MiscellaneousGroup extends ConfigGroup {
@@ -18,13 +17,6 @@ public class MiscellaneousGroup extends ConfigGroup {
         this.register(new BooleanSetting("itemApi", true));
         this.register(new BooleanSetting("quickVarScope", true));
         this.register(new BooleanSetting("debugMode", false));
-
-        // Discord
-        ConfigSubGroup discord = new ConfigSubGroup("discordrpc");
-        discord.register(new BooleanSetting("discordRPC", true));
-        discord.register(new LongSetting("discordRPCTimeout", 15000L));
-        discord.register(new BooleanSetting("discordRPCShowElapsed", true));
-        this.register(discord);
 
         // Audio
         ConfigSubGroup audio = new ConfigSubGroup("audio");

@@ -5,7 +5,7 @@ import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.config.Config;
 import io.github.codeutilities.mod.events.impl.ReceiveChatMessageEvent;
 import io.github.codeutilities.mod.events.interfaces.ChatEvents;
-import io.github.codeutilities.mod.features.external.DFDiscordRPC;
+import io.github.codeutilities.mod.features.discordrpc.DFDiscordRPC;
 import io.github.codeutilities.mod.features.keybinds.FlightspeedToggle;
 import io.github.codeutilities.sys.player.chat.MessageGrabber;
 import io.github.codeutilities.mod.features.CPU_UsageText;

@@ -15,7 +15,7 @@ import io.github.codeutilities.mod.config.types.list.StringListSetting;
 import io.github.codeutilities.mod.events.EventHandler;
 import io.github.codeutilities.mod.events.interfaces.OtherEvents;
 import io.github.codeutilities.mod.features.TemplatePeeker;
-import io.github.codeutilities.mod.features.external.DFDiscordRPC;
+import io.github.codeutilities.mod.features.discordrpc.DFDiscordRPC;
 import io.github.codeutilities.mod.features.social.cosmetics.CosmeticHandler;
 import io.github.codeutilities.mod.features.social.tab.Client;
 import io.github.codeutilities.mod.commands.CommandHandler;

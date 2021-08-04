@@ -1,7 +1,7 @@
 package io.github.codeutilities.mod.events.impl;
 
 import io.github.codeutilities.mod.events.interfaces.HyperCubeEvents;
-import io.github.codeutilities.mod.features.external.DFDiscordRPC;
+import io.github.codeutilities.mod.features.discordrpc.DFDiscordRPC;
 import io.github.codeutilities.mod.features.social.tab.Client;
 import io.github.codeutilities.mod.features.StreamerModeHandler;
 import io.github.codeutilities.mod.features.social.tab.Message;

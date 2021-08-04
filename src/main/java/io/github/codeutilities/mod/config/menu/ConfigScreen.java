@@ -222,8 +222,18 @@ public class ConfigScreen implements ITranslatable {
     private static <E extends Enum<E>> EnumSelectorBuilder<E> setupEnumSelector(ConfigEntryBuilder builder, Text title, EnumSetting<E> enumList) {
         return builder
                 .startEnumSelector(title, enumList.getEnumClass(), enumList.getValue())
+                .setEnumNameProvider(ConfigScreen::getEnumName)
                 .setDefaultValue(enumList.getValue())
                 .setSaveConsumer(enumList::setValue);
+    }
+
+    private static Text getEnumName(Enum<?> anEnum) {
+        if (!(anEnum instanceof IConfigEnum)) {
+            throw new IllegalStateException("Enum must implement IConfigEnum");
+        }
+
+        String key = "." + anEnum.toString().toLowerCase();
+        return ITranslatable.get(KEY_TEXT + ((IConfigEnum) anEnum).getKey() + key);
     }
 
     private static Text getTitle(Text origin) {
