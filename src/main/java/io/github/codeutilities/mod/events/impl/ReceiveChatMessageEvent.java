@@ -158,10 +158,15 @@ public class ReceiveChatMessageEvent {
         }
 
         String msgToString = message.toString();
-        String msgGetString = message.getString();
+        String stripped = message.getString();
 
         String msgWithColor = TextUtil.textComponentToColorCodes(message);
         String msgWithoutColor = msgWithColor.replaceAll("§.", "");
+
+        // incoming report sound
+        if (stripped.startsWith("! Incoming Report ")) {
+            ChatUtil.playSound(Config.getSound("incomingReportSound"));
+        }
 
         // highlight name
         if (Config.getBoolean("highlight")) {
@@ -191,9 +196,10 @@ public class ReceiveChatMessageEvent {
                             newMsgIter++;
                         }
                         mc.player.sendMessage(TextUtil.colorCodesToTextComponent(newMsg), false);
-                        if ((Config.getSound("highlightSound") != null) &&
-                                (Config.getBoolean("highlightOwnSenderSound") || (!msgWithoutColor.matches("^.*" + highlightMatcher + ": .+")))) {
-                            mc.player.playSound(Config.getSound("highlightSound"), Config.getFloat("highlightSoundVolume"), 1);
+                        if (Config.getBoolean("highlightOwnSenderSound") ||
+                                (!msgWithoutColor.matches("^.*" + highlightMatcher + ": .+"))) {
+                            ChatUtil.playSound(
+                                    Config.getSound("highlightSound"), 1, Config.getFloat("highlightSoundVolume"));
                         }
                         cancel = true;
                     }
@@ -215,19 +221,19 @@ public class ReceiveChatMessageEvent {
                 && (msgToString.contains("hoverEvent=false") || msgToString.contains("hoverEvent=null"))
                 && (msgToString.contains("insertion=false") || msgToString.contains("insertion=null"))
 
-                && (msgGetString.endsWith(" joined.") || msgGetString.endsWith(" joined!") || msgGetString.endsWith(" left."))) {
+                && (stripped.endsWith(" joined.") || stripped.endsWith(" joined!") || stripped.endsWith(" left."))) {
 
             // cancel message
             cancel = true;
         }
 
         // hide session spy
-        if (Config.getBoolean("hideSessionSpy") && msgGetString.startsWith("*") && msgToString.contains("text='*'") && msgToString.contains("color=green")) {
+        if (Config.getBoolean("hideSessionSpy") && stripped.startsWith("*") && msgToString.contains("text='*'") && msgToString.contains("color=green")) {
             cancel = true;
         }
 
         // hide muted chat
-        if (Config.getBoolean("hideMutedChat") && msgGetString.startsWith("*") && msgToString.contains("text='*'") && msgToString.contains("color=red")) {
+        if (Config.getBoolean("hideMutedChat") && stripped.startsWith("*") && msgToString.contains("text='*'") && msgToString.contains("color=red")) {
             cancel = true;
         }
 
@@ -245,7 +251,7 @@ public class ReceiveChatMessageEvent {
         }
 
         // hide msg matching regex
-        if (Config.getBoolean("hideMsgMatchingRegex") && msgGetString.replaceAll("§.", "").matches(Config.getString("hideMsgRegex"))) {
+        if (Config.getBoolean("hideMsgMatchingRegex") && stripped.replaceAll("§.", "").matches(Config.getString("hideMsgRegex"))) {
             cancel = true;
         }
 

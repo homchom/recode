@@ -6,6 +6,7 @@ import io.github.codeutilities.sys.player.DFInfo;
 import io.github.codeutilities.sys.player.chat.color.MinecraftColors;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.*;
 import org.jetbrains.annotations.Nullable;
@@ -14,6 +15,20 @@ import java.awt.*;
 import java.util.List;
 
 public class ChatUtil {
+
+    public static void playSound(SoundEvent sound) {
+        playSound(sound, 1F);
+    }
+
+    public static void playSound(SoundEvent sound, float pitch) {
+        playSound(sound, 2F, pitch);
+    }
+
+    public static void playSound(SoundEvent sound, float pitch, float volume) {
+        if (sound != null) {
+            CodeUtilities.MC.player.playSound(sound, volume, pitch);
+        }
+    }
 
     public static void sendMessage(String text) {
         sendMessage(new LiteralText(text), null);
