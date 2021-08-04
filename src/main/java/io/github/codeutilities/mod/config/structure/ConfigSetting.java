@@ -1,5 +1,6 @@
 package io.github.codeutilities.mod.config.structure;
 
+import io.github.codeutilities.mod.config.types.DropdownSetting;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
@@ -112,6 +113,10 @@ public class ConfigSetting<Value> implements IRawTranslation<ConfigSetting<Value
 
     public boolean isEnum() {
         return value instanceof Enum;
+    }
+
+    public boolean isDropdown() {
+        return this instanceof DropdownSetting;
     }
 
     public boolean isText() {

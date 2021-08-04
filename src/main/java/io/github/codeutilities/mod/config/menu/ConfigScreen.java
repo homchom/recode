@@ -149,6 +149,7 @@ public class ConfigScreen implements ITranslatable {
 
         if (configSetting.isList()) {
             ListSetting<?> setting = configSetting.cast();
+
             if (setting.isString()) {
                 StringListSetting list = setting.cast();
 
@@ -223,7 +224,7 @@ public class ConfigScreen implements ITranslatable {
         return null;
     }
 
-    private static <E extends Enum<E>> EnumSelectorBuilder<E> setupEnumSelector(ConfigEntryBuilder builder, Text title, EnumSetting<E> enumList) {
+    private static <E extends Enum<E> & IConfigEnum> EnumSelectorBuilder<E> setupEnumSelector(ConfigEntryBuilder builder, Text title, EnumSetting<E> enumList) {
         return builder
                 .startEnumSelector(title, enumList.getEnumClass(), enumList.getValue())
                 .setEnumNameProvider(ConfigScreen::getEnumName)

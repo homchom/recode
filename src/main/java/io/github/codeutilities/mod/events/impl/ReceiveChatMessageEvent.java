@@ -191,9 +191,9 @@ public class ReceiveChatMessageEvent {
                             newMsgIter++;
                         }
                         mc.player.sendMessage(TextUtil.colorCodesToTextComponent(newMsg), false);
-                        if ((ConfigSounds.getByName(Config.getString("highlightSound")) != null) &&
+                        if ((Config.getSound("highlightSound") != null) &&
                                 (Config.getBoolean("highlightOwnSenderSound") || (!msgWithoutColor.matches("^.*" + highlightMatcher + ": .+")))) {
-                            mc.player.playSound(ConfigSounds.getByName(Config.getString("highlightSound")), Config.getFloat("highlightSoundVolume"), 1);
+                            mc.player.playSound(Config.getSound("highlightSound"), Config.getFloat("highlightSoundVolume"), 1);
                         }
                         cancel = true;
                     }

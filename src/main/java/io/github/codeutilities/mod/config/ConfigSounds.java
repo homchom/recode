@@ -1,9 +1,13 @@
 package io.github.codeutilities.mod.config;
 
+import io.github.codeutilities.CodeUtilities;
+import io.github.codeutilities.mod.config.types.IConfigDropdownEnum;
+import io.github.codeutilities.sys.player.chat.ChatType;
+import io.github.codeutilities.sys.player.chat.ChatUtil;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 
-public enum ConfigSounds {
+public enum ConfigSounds implements IConfigDropdownEnum<ConfigSounds> {
 
     // Default
     SHIELD_BLOCK(SoundEvents.ITEM_SHIELD_BLOCK, "Shield Block"),
@@ -49,12 +53,17 @@ public enum ConfigSounds {
         return name;
     }
 
+    public ConfigSounds[] getValues() {
+        return values();
+    }
+
     public static SoundEvent getByName(String name) {
         for (ConfigSounds sounds : values()) {
             if (name.equals(sounds.getName())) {
                 return sounds.getSound();
             }
         }
+        ChatUtil.sendMessage("Invalid sound.", ChatType.FAIL);
         return null;
     }
 

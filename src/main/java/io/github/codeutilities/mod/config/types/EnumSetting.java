@@ -5,7 +5,7 @@ import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.config.internal.ConfigFile;
 import io.github.codeutilities.mod.config.structure.ConfigSetting;
 
-public class EnumSetting<E extends Enum<E>> extends ConfigSetting<E> {
+public class EnumSetting<E extends Enum<E> & IConfigEnum> extends ConfigSetting<E> {
     Class<E> eClass;
 
     public EnumSetting(String key, Class<E> eClass, E defaultValue) {

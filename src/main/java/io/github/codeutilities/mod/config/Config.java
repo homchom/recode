@@ -2,6 +2,8 @@ package io.github.codeutilities.mod.config;
 
 import io.github.codeutilities.mod.config.structure.ConfigManager;
 import io.github.codeutilities.mod.config.structure.ConfigSetting;
+import io.github.codeutilities.mod.config.types.list.ListSetting;
+import net.minecraft.sound.SoundEvent;
 
 import java.util.HashMap;
 import java.util.List;
@@ -55,6 +57,12 @@ public class Config {
     public static Long getLong(String key) {
         ConfigSetting<?> setting = CONFIG.find(key);
         return getValue(setting, Long.class);
+    }
+
+    public static SoundEvent getSound(String key) {
+        ConfigSetting<?> setting = CONFIG.find(key);
+        ListSetting<String> list = setting.cast();
+        return ConfigSounds.getByName(list.getSelected());
     }
 
     @SuppressWarnings("unchecked")
