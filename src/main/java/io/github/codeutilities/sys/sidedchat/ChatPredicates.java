@@ -18,8 +18,6 @@ public class ChatPredicates {
         return iTextComponent -> {
             List<String> customWords = getCustomWords();
 
-            System.out.println(customWords.toString());
-
             if (customWords.size() == 0 || getCustomWordsString().trim().length()==0) return false; // do no checks if the input is empty
 
 //            Main.log(new ChatPattern(iTextComponent).toString());
