@@ -27,7 +27,7 @@ public class Config {
         return value;
     }
 
-    public static <T> T getEnum(String key, Class<T> enumType) {
+    public static <T extends Enum<T>> T getEnum(String key, Class<T> enumType) {
         ConfigSetting<?> setting = CONFIG.find(key);
         return getValue(setting, enumType);
     }
