@@ -3,6 +3,7 @@ package io.github.codeutilities.mod.features;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.config.Config;
 import io.github.codeutilities.mod.events.impl.ReceiveSoundEvent;
+import io.github.codeutilities.mod.features.social.chat.message.Message;
 import io.github.codeutilities.sys.util.TextUtil;
 import io.github.codeutilities.sys.player.chat.MessageGrabber;
 import io.github.codeutilities.sys.networking.State;
@@ -84,11 +85,13 @@ public class StreamerModeHandler {
         return "^\\[" + sender + " → You] .+$";
     }
 
-    public static boolean handleMessage(Text message) {
+    public static boolean handleMessage(Message message) {
         if (!enabled()) return false;
 
-        String colorCodes = TextUtil.textComponentToColorCodes(message);
-        String stripped = message.getString();
+        Text text = message.text();
+
+        String colorCodes = TextUtil.textComponentToColorCodes(text);
+        String stripped = text.getString();
 
         // Hide support messages
         if (hideSupport()) {

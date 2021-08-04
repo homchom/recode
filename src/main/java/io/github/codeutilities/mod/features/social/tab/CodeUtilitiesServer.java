@@ -8,7 +8,7 @@ import io.github.codeutilities.sys.util.TextUtil;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.concurrent.FutureTask;
-import java.util.function.Consumer;
+
 import net.minecraft.client.MinecraftClient;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
@@ -32,7 +32,7 @@ public class CodeUtilitiesServer extends WebSocketClient {
     @Override
     public void onMessage(String message) {
         JsonObject jsonObject = CodeUtilities.JSON_PARSER.parse(message).getAsJsonObject();
-        Message msg = new Message(jsonObject.get("type").getAsString(), jsonObject.get("content"), jsonObject.get("id").getAsString());
+        WebMessage msg = new WebMessage(jsonObject.get("type").getAsString(), jsonObject.get("content"), jsonObject.get("id").getAsString());
         if(msg.getType().equals("users")){
             users = msg.getContent().getAsJsonArray();
         }
@@ -44,7 +44,7 @@ public class CodeUtilitiesServer extends WebSocketClient {
         Requester req = requests.get(msg.getId());
         if(req != null) {
             requests.remove(msg.getId());
-            req.run(new Message(msg.getType(), msg.getContent(), msg.getId()));
+            req.run(new WebMessage(msg.getType(), msg.getContent(), msg.getId()));
         }
     }
 
@@ -75,7 +75,7 @@ public class CodeUtilitiesServer extends WebSocketClient {
         return users.size();
     }
 
-    public static void requestMessage(Message message, Requester request) {
+    public static void requestMessage(WebMessage message, Requester request) {
         if(Client.client.isOpen()){
             requests.put(message.getId(), request);
             Client.client.send(message.build());
@@ -87,7 +87,7 @@ public class CodeUtilitiesServer extends WebSocketClient {
             FutureTask<Object> ft = new FutureTask<>(() -> {
             }, new Object());
             String[] response = new String[1];
-            requestMessage(new Message("req-proxy",url),msg -> {
+            requestMessage(new WebMessage("req-proxy",url), msg -> {
                 response[0] = msg.getContent().getAsString();
                 System.out.println("Response: " + response[0]);
                 ft.run();

@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.events.impl.ReceiveChatMessageEvent;
 import io.github.codeutilities.mod.events.interfaces.HyperCubeEvents;
+import io.github.codeutilities.mod.features.social.chat.message.Message;
 import io.github.codeutilities.mod.features.social.tab.Client;
 import io.github.codeutilities.sys.file.ILoader;
 import io.github.codeutilities.sys.player.DFInfo;
@@ -273,7 +274,9 @@ public class State {
         return new State(this);
     }
 
-    public static State fromLocate(Text msg) {
+    public static State fromLocate(Message message) {
+        Text msg = message.text();
+
         String text = msg.getString().replaceAll("§.", "");
         State finalstate = new State();
 

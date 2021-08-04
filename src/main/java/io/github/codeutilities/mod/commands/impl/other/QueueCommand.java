@@ -1,33 +1,22 @@
 package io.github.codeutilities.mod.commands.impl.other;
 
 
-import com.google.gson.JsonPrimitive;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.commands.Command;
 import io.github.codeutilities.mod.commands.arguments.ArgBuilder;
 import io.github.codeutilities.mod.commands.arguments.types.FreeStringArgumentType;
 import io.github.codeutilities.mod.features.commands.queue.QueueEntry;
-import io.github.codeutilities.mod.features.commands.queue.QueueMenu;
-import io.github.codeutilities.mod.features.social.tab.Client;
 import io.github.codeutilities.mod.features.social.tab.CodeUtilitiesServer;
-import io.github.codeutilities.mod.features.social.tab.Message;
-import io.github.codeutilities.sys.networking.WebUtil;
+import io.github.codeutilities.mod.features.social.tab.WebMessage;
 import io.github.codeutilities.sys.player.chat.ChatUtil;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.*;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.Queue;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class QueueCommand extends Command {
 
@@ -37,7 +26,7 @@ public class QueueCommand extends Command {
                 .executes(ctx -> {
 
                     try {
-                        CodeUtilitiesServer.requestMessage(new Message("twitch-queue"), message -> {
+                        CodeUtilitiesServer.requestMessage(new WebMessage("twitch-queue"), message -> {
 
                             String[] splitQueue = message.getContent().getAsString().split("\\n");
                             LinkedHashSet<QueueEntry> queue = new LinkedHashSet<>();
