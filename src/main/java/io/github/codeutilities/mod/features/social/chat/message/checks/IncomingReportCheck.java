@@ -7,12 +7,17 @@ import io.github.codeutilities.mod.features.social.chat.message.MessageType;
 public class IncomingReportCheck extends MessageCheck {
 
     @Override
-    public MessageType getType() {
+    protected MessageType getType() {
         return MessageType.INCOMING_REPORT;
     }
 
     @Override
-    public boolean check(Message message, String stripped) {
+    protected boolean check(Message message, String stripped) {
         return stripped.startsWith("! Incoming Report ");
+    }
+
+    @Override
+    protected void onReceive(Message message) {
+    
     }
 }
