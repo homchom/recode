@@ -8,13 +8,22 @@ public abstract class MessageCheck {
         new IncomingReportCheck()
     };
 
-    public abstract MessageType getType();
+    protected abstract MessageType getType();
 
-    public abstract boolean check(Message message, String stripped);
+    protected abstract boolean check(Message message, String stripped);
+
+    /*
+        Return true to cancel the message
+    */
+    protected abstract boolean onReceive(Message message);
+//TODO provide packet in Message class to achieve the above
 
     public static MessageType run(Message message) {
         for (MessageCheck check : checks) {
             if (check.check(message, message.text().getString())) {
+                if (check.onReceive(message)) {
+
+                }
                 return check.getType();
             }
         }
