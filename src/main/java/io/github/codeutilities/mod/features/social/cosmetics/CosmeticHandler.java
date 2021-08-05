@@ -75,7 +75,6 @@ public class CosmeticHandler implements ILoader {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        CosmeticType.HAT.getName(); // load cosmetics on main thread
     }
 
     public void invalidateCache() {

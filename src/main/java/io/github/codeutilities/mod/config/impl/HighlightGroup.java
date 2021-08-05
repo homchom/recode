@@ -1,9 +1,11 @@
 package io.github.codeutilities.mod.config.impl;
 
+import io.github.codeutilities.mod.config.ConfigSounds;
 import io.github.codeutilities.mod.config.structure.ConfigGroup;
 import io.github.codeutilities.mod.config.structure.ConfigSubGroup;
 import io.github.codeutilities.mod.config.types.BooleanSetting;
 import io.github.codeutilities.mod.config.types.FloatSetting;
+import io.github.codeutilities.mod.config.types.SoundSetting;
 import io.github.codeutilities.mod.config.types.StringSetting;
 import io.github.codeutilities.mod.config.types.list.StringListSetting;
 
@@ -26,13 +28,8 @@ public class HighlightGroup extends ConfigGroup {
 
         // Sound
         ConfigSubGroup sound = new ConfigSubGroup("sound");
-        sound.register(new StringListSetting("highlightSound",
-                "None", "Shield Block", "Bass Drum", "Banjo",
-                "Bass", "Bell", "Bit", "Chime", "Cow Bell", "Didgeridoo", "Flute",
-                "Guitar", "Harp", "Pling", "Hat", "Snare", "Iron Xylophone", "Xylophone",
-                "Experience Orb Pickup", "Item Pickup")
-                .setSelected("Shield Block")
-        );
+        sound.register(new SoundSetting("highlightSound")
+                .setSelected(ConfigSounds.SHIELD_BLOCK));
         sound.register(new FloatSetting("highlightSoundVolume", 3F));
         sound.register(new BooleanSetting("highlightOwnSenderSound", false));
         this.register(sound);

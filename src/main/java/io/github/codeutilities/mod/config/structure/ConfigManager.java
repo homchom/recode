@@ -28,6 +28,7 @@ public class ConfigManager implements IManager<ConfigGroup> {
         //this.register(new ModulesGroup("modules"));
         this.register(new AutomationGroup("automation"));
         this.register(new CommandsGroup("commands"));
+        this.register(new DiscordRPCGroup("discordRPC"));
         this.register(new HidingGroup("hiding"));
         this.register(new KeybindsGroup("keybinds"));
         this.register(new HighlightGroup("highlight"));

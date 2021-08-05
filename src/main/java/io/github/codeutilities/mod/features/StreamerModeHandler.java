@@ -3,6 +3,7 @@ package io.github.codeutilities.mod.features;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.config.Config;
 import io.github.codeutilities.mod.events.impl.ReceiveSoundEvent;
+import io.github.codeutilities.mod.features.social.chat.message.Message;
 import io.github.codeutilities.sys.util.TextUtil;
 import io.github.codeutilities.sys.player.chat.MessageGrabber;
 import io.github.codeutilities.sys.networking.State;
@@ -77,16 +78,20 @@ public class StreamerModeHandler {
     private static final String BUYCRAFT_UPDATE_REGEX = "^A new version of BuycraftX \\([0-9.]+\\) is available\\. Go to your server panel at https://server.tebex.io/plugins to download the update\\.$";
     private static final String PLOT_AD_REGEX = "^.*\\[ Plot Ad ].*\\n.+\\n.*$";
     private static final String SCANNING_REGEX = "^Scanning \\w+(.|\n)*\\[Online] \\[Offline] \\[(IP|)Banned]\1*$";
+    private static final String TELEPORTING_REGEX = "^\\[([^ ]{3,}): Teleported ([^ ]{3,}) to ([^ ]{3,})]$";
+    private static final String JOIN_FAIL_REGEX = "^([^ ]{3,}) tried to join, but is banned \\(.*\\)!$";
 
     private static String getDmRegex(String sender) {
         return "^\\[" + sender + " → You] .+$";
     }
 
-    public static boolean handleMessage(Text message) {
+    public static boolean handleMessage(Message message) {
         if (!enabled()) return false;
 
-        String colorCodes = TextUtil.textComponentToColorCodes(message);
-        String stripped = message.getString();
+        Text text = message.text();
+
+        String colorCodes = TextUtil.textComponentToColorCodes(text);
+        String stripped = text.getString();
 
         // Hide support messages
         if (hideSupport()) {
@@ -111,9 +116,17 @@ public class StreamerModeHandler {
                 stripped.startsWith("[Silent]") ||
                 // Incoming reports
                 stripped.startsWith("! Incoming Report ") ||
-                // Scanning
-                stripped.matches(SCANNING_REGEX)
+                // Teleport
+                stripped.matches(TELEPORTING_REGEX) ||
+                // Join fail
+                stripped.matches(JOIN_FAIL_REGEX)
                 )) {
+            return true;
+        }
+
+        // Hide moderation scanning
+        if (hideModeration() && stripped.matches(SCANNING_REGEX)) {
+            MessageGrabber.hideSilently(1);
             return true;
         }
 
@@ -126,7 +139,7 @@ public class StreamerModeHandler {
         }
 
         // Hide spies (Session spy, Muted spy, DM spy)
-        if (spies() && stripped.startsWith("* ")) {
+        if (spies() && stripped.startsWith("*")) {
             return true;
         }
 

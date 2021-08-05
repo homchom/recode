@@ -1,4 +1,4 @@
-package io.github.codeutilities.mod.features.external;
+package io.github.codeutilities.mod.features;
 
 import com.google.gson.JsonObject;
 import io.github.codeutilities.CodeUtilities;
