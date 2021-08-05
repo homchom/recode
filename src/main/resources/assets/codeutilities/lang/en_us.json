@@ -189,6 +189,7 @@
     "config.codeutilities.option.chestToolTipType": "Chest Tooltip Style",
     "config.codeutilities.option.chestToolTipType.tooltip": "Choose between regular Minecraft tooltip style \nor raw text in the top left corner.",
 
+    "config.codeutilities.option.sidechat_width": "2nd Chat Width",
     "config.codeutilities.subcategory.sidedchat_custom_chat": "Custom Chat",
     "config.codeutilities.subcategory.sidedchat_messages": "/msg",
     "config.codeutilities.subcategory.sidedchat_support_chat": "Support Chat",
@@ -209,6 +210,7 @@
     "config.codeutilities.option.mod_chat.sound": "Chat Sound",
     "config.codeutilities.option.admin_chat.sound": "Chat Sound",
 
+    "config.codeutilities.option.sidechat_width.tooltip": "The width to be used by the second chat.\nIf set to 0, the width will be calculated from the\nlower of main chat width & window space remaining.",
     "config.codeutilities.subcategory.sidedchat_custom_chat.tooltip": "Filter that matches text with a pattern defined by you.",
     "config.codeutilities.subcategory.sidedchat_messages.tooltip": "Filter that matches text that comes from the /msg command.",
     "config.codeutilities.subcategory.sidedchat_support_chat.tooltip": "Filter that matches text that comes from Support Chat.",

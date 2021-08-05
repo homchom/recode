@@ -3,6 +3,7 @@ package io.github.codeutilities.mod.config.impl;
 import io.github.codeutilities.mod.config.structure.ConfigGroup;
 import io.github.codeutilities.mod.config.structure.ConfigSubGroup;
 import io.github.codeutilities.mod.config.types.EnumSetting;
+import io.github.codeutilities.mod.config.types.IntegerSetting;
 import io.github.codeutilities.mod.config.types.StringSetting;
 import io.github.codeutilities.sys.sidedchat.ChatRule;
 
@@ -18,6 +19,8 @@ public class SidedChatGroup extends ConfigGroup {
 
     @Override
     public void initialize() {
+        this.register(new IntegerSetting("sidechat_width",0));
+
         for (ChatRule chatRule : ChatRule.getChatRules()) {
             ConfigSubGroup chatRuleSubGroup = new ConfigSubGroup(chatRule.getInternalName());
 

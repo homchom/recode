@@ -2,6 +2,7 @@ package io.github.codeutilities.mod.mixin.render;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
+import io.github.codeutilities.mod.config.Config;
 import io.github.codeutilities.sys.sidedchat.ChatRule;
 import io.github.codeutilities.sys.util.SoundUtil;
 import net.minecraft.client.MinecraftClient;
@@ -41,20 +42,20 @@ public abstract class MSideChatHUD {
     @Shadow public abstract double getChatScale();
     @Shadow public abstract int getVisibleLineCount();
     @Shadow public abstract int getWidth();
-    @Shadow protected abstract void processMessageQueue();
+    @Shadow public abstract void reset();
 
+    @Shadow protected abstract void processMessageQueue();
     @Shadow public static int getWidth(double widthOption) { return 0; }
     @Shadow private static double getMessageOpacityMultiplier(int age) { return 0; }
 
-    @Shadow protected abstract void removeMessage(int messageId);
-
     private final List<ChatHudLine<OrderedText>> sideVisibleMessages = Lists.newArrayList();
+    private int oldSideChatWidth = -1;
 
     @Inject(method = "render",at = @At("HEAD"), cancellable = true)
     private void render(MatrixStack matrices, int tickDelta, CallbackInfo ci) {
         this.processMessageQueue();
-        int renderedLines = renderChat(matrices,tickDelta,visibleMessages,0,0);
-        renderChat(matrices,tickDelta,sideVisibleMessages,0,0);
+        int renderedLines = renderChat(matrices,tickDelta,visibleMessages,0, getWidth());
+        renderChat(matrices,tickDelta,sideVisibleMessages,getSideChatStartX(), getSideChatWidth());
         renderOthers(matrices,renderedLines);
         ci.cancel();
     }
@@ -63,11 +64,18 @@ public abstract class MSideChatHUD {
      * Renders a chat box, drawn into its own function so I don't repeat code for side chat
      * Most params are just stuff the code needs and I don't have the confidence to change
      * @param displayX X to display at
-     * @param displayY Y to display at
+     * @param width Width of the chat to display
      * @return The amount of lines actually rendered. Other parts of rendering need to know this
      */
     @SuppressWarnings("deprecation")
-    private int renderChat(MatrixStack matrices, int tickDelta, List<ChatHudLine<OrderedText>> visibleMessages, int displayX, int displayY) {
+    private int renderChat(MatrixStack matrices, int tickDelta, List<ChatHudLine<OrderedText>> visibleMessages, int displayX, int width) {
+        // reset chat (re-allign all text) whenever calculated size for side chat changes
+        int newSideChatWidth = getSideChatWidth();
+        if (newSideChatWidth != oldSideChatWidth) {
+            oldSideChatWidth = newSideChatWidth;
+            reset();
+        }
+
         // will apologise - most code is taken from deobfuscated minecraft jar
         // have attempted to make it as readable as possible but some lines idk man no clue
         int visibleLineCount = this.getVisibleLineCount();
@@ -77,7 +85,7 @@ public abstract class MSideChatHUD {
             boolean chatFocused = this.isChatFocused();
 
             double d = this.getChatScale();
-            int k = MathHelper.ceil((double) this.getWidth() / d);
+            int k = MathHelper.ceil((double) width / d);
             RenderSystem.pushMatrix();
             RenderSystem.translatef(2.0F, 8.0F, 0.0F);
             RenderSystem.scaled(d, d, 1.0D);
@@ -98,7 +106,7 @@ public abstract class MSideChatHUD {
                         if (aa > 3) {
                             double s = (double) (-i) * lineSpacing;
                             matrices.push();
-                            matrices.translate(0.0D, 0.0D, 50.0D);
+                            matrices.translate(displayX, 0, 50.0D);
                             fill(matrices, -2, (int) (s - lineSpacing), k + 4, (int) s, ab << 24);
                             RenderSystem.enableBlend();
                             matrices.translate(0.0D, 0.0D, 50.0D);
@@ -110,6 +118,7 @@ public abstract class MSideChatHUD {
                     }
                 }
             }
+            // in case you're wondering, the splitting of the text by width is done as its received, not upon rendering
 
             RenderSystem.popMatrix();
         }
@@ -162,20 +171,38 @@ public abstract class MSideChatHUD {
         RenderSystem.popMatrix();
     }
 
+    private int getSideChatStartX() {
+        return (int) ((this.client.getWindow().getScaledWidth() - getSideChatWidth()) / getSideChatScale()) - 6;
+    }
+
+    private int getSideChatWidth() {
+        int configWidth = Config.getInteger("sidechat_width");
+
+        // if the width in config is valid
+        if (configWidth > 0)
+            return configWidth;
+        else { // else if 0 or less, auto size the side chat
+            int rawWidth = Math.min(
+                    (this.client.getWindow().getScaledWidth() - getWidth() - 14),
+                    getWidth()
+            );
+            // if the calculated width <= 0 (window really small), have 1 as a failsafe value
+            return rawWidth > 0 ? rawWidth : 1;
+        }
+    }
+
+    private double getSideChatScale() {
+        return getChatScale();
+    }
+
     @Inject(method = "clear", at = @At("TAIL"))
     private void clear(boolean clearHistory, CallbackInfo ci) {
         sideVisibleMessages.clear();
     }
 
 
-    @Inject(method = "addMessage(Lnet/minecraft/text/Text;IIZ)V", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "addMessage(Lnet/minecraft/text/Text;IIZ)V", at = @At("TAIL"), cancellable = true)
     private void addMessage(Text message, int messageId, int timestamp, boolean refresh, CallbackInfo ci) {
-        // make sure dupe id messages are removed
-        // this is as main addmessage func may get cancelled
-        if (messageId != 0) {
-            removeMessage(messageId);
-        }
-
         boolean matchedARule = false;
         for (ChatRule chatRule : ChatRule.getChatRules()) {
             // compare against all rules
@@ -186,14 +213,20 @@ public abstract class MSideChatHUD {
                     matchedARule = true;
                 }
 
-                if (chatRule.getChatSound() != ChatRule.ChatSound.NONE) {
+                // dont play sound if message is just being refreshed (ie, when window changes size)
+                if (!refresh && chatRule.getChatSound() != ChatRule.ChatSound.NONE) {
                     SoundUtil.playSound(chatRule.getChatSound().getSoundEvent());
                 }
             }
         }
-        // if rule matched, cancel normal behaviour
+
+        // if matched rule, remove last from
         if (matchedARule) {
-            ci.cancel();
+            int i = MathHelper.floor((double)this.getWidth() / this.getChatScale());
+            int addedMessageCount = ChatMessages.breakRenderedChatMessageLines(message, i, this.client.textRenderer).size();
+            // remove the last addedMessageCount messages from the visible messages
+            // this has the effect of removing last message sent to main (to go to side instead)
+            visibleMessages.subList(0, addedMessageCount).clear();
         }
     }
 
@@ -204,7 +237,7 @@ public abstract class MSideChatHUD {
                 i = MathHelper.floor((double) this.getWidth() / this.getChatScale());
                 break;
             case SIDE:
-                i = MathHelper.floor((double) this.getWidth() / this.getChatScale());
+                i = MathHelper.floor((double) this.getSideChatWidth() / this.getSideChatScale());
                 break;
         }
 
@@ -231,5 +264,10 @@ public abstract class MSideChatHUD {
         this.sideVisibleMessages.removeIf((message) ->
             message.getId() == messageId
         );
+    }
+
+    @Inject(method = "reset", at = @At("HEAD"))
+    private void reset(CallbackInfo ci) {
+        sideVisibleMessages.clear();
     }
 }
