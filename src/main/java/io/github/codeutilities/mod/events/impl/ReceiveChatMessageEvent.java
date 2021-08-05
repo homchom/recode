@@ -2,12 +2,12 @@ package io.github.codeutilities.mod.events.impl;
 
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.config.Config;
-import io.github.codeutilities.mod.config.ConfigSounds;
 import io.github.codeutilities.mod.events.interfaces.ChatEvents;
 import io.github.codeutilities.mod.features.social.chat.ConversationTimer;
 import io.github.codeutilities.mod.features.modules.triggers.Trigger;
 import io.github.codeutilities.mod.features.modules.triggers.impl.MessageReceivedTrigger;
 import io.github.codeutilities.mod.features.StreamerModeHandler;
+import io.github.codeutilities.mod.features.social.chat.message.Message;
 import io.github.codeutilities.sys.player.chat.ChatType;
 import io.github.codeutilities.sys.player.chat.ChatUtil;
 import io.github.codeutilities.sys.util.TextUtil;
@@ -15,6 +15,8 @@ import io.github.codeutilities.mod.features.CPU_UsageText;
 import io.github.codeutilities.sys.player.DFInfo;
 import io.github.codeutilities.sys.networking.State;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ChatScreen;
+import net.minecraft.text.ClickEvent.Action;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import org.apache.logging.log4j.Level;
@@ -39,9 +41,17 @@ public class ReceiveChatMessageEvent {
     public static int locating = 0;
     public static int cancelMsgs = 0;
 
-    private ActionResult run(Text message) {
+    public static String tipPlayer = "";
+
+    private ActionResult run(Text text) {
+        return run(new Message(text));
+    }
+
+    private ActionResult run(Message message) {
         MinecraftClient mc = MinecraftClient.getInstance();
-        String text = message.getString();
+
+        Text text = message.text();
+        String stripped = text.getString();
 
         boolean cancel = false;
         boolean showCancelMsg = true;
@@ -58,7 +68,7 @@ public class ReceiveChatMessageEvent {
         // Streamer mode
         if (StreamerModeHandler.handleMessage(message)) {
             cancel = true;
-        };
+        }
 
         // Debug mode
         if (Config.getBoolean("debugMode")) {
@@ -71,7 +81,7 @@ public class ReceiveChatMessageEvent {
 
         // cancel rpc /locate message
         if (locating > 0) {
-            if (text.contains("\nYou are currently")) {
+            if (stripped.contains("\nYou are currently")) {
                 DFInfo.setCurrentState(State.fromLocate(message));
                 cancel = true;
                 showCancelMsg = false;
@@ -81,7 +91,7 @@ public class ReceiveChatMessageEvent {
 
 
         // detect if player is in beta
-        if (DFInfo.currentState.getMode() == State.Mode.SPAWN && text.equals("◆ Welcome back to DiamondFire! ◆")) {
+        if (DFInfo.currentState.getMode() == State.Mode.SPAWN && stripped.equals("◆ Welcome back to DiamondFire! ◆")) {
             DFInfo.isInBeta = false;
             Collection<String> lines = mc.world.getScoreboard().getKnownPlayers();
             for (String line : lines) {
@@ -95,28 +105,28 @@ public class ReceiveChatMessageEvent {
         }
 
         // update conversation end timer
-        if (ConversationTimer.currentConversation != null && text.toLowerCase().startsWith("[" + ConversationTimer.currentConversation.toLowerCase() + " → you] "))
+        if (ConversationTimer.currentConversation != null && stripped.toLowerCase().startsWith("[" + ConversationTimer.currentConversation.toLowerCase() + " → you] "))
             ConversationTimer.conversationUpdateTime = String.valueOf(System.currentTimeMillis());
 
         //LagSlayer enable/disable
-        if (text.matches("^\\[LagSlayer\\] Now monitoring plot .*\\. Type /lagslayer to stop monitoring\\.$")) {
+        if (stripped.matches("^\\[LagSlayer] Now monitoring plot .*\\. Type /lagslayer to stop monitoring\\.$")) {
             CPU_UsageText.lagSlayerEnabled = true;
             if (cancelLagSlayerMsg) cancel = true;
             cancelLagSlayerMsg = false;
         }
 
-        if (text.matches("^\\[LagSlayer\\] Stopped monitoring plot .*\\.$")) {
+        if (stripped.matches("^\\[LagSlayer] Stopped monitoring plot .*\\.$")) {
             CPU_UsageText.lagSlayerEnabled = false;
             if (cancelLagSlayerMsg) cancel = true;
             cancelLagSlayerMsg = false;
         }
 
-        if (text.matches("^Error: You must be in a plot to use this command!$")) {
+        if (stripped.matches("^Error: You must be in a plot to use this command!$")) {
             CPU_UsageText.lagSlayerEnabled = false;
             if (cancelLagSlayerMsg) cancel = true;
             cancelLagSlayerMsg = false;
         }
-        if (text.matches("^Error: You can't monitor this plot!$")) {
+        if (stripped.matches("^Error: You can't monitor this plot!$")) {
             CPU_UsageText.lagSlayerEnabled = false;
             if (cancelLagSlayerMsg) cancel = true;
             cancelLagSlayerMsg = false;
@@ -124,7 +134,7 @@ public class ReceiveChatMessageEvent {
 
         //PJoin command
         if (pjoin) {
-            String msg = text.replaceAll("§.", "");
+            String msg = stripped.replaceAll("§.", "");
             if (msg.startsWith("                                       \n")) {
                 if (msg.contains(" is currently at spawn\n")) {
                     ChatUtil.sendMessage("This player is not in a plot.", ChatType.FAIL);
@@ -153,10 +163,14 @@ public class ReceiveChatMessageEvent {
         }
 
         String msgToString = message.toString();
-        String msgGetString = message.getString();
 
-        String msgWithColor = TextUtil.textComponentToColorCodes(message);
+        String msgWithColor = TextUtil.textComponentToColorCodes(text);
         String msgWithoutColor = msgWithColor.replaceAll("§.", "");
+
+        // incoming report sound
+        if (stripped.startsWith("! Incoming Report ")) {
+            ChatUtil.playSound(Config.getSound("incomingReportSound"));
+        }
 
         // highlight name
         if (Config.getBoolean("highlight")) {
@@ -186,9 +200,10 @@ public class ReceiveChatMessageEvent {
                             newMsgIter++;
                         }
                         mc.player.sendMessage(TextUtil.colorCodesToTextComponent(newMsg), false);
-                        if ((ConfigSounds.getByName(Config.getString("highlightSound")) != null) &&
-                                (Config.getBoolean("highlightOwnSenderSound") || (!msgWithoutColor.matches("^.*" + highlightMatcher + ": .+")))) {
-                            mc.player.playSound(ConfigSounds.getByName(Config.getString("highlightSound")), Config.getFloat("highlightSoundVolume"), 1);
+                        if (Config.getBoolean("highlightOwnSenderSound") ||
+                                (!msgWithoutColor.matches("^.*" + highlightMatcher + ": .+"))) {
+                            ChatUtil.playSound(
+                                    Config.getSound("highlightSound"), 1, Config.getFloat("highlightSoundVolume"));
                         }
                         cancel = true;
                     }
@@ -210,19 +225,19 @@ public class ReceiveChatMessageEvent {
                 && (msgToString.contains("hoverEvent=false") || msgToString.contains("hoverEvent=null"))
                 && (msgToString.contains("insertion=false") || msgToString.contains("insertion=null"))
 
-                && (msgGetString.endsWith(" joined.") || msgGetString.endsWith(" joined!") || msgGetString.endsWith(" left."))) {
+                && (stripped.endsWith(" joined.") || stripped.endsWith(" joined!") || stripped.endsWith(" left."))) {
 
             // cancel message
             cancel = true;
         }
 
         // hide session spy
-        if (Config.getBoolean("hideSessionSpy") && msgGetString.startsWith("*") && msgToString.contains("text='*'") && msgToString.contains("color=green")) {
+        if (Config.getBoolean("hideSessionSpy") && stripped.startsWith("*") && msgToString.contains("text='*'") && msgToString.contains("color=green")) {
             cancel = true;
         }
 
         // hide muted chat
-        if (Config.getBoolean("hideMutedChat") && msgGetString.startsWith("*") && msgToString.contains("text='*'") && msgToString.contains("color=red")) {
+        if (Config.getBoolean("hideMutedChat") && stripped.startsWith("*") && msgToString.contains("text='*'") && msgToString.contains("color=red")) {
             cancel = true;
         }
 
@@ -240,31 +255,46 @@ public class ReceiveChatMessageEvent {
         }
 
         // hide msg matching regex
-        if (Config.getBoolean("hideMsgMatchingRegex") && msgGetString.replaceAll("§.", "").matches(Config.getString("hideMsgRegex"))) {
+        if (Config.getBoolean("hideMsgMatchingRegex") && stripped.replaceAll("§.", "").matches(Config.getString("hideMsgRegex"))) {
             cancel = true;
         }
 
-        if (cancelTimeMsg && text.contains("» Set your player time to " + Config.getInteger("autotimeval") + ".") && text.startsWith("»")) {
+        if (cancelTimeMsg && stripped.contains("» Set your player time to " + Config.getInteger("autotimeval") + ".") && stripped.startsWith("»")) {
             cancel = true;
             cancelTimeMsg = false;
         }
 
-        if (cancelNVisionMsg && text.contains("» Enabled night vision.") && text.startsWith("»")) {
+        if (cancelNVisionMsg && stripped.contains("» Enabled night vision.") && stripped.startsWith("»")) {
             cancel = true;
             cancelNVisionMsg = false;
         }
 
-        if (cancelFlyMsg && text.contains("» Flight enabled.") && text.startsWith("»")) {
+        if (cancelFlyMsg && stripped.contains("» Flight enabled.") && stripped.startsWith("»")) {
             cancel = true;
             cancelFlyMsg = false;
         }
 
         // adminv msg cancel (streamer mode)
-        if (cancelAdminVanishMsg && text.equals("You are no longer invisible.")) {
+        if (cancelAdminVanishMsg && stripped.equals("You are no longer invisible.")) {
             cancel = true;
             cancelAdminVanishMsg = false;
         }
 
+
+        if (Config.getBoolean("autoClickEditMsgs") && stripped.startsWith("⏵ Click to edit variable: ")) {
+            if (text.getStyle().getClickEvent().getAction() == Action.SUGGEST_COMMAND) {
+                String toOpen = text.getStyle().getClickEvent().getValue();
+                MinecraftClient.getInstance().send(() -> MinecraftClient.getInstance().openScreen(new ChatScreen(toOpen)));
+            }
+        }
+
+        if (Config.getBoolean("autoTip") && stripped.startsWith("⏵⏵ ")) {
+            if (msgWithColor.matches("§x§a§a§5§5§f§f⏵⏵ §f§l\\w+§7 is using a §x§f§f§f§f§a§a§l2§x§f§f§f§f§a§a§lx§7 booster.")) {
+                tipPlayer = stripped.split("§f§l")[1].split("§7")[0];
+            } else if (msgWithColor.matches("§x§a§a§5§5§f§f⏵⏵ §7Use §x§f§f§f§f§a§a\\/tip§7 to show your appreciation and receive a §x§f§f§d§4§2§a□ token notch§7!")) {
+                mc.player.sendChatMessage("/tip " + tipPlayer);
+            }
+        }
 
 
         //Cancelling (set cancel to true)

@@ -5,7 +5,7 @@ import com.google.gson.JsonPrimitive;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.sys.util.StringUtil;
 
-public class Message {
+public class WebMessage {
     private final String type;
     private final JsonElement content;
     private final String id;
@@ -16,7 +16,7 @@ public class Message {
      * @param content
      * @param id
      */
-    public Message(String type, Object content, String id) {
+    public WebMessage(String type, Object content, String id) {
         this.type = type;
         this.content = parseContent(content);
         this.id = id == null ? StringUtil.generateKey(6) : id;
@@ -27,13 +27,13 @@ public class Message {
      * @param type
      * @param content
      */
-    public Message(String type, Object content) {
+    public WebMessage(String type, Object content) {
         this.type = type;
         this.content = parseContent(content);
         this.id = StringUtil.generateKey(6);
     }
 
-    public Message(String type) {
+    public WebMessage(String type) {
         this.type = type;
         this.content = parseContent("");
         this.id = StringUtil.generateKey(6);

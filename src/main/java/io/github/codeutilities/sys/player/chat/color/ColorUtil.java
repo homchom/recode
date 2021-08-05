@@ -13,4 +13,8 @@ public class ColorUtil {
     public static HSBColor toHSB(Color color){
         return new HSBColor(Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null));
     }
+
+    public static String toMC(Color c) {
+        return "§x" + String.format("%02x%02x%02x", c.getRed(), c.getGreen(), c.getBlue()).replaceAll("(.)", "§$1");
+    }
 }

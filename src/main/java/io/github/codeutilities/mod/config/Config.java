@@ -2,7 +2,10 @@ package io.github.codeutilities.mod.config;
 
 import io.github.codeutilities.mod.config.structure.ConfigManager;
 import io.github.codeutilities.mod.config.structure.ConfigSetting;
+import io.github.codeutilities.mod.config.types.list.ListSetting;
+import net.minecraft.sound.SoundEvent;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -12,6 +15,23 @@ public class Config {
     public static String getString(String key) {
         ConfigSetting<?> setting = CONFIG.find(key);
         return getValue(setting, String.class);
+    }
+
+    public static String getDynamicString(String key, HashMap<String, String> vars) {
+        ConfigSetting<?> setting = CONFIG.find(key);
+        String value = getValue(setting, String.class);
+
+        for (String var : vars.keySet()) {
+            String val = vars.get(var);
+            value = value.replaceAll("\\$\\{" + var.replaceAll("\\.", "\\.") + "}", val);
+        }
+
+        return value;
+    }
+
+    public static <T extends Enum<T>> T getEnum(String key, Class<T> enumType) {
+        ConfigSetting<?> setting = CONFIG.find(key);
+        return getValue(setting, enumType);
     }
 
     public static Double getDouble(String key) {
@@ -37,6 +57,12 @@ public class Config {
     public static Long getLong(String key) {
         ConfigSetting<?> setting = CONFIG.find(key);
         return getValue(setting, Long.class);
+    }
+
+    public static SoundEvent getSound(String key) {
+        ConfigSetting<?> setting = CONFIG.find(key);
+        ListSetting<String> list = setting.cast();
+        return ConfigSounds.getByName(list.getSelected());
     }
 
     @SuppressWarnings("unchecked")

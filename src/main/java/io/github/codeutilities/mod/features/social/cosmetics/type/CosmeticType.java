@@ -11,11 +11,9 @@ public interface CosmeticType {
     void invalidateCache();
 
     CapeCosmetic CAPE = new CapeCosmetic();
-    HatCosmetic HAT = new HatCosmetic();
 
     CosmeticType[] REGISTERED_COSMETICS = {
-            CAPE,
-            HAT
+            CAPE
     };
 
 }
