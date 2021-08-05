@@ -89,7 +89,6 @@ public class CodeUtilitiesServer extends WebSocketClient {
             String[] response = new String[1];
             requestMessage(new WebMessage("req-proxy",url), msg -> {
                 response[0] = msg.getContent().getAsString();
-                System.out.println("Response: " + response[0]);
                 ft.run();
             });
             ft.get();
