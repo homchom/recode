@@ -13,17 +13,15 @@ public abstract class MessageCheck {
     protected abstract boolean check(Message message, String stripped);
 
     /*
-        Return true to cancel the message
+        Use @code{message.cancel();} to cancel the message
     */
-    protected abstract boolean onReceive(Message message);
+    protected abstract void onReceive(Message message);
 //TODO provide packet in Message class to achieve the above
 
     public static MessageType run(Message message) {
         for (MessageCheck check : checks) {
             if (check.check(message, message.text().getString())) {
-                if (check.onReceive(message)) {
-
-                }
+                check.onReceive(message);
                 return check.getType();
             }
         }
