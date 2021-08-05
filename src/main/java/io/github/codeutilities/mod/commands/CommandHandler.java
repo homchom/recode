@@ -13,6 +13,7 @@ import io.github.codeutilities.mod.commands.impl.item.TemplatesCommand;
 import io.github.codeutilities.mod.commands.impl.item.UnpackCommand;
 import io.github.codeutilities.mod.commands.impl.item.template.SendTemplateCommand;
 import io.github.codeutilities.mod.commands.impl.item.template.WebviewCommand;
+import io.github.codeutilities.mod.commands.impl.other.CalcCommand;
 import io.github.codeutilities.mod.commands.impl.other.CodeUtilitiesCommand;
 import io.github.codeutilities.mod.commands.impl.other.ConfigCommand;
 import io.github.codeutilities.mod.commands.impl.other.DebugCommand;
@@ -58,7 +59,8 @@ public class CommandHandler implements ILoader {
             new QueueCommand(),
             new TitleCommand(),
             new SubTitleCommand(),
-            new ActionbarCommand()
+            new ActionbarCommand(),
+            new CalcCommand()
         );
 
         if (Config.getBoolean("dfCommands")) {
