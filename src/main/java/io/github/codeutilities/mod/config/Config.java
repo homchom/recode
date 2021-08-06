@@ -71,11 +71,6 @@ public class Config {
         return (List<String>) getValue(setting, List.class);
     }
 
-    public static <E extends Enum<E>> E getEnum(String key, Class<E> eClass) {
-        ConfigSetting<?> setting = CONFIG.find(key);
-        return getValue(setting, eClass);
-    }
-
     @SuppressWarnings("unchecked")
     public static <Value> Value getValue(ConfigSetting<?> setting, Class<Value> valueClass) {
         Objects.requireNonNull(setting, "Could not find the setting");
