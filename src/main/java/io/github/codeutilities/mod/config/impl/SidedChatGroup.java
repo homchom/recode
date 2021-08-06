@@ -1,9 +1,11 @@
 package io.github.codeutilities.mod.config.impl;
 
+import io.github.codeutilities.mod.config.ConfigSounds;
 import io.github.codeutilities.mod.config.structure.ConfigGroup;
 import io.github.codeutilities.mod.config.structure.ConfigSubGroup;
 import io.github.codeutilities.mod.config.types.EnumSetting;
 import io.github.codeutilities.mod.config.types.IntegerSetting;
+import io.github.codeutilities.mod.config.types.SoundSetting;
 import io.github.codeutilities.mod.config.types.StringSetting;
 import io.github.codeutilities.sys.sidedchat.ChatRule;
 
@@ -28,7 +30,7 @@ public class SidedChatGroup extends ConfigGroup {
                 chatRuleSubGroup.register(new StringSetting("custom_filter"));
 
             chatRuleSubGroup.register(new EnumSetting<>(ChatRule.getChatRuleConfigSideName(chatRule), ChatRule.ChatSide.class, ChatRule.ChatSide.MAIN));
-            chatRuleSubGroup.register(new EnumSetting<>(ChatRule.getChatRuleConfigSoundName(chatRule), ChatRule.ChatSound.class, ChatRule.ChatSound.NONE));
+            chatRuleSubGroup.register(new SoundSetting(ChatRule.getChatRuleConfigSoundName(chatRule)).setSelected(ConfigSounds.NONE));
             this.register(chatRuleSubGroup);
         }
     }

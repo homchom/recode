@@ -2,6 +2,7 @@ package io.github.codeutilities.sys.sidedchat;
 
 import com.google.common.collect.Lists;
 import io.github.codeutilities.mod.config.Config;
+import io.github.codeutilities.mod.config.types.IConfigEnum;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
@@ -28,8 +29,8 @@ public class ChatRule {
         return Config.getEnum(getChatRuleConfigSideName(this),ChatSide.class);
     }
 
-    public ChatSound getChatSound() {
-        return Config.getEnum(getChatRuleConfigSoundName(this),ChatSound.class);
+    public SoundEvent getChatSound() {
+        return Config.getSound(getChatRuleConfigSoundName(this));
     }
 
     public String getName() {
@@ -81,20 +82,14 @@ public class ChatRule {
         chatRules.add(new ChatRule("admin_chat", ChatPredicates.getAdminPredicate(), ChatRuleType.ADMIN));
     }
 
-    public enum ChatSide {
+    public enum ChatSide implements IConfigEnum {
         MAIN,
         SIDE,
         EITHER; // either is for when a rule has no preference (e.g. you wanna use a rule to specify sound only)
 
-        public ChatSide next() {
-            int myIndex = Lists.newArrayList(ChatSide.values()).indexOf(this);
-            myIndex++;
-            if (myIndex >= ChatSide.values().length) myIndex = 0;
-            return ChatSide.values()[myIndex];
-        }
-
-        public static String[] getValueNames() {
-            return Arrays.stream(ChatRule.ChatSide.values()).map(ChatRule.ChatSide::toString).toArray(String[]::new);
+        @Override
+        public String getKey() {
+            return "chatside";
         }
     }
 
@@ -105,47 +100,6 @@ public class ChatRule {
         SESSION,
         MOD,
         ADMIN
-    }
-
-    public enum ChatSound {
-        NONE(null),
-        BASS(SoundEvents.BLOCK_NOTE_BLOCK_BASS),
-        BASS_DRUM(SoundEvents.BLOCK_NOTE_BLOCK_BASEDRUM),
-        BANJO(SoundEvents.BLOCK_NOTE_BLOCK_BANJO),
-        BELL(SoundEvents.BLOCK_NOTE_BLOCK_BELL),
-        BIT(SoundEvents.BLOCK_NOTE_BLOCK_BIT),
-        CHIME(SoundEvents.BLOCK_NOTE_BLOCK_CHIME),
-        CLICK(SoundEvents.BLOCK_NOTE_BLOCK_HAT),
-        COW_BELL(SoundEvents.BLOCK_NOTE_BLOCK_COW_BELL),
-        DIDGERIDOO(SoundEvents.BLOCK_NOTE_BLOCK_DIDGERIDOO),
-        FLUTE(SoundEvents.BLOCK_NOTE_BLOCK_FLUTE),
-        GUITAR(SoundEvents.BLOCK_NOTE_BLOCK_GUITAR),
-        HARP(SoundEvents.BLOCK_NOTE_BLOCK_HARP),
-        IRON_XYLOPHONE(SoundEvents.BLOCK_NOTE_BLOCK_IRON_XYLOPHONE),
-        PLING(SoundEvents.BLOCK_NOTE_BLOCK_PLING),
-        SNARE_DRUM(SoundEvents.BLOCK_NOTE_BLOCK_SNARE),
-        XYLOPHONE(SoundEvents.BLOCK_NOTE_BLOCK_XYLOPHONE);
-
-        private SoundEvent soundEvent;
-
-        ChatSound(SoundEvent soundEvent) {
-            this.soundEvent = soundEvent;
-        }
-
-        public SoundEvent getSoundEvent() {
-            return soundEvent;
-        }
-
-        public ChatSound next() {
-            int myIndex = Lists.newArrayList(ChatSound.values()).indexOf(this);
-            myIndex++;
-            if (myIndex >= ChatSound.values().length) myIndex = 0;
-            return ChatSound.values()[myIndex];
-        }
-
-        public static String[] getValueNames() {
-            return Arrays.stream(ChatRule.ChatSound.values()).map(ChatRule.ChatSound::toString).toArray(String[]::new);
-        }
     }
 }
 

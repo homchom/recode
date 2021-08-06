@@ -214,8 +214,9 @@ public abstract class MSideChatHUD {
                 }
 
                 // dont play sound if message is just being refreshed (ie, when window changes size)
-                if (!refresh && chatRule.getChatSound() != ChatRule.ChatSound.NONE) {
-                    SoundUtil.playSound(chatRule.getChatSound().getSoundEvent());
+                // & dont try to play a null sound (when the sound is set to 'None')
+                if (!refresh && chatRule.getChatSound() != null) {
+                    SoundUtil.playSound(chatRule.getChatSound());
                 }
             }
         }

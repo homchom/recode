@@ -267,6 +267,10 @@
     "config.codeutilities.option.mod_chat.sound": "Chat Sound",
     "config.codeutilities.option.admin_chat.sound": "Chat Sound",
 
+    "config.codeutilities.option.chatside.main": "Main",
+    "config.codeutilities.option.chatside.side": "Side",
+    "config.codeutilities.option.chatside.either": "Remain",
+
     "config.codeutilities.option.sidechat_width.tooltip": "The width to be used by the second chat.\nIf set to 0, the width will be calculated from the\nlower of main chat width & window space remaining.",
     "config.codeutilities.subcategory.sidedchat_custom_chat.tooltip": "Filter that matches text with a pattern defined by you.",
     "config.codeutilities.subcategory.sidedchat_messages.tooltip": "Filter that matches text that comes from the /msg command.",
