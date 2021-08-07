@@ -46,24 +46,6 @@ public class ReceiveChatMessageEvent {
         // module trigger
         Trigger.execute(new MessageReceivedTrigger());
 
-        // detect if player is in beta
-        if (DFInfo.currentState.getMode() == State.Mode.SPAWN && stripped.equals("◆ Welcome back to DiamondFire! ◆")) {
-            DFInfo.isInBeta = false;
-            Collection<String> lines = mc.world.getScoreboard().getKnownPlayers();
-            for (String line : lines) {
-                try {
-                    if (line.startsWith("§aNode ") && (line.split(" ")[1]).equals("Beta§8")) {
-                        DFInfo.isInBeta = true;
-                    }
-                } catch (ArrayIndexOutOfBoundsException ignored) {
-                }
-            }
-        }
-
-        // update conversation end timer
-        if (ConversationTimer.currentConversation != null && stripped.toLowerCase().startsWith("[" + ConversationTimer.currentConversation.toLowerCase() + " → you] "))
-            ConversationTimer.conversationUpdateTime = String.valueOf(System.currentTimeMillis());
-
         //PJoin command
         if (pjoin) {
             String msg = stripped.replaceAll("§.", "");

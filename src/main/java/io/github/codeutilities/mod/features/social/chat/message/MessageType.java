@@ -12,6 +12,7 @@ public enum MessageType {
     LOCATE,
     DIRECT_MESSAGE(true),
     PLOT_AD(true),
+    JOIN_DF,
 
     // Lagslayer
     LAGSLAYER_START,

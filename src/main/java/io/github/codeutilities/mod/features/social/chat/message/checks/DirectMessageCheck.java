@@ -1,5 +1,6 @@
 package io.github.codeutilities.mod.features.social.chat.message.checks;
 
+import io.github.codeutilities.mod.features.social.chat.ConversationTimer;
 import io.github.codeutilities.mod.features.social.chat.message.Message;
 import io.github.codeutilities.mod.features.social.chat.message.MessageCheck;
 import io.github.codeutilities.mod.features.social.chat.message.MessageType;
@@ -22,11 +23,18 @@ public class DirectMessageCheck extends MessageCheck implements StreamerModeMess
 
     @Override
     protected void onReceive(Message message) {
-
+        // update conversation end timer
+        if (ConversationTimer.currentConversation != null && usernameMatches(message, ConversationTimer.currentConversation)) {
+            ConversationTimer.conversationUpdateTime = String.valueOf(System.currentTimeMillis());
+        }
     }
 
     @Override
     public boolean streamerHideEnabled() {
         return StreamerModeHandler.hideDMs();
+    }
+
+    public static boolean usernameMatches(Message message, String username) {
+        return message.getStripped().matches("^\\["+ username +" → You] .+$");
     }
 }

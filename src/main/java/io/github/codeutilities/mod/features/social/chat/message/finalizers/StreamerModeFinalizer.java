@@ -4,6 +4,7 @@ import io.github.codeutilities.mod.features.social.chat.message.Message;
 import io.github.codeutilities.mod.features.social.chat.message.MessageCheck;
 import io.github.codeutilities.mod.features.social.chat.message.MessageFinalizer;
 import io.github.codeutilities.mod.features.social.chat.message.MessageType;
+import io.github.codeutilities.mod.features.social.chat.message.checks.DirectMessageCheck;
 import io.github.codeutilities.mod.features.streamer.StreamerModeMessageCheck;
 
 public class StreamerModeFinalizer extends MessageFinalizer {
@@ -31,7 +32,7 @@ public class StreamerModeFinalizer extends MessageFinalizer {
             String stripped = message.getStripped();
 
             for (String username : HIDE_DMS_EXEMPTIONS) {
-                if (stripped.matches("^\\["+ username +" → You] .+$")) {
+                if (DirectMessageCheck.usernameMatches(message, username)) {
                     return true;
                 }
             }

@@ -14,6 +14,7 @@ public abstract class MessageCheck {
             new LocateCheck(),
             new DirectMessageCheck(),
             new PlotAdCheck(),
+            new JoinDiamondFireCheck(),
 
             // Lagslayer
             new LagslayerStartCheck(),
