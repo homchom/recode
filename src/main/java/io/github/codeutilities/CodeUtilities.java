@@ -3,39 +3,43 @@ package io.github.codeutilities;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
+import io.github.codeutilities.mod.commands.CommandHandler;
 import io.github.codeutilities.mod.config.Config;
 import io.github.codeutilities.mod.config.internal.ConfigFile;
 import io.github.codeutilities.mod.config.internal.ConfigInstruction;
 import io.github.codeutilities.mod.config.internal.gson.ConfigSerializer;
-import io.github.codeutilities.mod.config.internal.gson.types.*;
+import io.github.codeutilities.mod.config.internal.gson.types.BooleanSerializer;
+import io.github.codeutilities.mod.config.internal.gson.types.DoubleSerializer;
+import io.github.codeutilities.mod.config.internal.gson.types.EnumSerializer;
+import io.github.codeutilities.mod.config.internal.gson.types.FloatSerializer;
+import io.github.codeutilities.mod.config.internal.gson.types.IntegerSerializer;
+import io.github.codeutilities.mod.config.internal.gson.types.LongSerializer;
+import io.github.codeutilities.mod.config.internal.gson.types.StringSerializer;
 import io.github.codeutilities.mod.config.internal.gson.types.list.StringListSerializer;
 import io.github.codeutilities.mod.config.structure.ConfigManager;
-import io.github.codeutilities.mod.config.types.*;
+import io.github.codeutilities.mod.config.types.BooleanSetting;
+import io.github.codeutilities.mod.config.types.DoubleSetting;
+import io.github.codeutilities.mod.config.types.EnumSetting;
+import io.github.codeutilities.mod.config.types.FloatSetting;
+import io.github.codeutilities.mod.config.types.IntegerSetting;
+import io.github.codeutilities.mod.config.types.LongSetting;
+import io.github.codeutilities.mod.config.types.StringSetting;
 import io.github.codeutilities.mod.config.types.list.StringListSetting;
 import io.github.codeutilities.mod.events.EventHandler;
 import io.github.codeutilities.mod.events.interfaces.OtherEvents;
 import io.github.codeutilities.mod.features.TemplatePeeker;
+import io.github.codeutilities.mod.features.commands.HeadsMenu;
 import io.github.codeutilities.mod.features.discordrpc.DFDiscordRPC;
-import io.github.codeutilities.mod.features.social.cosmetics.CosmeticHandler;
-import io.github.codeutilities.mod.features.social.tab.Client;
-import io.github.codeutilities.mod.commands.CommandHandler;
 import io.github.codeutilities.mod.features.modules.Module;
 import io.github.codeutilities.mod.features.modules.actions.Action;
 import io.github.codeutilities.mod.features.modules.triggers.Trigger;
-import io.github.codeutilities.sys.hypercube.codeaction.ActionDump;
+import io.github.codeutilities.mod.features.social.cosmetics.CosmeticHandler;
+import io.github.codeutilities.mod.features.social.tab.Client;
 import io.github.codeutilities.sys.file.FileUtil;
-import io.github.codeutilities.mod.features.commands.HeadsMenu;
+import io.github.codeutilities.sys.hypercube.codeaction.ActionDump;
+import io.github.codeutilities.sys.hypercube.templates.TemplateStorageHandler;
 import io.github.codeutilities.sys.networking.State;
 import io.github.codeutilities.sys.networking.websocket.SocketHandler;
-import io.github.codeutilities.sys.hypercube.templates.TemplateStorageHandler;
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.MinecraftClient;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
@@ -44,6 +48,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.MinecraftClient;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CodeUtilities implements ModInitializer {
 
@@ -68,15 +79,13 @@ public class CodeUtilities implements ModInitializer {
         .create();
     public static final JsonParser JSON_PARSER = new JsonParser();
     public static final MinecraftClient MC = MinecraftClient.getInstance();
-
+    public static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
+    private static final Path optionsTxtPath = FabricLoader.getInstance().getGameDir()
+        .resolve("options.txt");
     public static String PLAYER_NAME = null;
     public static String PLAYER_UUID = null;
-
     public static String JEREMASTER_UUID = "6c669475-3026-4603-b3e7-52c97681ad3a";
     public static String RYANLAND_UUID = "3134fb4d-a345-4c5e-9513-97c2c951223e";
-
-    public static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
-    private static final Path optionsTxtPath = FabricLoader.getInstance().getGameDir().resolve("options.txt");
     public static String OPTIONSTXT = "";
     public static String CLIENT_LANG = "unknown";
 
@@ -95,7 +104,7 @@ public class CodeUtilities implements ModInitializer {
     @Override
     public void onInitialize() {
         log(Level.INFO, "Initializing");
-        Runtime.getRuntime().addShutdownHook(new Thread(this::onClose));
+//        Runtime.getRuntime().addShutdownHook(new Thread(this::onClose));
         System.setProperty("java.awt.headless", "false");
         //System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2,TLSv1.3");
 
@@ -140,11 +149,17 @@ public class CodeUtilities implements ModInitializer {
         log(Level.INFO, "Initialized successfully!");
     }
 
-    public void onClose() {
-        System.out.println("CLOSED");
-        ConfigFile.getInstance().save();
-        TemplateStorageHandler.getInstance().save();
-        CosmeticHandler.INSTANCE.shutdownExecutorService();
+    public static void onClose() {
+        LOGGER.info("Closing...");
+        try {
+            ConfigFile.getInstance().save();
+            TemplateStorageHandler.getInstance().save();
+            CosmeticHandler.INSTANCE.shutdownExecutorService();
+        } catch (Exception err) {
+            LOGGER.error("Error");
+            err.printStackTrace();
+        }
+        LOGGER.info("Closed.");
     }
 
 }
