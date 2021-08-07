@@ -1,9 +1,12 @@
 package io.github.codeutilities.mod.features.social.chat.message;
 
+import io.github.codeutilities.CodeUtilities;
+import io.github.codeutilities.mod.config.Config;
 import io.github.codeutilities.mod.events.impl.ReceiveSoundEvent;
 import io.github.codeutilities.sys.player.chat.MessageGrabber;
 import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
 import net.minecraft.text.Text;
+import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 public class Message {
@@ -69,6 +72,10 @@ public class Message {
         if (type.hasSound()) {
             ReceiveSoundEvent.cancelNextSound();
         }
-        MessageGrabber.hideSilently(type.getMessageAmount() - 1);
+        MessageGrabber.hide(type.getMessageAmount() - 1);
+
+        if (Config.getBoolean("debugMode")) {
+            CodeUtilities.log("[CANCELLED] " + text.toString());
+        }
     }
 }

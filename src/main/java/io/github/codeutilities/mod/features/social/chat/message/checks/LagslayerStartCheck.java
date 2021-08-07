@@ -1,25 +1,26 @@
 package io.github.codeutilities.mod.features.social.chat.message.checks;
 
+import io.github.codeutilities.mod.features.CPU_UsageText;
 import io.github.codeutilities.mod.features.social.chat.message.Message;
 import io.github.codeutilities.mod.features.social.chat.message.MessageCheck;
 import io.github.codeutilities.mod.features.social.chat.message.MessageType;
-import io.github.codeutilities.sys.networking.State;
-import io.github.codeutilities.sys.player.DFInfo;
 
-public class LocateCheck extends MessageCheck {
+public class LagslayerStartCheck extends MessageCheck {
+
+    private static final String LAGSLAYER_START_REGEX = "^\\[LagSlayer] Now monitoring plot .*\\. Type /lagslayer to stop monitoring\\.$";
 
     @Override
     protected MessageType getType() {
-        return MessageType.LOCATE;
+        return MessageType.LAGSLAYER_START;
     }
 
     @Override
     protected boolean check(Message message, String stripped) {
-        return stripped.contains("\nYou are currently");
+        return stripped.matches(LAGSLAYER_START_REGEX);
     }
 
     @Override
     protected void onReceive(Message message) {
-        DFInfo.setCurrentState(State.fromLocate(message));
+        CPU_UsageText.lagSlayerEnabled = true;
     }
 }

@@ -13,6 +13,10 @@ public enum MessageType {
     DIRECT_MESSAGE(true),
     PLOT_AD(true),
 
+    // Lagslayer
+    LAGSLAYER_START,
+    LAGSLAYER_STOP,
+
     // Support
     SUPPORT,
     SUPPORT_QUESTION(true),

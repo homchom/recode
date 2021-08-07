@@ -8,6 +8,7 @@ import io.github.codeutilities.mod.events.interfaces.ChatEvents;
 import io.github.codeutilities.mod.features.discordrpc.DFDiscordRPC;
 import io.github.codeutilities.mod.features.keybinds.FlightspeedToggle;
 import io.github.codeutilities.mod.features.social.chat.message.Message;
+import io.github.codeutilities.sys.player.chat.ChatUtil;
 import io.github.codeutilities.sys.player.chat.MessageGrabber;
 import io.github.codeutilities.mod.features.CPU_UsageText;
 import io.github.codeutilities.sys.player.DFInfo;
@@ -117,14 +118,13 @@ public class MMessageListener {
 
                     lastPatchCheck = time;
 
-                    // update rpc on server join
-                    DFDiscordRPC.delayRPC = true;
+                    // update state on server join
                     DFInfo.currentState.setInSession(false);
 
                     // auto chat local
                     if (Config.getBoolean("autoChatLocal")) {
-                        minecraftClient.player.sendChatMessage("/c 1");
-                        ReceiveChatMessageEvent.cancelMsgs = 1;
+                        //Deprecated ChatUtil.executeCommandSilently("c 1");
+                        ChatUtil.executeCommandSilently("c l");
                     }
                 }
             } catch (Exception e) {
@@ -151,8 +151,7 @@ public class MMessageListener {
             // Auto LagSlayer
             System.out.println(CPU_UsageText.lagSlayerEnabled);
             if (!CPU_UsageText.lagSlayerEnabled && Config.getBoolean("autolagslayer")) {
-                minecraftClient.player.sendChatMessage("/lagslayer");
-                ReceiveChatMessageEvent.cancelLagSlayerMsg = true;
+                ChatUtil.executeCommandSilently("lagslayer");
             }
 
             // fs toggle
@@ -189,8 +188,7 @@ public class MMessageListener {
 
             // Auto LagSlayer
             if (!CPU_UsageText.lagSlayerEnabled && Config.getBoolean("autolagslayer")) {
-                minecraftClient.player.sendChatMessage("/lagslayer");
-                ReceiveChatMessageEvent.cancelLagSlayerMsg = true;
+                ChatUtil.executeCommandSilently("lagslayer");
             }
 
             // fs toggle
@@ -202,12 +200,10 @@ public class MMessageListener {
                     try {
                         Thread.sleep(20);
                         if (Config.getBoolean("autotime")) {
-                            minecraftClient.player.sendChatMessage("/time " + Config.getInteger("autotimeval"));
-                            ReceiveChatMessageEvent.cancelTimeMsg = true;
+                            ChatUtil.executeCommandSilently("time " + Config.getInteger("autotimeval"));
                         }
                         if (Config.getBoolean("autonightvis")) {
-                            minecraftClient.player.sendChatMessage("/nightvis");
-                            ReceiveChatMessageEvent.cancelNVisionMsg = true;
+                            ChatUtil.executeCommandSilently("nightvis");
                         }
                     } catch (Exception e) {
                         CodeUtilities.log(Level.ERROR, "Error while executing the task!");

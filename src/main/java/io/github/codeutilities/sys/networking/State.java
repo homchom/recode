@@ -8,6 +8,7 @@ import io.github.codeutilities.mod.features.social.chat.message.Message;
 import io.github.codeutilities.mod.features.social.tab.Client;
 import io.github.codeutilities.sys.file.ILoader;
 import io.github.codeutilities.sys.player.DFInfo;
+import io.github.codeutilities.sys.player.chat.ChatUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import org.java_websocket.enums.ReadyState;
@@ -355,8 +356,7 @@ public class State {
     public void sendLocate() {
         if(mc.player != null){
             if(!mc.player.isDead()){
-                ReceiveChatMessageEvent.locating += 1;
-                mc.player.sendChatMessage("/locate");
+                ChatUtil.executeCommandSilently("locate");
             }
         }
     }

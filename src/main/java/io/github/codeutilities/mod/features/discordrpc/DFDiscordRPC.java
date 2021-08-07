@@ -16,8 +16,6 @@ import java.util.HashMap;
 
 public class DFDiscordRPC implements ILoader {
 
-    public static boolean delayRPC = false;
-
     public static RichPresence.Builder builder;
     private static DFDiscordRPC instance;
     private static State oldState = new State();

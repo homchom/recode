@@ -28,7 +28,11 @@ public class MessageGrabber {
         silent = true;
     }
 
-    public static void hideSilently(int messages) {
+    public static void hideNext() {
+        hide(1);
+    }
+
+    public static void hide(int messages) {
         if (messages > 0) grabSilently(messages, ignored -> {});
     }
 

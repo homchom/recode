@@ -1,12 +1,10 @@
 package io.github.codeutilities.mod.events.impl;
 
-import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.config.Config;
 import io.github.codeutilities.mod.events.interfaces.ChatEvents;
+import io.github.codeutilities.mod.features.modules.triggers.impl.MessageReceivedTrigger;
 import io.github.codeutilities.mod.features.social.chat.ConversationTimer;
 import io.github.codeutilities.mod.features.modules.triggers.Trigger;
-import io.github.codeutilities.mod.features.modules.triggers.impl.MessageReceivedTrigger;
-import io.github.codeutilities.mod.features.streamer.StreamerModeHandler;
 import io.github.codeutilities.mod.features.social.chat.message.Message;
 import io.github.codeutilities.sys.player.chat.ChatType;
 import io.github.codeutilities.sys.player.chat.ChatUtil;
@@ -19,7 +17,6 @@ import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.text.ClickEvent.Action;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
-import org.apache.logging.log4j.Level;
 
 import java.util.Collection;
 import java.util.regex.Matcher;
@@ -32,15 +29,6 @@ public class ReceiveChatMessageEvent {
 
     public static boolean pjoin = false;
 
-    public static boolean cancelTimeMsg;
-    public static boolean cancelNVisionMsg;
-    public static boolean cancelFlyMsg;
-    public static boolean cancelAdminVanishMsg;
-    public static boolean cancelLagSlayerMsg;
-
-    public static int locating = 0;
-    public static int cancelMsgs = 0;
-
     public static String tipPlayer = "";
 
     private ActionResult run(Message message) {
@@ -50,15 +38,9 @@ public class ReceiveChatMessageEvent {
         String stripped = text.getString();
 
         boolean cancel = false;
-        boolean showCancelMsg = true;
 
         if (mc.player == null) {
             return ActionResult.FAIL;
-        }
-
-        if (cancelMsgs > 0) {
-            cancelMsgs--;
-            cancel = true;
         }
 
         // module trigger
@@ -81,30 +63,6 @@ public class ReceiveChatMessageEvent {
         // update conversation end timer
         if (ConversationTimer.currentConversation != null && stripped.toLowerCase().startsWith("[" + ConversationTimer.currentConversation.toLowerCase() + " → you] "))
             ConversationTimer.conversationUpdateTime = String.valueOf(System.currentTimeMillis());
-
-        //LagSlayer enable/disable
-        if (stripped.matches("^\\[LagSlayer] Now monitoring plot .*\\. Type /lagslayer to stop monitoring\\.$")) {
-            CPU_UsageText.lagSlayerEnabled = true;
-            if (cancelLagSlayerMsg) cancel = true;
-            cancelLagSlayerMsg = false;
-        }
-
-        if (stripped.matches("^\\[LagSlayer] Stopped monitoring plot .*\\.$")) {
-            CPU_UsageText.lagSlayerEnabled = false;
-            if (cancelLagSlayerMsg) cancel = true;
-            cancelLagSlayerMsg = false;
-        }
-
-        if (stripped.matches("^Error: You must be in a plot to use this command!$")) {
-            CPU_UsageText.lagSlayerEnabled = false;
-            if (cancelLagSlayerMsg) cancel = true;
-            cancelLagSlayerMsg = false;
-        }
-        if (stripped.matches("^Error: You can't monitor this plot!$")) {
-            CPU_UsageText.lagSlayerEnabled = false;
-            if (cancelLagSlayerMsg) cancel = true;
-            cancelLagSlayerMsg = false;
-        }
 
         //PJoin command
         if (pjoin) {
@@ -228,28 +186,6 @@ public class ReceiveChatMessageEvent {
             cancel = true;
         }
 
-        if (cancelTimeMsg && stripped.contains("» Set your player time to " + Config.getInteger("autotimeval") + ".") && stripped.startsWith("»")) {
-            cancel = true;
-            cancelTimeMsg = false;
-        }
-
-        if (cancelNVisionMsg && stripped.contains("» Enabled night vision.") && stripped.startsWith("»")) {
-            cancel = true;
-            cancelNVisionMsg = false;
-        }
-
-        if (cancelFlyMsg && stripped.contains("» Flight enabled.") && stripped.startsWith("»")) {
-            cancel = true;
-            cancelFlyMsg = false;
-        }
-
-        // adminv msg cancel (streamer mode)
-        if (cancelAdminVanishMsg && stripped.equals("You are no longer invisible.")) {
-            cancel = true;
-            cancelAdminVanishMsg = false;
-        }
-
-
         if (Config.getBoolean("autoClickEditMsgs") && stripped.startsWith("⏵ Click to edit variable: ")) {
             if (text.getStyle().getClickEvent().getAction() == Action.SUGGEST_COMMAND) {
                 String toOpen = text.getStyle().getClickEvent().getValue();
@@ -268,7 +204,6 @@ public class ReceiveChatMessageEvent {
 
         //Cancelling (set cancel to true)
         if (cancel) {
-            if (showCancelMsg) CodeUtilities.log(Level.INFO, "[CANCELLED] " + msgWithColor);
             return ActionResult.SUCCESS;
         }
         return ActionResult.PASS;

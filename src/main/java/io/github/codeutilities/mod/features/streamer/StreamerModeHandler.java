@@ -2,13 +2,9 @@ package io.github.codeutilities.mod.features.streamer;
 
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.config.Config;
-import io.github.codeutilities.mod.events.impl.ReceiveSoundEvent;
-import io.github.codeutilities.mod.features.social.chat.message.Message;
-import io.github.codeutilities.sys.util.TextUtil;
 import io.github.codeutilities.sys.player.chat.MessageGrabber;
 import io.github.codeutilities.sys.networking.State;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
-import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 public class StreamerModeHandler {
@@ -91,9 +87,9 @@ public class StreamerModeHandler {
 
         // Hide messages
         if (autoAdminV() ^ autoChatLocal()) {
-            MessageGrabber.hideSilently(1);
+            MessageGrabber.hide(1);
         } else if (autoAdminV() && autoChatLocal()) {
-            MessageGrabber.hideSilently(2);
+            MessageGrabber.hide(2);
         }
     }
 
@@ -104,7 +100,7 @@ public class StreamerModeHandler {
         // Note: May trigger simultaneously with StreamerHandler#handleServerJoin, but this is not a problem
         if (autoChatLocal() && newState.mode.equals(State.Mode.PLAY)) {
             CodeUtilities.MC.player.sendChatMessage("/c l");
-            MessageGrabber.hideSilently(1);
+            MessageGrabber.hide(1);
         }
     }
 }

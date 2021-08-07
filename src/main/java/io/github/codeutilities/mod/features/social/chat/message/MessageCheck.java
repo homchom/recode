@@ -15,6 +15,10 @@ public abstract class MessageCheck {
             new DirectMessageCheck(),
             new PlotAdCheck(),
 
+            // Lagslayer
+            new LagslayerStartCheck(),
+            new LagslayerStopCheck(),
+
             // Support
             new SupportCheck(),
             new SupportQuestionCheck(),

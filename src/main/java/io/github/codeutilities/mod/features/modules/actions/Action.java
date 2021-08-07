@@ -5,7 +5,7 @@ import io.github.codeutilities.mod.features.modules.actions.json.ActionJson;
 
 import java.util.HashMap;
 
-public class Action {
+public abstract class Action {
 
     private static final Action[] ACTIONS = new Action[]{
             new MessageAction(),
@@ -25,12 +25,9 @@ public class Action {
         }
     }
 
-    public String getId() {
-        return null;
-    }
+    public abstract String getId();
 
-    public void execute(ActionJson params) {
-    }
+    public abstract void execute(ActionJson params);
 
     public static Action getAction(String id) {
         return ACTION_IDS.get(id);

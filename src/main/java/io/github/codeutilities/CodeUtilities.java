@@ -101,6 +101,10 @@ public class CodeUtilities implements ModInitializer {
         LOGGER.log(level, "[" + MOD_NAME + "] " + message);
     }
 
+    public static void log(String message) {
+        log(Level.INFO, message);
+    }
+
     @Override
     public void onInitialize() {
         log(Level.INFO, "Initializing");
