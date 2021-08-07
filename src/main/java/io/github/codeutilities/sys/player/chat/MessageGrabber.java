@@ -29,7 +29,7 @@ public class MessageGrabber {
     }
 
     public static void hideSilently(int messages) {
-        grabSilently(messages, ignored -> {});
+        if (messages > 0) grabSilently(messages, ignored -> {});
     }
 
     public static void supply(Text message) {

@@ -275,7 +275,7 @@ public class State {
     }
 
     public static State fromLocate(Message message) {
-        Text msg = message.text();
+        Text msg = message.getText();
 
         String text = msg.getString().replaceAll("§.", "");
         State finalstate = new State();

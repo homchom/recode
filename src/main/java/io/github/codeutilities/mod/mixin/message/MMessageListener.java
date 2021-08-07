@@ -7,6 +7,7 @@ import io.github.codeutilities.mod.events.impl.ReceiveChatMessageEvent;
 import io.github.codeutilities.mod.events.interfaces.ChatEvents;
 import io.github.codeutilities.mod.features.discordrpc.DFDiscordRPC;
 import io.github.codeutilities.mod.features.keybinds.FlightspeedToggle;
+import io.github.codeutilities.mod.features.social.chat.message.Message;
 import io.github.codeutilities.sys.player.chat.MessageGrabber;
 import io.github.codeutilities.mod.features.CPU_UsageText;
 import io.github.codeutilities.sys.player.DFInfo;
@@ -52,7 +53,7 @@ public class MMessageListener {
         if (DFInfo.isOnDF()) {
             if (packet.getLocation() == MessageType.CHAT || packet.getLocation() == MessageType.SYSTEM) {
                 if (RenderSystem.isOnRenderThread()) {
-                    if (invoker.receive(packet.getMessage()).equals(ActionResult.SUCCESS)) ci.cancel();
+                    if (invoker.receive(new Message(packet, ci)).equals(ActionResult.SUCCESS)) ci.cancel();
                     try {
                         this.updateVersion(packet.getMessage());
                         this.updateState(packet.getMessage());

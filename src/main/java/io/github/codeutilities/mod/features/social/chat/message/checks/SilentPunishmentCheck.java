@@ -1,28 +1,26 @@
 package io.github.codeutilities.mod.features.social.chat.message.checks;
 
-import io.github.codeutilities.mod.config.Config;
 import io.github.codeutilities.mod.features.social.chat.message.Message;
 import io.github.codeutilities.mod.features.social.chat.message.MessageCheck;
 import io.github.codeutilities.mod.features.social.chat.message.MessageType;
 import io.github.codeutilities.mod.features.streamer.StreamerModeHandler;
 import io.github.codeutilities.mod.features.streamer.StreamerModeMessageCheck;
-import io.github.codeutilities.sys.player.chat.ChatUtil;
 
-public class IncomingReportCheck extends MessageCheck implements StreamerModeMessageCheck {
+public class SilentPunishmentCheck extends MessageCheck implements StreamerModeMessageCheck {
 
     @Override
     protected MessageType getType() {
-        return MessageType.INCOMING_REPORT;
+        return MessageType.SILENT_PUNISHMENT;
     }
 
     @Override
     protected boolean check(Message message, String stripped) {
-        return stripped.startsWith("! Incoming Report ");
+        return stripped.startsWith("[Silent]");
     }
 
     @Override
     protected void onReceive(Message message) {
-        ChatUtil.playSound(Config.getSound("incomingReportSound"));
+
     }
 
     @Override

@@ -6,7 +6,7 @@ import io.github.codeutilities.mod.events.interfaces.ChatEvents;
 import io.github.codeutilities.mod.features.social.chat.ConversationTimer;
 import io.github.codeutilities.mod.features.modules.triggers.Trigger;
 import io.github.codeutilities.mod.features.modules.triggers.impl.MessageReceivedTrigger;
-import io.github.codeutilities.mod.features.StreamerModeHandler;
+import io.github.codeutilities.mod.features.streamer.StreamerModeHandler;
 import io.github.codeutilities.mod.features.social.chat.message.Message;
 import io.github.codeutilities.sys.player.chat.ChatType;
 import io.github.codeutilities.sys.player.chat.ChatUtil;
@@ -43,14 +43,10 @@ public class ReceiveChatMessageEvent {
 
     public static String tipPlayer = "";
 
-    private ActionResult run(Text text) {
-        return run(new Message(text));
-    }
-
     private ActionResult run(Message message) {
         MinecraftClient mc = MinecraftClient.getInstance();
 
-        Text text = message.text();
+        Text text = message.getText();
         String stripped = text.getString();
 
         boolean cancel = false;
@@ -65,30 +61,8 @@ public class ReceiveChatMessageEvent {
             cancel = true;
         }
 
-        // Streamer mode
-        if (StreamerModeHandler.handleMessage(message)) {
-            cancel = true;
-        }
-
-        // Debug mode
-        if (Config.getBoolean("debugMode")) {
-            System.out.println(message);
-            // Doesn't work? > CodeUtilities.log(Level.DEBUG, message.toString());
-        }
-
         // module trigger
         Trigger.execute(new MessageReceivedTrigger());
-
-        // cancel rpc /locate message
-        if (locating > 0) {
-            if (stripped.contains("\nYou are currently")) {
-                DFInfo.setCurrentState(State.fromLocate(message));
-                cancel = true;
-                showCancelMsg = false;
-                locating -= 1;
-            }
-        }
-
 
         // detect if player is in beta
         if (DFInfo.currentState.getMode() == State.Mode.SPAWN && stripped.equals("◆ Welcome back to DiamondFire! ◆")) {
@@ -166,11 +140,6 @@ public class ReceiveChatMessageEvent {
 
         String msgWithColor = TextUtil.textComponentToColorCodes(text);
         String msgWithoutColor = msgWithColor.replaceAll("§.", "");
-
-        // incoming report sound
-        if (stripped.startsWith("! Incoming Report ")) {
-            ChatUtil.playSound(Config.getSound("incomingReportSound"));
-        }
 
         // highlight name
         if (Config.getBoolean("highlight")) {
