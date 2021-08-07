@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "game.MClient",
+    "game.MMinecraftClient",
     "game.MServerJoin",
     "inventory.MHeldItemTooltip",
     "inventory.MInventoryListener",

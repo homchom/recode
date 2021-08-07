@@ -45,7 +45,7 @@ public class ConfigManager implements IManager<ConfigGroup> {
     }
 
     private void readInstruction(ConfigInstruction configInstruction) {
-        if (configInstruction.isEmpty()) {
+        if (configInstruction == null || configInstruction.isEmpty()) {
             return;
         }
 
