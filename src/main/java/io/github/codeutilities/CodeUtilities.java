@@ -10,19 +10,23 @@ import io.github.codeutilities.mod.config.internal.ConfigInstruction;
 import io.github.codeutilities.mod.config.internal.gson.ConfigSerializer;
 import io.github.codeutilities.mod.config.internal.gson.types.BooleanSerializer;
 import io.github.codeutilities.mod.config.internal.gson.types.DoubleSerializer;
+import io.github.codeutilities.mod.config.internal.gson.types.DynamicStringSerializer;
 import io.github.codeutilities.mod.config.internal.gson.types.EnumSerializer;
 import io.github.codeutilities.mod.config.internal.gson.types.FloatSerializer;
 import io.github.codeutilities.mod.config.internal.gson.types.IntegerSerializer;
 import io.github.codeutilities.mod.config.internal.gson.types.LongSerializer;
+import io.github.codeutilities.mod.config.internal.gson.types.SoundSerializer;
 import io.github.codeutilities.mod.config.internal.gson.types.StringSerializer;
 import io.github.codeutilities.mod.config.internal.gson.types.list.StringListSerializer;
 import io.github.codeutilities.mod.config.structure.ConfigManager;
 import io.github.codeutilities.mod.config.types.BooleanSetting;
 import io.github.codeutilities.mod.config.types.DoubleSetting;
+import io.github.codeutilities.mod.config.types.DynamicStringSetting;
 import io.github.codeutilities.mod.config.types.EnumSetting;
 import io.github.codeutilities.mod.config.types.FloatSetting;
 import io.github.codeutilities.mod.config.types.IntegerSetting;
 import io.github.codeutilities.mod.config.types.LongSetting;
+import io.github.codeutilities.mod.config.types.SoundSetting;
 import io.github.codeutilities.mod.config.types.StringSetting;
 import io.github.codeutilities.mod.config.types.list.StringListSetting;
 import io.github.codeutilities.mod.events.EventHandler;
@@ -75,6 +79,8 @@ public class CodeUtilities implements ModInitializer {
         .registerTypeAdapter(StringSetting.class, new StringSerializer())
         .registerTypeAdapter(StringListSetting.class, new StringListSerializer())
         .registerTypeAdapter(EnumSetting.class, new EnumSerializer())
+        .registerTypeAdapter(DynamicStringSetting.class, new DynamicStringSerializer())
+        .registerTypeAdapter(SoundSetting.class, new SoundSerializer())
         .setPrettyPrinting()
         .create();
     public static final JsonParser JSON_PARSER = new JsonParser();
