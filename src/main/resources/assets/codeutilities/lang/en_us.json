@@ -42,6 +42,10 @@
     "config.codeutilities.option.cosmeticsEnabled.tooltip": "Shows CodeUtilities cosmetics such\nas developer capes and hats.",
     "config.codeutilities.option.loadTabStars": "Load Tablist Stars",
     "config.codeutilities.option.loadTabStars.tooltip": "Shows other players that are using codeutilities.",
+    "config.codeutilities.option.highlightVarSyntax": "Highlight Variable Syntax",
+    "config.codeutilities.option.highlightVarSyntax.tooltip": "Highlights text, num and var syntax\nlike percent and color codes",
+    "config.codeutilities.option.templatePeeking": "Template Peeking",
+    "config.codeutilities.option.templatePeeking.tooltip": "Preview a code template without the\n need of having to place it down",
 
 
     "config.codeutilities.subcategory.commands_automsg": "Auto /msg",
@@ -69,6 +73,10 @@
     "config.codeutilities.option.autolagslayer.tooltip": "Automatically display CPU usage upon\njoining one of your plots.",
     "config.codeutilities.option.autoChatLocal": "Auto /chat local",
     "config.codeutilities.option.autoChatLocal.tooltip": "Automatically runs /chat local.",
+    "config.codeutilities.option.autoClickEditMsgs": "Auto click edit msgs",
+    "config.codeutilities.option.autoClickEditMsgs.tooltip": "Automatically clisk messages like\nthe ones that appear when you\nshift l-click a text",
+    "config.codeutilities.option.autoTip": "Auto Tip",
+    "config.codeutilities.option.autoTip.tooltip": "Automatically runs /tip <player>",
 
     "config.codeutilities.option.dfCommands": "DF Commands",
     "config.codeutilities.option.dfCommands.tooltip": "Enables the commands that work only in DiamondFire.",

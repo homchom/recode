@@ -1,8 +1,8 @@
 package io.github.codeutilities.mod.features.modules.actions.impl;
 
-import io.github.codeutilities.mod.events.impl.ReceiveChatMessageEvent;
 import io.github.codeutilities.mod.features.modules.actions.Action;
 import io.github.codeutilities.mod.features.modules.actions.json.ActionJson;
+import io.github.codeutilities.sys.player.chat.MessageGrabber;
 
 public class CancelNextMessagesAction extends Action {
 
@@ -13,7 +13,7 @@ public class CancelNextMessagesAction extends Action {
 
     @Override
     public void execute(ActionJson params) {
-        ReceiveChatMessageEvent.cancelMsgs = params.getInt("amount");
+        MessageGrabber.hide(params.getInt("amount"));
     }
 
 }

@@ -9,6 +9,8 @@ import io.github.codeutilities.sys.player.DFInfo;
 import io.github.codeutilities.sys.networking.State;
 import io.github.codeutilities.sys.hypercube.templates.TemplateStorageHandler;
 import io.github.codeutilities.sys.hypercube.templates.TemplateUtils;
+import io.github.codeutilities.sys.player.chat.ChatUtil;
+import io.github.codeutilities.sys.player.chat.MessageGrabber;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.item.ItemStack;
@@ -53,7 +55,7 @@ public class MItemSlotUpdate {
                     if (Config.getBoolean("autofly")) {
                         if (System.currentTimeMillis() > lobbyTime) { // theres a bug with /fly running twice this is a temp fix.
                             mc.player.sendChatMessage("/fly");
-                            ReceiveChatMessageEvent.cancelFlyMsg = true;
+                            MessageGrabber.hide(1);
                             lobbyTime = System.currentTimeMillis() + 1000;
                         }
 
@@ -77,8 +79,7 @@ public class MItemSlotUpdate {
 
                     // Auto LagSlayer
                     if (!CPU_UsageText.lagSlayerEnabled && Config.getBoolean("autolagslayer")) {
-                        mc.player.sendChatMessage("/lagslayer");
-                        ReceiveChatMessageEvent.cancelLagSlayerMsg = true;
+                        ChatUtil.executeCommandSilently("lagslayer");
                     }
 
                     // fs toggle
@@ -94,12 +95,10 @@ public class MItemSlotUpdate {
                                     mc.player.sendChatMessage("/rc");
                                 }
                                 if (Config.getBoolean("autotime")) {
-                                    mc.player.sendChatMessage("/time " + Config.getLong("autotimeval"));
-                                    ReceiveChatMessageEvent.cancelTimeMsg = true;
+                                    ChatUtil.executeCommandSilently("time " + Config.getLong("autotimeval"));
                                 }
                                 if (Config.getBoolean("autonightvis")) {
-                                    mc.player.sendChatMessage("/nightvis");
-                                    ReceiveChatMessageEvent.cancelNVisionMsg = true;
+                                    ChatUtil.executeCommandSilently("nightvis");
                                 }
                             } catch (Exception e) {
                                 CodeUtilities.log(Level.ERROR, "Error while executing the task!");

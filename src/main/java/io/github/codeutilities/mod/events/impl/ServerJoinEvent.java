@@ -1,6 +1,6 @@
 package io.github.codeutilities.mod.events.impl;
 
-import io.github.codeutilities.mod.features.StreamerModeHandler;
+import io.github.codeutilities.mod.features.streamer.StreamerModeHandler;
 import io.github.codeutilities.mod.features.discordrpc.DFDiscordRPC;
 import io.github.codeutilities.mod.features.discordrpc.RPCElapsedOption;
 import io.github.codeutilities.sys.util.TimerUtil;

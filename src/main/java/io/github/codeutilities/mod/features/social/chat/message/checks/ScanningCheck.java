@@ -1,28 +1,28 @@
 package io.github.codeutilities.mod.features.social.chat.message.checks;
 
-import io.github.codeutilities.mod.config.Config;
 import io.github.codeutilities.mod.features.social.chat.message.Message;
 import io.github.codeutilities.mod.features.social.chat.message.MessageCheck;
 import io.github.codeutilities.mod.features.social.chat.message.MessageType;
 import io.github.codeutilities.mod.features.streamer.StreamerModeHandler;
 import io.github.codeutilities.mod.features.streamer.StreamerModeMessageCheck;
-import io.github.codeutilities.sys.player.chat.ChatUtil;
 
-public class IncomingReportCheck extends MessageCheck implements StreamerModeMessageCheck {
+public class ScanningCheck extends MessageCheck implements StreamerModeMessageCheck {
+
+    private static final String SCANNING_REGEX = "^Scanning \\w+(.|\n)*\\[Online] \\[Offline] \\[(IP|)Banned]\1*$";
 
     @Override
     public MessageType getType() {
-        return MessageType.INCOMING_REPORT;
+        return MessageType.SCANNING;
     }
 
     @Override
     public boolean check(Message message, String stripped) {
-        return stripped.startsWith("! Incoming Report ");
+        return stripped.matches(SCANNING_REGEX);
     }
 
     @Override
     public void onReceive(Message message) {
-        ChatUtil.playSound(Config.getSound("incomingReportSound"));
+
     }
 
     @Override
