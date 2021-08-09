@@ -42,23 +42,24 @@ public abstract class MSideChatHUD {
 
     @Shadow protected abstract boolean isChatFocused();
     @Shadow protected abstract boolean isChatHidden();
+    @Shadow protected abstract void processMessageQueue();
     @Shadow public abstract double getChatScale();
     @Shadow public abstract int getVisibleLineCount();
     @Shadow public abstract int getWidth();
     @Shadow public abstract void reset();
 
-    @Shadow protected abstract void processMessageQueue();
     @Shadow public static int getWidth(double widthOption) { return 0; }
     @Shadow private static double getMessageOpacityMultiplier(int age) { return 0; }
 
     private final List<ChatHudLine<OrderedText>> sideVisibleMessages = Lists.newArrayList();
     private int oldSideChatWidth = -1;
+    private int sideScrolledLines;
 
     @Inject(method = "render",at = @At("HEAD"), cancellable = true)
     private void render(MatrixStack matrices, int tickDelta, CallbackInfo ci) {
         this.processMessageQueue();
-        int renderedLines = renderChat(matrices,tickDelta,visibleMessages,0, getWidth());
-        renderChat(matrices,tickDelta,sideVisibleMessages,getSideChatStartX(), getSideChatWidth());
+        int renderedLines = renderChat(matrices,tickDelta,visibleMessages,0, getWidth(), scrolledLines);
+        renderChat(matrices,tickDelta,sideVisibleMessages,getSideChatStartX(), getSideChatWidth(), sideScrolledLines);
         renderOthers(matrices,renderedLines);
         ci.cancel();
     }
@@ -68,10 +69,11 @@ public abstract class MSideChatHUD {
      * Most params are just stuff the code needs and I don't have the confidence to change
      * @param displayX X to display at
      * @param width Width of the chat to display
+     * @param scrolledLines The amount of lines scrolled on this chat
      * @return The amount of lines actually rendered. Other parts of rendering need to know this
      */
     @SuppressWarnings("deprecation")
-    private int renderChat(MatrixStack matrices, int tickDelta, List<ChatHudLine<OrderedText>> visibleMessages, int displayX, int width) {
+    private int renderChat(MatrixStack matrices, int tickDelta, List<ChatHudLine<OrderedText>> visibleMessages, int displayX, int width, int scrolledLines) {
         // reset chat (re-allign all text) whenever calculated size for side chat changes
         int newSideChatWidth = getSideChatWidth();
         if (newSideChatWidth != oldSideChatWidth) {
@@ -97,8 +99,8 @@ public abstract class MSideChatHUD {
             double lineSpacing = 9.0D * (this.client.options.chatLineSpacing + 1.0D);
             double lineSpacing2 = -8.0D * (this.client.options.chatLineSpacing + 1.0D) + 4.0D * this.client.options.chatLineSpacing;
 
-            for (int i = 0; i + this.scrolledLines < visibleMessages.size() && i < visibleLineCount; ++i) {
-                ChatHudLine<OrderedText> chatHudLine = visibleMessages.get(i + this.scrolledLines);
+            for (int i = 0; i + scrolledLines < visibleMessages.size() && i < visibleLineCount; ++i) {
+                ChatHudLine<OrderedText> chatHudLine = visibleMessages.get(i + scrolledLines);
                 if (chatHudLine != null) {
                     int ticksSinceCreation = tickDelta - chatHudLine.getCreationTick();
                     if (ticksSinceCreation < 200 || chatFocused) {
@@ -161,7 +163,7 @@ public abstract class MSideChatHUD {
             RenderSystem.translatef(-3.0F, 0.0F, 0.0F);
             int w = visibleMessagesSize * v + visibleMessagesSize;
             int x = renderedLines * v + renderedLines;
-            int y = this.scrolledLines * x / visibleMessagesSize;
+            int y = scrolledLines * x / visibleMessagesSize;
             int z = x * x / w;
             if (w != x) {
                 int aa = y > 0 ? 170 : 96;
@@ -291,7 +293,7 @@ public abstract class MSideChatHUD {
                 int size = Math.min(this.getVisibleLineCount(), this.sideVisibleMessages.size());
                 if (adjustedX <= (double)MathHelper.floor((double)this.getSideChatWidth() / scale)) {
                     if (adjustedY < (double)(9 * size + size)) {
-                        int line = (int)(adjustedY / 9.0D + (double)this.scrolledLines);
+                        int line = (int)(adjustedY / 9.0D + (double) sideScrolledLines);
                         if (line >= 0 && line < this.sideVisibleMessages.size()) {
                             ChatHudLine<OrderedText> chatHudLine = this.sideVisibleMessages.get(line);
                             cir.setReturnValue(this.client.textRenderer.getTextHandler().getStyleAt(chatHudLine.getText(), (int)adjustedX));
@@ -299,6 +301,24 @@ public abstract class MSideChatHUD {
                     }
                 }
             }
+        }
+    }
+
+    @Inject(method = "resetScroll", at = @At("TAIL"))
+    private void resetScroll(CallbackInfo ci) {
+        sideScrolledLines = 0;
+    }
+
+    @Inject(method = "scroll", at = @At("TAIL"))
+    private void scroll(double amount, CallbackInfo ci) {
+        sideScrolledLines = (int)((double)this.scrolledLines + amount);
+        int i = this.sideVisibleMessages.size();
+        if (sideScrolledLines > i - this.getVisibleLineCount()) {
+            sideScrolledLines = i - this.getVisibleLineCount();
+        }
+
+        if (sideScrolledLines <= 0) {
+            sideScrolledLines = 0;
         }
     }
 }
