@@ -246,7 +246,7 @@ public class NBSDecoder {
         //System.out.println("Layer Data: " + layerStringBuilder.toString());
         //YET ANOTHER EPIC DEBUG CODE ENDS HERE
 
-        return new SongData(title, author, speed, (int) ((Math.ceil((length + 1.0) / timeSignature) + 1) * timeSignature), stringBuilder.toString(), file, layerStringBuilder.toString(), (loopTick + 1), loopCount, customInstruments);
+        return new SongData(title, author, speed, (int) Math.ceil((length + 1.0) / (4 * timeSignature)) * (4 * timeSignature), stringBuilder.toString(), file, layerStringBuilder.toString(), (loopTick + 1), loopCount, customInstruments);
     }
 
     private static short readShort(DataInputStream dataInputStream) throws IOException {
