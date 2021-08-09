@@ -11,6 +11,7 @@ import net.minecraft.client.gui.hud.ChatHudLine;
 import net.minecraft.client.util.ChatMessages;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.OrderedText;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.MathHelper;
@@ -21,6 +22,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Collections;
 import java.util.Deque;
@@ -39,6 +41,7 @@ public abstract class MSideChatHUD {
     @Shadow        private boolean hasUnreadNewMessages;
 
     @Shadow protected abstract boolean isChatFocused();
+    @Shadow protected abstract boolean isChatHidden();
     @Shadow public abstract double getChatScale();
     @Shadow public abstract int getVisibleLineCount();
     @Shadow public abstract int getWidth();
@@ -191,6 +194,7 @@ public abstract class MSideChatHUD {
         }
     }
 
+    // just incase i want to re-add the option to change side chat scale
     private double getSideChatScale() {
         return getChatScale();
     }
@@ -270,5 +274,31 @@ public abstract class MSideChatHUD {
     @Inject(method = "reset", at = @At("HEAD"))
     private void reset(CallbackInfo ci) {
         sideVisibleMessages.clear();
+    }
+
+    // another copy from minecraft decompiled code
+    // the main difference is switching references from main to side chat
+    // and subtracting getSideChatStartX() from the adjusted x
+    @Inject(method = "getText", at = @At("HEAD"), cancellable = true)
+    private void getText(double x, double y, CallbackInfoReturnable<Style> cir) {
+        if (this.isChatFocused() && !this.client.options.hudHidden && !this.isChatHidden()) {
+            double scale = this.getSideChatScale();
+            double adjustedX = (x - 2.0D) - getSideChatStartX();
+            double adjustedY = (double)this.client.getWindow().getScaledHeight() - y - 40.0D;
+            adjustedX = MathHelper.floor(adjustedX / scale);
+            adjustedY = MathHelper.floor(adjustedY / (scale * (this.client.options.chatLineSpacing + 1.0D)));
+            if (!(adjustedX < 0.0D) && !(adjustedY < 0.0D)) {
+                int size = Math.min(this.getVisibleLineCount(), this.sideVisibleMessages.size());
+                if (adjustedX <= (double)MathHelper.floor((double)this.getSideChatWidth() / scale)) {
+                    if (adjustedY < (double)(9 * size + size)) {
+                        int line = (int)(adjustedY / 9.0D + (double)this.scrolledLines);
+                        if (line >= 0 && line < this.sideVisibleMessages.size()) {
+                            ChatHudLine<OrderedText> chatHudLine = this.sideVisibleMessages.get(line);
+                            cir.setReturnValue(this.client.textRenderer.getTextHandler().getStyleAt(chatHudLine.getText(), (int)adjustedX));
+                        }
+                    }
+                }
+            }
+        }
     }
 }
