@@ -9,18 +9,18 @@ import io.github.codeutilities.mod.features.streamer.StreamerModeMessageCheck;
 public class SpiesCheck extends MessageCheck implements StreamerModeMessageCheck {
 
     @Override
-    protected MessageType getType() {
+    public MessageType getType() {
         return MessageType.SPIES;
     }
 
     @Override
-    protected boolean check(Message message, String stripped) {
+    public boolean check(Message message, String stripped) {
         // Hide spies (Session spy, Muted spy, DM spy)
         return stripped.startsWith("*");
     }
 
     @Override
-    protected void onReceive(Message message) {
+    public void onReceive(Message message) {
 
     }
 

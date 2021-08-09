@@ -44,9 +44,8 @@ public class MMessageListener {
     @Inject(method = "onGameMessage", at = @At("HEAD"), cancellable = true)
     private void onGameMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
         if(MessageGrabber.isActive()) {
-            MessageGrabber.supply(packet.getMessage());
 
-            if(MessageGrabber.isSilent()) {
+            if(MessageGrabber.supply(new Message(packet,ci))) {
                 ci.cancel();
                 CodeUtilities.log(Level.INFO, "[CANCELLED] " + packet.getMessage().getString());
             }

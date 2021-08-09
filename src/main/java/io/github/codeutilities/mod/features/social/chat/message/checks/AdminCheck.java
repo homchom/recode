@@ -9,17 +9,17 @@ import io.github.codeutilities.mod.features.streamer.StreamerModeMessageCheck;
 public class AdminCheck extends MessageCheck implements StreamerModeMessageCheck {
 
     @Override
-    protected MessageType getType() {
+    public MessageType getType() {
         return MessageType.ADMIN;
     }
 
     @Override
-    protected boolean check(Message message, String stripped) {
+    public boolean check(Message message, String stripped) {
         return stripped.startsWith("[ADMIN]");
     }
 
     @Override
-    protected void onReceive(Message message) {
+    public void onReceive(Message message) {
 
     }
 

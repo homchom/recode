@@ -152,7 +152,7 @@ public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
                                     int[] index = {0};
                                     ScheduledExecutorService scheduler = Executors
                                         .newScheduledThreadPool(1);
-                                    scheduler.scheduleAtFixedRate(() -> {
+                                    scheduler.scheduleAtFixedRate(() -> CodeUtilities.MC.submit(() -> { //apparently playing sounds non-sync can crash the game
                                         if (previewId != id
                                             || mc.currentScreen == null) {
                                             scheduler.shutdown();
@@ -183,7 +183,7 @@ public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
                                             index[0]++;
                                         }
                                         tick[0]++;
-                                    }, 0, 1000 / 20, TimeUnit.MILLISECONDS);
+                                    }), 0, 1000 / 20, TimeUnit.MILLISECONDS);
                                 });
                         } else {
                             previewId = -1;

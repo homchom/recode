@@ -11,17 +11,17 @@ import io.github.codeutilities.sys.player.chat.ChatUtil;
 public class IncomingReportCheck extends MessageCheck implements StreamerModeMessageCheck {
 
     @Override
-    protected MessageType getType() {
+    public MessageType getType() {
         return MessageType.INCOMING_REPORT;
     }
 
     @Override
-    protected boolean check(Message message, String stripped) {
+    public boolean check(Message message, String stripped) {
         return stripped.startsWith("! Incoming Report ");
     }
 
     @Override
-    protected void onReceive(Message message) {
+    public void onReceive(Message message) {
         ChatUtil.playSound(Config.getSound("incomingReportSound"));
     }
 

@@ -12,17 +12,17 @@ public class DirectMessageCheck extends MessageCheck implements StreamerModeMess
     private static final String DIRECT_MESSAGE_REGEX = "^\\[(\\w{3,16}) → You] .+$";
 
     @Override
-    protected MessageType getType() {
+    public MessageType getType() {
         return MessageType.DIRECT_MESSAGE;
     }
 
     @Override
-    protected boolean check(Message message, String stripped) {
+    public boolean check(Message message, String stripped) {
         return stripped.matches(DIRECT_MESSAGE_REGEX);
     }
 
     @Override
-    protected void onReceive(Message message) {
+    public void onReceive(Message message) {
         // update conversation end timer
         if (ConversationTimer.currentConversation != null && usernameMatches(message, ConversationTimer.currentConversation)) {
             ConversationTimer.conversationUpdateTime = String.valueOf(System.currentTimeMillis());

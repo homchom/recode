@@ -10,17 +10,17 @@ public class LagslayerStartCheck extends MessageCheck {
     private static final String LAGSLAYER_START_REGEX = "^\\[LagSlayer] Now monitoring plot .*\\. Type /lagslayer to stop monitoring\\.$";
 
     @Override
-    protected MessageType getType() {
+    public MessageType getType() {
         return MessageType.LAGSLAYER_START;
     }
 
     @Override
-    protected boolean check(Message message, String stripped) {
+    public boolean check(Message message, String stripped) {
         return stripped.matches(LAGSLAYER_START_REGEX);
     }
 
     @Override
-    protected void onReceive(Message message) {
+    public void onReceive(Message message) {
         CPU_UsageText.lagSlayerEnabled = true;
     }
 }

@@ -11,17 +11,17 @@ public class TeleportCheck extends MessageCheck implements StreamerModeMessageCh
     private static final String TELEPORTING_REGEX = "^\\[([^ ]{3,}): Teleported ([^ ]{3,}) to ([^ ]{3,})]$";
 
     @Override
-    protected MessageType getType() {
+    public MessageType getType() {
         return MessageType.TELEPORTING;
     }
 
     @Override
-    protected boolean check(Message message, String stripped) {
+    public boolean check(Message message, String stripped) {
         return stripped.matches(TELEPORTING_REGEX);
     }
 
     @Override
-    protected void onReceive(Message message) {
+    public void onReceive(Message message) {
 
     }
 

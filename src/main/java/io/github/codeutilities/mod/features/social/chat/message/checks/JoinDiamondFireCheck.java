@@ -12,17 +12,17 @@ import java.util.Collection;
 public class JoinDiamondFireCheck extends MessageCheck {
 
     @Override
-    protected MessageType getType() {
+    public MessageType getType() {
         return MessageType.JOIN_DF;
     }
 
     @Override
-    protected boolean check(Message message, String stripped) {
+    public boolean check(Message message, String stripped) {
         return DFInfo.currentState.getMode() == State.Mode.SPAWN && stripped.equals("◆ Welcome back to DiamondFire! ◆");
     }
 
     @Override
-    protected void onReceive(Message message) {
+    public void onReceive(Message message) {
         // Check if the player joined Beta
         DFInfo.isInBeta = false;
         Collection<String> lines = CodeUtilities.MC.world.getScoreboard().getKnownPlayers();

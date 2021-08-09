@@ -43,14 +43,14 @@ public abstract class MessageCheck {
 
     };
 
-    protected abstract MessageType getType();
+    public abstract MessageType getType();
 
-    protected abstract boolean check(Message message, String stripped);
+    public abstract boolean check(Message message, String stripped);
 
     /**
      * Use {@link Message#cancel()} to cancel the message
     */
-    protected abstract void onReceive(Message message);
+    public abstract void onReceive(Message message);
 
     public static MessageType run(Message message) {
         for (MessageCheck check : checks) {

@@ -5,10 +5,14 @@ import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.events.impl.ReceiveChatMessageEvent;
 import io.github.codeutilities.mod.events.interfaces.HyperCubeEvents;
 import io.github.codeutilities.mod.features.social.chat.message.Message;
+import io.github.codeutilities.mod.features.social.chat.message.checks.LocateCheck;
 import io.github.codeutilities.mod.features.social.tab.Client;
 import io.github.codeutilities.sys.file.ILoader;
 import io.github.codeutilities.sys.player.DFInfo;
 import io.github.codeutilities.sys.player.chat.ChatUtil;
+import io.github.codeutilities.sys.player.chat.MessageGrabber;
+import java.util.Timer;
+import java.util.TimerTask;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import org.java_websocket.enums.ReadyState;
@@ -23,6 +27,7 @@ public class State {
     private final HyperCubeEvents invoker = HyperCubeEvents.CHANGE_STATE.invoker();
     private static final String EMPTY = "                                       ";
     private static final MinecraftClient mc = MinecraftClient.getInstance();
+    private static Timer locateTimer = new Timer();
 
     public Plot plot;
     public Mode mode;
@@ -356,7 +361,16 @@ public class State {
     public void sendLocate() {
         if(mc.player != null){
             if(!mc.player.isDead()){
-                ChatUtil.executeCommandSilently("locate");
+                locateTimer.cancel();
+                locateTimer = new Timer();
+                locateTimer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+//                        ChatUtil.executeCommandSilently("locate");
+                        ChatUtil.executeCommand("locate");
+                        MessageGrabber.hide(1, new LocateCheck());
+                    }
+                }, 1500L);
             }
         }
     }
