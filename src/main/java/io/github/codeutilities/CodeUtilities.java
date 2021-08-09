@@ -88,6 +88,7 @@ public class CodeUtilities implements ModInitializer {
     public static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
     private static final Path optionsTxtPath = FabricLoader.getInstance().getGameDir()
         .resolve("options.txt");
+
     public static String PLAYER_NAME = null;
     public static String PLAYER_UUID = null;
     public static String JEREMASTER_UUID = "6c669475-3026-4603-b3e7-52c97681ad3a";
