@@ -63,7 +63,7 @@ public class MessageGrabber {
     }
 
     public static void supply(Message msg) {
-        if (filter != null && msg.typeIs(filter)) return;
+        if (filter != null && !msg.typeIs(filter)) return;
 
         Text message = msg.getText();
         currentMessages.add(message);
