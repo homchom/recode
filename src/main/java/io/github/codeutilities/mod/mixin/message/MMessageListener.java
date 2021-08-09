@@ -43,13 +43,6 @@ public class MMessageListener {
 
     @Inject(method = "onGameMessage", at = @At("HEAD"), cancellable = true)
     private void onGameMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
-        if(MessageGrabber.isActive()) {
-
-            if(MessageGrabber.supply(new Message(packet,ci))) {
-                ci.cancel();
-                CodeUtilities.log(Level.INFO, "[CANCELLED] " + packet.getMessage().getString());
-            }
-        }
         if (DFInfo.isOnDF()) {
             if (packet.getLocation() == MessageType.CHAT || packet.getLocation() == MessageType.SYSTEM) {
                 if (RenderSystem.isOnRenderThread()) {

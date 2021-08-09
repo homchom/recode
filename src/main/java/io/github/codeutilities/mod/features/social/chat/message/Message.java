@@ -6,7 +6,6 @@ import io.github.codeutilities.mod.events.impl.ReceiveSoundEvent;
 import io.github.codeutilities.sys.player.chat.MessageGrabber;
 import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
 import net.minecraft.text.Text;
-import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 public class Message {
@@ -24,6 +23,7 @@ public class Message {
         this.text = packet.getMessage();
         this.callback = ci;
         this.type = MessageCheck.run(this);
+        MessageFinalizer.run(this);
     }
 
     public GameMessageS2CPacket getPacket() {
@@ -69,6 +69,7 @@ public class Message {
         cancelled = true;
 
         callback.cancel();
+
         if (type.hasSound()) {
             ReceiveSoundEvent.cancelNextSound();
         }

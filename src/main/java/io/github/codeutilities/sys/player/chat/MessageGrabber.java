@@ -2,6 +2,7 @@ package io.github.codeutilities.sys.player.chat;
 
 import io.github.codeutilities.mod.features.social.chat.message.Message;
 import io.github.codeutilities.mod.features.social.chat.message.MessageCheck;
+import io.github.codeutilities.mod.features.social.chat.message.MessageType;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
@@ -17,10 +18,10 @@ public class MessageGrabber {
     private static Consumer<List<Text>> messageConsumer;
     private static int messagesToGrab = 0;
     private static boolean silent = false;
-    private static MessageCheck filter = null;
+    private static MessageType filter = null;
     private static final List<MessageGrabberTask> tasks = new ArrayList<>();
 
-    public static void grab(int messages, Consumer<List<Text>> consumer, MessageCheck filter) {
+    public static void grab(int messages, Consumer<List<Text>> consumer, MessageType filter) {
         if (isActive()) {
             tasks.add(new MessageGrabberTask(messages,consumer,false, filter));
             return;
@@ -35,7 +36,7 @@ public class MessageGrabber {
         grab(messages,consumer,null);
     }
 
-    public static void grabSilently(int messages, Consumer<List<Text>> consumer, MessageCheck filter) {
+    public static void grabSilently(int messages, Consumer<List<Text>> consumer, MessageType filter) {
         if (isActive()) {
             tasks.add(new MessageGrabberTask(messages,consumer,true, filter));
             return;
@@ -57,17 +58,17 @@ public class MessageGrabber {
     public static void hide(int messages) {
         if (messages > 0) grabSilently(messages, ignored -> {}, null);
     }
-    public static void hide(int messages, MessageCheck filter) {
+    public static void hide(int messages, MessageType filter) {
         if (messages > 0) grabSilently(messages, ignored -> {}, filter);
     }
 
-    public static boolean supply(Message msg) {
-        if (filter != null && !filter.check(msg,msg.getStripped())) return false;
+    public static void supply(Message msg) {
+        if (filter != null && msg.typeIs(filter)) return;
 
         Text message = msg.getText();
         currentMessages.add(message);
 
-        boolean wasSilent = silent;
+        if (silent) msg.cancel();
 
         if (currentMessages.size() >= messagesToGrab) {
             messageConsumer.accept(currentMessages);
@@ -83,8 +84,6 @@ public class MessageGrabber {
                 silent = task.silent;
             }
         }
-
-        return wasSilent;
     }
 
     public static boolean isActive() {

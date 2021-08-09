@@ -57,7 +57,6 @@ public abstract class MessageCheck {
             if (check.check(message, message.getStripped())) {
                 check.onReceive(message);
                 message.setCheck(check);
-                MessageFinalizer.run(message);
                 return check.getType();
             }
         }

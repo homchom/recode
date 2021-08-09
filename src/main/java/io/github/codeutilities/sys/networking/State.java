@@ -5,6 +5,7 @@ import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.events.impl.ReceiveChatMessageEvent;
 import io.github.codeutilities.mod.events.interfaces.HyperCubeEvents;
 import io.github.codeutilities.mod.features.social.chat.message.Message;
+import io.github.codeutilities.mod.features.social.chat.message.MessageType;
 import io.github.codeutilities.mod.features.social.chat.message.checks.LocateCheck;
 import io.github.codeutilities.mod.features.social.tab.Client;
 import io.github.codeutilities.sys.file.ILoader;
@@ -368,7 +369,7 @@ public class State {
                     public void run() {
 //                        ChatUtil.executeCommandSilently("locate");
                         ChatUtil.executeCommand("locate");
-                        MessageGrabber.hide(1, new LocateCheck());
+                        MessageGrabber.hide(1, MessageType.LOCATE);
                     }
                 }, 1500L);
             }
