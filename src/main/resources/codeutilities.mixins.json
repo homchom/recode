@@ -27,7 +27,8 @@
     "render.player.MPlayerListEntry",
     "render.player.MPlayerListHUD",
     "render.screen.MOptionsScreen",
-    "render.screen.MTitleScreen"
+    "render.screen.MTitleScreen",
+    "render.MSideChatHUD"
   ],
   "client": [],
   "server": [],
