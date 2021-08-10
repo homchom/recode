@@ -64,7 +64,7 @@ public class CodeUtilities implements ModInitializer {
 
     public static final String MOD_ID = "codeutilities";
     public static final String MOD_NAME = "CodeUtilities";
-    public static final String MOD_VERSION = "2.2.2";
+    public static String MOD_VERSION;
     public static final boolean BETA = true;
 
     public static final Logger LOGGER = LogManager.getLogger();
@@ -114,6 +114,7 @@ public class CodeUtilities implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        MOD_VERSION = FabricLoader.getInstance().getModContainer(MOD_ID).get().getMetadata().getVersion().getFriendlyString();
         log(Level.INFO, "Initializing");
 //        Runtime.getRuntime().addShutdownHook(new Thread(this::onClose));
         System.setProperty("java.awt.headless", "false");
