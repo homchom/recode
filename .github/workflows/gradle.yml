@@ -14,7 +14,7 @@ jobs:
     - name: Add SHORT_SHA env property with short commit id
       run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
     - name: Build with Gradle
-      run: ./gradlew build '-Pversion=2.2.2-${SHORT_SHA}'
+      run: ./gradlew build '-Pversion=2.2.2-${{SHORT_SHA}}'
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
