@@ -21,6 +21,7 @@ import io.github.codeutilities.mod.commands.impl.other.NBSCommand;
 import io.github.codeutilities.mod.commands.impl.other.NBSSearchCommand;
 import io.github.codeutilities.mod.commands.impl.other.NodeCommand;
 import io.github.codeutilities.mod.commands.impl.other.PJoinCommand;
+import io.github.codeutilities.mod.commands.impl.other.PartnerBracketCommand;
 import io.github.codeutilities.mod.commands.impl.other.PlotsCommand;
 import io.github.codeutilities.mod.commands.impl.other.QueueCommand;
 import io.github.codeutilities.mod.commands.impl.other.SchemCommand;
@@ -79,7 +80,8 @@ public class CommandHandler implements ILoader {
                 new SchemCommand(),
                 new RelativeLocCommand(),
                 new PlotsCommand(),
-                new NBSSearchCommand()
+                new NBSSearchCommand(),
+                new PartnerBracketCommand()
             );
         }
     }

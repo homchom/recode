@@ -1,5 +1,6 @@
 package io.github.codeutilities.mod.features.keybinds;
 
+import io.github.codeutilities.mod.commands.impl.other.PartnerBracketCommand;
 import io.github.codeutilities.mod.config.Config;
 import io.github.codeutilities.sys.player.DFInfo;
 import io.github.codeutilities.sys.networking.State;
@@ -132,6 +133,10 @@ public class Keybinds implements ClientModInitializer {
 
         showTags = KeyBindingHelper.registerKeyBinding(new KeyBinding(
             "key.codeutilities.showTags", Type.KEYSYM, -1, "key.category.codeutilities"
+        ));
+
+        KeyBinding partnerBracket = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+            "key.codeutilities.partnerBracket", Type.KEYSYM, -1, "key.category.codeutilities"
         ));
 
         // =======
@@ -300,6 +305,10 @@ public class Keybinds implements ClientModInitializer {
                         CodeSearcher.clearSearch();
                     }
                 }
+            }
+
+            while (partnerBracket.wasPressed()) {
+                PartnerBracketCommand.exec();
             }
 
         });
