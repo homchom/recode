@@ -4,6 +4,7 @@ import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.features.keybinds.Keybinds;
 import java.util.List;
 import java.util.Set;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.options.KeyBinding;
@@ -39,7 +40,12 @@ public abstract class MItemStack {
         if (player == null) return;
 
         try {
-            int keycode = ((Key) FieldUtils.getField(KeyBinding.class,"boundKey",true).get(Keybinds.showTags)).getCode();
+
+            String cname = FabricLoader.getInstance().isDevelopmentEnvironment() ? "boundKey" : "field_1655";
+
+            int keycode = ((Key) FieldUtils.getField(KeyBinding.class,cname,true).get(Keybinds.showTags)).getCode();
+
+            if (keycode == -1) return;
 
             if (InputUtil.isKeyPressed(CodeUtilities.MC.getWindow().getHandle(),keycode)) {
                 List<Text> t = cir.getReturnValue();
