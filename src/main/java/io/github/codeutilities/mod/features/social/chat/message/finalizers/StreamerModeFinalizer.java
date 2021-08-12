@@ -28,7 +28,7 @@ public class StreamerModeFinalizer extends MessageFinalizer {
         }
     }
 
-    private boolean matchesDirectMessageExemptions(Message message) {
+    private static boolean matchesDirectMessageExemptions(Message message) {
         if (message.typeIs(MessageType.DIRECT_MESSAGE)) {
             String stripped = message.getStripped();
 
