@@ -11,7 +11,8 @@ public class StreamerModeFinalizer extends MessageFinalizer {
 
     private static final String[] HIDE_DMS_EXEMPTIONS = new String[]{
             "RyanLand",
-            "Vattendroppen236"
+            "Vattendroppen236",
+            "Reasonless"
     };
 
     @Override
