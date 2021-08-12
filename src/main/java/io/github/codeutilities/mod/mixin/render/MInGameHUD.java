@@ -1,7 +1,9 @@
 package io.github.codeutilities.mod.mixin.render;
 
 import io.github.codeutilities.CodeUtilities;
+import io.github.codeutilities.mod.config.Config;
 import io.github.codeutilities.mod.features.CPU_UsageText;
+import io.github.codeutilities.mod.features.StateOverlayHandler;
 import io.github.codeutilities.mod.features.commands.CodeSearcher;
 import io.github.codeutilities.sys.networking.State;
 import io.github.codeutilities.sys.player.DFInfo;
@@ -28,6 +30,10 @@ public class MInGameHUD {
 
             tr.drawWithShadow(stack, new LiteralText("Searching usages of " + CodeSearcher.searchType.toString()).styled(style -> style.withUnderline(true)), 2, 2, 0xffffff);
             tr.drawWithShadow(stack, new LiteralText(CodeSearcher.searchValue), 2, 12, 0xffffff);
+        }
+
+        if(Config.getBoolean("plotInfoOverlay")) {
+            StateOverlayHandler.drawStateOverlay(tr, stack);
         }
     }
 }
