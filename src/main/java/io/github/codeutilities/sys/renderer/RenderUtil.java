@@ -36,4 +36,8 @@ public class RenderUtil extends DrawableHelper {
     protected void drawGradientRect(Matrix4f matrix, BufferBuilder bufferBuilder, int xStart, int yStart, int xEnd, int yEnd, int z, int colorStart, int colorEnd) {
         DrawableHelper.fillGradient(matrix, bufferBuilder, xStart, yStart, xEnd, yEnd, z, colorStart, colorEnd);
     }
+
+    public static void drawBox(MatrixStack matrixStack) {
+
+    }
 }

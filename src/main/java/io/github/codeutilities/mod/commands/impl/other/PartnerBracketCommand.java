@@ -11,11 +11,13 @@ import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
+import org.lwjgl.opengl.GL11;
 
 public class PartnerBracketCommand extends Command {
 
@@ -101,22 +103,28 @@ public class PartnerBracketCommand extends Command {
             .executes(PartnerBracketCommand::exec)
         );
 
+
         WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register((ctx, outline) -> {
             if (active) {
                 try {
+
                     MatrixStack matrix = ctx.matrixStack();
                     matrix.push();
-
+                    matrix.scale(1.0005f, 1.0005f, 1.0005f);
                     Vec3d vec = ctx.camera().getPos();
-                    matrix.translate(-vec.x, -vec.y+1, -vec.z);
+
+                    matrix.translate(-vec.x, -vec.y, -vec.z);
 
                     //TODO: someone should recode this cuz im bad at rendering stuff
                     matrix.push();
                     matrix.translate(p1.getX(),p1.getY(),p1.getZ());
+
+                    OutlineVertexConsumerProvider outlineVertexConsumerProvider = mc.getBufferBuilders().getOutlineVertexConsumers();
+                    outlineVertexConsumerProvider.setColor(255, 255, 255, 150);
+
                     mc.getBlockRenderManager().renderBlockAsEntity(
-                        Blocks.WARPED_PRESSURE_PLATE.getDefaultState(),
-                        ctx.matrixStack(),
-                        ctx.consumers(),
+                        Blocks.WHITE_STAINED_GLASS.getDefaultState(),
+                        ctx.matrixStack(), outlineVertexConsumerProvider,
                         16777215,
                         655360
                     );
@@ -125,12 +133,12 @@ public class PartnerBracketCommand extends Command {
                     matrix.push();
                     matrix.translate(p2.getX(),p2.getY(),p2.getZ());
                     mc.getBlockRenderManager().renderBlockAsEntity(
-                        Blocks.WARPED_PRESSURE_PLATE.getDefaultState(),
-                        ctx.matrixStack(),
-                        ctx.consumers(),
-                        16777215,
-                        655360
+                            Blocks.WHITE_STAINED_GLASS.getDefaultState(),
+                            ctx.matrixStack(), outlineVertexConsumerProvider,
+                            16777215,
+                            655360
                     );
+
                     matrix.pop();
 
                     matrix.pop();
