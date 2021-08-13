@@ -4,6 +4,7 @@ import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.commands.impl.image.ImageHologramCommand;
 import io.github.codeutilities.mod.commands.impl.image.ImageParticleCommand;
 import io.github.codeutilities.mod.commands.impl.item.BreakableCommand;
+import io.github.codeutilities.mod.commands.impl.item.CodeVaultCommand;
 import io.github.codeutilities.mod.commands.impl.item.EditItemCommand;
 import io.github.codeutilities.mod.commands.impl.item.GiveCommand;
 import io.github.codeutilities.mod.commands.impl.item.HeadsCommand;
@@ -81,7 +82,8 @@ public class CommandHandler implements ILoader {
                 new RelativeLocCommand(),
                 new PlotsCommand(),
                 new NBSSearchCommand(),
-                new PartnerBracketCommand()
+                new PartnerBracketCommand(),
+                new CodeVaultCommand()
             );
         }
     }

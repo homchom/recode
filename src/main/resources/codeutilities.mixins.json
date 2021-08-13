@@ -21,14 +21,15 @@
     "render.MDebugHUD",
     "render.MInGameHUD",
     "render.MMouse",
+    "render.MSideChatHUD",
+    "render.MSignBlockEntityRenderer",
     "render.MSignRenderer",
     "render.MWindow",
     "render.TextureMapAccessor",
     "render.player.MPlayerListEntry",
     "render.player.MPlayerListHUD",
     "render.screen.MOptionsScreen",
-    "render.screen.MTitleScreen",
-    "render.MSideChatHUD"
+    "render.screen.MTitleScreen"
   ],
   "client": [],
   "server": [],
