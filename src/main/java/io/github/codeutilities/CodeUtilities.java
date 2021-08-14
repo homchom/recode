@@ -127,11 +127,6 @@ public class CodeUtilities implements ModInitializer {
             CLIENT_LANG = m.group(0).replaceAll("^\nlang:", "");
         }
 
-        // Load modules
-        Action.cacheActions();
-        Trigger.cacheTriggers();
-        Module.loadModules();
-
         // Get player name
         PLAYER_NAME = MC.getSession().getUsername();
         PLAYER_UUID = MC.getSession().getUuid();
