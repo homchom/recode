@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.codeutilities.mod.commands.Command;
 import io.github.codeutilities.mod.commands.arguments.ArgBuilder;
+import io.github.codeutilities.mod.commands.arguments.types.FileArgumentType;
 import io.github.codeutilities.mod.features.commands.image.ImageToHologram;
 import io.github.codeutilities.sys.player.chat.ChatType;
 import io.github.codeutilities.sys.player.chat.ChatUtil;
@@ -24,7 +25,7 @@ public class ImageHologramCommand extends Command {
         cd.register(ArgBuilder.literal("imagehologram")
                 .then(ArgBuilder.literal("load")
                         .then(ArgBuilder.literal("hex")
-                                .then(ArgBuilder.argument("location", StringArgumentType.greedyString())
+                                .then(ArgBuilder.argument("location", FileArgumentType.folder(ExternalFile.IMAGE_FILES.getFile()))
                                         .executes(ctx -> {
                                             try {
                                                 String location = StringArgumentType.getString(ctx, "location");
@@ -48,7 +49,7 @@ public class ImageHologramCommand extends Command {
                                             }
                                         })))
                         .then(ArgBuilder.literal("colorcodes")
-                                .then(ArgBuilder.argument("location", StringArgumentType.greedyString())
+                                .then(ArgBuilder.argument("location", FileArgumentType.folder(ExternalFile.IMAGE_FILES.getFile()))
                                         .executes(ctx -> {
                                             try {
                                                 String location = StringArgumentType.getString(ctx, "location");

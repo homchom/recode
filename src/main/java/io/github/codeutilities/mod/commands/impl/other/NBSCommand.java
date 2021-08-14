@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.commands.Command;
 import io.github.codeutilities.mod.commands.arguments.ArgBuilder;
+import io.github.codeutilities.mod.commands.arguments.types.FileArgumentType;
 import io.github.codeutilities.mod.features.commands.nbs.NBSDecoder;
 import io.github.codeutilities.mod.features.commands.nbs.NBSToTemplate;
 import io.github.codeutilities.mod.features.commands.nbs.SongData;
@@ -62,7 +63,7 @@ public class NBSCommand extends Command {
     public void register(MinecraftClient mc, CommandDispatcher<FabricClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("nbs")
                 .then(ArgBuilder.literal("load")
-                        .then(ArgBuilder.argument("filename", StringArgumentType.greedyString())
+                        .then(ArgBuilder.argument("filename", FileArgumentType.folder(ExternalFile.NBS_FILES.getFile()))
                                 .executes(ctx -> {
                                     if (this.isCreative(mc)) {
                                         String filename = StringArgumentType.getString(ctx, "filename");
