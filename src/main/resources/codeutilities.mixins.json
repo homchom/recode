@@ -15,7 +15,6 @@
     "message.MMessageListener",
     "message.MPlayerSendMessage",
     "message.MReceivedSound",
-    "render.MChatHUD",
     "render.MChatScreen",
     "render.MChestRenderer",
     "render.MDebugHUD",
