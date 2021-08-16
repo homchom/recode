@@ -27,7 +27,7 @@ public class StateOverlayHandler {
                     drawTextRight(new LiteralText("/join " + state.plot.getId()).styled(style -> style.withColor(TextColor.fromFormatting(Formatting.GRAY))).asOrderedText(), 22, tr, stack);
 
                 }else {
-                    drawTextRight(new LiteralText("At Node " + state.getNode().getIdentifier() + " Spawn").styled(style -> style.withColor(TextColor.fromFormatting(Formatting.YELLOW))).asOrderedText(), 2, tr, stack);
+                    if(state.getNode() != null) drawTextRight(new LiteralText("At Node " + state.getNode().getIdentifier() + " Spawn").styled(style -> style.withColor(TextColor.fromFormatting(Formatting.YELLOW))).asOrderedText(), 2, tr, stack);
                 }
             }
         }
