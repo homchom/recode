@@ -121,7 +121,7 @@ public class CalcCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "TODO: Add description";
+        return "/calc <expression>\n\nCan be used for calculating simple math expressions.";
     }
 
     @Override

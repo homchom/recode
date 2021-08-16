@@ -38,7 +38,7 @@ public class BreakableCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "TODO: Add description";
+        return "/breakable\n\nOpposite of /unbreakable";
     }
 
     @Override

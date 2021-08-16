@@ -24,7 +24,7 @@ public class CodeVaultCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "TODO: Add description";
+        return "/codevault\n\nAccess the uploaded templates from the CodeVault df plot anywhere.";
     }
 
     @Override

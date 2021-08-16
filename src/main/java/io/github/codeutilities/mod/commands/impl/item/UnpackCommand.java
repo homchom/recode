@@ -50,7 +50,7 @@ public class UnpackCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "TODO: Add description";
+        return "/unpack\n\nEmpties the contents of the container (shulker/chest/etc) you're holding into your inventory without the need of placing it down.";
     }
 
     @Override

@@ -152,7 +152,7 @@ public class PartnerBracketCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "TODO: Add description";
+        return "/partnerbracket\n\nCan be used for highlighting 2 brackets (pistons) of an if/repeat statement for finding the corresponding partner more easily.\nAlso has a keybind.";
     }
 
     @Override

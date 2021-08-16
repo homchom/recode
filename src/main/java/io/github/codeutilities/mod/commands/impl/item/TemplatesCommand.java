@@ -26,7 +26,7 @@ public class TemplatesCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "TODO: Add description";
+        return "/templates\n\nView a list of recently used code templates";
     }
 
     @Override

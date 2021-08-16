@@ -39,7 +39,7 @@ public class HeadsCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "TODO: Add description";
+        return "/heads\n\nNormally disabled in the config. Now replaced by dfs /heads";
     }
 
     @Override

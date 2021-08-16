@@ -81,7 +81,11 @@ public class ImageParticleCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "TODO: Add description";
+        return "/imageparticle load <file>\n"
+            + "/imageparticle printer\n"
+            + "\n"
+            + "Can be used to load an image from CodeUtilities/Images and import it as particles.\n"
+            + "/imageparticle load <file> gives you the code template with the image data and /imageparticle printer gives you the template that is required for reading that data.";
     }
 
     @Override

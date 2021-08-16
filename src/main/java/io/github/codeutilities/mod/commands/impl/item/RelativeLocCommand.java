@@ -57,7 +57,8 @@ public class RelativeLocCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "TODO: Add description";
+        return "/relativeloc <target> <forwards> <upwards> <right> <rot_down> <rot_right>\n\n"
+            + "Get a relative location based on the given parameters.";
     }
 
     @Override

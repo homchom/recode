@@ -101,7 +101,8 @@ public class NBSCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "TODO: Add description";
+        return "/nbs player\n/nbs load <file>\n\n"
+            + "Import local .nbs files in 'CodeUtilities/Nbs Files' as templates into your plot and then play them using the /nbs player\nFor searching the web check out /nbssearch";
     }
 
     @Override

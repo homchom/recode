@@ -22,7 +22,7 @@ public class CodeUtilitiesCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "TODO: Add description";
+        return "/codeutilities\n\nView information about the mod like version, contributors, etc";
     }
 
     @Override

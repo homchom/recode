@@ -41,7 +41,7 @@ public class PlotsCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "TODO: Add description";
+        return "/plots\n\nOpen the df plots menu from anywhere.";
     }
 
     @Override

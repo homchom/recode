@@ -19,7 +19,7 @@ public class WebviewCommand extends AbstractTemplateCommand {
 
     @Override
     public String getDescription() {
-        return "TODO: Add description";
+        return "/webview\n\nSends you a link for opening the template in the web.";
     }
 
     @Override

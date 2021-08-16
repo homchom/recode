@@ -53,7 +53,7 @@ public class ItemdataCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "TODO: Add description";
+        return "/itemdata\n\nView & copy the itemdata from the currently held item in different formats.";
     }
 
     @Override

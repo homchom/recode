@@ -31,7 +31,7 @@ public class PJoinCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "TODO: Add description";
+        return "/pjoin <player>\n\nJoin the plot the player is on.";
     }
 
     @Override

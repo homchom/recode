@@ -39,7 +39,7 @@ public class NodeCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "TODO: Add description";
+        return "/node <1-5,beta>\n\nAlias for /server";
     }
 
     @Override

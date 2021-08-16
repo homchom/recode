@@ -166,7 +166,7 @@ public class QueueCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "TODO: Add description";
+        return "/queue\n\nView the plot queue of jeremasters stream.";
     }
 
     @Override

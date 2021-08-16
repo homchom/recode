@@ -21,7 +21,7 @@ public class ConfigCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "TODO: Add description";
+        return "/cuconfig\n\nOpens the CodeUtilities config";
     }
 
     @Override

@@ -35,7 +35,7 @@ public class EditItemCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "TODO: Add description";
+        return "/edititem\n\nOpen a very simple gui for editing the item nbt & name";
     }
 
     @Override
