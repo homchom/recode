@@ -117,7 +117,7 @@ public class VarSyntaxHighlighter {
                 msg = msg.substring(5);
             }
 
-            Matcher percentm = Pattern.compile("%\\w+\\(?").matcher(msg);
+            Matcher percentm = Pattern.compile("%[a-zA-Z]+\\(?").matcher(msg);
 
             while (percentm.find()) {
                 if (!percentcodes.contains(percentm.group())) {
@@ -171,7 +171,7 @@ public class VarSyntaxHighlighter {
                     percent = false;
                     continue;
                 } else {
-                    if (!(c + "").matches("\\w") && percent) {
+                    if (!(c + "").matches("[a-zA-Z]") && percent) {
                         percent = false;
                         depth--;
                         o.append(color(depth));

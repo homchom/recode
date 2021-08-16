@@ -2,6 +2,8 @@ package io.github.codeutilities.sys.renderer.widgets;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import io.github.cottonmc.cotton.gui.client.LibGuiClient;
+import io.github.cottonmc.cotton.gui.client.LibGuiConfig;
 import io.github.cottonmc.cotton.gui.client.ScreenDrawing;
 import io.github.cottonmc.cotton.gui.widget.WButton;
 import net.fabricmc.api.EnvType;
@@ -22,18 +24,20 @@ public class CButton extends WButton {
             && mouseY < getHeight());
         int color = 0;
         if (hovered || isFocused()) {
-            color = 0xaaffff00;
+            color = LibGuiClient.config.darkMode ? 0xff393E46 : 0xffdddddd;
         }
         if (!isEnabled()) {
-            color = 0xaa010101;
+            color = LibGuiClient.config.darkMode ? 0xaa00ADB5 : 0xff00ADB5;
         }
+
+        int tcolor = LibGuiClient.config.darkMode ? 0xaaaaaa : 0x222222;
 
         if (getLabel() != null) {
 
-            ScreenDrawing.coloredRect(x,y,width,height, color);
+            ScreenDrawing.coloredRect(x,y+3,width,height, color);
 
-            ScreenDrawing.drawStringWithShadow(matrices, getLabel().asOrderedText(), alignment, x,
-                y + ((20 - 8) / 2), width, 0xaaaaaa);
+            ScreenDrawing.drawString(matrices, getLabel().asOrderedText(), alignment, x,
+                y + ((20 - 8) / 2), width, tcolor);
         }
     }
 

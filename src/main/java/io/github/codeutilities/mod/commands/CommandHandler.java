@@ -84,8 +84,6 @@ public class CommandHandler implements ILoader {
                 new ImageParticleCommand(),
                 new SendTemplateCommand(),
                 new PJoinCommand(),
-                new ImageHologramCommand(),
-                new ImageParticleCommand(),
                 new SchemCommand(),
                 new RelativeLocCommand(),
                 new PlotsCommand(),
