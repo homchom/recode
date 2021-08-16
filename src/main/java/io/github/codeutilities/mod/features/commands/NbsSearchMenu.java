@@ -75,131 +75,133 @@ public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
 
         WScrollPanel spanel = new WScrollPanel(ppanel);
 
-        try {
-            String sresults = CodeUtilitiesServer.requestURL(
-                "https://untitled-57qvszfgg28u.runkit.sh/search?query=" + URLEncoder
-                    .encode(query, "UTF-8"));
+        CodeUtilities.EXECUTOR.submit(() -> {
+            try {
+                String sresults = CodeUtilitiesServer.requestURL(
+                    "https://untitled-57qvszfgg28u.runkit.sh/search?query=" + URLEncoder
+                        .encode(query, "UTF-8"));
 
-            JsonArray results = CodeUtilities.JSON_PARSER.parse(sresults).getAsJsonArray();
+                JsonArray results = CodeUtilities.JSON_PARSER.parse(sresults).getAsJsonArray();
 
-            mc.execute(() -> {
-                ppanel.remove(loading);
+                mc.execute(() -> {
+                    ppanel.remove(loading);
 
-                int y = 5;
+                    int y = 5;
 
-                for (JsonElement resulte : results) {
-                    JsonObject e = resulte.getAsJsonObject();
+                    for (JsonElement resulte : results) {
+                        JsonObject e = resulte.getAsJsonObject();
 
-                    int id = e.get("id").getAsInt();
-                    String duration = e.get("duration").getAsString();
-                    WText title = new WText(new LiteralText(e.get("title").getAsString()));
-                    WText description = new WText(
-                        new LiteralText(duration + " §8-§r " + e.get("composer").getAsString()));
+                        int id = e.get("id").getAsInt();
+                        String duration = e.get("duration").getAsString();
+                        WText title = new WText(new LiteralText(e.get("title").getAsString()));
+                        WText description = new WText(
+                            new LiteralText(duration + " §8-§r " + e.get("composer").getAsString()));
 
-                    ppanel.add(title, 0, y, 999, 10);
-                    ppanel.add(description, 0, y + 10, 999, 10);
+                        ppanel.add(title, 0, y, 999, 10);
+                        ppanel.add(description, 0, y + 10, 999, 10);
 
-                    WButton download = new WButton(new LiteralText("§l↓"));
+                        WButton download = new WButton(new LiteralText("§l↓"));
 
-                    ppanel.add(download, 270, y, 20, 20);
+                        ppanel.add(download, 270, y, 20, 20);
 
-                    download.setOnClick(() -> {
-                        download.setLabel(new LiteralText("..."));
-                        CodeUtilities.EXECUTOR
-                            .submit(() -> {
-                                String notes = CodeUtilitiesServer.requestURL(
-                                    "https://untitled-57qvszfgg28u.runkit.sh/download?format=mcnbs&id="
-                                        + id);
-                                String[] notearr = notes.split("=");
-                                int length = Integer
-                                    .parseInt(notearr[notearr.length - 1].split(":")[0]);
-                                SongData d = new SongData("Song " + id, "CodeUtilities", 20f,
-                                    length, notes, "", "", 1, 0, 0);
-
-                                String code = new NBSToTemplate(d).convert();
-
-                                ItemStack stack = new ItemStack(Items.NOTE_BLOCK);
-                                TemplateUtils
-                                    .compressTemplateNBT(stack, d.getName(), d.getAuthor(), code);
-
-                                stack.setCustomName(
-                                    new LiteralText("§d" + e.get("title").getAsString()));
-
-                                ItemUtil.giveCreativeItem(stack, true);
-                                download.setLabel(new LiteralText("§l↓"));
-                            });
-                    });
-
-                    WButton preview = new WButton(new LiteralText("▶"));
-
-                    ppanel.add(preview, 250, y, 20, 20);
-
-                    preview.setOnClick(() -> {
-                        if (previewId != id) {
-                            previewId = id;
-                            preview.setLabel(new LiteralText("..."));
+                        download.setOnClick(() -> {
+                            download.setLabel(new LiteralText("..."));
                             CodeUtilities.EXECUTOR
                                 .submit(() -> {
-                                    String snotes = CodeUtilitiesServer.requestURL(
+                                    String notes = CodeUtilitiesServer.requestURL(
                                         "https://untitled-57qvszfgg28u.runkit.sh/download?format=mcnbs&id="
                                             + id);
-                                    List<String> notes = new ArrayList<>(
-                                        Arrays.asList(snotes.split("=")));
+                                    String[] notearr = notes.split("=");
+                                    int length = Integer
+                                        .parseInt(notearr[notearr.length - 1].split(":")[0]);
+                                    SongData d = new SongData("Song " + id, "CodeUtilities", 20f,
+                                        length, notes, "", "", 1, 0, 0);
 
-                                    preview.setLabel(new LiteralText("■"));
+                                    String code = new NBSToTemplate(d).convert();
 
-                                    int[] tick = {0};
-                                    int[] index = {0};
-                                    ScheduledExecutorService scheduler = Executors
-                                        .newScheduledThreadPool(1);
-                                    scheduler.scheduleAtFixedRate(() -> CodeUtilities.MC.submit(() -> { //apparently playing sounds non-sync can crash the game
-                                        if (previewId != id
-                                            || mc.currentScreen == null) {
-                                            scheduler.shutdown();
-                                            preview.setLabel(new LiteralText("▶"));
-                                            return;
-                                        }
-                                        if (notes.get(index[0])
-                                            .startsWith(tick[0] + ":")) {
+                                    ItemStack stack = new ItemStack(Items.NOTE_BLOCK);
+                                    TemplateUtils
+                                        .compressTemplateNBT(stack, d.getName(), d.getAuthor(), code);
 
-                                            String line = notes.get(index[0])
-                                                .split(":")[1];
+                                    stack.setCustomName(
+                                        new LiteralText("§d" + e.get("title").getAsString()));
 
-                                            for (String n : line.split(";")) {
-                                                String[] d = n.split(",");
-                                                int instrumentid = Integer
-                                                    .parseInt(d[0]);
-                                                float pitch =
-                                                    (float) Integer.parseInt(d[1])
-                                                        / 1000;
-                                                float panning =
-                                                    (float) Integer.parseInt(d[2]) / 100;
-                                                mc.player
-                                                    .playSound(
-                                                        instrumentids[instrumentid - 1],
-                                                        panning, pitch);
-                                            }
-
-                                            index[0]++;
-                                        }
-                                        tick[0]++;
-                                    }), 0, 1000 / 20, TimeUnit.MILLISECONDS);
+                                    ItemUtil.giveCreativeItem(stack, true);
+                                    download.setLabel(new LiteralText("§l↓"));
                                 });
-                        } else {
-                            previewId = -1;
-                        }
-                    });
+                        });
 
-                    y += 25;
-                }
+                        WButton preview = new WButton(new LiteralText("▶"));
 
-                spanel.layout();
-            });
-        } catch (UnsupportedEncodingException err) {
-            err.printStackTrace();
-            loading.setText(new LiteralText("Error"));
-            ChatUtil.sendMessage("Error");
-        }
+                        ppanel.add(preview, 250, y, 20, 20);
+
+                        preview.setOnClick(() -> {
+                            if (previewId != id) {
+                                previewId = id;
+                                preview.setLabel(new LiteralText("..."));
+                                CodeUtilities.EXECUTOR
+                                    .submit(() -> {
+                                        String snotes = CodeUtilitiesServer.requestURL(
+                                            "https://untitled-57qvszfgg28u.runkit.sh/download?format=mcnbs&id="
+                                                + id);
+                                        List<String> notes = new ArrayList<>(
+                                            Arrays.asList(snotes.split("=")));
+
+                                        preview.setLabel(new LiteralText("■"));
+
+                                        int[] tick = {0};
+                                        int[] index = {0};
+                                        ScheduledExecutorService scheduler = Executors
+                                            .newScheduledThreadPool(1);
+                                        scheduler.scheduleAtFixedRate(() -> CodeUtilities.MC.submit(() -> { //apparently playing sounds non-sync can crash the game
+                                            if (previewId != id
+                                                || mc.currentScreen == null) {
+                                                scheduler.shutdown();
+                                                preview.setLabel(new LiteralText("▶"));
+                                                return;
+                                            }
+                                            if (notes.get(index[0])
+                                                .startsWith(tick[0] + ":")) {
+
+                                                String line = notes.get(index[0])
+                                                    .split(":")[1];
+
+                                                for (String n : line.split(";")) {
+                                                    String[] d = n.split(",");
+                                                    int instrumentid = Integer
+                                                        .parseInt(d[0]);
+                                                    float pitch =
+                                                        (float) Integer.parseInt(d[1])
+                                                            / 1000;
+                                                    float panning =
+                                                        (float) Integer.parseInt(d[2]) / 100;
+                                                    mc.player
+                                                        .playSound(
+                                                            instrumentids[instrumentid - 1],
+                                                            panning, pitch);
+                                                }
+
+                                                index[0]++;
+                                            }
+                                            tick[0]++;
+                                        }), 0, 1000 / 20, TimeUnit.MILLISECONDS);
+                                    });
+                            } else {
+                                previewId = -1;
+                            }
+                        });
+
+                        y += 25;
+                    }
+
+                    spanel.layout();
+                });
+            } catch (UnsupportedEncodingException err) {
+                err.printStackTrace();
+                loading.setText(new LiteralText("Error"));
+                ChatUtil.sendMessage("Error");
+            }
+        });
 
         spanel.setScrollingHorizontally(TriState.FALSE);
         spanel.setScrollingVertically(TriState.TRUE);
