@@ -32,6 +32,16 @@ public class NBSSearchCommand extends Command {
         );
     }
 
+    @Override
+    public String getDescription() {
+        return "TODO: Add description";
+    }
+
+    @Override
+    public String getName() {
+        return "/nbssearch";
+    }
+
     // Text based version below
 //    @Override
 //    public void register(MinecraftClient mc, CommandDispatcher<FabricClientCommandSource> cd) {

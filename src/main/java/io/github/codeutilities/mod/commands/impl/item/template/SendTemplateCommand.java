@@ -16,7 +16,17 @@ import java.io.IOException;
 public class SendTemplateCommand extends AbstractTemplateCommand {
 
     @Override
-    protected String getName() {
+    public String getDescription() {
+        return "TODO: Add description";
+    }
+
+    @Override
+    public String getName() {
+        return "/sendtemplate";
+    }
+
+    @Override
+    protected String getCmdName() {
         return "sendtemplate";
     }
 

@@ -23,4 +23,14 @@ public class CopyTextCommand extends Command {
                 )
         );
     }
+
+    @Override
+    public String getDescription() {
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return null;
+    }
 }

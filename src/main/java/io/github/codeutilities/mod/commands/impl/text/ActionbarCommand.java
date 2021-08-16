@@ -19,6 +19,19 @@ public class ActionbarCommand extends Command {
         reg("actionbarpreview",mc,cd);
     }
 
+    @Override
+    public String getDescription() {
+        return "/previewactionbar [text]\n"
+            + "/actionbarpreview [text]\n"
+            + "\n"
+            + "Displays the text in your actionbar or if no text is provided will use the name of the item you're holding.";
+    }
+
+    @Override
+    public String getName() {
+        return "/previewactionbar";
+    }
+
     public void reg(String name, MinecraftClient mc, CommandDispatcher<FabricClientCommandSource> cd) {
         cd.register(literal(name)
             .then(argument("message", StringArgumentType.greedyString())

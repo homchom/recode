@@ -39,6 +39,16 @@ public class PlotsCommand extends Command {
         }));
     }
 
+    @Override
+    public String getDescription() {
+        return "TODO: Add description";
+    }
+
+    @Override
+    public String getName() {
+        return "/plots";
+    }
+
     public static void getItems(CompoundTag recievedTag) {
         try {
             CompoundTag compoundTag = recievedTag;

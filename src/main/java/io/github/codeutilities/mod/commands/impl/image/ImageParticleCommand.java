@@ -79,6 +79,16 @@ public class ImageParticleCommand extends Command {
         );
     }
 
+    @Override
+    public String getDescription() {
+        return "TODO: Add description";
+    }
+
+    @Override
+    public String getName() {
+        return "/imageparticle";
+    }
+
     private String convertToTemplate(ParticleImage image, String name) {
         String[] data = image.getData();
         int width = image.getWidth();

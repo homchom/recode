@@ -36,4 +36,14 @@ public class HeadsCommand extends Command {
             return 1;
         })));
     }
+
+    @Override
+    public String getDescription() {
+        return "TODO: Add description";
+    }
+
+    @Override
+    public String getName() {
+        return "/heads";
+    }
 }

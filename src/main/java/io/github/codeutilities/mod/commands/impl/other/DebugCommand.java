@@ -24,4 +24,14 @@ public class DebugCommand extends Command {
                             })));
         }
     }
+
+    @Override
+    public String getDescription() {
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return null;
+    }
 }

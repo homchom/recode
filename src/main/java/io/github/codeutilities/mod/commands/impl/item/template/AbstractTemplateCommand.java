@@ -15,7 +15,7 @@ public abstract class AbstractTemplateCommand extends Command {
 
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<FabricClientCommandSource> cd) {
-        cd.register(ArgBuilder.literal(getName())
+        cd.register(ArgBuilder.literal(getCmdName())
                 .executes(ctx -> {
                     ItemStack item = mc.player.getMainHandStack();
                     if (TemplateUtils.isTemplate(item)) {
@@ -29,7 +29,7 @@ public abstract class AbstractTemplateCommand extends Command {
         );
     }
 
-    protected abstract String getName();
+    protected abstract String getCmdName();
 
     protected abstract void withTemplate(ItemStack stack);
 }

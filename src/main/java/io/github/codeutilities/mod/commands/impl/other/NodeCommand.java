@@ -36,4 +36,14 @@ public class NodeCommand extends Command {
 
         cd.register(cmd);
     }
+
+    @Override
+    public String getDescription() {
+        return "TODO: Add description";
+    }
+
+    @Override
+    public String getName() {
+        return "/node";
+    }
 }

@@ -68,6 +68,20 @@ public class ColorCommand extends Command {
 
     }
 
+    @Override
+    public String getDescription() {
+        return "/color rgb <r> <g> <b> (max 256)\n"
+            + "/color hex <hex>\n"
+            + "/color hsb <h> <s> <b> (max 360)\n"
+            + "\n"
+            + "Copies said color in the mc hex format.\nExample: /color 255 0 0 -> &x&f&f&0&0&0&0";
+    }
+
+    @Override
+    public String getName() {
+        return "/color";
+    }
+
     private void copyColor(Color color) {
         String colorName = Integer.toHexString(color.getRGB()).substring(2);
 

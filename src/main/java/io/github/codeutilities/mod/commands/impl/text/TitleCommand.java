@@ -19,6 +19,19 @@ public class TitleCommand extends Command {
         reg("titlepreview",mc,cd);
     }
 
+    @Override
+    public String getDescription() {
+        return "/previewtitle [text]\n"
+            + "/titlepreview [text]\n"
+            + "\n"
+            + "Displays the text in a title or if no text is provided will use the name of the item you're holding.";
+    }
+
+    @Override
+    public String getName() {
+        return "/previewtitle";
+    }
+
     public void reg(String name, MinecraftClient mc, CommandDispatcher<FabricClientCommandSource> cd) {
         cd.register(literal(name)
             .then(argument("message", StringArgumentType.greedyString())

@@ -37,9 +37,17 @@ import io.github.codeutilities.mod.commands.impl.text.TitleCommand;
 import io.github.codeutilities.mod.commands.impl.text.UuidCommand;
 import io.github.codeutilities.mod.config.Config;
 import io.github.codeutilities.sys.file.ILoader;
+import java.util.ArrayList;
+import java.util.List;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 
 public class CommandHandler implements ILoader {
+
+    private static List<Command> cmds = new ArrayList<>();
+
+    public static List<Command> getCommands() {
+        return cmds;
+    }
 
     @Override
     public void load() {
@@ -90,6 +98,7 @@ public class CommandHandler implements ILoader {
 
     public void register(Command cmd) {
         cmd.register(CodeUtilities.MC, ClientCommandManager.DISPATCHER);
+        cmds.add(cmd);
     }
 
     public void register(Command... cmds) {

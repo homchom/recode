@@ -20,6 +20,19 @@ public class SubTitleCommand extends Command {
         reg("subtitlepreview",mc,cd);
     }
 
+    @Override
+    public String getDescription() {
+        return "/previewsubtitle [text]\n"
+            + "/subtitlepreview [text]\n"
+            + "\n"
+            + "Displays the text in a subtitle or if no text is provided will use the name of the item you're holding.";
+    }
+
+    @Override
+    public String getName() {
+        return "/previewsubtitle";
+    }
+
     public void reg(String name, MinecraftClient mc, CommandDispatcher<FabricClientCommandSource> cd) {
         cd.register(literal(name)
             .then(argument("message", StringArgumentType.greedyString())

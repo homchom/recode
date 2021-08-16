@@ -46,4 +46,8 @@ public abstract class Command {
             playerEntity.sendMessage(message, actionBar);
         }
     }
+
+    public abstract String getDescription();
+
+    public abstract String getName();
 }

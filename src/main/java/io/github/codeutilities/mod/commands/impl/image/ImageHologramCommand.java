@@ -76,6 +76,20 @@ public class ImageHologramCommand extends Command {
         );
     }
 
+    @Override
+    public String getDescription() {
+        return "/imagehologram load <hex/colorcodes> <file>\n"
+            + "\n"
+            + "Generates a code template that displays the image using a holograms\n"
+            + "If you use hex the image colors will be more accurate, while the image size will be smaller. For colorcodes it's the opposite.\n"
+            + "Searches for the image in the CodeUtilities/Images folder which is located in your minecraft folder)";
+    }
+
+    @Override
+    public String getName() {
+        return "/imagehologram";
+    }
+
     private String convert(String[] layers) {
         StringBuilder code = new StringBuilder();
         StringBuilder currentBlock = new StringBuilder();

@@ -35,4 +35,14 @@ public class BreakableCommand extends Command {
                 })
         );
     }
+
+    @Override
+    public String getDescription() {
+        return "TODO: Add description";
+    }
+
+    @Override
+    public String getName() {
+        return "/breakable";
+    }
 }

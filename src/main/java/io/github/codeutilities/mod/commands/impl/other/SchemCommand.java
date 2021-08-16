@@ -39,6 +39,16 @@ public class SchemCommand extends Command {
         cd.register(subcommand(mc, ArgBuilder.literal("schematic")));
     }
 
+    @Override
+    public String getDescription() {
+        return "TODO: Add description";
+    }
+
+    @Override
+    public String getName() {
+        return "/schem";
+    }
+
     public LiteralArgumentBuilder<FabricClientCommandSource> subcommand(MinecraftClient mc, LiteralArgumentBuilder<FabricClientCommandSource> literal) {
         literal.then(ArgBuilder.literal("load")
                 .then(ArgBuilder.argument("filepath", StringArgumentType.greedyString())

@@ -29,6 +29,16 @@ public class PJoinCommand extends Command {
         );
     }
 
+    @Override
+    public String getDescription() {
+        return "TODO: Add description";
+    }
+
+    @Override
+    public String getName() {
+        return "/pjoin";
+    }
+
     private int run(MinecraftClient mc, String player) {
 
         if (player.equals(mc.player.getName().asString())) {

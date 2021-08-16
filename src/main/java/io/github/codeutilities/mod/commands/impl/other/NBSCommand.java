@@ -98,4 +98,14 @@ public class NBSCommand extends Command {
                 )
         );
     }
+
+    @Override
+    public String getDescription() {
+        return "TODO: Add description";
+    }
+
+    @Override
+    public String getName() {
+        return "/nbs";
+    }
 }

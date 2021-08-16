@@ -18,7 +18,17 @@ import org.apache.http.util.EntityUtils;
 public class WebviewCommand extends AbstractTemplateCommand {
 
     @Override
-    protected String getName() {
+    public String getDescription() {
+        return "TODO: Add description";
+    }
+
+    @Override
+    public String getName() {
+        return "/webview";
+    }
+
+    @Override
+    protected String getCmdName() {
         return "webview";
     }
 

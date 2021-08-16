@@ -64,4 +64,16 @@ public class UuidCommand extends Command {
                 )
         );
     }
+
+    @Override
+    public String getDescription() {
+        return "/uuid <username>\n"
+            + "\n"
+            + "Copies the uuid of the player to your clipboard and if you're in dev mode also gives you the uuid as a text item.";
+    }
+
+    @Override
+    public String getName() {
+        return "/uuid";
+    }
 }

@@ -33,6 +33,18 @@ public class ColorsCommand extends Command {
                 })));
     }
 
+    @Override
+    public String getDescription() {
+        return "/colors [saturation]\n"
+            + "\n"
+            + "When doing /colors it shows a color palette in chat or opens a color picker based on whats selected in the config. When provided with a saturation always opens the palette.";
+    }
+
+    @Override
+    public String getName() {
+        return "/colors";
+    }
+
     private void showColorPalette(float saturation) {
         int maxColors = Config.getInteger("colorMaxRender");
         int lines = Config.getInteger("colorLines");

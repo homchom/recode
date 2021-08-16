@@ -66,6 +66,16 @@ public class GiveCommand extends Command {
         );
     }
 
+    @Override
+    public String getDescription() {
+        return "TODO: Add description";
+    }
+
+    @Override
+    public String getName() {
+        return "/dfgive";
+    }
+
     private void giveItem(MinecraftClient mc, ItemStack item, int count) {
         item.setCount(count);
         if (this.isCreative(mc)) {

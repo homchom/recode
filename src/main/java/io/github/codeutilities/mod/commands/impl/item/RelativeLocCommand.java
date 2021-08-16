@@ -55,6 +55,16 @@ public class RelativeLocCommand extends Command {
         );
     }
 
+    @Override
+    public String getDescription() {
+        return "TODO: Add description";
+    }
+
+    @Override
+    public String getName() {
+        return "/relativeloc";
+    }
+
     private int run(String target, float forwards, float upwards, float right, float rot_down, float rot_right) {
         String[] targetNames = {"Selected Object", "Default", "Damager", "Killer", "Victim", "Shooter", "Projectile"};
         String finalTarget = targetNames[Arrays.asList(TARGET_TYPES).indexOf(target)];
