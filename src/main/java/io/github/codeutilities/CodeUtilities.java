@@ -47,6 +47,8 @@ import io.github.codeutilities.sys.networking.websocket.SocketHandler;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -56,6 +58,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.util.math.BlockPos;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -95,6 +98,7 @@ public class CodeUtilities implements ModInitializer {
     public static String RYANLAND_UUID = "3134fb4d-a345-4c5e-9513-97c2c951223e";
     public static String OPTIONSTXT = "";
     public static String CLIENT_LANG = "unknown";
+    public static String[] signText = {};//stores the text of the code sign corresponding to the currently open chest
 
     static {
         try {
