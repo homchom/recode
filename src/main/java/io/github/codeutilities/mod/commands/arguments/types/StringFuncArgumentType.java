@@ -18,9 +18,11 @@ import net.minecraft.text.LiteralText;
 public class StringFuncArgumentType implements ArgumentType<String> {
 
     Function<Void,List<String>> func;
+    boolean greedy;
 
-    public StringFuncArgumentType(Function<Void, List<String>> func) {
+    public StringFuncArgumentType(Function<Void, List<String>> func, boolean greedy) {
         this.func = func;
+        this.greedy = greedy;
     }
 
     @Override
@@ -40,8 +42,9 @@ public class StringFuncArgumentType implements ArgumentType<String> {
     public String parse(StringReader reader) throws CommandSyntaxException {
         int i = reader.getCursor();
 
-        while (reader.canRead() && reader.peek() != ' ') {
-            reader.skip();
+        while (reader.canRead()) {
+            if (this.greedy) reader.skip();
+            else if (reader.peek() != ' ') reader.skip();
         }
 
         return reader.getString().substring(i, reader.getCursor());

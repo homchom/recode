@@ -6,7 +6,7 @@ import java.util.List;
 
 public class FileArgumentType {
 
-    public static StringFuncArgumentType folder(File folder) {
+    public static StringFuncArgumentType folder(File folder, boolean greedy) {
         return new StringFuncArgumentType(v -> {
             List<String> files = new ArrayList<>();
 
@@ -15,7 +15,7 @@ public class FileArgumentType {
             }
 
             return files;
-        });
+        }, true);
     }
 
 

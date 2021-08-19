@@ -63,7 +63,7 @@ public class NBSCommand extends Command {
     public void register(MinecraftClient mc, CommandDispatcher<FabricClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("nbs")
                 .then(ArgBuilder.literal("load")
-                        .then(ArgBuilder.argument("filename", FileArgumentType.folder(ExternalFile.NBS_FILES.getFile()))
+                        .then(ArgBuilder.argument("filename", FileArgumentType.folder(ExternalFile.NBS_FILES.getFile(), true))
                                 .executes(ctx -> {
                                     if (this.isCreative(mc)) {
                                         String filename = StringArgumentType.getString(ctx, "filename");

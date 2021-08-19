@@ -25,7 +25,7 @@ public class ImageHologramCommand extends Command {
         cd.register(ArgBuilder.literal("imagehologram")
                 .then(ArgBuilder.literal("load")
                         .then(ArgBuilder.literal("hex")
-                                .then(ArgBuilder.argument("location", FileArgumentType.folder(ExternalFile.IMAGE_FILES.getFile()))
+                                .then(ArgBuilder.argument("location", FileArgumentType.folder(ExternalFile.IMAGE_FILES.getFile(), true))
                                         .executes(ctx -> {
                                             try {
                                                 String location = StringArgumentType.getString(ctx, "location");
@@ -49,7 +49,7 @@ public class ImageHologramCommand extends Command {
                                             }
                                         })))
                         .then(ArgBuilder.literal("colorcodes")
-                                .then(ArgBuilder.argument("location", FileArgumentType.folder(ExternalFile.IMAGE_FILES.getFile()))
+                                .then(ArgBuilder.argument("location", FileArgumentType.folder(ExternalFile.IMAGE_FILES.getFile(), true))
                                         .executes(ctx -> {
                                             try {
                                                 String location = StringArgumentType.getString(ctx, "location");
