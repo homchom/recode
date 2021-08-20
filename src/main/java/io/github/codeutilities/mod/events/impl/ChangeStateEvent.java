@@ -7,6 +7,7 @@ import io.github.codeutilities.mod.features.social.tab.Client;
 import io.github.codeutilities.mod.features.social.tab.WebMessage;
 import io.github.codeutilities.mod.features.streamer.StreamerModeHandler;
 import io.github.codeutilities.sys.networking.State;
+import io.github.codeutilities.sys.player.chat.MessageGrabber;
 import net.minecraft.util.ActionResult;
 
 public class ChangeStateEvent {
@@ -16,6 +17,10 @@ public class ChangeStateEvent {
 
     private ActionResult run(State newstate, State oldstate) {
         StreamerModeHandler.handleStateChange(oldstate, newstate);
+
+        if (newstate.mode == State.Mode.OFFLINE) {
+            MessageGrabber.reset();
+        }
 
         try{
             DFDiscordRPC.getInstance().update(newstate);

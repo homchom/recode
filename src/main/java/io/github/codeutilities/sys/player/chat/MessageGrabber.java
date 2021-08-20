@@ -86,6 +86,14 @@ public class MessageGrabber {
         }
     }
 
+    public static void reset() {
+        tasks.clear();
+        messageConsumer = null;
+        messagesToGrab = 0;
+        silent = false;
+        filter = null;
+    }
+
     public static boolean isActive() {
         return messageConsumer != null;
     }
