@@ -12,7 +12,7 @@ public class SupportQuestionCheck extends MessageCheck implements StreamerModeMe
 
     @Override
     public MessageType getType() {
-        return null;
+        return MessageType.SUPPORT_QUESTION;
     }
 
     @Override
