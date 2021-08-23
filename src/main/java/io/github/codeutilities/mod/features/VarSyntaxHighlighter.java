@@ -42,7 +42,9 @@ public class VarSyntaxHighlighter {
         "/item lore set N",
         "/item lore add ",
         "/ils N",
-        "/sll N"
+        "/sll N",
+        "/p name ",
+        "/plot name "
     );
 
     public static Text highlight(String msg) {
