@@ -1,6 +1,7 @@
 package io.github.codeutilities.mod.commands;
 
 import io.github.codeutilities.CodeUtilities;
+import io.github.codeutilities.mod.commands.impl.ext.ImportMapCommand;
 import io.github.codeutilities.mod.commands.impl.image.ImageHologramCommand;
 import io.github.codeutilities.mod.commands.impl.image.ImageParticleCommand;
 import io.github.codeutilities.mod.commands.impl.item.BreakableCommand;
@@ -91,7 +92,8 @@ public class CommandHandler implements ILoader {
                 new NBSSearchCommand(),
                 new PartnerBracketCommand(),
                 new CodeVaultCommand(),
-                new ImportFileCommand()
+                new ImportFileCommand(),
+                new ImportMapCommand()
             );
         }
     }
