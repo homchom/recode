@@ -44,7 +44,12 @@ public class CodeUtilitiesServer extends WebSocketClient {
         Requester req = requests.get(msg.getId());
         if(req != null) {
             requests.remove(msg.getId());
-            req.run(new WebMessage(msg.getType(), msg.getContent(), msg.getId()));
+            try {
+                req.run(new WebMessage(msg.getType(), msg.getContent(), msg.getId()));
+            } catch (Exception e) {
+                System.err.println(String.format("Error running ws callback: %s : %s @ %s", msg.getType(), msg.getContent(), msg.getId()));
+                e.printStackTrace();
+            }
         }
     }
 
