@@ -177,7 +177,12 @@
     "config.codeutilities.option.quickVarScope": "Quick Variable Scope",
     "config.codeutilities.option.quickVarScope.tooltip": "Typing \"-s\", \"-l\" or \"-g\" after a\nvariable name in chat will change its scope,\nsimilar to the way /var works.",
     "config.codeutilities.option.destroyItemReset": "Destroy Item Reset",
-    "config.codeutilities.option.destroyItemReset.tooltip": "Resets your inventory to the /rc items after shift clicking the destroy item slot while in dev mode.",
+    "config.codeutilities.option.destroyItemReset.tooltip": "Resets your inventory to the specified set of items after shift clicking the destroy item slot while in dev mode.",
+
+    "config.codeutilities.option.destroyitemresettype.off": "Off",
+    "config.codeutilities.option.destroyitemresettype.standard": "Standard Items",
+    "config.codeutilities.option.destroyitemresettype.compact": "Compact Items",
+
 
     "config.codeutilities.subcategory.misc_audio": "Project: Audio",
     "config.codeutilities.subcategory.misc_audio.tooltip": "Project: Audio settings",

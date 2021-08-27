@@ -2,6 +2,7 @@ package io.github.codeutilities.mod.mixin.render.screen;
 
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.config.Config;
+import io.github.codeutilities.mod.config.internal.DestroyItemResetType;
 import io.github.codeutilities.sys.networking.State;
 import io.github.codeutilities.sys.player.DFInfo;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
@@ -20,10 +21,20 @@ public class MCreativeInventoryScreen {
 
     @Inject(method = "onMouseClick", at = @At("HEAD"), cancellable = true)
     public void onMouseClick(Slot slot, int invSlot, int clickData, SlotActionType actionType, CallbackInfo ci) {
-        if (Config.getBoolean("destroyItemReset") && DFInfo.isOnDF() && DFInfo.currentState.getMode() == State.CurrentState.Mode.DEV
+        DestroyItemResetType resetType = Config.getEnum("destroyItemReset", DestroyItemResetType.class);
+        if (resetType != DestroyItemResetType.OFF && DFInfo.isOnDF() && DFInfo.currentState.getMode() == State.CurrentState.Mode.DEV
                 && actionType == SlotActionType.QUICK_MOVE && slot == this.deleteItemSlot) {
             CodeUtilities.MC.openScreen(null);
-            CodeUtilities.MC.player.sendChatMessage("/rc");
+            String cmd = "";
+            switch (resetType) {
+                case STANDARD:
+                    cmd = "/rs";
+                    break;
+                case COMPACT:
+                    cmd = "/rc";
+                    break;
+            }
+            CodeUtilities.MC.player.sendChatMessage(cmd);
             ci.cancel();
         }
     }
