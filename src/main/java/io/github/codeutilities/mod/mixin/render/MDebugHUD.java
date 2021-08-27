@@ -24,7 +24,7 @@ public class MDebugHUD {
             List<String> leftText = callbackInfoReturnable.getReturnValue();
             leftText.add("");
             leftText.add(Formatting.UNDERLINE + "CodeUtilities");
-            leftText.add("Client TPS: " + DFInfo.TPS);
+            leftText.add("Clients TPS: " + DFInfo.TPS);
 
             callbackInfoReturnable.setReturnValue(leftText);
         } catch (Exception e) {

@@ -1,44 +1,47 @@
 package io.github.codeutilities.sys.networking.websocket;
 
-import io.github.codeutilities.mod.commands.IManager;
-import io.github.codeutilities.sys.networking.websocket.client.Client;
+import io.github.codeutilities.sys.file.ILoader;
+import io.github.codeutilities.sys.networking.websocket.client.Clients;
 import io.github.codeutilities.sys.networking.websocket.client.SocketClient;
+import io.github.codeutilities.sys.networking.websocket.client.WebsocketServer;
 import io.github.codeutilities.sys.networking.websocket.client.type.NbtItem;
 import io.github.codeutilities.sys.networking.websocket.client.type.RawTemplateItem;
 import io.github.codeutilities.sys.networking.websocket.client.type.SocketItem;
 import io.github.codeutilities.sys.networking.websocket.client.type.TemplateItem;
-import org.glassfish.tyrus.server.Server;
+import org.java_websocket.WebSocket;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class SocketHandler implements IManager<Client> {
+public class SocketHandler implements ILoader {
 
     private static SocketHandler instance;
     private final Map<String, SocketItem> socketItemMap = new HashMap<>();
-    private final List<Client> clients = new ArrayList<>();
+    private final List<SocketClient> clients = new ArrayList<>();
 
-    private ServerSocket server;
+    private ServerSocket serverSocket;
+    private WebsocketServer webSocketServer;
 
     public static SocketHandler getInstance() {
         return instance;
     }
 
     @Override
-    public void initialize() {
+    public void load() {
         instance = this;
 
         this.addSocketItem(new NbtItem(), new TemplateItem(), new RawTemplateItem());
         try {
-            server = new ServerSocket(31372);
+            serverSocket = new ServerSocket(31372);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        if (server == null) {
+        if (serverSocket == null) {
             return;
         }
 
@@ -47,18 +50,18 @@ public class SocketHandler implements IManager<Client> {
             System.out.println("Opened socket listener");
             while (true) {
                 try {
-                    SocketClient client = new SocketClient(server.accept());
+                    SocketClient client = new SocketClient(serverSocket.accept());
                     this.register(client);
-                    System.out.println("Client connected on local server: " + client.getSocket());
+                    System.out.println("Clients connected on local server: " + client.getSocket());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         });
 
-        Server server = new Server("localhost", 31371, "/codeutilities", ItemWebEndpoint.class);
+        webSocketServer = new WebsocketServer(new InetSocketAddress("localhost", 31371));
         try {
-            server.start();
+            new Thread(webSocketServer, "Item-API-Websocket-Thread").start();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -68,17 +71,31 @@ public class SocketHandler implements IManager<Client> {
         Arrays.stream(items).forEach(item -> socketItemMap.put(item.getIdentifier(), item));
     }
 
-    @Override
-    public void register(Client client) {
+    public void register(SocketClient client) {
         this.clients.add(client);
     }
 
-    @Override
-    public List<Client> getRegistered() {
-        return this.clients;
+    public void unregister(SocketClient socketClient) {
+        this.clients.remove(socketClient);
     }
 
     public Map<String, SocketItem> getSocketItems() {
         return socketItemMap;
+    }
+
+    public void sendData(String message) {
+        for (SocketClient client :
+                clients) {
+            try {
+                client.sendData(message);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        for (WebSocket socket :
+                webSocketServer.getConnections()) {
+            socket.send(message);
+        }
     }
 }

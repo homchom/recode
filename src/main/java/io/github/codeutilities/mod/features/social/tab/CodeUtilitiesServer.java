@@ -6,7 +6,10 @@ import com.google.gson.JsonObject;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.sys.util.TextUtil;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.FutureTask;
 
 import net.minecraft.client.MinecraftClient;
@@ -15,7 +18,7 @@ import org.java_websocket.handshake.ServerHandshake;
 
 public class CodeUtilitiesServer extends WebSocketClient {
 
-    private static JsonArray users = new JsonArray();
+    private static List<User> users = Collections.emptyList();
     private static HashMap<String, Requester> requests = new HashMap<>();
     private final CodeUtilitiesServer instance;
 
@@ -25,18 +28,21 @@ public class CodeUtilitiesServer extends WebSocketClient {
     }
 
     @Override
-    public void onOpen(ServerHandshake handshakedata) {
-
-    }
+    public void onOpen(ServerHandshake handshakedata) {}
 
     @Override
     public void onMessage(String message) {
         JsonObject jsonObject = CodeUtilities.JSON_PARSER.parse(message).getAsJsonObject();
         WebMessage msg = new WebMessage(jsonObject.get("type").getAsString(), jsonObject.get("content"), jsonObject.get("id").getAsString());
-        if(msg.getType().equals("users")){
-            users = msg.getContent().getAsJsonArray();
-        }
-        if(msg.getType().equals("chat")){
+        if (jsonObject.get("type").getAsString().equals("users")) {
+            List<User> users2 = new ArrayList<>();
+            for (JsonElement element :
+                    jsonObject.get("content").getAsJsonArray()) {
+                users2.add(new User(element.getAsJsonObject()));
+            }
+
+            users = users2;
+        } else if (jsonObject.get("type").getAsString().equals("chat")) {
             if(MinecraftClient.getInstance().player != null){
                 MinecraftClient.getInstance().player.sendMessage(TextUtil.colorCodesToTextComponent(msg.getContent().getAsString()), false);
             }
@@ -55,7 +61,7 @@ public class CodeUtilitiesServer extends WebSocketClient {
 
     @Override
     public void onClose(int code, String reason, boolean remote) {
-        users = new JsonArray();
+        users = Collections.emptyList();
     }
 
     @Override
@@ -65,13 +71,10 @@ public class CodeUtilitiesServer extends WebSocketClient {
 
     public static User getUser(String query){
         query = query.replaceAll("-", "");
-        String mode = "uuid";
-        if(query.length() <= 16) mode = "username";
-        for(JsonElement jsonElement : users){
-            JsonObject jsonObject = jsonElement.getAsJsonObject();
-            if(jsonObject.get(mode).getAsString().equals(query)){
-                return new User(jsonObject);
-            }
+        for (int i = 0; i < users.size(); i++) {
+            User user = users.get(i);
+            if(query.length() <= 16 && user.getUsername().equals(query)) return user;
+            else if (user.getUuid().equals(query)) return user;
         }
         return null;
     }
