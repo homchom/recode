@@ -29,6 +29,7 @@ public class ScreenGroup extends ConfigGroup {
         // Cosmetic
         ConfigSubGroup cosmetic = new ConfigSubGroup("cosmetic");
         cosmetic.register(new BooleanSetting("loadTabStars", true));
+        cosmetic.register(new BooleanSetting("relocateTabStars", false));
         cosmetic.register(new BooleanSetting("cosmeticsEnabled", true));
         this.register(cosmetic);
 
