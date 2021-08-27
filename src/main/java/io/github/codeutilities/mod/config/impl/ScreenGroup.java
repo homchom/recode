@@ -42,6 +42,7 @@ public class ScreenGroup extends ConfigGroup {
         code.register(new BooleanSetting("highlightVarSyntax", true));
         code.register(new BooleanSetting("showCodeblockDescription", true));
         code.register(new BooleanSetting("showParameterErrors", true));
+        code.register(new BooleanSetting("previewHeadSkins", true));
         this.register(code);
     }
 }
