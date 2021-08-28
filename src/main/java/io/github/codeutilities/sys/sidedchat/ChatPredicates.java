@@ -108,7 +108,7 @@ public class ChatPredicates {
             new ChatPattern.ChatComponent("[ADMIN] ", TextColor.fromFormatting(Formatting.RED),0)
     );
     public static Predicate<Text> getAdminPredicate() {
-        return text -> (new ChatPattern(text)).contains(modChatPattern);
+        return text -> (new ChatPattern(text)).contains(adminChatPattern);
     }
 }
 
