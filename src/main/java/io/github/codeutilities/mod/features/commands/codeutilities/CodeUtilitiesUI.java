@@ -4,11 +4,13 @@ import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.config.menu.ConfigScreen;
 import io.github.codeutilities.sys.renderer.IMenu;
 import io.github.codeutilities.sys.renderer.widgets.CImage;
+import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WButton;
 import io.github.cottonmc.cotton.gui.widget.WLabel;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ConfirmChatLinkScreen;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
@@ -51,7 +53,18 @@ public class CodeUtilitiesUI extends LightweightGuiDescription implements IMenu 
 
         // ------------------------ Bug Report Button ------------------------
         WButton bugReport = new WButton(new LiteralText("Bug Report"));
-        bugReport.setOnClick(() -> Util.getOperatingSystem().open("https://github.com/CodeUtilities/CodeUtilities/issues"));
+        bugReport.setOnClick(() -> {
+            String link = "https://github.com/CodeUtilities/CodeUtilities/issues";
+
+            ConfirmChatLinkScreen gui_3 = new ConfirmChatLinkScreen((bool) -> {
+                if (bool) {
+                    Util.getOperatingSystem().open(link);
+                }
+                CodeUtilitiesUI gui = new CodeUtilitiesUI();
+                gui.scheduleOpenGui(gui);
+            }, link, false);
+            MinecraftClient.getInstance().send(() -> MinecraftClient.getInstance().openScreen(gui_3));
+        });
         panel.add(bugReport, 60, 192, 100, 20);
 
         // ------------------------ Options Button ------------------------
