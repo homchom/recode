@@ -149,6 +149,8 @@ public class TemplatePeeker implements ILoader {
 
                                     if (blocks.has("action")) {
                                         action = blocks.get("action").getAsString();
+                                    } else if (blocks.has("data")) {
+                                        action = blocks.get("data").getAsString();
                                     }
                                     if (blocks.has("subAction")) {
                                         subAction = blocks.get("subAction").getAsString();
