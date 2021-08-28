@@ -41,7 +41,9 @@ public class PlotsCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "/plots\n\nOpen the df plots menu from anywhere.";
+        return "[blue]/plots[reset]\n"
+                + "\n"
+                + "Shows the list of your own plots. Click on the icon to join the plot.";
     }
 
     @Override

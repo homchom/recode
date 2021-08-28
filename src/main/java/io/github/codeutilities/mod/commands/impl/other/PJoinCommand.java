@@ -31,7 +31,9 @@ public class PJoinCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "/pjoin <player>\n\nJoin the plot the player is on.";
+        return "[blue]/pjoin <player>[reset]\n"
+                + "\n"
+                + "Join the plot the specified player is currently playing.";
     }
 
     @Override

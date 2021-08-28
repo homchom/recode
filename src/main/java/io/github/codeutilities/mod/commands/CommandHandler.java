@@ -63,7 +63,6 @@ public class CommandHandler implements ILoader {
             new CopyTextCommand(),
             new GradientCommand(),
             new SearchCommand(),
-            new DebugCommand(),
             new QueueCommand(),
             new TitleCommand(),
             new SubTitleCommand(),

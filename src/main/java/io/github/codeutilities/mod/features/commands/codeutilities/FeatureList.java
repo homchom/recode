@@ -19,28 +19,30 @@ public class FeatureList {
 
         features.addAll(Arrays.asList(new Feature(
             "Discord RPC",
-            "Set a currently playing status based on which df plot you're playing right now."
+            "Displays which plot you are in on \"Currently Playing\" status of your Discord profile.\n" +
+            "You can modify the appearance in the config menu."
         ), new Feature(
             "Tablist Stars",
-            "Every CodeUtilities user gets a fancy star next to their name in the tablist."
+            "A star is displayed next to each CodeUtilities mod user in the tab player list."
         ), new Feature(
-            "Project-Audio",
-            "Once enabled in the config you can use project audio directly ingame."
+            "Project: Audio",
+            "[red]*Disabled by default, you can enable this feature in config*[reset]\n" +
+            "Plays custom audio in plots. With CodeUtilities, you do not need to open web browser to use Project: Audio."
         ), new Feature(
             "Side Chat",
-            "Gives you 2 chats in which you can seperate msgs to. Check out the config for more."
+            "Gives you 2 chats in which you can seperate messages to. Check out the config for more information."
         ), new Feature(
-            "CodeDesc",
-            "When opening a codeblock chest it shows the action description."
+            "Code Info",
+            "When opening a code chest it shows the action description next to the chest menu."
         ), new Feature(
-            "ItemTags",
+            "Item Tags",
             "When holding a keybind defined in your settings you can view its item tags."
         ), new Feature(
-            "MessageStacker",
+            "Message Stacker",
             "If you receive the same message multiple times it combines them into one."
         ), new Feature(
-            "VarHighlighting",
-            "When editing a variable, number or text you will receive a preview for texts or the syntax highlighted for vars and nums."
+            "Var Highlighting",
+            "When editing a variable, number or text you will receive a preview for texts or the syntax highlighted for variables and numbers."
         )));
 
         features.sort(Comparator.comparing(Feature::getName));

@@ -166,7 +166,9 @@ public class QueueCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "/queue\n\nView the plot queue of jeremasters stream.";
+        return "[blue]/queue[reset]\n"
+                + "\n"
+                + "Checks the Plot Queue of Jeremaster's DiamondFire stream.";
     }
 
     @Override

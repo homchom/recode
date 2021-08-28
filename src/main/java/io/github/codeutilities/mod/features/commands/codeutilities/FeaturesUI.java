@@ -46,10 +46,10 @@ public class FeaturesUI extends LightweightGuiDescription implements IMenu {
 
                 String desc = f.getDescription();
 
-                desc = desc.replaceAll("\\[red\\]", !LibGuiClient.config.darkMode ? "§x§B§7§1§2§0§0" : "§x§D§D§4§6§2§C");
-                desc = desc.replaceAll("\\[blue\\]", !LibGuiClient.config.darkMode ? "§x§0§0§0§0§A§B" : "§x§6§8§A§E§E§3");
-                desc = desc.replaceAll("\\[green\\]", !LibGuiClient.config.darkMode ? "§x§0§0§8§7§0§F" : "§x§6§8§A§E§E§3");
-                desc = desc.replaceAll("\\[yellow\\]", !LibGuiClient.config.darkMode ? "§x§D§3§8§2§0§0" : "§x§8§1§E§2§4§2");
+                desc = desc.replaceAll("\\[red\\]", !LibGuiClient.config.darkMode ? "§x§b§7§1§2§0§0" : "§x§d§d§4§6§2§c");
+                desc = desc.replaceAll("\\[blue\\]", !LibGuiClient.config.darkMode ? "§x§0§0§0§0§a§b" : "§x§6§8§a§e§e§3");
+                desc = desc.replaceAll("\\[green\\]", !LibGuiClient.config.darkMode ? "§x§0§0§8§7§0§f" : "§x§6§8§a§e§e§3");
+                desc = desc.replaceAll("\\[yellow\\]", !LibGuiClient.config.darkMode ? "§x§d§3§8§2§0§0" : "§x§8§1§e§2§4§2");
                 desc = desc.replaceAll("\\[reset\\]", "§r");
 
                 text.setText(TextUtil.colorCodesToTextComponent(desc));

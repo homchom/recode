@@ -101,8 +101,12 @@ public class NBSCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "/nbs player\n/nbs load <file>\n\n"
-            + "Import local .nbs files in 'CodeUtilities/Nbs Files' as templates into your plot and then play them using the /nbs player\nFor searching the web check out /nbssearch";
+        return "[blue]/nbs load <file>[reset]\n"
+                + "[blue]/nbs load <file>[reset]\n"
+                + "\n"
+                + "Imports Note Block Song files (.nbs) into DiamondFire.\n"
+                + "Put the files you want to use in [green].minecraft/CodeUtilities/NBS Files[reset] folder.\n"
+                + "Use [yellow]/nbs player[reset] to grab the Song Player which plays the imported song data.";
     }
 
     @Override

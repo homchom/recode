@@ -152,7 +152,9 @@ public class PartnerBracketCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "/partnerbracket\n\nCan be used for highlighting 2 brackets (pistons) of an if/repeat statement for finding the corresponding partner more easily.\nAlso has a keybind.";
+        return "[blue]/partnerbracket[reset]\n"
+                + "\n"
+                + "Highlights where the end/start of the piston bracket you are looking is.";
     }
 
     @Override
