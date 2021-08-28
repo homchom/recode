@@ -155,7 +155,16 @@ public class VarSyntaxHighlighter {
         Matcher percentm = Pattern.compile("%[a-zA-Z]+\\(?").matcher(msg);
 
         while (percentm.find()) {
-            if (!percentcodes.contains(percentm.group())) {
+            boolean valid = false;
+
+            for (String code : percentcodes) {
+                if (percentm.group().startsWith(code)) {
+                    valid = true;
+                    break;
+                }
+            }
+
+            if (!valid) {
                 if (percentcodes.contains(percentm.group().replace("(", ""))) {
                     return "§c" + percentm.group().replace("(", "") + " doesnt support brackets!";
                 } else if (percentcodes.contains(percentm.group() + "(")) {
@@ -177,10 +186,13 @@ public class VarSyntaxHighlighter {
 
         int depth = 0;
         boolean percent = false;
+        String ptext = "";
 
         for (char c : msg.toCharArray()) {
+            if (percent) ptext+=c;
             if (c == '%') {
                 percent = true;
+                ptext="%";
                 depth++;
                 o.append(color(depth));
             } else if (c == '(') {
@@ -202,7 +214,15 @@ public class VarSyntaxHighlighter {
                 percent = false;
                 continue;
             } else {
-                if (!(c + "").matches("[a-zA-Z]") && percent) {
+                boolean valid = false;
+                for (String code : percentcodes) {
+                    if (code.startsWith(ptext)) {
+                        valid = true;
+                        break;
+                    }
+                }
+                if (!valid) {
+                    ptext = "";
                     percent = false;
                     depth--;
                     o.append(color(depth));
