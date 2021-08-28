@@ -74,7 +74,7 @@ public class TextUtil {
         MutableText result = new LiteralText("");
 
         try {
-            Pattern pattern = Pattern.compile("(§[a-f0-9lonmkr]|§x(§[a-f0-9]){6})");
+            Pattern pattern = Pattern.compile("(§[a-f0-9lonmkrA-FLONMRK]|§x(§[a-f0-9A-F]){6})");
             Matcher matcher = pattern.matcher(message);
 
             Style s = Style.EMPTY;
