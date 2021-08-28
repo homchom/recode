@@ -1,6 +1,7 @@
 package io.github.codeutilities.mod.mixin.game;
 
 import io.github.codeutilities.CodeUtilities;
+import io.github.codeutilities.sys.sidedchat.ChatShortcut;
 import net.minecraft.client.MinecraftClient;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -15,4 +16,9 @@ public class MMinecraftClient {
         CodeUtilities.onClose();
     }
 
+    @Inject(method = "openChatScreen", at = @At("HEAD"))
+    public void openChatScreen(String text, CallbackInfo ci) {
+        // set such that no shortcut is active when pressing 't'
+        ChatShortcut.setCurrentChatShortcut(null);
+    }
 }

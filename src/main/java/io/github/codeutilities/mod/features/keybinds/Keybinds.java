@@ -6,20 +6,20 @@ import io.github.codeutilities.sys.player.DFInfo;
 import io.github.codeutilities.sys.networking.State;
 import io.github.codeutilities.mod.features.commands.CodeSearcher;
 import io.github.codeutilities.sys.player.chat.ChatType;
-import io.github.codeutilities.sys.sidedchat.ChatRule;
+import io.github.codeutilities.sys.sidedchat.ChatShortcut;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.InputUtil.Type;
 import net.minecraft.util.math.BlockPos;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Keybinds implements ClientModInitializer {
 
@@ -165,6 +165,13 @@ public class Keybinds implements ClientModInitializer {
                 "key.codeutilities.support.accept", InputUtil.Type.KEYSYM, -1, "key.category.codeutilities"));
         KeyBinding supportQueue = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.codeutilities.support.queue", InputUtil.Type.KEYSYM, -1, "key.category.codeutilities"));
+
+        // register all the keybindings for the chat rooms
+        for (ChatShortcut chatShortcut: ChatShortcut.values()) {
+            ChatShortcut.addKeyBinding(KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                    chatShortcut.getTranslationKey(), -1, "key.category.codeutilities"
+            )), chatShortcut);
+        }
 
 //        // Sided Chat
 //        Map<ChatType, KeyBinding> chatTypeKeyBindingMap = new HashMap<>();
@@ -341,6 +348,28 @@ public class Keybinds implements ClientModInitializer {
 
             while (supportQueue.wasPressed()) {
                 sendChat("/support queue");
+            }
+
+            // chat shortcuts
+            Optional<KeyBinding> pressedChatShortcut = ChatShortcut.keyBindings().stream()
+                    .filter(keyBinding -> {
+                        // filter which also needs to consume all of the wasPressed
+                        // e.g. if multiple inputs went by before next frame was drawn
+                        boolean pressed = false;
+                        while (keyBinding.wasPressed()) {
+                            pressed = true;
+                        }
+                        return pressed;
+                    })
+                    // will only handle the first, if for some reason you bind multiple chats to one button
+                    .findFirst();
+
+            // if any chat shortcut was pressed
+            if (pressedChatShortcut.isPresent()) {
+                ChatShortcut chatShortcut = ChatShortcut.getFromKey(pressedChatShortcut.get());
+
+                ChatShortcut.setCurrentChatShortcut(chatShortcut);
+                mc.openScreen(new ChatScreen(""));
             }
         });
     }

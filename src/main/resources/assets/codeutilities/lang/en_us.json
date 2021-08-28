@@ -365,5 +365,9 @@
 
     "key.codeutilities.modv": "[Mod] Vanish",
     "key.codeutilities.support.accept": "[Support] Accept Support Request",
-    "key.codeutilities.support.queue": "[Support] Show Queue"
+    "key.codeutilities.support.queue": "[Support] Show Queue",
+
+    "key.codeutilities.support_chat": "[Support] Send Message to /sb",
+    "key.codeutilities.mod_chat": "[Mod] Send Message to /mb",
+    "key.codeutilities.admin_chat": "[Admin] Send Message to /ab"
 }
