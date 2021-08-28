@@ -32,7 +32,7 @@ public class ImageHologramCommand extends Command {
                                                 File f = new File(ExternalFile.IMAGE_FILES.getFile(), location + (location.endsWith(".png") ? "" : ".png"));
 
                                                 if (f.exists()) {
-                                                    String[] strings = ImageToHologram.convert116(f);
+                                                    String[] strings = ImageToHologram.convertWithHex(f);
 
                                                     ItemStack stack = new ItemStack(Items.ENDER_CHEST);
                                                     TemplateUtils.compressTemplateNBT(stack, StringArgumentType.getString(ctx, "location"), mc.player.getName().asString(), convert(strings));
@@ -56,7 +56,7 @@ public class ImageHologramCommand extends Command {
                                                 File f = new File(ExternalFile.IMAGE_FILES.getFile(), location + (location.endsWith(".png") ? "" : ".png"));
 
                                                 if (f.exists()) {
-                                                    String[] strings = ImageToHologram.convert115(f);
+                                                    String[] strings = ImageToHologram.convertWithColorCodes(f);
 
                                                     ItemStack stack = new ItemStack(Items.ENDER_CHEST);
                                                     TemplateUtils.compressTemplateNBT(stack, StringArgumentType.getString(ctx, "location"), mc.player.getName().asString(), convert(strings));

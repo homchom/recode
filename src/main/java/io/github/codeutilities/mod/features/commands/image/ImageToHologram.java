@@ -16,7 +16,7 @@ import static java.awt.Image.SCALE_SMOOTH;
 public class ImageToHologram {
 
     // Converts a file into an array of literal texts containing the respected color. This would work?
-    public static String[] convert116(File file) {
+    public static String[] convertWithHex(File file) {
         List<String> layers = new ArrayList<>();
         if (file.exists()) {
             try {
@@ -63,7 +63,7 @@ public class ImageToHologram {
         return layers.toArray(new String[0]);
     }
 
-    public static String[] convert115(File file) {
+    public static String[] convertWithColorCodes(File file) {
         List<String> layers = new ArrayList<>();
         if (file.exists()) {
             try {
