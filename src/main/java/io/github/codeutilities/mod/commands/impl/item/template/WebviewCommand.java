@@ -19,7 +19,9 @@ public class WebviewCommand extends AbstractTemplateCommand {
 
     @Override
     public String getDescription() {
-        return "/webview\n\nSends you a link for opening the template in the web.";
+        return "[blue]/webview[reset]\n"
+                + "\n"
+                + "Sends you a link for previewing the code template in the website.";
     }
 
     @Override

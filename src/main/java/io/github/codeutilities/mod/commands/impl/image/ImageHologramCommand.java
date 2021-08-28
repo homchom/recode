@@ -32,7 +32,7 @@ public class ImageHologramCommand extends Command {
                                                 File f = new File(ExternalFile.IMAGE_FILES.getFile(), location + (location.endsWith(".png") ? "" : ".png"));
 
                                                 if (f.exists()) {
-                                                    String[] strings = ImageToHologram.convert116(f);
+                                                    String[] strings = ImageToHologram.convertWithHex(f);
 
                                                     ItemStack stack = new ItemStack(Items.ENDER_CHEST);
                                                     TemplateUtils.compressTemplateNBT(stack, StringArgumentType.getString(ctx, "location"), mc.player.getName().asString(), convert(strings));
@@ -56,7 +56,7 @@ public class ImageHologramCommand extends Command {
                                                 File f = new File(ExternalFile.IMAGE_FILES.getFile(), location + (location.endsWith(".png") ? "" : ".png"));
 
                                                 if (f.exists()) {
-                                                    String[] strings = ImageToHologram.convert115(f);
+                                                    String[] strings = ImageToHologram.convertWithColorCodes(f);
 
                                                     ItemStack stack = new ItemStack(Items.ENDER_CHEST);
                                                     TemplateUtils.compressTemplateNBT(stack, StringArgumentType.getString(ctx, "location"), mc.player.getName().asString(), convert(strings));
@@ -78,11 +78,11 @@ public class ImageHologramCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "/imagehologram load <hex/colorcodes> <file>\n"
+        return "[blue]/imagehologram load <hex|colorcodes> <file>[reset]\n"
             + "\n"
-            + "Generates a code template that displays the image using a holograms\n"
-            + "If you use hex the image colors will be more accurate, while the image size will be smaller. For colorcodes it's the opposite.\n"
-            + "Searches for the image in the CodeUtilities/Images folder which is located in your minecraft folder)";
+            + "Generates a code template that displays images using holograms.\n"
+            + "Put the image file you want to convert in [green].minecraft/CodeUtilities/Images[reset] folder.\n"
+            + "Maximum image size is [yellow]64x64[reset] for Color Code images, and [yellow]17x17[reset] for Hex Color images.";
     }
 
     @Override

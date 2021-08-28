@@ -34,7 +34,10 @@ public class NBSSearchCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "/nbssearch <query>\n\nSearch musescore.com for midis and directly preview & convert them to code templates.\nYou still need the /nbs player\nFor importing local .nbs files check out /nbs";
+        return "[blue]/nbssearch <query>[reset]\n"
+                + "\n"
+                + "Browses songs in musescore.com and converts them into code templates."
+                + "Play the song with [green]Song Player[reset]. (see [yellow]/nbs[reset] command help for more info)";
     }
 
     @Override

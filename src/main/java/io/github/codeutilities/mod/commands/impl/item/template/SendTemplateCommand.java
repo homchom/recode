@@ -17,9 +17,9 @@ public class SendTemplateCommand extends AbstractTemplateCommand {
 
     @Override
     public String getDescription() {
-        return "/sendtemplate\n"
+        return "[blue]/sendtemplate[reset]\n"
             + "\n"
-            + "Can be used to send the template in your main hand to an external program like DFVisual";
+            + "Sends the code template in your main hand to external programs like DFVisual";
     }
 
     @Override

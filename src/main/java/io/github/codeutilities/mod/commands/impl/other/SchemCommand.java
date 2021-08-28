@@ -41,7 +41,14 @@ public class SchemCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "TODO: Add description";
+        return "[blue]/schem load <file>[reset]\n" +
+               "[blue]/schem builder[reset]\n" +
+               "[blue]/schem saver[reset]\n" +
+               "[blue]/schem transferer[reset]\n" +
+               "\n" +
+               "Converts structure files to code templates, to automatically build them in your plot.\n" +
+               "For the usage of builder/saver/transferer, please refer to the description of each code template.\n" +
+               "Supported structure file formats: [green].schematic .schem .litematic[reset]";
     }
 
     @Override

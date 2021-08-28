@@ -21,10 +21,10 @@ public class ActionbarCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "/previewactionbar [text]\n"
-            + "/actionbarpreview [text]\n"
+        return "[blue]/previewactionbar [text][reset]\n"
+            + "[blue]/actionbarpreview [text][reset]\n"
             + "\n"
-            + "Displays the text in your actionbar or if no text is provided will use the name of the item you're holding.";
+            + "Previews the action bar text. If no text is specified, the name of the item you are holding will show up.";
     }
 
     @Override

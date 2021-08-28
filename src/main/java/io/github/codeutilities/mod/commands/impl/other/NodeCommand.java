@@ -39,7 +39,9 @@ public class NodeCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "/node <1-5,beta>\n\nAlias for /server";
+        return "[blue]/node <1-5|beta>[reset]\n"
+                + "\n"
+                + "Joins the specified node.";
     }
 
     @Override

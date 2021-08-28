@@ -17,8 +17,6 @@ import io.github.codeutilities.mod.commands.impl.item.template.SendTemplateComma
 import io.github.codeutilities.mod.commands.impl.item.template.WebviewCommand;
 import io.github.codeutilities.mod.commands.impl.other.CalcCommand;
 import io.github.codeutilities.mod.commands.impl.other.CodeUtilitiesCommand;
-import io.github.codeutilities.mod.commands.impl.other.ConfigCommand;
-import io.github.codeutilities.mod.commands.impl.other.DebugCommand;
 import io.github.codeutilities.mod.commands.impl.other.NBSCommand;
 import io.github.codeutilities.mod.commands.impl.other.NBSSearchCommand;
 import io.github.codeutilities.mod.commands.impl.other.NodeCommand;
@@ -64,9 +62,7 @@ public class CommandHandler implements ILoader {
             new EditItemCommand(),
             new CopyTextCommand(),
             new GradientCommand(),
-            new ConfigCommand(),
             new SearchCommand(),
-            new DebugCommand(),
             new QueueCommand(),
             new TitleCommand(),
             new SubTitleCommand(),

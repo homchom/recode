@@ -147,7 +147,10 @@ public class ImportFileCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "/importfile\n\nImport a text file as a df code template.\nNotice: does NOT support line wrapping so if the code line is too long it will get cut off";
+        return "[blue]/importfile[reset]\n"
+                + "\n"
+                + "Import a text file as a code template.\n"
+                + "[red]Notice[reset]: Does NOT support line wrapping so if the code line is too long it will get cut off";
     }
 
     @Override

@@ -38,7 +38,9 @@ public class BreakableCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "[blue]/breakable[reset]\n\nOpposite of /unbreakable";
+        return "[blue]/breakable[reset]\n"
+                + "\n"
+                + "Opposite of /unbreakable - Removes the Unbreakable tag from the item you are holding.";
     }
 
     @Override

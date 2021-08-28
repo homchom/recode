@@ -35,9 +35,10 @@ public class ColorsCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "/colors [saturation]\n"
+        return "[blue]/colors [saturation][reset]\n"
             + "\n"
-            + "When doing /colors it shows a color palette in chat or opens a color picker based on whats selected in the config. When provided with a saturation always opens the palette.";
+            + "Shows the color picker menu.\n"
+            + "When Saturation value is specified, it will show you the old color picker in chat.";
     }
 
     @Override

@@ -96,7 +96,9 @@ public class SearchCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "/search <query>\n\nSearch your plot for specific codeblocks by making their signs glow.";
+        return "[blue]/search <query>[reset]\n"
+                + "\n"
+                + "Searches specified Code Block. The block found with the search will glow white.";
     }
 
     @Override

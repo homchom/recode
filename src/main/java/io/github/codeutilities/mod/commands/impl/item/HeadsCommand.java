@@ -39,7 +39,10 @@ public class HeadsCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "/heads\n\nNormally disabled in the config. Now replaced by dfs /heads";
+        return "[blue]/heads [keyword][reset]\n"
+                + "\n"
+                + "[red]*Disabled by default, you can enable it in config*[reset]\n"
+                + "Opens a menu to browse player heads from minecraft-heads.com. Click on a head item to get it in your inventory.";
     }
 
     @Override

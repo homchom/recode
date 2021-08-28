@@ -26,7 +26,9 @@ public class TemplatesCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "/templates\n\nView a list of recently used code templates";
+        return "[blue]/templates[reset]\n"
+                + "\n"
+                + "Shows a list of recently used code templates. Click on the item to get it in your inventory.";
     }
 
     @Override

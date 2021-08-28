@@ -70,11 +70,13 @@ public class ColorCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "/color rgb <r> <g> <b> (max 256)\n"
-            + "/color hex <hex>\n"
-            + "/color hsb <h> <s> <b> (max 360)\n"
+        return "[blue]/color rgb <r> <g> <b>[reset]\n"
+            + "[blue]/color hex <hex>[reset]\n"
+            + "[blue]/color hsb <h> <s> <b>[reset]\n"
             + "\n"
-            + "Copies said color in the mc hex format.\nExample: /color 255 0 0 -> &x&f&f&0&0&0&0";
+            + "Copies the specified color in DiamondFire hex color format.\n"
+            + "The max number is [green]256[reset] for RGB colors, and [green]360[reset] for HSB colors.\n"
+            + "[yellow]Example[reset]: /color 255 0 0 -> &x&f&f&0&0&0&0";
     }
 
     @Override

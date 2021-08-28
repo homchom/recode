@@ -21,10 +21,10 @@ public class TitleCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "/previewtitle [text]\n"
-            + "/titlepreview [text]\n"
-            + "\n"
-            + "Displays the text in a title or if no text is provided will use the name of the item you're holding.";
+        return "[blue]/previewtitle [text][reset]\n"
+                + "[blue]/titlepreview [text][reset]\n"
+                + "\n"
+                + "Previews the title text. If no text is specified, the name of the item you are holding will show up.";
     }
 
     @Override

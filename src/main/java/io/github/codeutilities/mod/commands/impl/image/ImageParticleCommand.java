@@ -81,11 +81,13 @@ public class ImageParticleCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "/imageparticle load <file>\n"
-            + "/imageparticle printer\n"
+        return "[blue]/imageparticle load <file>[reset]\n"
+            + "[blue]/imageparticle printer[reset]\n"
             + "\n"
-            + "Can be used to load an image from CodeUtilities/Images and import it as particles.\n"
-            + "/imageparticle load <file> gives you the code template with the image data and /imageparticle printer gives you the template that is required for reading that data.";
+            + "Generates a code template that displays images using colored particles.\n"
+            + "Put the image file you want to convert in [green].minecraft/CodeUtilities/Images[reset] folder.\n"
+            + "Maximum image size is [yellow]4040[reset].\n"
+            + "Use [yellow]/imageparticle printer[reset] to grab the Image Printer which displays the image.";
     }
 
     @Override

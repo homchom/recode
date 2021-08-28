@@ -68,8 +68,10 @@ public class GiveCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "/dfgive <item/clipboard> [count]\n\n"
-            + "Can be used like /give in vanilla to get items or can also use it combined with item generators like mcstacker and then do '/dfgive clipboard' to parse the vanilla cmd and avoid the chat limit.";
+        return "[blue]/dfgive <item|clipboard> [count][reset]\n"
+            + "\n"
+            + "Gives you an item, like in Minecraft /give.\n"
+            + "Use [yellow]/dfgive clipboard[reset] if you have a long /give command copied in your clipboard.";
     }
 
     @Override

@@ -22,10 +22,10 @@ public class SubTitleCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "/previewsubtitle [text]\n"
-            + "/subtitlepreview [text]\n"
-            + "\n"
-            + "Displays the text in a subtitle or if no text is provided will use the name of the item you're holding.";
+        return "[blue]/previewsubtitle [text][reset]\n"
+                + "[blue]/subtitlepreview [text][reset]\n"
+                + "\n"
+                + "Previews the sub-title text. If no text is specified, the name of the item you are holding will show up.";
     }
 
     @Override
