@@ -3,7 +3,7 @@
   "id": "codeutilities",
   "version": "${version}",
   "name": "CodeUtilities",
-  "description": "» A set of utilities for coding in DiamondFire server (mcdiamondfire.com).\n» Developers:\nBlazeMCworld, KabanFriends, RyanLand, Vattendroppen236, Reasonless and Owen1212055\n\n» Contributors:\nWLGRXD, TechStreet, RotemRotem and MarcusSlover",
+  "description": "» A set of utilities for coding in DiamondFire server (mcdiamondfire.com).\n» Developers:\nBlazeMCworld, KabanFriends, RyanLand, Vattendroppen236, Reasonless, tk2217 and Owen1212055\n\n» Contributors:\nWLGRXD, TechStreet, RotemRotem, SamMan_, Tomoli75 and MarcusSlover",
   "contributors": [],
   "contact": {
     "homepage": "https://codeutilities.github.io/",
@@ -14,9 +14,6 @@
   "license": "MIT",
   "icon": "assets/codeutilities/icon.png",
   "entrypoints": {
-    "cotton-client-commands": [
-      "io.github.codeutilities.sys.commands.CommandHandler"
-    ],
     "main": [
       "io.github.codeutilities.CodeUtilities"
     ],

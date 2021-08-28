@@ -32,7 +32,6 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
-import org.apache.commons.lang3.reflect.FieldUtils;
 
 public class TemplatePeeker implements ILoader {
 
@@ -128,6 +127,21 @@ public class TemplatePeeker implements ILoader {
                                     if (name.equals("EVENT")) {
                                         name = "PLAYER EVENT";
                                     }
+                                    if (name.equals("FUNC")) {
+                                        name = "FUNCTION";
+                                    }
+                                    if (name.equals("SET VAR")) {
+                                        name = "SET VARIABLE";
+                                    }
+                                    if (name.equals("IF VAR")) {
+                                        name = "IF VARIABLE";
+                                    }
+                                    if (name.equals("SELECT OBJ")) {
+                                        name = "SELECT OBJECT";
+                                    }
+                                    if (name.equals("CALL FUNC")) {
+                                        name = "CALL FUNCTiON";
+                                    }
 
                                     String action = "";
                                     String subAction = "";
@@ -135,12 +149,14 @@ public class TemplatePeeker implements ILoader {
 
                                     if (blocks.has("action")) {
                                         action = blocks.get("action").getAsString();
+                                    } else if (blocks.has("data")) {
+                                        action = blocks.get("data").getAsString();
                                     }
                                     if (blocks.has("subAction")) {
-                                        action = blocks.get("subAction").getAsString();
+                                        subAction = blocks.get("subAction").getAsString();
                                     }
                                     if (blocks.has("inverted")) {
-                                        action = blocks.get("inverted").getAsString();
+                                        inverted = blocks.get("inverted").getAsString();
                                     }
 
                                     renderSign(name, action, subAction, inverted, dloc.west(), ctx);

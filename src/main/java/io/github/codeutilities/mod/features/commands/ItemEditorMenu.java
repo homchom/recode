@@ -5,6 +5,7 @@ import io.github.codeutilities.sys.renderer.IMenu;
 import io.github.codeutilities.sys.renderer.widgets.CItem;
 import io.github.codeutilities.sys.renderer.widgets.CTextField;
 import io.github.codeutilities.sys.util.StringUtil;
+import io.github.codeutilities.sys.util.TextUtil;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WButton;
 import io.github.cottonmc.cotton.gui.widget.WGridPanel;
@@ -41,12 +42,12 @@ public class ItemEditorMenu extends LightweightGuiDescription implements IMenu {
         CTextField name = new CTextField(new LiteralText(""));
         name.setMaxLength(Integer.MAX_VALUE);
         name.setSuggestion(new TranslatableText(item[0].getItem().getTranslationKey()));
-        name.setText(StringUtil.textToString(item[0].getName()).replaceAll("§", "&"));
+        name.setText(TextUtil.textComponentToColorCodes(item[0].getName()).replaceAll("§", "&"));
         name.setChangedListener(s -> {
             if (name.getText().isEmpty()) {
                 item[0].removeCustomName();
             } else {
-                item[0].setCustomName(new LiteralText(name.getText().replaceAll("&", "§")));
+                item[0].setCustomName(TextUtil.colorCodesToTextComponent(name.getText().replaceAll("&", "§")));
             }
         });
         root.add(name, 30, 0, 226, 0);

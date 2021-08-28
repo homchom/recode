@@ -51,40 +51,17 @@ dependencies {
 	modImplementation "io.github.prospector:modmenu:1.16.9"
 	modImplementation "me.shedaniel.cloth:cloth-config-fabric:4.11.19"
 
-    //include "com.google.code.gson:gson:2.8.6"
     include "io.github.cottonmc:LibGui:3.2.2+1.16.3"
 	include "me.shedaniel.cloth:cloth-config-fabric:4.11.19"
 
     //websocket TODO: clean this up
-    compile "org.java-websocket:Java-WebSocket:1.5.1"
+    compile 'org.java-websocket:Java-WebSocket:1.5.2'
     modImplementation "javax.websocket:javax.websocket-api:1.1"
-    modImplementation "org.glassfish.tyrus:tyrus-server:1.1"
-    modImplementation "org.glassfish.tyrus:tyrus-client:1.1"
-    modImplementation "org.glassfish.tyrus:tyrus-container-grizzly:1.1"
-    modImplementation 'io.socket:socket.io-client:2.0.0'
+    modImplementation 'io.socket:socket.io-client:2.0.1'
     include "javax.websocket:javax.websocket-api:1.1"
-    include "org.glassfish.tyrus:tyrus-websocket-core:1.1"
-    include "org.glassfish.tyrus:tyrus-spi:1.1"
-    include "org.glassfish.tyrus:tyrus-server:1.1"
-    include "org.glassfish.tyrus:tyrus-core:1.1"
-    include "org.glassfish.tyrus:tyrus-container-grizzly:1.1"
-    include "org.glassfish.grizzly:grizzly-rcm:2.3.3"
-    include "org.glassfish.grizzly:grizzly-http-server:2.3.3"
-    include "org.glassfish.grizzly:grizzly-http:2.3.3"
-    include "org.glassfish.grizzly:grizzly-framework:2.3.3"
-    compile 'io.socket:socket.io-client:2.0.0'
+    compile 'io.socket:socket.io-client:2.0.1'
     include 'javax.websocket:javax.websocket-api:1.1'
-    include "org.java-websocket:Java-WebSocket:1.5.1"
-    include 'org.glassfish.tyrus:tyrus-server:1.1'
-    include 'org.glassfish.tyrus:tyrus-client:1.1'
-    include 'org.glassfish.tyrus:tyrus-container-grizzly:1.1'
-    include 'org.glassfish.tyrus:tyrus-spi:1.1'
-    include 'org.glassfish.tyrus:tyrus-websocket-core:1.1'
-    include 'org.glassfish.tyrus:tyrus-core:1.1'
-    include 'org.glassfish.grizzly:grizzly-rcm:2.3.3'
-    include 'org.glassfish.grizzly:grizzly-framework:2.3.3'
-    include 'org.glassfish.grizzly:grizzly-http-server:2.3.3'
-    include 'org.glassfish.grizzly:grizzly-http:2.3.3'
+    include 'org.java-websocket:Java-WebSocket:1.5.2'
 
     //https://github.com/natanfudge/Not-Enough-Crashes //API
     //modRuntime "com.lettuce.fudge:notenoughcrashes:2.1.4+1.16.4"

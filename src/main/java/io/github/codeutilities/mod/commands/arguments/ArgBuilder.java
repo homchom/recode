@@ -7,7 +7,7 @@ import io.github.codeutilities.sys.player.chat.ChatType;
 import io.github.codeutilities.sys.player.chat.ChatUtil;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 
-//These argument classes will eventually become our own command dispatcher, removing the dependency for Cotton Client Commands.
+//These argument classes will eventually become our own command dispatcher, removing the dependency for Cotton Clients Commands.
 public final class ArgBuilder {
 
     private ArgBuilder() {

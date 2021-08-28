@@ -29,6 +29,7 @@ public class ScreenGroup extends ConfigGroup {
         // Cosmetic
         ConfigSubGroup cosmetic = new ConfigSubGroup("cosmetic");
         cosmetic.register(new BooleanSetting("loadTabStars", true));
+        cosmetic.register(new BooleanSetting("relocateTabStars", false));
         cosmetic.register(new BooleanSetting("cosmeticsEnabled", true));
         this.register(cosmetic);
 
@@ -42,6 +43,7 @@ public class ScreenGroup extends ConfigGroup {
         code.register(new BooleanSetting("highlightVarSyntax", true));
         code.register(new BooleanSetting("showCodeblockDescription", true));
         code.register(new BooleanSetting("showParameterErrors", true));
+        code.register(new BooleanSetting("previewHeadSkins", true));
         this.register(code);
     }
 }

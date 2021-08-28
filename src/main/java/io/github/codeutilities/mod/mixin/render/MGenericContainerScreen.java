@@ -66,6 +66,11 @@ public abstract class MGenericContainerScreen extends HandledScreen<GenericConta
         }
         DisplayItem ditem = a.getIcon();
 
+        if (ditem.getArguments()==null) {
+            //happens for things like select entities by condition
+            return;
+        }
+
         for (int i = 0; i < ditem.getTags(); i++) {
             items.set(26 - i, new ItemStack(Items.AIR));
         }

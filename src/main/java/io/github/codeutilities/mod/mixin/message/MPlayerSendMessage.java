@@ -122,7 +122,7 @@ public class MPlayerSendMessage {
     }
 
     private void conversationMessage(String message, CallbackInfo ci) {
-        if (ConversationTimer.currentConversation != null && (DFInfo.currentState.getMode() != State.Mode.PLAY || !message.startsWith("@"))) {
+        if (Config.getBoolean("automsg") && ConversationTimer.currentConversation != null && (DFInfo.currentState.getMode() != State.Mode.PLAY || !message.startsWith("@"))) {
             ci.cancel();
             ConversationTimer.conversationUpdateTime = String.valueOf(System.currentTimeMillis());
             minecraftClient.player.sendChatMessage("/msg " + ConversationTimer.currentConversation + " " + message);

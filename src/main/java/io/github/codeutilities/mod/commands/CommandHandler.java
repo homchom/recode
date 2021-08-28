@@ -8,6 +8,7 @@ import io.github.codeutilities.mod.commands.impl.item.CodeVaultCommand;
 import io.github.codeutilities.mod.commands.impl.item.EditItemCommand;
 import io.github.codeutilities.mod.commands.impl.item.GiveCommand;
 import io.github.codeutilities.mod.commands.impl.item.HeadsCommand;
+import io.github.codeutilities.mod.commands.impl.item.ImportFileCommand;
 import io.github.codeutilities.mod.commands.impl.item.ItemdataCommand;
 import io.github.codeutilities.mod.commands.impl.item.RelativeLocCommand;
 import io.github.codeutilities.mod.commands.impl.item.TemplatesCommand;
@@ -89,7 +90,8 @@ public class CommandHandler implements ILoader {
                 new PlotsCommand(),
                 new NBSSearchCommand(),
                 new PartnerBracketCommand(),
-                new CodeVaultCommand()
+                new CodeVaultCommand(),
+                new ImportFileCommand()
             );
         }
     }

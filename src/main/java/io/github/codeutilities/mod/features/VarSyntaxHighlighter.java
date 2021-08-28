@@ -42,7 +42,9 @@ public class VarSyntaxHighlighter {
         "/item lore set N",
         "/item lore add ",
         "/ils N",
-        "/sll N"
+        "/sll N",
+        "/p name ",
+        "/plot name "
     );
 
     public static Text highlight(String msg) {
@@ -117,68 +119,7 @@ public class VarSyntaxHighlighter {
                 msg = msg.substring(5);
             }
 
-            Matcher percentm = Pattern.compile("%[a-zA-Z]+\\(?").matcher(msg);
-
-            while (percentm.find()) {
-                if (!percentcodes.contains(percentm.group())) {
-                    if (percentcodes.contains(percentm.group().replace("(", ""))) {
-                        return TextUtil.colorCodesToTextComponent(
-                            "§c" + percentm.group().replace("(", "") + " doesnt support brackets!");
-                    } else if (percentcodes.contains(percentm.group() + "(")) {
-                        return TextUtil.colorCodesToTextComponent(
-                            "§c" + percentm.group() + " needs brackets!");
-                    } else {
-                        return TextUtil.colorCodesToTextComponent(
-                            "§cInvalid Text Code: " + percentm.group().replace("(",")"));
-                    }
-                }
-            }
-
-            int openb = StringUtils.countMatches(msg, "(");
-            int closeb = StringUtils.countMatches(msg, ")");
-
-            if (openb != closeb) {
-                return TextUtil.colorCodesToTextComponent(
-                    "§cInvalid Brackets! " + openb + " ( and " + closeb + " )");
-            }
-
-            StringBuilder o = new StringBuilder();
-
-            int depth = 0;
-            boolean percent = false;
-
-            for (char c : msg.toCharArray()) {
-                if (c == '%') {
-                    percent = true;
-                    depth++;
-                    o.append(color(depth));
-                } else if (c == '(') {
-                    if (!percent) {
-                        depth++;
-                        o.append(color(depth));
-                    }
-                    o.append(c);
-                    depth++;
-                    o.append(color(depth));
-                    percent = false;
-                    continue;
-                } else if (c == ')') {
-                    depth--;
-                    o.append(color(depth));
-                    o.append(c);
-                    depth--;
-                    o.append(color(depth));
-                    percent = false;
-                    continue;
-                } else {
-                    if (!(c + "").matches("[a-zA-Z]") && percent) {
-                        percent = false;
-                        depth--;
-                        o.append(color(depth));
-                    }
-                }
-                o.append(c);
-            }
+            String o = highlightString(msg);
 
             return TextUtil.colorCodesToTextComponent("§bHighlighted:§r " + o);
 
@@ -189,6 +130,9 @@ public class VarSyntaxHighlighter {
             if (msg.startsWith("/txt ")) {
                 msg = msg.substring(5);
             }
+
+            msg = highlightString(msg);
+
             int lastIndex = 0;
             StringBuilder out = new StringBuilder();
             Matcher matcher = p.matcher(msg);
@@ -205,6 +149,89 @@ public class VarSyntaxHighlighter {
         } else {
             return null;
         }
+    }
+
+    public static String highlightString(String msg) {
+        Matcher percentm = Pattern.compile("%[a-zA-Z]+\\(?").matcher(msg);
+
+        while (percentm.find()) {
+            boolean valid = false;
+
+            for (String code : percentcodes) {
+                if (percentm.group().startsWith(code)) {
+                    valid = true;
+                    break;
+                }
+            }
+
+            if (!valid) {
+                if (percentcodes.contains(percentm.group().replace("(", ""))) {
+                    return "§c" + percentm.group().replace("(", "") + " doesnt support brackets!";
+                } else if (percentcodes.contains(percentm.group() + "(")) {
+                    return "§c" + percentm.group() + " needs brackets!";
+                } else {
+                    return "§cInvalid Text Code: " + percentm.group().replace("(",")");
+                }
+            }
+        }
+
+        int openb = StringUtils.countMatches(msg, "(");
+        int closeb = StringUtils.countMatches(msg, ")");
+
+        if (openb != closeb) {
+            return "§cInvalid Brackets! " + openb + " ( and " + closeb + " )";
+        }
+
+        StringBuilder o = new StringBuilder();
+
+        int depth = 0;
+        boolean percent = false;
+        String ptext = "";
+
+        for (char c : msg.toCharArray()) {
+            if (percent) ptext+=c;
+            if (c == '%') {
+                percent = true;
+                ptext="%";
+                depth++;
+                o.append(color(depth));
+            } else if (c == '(') {
+                if (!percent) {
+                    depth++;
+                    o.append(color(depth));
+                }
+                o.append(c);
+                depth++;
+                o.append(color(depth));
+                percent = false;
+                continue;
+            } else if (c == ')') {
+                depth--;
+                o.append(color(depth));
+                o.append(c);
+                depth--;
+                o.append(color(depth));
+                percent = false;
+                continue;
+            } else {
+                boolean valid = false;
+                for (String code : percentcodes) {
+                    if (code.startsWith(ptext)) {
+                        valid = true;
+                        break;
+                    }
+                }
+                if (!valid) {
+                    ptext = "";
+                    percent = false;
+                    depth--;
+                    o.append(color(depth));
+                }
+            }
+            o.append(c);
+        }
+
+        return o.toString();
     }
 
     private static String color(int depth) {

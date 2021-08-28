@@ -1,5 +1,6 @@
 package io.github.codeutilities.mod.events.impl;
 
+import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.config.Config;
 import io.github.codeutilities.mod.events.interfaces.ChatEvents;
 import io.github.codeutilities.mod.features.modules.triggers.impl.MessageReceivedTrigger;
@@ -179,7 +180,12 @@ public class ReceiveChatMessageEvent {
             if (msgWithColor.matches("§x§a§a§5§5§f§f⏵⏵ §f§l\\w+§7 is using a §x§f§f§f§f§a§a§l2§x§f§f§f§f§a§a§lx§7 booster.")) {
                 tipPlayer = stripped.split("§f§l")[1].split("§7")[0];
             } else if (msgWithColor.matches("§x§a§a§5§5§f§f⏵⏵ §7Use §x§f§f§f§f§a§a\\/tip§7 to show your appreciation and receive a §x§f§f§d§4§2§a□ token notch§7!")) {
-                mc.player.sendChatMessage("/tip " + tipPlayer);
+                CodeUtilities.EXECUTOR.submit(() -> {
+                    try {
+                        Thread.sleep(3000);
+                    } catch (Exception ignored) {}
+                    mc.player.sendChatMessage("/tip " + tipPlayer);
+                });
             }
         }
 

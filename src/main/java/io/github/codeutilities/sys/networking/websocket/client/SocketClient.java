@@ -2,15 +2,12 @@ package io.github.codeutilities.sys.networking.websocket.client;
 
 import io.github.codeutilities.sys.networking.websocket.SocketHandler;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class SocketClient extends Client {
+public class SocketClient implements Closeable {
 
     private static final ExecutorService SERVICE = Executors.newFixedThreadPool(5); // MAX of 5 connections (socket)
 
@@ -24,7 +21,8 @@ public class SocketClient extends Client {
         SERVICE.execute(() -> {
             while (true) {
                 try {
-                    acceptData(reader.readLine());
+                    String res = Clients.acceptData(reader.readLine());
+                    sendData(res);
                 } catch (IOException e) {
                     e.printStackTrace();
                     SocketHandler.getInstance().unregister(this);
@@ -43,7 +41,6 @@ public class SocketClient extends Client {
         return socket;
     }
 
-    @Override
     public void sendData(String string) throws IOException {
         OutputStream outputStream = socket.getOutputStream();
         outputStream.write(string.getBytes());

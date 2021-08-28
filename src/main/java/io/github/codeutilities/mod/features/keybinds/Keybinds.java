@@ -5,6 +5,8 @@ import io.github.codeutilities.mod.config.Config;
 import io.github.codeutilities.sys.player.DFInfo;
 import io.github.codeutilities.sys.networking.State;
 import io.github.codeutilities.mod.features.commands.CodeSearcher;
+import io.github.codeutilities.sys.player.chat.ChatType;
+import io.github.codeutilities.sys.sidedchat.ChatRule;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -15,6 +17,9 @@ import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.InputUtil.Type;
 import net.minecraft.util.math.BlockPos;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Keybinds implements ClientModInitializer {
 
@@ -152,6 +157,21 @@ public class Keybinds implements ClientModInitializer {
         // chat none
         KeyBinding chatNone = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.codeutilities.chat_none", InputUtil.Type.KEYSYM, -1, "key.category.codeutilities"));
+
+        // Staff Keybinds
+        KeyBinding modv = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.codeutilities.modv", InputUtil.Type.KEYSYM, -1, "key.category.codeutilities"));
+        KeyBinding supportAccept = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.codeutilities.support.accept", InputUtil.Type.KEYSYM, -1, "key.category.codeutilities"));
+        KeyBinding supportQueue = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.codeutilities.support.queue", InputUtil.Type.KEYSYM, -1, "key.category.codeutilities"));
+
+//        // Sided Chat
+//        Map<ChatType, KeyBinding> chatTypeKeyBindingMap = new HashMap<>();
+//        for (ChatRule.ChatRuleType chatType :
+//                ChatType.values()) {
+//            chatTypeKeyBindingMap.put(Chat)
+//        }
 
         // =======================================================
         // Events
@@ -311,6 +331,17 @@ public class Keybinds implements ClientModInitializer {
                 PartnerBracketCommand.exec();
             }
 
+            while (modv.wasPressed()) {
+                sendChat("/mod v");
+            }
+
+            while (supportAccept.wasPressed()) {
+                sendChat("/support accept");
+            }
+
+            while (supportQueue.wasPressed()) {
+                sendChat("/support queue");
+            }
         });
     }
 

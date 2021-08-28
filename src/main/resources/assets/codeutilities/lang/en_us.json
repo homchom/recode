@@ -50,6 +50,8 @@
     "config.codeutilities.option.cosmeticsEnabled.tooltip": "Shows CodeUtilities cosmetics such\nas developer capes and hats.",
     "config.codeutilities.option.loadTabStars": "Load Tablist Stars",
     "config.codeutilities.option.loadTabStars.tooltip": "Shows other players that are using codeutilities.",
+    "config.codeutilities.option.relocateTabStars": "Relocate Tablist Stars",
+    "config.codeutilities.option.relocateTabStars.tooltip": "Shows tablist stars after users names instead of before.",
     "config.codeutilities.option.highlightVarSyntax": "Highlight Variable Syntax",
     "config.codeutilities.option.highlightVarSyntax.tooltip": "Highlights text, num and var syntax\nlike percent and color codes",
     "config.codeutilities.option.templatePeeking": "Template Peeking",
@@ -176,6 +178,13 @@
     "config.codeutilities.option.f3Tps.tooltip": "Shows the client TPS on the Debug Screen (F3).",
     "config.codeutilities.option.quickVarScope": "Quick Variable Scope",
     "config.codeutilities.option.quickVarScope.tooltip": "Typing \"-s\", \"-l\" or \"-g\" after a\nvariable name in chat will change its scope,\nsimilar to the way /var works.",
+    "config.codeutilities.option.destroyItemReset": "Destroy Item Reset",
+    "config.codeutilities.option.destroyItemReset.tooltip": "Resets your inventory to the specified set of items after shift clicking the destroy item slot while in dev mode.",
+
+    "config.codeutilities.option.destroyitemresettype.off": "Off",
+    "config.codeutilities.option.destroyitemresettype.standard": "Standard Items",
+    "config.codeutilities.option.destroyitemresettype.compact": "Compact Items",
+
 
     "config.codeutilities.subcategory.misc_audio": "Project: Audio",
     "config.codeutilities.subcategory.misc_audio.tooltip": "Project: Audio settings",
@@ -352,5 +361,9 @@
     "key.codeutilities.node5": "Node 5",
     "key.codeutilities.node_beta": "Node Beta",
 
-    "key.codeutilities.colors.recent_colors": "Recent Colors"
+    "key.codeutilities.colors.recent_colors": "Recent Colors",
+
+    "key.codeutilities.modv": "[Mod] Vanish",
+    "key.codeutilities.support.accept": "[Support] Accept Support Request",
+    "key.codeutilities.support.queue": "[Support] Show Queue"
 }

@@ -3,6 +3,7 @@ package io.github.codeutilities.mod.mixin.render.player;
 import io.github.codeutilities.mod.config.Config;
 import io.github.codeutilities.mod.features.social.tab.CodeUtilitiesServer;
 import io.github.codeutilities.mod.features.social.tab.User;
+import io.github.codeutilities.sys.util.StringUtil;
 import net.minecraft.client.gui.hud.PlayerListHud;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.scoreboard.Team;
@@ -20,6 +21,7 @@ import java.util.UUID;
 
 @Mixin(PlayerListHud.class)
 public class MPlayerListHUD {
+    private static final Text SPACE = Text.of(" ");
 
     @Inject(method = "getPlayerName", at = @At("RETURN"), cancellable = true)
     public void getPlayerName(PlayerListEntry entry, CallbackInfoReturnable<Text> cir) {
@@ -31,8 +33,12 @@ public class MPlayerListHUD {
         User user = CodeUtilitiesServer.getUser(id.toString());
 
         if (user != null) {
-            LiteralText star = new LiteralText(user.getStar());
-            name = star.shallowCopy().append(name);
+            LiteralText star = new LiteralText(StringUtil.STRIP_CHARS_PATTERN.matcher(user.getStar()).replaceAll(""));
+            if (Config.getBoolean("relocateTabStars")) {
+                name = name.shallowCopy().append(SPACE).append(star);
+            } else {
+                name = star.append(SPACE).append(name);
+            }
         }
         cir.setReturnValue(name);
     }

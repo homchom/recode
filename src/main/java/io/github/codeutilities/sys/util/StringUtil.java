@@ -17,8 +17,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 public class StringUtil {
+    public static final Pattern STRIP_CHARS_PATTERN = Pattern.compile("(^\\s+|\\s+$)");
 
     public static LiteralText of(String... literalTexts) {
         int length = literalTexts.length;
