@@ -24,7 +24,10 @@ public class CodeVaultCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "/codevault\n\nAccess the uploaded templates from the CodeVault df plot anywhere.";
+        return "[blue]/codevault[reset]\n"
+                + "\n"
+                + "Browses the code templates uploaded by other people. Click the item in the menu to get the code template.\n"
+                + "To add your own code templates, join the plot [green]Code Vault[reset] (ID:43780) and upload the templates there.";
     }
 
     @Override

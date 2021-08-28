@@ -53,7 +53,9 @@ public class ItemdataCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "/itemdata\n\nView & copy the itemdata from the currently held item in different formats.";
+        return "[blue]/itemdata[reset]\n"
+                + "\n"
+                + "Shows the item NBT of the item you are holding.";
     }
 
     @Override

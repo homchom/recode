@@ -22,7 +22,7 @@ public class CodeUtilitiesCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "/codeutilities\n\nView information about the mod like version, contributors, etc";
+        return "[blue]/codeutilities[reset]\n\nShows information about this mod, such as this help menu, mod contributors, etc.";
     }
 
     @Override

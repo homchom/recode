@@ -57,8 +57,10 @@ public class RelativeLocCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "/relativeloc <target> <forwards> <upwards> <right> <rot_down> <rot_right>\n\n"
-            + "Get a relative location based on the given parameters.";
+        return "[blue]/relativeloc <target> <forwards> <upwards> <right> <rot_down> <rot_right>[reset]\n"
+                + "\n"
+                + "Gives you the Relative Location item that you can use in your code."
+                + "[red]Disclaimer[reset]: Relative Locations are deprecated code item that is not recommended to use. Use them on your own risk.";
     }
 
     @Override

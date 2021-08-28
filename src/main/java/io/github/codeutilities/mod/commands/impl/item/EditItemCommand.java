@@ -35,7 +35,9 @@ public class EditItemCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "/edititem\n\nOpen a very simple gui for editing the item nbt & name";
+        return "[blue]/edititem[reset]\n"
+                + "\n"
+                + "Opens a menu to edit item data.";
     }
 
     @Override
