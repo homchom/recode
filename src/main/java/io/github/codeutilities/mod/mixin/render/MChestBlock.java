@@ -8,6 +8,7 @@ import net.minecraft.block.ChestBlock;
 import net.minecraft.block.SignBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.SignBlockEntity;
+import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.render.block.entity.SignBlockEntityRenderer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
@@ -35,6 +36,14 @@ public class MChestBlock {
                 sign.getTextOnRow(2).getString(),
                 sign.getTextOnRow(3).getString()
             };
+            CodeUtilities.EXECUTOR.submit(() -> {
+                try {
+                  Thread.sleep(1000);
+                } catch (Exception ignored) {}
+                if (!(CodeUtilities.MC.currentScreen instanceof GenericContainerScreen)) {
+                    CodeUtilities.signText = new String[0];
+                }
+            });
         } else CodeUtilities.signText = new String[0];
     }
 
