@@ -34,7 +34,7 @@ public class CodeUtilitiesUI extends LightweightGuiDescription implements IMenu 
 
     private void addButtons(WPlainPanel panel) {
         // ------------------------ Features Button ------------------------
-        WButton featuresButton = new WButton(new LiteralText("Features"));
+        WButton featuresButton = new WButton(new LiteralText("Help / Features"));
         featuresButton.setOnClick(() -> {
             FeaturesUI gui_1 = new FeaturesUI();
             gui_1.scheduleOpenGui(gui_1);
