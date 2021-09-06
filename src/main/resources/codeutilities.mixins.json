@@ -15,7 +15,7 @@
     "message.MMessageListener",
     "message.MPlayerSendMessage",
     "message.MReceivedSound",
-    "render.MBuiltinModelItemRenderer",
+    "render.MBakedModelManager",
     "render.MChatScreen",
     "render.MChestBlock",
     "render.MChestRenderer",
