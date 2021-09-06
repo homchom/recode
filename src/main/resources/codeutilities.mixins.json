@@ -24,7 +24,6 @@
         "render.MMouse",
         "render.MScreen",
         "render.MSideChatHUD",
-        "render.MSignBlockEntityRenderer",
         "render.MSignRenderer",
         "render.MWindow",
         "render.TextureMapAccessor",

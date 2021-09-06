@@ -8,6 +8,7 @@ import io.github.codeutilities.sys.networking.WebUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class ActionDump implements ILoader {
 
@@ -91,12 +92,22 @@ public class ActionDump implements ILoader {
 
     private static ArrayList<String> autoCompleteCodeBlocks(String query){
         ArrayList<String> results = new ArrayList<>();
-        for(String s : codeblocks.keySet()){
-            if(s.equalsIgnoreCase(query)){
-                results.add(0, s);
+        for(Map.Entry<String, CodeBlock> entry : codeblocks.entrySet()){
+            if(entry.getValue().getIdentifier().equalsIgnoreCase(query)){
+                results.add(0, entry.getKey());
+                continue;
             }
-            if(s.toLowerCase().contains(query.toLowerCase())){
-                results.add(s);
+            if(entry.getKey().equalsIgnoreCase(query)){
+                results.add(0, entry.getKey());
+                continue;
+            }
+            if(entry.getValue().getIdentifier().toLowerCase().contains(query.toLowerCase())){
+                results.add(entry.getKey());
+                continue;
+            }
+            if(entry.getKey().toLowerCase().contains(query.toLowerCase())){
+                results.add(entry.getKey());
+                continue;
             }
         }
         return results;
