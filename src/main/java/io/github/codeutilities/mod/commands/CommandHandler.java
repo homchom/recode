@@ -5,6 +5,7 @@ import io.github.codeutilities.mod.commands.impl.image.ImageHologramCommand;
 import io.github.codeutilities.mod.commands.impl.image.ImageParticleCommand;
 import io.github.codeutilities.mod.commands.impl.item.BreakableCommand;
 import io.github.codeutilities.mod.commands.impl.item.CodeVaultCommand;
+import io.github.codeutilities.mod.commands.impl.item.CustomTextureCommand;
 import io.github.codeutilities.mod.commands.impl.item.EditItemCommand;
 import io.github.codeutilities.mod.commands.impl.item.GiveCommand;
 import io.github.codeutilities.mod.commands.impl.item.HeadsCommand;
@@ -67,7 +68,8 @@ public class CommandHandler implements ILoader {
             new TitleCommand(),
             new SubTitleCommand(),
             new ActionbarCommand(),
-            new CalcCommand()
+            new CalcCommand(),
+            new CustomTextureCommand()
         );
 
         if (Config.getBoolean("dfCommands")) {

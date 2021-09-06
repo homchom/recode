@@ -15,12 +15,14 @@
         "message.MMessageListener",
         "message.MPlayerSendMessage",
         "message.MReceivedSound",
+        "render.MBakedModelManager",
         "render.MChatScreen",
         "render.MChestBlock",
         "render.MChestRenderer",
         "render.MDebugHUD",
         "render.MGenericContainerScreen",
         "render.MInGameHUD",
+        "render.MItemModels",
         "render.MMouse",
         "render.MScreen",
         "render.MSideChatHUD",
@@ -37,5 +39,5 @@
     "server": [],
     "injectors": {
         "defaultRequire": 1
-  }
+    }
 }

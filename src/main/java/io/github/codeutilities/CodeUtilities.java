@@ -58,6 +58,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.util.math.BlockPos;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -99,6 +100,7 @@ public class CodeUtilities implements ModInitializer {
     public static String OPTIONSTXT = "";
     public static String CLIENT_LANG = "unknown";
     public static String[] signText = {};//stores the text of the code sign corresponding to the currently open chest
+    public static ModelLoader modelLoader;
 
     static {
         try {
