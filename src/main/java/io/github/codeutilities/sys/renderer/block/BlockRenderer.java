@@ -190,15 +190,15 @@ public class BlockRenderer {
         Vec3d vec3d = state.getModelOffset(world, pos);
         matrix.translate(vec3d.x, vec3d.y, vec3d.z);
 
-        //try {
+        try {
             return this.renderFlat(world, model, state, pos, matrix, vertexConsumer, cull, random, seed, overlay, color);
-        /*} catch (Throwable var17) {
+        } catch (Throwable var17) {
             CrashReport crashReport = CrashReport.create(var17, "Tesselating block model");
             CrashReportSection crashReportSection = crashReport.addElement("Block model being tesselated");
             CrashReportSection.addBlockInfo(crashReportSection, pos, state);
             crashReportSection.add("Using AO", bl);
             throw new CrashException(crashReport);
-        }*/
+        }
     }
 
     private boolean renderFlat(BlockRenderView world, BakedModel model, BlockState state, BlockPos pos, MatrixStack buffer, VertexConsumer vertexConsumer, boolean cull, Random random, long l, int i, Color color) {
