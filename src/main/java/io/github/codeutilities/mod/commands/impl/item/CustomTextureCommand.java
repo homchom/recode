@@ -10,83 +10,126 @@ import io.github.codeutilities.mod.commands.Command;
 import io.github.codeutilities.mod.config.Config;
 import io.github.codeutilities.sys.player.chat.ChatType;
 import io.github.codeutilities.sys.player.chat.ChatUtil;
+import java.awt.Dialog;
+import java.awt.FileDialog;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import javax.imageio.ImageIO;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.StringTag;
+import org.apache.commons.io.FileUtils;
 
 public class CustomTextureCommand extends Command {
 
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<FabricClientCommandSource> cd) {
         cd.register(literal("customtexture")
-            .then(literal("url")
-                .then(argument("url", StringArgumentType.greedyString())
-                    .executes(ctx -> {
-                        CompoundTag t = getTags(mc);
+            .then(literal("texture")
+                .then(literal("url")
+                    .then(argument("url", StringArgumentType.greedyString())
+                        .executes(ctx -> {
+                            CompoundTag t = getTags(mc);
 
+                            CodeUtilities.EXECUTOR.submit(() -> {
+                                try {
+                                    BufferedImage img = ImageIO.read(new URL(ctx.getArgument("url", String.class)));
+
+                                    if (img.getWidth() * img.getHeight() > 64 * 64) {
+                                        ChatUtil.sendMessage("Image is too large! (" + img.getWidth() * img.getHeight() + ">" + (64 * 64) + "px)", ChatType.FAIL);
+                                        return;
+                                    }
+
+                                    ByteArrayOutputStream os = new ByteArrayOutputStream();
+                                    ImageIO.write(img, "png", os);
+
+                                    t.putString("texture", Base64.getEncoder().encodeToString(os.toByteArray()));
+                                    setTags(mc, t);
+                                } catch (Exception e) {
+                                    ChatUtil.sendMessage("Failed Loading image!", ChatType.FAIL);
+                                    e.printStackTrace();
+                                }
+                            });
+                            return 1;
+                        })
+                    )
+                )
+                .then(literal("clipboard")
+                    .executes(ctx -> {
+                        try {
+                            CompoundTag t = getTags(mc);
+                            Transferable content = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
+                            if (content == null) {
+                                ChatUtil.sendMessage("Your clipboard is empty!", ChatType.FAIL);
+                                return -1;
+                            }
+                            if (!content.isDataFlavorSupported(DataFlavor.imageFlavor)) {
+                                ChatUtil.sendMessage("Your clipboard doesnt contain an image!", ChatType.FAIL);
+                                return -1;
+                            }
+                            BufferedImage img = (BufferedImage) content.getTransferData(DataFlavor.imageFlavor);
+
+                            if (img.getWidth() * img.getHeight() > 64 * 64) {
+                                ChatUtil.sendMessage("Image is too large! (" + img.getWidth() * img.getHeight() + ">" + (64 * 64) + "px)", ChatType.FAIL);
+                                return -1;
+                            }
+
+                            ByteArrayOutputStream os = new ByteArrayOutputStream();
+                            ImageIO.write(img, "png", os);
+
+                            t.putString("texture", Base64.getEncoder().encodeToString(os.toByteArray()));
+                            setTags(mc, t);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            ChatUtil.sendMessage("Unexpected error!", ChatType.FAIL);
+                        }
+                        return 1;
+                    })
+                )
+            )
+            .then(literal("type")
+                .then(literal("model")
+                    .executes(ctx -> {
                         CodeUtilities.EXECUTOR.submit(() -> {
                             try {
-                                BufferedImage img = ImageIO.read(new URL(ctx.getArgument("url", String.class)));
-
-                                if (img.getWidth() * img.getHeight() > 64 * 64) {
-                                    ChatUtil.sendMessage("Image is too large! (" + img.getWidth() * img.getHeight() + ">" + (64*64) + "px)", ChatType.FAIL);
+                                FileDialog fd = new FileDialog((Dialog) null, "Choose a model file", FileDialog.LOAD);
+                                fd.setVisible(true);
+                                File[] f = fd.getFiles();
+                                if (f.length == 0) {
+                                    ChatUtil.sendMessage("Aborted.",ChatType.FAIL);
                                     return;
                                 }
+                                String json = FileUtils.readFileToString(f[0], StandardCharsets.UTF_8);
+                                json = CodeUtilities.JSON_PARSER.parse(json).toString();//syntax check & remove intends
 
-                                ByteArrayOutputStream os = new ByteArrayOutputStream();
-                                ImageIO.write(img, "png", os);
-
-                                t.putString("texture", Base64.getEncoder().encodeToString(os.toByteArray()));
-                                setTags(mc, t);
-                            } catch (Exception e) {
-                                ChatUtil.sendMessage("Failed Loading image!", ChatType.FAIL);
-                                e.printStackTrace();
+                                CompoundTag tag = getTags(mc);
+                                tag.put("model", StringTag.of(json));
+                                setTags(mc,tag);
+                            } catch (Exception err) {
+                                err.printStackTrace();
+                                ChatUtil.sendMessage("Unexpected Error.",ChatType.FAIL);
                             }
                         });
                         return 1;
                     })
                 )
-            )
-            .then(literal("clipboard")
-                .executes(ctx -> {
-                    try {
-                        CompoundTag t = getTags(mc);
-                        Transferable content = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
-                        if (content == null) {
-                            ChatUtil.sendMessage("Your clipboard is empty!", ChatType.FAIL);
-                            return -1;
-                        }
-                        if (!content.isDataFlavorSupported(DataFlavor.imageFlavor)) {
-                            ChatUtil.sendMessage("Your clipboard doesnt contain an image!", ChatType.FAIL);
-                            return -1;
-                        }
-                        BufferedImage img = (BufferedImage) content.getTransferData(DataFlavor.imageFlavor);
-
-                        if (img.getWidth() * img.getHeight() > 64 * 64) {
-                            ChatUtil.sendMessage("Image is too large! (" + img.getWidth() * img.getHeight() + ">" + (64*64) + "px)", ChatType.FAIL);
-                            return -1;
-                        }
-
-                        ByteArrayOutputStream os = new ByteArrayOutputStream();
-                        ImageIO.write(img, "png", os);
-
-                        t.putString("texture", Base64.getEncoder().encodeToString(os.toByteArray()));
-                        setTags(mc, t);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        ChatUtil.sendMessage("Unexpected error!", ChatType.FAIL);
-                    }
-                    return 1;
-                })
+                .then(literal("item")
+                    .executes(ctx -> {
+                        CompoundTag tag = getTags(mc);
+                        tag.remove("model");
+                        setTags(mc,tag);
+                        return 1;
+                    })
+                )
             )
         );
     }

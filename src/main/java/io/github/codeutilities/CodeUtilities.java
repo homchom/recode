@@ -44,10 +44,12 @@ import io.github.codeutilities.sys.hypercube.codeaction.ActionDump;
 import io.github.codeutilities.sys.hypercube.templates.TemplateStorageHandler;
 import io.github.codeutilities.sys.networking.State;
 import io.github.codeutilities.sys.networking.websocket.SocketHandler;
+import io.github.codeutilities.sys.util.LimitedHashmap;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
@@ -59,6 +61,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.model.ModelLoader;
+import net.minecraft.client.texture.NativeImage;
 import net.minecraft.util.math.BlockPos;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -101,6 +104,7 @@ public class CodeUtilities implements ModInitializer {
     public static String CLIENT_LANG = "unknown";
     public static String[] signText = {};//stores the text of the code sign corresponding to the currently open chest
     public static ModelLoader modelLoader;
+    public static LimitedHashmap<String, NativeImage> textureCache = new LimitedHashmap<>(20);
 
     static {
         try {
