@@ -37,8 +37,8 @@ public class CustomTextureCommand extends Command {
                             try {
                                 BufferedImage img = ImageIO.read(new URL(ctx.getArgument("url", String.class)));
 
-                                if (img.getWidth() * img.getHeight() > 50 * 50) {
-                                    ChatUtil.sendMessage("Image is too large! (" + img.getWidth() * img.getHeight() + ">2500px)", ChatType.FAIL);
+                                if (img.getWidth() * img.getHeight() > 64 * 64) {
+                                    ChatUtil.sendMessage("Image is too large! (" + img.getWidth() * img.getHeight() + ">" + (64*64) + "px)", ChatType.FAIL);
                                     return;
                                 }
 
@@ -72,7 +72,7 @@ public class CustomTextureCommand extends Command {
                         BufferedImage img = (BufferedImage) content.getTransferData(DataFlavor.imageFlavor);
 
                         if (img.getWidth() * img.getHeight() > 64 * 64) {
-                            ChatUtil.sendMessage("Image is too large! (" + img.getWidth() * img.getHeight() + ">10000px)", ChatType.FAIL);
+                            ChatUtil.sendMessage("Image is too large! (" + img.getWidth() * img.getHeight() + ">" + (64*64) + "px)", ChatType.FAIL);
                             return -1;
                         }
 
