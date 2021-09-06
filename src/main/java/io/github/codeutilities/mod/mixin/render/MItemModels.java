@@ -80,13 +80,18 @@ public class MItemModels {
                 if (info.contains("model")) {
                     unbaked = JsonUnbakedModel.deserialize(info.getString("model"));
                 } else {
+                    String parentRot = "apple";
+                    if (info.contains("weapon")) {
+                        parentRot = "diamond_sword";
+                    }
+
                     unbaked = new JsonUnbakedModel(
                         id,
                         Lists.newArrayList(),
                         textures,
                         true,
                         GuiLight.field_21858,
-                        ((JsonUnbakedModel) CodeUtilities.modelLoader.getOrLoadModel(new Identifier("item/apple"))).getTransformations(),
+                        ((JsonUnbakedModel) CodeUtilities.modelLoader.getOrLoadModel(new Identifier("item/" + parentRot))).getTransformations(),
                         Lists.newArrayList()
                     );
                     unbaked = gen.create(

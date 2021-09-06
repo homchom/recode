@@ -129,6 +129,22 @@ public class CustomTextureCommand extends Command {
                         setTags(mc,tag);
                         return 1;
                     })
+                    .then(literal("default")
+                        .executes(ctx -> {
+                            CompoundTag tag = getTags(mc);
+                            tag.remove("weapon");
+                            setTags(mc,tag);
+                            return 1;
+                        })
+                    )
+                    .then(literal("weapon")
+                        .executes(ctx -> {
+                            CompoundTag tag = getTags(mc);
+                            tag.putBoolean("weapon",true);
+                            setTags(mc,tag);
+                            return 1;
+                        })
+                    )
                 )
             )
         );
