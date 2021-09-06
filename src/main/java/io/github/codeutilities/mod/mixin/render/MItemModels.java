@@ -34,7 +34,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ItemModels.class)
 public class MItemModels {
 
-    HashMap<String, BakedModel> cache = new LimitedHashmap<>(20);
+    private static final HashMap<String, NativeImage> cache = new LimitedHashmap<>(20);
 
     @Inject(method = "getModel(Lnet/minecraft/item/ItemStack;)Lnet/minecraft/client/render/model/BakedModel;", at = @At("HEAD"), cancellable = true)
     private void getModel(ItemStack stack, CallbackInfoReturnable<BakedModel> cir) {
@@ -46,20 +46,20 @@ public class MItemModels {
 
             try {
                 String tdata = info.getString("texture");
+                NativeImage texture;
                 if (cache.containsKey(tdata)) {
-                    cir.cancel();
-                    cir.setReturnValue(cache.get(tdata));
-                    return;
+                    texture = cache.get(tdata);
+                } else {
+                    texture = NativeImage.read(tdata);
+                    cache.put(tdata, texture);
                 }
-
-                NativeImage texture = NativeImage.read(tdata);
 
                 Identifier id = new Identifier("minecraft:cu_custom");
 
                 SpriteAtlasTexture sat = CodeUtilities.MC.getBakedModelManager().method_24153(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
 
                 Sprite s;
-                if (texture.getWidth() * texture.getHeight() >= 64 * 64) {
+                if (texture.getWidth() * texture.getHeight() > 64 * 64) {
                     s = MissingSprite.getMissingSprite(sat, 0, 0, 0, 0, 0);
                 } else {
                     sat.bindTexture();
@@ -68,7 +68,7 @@ public class MItemModels {
                         sat,
                         new Info(id, texture.getWidth(), texture.getHeight(), AnimationResourceMetadata.EMPTY),
                         0, 1024, 1024,
-                        0, 0,
+                        1024-64, 1024-64,
                         texture
                     );
                     s.upload();
@@ -89,7 +89,6 @@ public class MItemModels {
                     Lists.newArrayList()
                 );
 
-
                 unbaked = gen.create(
                     i -> s,
                     unbaked
@@ -103,7 +102,6 @@ public class MItemModels {
                 );
 
                 cir.setReturnValue(baked);
-                cache.put(tdata, baked);
             } catch (Exception err) {
                 err.printStackTrace();
             }
