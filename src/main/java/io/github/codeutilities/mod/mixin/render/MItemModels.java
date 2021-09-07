@@ -6,8 +6,6 @@ import com.mojang.datafixers.util.Either;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.config.Config;
 import io.github.codeutilities.sys.renderer.PublicSprite;
-import io.github.codeutilities.sys.util.LimitedHashmap;
-import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.client.render.item.ItemModels;
 import net.minecraft.client.render.model.BakedModel;
@@ -34,8 +32,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ItemModels.class)
 public class MItemModels {
 
-    private static final HashMap<String, NativeImage> cache = new LimitedHashmap<>(20);
-
     @Inject(method = "getModel(Lnet/minecraft/item/ItemStack;)Lnet/minecraft/client/render/model/BakedModel;", at = @At("HEAD"), cancellable = true)
     private void getModel(ItemStack stack, CallbackInfoReturnable<BakedModel> cir) {
         if (!Config.getBoolean("betaItemTextures")) {
@@ -47,11 +43,11 @@ public class MItemModels {
             try {
                 String tdata = info.getString("texture");
                 NativeImage texture;
-                if (cache.containsKey(tdata)) {
-                    texture = cache.get(tdata);
+                if (CodeUtilities.textureCache.containsKey(tdata)) {
+                    texture = CodeUtilities.textureCache.get(tdata);
                 } else {
                     texture = NativeImage.read(tdata);
-                    cache.put(tdata, texture);
+                    CodeUtilities.textureCache.put(tdata, texture);
                 }
 
                 Identifier id = new Identifier("minecraft:cu_custom");
@@ -68,7 +64,7 @@ public class MItemModels {
                         sat,
                         new Info(id, texture.getWidth(), texture.getHeight(), AnimationResourceMetadata.EMPTY),
                         0, 1024, 1024,
-                        1024-64, 1024-64,
+                        1024 - 64, 1024 - 64,
                         texture
                     );
                     s.upload();
@@ -79,20 +75,30 @@ public class MItemModels {
                 Map<String, Either<SpriteIdentifier, String>> textures = Maps.newHashMap();
                 textures.put("layer0", Either.left(new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, id)));
 
-                JsonUnbakedModel unbaked = new JsonUnbakedModel(
-                    id,
-                    Lists.newArrayList(),
-                    textures,
-                    true,
-                    GuiLight.field_21858,
-                    ((JsonUnbakedModel) CodeUtilities.modelLoader.getOrLoadModel(new Identifier("item/apple"))).getTransformations(),
-                    Lists.newArrayList()
-                );
+                JsonUnbakedModel unbaked;
 
-                unbaked = gen.create(
-                    i -> s,
-                    unbaked
-                );
+                if (info.contains("model")) {
+                    unbaked = JsonUnbakedModel.deserialize(info.getString("model"));
+                } else {
+                    String parentRot = "apple";
+                    if (info.contains("weapon")) {
+                        parentRot = "diamond_sword";
+                    }
+
+                    unbaked = new JsonUnbakedModel(
+                        id,
+                        Lists.newArrayList(),
+                        textures,
+                        true,
+                        GuiLight.field_21858,
+                        ((JsonUnbakedModel) CodeUtilities.modelLoader.getOrLoadModel(new Identifier("item/" + parentRot))).getTransformations(),
+                        Lists.newArrayList()
+                    );
+                    unbaked = gen.create(
+                        i -> s,
+                        unbaked
+                    );
+                }
 
                 BakedModel baked = unbaked.bake(
                     CodeUtilities.modelLoader,

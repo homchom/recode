@@ -24,6 +24,7 @@
     "render.MInGameHUD",
     "render.MItemModels",
     "render.MMouse",
+    "render.MReloadableResourceManager",
     "render.MScreen",
     "render.MSideChatHUD",
     "render.MSignRenderer",
