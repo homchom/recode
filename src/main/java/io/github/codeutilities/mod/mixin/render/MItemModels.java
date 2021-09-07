@@ -3,7 +3,6 @@ package io.github.codeutilities.mod.mixin.render;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mojang.datafixers.util.Either;
-import com.sun.org.apache.bcel.internal.classfile.Code;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.config.Config;
 import io.github.codeutilities.sys.renderer.PublicSprite;
@@ -33,6 +32,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ItemModels.class)
 public class MItemModels {
 
+    int spriteIndex = 0;
+
     @Inject(method = "getModel(Lnet/minecraft/item/ItemStack;)Lnet/minecraft/client/render/model/BakedModel;", at = @At("HEAD"), cancellable = true)
     private void getModel(ItemStack stack, CallbackInfoReturnable<BakedModel> cir) {
         if (!Config.getBoolean("betaItemTextures")) {
@@ -41,22 +42,19 @@ public class MItemModels {
         CompoundTag info = stack.getSubTag("CodeutilitiesTextureData");
         if (info != null && info.contains("texture")) {
 
+            if (CodeUtilities.modelCache.containsKey(info.toString())) {
+                BakedModel m = CodeUtilities.modelCache.get(info.toString());
+                if (m == null) {
+                    return;
+                }
+                cir.setReturnValue(m);
+                cir.cancel();
+                return;
+            }
+
             try {
                 String tdata = info.getString("texture");
-                NativeImage texture;
-                if (CodeUtilities.textureCache.containsKey(tdata)) {
-                    texture = CodeUtilities.textureCache.get(tdata);
-                    if (texture == null) return;
-                } else {
-                    try {
-                        texture = NativeImage.read(tdata);
-                        CodeUtilities.textureCache.put(tdata, texture);
-                    } catch (Exception err) {
-                        err.printStackTrace();
-                        CodeUtilities.textureCache.put(tdata, null);
-                        return;
-                    }
-                }
+                NativeImage texture = NativeImage.read(tdata);
 
                 Identifier id = new Identifier("minecraft:cu_custom");
 
@@ -68,11 +66,23 @@ public class MItemModels {
                 } else {
                     sat.bindTexture();
 
+                    int x = 0;
+                    int y = 1024 - 128;
+
+                    if (spriteIndex > 16) {
+                        y += 64;
+                    }
+                    x += (spriteIndex % 16) * 64;
+
+                    spriteIndex++;
+                    if (spriteIndex >= 32) {
+                        spriteIndex = 0;
+                    }
                     s = new PublicSprite(
                         sat,
                         new Info(id, texture.getWidth(), texture.getHeight(), AnimationResourceMetadata.EMPTY),
                         0, 1024, 1024,
-                        1024 - 64, 1024 - 64,
+                        x, y,
                         texture
                     );
                     s.upload();
@@ -87,19 +97,7 @@ public class MItemModels {
 
                 if (info.contains("model")) {
                     String model = info.getString("model");
-                    if (CodeUtilities.modelCache.containsKey(model)) {
-                        unbaked = CodeUtilities.modelCache.get(model);
-                        if (unbaked == null) return;
-                    } else {
-                        try {
-                            unbaked = JsonUnbakedModel.deserialize(model);
-                            CodeUtilities.modelCache.put(model,unbaked);
-                        } catch (Exception err) {
-                            err.printStackTrace();
-                            CodeUtilities.modelCache.put(model,null);
-                            return;
-                        }
-                    }
+                    unbaked = JsonUnbakedModel.deserialize(model);
                 } else {
                     String parentRot = "apple";
                     if (info.contains("weapon")) {
@@ -128,10 +126,12 @@ public class MItemModels {
                     id
                 );
 
+                CodeUtilities.modelCache.put(info.toString(), baked);
                 cir.setReturnValue(baked);
                 cir.cancel();
             } catch (Exception err) {
                 err.printStackTrace();
+                CodeUtilities.modelCache.put(info.toString(), null);
             }
 
         }

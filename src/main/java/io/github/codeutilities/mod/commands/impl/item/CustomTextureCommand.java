@@ -38,6 +38,7 @@ public class CustomTextureCommand extends Command {
                 .then(literal("url")
                     .then(argument("url", StringArgumentType.greedyString())
                         .executes(ctx -> {
+                            if (!isCreative(mc)) return -1;
                             CompoundTag t = getTags(mc);
 
                             CodeUtilities.EXECUTOR.submit(() -> {
@@ -65,6 +66,7 @@ public class CustomTextureCommand extends Command {
                 )
                 .then(literal("clipboard")
                     .executes(ctx -> {
+                        if (!isCreative(mc)) return -1;
                         try {
                             CompoundTag t = getTags(mc);
                             Transferable content = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
@@ -97,6 +99,7 @@ public class CustomTextureCommand extends Command {
                 )
                 .then(literal("file")
                     .executes(ctx -> {
+                        if (!isCreative(mc)) return -1;
                         CodeUtilities.EXECUTOR.submit(() -> {
                             try {
                                 CompoundTag t = getTags(mc);
@@ -133,6 +136,7 @@ public class CustomTextureCommand extends Command {
             .then(literal("type")
                 .then(literal("model")
                     .executes(ctx -> {
+                        if (!isCreative(mc)) return -1;
                         CodeUtilities.EXECUTOR.submit(() -> {
                             try {
                                 FileDialog fd = new FileDialog((Dialog) null, "Choose a model file", FileDialog.LOAD);
@@ -158,6 +162,7 @@ public class CustomTextureCommand extends Command {
                 )
                 .then(literal("item")
                     .executes(ctx -> {
+                        if (!isCreative(mc)) return -1;
                         CompoundTag tag = getTags(mc);
                         tag.remove("model");
                         setTags(mc,tag);
@@ -165,6 +170,7 @@ public class CustomTextureCommand extends Command {
                     })
                     .then(literal("default")
                         .executes(ctx -> {
+                            if (!isCreative(mc)) return -1;
                             CompoundTag tag = getTags(mc);
                             tag.remove("weapon");
                             setTags(mc,tag);
@@ -173,6 +179,7 @@ public class CustomTextureCommand extends Command {
                     )
                     .then(literal("weapon")
                         .executes(ctx -> {
+                            if (!isCreative(mc)) return -1;
                             CompoundTag tag = getTags(mc);
                             tag.putBoolean("weapon",true);
                             setTags(mc,tag);
@@ -201,7 +208,17 @@ public class CustomTextureCommand extends Command {
     public String getDescription() {
         return "[blue]/customtexture[reset]\n"
             + "\n"
-            + "Can be used for modifying the texture of an item which will be visible to all other CodeUtilities users.";
+            + "Can be used for modifying the texture & model of an item which will be visible to all other CodeUtilities users.\n"
+            + "\n"
+            + "[yellow]/customtexture texture...[reset] Sets the texture of the item to\n"
+            + "[yellow]...url <url> [reset]an img from the web..\n"
+            + "[yellow]...file [reset]a local file.\n"
+            + "[yellow]...clipboard [reset]your clipboard.\n"
+            + "\n"
+            + "[yellow]/customtexture type...[reset] Sets the render mode of the item to\n"
+            + "[yellow]...model[reset] a model json file.\n"
+            + "[yellow]...item [default/weapon][reset] a flat item.\n"
+            + "The difference between weapon&default is the way its being held.";
     }
 
     @Override

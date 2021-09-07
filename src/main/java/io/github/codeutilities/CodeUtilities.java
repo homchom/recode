@@ -34,9 +34,6 @@ import io.github.codeutilities.mod.events.interfaces.OtherEvents;
 import io.github.codeutilities.mod.features.TemplatePeeker;
 import io.github.codeutilities.mod.features.commands.HeadsMenu;
 import io.github.codeutilities.mod.features.discordrpc.DFDiscordRPC;
-import io.github.codeutilities.mod.features.modules.Module;
-import io.github.codeutilities.mod.features.modules.actions.Action;
-import io.github.codeutilities.mod.features.modules.triggers.Trigger;
 import io.github.codeutilities.mod.features.social.cosmetics.CosmeticHandler;
 import io.github.codeutilities.mod.features.social.tab.Client;
 import io.github.codeutilities.sys.file.FileUtil;
@@ -48,9 +45,6 @@ import io.github.codeutilities.sys.util.LimitedHashmap;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -60,11 +54,8 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.ModelLoader;
-import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.client.render.model.json.JsonUnbakedModel;
-import net.minecraft.client.texture.NativeImage;
-import net.minecraft.util.math.BlockPos;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -106,8 +97,7 @@ public class CodeUtilities implements ModInitializer {
     public static String CLIENT_LANG = "unknown";
     public static String[] signText = {};//stores the text of the code sign corresponding to the currently open chest
     public static ModelLoader modelLoader;
-    public static LimitedHashmap<String, NativeImage> textureCache = new LimitedHashmap<>(20);
-    public static LimitedHashmap<String, JsonUnbakedModel> modelCache = new LimitedHashmap<>(20);
+    public static LimitedHashmap<String, BakedModel> modelCache = new LimitedHashmap<>(32);
 
     static {
         try {
