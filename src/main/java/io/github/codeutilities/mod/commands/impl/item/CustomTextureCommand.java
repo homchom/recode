@@ -95,6 +95,40 @@ public class CustomTextureCommand extends Command {
                         return 1;
                     })
                 )
+                .then(literal("file")
+                    .executes(ctx -> {
+                        CodeUtilities.EXECUTOR.submit(() -> {
+                            try {
+                                CompoundTag t = getTags(mc);
+
+                                FileDialog fd = new FileDialog((Dialog) null, "Choose a model file", FileDialog.LOAD);
+                                fd.setVisible(true);
+                                File[] f = fd.getFiles();
+                                if (f.length == 0) {
+                                    ChatUtil.sendMessage("Aborted.",ChatType.FAIL);
+                                    return;
+                                }
+
+                                BufferedImage img = ImageIO.read(f[0]);
+
+                                if (img.getWidth() * img.getHeight() > 64 * 64) {
+                                    ChatUtil.sendMessage("Image is too large! (" + img.getWidth() * img.getHeight() + ">" + (64 * 64) + "px)", ChatType.FAIL);
+                                    return;
+                                }
+
+                                ByteArrayOutputStream os = new ByteArrayOutputStream();
+                                ImageIO.write(img, "png", os);
+
+                                t.putString("texture", Base64.getEncoder().encodeToString(os.toByteArray()));
+                                setTags(mc, t);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                ChatUtil.sendMessage("Unexpected error!", ChatType.FAIL);
+                            }
+                        });
+                        return 1;
+                    })
+                )
             )
             .then(literal("type")
                 .then(literal("model")
