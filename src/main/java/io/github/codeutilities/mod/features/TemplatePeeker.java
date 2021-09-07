@@ -7,6 +7,7 @@ import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.config.Config;
 import io.github.codeutilities.sys.file.ILoader;
 import io.github.codeutilities.sys.hypercube.codeaction.ActionDump;
+import io.github.codeutilities.sys.hypercube.codeaction.CodeBlock;
 import io.github.codeutilities.sys.hypercube.templates.CompressionUtil;
 import io.github.codeutilities.sys.hypercube.templates.TemplateUtils;
 import io.github.codeutilities.sys.renderer.block.BlockRenderer;
@@ -25,6 +26,7 @@ import net.minecraft.util.math.Vec3d;
 
 import java.awt.*;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
@@ -32,6 +34,7 @@ import java.util.Objects;
 public class TemplatePeeker implements ILoader {
 
     public static boolean templatePreview = false;
+    public static boolean templateFits = true;
     public static HashMap<String, Block> blockTypes = new HashMap<>();
     public static HashSet<String> noStones = new HashSet<>();
     public static HashSet<String> noChests = new HashSet<>();
@@ -81,6 +84,7 @@ public class TemplatePeeker implements ILoader {
             chest = chest.with(ChestBlock.FACING, Direction.NORTH);
 
             templatePreview = true;
+            templateFits = true;
             try {
                 blockRenderer.clear();
 
@@ -114,13 +118,17 @@ public class TemplatePeeker implements ILoader {
                             if (Objects.equals(blocks.get("id").getAsString(), "block")) {
                                 String type = blocks.get("block").getAsString();
 
+                                canFit(dloc);
                                 blockRenderer.addBlocks(new BlockRenderer.RenderingBlock(dloc, blockTypes.get(type).getDefaultState(), BlockRenderer.BlockType.BLOCK, true));
 
                                 if (!noChests.contains(type)) {
+                                    canFit(dloc.up());
                                     blockRenderer.addBlocks(new BlockRenderer.RenderingBlock(dloc.up(), chest, BlockRenderer.BlockType.CHEST, true));
                                 }
                                 if (!type.equals("else")) {
-                                    String name = ActionDump.getCodeBlock(type).get(0).getName();
+                                    ArrayList<CodeBlock> blocknames = ActionDump.getCodeBlock(type);
+                                    if(blocknames.size() == 0) return true;
+                                    String name = blocknames.get(0).getName();
 
                                     String action = "";
                                     String subAction = "";
@@ -137,10 +145,12 @@ public class TemplatePeeker implements ILoader {
                                     if (blocks.has("inverted")) {
                                         inverted = blocks.get("inverted").getAsString();
                                     }
+                                    canFit(dloc.west());
                                     blockRenderer.addBlocks(new BlockRenderer.RenderingBlock(dloc.west(), getSign(name, action, subAction, inverted), BlockRenderer.BlockType.SIGN, true));
                                 }
                                 if (!noStones.contains(type)) {
                                     dloc = dloc.south();
+                                    canFit(dloc);
                                     blockRenderer.addBlocks(new BlockRenderer.RenderingBlock(dloc, Blocks.STONE.getDefaultState(), BlockRenderer.BlockType.BLOCK, true));
                                 }
 
@@ -160,12 +170,12 @@ public class TemplatePeeker implements ILoader {
                                 } else {
                                     dloc = dloc.south();
                                 }
-
+                                canFit(dloc);
                                 blockRenderer.addBlocks(new BlockRenderer.RenderingBlock(dloc, bstate, BlockRenderer.BlockType.BLOCK, true));
                             }
                             dloc = dloc.south();
                         }
-                        blockRenderer.render(ctx.world(), matrix, ctx.consumers(), new Color(93, 225, 255, 140));
+                        blockRenderer.render(ctx.world(), matrix, ctx.consumers(), templateFits ? new Color(125, 214, 246, 120) : new Color(250, 135, 135, 140));
                     }
                 }
 
@@ -203,5 +213,9 @@ public class TemplatePeeker implements ILoader {
         sign.setTextOnRow(3, new LiteralText(inverted));
 
         return sign;
+    }
+
+    private void canFit(BlockPos pos) {
+        templateFits = MinecraftClient.getInstance().world.getBlockState(pos).isAir() && templateFits;
     }
 }
