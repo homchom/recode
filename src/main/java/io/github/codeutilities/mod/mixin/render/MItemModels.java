@@ -3,6 +3,7 @@ package io.github.codeutilities.mod.mixin.render;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mojang.datafixers.util.Either;
+import com.sun.org.apache.bcel.internal.classfile.Code;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.config.Config;
 import io.github.codeutilities.sys.renderer.PublicSprite;
@@ -45,9 +46,16 @@ public class MItemModels {
                 NativeImage texture;
                 if (CodeUtilities.textureCache.containsKey(tdata)) {
                     texture = CodeUtilities.textureCache.get(tdata);
+                    if (texture == null) return;
                 } else {
-                    texture = NativeImage.read(tdata);
-                    CodeUtilities.textureCache.put(tdata, texture);
+                    try {
+                        texture = NativeImage.read(tdata);
+                        CodeUtilities.textureCache.put(tdata, texture);
+                    } catch (Exception err) {
+                        err.printStackTrace();
+                        CodeUtilities.textureCache.put(tdata, null);
+                        return;
+                    }
                 }
 
                 Identifier id = new Identifier("minecraft:cu_custom");
@@ -78,7 +86,20 @@ public class MItemModels {
                 JsonUnbakedModel unbaked;
 
                 if (info.contains("model")) {
-                    unbaked = JsonUnbakedModel.deserialize(info.getString("model"));
+                    String model = info.getString("model");
+                    if (CodeUtilities.modelCache.containsKey(model)) {
+                        unbaked = CodeUtilities.modelCache.get(model);
+                        if (unbaked == null) return;
+                    } else {
+                        try {
+                            unbaked = JsonUnbakedModel.deserialize(model);
+                            CodeUtilities.modelCache.put(model,unbaked);
+                        } catch (Exception err) {
+                            err.printStackTrace();
+                            CodeUtilities.modelCache.put(model,null);
+                            return;
+                        }
+                    }
                 } else {
                     String parentRot = "apple";
                     if (info.contains("weapon")) {
@@ -108,11 +129,11 @@ public class MItemModels {
                 );
 
                 cir.setReturnValue(baked);
+                cir.cancel();
             } catch (Exception err) {
                 err.printStackTrace();
             }
 
-            cir.cancel();
         }
     }
 

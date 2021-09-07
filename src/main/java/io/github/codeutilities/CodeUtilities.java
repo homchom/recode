@@ -61,6 +61,8 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.model.ModelLoader;
+import net.minecraft.client.render.model.UnbakedModel;
+import net.minecraft.client.render.model.json.JsonUnbakedModel;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.util.math.BlockPos;
 import org.apache.logging.log4j.Level;
@@ -105,6 +107,7 @@ public class CodeUtilities implements ModInitializer {
     public static String[] signText = {};//stores the text of the code sign corresponding to the currently open chest
     public static ModelLoader modelLoader;
     public static LimitedHashmap<String, NativeImage> textureCache = new LimitedHashmap<>(20);
+    public static LimitedHashmap<String, JsonUnbakedModel> modelCache = new LimitedHashmap<>(20);
 
     static {
         try {
