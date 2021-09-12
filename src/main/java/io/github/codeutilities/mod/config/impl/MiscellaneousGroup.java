@@ -17,9 +17,10 @@ public class MiscellaneousGroup extends ConfigGroup {
         this.register(new BooleanSetting("itemApi", true));
         this.register(new BooleanSetting("quickVarScope", true));
         this.register(new EnumSetting<>("destroyItemReset", DestroyItemResetType.class, DestroyItemResetType.OFF));
-        this.register(new BooleanSetting("debugMode", false));
         this.register(new SoundSetting("incomingReportSound")
                 .setSelected(ConfigSounds.FLUTE));
+        this.register(new BooleanSetting("debugMode", false));
+
 
         // Audio
         ConfigSubGroup audio = new ConfigSubGroup("audio");
