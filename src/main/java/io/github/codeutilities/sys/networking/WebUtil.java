@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets; 
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
@@ -66,7 +67,7 @@ public class WebUtil {
 
     public static String getString(String urlToRead) throws IOException {
         //System.out.println(urlToRead);
-        return getString(urlToRead, Charset.defaultCharset());
+        return getString(urlToRead, StandardCharsets.UTF_8);
     }
 
     public static HttpResponse makePost(String url, JsonObject obj) {
