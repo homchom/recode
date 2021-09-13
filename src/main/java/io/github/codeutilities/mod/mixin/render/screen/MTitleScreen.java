@@ -3,6 +3,7 @@ package io.github.codeutilities.mod.mixin.render.screen;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.config.Config;
 import io.github.codeutilities.sys.renderer.BlendableTexturedButtonWidget;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ConnectScreen;
 import net.minecraft.client.gui.screen.Screen;
@@ -45,9 +46,9 @@ public class MTitleScreen extends Screen {
 
         if (Config.getBoolean("dfNodeButtons")) {
             boolean modMenuButtonPresent = false;
-            try {
-                modMenuButtonPresent = com.terraformersmc.modmenu.config.ModMenuConfig.MODS_BUTTON_STYLE.getValue() == com.terraformersmc.modmenu.config.ModMenuConfig.ModsButtonStyle.ICON;
-            } catch (Exception ignored) {}
+            if (FabricLoader.getInstance().isModLoaded("modmenu")) {
+                modMenuButtonPresent = io.github.codeutilities.sys.util.ModMenuSupport.isModsButtonPresent();
+            }
 
             this.addButton(new BlendableTexturedButtonWidget(this.width / 2 + 104, y - spacingY, 20, 20, 0, 0, 20, identifier_main, 20, 40,
                     (button) -> {
