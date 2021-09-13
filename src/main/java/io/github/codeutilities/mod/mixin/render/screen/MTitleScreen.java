@@ -1,6 +1,5 @@
 package io.github.codeutilities.mod.mixin.render.screen;
 
-import com.terraformersmc.modmenu.config.ModMenuConfig;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.config.Config;
 import io.github.codeutilities.sys.renderer.BlendableTexturedButtonWidget;
@@ -47,7 +46,7 @@ public class MTitleScreen extends Screen {
         if (Config.getBoolean("dfNodeButtons")) {
             boolean modMenuButtonPresent = false;
             try {
-                modMenuButtonPresent = ModMenuConfig.MODS_BUTTON_STYLE.getValue() == ModMenuConfig.ModsButtonStyle.ICON;
+                modMenuButtonPresent = com.terraformersmc.modmenu.config.ModMenuConfig.MODS_BUTTON_STYLE.getValue() == com.terraformersmc.modmenu.config.ModMenuConfig.ModsButtonStyle.ICON;
             } catch (Exception ignored) {}
 
             this.addButton(new BlendableTexturedButtonWidget(this.width / 2 + 104, y - spacingY, 20, 20, 0, 0, 20, identifier_main, 20, 40,
