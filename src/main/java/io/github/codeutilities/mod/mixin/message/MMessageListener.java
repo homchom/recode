@@ -116,7 +116,7 @@ public class MMessageListener {
                     // auto chat local
                     if (Config.getBoolean("autoChatLocal")) {
                         //Deprecated ChatUtil.executeCommandSilently("c 1");
-                        ChatUtil.executeCommandSilently("c l");
+                        ChatUtil.executeCommandSilently("chat local");
                     }
                 }
             } catch (Exception e) {

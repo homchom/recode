@@ -303,17 +303,17 @@ public class Keybinds implements ClientModInitializer {
 
             // chat global
             while (chatGlobal.wasPressed()) {
-                sendChat("/c 2");
+                sendChat("/chat global");
             }
 
             // chat local
             while (chatLocal.wasPressed()) {
-                sendChat("/c 1");
+                sendChat("/chat local");
             }
 
             // chat none
             while (chatNone.wasPressed()) {
-                sendChat("/c 0");
+                sendChat("/chat none");
             }
 
             // search
