@@ -20,7 +20,7 @@ public class CodeSearcher {
         }
 
         return searchType.getSignText().contains(blockEntity.getTextOnRow(0).getString().trim()) &&
-                searchValue.equals(blockEntity.getTextOnRow(1).getString().trim());
+                searchValue.trim().equals(blockEntity.getTextOnRow(1).getString().trim());
     }
 
     public static void beginSearch(SearchType searchType, String searchValue) {
