@@ -126,7 +126,8 @@ public class VarSyntaxHighlighter {
 
         } else if (msg.startsWith("/txt ") || Objects.equals(type, "txt")) {
             Pattern p = Pattern.compile(
-                "(&[a-f0-9klmnor]|&x&[a-f0-9]&[a-f0-9]&[a-f0-9]&[a-f0-9]&[a-f0-9]&[a-f0-9])");
+                    "(&[a-f0-9klmnor]|&x&[a-f0-9]&[a-f0-9]&[a-f0-9]&[a-f0-9]&[a-f0-9]&[a-f0-9])",
+                    Pattern.CASE_INSENSITIVE);
             if (msg.startsWith("/txt ")) {
                 msg = msg.substring(5);
             }
