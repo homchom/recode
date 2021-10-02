@@ -33,12 +33,84 @@ public class CustomTextureCommand extends Command {
 
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<FabricClientCommandSource> cd) {
+        registerImg("texture", mc, cd);
+        registerImg("armor1", mc, cd);
+        registerImg("armor2", mc, cd);
         cd.register(literal("customtexture")
-            .then(literal("texture")
+            .then(literal("type")
+                .then(literal("model")
+                    .executes(ctx -> {
+                        if (!isCreative(mc)) {
+                            return -1;
+                        }
+                        CodeUtilities.EXECUTOR.submit(() -> {
+                            try {
+                                FileDialog fd = new FileDialog((Dialog) null, "Choose a model file", FileDialog.LOAD);
+                                fd.setVisible(true);
+                                File[] f = fd.getFiles();
+                                if (f.length == 0) {
+                                    ChatUtil.sendMessage("Aborted.", ChatType.FAIL);
+                                    return;
+                                }
+                                String json = FileUtils.readFileToString(f[0], StandardCharsets.UTF_8);
+                                json = CodeUtilities.JSON_PARSER.parse(json).toString();//syntax check & remove intends
+
+                                CompoundTag tag = getTags(mc);
+                                tag.put("model", StringTag.of(json));
+                                setTags(mc, tag);
+                            } catch (Exception err) {
+                                err.printStackTrace();
+                                ChatUtil.sendMessage("Unexpected Error.", ChatType.FAIL);
+                            }
+                        });
+                        return 1;
+                    })
+                )
+                .then(literal("item")
+                    .executes(ctx -> {
+                        if (!isCreative(mc)) {
+                            return -1;
+                        }
+                        CompoundTag tag = getTags(mc);
+                        tag.remove("model");
+                        setTags(mc, tag);
+                        return 1;
+                    })
+                    .then(literal("default")
+                        .executes(ctx -> {
+                            if (!isCreative(mc)) {
+                                return -1;
+                            }
+                            CompoundTag tag = getTags(mc);
+                            tag.remove("weapon");
+                            setTags(mc, tag);
+                            return 1;
+                        })
+                    )
+                    .then(literal("weapon")
+                        .executes(ctx -> {
+                            if (!isCreative(mc)) {
+                                return -1;
+                            }
+                            CompoundTag tag = getTags(mc);
+                            tag.putBoolean("weapon", true);
+                            setTags(mc, tag);
+                            return 1;
+                        })
+                    )
+                )
+            )
+        );
+    }
+
+    private void registerImg(String texture, MinecraftClient mc, CommandDispatcher<FabricClientCommandSource> cd) {
+        cd.register(literal("customtexture").then(literal(texture)
                 .then(literal("url")
                     .then(argument("url", StringArgumentType.greedyString())
                         .executes(ctx -> {
-                            if (!isCreative(mc)) return -1;
+                            if (!isCreative(mc)) {
+                                return -1;
+                            }
                             CompoundTag t = getTags(mc);
 
                             CodeUtilities.EXECUTOR.submit(() -> {
@@ -53,7 +125,7 @@ public class CustomTextureCommand extends Command {
                                     ByteArrayOutputStream os = new ByteArrayOutputStream();
                                     ImageIO.write(img, "png", os);
 
-                                    t.putString("texture", Base64.getEncoder().encodeToString(os.toByteArray()));
+                                    t.putString(texture, Base64.getEncoder().encodeToString(os.toByteArray()));
                                     setTags(mc, t);
                                 } catch (Exception e) {
                                     ChatUtil.sendMessage("Failed Loading image!", ChatType.FAIL);
@@ -66,7 +138,9 @@ public class CustomTextureCommand extends Command {
                 )
                 .then(literal("clipboard")
                     .executes(ctx -> {
-                        if (!isCreative(mc)) return -1;
+                        if (!isCreative(mc)) {
+                            return -1;
+                        }
                         try {
                             CompoundTag t = getTags(mc);
                             Transferable content = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
@@ -88,7 +162,7 @@ public class CustomTextureCommand extends Command {
                             ByteArrayOutputStream os = new ByteArrayOutputStream();
                             ImageIO.write(img, "png", os);
 
-                            t.putString("texture", Base64.getEncoder().encodeToString(os.toByteArray()));
+                            t.putString(texture, Base64.getEncoder().encodeToString(os.toByteArray()));
                             setTags(mc, t);
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -99,7 +173,9 @@ public class CustomTextureCommand extends Command {
                 )
                 .then(literal("file")
                     .executes(ctx -> {
-                        if (!isCreative(mc)) return -1;
+                        if (!isCreative(mc)) {
+                            return -1;
+                        }
                         CodeUtilities.EXECUTOR.submit(() -> {
                             try {
                                 CompoundTag t = getTags(mc);
@@ -108,7 +184,7 @@ public class CustomTextureCommand extends Command {
                                 fd.setVisible(true);
                                 File[] f = fd.getFiles();
                                 if (f.length == 0) {
-                                    ChatUtil.sendMessage("Aborted.",ChatType.FAIL);
+                                    ChatUtil.sendMessage("Aborted.", ChatType.FAIL);
                                     return;
                                 }
 
@@ -122,7 +198,7 @@ public class CustomTextureCommand extends Command {
                                 ByteArrayOutputStream os = new ByteArrayOutputStream();
                                 ImageIO.write(img, "png", os);
 
-                                t.putString("texture", Base64.getEncoder().encodeToString(os.toByteArray()));
+                                t.putString(texture, Base64.getEncoder().encodeToString(os.toByteArray()));
                                 setTags(mc, t);
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -133,63 +209,9 @@ public class CustomTextureCommand extends Command {
                     })
                 )
             )
-            .then(literal("type")
-                .then(literal("model")
-                    .executes(ctx -> {
-                        if (!isCreative(mc)) return -1;
-                        CodeUtilities.EXECUTOR.submit(() -> {
-                            try {
-                                FileDialog fd = new FileDialog((Dialog) null, "Choose a model file", FileDialog.LOAD);
-                                fd.setVisible(true);
-                                File[] f = fd.getFiles();
-                                if (f.length == 0) {
-                                    ChatUtil.sendMessage("Aborted.",ChatType.FAIL);
-                                    return;
-                                }
-                                String json = FileUtils.readFileToString(f[0], StandardCharsets.UTF_8);
-                                json = CodeUtilities.JSON_PARSER.parse(json).toString();//syntax check & remove intends
-
-                                CompoundTag tag = getTags(mc);
-                                tag.put("model", StringTag.of(json));
-                                setTags(mc,tag);
-                            } catch (Exception err) {
-                                err.printStackTrace();
-                                ChatUtil.sendMessage("Unexpected Error.",ChatType.FAIL);
-                            }
-                        });
-                        return 1;
-                    })
-                )
-                .then(literal("item")
-                    .executes(ctx -> {
-                        if (!isCreative(mc)) return -1;
-                        CompoundTag tag = getTags(mc);
-                        tag.remove("model");
-                        setTags(mc,tag);
-                        return 1;
-                    })
-                    .then(literal("default")
-                        .executes(ctx -> {
-                            if (!isCreative(mc)) return -1;
-                            CompoundTag tag = getTags(mc);
-                            tag.remove("weapon");
-                            setTags(mc,tag);
-                            return 1;
-                        })
-                    )
-                    .then(literal("weapon")
-                        .executes(ctx -> {
-                            if (!isCreative(mc)) return -1;
-                            CompoundTag tag = getTags(mc);
-                            tag.putBoolean("weapon",true);
-                            setTags(mc,tag);
-                            return 1;
-                        })
-                    )
-                )
-            )
         );
     }
+
 
     private CompoundTag getTags(MinecraftClient mc) {
         return mc.player.getMainHandStack().getOrCreateSubTag("CodeutilitiesTextureData");
@@ -208,17 +230,21 @@ public class CustomTextureCommand extends Command {
     public String getDescription() {
         return "[blue]/customtexture[reset]\n"
             + "\n"
-            + "Can be used for modifying the texture & model of an item which will be visible to all other CodeUtilities users.\n"
-            + "\n"
-            + "[yellow]/customtexture texture...[reset] Sets the texture of the item to\n"
-            + "[yellow]...url <url> [reset]an img from the web..\n"
-            + "[yellow]...file [reset]a local file.\n"
-            + "[yellow]...clipboard [reset]your clipboard.\n"
-            + "\n"
-            + "[yellow]/customtexture type...[reset] Sets the render mode of the item to\n"
-            + "[yellow]...model[reset] a model json file.\n"
-            + "[yellow]...item [default/weapon][reset] a flat item.\n"
-            + "The difference between weapon&default is the way its being held.";
+            + "A complex command for giving items a custom appearance.\n"
+            + "For more info ask in the CodeUtilities Discord";
+//        return "[blue]/customtexture[reset]\n"
+//            + "\n"
+//            + "Can be used for modifying the texture & model of an item which will be visible to all other CodeUtilities users.\n"
+//            + "\n"
+//            + "[yellow]/customtexture texture...[reset] Sets the texture of the item to\n"
+//            + "[yellow]...url <url> [reset]an img from the web..\n"
+//            + "[yellow]...file [reset]a local file.\n"
+//            + "[yellow]...clipboard [reset]your clipboard.\n"
+//            + "\n"
+//            + "[yellow]/customtexture type...[reset] Sets the render mode of the item to\n"
+//            + "[yellow]...model[reset] a model json file.\n"
+//            + "[yellow]...item [default/weapon][reset] a flat item.\n"
+//            + "The difference between weapon&default is the way its being held.";
     }
 
     @Override
