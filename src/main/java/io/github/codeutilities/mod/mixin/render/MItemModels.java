@@ -40,7 +40,7 @@ public class MItemModels {
             return;
         }
         CompoundTag info = stack.getSubTag("CodeutilitiesTextureData");
-        if (info != null && info.contains("texture")) {
+        if (info != null && (info.contains("texture") || info.contains("model"))) {
 
             if (CodeUtilities.modelCache.containsKey(info.toString())) {
                 BakedModel m = CodeUtilities.modelCache.get(info.toString());
@@ -53,40 +53,35 @@ public class MItemModels {
             }
 
             try {
-                String tdata = info.getString("texture");
-                NativeImage texture = NativeImage.read(tdata);
-
+                Sprite s = null;
                 Identifier id = new Identifier("minecraft:cu_custom");
+                if (info.contains("texture")) {
+                    String tdata = info.getString("texture");
+                    NativeImage texture = NativeImage.read(tdata);
 
-                SpriteAtlasTexture sat = CodeUtilities.MC.getBakedModelManager().method_24153(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
+                    SpriteAtlasTexture sat = CodeUtilities.MC.getBakedModelManager().method_24153(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
 
-                Sprite s;
-                if (texture.getWidth() * texture.getHeight() > 64 * 64) {
-                    s = MissingSprite.getMissingSprite(sat, 0, 0, 0, 0, 0);
-                } else {
-                    sat.bindTexture();
+                    if (texture.getWidth() * texture.getHeight() > 64 * 64) {
+                        s = MissingSprite.getMissingSprite(sat, 0, 0, 0, 0, 0);
+                    } else {
+                        sat.bindTexture();
 
-                    int x = 0;
-                    int y = 1024;
+                        int x = spriteIndex%16*64;
+                        int y = 1024+spriteIndex/16*64;
 
-                    if (spriteIndex > 16) {
-                        y += 64;
+                        spriteIndex++;
+                        if (spriteIndex >= 256) {
+                            spriteIndex = 0;
+                        }
+                        s = new PublicSprite(
+                            sat,
+                            new Info(id, texture.getWidth(), texture.getHeight(), AnimationResourceMetadata.EMPTY),
+                            0, 1024, 2048,
+                            x, y,
+                            texture
+                        );
+                        s.upload();
                     }
-                    x += (spriteIndex % 16) * 64;
-
-                    spriteIndex++;
-                    if (spriteIndex >= 32) {
-                        spriteIndex = 0;
-                    }
-                    System.out.println("Uploaded Sprite at " + x + " " + y);
-                    s = new PublicSprite(
-                        sat,
-                        new Info(id, texture.getWidth(), texture.getHeight(), AnimationResourceMetadata.EMPTY),
-                        0, 1024, 2048,
-                        x, y,
-                        texture
-                    );
-                    s.upload();
                 }
 
                 ItemModelGenerator gen = new ItemModelGenerator();
@@ -95,6 +90,8 @@ public class MItemModels {
                 textures.put("layer0", Either.left(new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, id)));
 
                 JsonUnbakedModel unbaked;
+
+                Sprite finalS = s; //lambda weirdness
 
                 if (info.contains("model")) {
                     String model = info.getString("model");
@@ -115,14 +112,20 @@ public class MItemModels {
                         Lists.newArrayList()
                     );
                     unbaked = gen.create(
-                        i -> s,
+                        i -> {
+                            if (finalS != null && i.getTextureId().toString().contains("cu_custom")) return finalS;
+                            return i.getSprite();
+                        },
                         unbaked
                     );
                 }
 
                 BakedModel baked = unbaked.bake(
                     CodeUtilities.modelLoader,
-                    i -> s,
+                    i ->  {
+                    if (finalS != null && i.getTextureId().toString().contains("cu_custom")) return finalS;
+                    return i.getSprite();
+                },
                     ModelRotation.X0_Y0,
                     id
                 );

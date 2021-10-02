@@ -97,7 +97,7 @@ public class CodeUtilities implements ModInitializer {
     public static String CLIENT_LANG = "unknown";
     public static String[] signText = {};//stores the text of the code sign corresponding to the currently open chest
     public static ModelLoader modelLoader;
-    public static LimitedHashmap<String, BakedModel> modelCache = new LimitedHashmap<>(32);
+    public static LimitedHashmap<String, BakedModel> modelCache = new LimitedHashmap<>(256);
 
     static {
         try {
