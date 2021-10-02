@@ -28,6 +28,7 @@
     "render.MScreen",
     "render.MSideChatHUD",
     "render.MSignRenderer",
+    "render.MTextureStitcher",
     "render.MWindow",
     "render.TextureMapAccessor",
     "render.player.MPlayerListEntry",

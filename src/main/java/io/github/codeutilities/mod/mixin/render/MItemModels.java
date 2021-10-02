@@ -67,7 +67,7 @@ public class MItemModels {
                     sat.bindTexture();
 
                     int x = 0;
-                    int y = 1024 - 128;
+                    int y = 1024;
 
                     if (spriteIndex > 16) {
                         y += 64;
@@ -78,10 +78,11 @@ public class MItemModels {
                     if (spriteIndex >= 32) {
                         spriteIndex = 0;
                     }
+                    System.out.println("Uploaded Sprite at " + x + " " + y);
                     s = new PublicSprite(
                         sat,
                         new Info(id, texture.getWidth(), texture.getHeight(), AnimationResourceMetadata.EMPTY),
-                        0, 1024, 1024,
+                        0, 1024, 2048,
                         x, y,
                         texture
                     );
