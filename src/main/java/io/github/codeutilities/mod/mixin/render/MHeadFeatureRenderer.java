@@ -44,6 +44,7 @@ public abstract class MHeadFeatureRenderer<T extends LivingEntity, M extends Ent
             CompoundTag info = stack.getSubTag("CodeutilitiesTextureData");
             if (info != null && (info.contains("texture") || info.contains("model"))) {
                 ci.cancel();
+                if (info.contains("armor")) return;
                 matrixStack.push();
                 matrixStack.scale(this.field_24474, this.field_24475, this.field_24476);
                 boolean bl = livingEntity instanceof VillagerEntity || livingEntity instanceof ZombieVillagerEntity;
