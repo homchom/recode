@@ -33,9 +33,8 @@ public class CustomTextureCommand extends Command {
 
     @Override
     public void register(MinecraftClient mc, CommandDispatcher<FabricClientCommandSource> cd) {
-        registerImg("texture", mc, cd);
-        registerImg("armor1", mc, cd);
-        registerImg("armor2", mc, cd);
+        registerImg("texture", mc, cd,16*4,16*4);
+        registerImg("armor", mc, cd,64*4,32*4);
         cd.register(literal("customtexture")
             .then(literal("type")
                 .then(literal("model")
@@ -103,7 +102,7 @@ public class CustomTextureCommand extends Command {
         );
     }
 
-    private void registerImg(String texture, MinecraftClient mc, CommandDispatcher<FabricClientCommandSource> cd) {
+    private void registerImg(String texture, MinecraftClient mc, CommandDispatcher<FabricClientCommandSource> cd, int maxwidth, int maxheight) {
         cd.register(literal("customtexture").then(literal(texture)
                 .then(literal("url")
                     .then(argument("url", StringArgumentType.greedyString())
@@ -117,8 +116,8 @@ public class CustomTextureCommand extends Command {
                                 try {
                                     BufferedImage img = ImageIO.read(new URL(ctx.getArgument("url", String.class)));
 
-                                    if (img.getWidth() * img.getHeight() > 64 * 64) {
-                                        ChatUtil.sendMessage("Image is too large! (" + img.getWidth() * img.getHeight() + ">" + (64 * 64) + "px)", ChatType.FAIL);
+                                    if (img.getWidth() * img.getHeight() > maxwidth * maxheight) {
+                                        ChatUtil.sendMessage("Image is too large! (" + img.getWidth() * img.getHeight() + ">" + (maxwidth * maxheight) + "px)", ChatType.FAIL);
                                         return;
                                     }
 
