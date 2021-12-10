@@ -24,7 +24,7 @@ public class MTitleScreen extends Screen {
     private final Identifier identifier_node1 = new Identifier(CodeUtilities.MOD_ID + ":node1.png");
     private final Identifier identifier_node2 = new Identifier(CodeUtilities.MOD_ID + ":node2.png");
     private final Identifier identifier_node3 = new Identifier(CodeUtilities.MOD_ID + ":node3.png");
-    private final Identifier identifier_node4 = new Identifier(CodeUtilities.MOD_ID + ":node4.png");
+    private final Identifier identifier_node4 = new Identifier(CodeUtilities.MOD_ID + ":node4-valley.png");
     private final Identifier identifier_node5 = new Identifier(CodeUtilities.MOD_ID + ":node5.png");
 
     protected MTitleScreen(LiteralText title) {
