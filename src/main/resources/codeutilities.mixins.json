@@ -27,6 +27,7 @@
     "render.MItemModels",
     "render.MMouse",
     "render.MReloadableResourceManager",
+    "render.MScoreboardHUD",
     "render.MScreen",
     "render.MSideChatHUD",
     "render.MSignRenderer",
