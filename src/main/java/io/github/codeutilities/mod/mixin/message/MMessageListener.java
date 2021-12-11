@@ -3,17 +3,15 @@ package io.github.codeutilities.mod.mixin.message;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.config.Config;
-import io.github.codeutilities.mod.events.impl.ReceiveChatMessageEvent;
 import io.github.codeutilities.mod.events.interfaces.ChatEvents;
-import io.github.codeutilities.mod.features.discordrpc.DFDiscordRPC;
+import io.github.codeutilities.mod.features.CPU_UsageText;
 import io.github.codeutilities.mod.features.keybinds.FlightspeedToggle;
 import io.github.codeutilities.mod.features.social.chat.message.Message;
-import io.github.codeutilities.sys.player.chat.ChatUtil;
-import io.github.codeutilities.sys.player.chat.MessageGrabber;
-import io.github.codeutilities.mod.features.CPU_UsageText;
-import io.github.codeutilities.sys.player.DFInfo;
 import io.github.codeutilities.sys.networking.State;
 import io.github.codeutilities.sys.networking.WebUtil;
+import io.github.codeutilities.sys.player.DFInfo;
+import io.github.codeutilities.sys.player.chat.ChatUtil;
+import io.github.codeutilities.sys.util.VersionUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.MessageType;
@@ -91,7 +89,7 @@ public class MMessageListener {
                                 minecraftClient.player.sendMessage(new LiteralText(string).styled(style -> style.withColor(TextColor.fromFormatting(Formatting.AQUA))), false);
                             }
 
-                            String version = WebUtil.getString("https://codeutilities.github.io/data/currentversion.txt").replaceAll("\n", "");
+                            String version = VersionUtil.getLatestVersion();
                             if (!CodeUtilities.MOD_VERSION.equals(version) && !CodeUtilities.BETA) {
                                 minecraftClient.player.sendMessage(new LiteralText(String.format("A new version of CodeUtilities (%s) is available! Click here to download!", version)).styled(style ->
                                         style.withColor(TextColor.fromFormatting(Formatting.YELLOW))).styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://codeutilities.github.io/"))), false);
