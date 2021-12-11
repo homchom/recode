@@ -38,12 +38,12 @@ public class MInGameHUD {
     }
 
     @Inject(at = @At("HEAD"), method = "renderScoreboardSidebar", cancellable = true)
-	private void init(CallbackInfo info) {
-		MinecraftClient client = CodeUtilities.MC;
-		if (Config.getBoolean("hideScoreboardOnF3")) {
-			if (client.options.debugEnabled) {
-				info.cancel();
-			}
-		}
-	}
+    private void init(CallbackInfo info) {
+        MinecraftClient client = CodeUtilities.MC;
+        if (Config.getBoolean("hideScoreboardOnF3")) {
+            if (client.options.debugEnabled) {
+                info.cancel();
+            }
+        }
+    }
 }
