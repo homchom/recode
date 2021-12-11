@@ -168,8 +168,6 @@
     "config.codeutilities.option.stackDuplicateMsgs": "Message Stacker",
     "config.codeutilities.option.stackDuplicateMsgs.tooltip": "Merges multiple messages into one\nif they're the same.",
 
-    "config.codeutilities.subcategory.hiding_screen": "In-Game Screen",
-    "config.codeutilities.subcategory.hiding_screen.tooltip": "Options that hide things ingame",
     "config.codeutilities.option.hideScoreboardOnF3": "Hide Scoreboard on F3",
     "config.codeutilities.option.hideScoreboardOnF3.tooltip": "Hides the scoreboard when the F3 menu is active.",
 
