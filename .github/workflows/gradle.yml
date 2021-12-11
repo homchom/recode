@@ -1,6 +1,9 @@
 name: Build
 
-on: [push]
+on: 
+  push:
+    branches: 
+      - master
 
 jobs:
   build:
@@ -17,4 +20,12 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: CodeUtilities
-        path: ./build/libs/CodeUtilities-${{ github.run_number }}.jar
+        path: ./build/libs/CodeUtilities*.jar
+    - name: Publish Release
+      uses: marvinpinto/action-automatic-releases@latest
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        prerelease: false
+        files: |
+          LICENSE.txt
+          ./build/libs/CodeUtilities-${{ github.run_number }}.jar
