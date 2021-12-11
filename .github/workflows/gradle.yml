@@ -21,11 +21,3 @@ jobs:
       with:
         name: CodeUtilities
         path: ./build/libs/CodeUtilities*.jar
-    - name: Publish Release
-      uses: marvinpinto/action-automatic-releases@latest
-      with:
-        repo_token: "${{ secrets.GITHUB_TOKEN }}"
-        prerelease: false
-        files: |
-          LICENSE.txt
-          ./build/libs/CodeUtilities-${{ github.run_number }}.jar
