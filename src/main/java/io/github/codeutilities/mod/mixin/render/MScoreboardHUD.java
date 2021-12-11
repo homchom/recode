@@ -1,6 +1,7 @@
 package io.github.codeutilities.mod.mixin.render;
 
 import io.github.codeutilities.CodeUtilities;
+import io.github.codeutilities.mod.config.Config;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.InGameHud;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,8 +14,10 @@ public class MScoreboardHUD {
     @Inject(at = @At("HEAD"), method = "renderScoreboardSidebar", cancellable = true)
 	private void init(CallbackInfo info) {
 		MinecraftClient client = CodeUtilities.MC;
-		if (client.options.debugEnabled) {
-			info.cancel();
+		if (Config.getBoolean("hideScoreboardOnF3")) {
+			if (client.options.debugEnabled) {
+				info.cancel();
+			}
 		}
 	}
 }

@@ -17,6 +17,11 @@ public class HidingGroup extends ConfigGroup {
         this.register(new BooleanSetting("hideVarScopeMessages", false));
         this.register(new BooleanSetting("stackDuplicateMsgs", false));
 
+        // Screen
+        ConfigSubGroup screen = new ConfigSubGroup("screen");
+        screen.register(new BooleanSetting("hideScoreboardOnF3", true));
+        this.register(screen);
+
         // Regular Expressions
         ConfigSubGroup regex = new ConfigSubGroup("regex");
         regex.register(new BooleanSetting("hideMsgMatchingRegex", false));
