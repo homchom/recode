@@ -3,7 +3,6 @@ package io.github.codeutilities.sys.util;
 import com.google.gson.JsonObject;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.sys.networking.WebUtil;
-import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.IOException;
 
