@@ -3,26 +3,21 @@ package io.github.codeutilities.mod.mixin.message;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.codeutilities.CodeUtilities;
 import io.github.codeutilities.mod.config.Config;
-import io.github.codeutilities.mod.events.impl.ReceiveChatMessageEvent;
 import io.github.codeutilities.mod.events.interfaces.ChatEvents;
-import io.github.codeutilities.mod.features.discordrpc.DFDiscordRPC;
+import io.github.codeutilities.mod.features.CPU_UsageText;
 import io.github.codeutilities.mod.features.keybinds.FlightspeedToggle;
 import io.github.codeutilities.mod.features.social.chat.message.Message;
-import io.github.codeutilities.sys.player.chat.ChatUtil;
-import io.github.codeutilities.sys.player.chat.MessageGrabber;
-import io.github.codeutilities.mod.features.CPU_UsageText;
-import io.github.codeutilities.sys.player.DFInfo;
 import io.github.codeutilities.sys.networking.State;
 import io.github.codeutilities.sys.networking.WebUtil;
+import io.github.codeutilities.sys.player.DFInfo;
+import io.github.codeutilities.sys.player.chat.ChatUtil;
+import io.github.codeutilities.sys.util.VersionUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.MessageType;
 import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
+import net.minecraft.text.*;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import org.apache.logging.log4j.Level;
@@ -91,10 +86,26 @@ public class MMessageListener {
                                 minecraftClient.player.sendMessage(new LiteralText(string).styled(style -> style.withColor(TextColor.fromFormatting(Formatting.AQUA))), false);
                             }
 
-                            String version = WebUtil.getString("https://codeutilities.github.io/data/currentversion.txt").replaceAll("\n", "");
-                            if (!CodeUtilities.MOD_VERSION.equals(version) && !CodeUtilities.BETA) {
-                                minecraftClient.player.sendMessage(new LiteralText(String.format("A new version of CodeUtilities (%s) is available! Click here to download!", version)).styled(style ->
-                                        style.withColor(TextColor.fromFormatting(Formatting.YELLOW))).styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://codeutilities.github.io/"))), false);
+                            if (!CodeUtilities.BETA) {
+                                int latestVersion = VersionUtil.getLatestVersion();
+                                int currentVersion = VersionUtil.getCurrentVersionInt();
+                                int versionsBehind = latestVersion - currentVersion;
+
+                                if (versionsBehind > 10) {
+                                    MutableText message = new LiteralText("")
+                                            .append(new LiteralText(String.format("You are currently on build #%s of CodeUtilities, which is %s versions behind the latest (%s). ",
+                                                    currentVersion, versionsBehind, latestVersion))
+                                                    .styled(style -> style.withColor(Formatting.YELLOW)))
+                                            .append(new LiteralText("Click here to download the latest version!")
+                                                    .styled(style -> {
+                                                        style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://codeutilities.github.io"));
+                                                        style.withColor(Formatting.AQUA);
+                                                        return style;
+                                                    }));
+
+                                    minecraftClient.player.sendMessage(message, false);
+
+                                }
                             }
 
                         } catch (IOException ignored) {

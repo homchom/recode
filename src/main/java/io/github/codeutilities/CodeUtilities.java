@@ -65,7 +65,7 @@ public class CodeUtilities implements ModInitializer {
     public static final String MOD_ID = "codeutilities";
     public static final String MOD_NAME = "CodeUtilities";
     public static String MOD_VERSION;
-    public static final boolean BETA = true;
+    public static final boolean BETA = false; // todo: we're changing how "betas" work so this will need to be changed.
 
     public static final Logger LOGGER = LogManager.getLogger();
     public static final Random RANDOM = new Random();
