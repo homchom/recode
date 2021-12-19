@@ -8,31 +8,14 @@ import io.github.codeutilities.mod.config.Config;
 import io.github.codeutilities.mod.config.internal.ConfigFile;
 import io.github.codeutilities.mod.config.internal.ConfigInstruction;
 import io.github.codeutilities.mod.config.internal.gson.ConfigSerializer;
-import io.github.codeutilities.mod.config.internal.gson.types.BooleanSerializer;
-import io.github.codeutilities.mod.config.internal.gson.types.DoubleSerializer;
-import io.github.codeutilities.mod.config.internal.gson.types.DynamicStringSerializer;
-import io.github.codeutilities.mod.config.internal.gson.types.EnumSerializer;
-import io.github.codeutilities.mod.config.internal.gson.types.FloatSerializer;
-import io.github.codeutilities.mod.config.internal.gson.types.IntegerSerializer;
-import io.github.codeutilities.mod.config.internal.gson.types.LongSerializer;
-import io.github.codeutilities.mod.config.internal.gson.types.SoundSerializer;
-import io.github.codeutilities.mod.config.internal.gson.types.StringSerializer;
+import io.github.codeutilities.mod.config.internal.gson.types.*;
 import io.github.codeutilities.mod.config.internal.gson.types.list.StringListSerializer;
 import io.github.codeutilities.mod.config.structure.ConfigManager;
-import io.github.codeutilities.mod.config.types.BooleanSetting;
-import io.github.codeutilities.mod.config.types.DoubleSetting;
-import io.github.codeutilities.mod.config.types.DynamicStringSetting;
-import io.github.codeutilities.mod.config.types.EnumSetting;
-import io.github.codeutilities.mod.config.types.FloatSetting;
-import io.github.codeutilities.mod.config.types.IntegerSetting;
-import io.github.codeutilities.mod.config.types.LongSetting;
-import io.github.codeutilities.mod.config.types.SoundSetting;
-import io.github.codeutilities.mod.config.types.StringSetting;
+import io.github.codeutilities.mod.config.types.*;
 import io.github.codeutilities.mod.config.types.list.StringListSetting;
 import io.github.codeutilities.mod.events.EventHandler;
 import io.github.codeutilities.mod.events.interfaces.OtherEvents;
 import io.github.codeutilities.mod.features.TemplatePeeker;
-import io.github.codeutilities.mod.features.commands.HeadsMenu;
 import io.github.codeutilities.mod.features.discordrpc.DFDiscordRPC;
 import io.github.codeutilities.mod.features.social.cosmetics.CosmeticHandler;
 import io.github.codeutilities.mod.features.social.tab.Client;
@@ -42,14 +25,6 @@ import io.github.codeutilities.sys.hypercube.templates.TemplateStorageHandler;
 import io.github.codeutilities.sys.networking.State;
 import io.github.codeutilities.sys.networking.websocket.SocketHandler;
 import io.github.codeutilities.sys.util.LimitedHashmap;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Path;
-import java.util.Random;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
@@ -60,35 +35,42 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Path;
+import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class CodeUtilities implements ModInitializer {
 
     public static final String MOD_ID = "codeutilities";
     public static final String MOD_NAME = "CodeUtilities";
-    public static String MOD_VERSION;
     public static final boolean BETA = false; // todo: we're changing how "betas" work so this will need to be changed.
-
     public static final Logger LOGGER = LogManager.getLogger();
     public static final Random RANDOM = new Random();
     public static final Gson GSON = new GsonBuilder()
-        .registerTypeAdapter(ConfigInstruction.class, new ConfigSerializer())
-        .registerTypeAdapter(BooleanSetting.class, new BooleanSerializer())
-        .registerTypeAdapter(IntegerSetting.class, new IntegerSerializer())
-        .registerTypeAdapter(DoubleSetting.class, new DoubleSerializer())
-        .registerTypeAdapter(FloatSetting.class, new FloatSerializer())
-        .registerTypeAdapter(LongSetting.class, new LongSerializer())
-        .registerTypeAdapter(StringSetting.class, new StringSerializer())
-        .registerTypeAdapter(StringListSetting.class, new StringListSerializer())
-        .registerTypeAdapter(EnumSetting.class, new EnumSerializer())
-        .registerTypeAdapter(DynamicStringSetting.class, new DynamicStringSerializer())
-        .registerTypeAdapter(SoundSetting.class, new SoundSerializer())
-        .setPrettyPrinting()
-        .create();
+            .registerTypeAdapter(ConfigInstruction.class, new ConfigSerializer())
+            .registerTypeAdapter(BooleanSetting.class, new BooleanSerializer())
+            .registerTypeAdapter(IntegerSetting.class, new IntegerSerializer())
+            .registerTypeAdapter(DoubleSetting.class, new DoubleSerializer())
+            .registerTypeAdapter(FloatSetting.class, new FloatSerializer())
+            .registerTypeAdapter(LongSetting.class, new LongSerializer())
+            .registerTypeAdapter(StringSetting.class, new StringSerializer())
+            .registerTypeAdapter(StringListSetting.class, new StringListSerializer())
+            .registerTypeAdapter(EnumSetting.class, new EnumSerializer())
+            .registerTypeAdapter(DynamicStringSetting.class, new DynamicStringSerializer())
+            .registerTypeAdapter(SoundSetting.class, new SoundSerializer())
+            .setPrettyPrinting()
+            .create();
     public static final JsonParser JSON_PARSER = new JsonParser();
     public static final MinecraftClient MC = MinecraftClient.getInstance();
     public static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
     private static final Path optionsTxtPath = FabricLoader.getInstance().getGameDir()
-        .resolve("options.txt");
-
+            .resolve("options.txt");
+    public static String MOD_VERSION;
     public static String PLAYER_NAME = null;
     public static String PLAYER_UUID = null;
     public static String JEREMASTER_UUID = "6c669475-3026-4603-b3e7-52c97681ad3a";
@@ -115,6 +97,19 @@ public class CodeUtilities implements ModInitializer {
         log(Level.INFO, message);
     }
 
+    public static void onClose() {
+        LOGGER.info("Closing...");
+        try {
+            ConfigFile.getInstance().save();
+            TemplateStorageHandler.getInstance().save();
+            CosmeticHandler.INSTANCE.shutdownExecutorService();
+        } catch (Exception err) {
+            LOGGER.error("Error");
+            err.printStackTrace();
+        }
+        LOGGER.info("Closed.");
+    }
+
     @Override
     public void onInitialize() {
         MOD_VERSION = FabricLoader.getInstance().getModContainer(MOD_ID).get().getMetadata().getVersion().getFriendlyString();
@@ -139,7 +134,7 @@ public class CodeUtilities implements ModInitializer {
         initializer.add(new ConfigFile());
         initializer.add(new ConfigManager());
         initializer.add(new TemplateStorageHandler());
-        initializer.add(new HeadsMenu());
+        // initializer.add(new HeadsMenu());
         initializer.add(new DFDiscordRPC());
         initializer.add(new Client());
         initializer.add(new ActionDump());
@@ -154,22 +149,9 @@ public class CodeUtilities implements ModInitializer {
         MC.send(CosmeticHandler.INSTANCE::load);
 
         ClientTickEvents.START_CLIENT_TICK
-            .register(client -> OtherEvents.TICK.invoker().tick(client));
+                .register(client -> OtherEvents.TICK.invoker().tick(client));
 
         log(Level.INFO, "Initialized successfully!");
-    }
-
-    public static void onClose() {
-        LOGGER.info("Closing...");
-        try {
-            ConfigFile.getInstance().save();
-            TemplateStorageHandler.getInstance().save();
-            CosmeticHandler.INSTANCE.shutdownExecutorService();
-        } catch (Exception err) {
-            LOGGER.error("Error");
-            err.printStackTrace();
-        }
-        LOGGER.info("Closed.");
     }
 
 }
