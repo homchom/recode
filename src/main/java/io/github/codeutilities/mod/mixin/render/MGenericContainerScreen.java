@@ -71,6 +71,11 @@ public abstract class MGenericContainerScreen extends HandledScreen<GenericConta
             return;
         }
 
+        // values menu would crash here.
+        if (items.size() != 27) {
+            return;
+        }
+
         for (int i = 0; i < ditem.getTags(); i++) {
             items.set(26 - i, new ItemStack(Items.AIR));
         }
