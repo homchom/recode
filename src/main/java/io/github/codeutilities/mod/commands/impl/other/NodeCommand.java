@@ -20,6 +20,8 @@ public class NodeCommand extends Command {
         NODE_MAP.put("3", "node3");
         NODE_MAP.put("4", "node4");
         NODE_MAP.put("5", "node5");
+        NODE_MAP.put("6", "node6");
+        NODE_MAP.put("7", "node7");
         NODE_MAP.put("beta", "beta");
     }
 
@@ -39,7 +41,7 @@ public class NodeCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "[blue]/node <1-5|beta>[reset]\n"
+        return "[blue]/node <1-7|beta>[reset]\n"
                 + "\n"
                 + "Joins the specified node.";
     }
