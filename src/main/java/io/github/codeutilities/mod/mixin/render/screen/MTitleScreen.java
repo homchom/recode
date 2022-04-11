@@ -19,15 +19,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(TitleScreen.class)
 public class MTitleScreen extends Screen {
 
+    // Valid positions: "top_left" && "bottom_right".
+    // DM 8Blits if you would like to have the numbers be in another position, or if you want other texture changes.
+    private static final String NUM_LOCATION = "top_left";
+
     private final Identifier identifier_main = new Identifier(CodeUtilities.MOD_ID + ":textures/gui/df.png");
-    private final Identifier identifier_beta = new Identifier(CodeUtilities.MOD_ID + ":textures/gui/beta.png");
-    private final Identifier identifier_node1 = new Identifier(CodeUtilities.MOD_ID + ":textures/gui/node1.png");
-    private final Identifier identifier_node2 = new Identifier(CodeUtilities.MOD_ID + ":textures/gui/node2.png");
-    private final Identifier identifier_node3 = new Identifier(CodeUtilities.MOD_ID + ":textures/gui/node3.png");
-    private final Identifier identifier_node4 = new Identifier(CodeUtilities.MOD_ID + ":textures/gui/node4.png");
-    private final Identifier identifier_node5 = new Identifier(CodeUtilities.MOD_ID + ":textures/gui/node5.png");
-    private final Identifier identifier_node6 = new Identifier(CodeUtilities.MOD_ID + ":textures/gui/node6.png");
-    private final Identifier identifier_node7 = new Identifier(CodeUtilities.MOD_ID + ":textures/gui/node7.png");
+    private final Identifier identifier_beta = new Identifier(CodeUtilities.MOD_ID + ":textures/gui/" + NUM_LOCATION + "/beta.png");
+    private final Identifier identifier_node1 = new Identifier(CodeUtilities.MOD_ID + ":textures/gui/" + NUM_LOCATION + "/node1.png");
+    private final Identifier identifier_node2 = new Identifier(CodeUtilities.MOD_ID + ":textures/gui/" + NUM_LOCATION + "/node2.png");
+    private final Identifier identifier_node3 = new Identifier(CodeUtilities.MOD_ID + ":textures/gui/" + NUM_LOCATION + "/node3.png");
+    private final Identifier identifier_node4 = new Identifier(CodeUtilities.MOD_ID + ":textures/gui/" + NUM_LOCATION + "/node4.png");
+    private final Identifier identifier_node5 = new Identifier(CodeUtilities.MOD_ID + ":textures/gui/" + NUM_LOCATION + "/node5.png");
+    private final Identifier identifier_node6 = new Identifier(CodeUtilities.MOD_ID + ":textures/gui/" + NUM_LOCATION + "/node6.png");
+    private final Identifier identifier_node7 = new Identifier(CodeUtilities.MOD_ID + ":textures/gui/" + NUM_LOCATION + "/node7.png");
 
     protected MTitleScreen(LiteralText title) {
         super(title);
