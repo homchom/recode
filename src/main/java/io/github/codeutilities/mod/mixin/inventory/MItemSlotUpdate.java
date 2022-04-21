@@ -27,7 +27,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MItemSlotUpdate {
     final MinecraftClient mc = MinecraftClient.getInstance();
     private long lobbyTime = System.currentTimeMillis() - 1000;
-    private long lastDevCheck = 0;
 
     @Inject(method = "onScreenHandlerSlotUpdate", at = @At("HEAD"))
     public void onScreenHandlerSlotUpdate(ScreenHandlerSlotUpdateS2CPacket packet, CallbackInfo ci) {
@@ -81,31 +80,8 @@ public class MItemSlotUpdate {
                 // fs toggle
                 FlightspeedToggle.fs_is_normal = true;
 
-                long time = System.currentTimeMillis() / 1000L;
-                if (time - lastDevCheck > 1) {
 
-                    new Thread(() -> {
-                        try {
-                            Thread.sleep(10);
-                            if (Config.getBoolean("autoRC")) {
-                                mc.player.sendChatMessage("/rc");
-                            }
-                            if (Config.getBoolean("autotime")) {
-                                ChatUtil.executeCommandSilently("time " + Config.getLong("autotimeval"));
-                            }
-                            if (Config.getBoolean("autonightvis")) {
-                                ChatUtil.executeCommandSilently("nightvis");
-                            }
-                        } catch (Exception e) {
-                            CodeUtilities.log(Level.ERROR, "Error while executing the task!");
-                            e.printStackTrace();
-                        }
-                    }).start();
-
-                    lastDevCheck = time;
                 }
             }
         }
     }
-
-}
