@@ -222,6 +222,25 @@ public class MMessageListener {
         if (minecraftClient.player.isCreative() && text.matches("^» You are now in dev mode\\.$")) {
             // fs toggle
             FlightspeedToggle.fs_is_normal = true;
+
+            new Thread(() -> {
+                try {
+                    Thread.sleep(10);
+                    if (Config.getBoolean("autoRC")) {
+                        CodeUtilities.MC.player.sendChatMessage("/rc");
+                    }
+                    if (Config.getBoolean("autotime")) {
+                        ChatUtil.executeCommandSilently("time " + Config.getLong("autotimeval"));
+                    }
+                    if (Config.getBoolean("autonightvis")) {
+                        ChatUtil.executeCommandSilently("nightvis");
+                    }
+                } catch (Exception e) {
+                    CodeUtilities.log(Level.ERROR, "Error while executing the task!");
+                    e.printStackTrace();
+                }
+            }).start();
+
         }
     }
 }
