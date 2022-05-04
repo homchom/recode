@@ -1,32 +1,31 @@
 {
   "schemaVersion": 1,
-  "id": "codeutilities",
+  "id": "recode",
   "version": "${version}",
-  "name": "CodeUtilities",
-  "description": "» A set of utilities for coding in DiamondFire server (mcdiamondfire.com).\n» Developers:\nBlazeMCworld, KabanFriends, RyanLand, Vattendroppen236, Reasonless, tk2217 and Owen1212055\n\n» Contributors:\nWLGRXD, TechStreet, RotemRotem, SamMan_, Tomoli75 and MarcusSlover",
-  "contributors": [],
+  "name": "recode",
+  "description": "A 1.18 fork of CodeUtilities 2.0.",
+  "contributors": ["homchom", "CodeUtilities"],
   "contact": {
-    "homepage": "https://codeutilities.github.io/",
-    "sources": "https://github.com/CodeUtilities/CodeUtilities",
+    "homepage": "» My Discord: https://discord.gg/ndGVFutEHg\n» CodeUtilities: https://codeutilities.github.io/",
+    "sources": "https://github.com/homchom/recode",
     "issues": "https://discord.gg/WY6tPFE"
   },
   "environment": "client",
   "license": "LGPL-3.0",
-  "icon": "assets/codeutilities/icon.png",
   "entrypoints": {
     "main": [
-      "io.github.codeutilities.CodeUtilities"
+      "io.github.homchom.recode.Recode"
     ],
     "modmenu": [
-      "io.github.codeutilities.mod.config.ModMenuIntegration"
+      "io.github.homchom.recode.mod.config.ModMenuIntegration"
     ],
     "client": [
-      "io.github.codeutilities.mod.features.keybinds.Keybinds"
+      "io.github.homchom.recode.mod.features.keybinds.Keybinds"
     ],
     "server": []
   },
   "mixins": [
-    "codeutilities.mixins.json"
+    "recode.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.8.9",

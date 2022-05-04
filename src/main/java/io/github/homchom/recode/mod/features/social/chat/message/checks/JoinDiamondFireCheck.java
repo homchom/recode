@@ -1,0 +1,36 @@
+package io.github.homchom.recode.mod.features.social.chat.message.checks;
+
+import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.mod.features.social.chat.message.*;
+import io.github.homchom.recode.sys.networking.State;
+import io.github.homchom.recode.sys.player.DFInfo;
+
+import java.util.Collection;
+
+public class JoinDiamondFireCheck extends MessageCheck {
+
+    @Override
+    public MessageType getType() {
+        return MessageType.JOIN_DF;
+    }
+
+    @Override
+    public boolean check(Message message, String stripped) {
+        return DFInfo.currentState.getMode() == State.Mode.SPAWN && stripped.equals("◆ Welcome back to DiamondFire! ◆");
+    }
+
+    @Override
+    public void onReceive(Message message) {
+        // Check if the player joined Beta
+        DFInfo.isInBeta = false;
+        Collection<String> lines = Recode.MC.level.getScoreboard().getTrackedPlayers();
+        for (String line : lines) {
+            try {
+                if (line.startsWith("§aNode ") && (line.split(" ")[1]).equals("Beta§8")) {
+                    DFInfo.isInBeta = true;
+                }
+            } catch (ArrayIndexOutOfBoundsException ignored) {
+            }
+        }
+    }
+}

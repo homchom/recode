@@ -19,8 +19,8 @@ jobs:
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
-        name: CodeUtilities
-        path: ./build/libs/CodeUtilities*.jar
+        name: recode
+        path: ./build/libs/recode*.jar
     - name: Publish Release
       uses: marvinpinto/action-automatic-releases@latest
       with:
@@ -29,4 +29,4 @@ jobs:
         prerelease: false
         files: |
           LICENSE.txt
-          ./build/libs/CodeUtilities-${{ github.run_number }}.jar
+          ./build/libs/recode-${{ github.run_number }}.jar
