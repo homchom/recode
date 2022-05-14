@@ -35,11 +35,11 @@ public class Module {
             modulesFile.mkdir();
         }
 
-        Recode.log(Level.INFO, "Loading modules...");
+        Recode.info("Loading modules...");
 
         File[] moduleFiles = modulesFile.listFiles();
         if (moduleFiles != null) {
-            Recode.log(Level.INFO, moduleFiles.length + " module" + (moduleFiles.length == 1 ? "" : "s") + " found.");
+            Recode.info(moduleFiles.length + " module" + (moduleFiles.length == 1 ? "" : "s") + " found.");
 
             int successfulLoads = 0;
             for (File file : moduleFiles) {
@@ -55,7 +55,7 @@ public class Module {
                 try {
                     jsonRead = new JSONObject(jsonString);
                 } catch (JSONException e) {
-                    Recode.log(Level.ERROR, "Error while loading module '" + file.getName() + "'. Stack Trace:");
+                    Recode.error("Error while loading module '" + file.getName() + "'. Stack Trace:");
                     e.printStackTrace();
                     continue;
                 }
@@ -124,9 +124,9 @@ public class Module {
 
                 successfulLoads++;
             }
-            Recode.log(Level.INFO, "Successfully loaded " + successfulLoads + " (" + successfulLoads + "/" + moduleFiles.length + ") module" + (successfulLoads == 1 ? "" : "s") + "!");
+            Recode.info("Successfully loaded " + successfulLoads + " (" + successfulLoads + "/" + moduleFiles.length + ") module" + (successfulLoads == 1 ? "" : "s") + "!");
         } else {
-            Recode.log(Level.INFO, "No modules found.");
+            Recode.info("No modules found.");
         }
 
     }

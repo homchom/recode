@@ -25,9 +25,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.net.URL;
 import java.util.*;
 
+@SuppressWarnings("ALL")
 @Mixin(Screen.class)
 public class MScreen {
-
     private final HashMap<String, ResourceLocation> cache = new HashMap<>();
 
     @Inject(method = "onClose", at = @At("HEAD"))
@@ -35,7 +35,7 @@ public class MScreen {
         Recode.signText = new String[0];
     }
 
-    @Inject(method = "renderTooltip(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/item/ItemStack;II)V", at = @At("HEAD"))
+    @Inject(method = "renderTooltip(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/item/ItemStack;II)V", at = @At("HEAD"))
     private void renderTooltip(PoseStack matrices, ItemStack stack, int x, int y, CallbackInfo ci) {
         try {
             if (Config.getBoolean("previewHeadSkins")) {
@@ -80,5 +80,4 @@ public class MScreen {
             err.printStackTrace();
         }
     }
-
 }

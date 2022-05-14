@@ -7,9 +7,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+@SuppressWarnings("ALL")
 @Mixin(Minecraft.class)
 public class MMinecraftClient {
-
     @Inject(method = "stop", at = @At("HEAD"))
     public void stop(CallbackInfo ci) {
         Recode.onClose();

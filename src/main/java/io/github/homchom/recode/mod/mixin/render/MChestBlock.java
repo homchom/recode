@@ -14,10 +14,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+@SuppressWarnings("ALL")
 @Mixin(ChestBlock.class)
 public class MChestBlock {
-
-    @Inject(method = "onUse", at = @At("HEAD"))
+    @Inject(method = "use", at = @At("HEAD"))
     private void use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit, CallbackInfoReturnable<InteractionResult> cir) {
         BlockPos signloc = pos.offset(-1,-1,0);
         BlockEntity be = world.getBlockEntity(signloc);
@@ -39,5 +39,4 @@ public class MChestBlock {
             });
         } else Recode.signText = new String[0];
     }
-
 }

@@ -10,43 +10,40 @@ import org.spongepowered.asm.mixin.*;
 
 import java.util.Map;
 
+@SuppressWarnings("ALL")
 @Mixin(PlayerInfo.class)
 public class MPlayerListEntry {
     @Shadow
     @Final
-    private Map<MinecraftProfileTexture.Type, ResourceLocation> textures;
+    private Map<MinecraftProfileTexture.Type, ResourceLocation> textureLocations;
 
     @Shadow
-    private boolean texturesLoaded;
+    private boolean pendingTextures;
 
     @Shadow
-    private String model;
+    private String skinModel;
 
     @Shadow
     @Final
     private GameProfile profile;
 
     @Overwrite
-    public void loadTextures() {
+    public void registerTextures() {
         synchronized (this) {
-            if (!this.texturesLoaded) {
-                this.texturesLoaded = true;
+            if (!this.pendingTextures) {
+                this.pendingTextures = true;
                 Minecraft.getInstance().getSkinManager().registerSkins(profile, (type, identifier, minecraftProfileTexture) -> {
-                    this.textures.put(type, identifier);
+                    this.textureLocations.put(type, identifier);
                     if (type == MinecraftProfileTexture.Type.SKIN) {
-                        this.model = minecraftProfileTexture.getMetadata("model");
-                        if (this.model == null) {
-                            this.model = "default";
+                        this.skinModel = minecraftProfileTexture.getMetadata("model");
+                        if (this.skinModel == null) {
+                            this.skinModel = "default";
                         }
                     }
                     CosmeticHandler.INSTANCE.applyCosmetics(profile.getId());
 
                 }, true);
             }
-
         }
-
     }
-
-
 }

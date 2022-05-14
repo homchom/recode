@@ -24,6 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.io.IOException;
 
+@SuppressWarnings("ALL")
 @Mixin(ClientPacketListener.class)
 public class MMessageListener {
     private static long lastPatchCheck = 0;
@@ -32,8 +33,8 @@ public class MMessageListener {
     private boolean motdShown = false;
     private final ChatEvents invoker = ChatEvents.RECEIVE_MESSAGE.invoker();
 
-    @Inject(method = "onGameMessage", at = @At("HEAD"), cancellable = true)
-    private void onGameMessage(ClientboundChatPacket packet, CallbackInfo ci) {
+    @Inject(method = "handleChat", at = @At("HEAD"), cancellable = true)
+    private void handleChat(ClientboundChatPacket packet, CallbackInfo ci) {
         if (DFInfo.isOnDF()) {
             if (packet.getType() == ChatType.CHAT || packet.getType() == ChatType.SYSTEM) {
                 if (RenderSystem.isOnRenderThread()) {
@@ -43,7 +44,7 @@ public class MMessageListener {
                         this.updateState(packet.getMessage());
                     } catch (Exception e) {
                         e.printStackTrace();
-                        Recode.log(Level.ERROR, "Error while trying to parse the chat text!");
+                        Recode.error("Error while trying to parse the chat text!");
                     }
                 }
             }
@@ -99,7 +100,7 @@ public class MMessageListener {
                     DFInfo.isPatchNewer(patchText, "0"); //very lazy validation lol
                     DFInfo.patchId = patchText;
                     DFInfo.currentState.sendLocate();
-                    Recode.log(Level.INFO, "DiamondFire Patch " + DFInfo.patchId + " detected!");
+                    Recode.info("DiamondFire Patch " + DFInfo.patchId + " detected!");
 
                     lastPatchCheck = time;
 
@@ -113,7 +114,7 @@ public class MMessageListener {
                     }
                 }
             } catch (Exception e) {
-                Recode.log(Level.INFO, "Error on parsing patch number!");
+                Recode.info("Error on parsing patch number!");
                 e.printStackTrace();
             }
         }
@@ -191,7 +192,7 @@ public class MMessageListener {
                             ChatUtil.executeCommandSilently("nightvis");
                         }
                     } catch (Exception e) {
-                        Recode.log(Level.ERROR, "Error while executing the task!");
+                        Recode.error("Error while executing the task!");
                         e.printStackTrace();
                     }
                 }).start();
@@ -218,11 +219,10 @@ public class MMessageListener {
                         ChatUtil.executeCommandSilently("nightvis");
                     }
                 } catch (Exception e) {
-                    Recode.log(Level.ERROR, "Error while executing the task!");
+                    Recode.error("Error while executing the task!");
                     e.printStackTrace();
                 }
             }).start();
-
         }
     }
 }

@@ -8,8 +8,9 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 import java.util.Map;
 
+@SuppressWarnings("ALL")
 @Mixin(PlayerInfo.class)
 public interface TextureMapAccessor {
-    @Accessor("textures")
+    @Accessor("textureLocations")
     Map<MinecraftProfileTexture.Type, ResourceLocation> getTextures();
 }

@@ -8,18 +8,16 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+@SuppressWarnings("ALL")
 @Mixin(ServerGamePacketListenerImpl.class)
 public class MItemCreative {
-
-    @Inject(method = "onCreativeInventoryAction", at = @At("HEAD"))
-    public void onCreativeInventoryAction(ServerboundSetCreativeModeSlotPacket packet, CallbackInfo ci) {
+    @Inject(method = "handleSetCreativeModeSlot", at = @At("HEAD"))
+    public void handleSetCreativeModeSlot(ServerboundSetCreativeModeSlotPacket packet, CallbackInfo ci) {
         ItemStack stack = packet.getItem();
         if (TemplateUtils.isTemplate(stack)) {
             TemplateStorageHandler.addTemplate(stack);
         }
-
     }
-
 }
 
 

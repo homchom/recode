@@ -8,12 +8,11 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+@SuppressWarnings("ALL")
 @Mixin(ModelManager.class)
-public class MBakedModelManager {
-
+public class MModelManager {
     @Inject(method = "prepare", at = @At("RETURN"))
     private void prepare(ResourceManager resourceManager, ProfilerFiller profiler, CallbackInfoReturnable<ModelBakery> cir) {
         Recode.modelLoader = cir.getReturnValue();
     }
-
 }

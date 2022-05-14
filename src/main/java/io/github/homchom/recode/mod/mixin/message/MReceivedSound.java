@@ -8,12 +8,13 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+@SuppressWarnings("ALL")
 @Mixin(ClientPacketListener.class)
 public class MReceivedSound {
     private final Minecraft mc = Minecraft.getInstance();
 
-    @Inject(method = "onPlaySound", at = @At("HEAD"), cancellable = true)
-    private void onPlaySound(ClientboundSoundPacket packet, CallbackInfo ci) {
+    @Inject(method = "handleSoundEvent", at = @At("HEAD"), cancellable = true)
+    private void handleSoundEvent(ClientboundSoundPacket packet, CallbackInfo ci) {
         ReceiveSoundEvent.run(packet, ci);
     }
 }

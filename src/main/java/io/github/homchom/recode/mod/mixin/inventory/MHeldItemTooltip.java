@@ -19,9 +19,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.*;
 
+@SuppressWarnings("ALL")
 @Mixin(Gui.class)
 public class MHeldItemTooltip {
-
     private static final Map<String, MutableComponent> scopes = new HashMap<>();
 
     static {
@@ -37,11 +37,10 @@ public class MHeldItemTooltip {
     private ItemStack variableStack;
     private JsonObject varItemNbt;
 
-    @Inject(method = "renderHeldItemTooltip", at = @At("HEAD"), cancellable = true)
-    public void renderHeldItemTooltip(PoseStack matrices, CallbackInfo callbackInfo) {
+    @Inject(method = "renderSelectedItemName", at = @At("HEAD"), cancellable = true)
+    public void renderSelectedItemName(PoseStack matrices, CallbackInfo callbackInfo) {
         try {
             if (Config.getBoolean("variableScopeView")) {
-
                 ItemStack itemStack = mc.player.getMainHandItem();
 
                 if (variableStack != itemStack) {
@@ -158,8 +157,5 @@ public class MHeldItemTooltip {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
-
 }

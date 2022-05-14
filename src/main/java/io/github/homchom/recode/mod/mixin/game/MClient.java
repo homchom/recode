@@ -9,14 +9,13 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+@SuppressWarnings("ALL")
 @Mixin(Minecraft.class)
 public class MClient {
-
-    @Inject(method = "openScreen(Lnet/minecraft/client/gui/screen/Screen;)V", at = @At("HEAD"), cancellable = true)
-    public void openScreen(@Nullable Screen screen, CallbackInfo cbi) {
-        if(Minecraft.getInstance().player == null) {
+    @Inject(method = "setScreen(Lnet/minecraft/client/gui/screens/Screen;)V", at = @At("HEAD"), cancellable = true)
+    public void setScreen(@Nullable Screen screen, CallbackInfo cbi) {
+        if (Minecraft.getInstance().player == null) {
             DFInfo.currentState.setMode(State.Mode.OFFLINE);
         }
     }
-
 }

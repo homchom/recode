@@ -18,9 +18,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.*;
 
+@SuppressWarnings("ALL")
 @Mixin(ItemStack.class)
 public abstract class MItemStack {
-
     @Shadow
     private CompoundTag tag;
 
@@ -28,14 +28,13 @@ public abstract class MItemStack {
     @Nullable
     public abstract CompoundTag getTagElement(String key);
 
-    @Inject(method = "getTooltip", at = @At("RETURN"), cancellable = true)
-    private void getTooltip(Player player, TooltipFlag context,
+    @Inject(method = "getTooltipLines", at = @At("RETURN"), cancellable = true)
+    private void getTooltipLines(Player player, TooltipFlag context,
         CallbackInfoReturnable<List<Component>> cir) {
 
         if (player == null) return;
 
         try {
-
             String cname = FabricLoader.getInstance().isDevelopmentEnvironment() ? "boundKey" : "field_1655";
 
             int keycode = ((Key) FieldUtils.getField(KeyMapping.class,cname,true).get(Keybinds.showTags)).getValue();

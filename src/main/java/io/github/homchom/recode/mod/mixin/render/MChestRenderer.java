@@ -12,16 +12,16 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+@SuppressWarnings("ALL")
 @Mixin(ChestRenderer.class)
 public abstract class MChestRenderer<T extends BlockEntity & LidBlockEntity> implements BlockEntityRenderer<T> {
-
-    @Inject(method = "render(Lnet/minecraft/block/entity/BlockEntity;FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;II)V", at = @At("HEAD"), cancellable = true)
-    public void render(T entity, float tickDelta, PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay, CallbackInfo ci) {
+    @Inject(method = "render(Lnet/minecraft/world/level/block/entity/BlockEntity;FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;II)V", at = @At("HEAD"), cancellable = true)
+    public void render(T entity, float tickDelta, PoseStack poseStack, MultiBufferSource multiBufferSource, int light, int overlay, CallbackInfo ci) {
         if (Config.getBoolean("chestReplacement") && entity instanceof ChestBlockEntity) {
             ci.cancel();
 
             BlockState state = Blocks.BARREL.defaultBlockState();
-            Recode.MC.getBlockRenderer().renderSingleBlock(state, matrices, vertexConsumers, light, overlay);
+            Recode.MC.getBlockRenderer().renderSingleBlock(state, poseStack, multiBufferSource, light, overlay);
         }
     }
 }

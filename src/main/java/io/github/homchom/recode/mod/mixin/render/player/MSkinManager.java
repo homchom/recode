@@ -14,21 +14,22 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.io.File;
 
+@SuppressWarnings("ALL")
 @Mixin(SkinManager.class)
-public class MPlayerSkinProvider {
-
+public class MSkinManager {
     long loadingTexture = 0;
+
     @Shadow
     @Final
     private TextureManager textureManager;
 
-    //Complete overwrite for loadSkin method in net.minecraft.client.texture.PlayerSkinProvider
+    // Complete overwrite for loadSkin method in net.minecraft.client.texture.PlayerSkinProvider
     @Shadow
     @Final
-    private File skinCacheDir;
+    private File skinsDirectory;
 
-    @Inject(method = "loadSkin(Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/client/texture/PlayerSkinProvider$SkinTextureAvailableCallback;)Lnet/minecraft/util/Identifier;", at = @At("HEAD"), cancellable = true)
-    private void loadSkin(MinecraftProfileTexture profileTexture, Type type,
+    @Inject(method = "registerTexture(Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/client/resources/PlayerSkinProvider$SkinTextureAvailableCallback;)Lnet/minecraft/resources/ResourceLocation;", at = @At("HEAD"), cancellable = true)
+    private void registerTexture(MinecraftProfileTexture profileTexture, Type type,
                           @Nullable SkinManager.SkinTextureCallback callback,
                           CallbackInfoReturnable<ResourceLocation> cir) {
         String string = Hashing.sha1().hashUnencodedChars(profileTexture.getHash()).toString();
@@ -41,7 +42,7 @@ public class MPlayerSkinProvider {
         } else {
             if (loadingTexture < System.currentTimeMillis() - 5000) {
                 loadingTexture = System.currentTimeMillis();
-                File file = new File(skinCacheDir, string.length() > 2 ? string.substring(0, 2) : "xx");
+                File file = new File(skinsDirectory, string.length() > 2 ? string.substring(0, 2) : "xx");
                 File file2 = new File(file, string);
                 ResourceLocation finalIdentifier = identifier;
                 new Thread(() -> {

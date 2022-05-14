@@ -5,14 +5,14 @@ import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+@SuppressWarnings("ALL")
 @Mixin(Stitcher.class)
-public class MTextureStitcher {
-
-    @Shadow private int height;
+public class MStitcher {
+    @Shadow private int storageY;
 
     @Inject(method = "stitch", at = @At("RETURN"))
     private void stitch(CallbackInfo ci) {
-        this.height*=2;
+        storageY *= 2;
     }
 
 }

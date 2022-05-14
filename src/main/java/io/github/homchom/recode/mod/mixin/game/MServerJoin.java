@@ -8,12 +8,13 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+@SuppressWarnings("ALL")
 @Mixin(ClientPacketListener.class)
 public class MServerJoin {
     private final Minecraft mc = Minecraft.getInstance();
 
-    @Inject(method = "onGameJoin", at = @At("RETURN"), cancellable = true)
-    private void onGameJoin(ClientboundLoginPacket packet, CallbackInfo ci) {
+    @Inject(method = "handleLogin", at = @At("RETURN"), cancellable = true)
+    private void handleLogin(ClientboundLoginPacket packet, CallbackInfo ci) {
         ServerJoinEvent.run(packet, ci);
     }
 }

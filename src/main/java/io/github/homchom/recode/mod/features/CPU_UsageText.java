@@ -69,7 +69,7 @@ public class CPU_UsageText {
             renderText(stack, barsText, 2);
             renderText(stack, numberText, 1);
         } catch (Exception e) {
-            Recode.log(Level.ERROR, "Error while trying to render LagSlayer HUD!");
+            Recode.error("Error while trying to render LagSlayer HUD!");
             e.printStackTrace();
         }
     }

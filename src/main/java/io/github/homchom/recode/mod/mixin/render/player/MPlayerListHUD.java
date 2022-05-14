@@ -15,14 +15,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.UUID;
 
+@SuppressWarnings("ALL")
 @Mixin(PlayerTabOverlay.class)
 public class MPlayerListHUD {
     private static final Component SPACE = Component.nullToEmpty(" ");
 
-    @Inject(method = "getPlayerName", at = @At("RETURN"), cancellable = true)
-    public void getPlayerName(PlayerInfo entry, CallbackInfoReturnable<Component> cir) {
-        if(!Config.getBoolean("loadTabStars")) return;
-        if(RecodeServer.getUserAmount() == 0) return;
+    @Inject(method = "getNameForDisplay", at = @At("RETURN"), cancellable = true)
+    public void getNameForDisplay(PlayerInfo entry, CallbackInfoReturnable<Component> cir) {
+        if (!Config.getBoolean("loadTabStars")) return;
+        if (RecodeServer.getUserAmount() == 0) return;
         
         UUID id = entry.getProfile().getId();
         Component name = entry.getTabListDisplayName() != null ? this.spectatorFormat(entry, entry.getTabListDisplayName().copy()) : this.spectatorFormat(entry, PlayerTeam.formatNameForTeam(entry.getTeam(), new TextComponent(entry.getProfile().getName())));

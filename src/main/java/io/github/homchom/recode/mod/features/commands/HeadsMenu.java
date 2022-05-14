@@ -214,8 +214,8 @@ public class HeadsMenu extends LightweightGuiDescription implements IMenu, ILoad
                 items.add(item);
             }
         } catch (Exception e) {
-            Recode.log(Level.ERROR, "Error in toItemStack!!!");
-            Recode.log(Level.ERROR, "Stack trace:");
+            Recode.error("Error in toItemStack!!!");
+            Recode.error("Stack trace:");
             e.printStackTrace();
         }
         return items;

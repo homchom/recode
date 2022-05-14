@@ -76,7 +76,7 @@ public class Message {
         MessageGrabber.hide(type.getMessageAmount() - 1);
 
         if (Config.getBoolean("debugMode")) {
-            Recode.log("[CANCELLED] " + text.toString());
+            Recode.info("[CANCELLED] " + text.toString());
         }
     }
 }

@@ -20,18 +20,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.math.BigDecimal;
 import java.util.List;
 
+@SuppressWarnings("ALL")
 @Mixin(MouseHandler.class)
-public class MMouse {
+public class MMouseHandler {
     @Shadow
-    private double x;
+    private double xpos;
 
     @Shadow
-    private double y;
+    private double ypos;
 
     private long cd = System.currentTimeMillis();
 
-    @Inject(method = "onMouseScroll(JDD)V", at = @At("HEAD"))
-    private void onMouseScroll(long window, double horiz, double vertical, CallbackInfo ci) {
+    @Inject(method = "onScroll(JDD)V", at = @At("HEAD"))
+    private void onScroll(long window, double horiz, double vertical, CallbackInfo ci) {
         Screen screen = Recode.MC.screen;
         if (screen instanceof ContainerScreen && Config.getBoolean("quicknum")) {
             AbstractContainerMenu handler = ((ContainerScreen) screen).getMenu();
@@ -39,8 +40,8 @@ public class MMouse {
 
             double scale = Recode.MC.getWindow().getGuiScale();
 
-            double mouseX = x;
-            double mouseY = y;
+            double mouseX = xpos;
+            double mouseY = ypos;
 
 
             for (Slot slot : slotList) {
@@ -122,16 +123,12 @@ public class MMouse {
                                         if (Config.getBoolean("quicknumSound"))
                                             Recode.MC.player.playNotifySound(SoundEvents.NOTE_BLOCK_DIDGERIDOO, SoundSource.PLAYERS, 1, 0);
                                     }
-
-
                                 }
                             }
                         }
-
                     }
                 }
             }
         }
     }
-
 }

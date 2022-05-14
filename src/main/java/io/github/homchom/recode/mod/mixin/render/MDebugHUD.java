@@ -10,11 +10,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
 
+@SuppressWarnings("ALL")
 @Mixin(DebugScreenOverlay.class)
 public class MDebugHUD {
-
-    @Inject(method = "getLeftText", at = @At("RETURN"), cancellable = true)
-    protected void getLeftText(CallbackInfoReturnable<List<String>> callbackInfoReturnable) {
+    @Inject(method = "getGameInformation", at = @At("RETURN"), cancellable = true)
+    protected void getGameInformation(CallbackInfoReturnable<List<String>> callbackInfoReturnable) {
         if (!Config.getBoolean("f3Tps")) {
             return;
         }
@@ -29,7 +29,5 @@ public class MDebugHUD {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
-
 }

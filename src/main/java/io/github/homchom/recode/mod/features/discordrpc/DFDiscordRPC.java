@@ -35,11 +35,11 @@ public class DFDiscordRPC implements ILoader {
     @Override
     public void load() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            Recode.log(Level.INFO, "Closing Discord hook.");
+            Recode.info("Closing Discord hook.");
             try {
                 close();
             } catch (Exception e) {
-                Recode.log(Level.ERROR, "Error while closing Discord hook.");
+                Recode.error("Error while closing Discord hook.");
             }
         }));
 

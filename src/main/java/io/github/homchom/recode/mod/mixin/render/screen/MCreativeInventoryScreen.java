@@ -12,15 +12,16 @@ import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+@SuppressWarnings("ALL")
 @Mixin(CreativeModeInventoryScreen.class)
 public class MCreativeInventoryScreen {
-    @Shadow @Nullable private Slot deleteItemSlot;
+    @Shadow @Nullable private Slot destroyItemSlot;
 
-    @Inject(method = "onMouseClick", at = @At("HEAD"), cancellable = true)
-    public void onMouseClick(Slot slot, int invSlot, int clickData, ClickType actionType, CallbackInfo ci) {
+    @Inject(method = "slotClicked", at = @At("HEAD"), cancellable = true)
+    public void slotClicked(Slot slot, int invSlot, int clickData, ClickType actionType, CallbackInfo ci) {
         DestroyItemResetType resetType = Config.getEnum("destroyItemReset", DestroyItemResetType.class);
         if (resetType != DestroyItemResetType.OFF && DFInfo.isOnDF() && DFInfo.currentState.getMode() == State.CurrentState.Mode.DEV
-                && actionType == ClickType.QUICK_MOVE && slot == this.deleteItemSlot) {
+                && actionType == ClickType.QUICK_MOVE && slot == this.destroyItemSlot) {
             Recode.MC.setScreen(null);
             String cmd = "";
             switch (resetType) {

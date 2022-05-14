@@ -19,13 +19,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.io.*;
 import java.util.*;
 
+@SuppressWarnings("ALL")
 @Mixin(ClientPacketListener.class)
 public class MInventoryListener {
     private static final File FILE = ExternalFile.PLOTS_DB.getFile();
     private CompoundTag lastTag = null;
 
-    @Inject(method = "onInventory", at = @At("RETURN"))
-    private void onInventory(ClientboundContainerSetContentPacket packet, CallbackInfo ci) {
+    @Inject(method = "handleContainerContent", at = @At("RETURN"))
+    private void handleContainerContent(ClientboundContainerSetContentPacket packet, CallbackInfo ci) {
         if (!Config.getBoolean("cmdLoadPlots")) {
             return;
         }

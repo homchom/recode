@@ -8,13 +8,15 @@ import net.minecraft.client.renderer.blockentity.SignRenderer;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+@SuppressWarnings("ALL")
 @Mixin(SignRenderer.class)
 public class MSignRenderer {
     private final Minecraft mc = Minecraft.getInstance();
 
-    @Inject(at = @At("HEAD"))
-    public void render(SignBlockEntity signBlockEntity, float f, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int i, int j) {
+    @Inject(method = "render", at = @At("HEAD"))
+    public void render(SignBlockEntity signBlockEntity, float f, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j, CallbackInfo ci) {
         if (!signBlockEntity.getBlockPos().closerThan(mc.cameraEntity.blockPosition(), Config.getInteger("signRenderDistance")))
             return;
     }

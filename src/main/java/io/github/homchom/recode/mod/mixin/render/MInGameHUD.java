@@ -14,10 +14,11 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+@SuppressWarnings("ALL")
 @Mixin(Gui.class)
 public class MInGameHUD {
-    @Inject(method = "renderStatusEffectOverlay", at = @At("RETURN"))
-    private void renderStatusEffectOverlay(PoseStack stack, CallbackInfo ci) {
+    @Inject(method = "renderEffects", at = @At("RETURN"))
+    private void renderEffects(PoseStack stack, CallbackInfo ci) {
         CPU_UsageText.onRender(stack);
 
         Minecraft mc = Recode.MC;
@@ -34,8 +35,8 @@ public class MInGameHUD {
         }
     }
 
-    @Inject(at = @At("HEAD"), method = "renderScoreboardSidebar", cancellable = true)
-    private void renderScoreboardSidebar(CallbackInfo info) {
+    @Inject(at = @At("HEAD"), method = "displayScoreboardSidebar", cancellable = true)
+    private void displayScoreboardSidebar(CallbackInfo info) {
         Minecraft client = Recode.MC;
         if (Config.getBoolean("hideScoreboardOnF3")) {
             if (client.options.renderDebug) {

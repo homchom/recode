@@ -17,10 +17,10 @@ import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+@SuppressWarnings("ALL")
 @Mixin(HumanoidArmorLayer.class)
 public abstract class MArmorFeatureRenderer<T extends LivingEntity, M extends HumanoidModel<T>, A extends HumanoidModel<T>> extends RenderLayer<T, M> {
-
-    @Shadow protected abstract void setVisible(A bipedModel, EquipmentSlot slot);
+    @Shadow protected abstract void setPartVisibility(A bipedModel, EquipmentSlot slot);
 
     public MArmorFeatureRenderer(RenderLayerParent<T, M> context) {
         super(context);
@@ -28,18 +28,17 @@ public abstract class MArmorFeatureRenderer<T extends LivingEntity, M extends Hu
 
     LimitedHashmap<String, ResourceLocation> cu_cache = new LimitedHashmap<>(64);
 
-    @Inject(method = "renderArmor", at = @At("HEAD"), cancellable = true)
-    private void renderArmor(PoseStack matrices, MultiBufferSource vertexConsumers, T livingEntity, EquipmentSlot equipmentSlot, int i, A bipedEntityModel, CallbackInfo ci) {
+    @Inject(method = "renderArmorPiece", at = @At("HEAD"), cancellable = true)
+    private void renderArmorPiece(PoseStack poseStack, MultiBufferSource multiBufferSource, T livingEntity, EquipmentSlot equipmentSlot, int i, A bipedEntityModel, CallbackInfo ci) {
         ItemStack stack = livingEntity.getItemBySlot(equipmentSlot);
         if (!stack.isEmpty()) {
-
             CompoundTag info = stack.getTagElement("RecodeTextureData");
             if (info != null && (info.contains("texture") || info.contains("model") || info.contains("armor"))) {
                 ci.cancel();
 
                 if (info.contains("armor")) {
                     this.getParentModel().copyPropertiesTo(bipedEntityModel);
-                    setVisible(bipedEntityModel,equipmentSlot);
+                    setPartVisibility(bipedEntityModel,equipmentSlot);
                     try {
                         ResourceLocation id = cu_cache.computeIfAbsent(info.getString("armor"),(s) -> {
                             try {
@@ -54,8 +53,8 @@ public abstract class MArmorFeatureRenderer<T extends LivingEntity, M extends Hu
                             return MissingTextureAtlasSprite.getLocation();
                         });
 
-                        VertexConsumer vertexConsumer = ItemRenderer.getArmorFoilBuffer(vertexConsumers, RenderType.armorCutoutNoCull(id), false, stack.hasFoil());
-                        bipedEntityModel.renderToBuffer(matrices, vertexConsumer, i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+                        VertexConsumer vertexConsumer = ItemRenderer.getArmorFoilBuffer(multiBufferSource, RenderType.armorCutoutNoCull(id), false, stack.hasFoil());
+                        bipedEntityModel.renderToBuffer(poseStack, vertexConsumer, i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
                     } catch (Exception err) {
                         err.printStackTrace();
                     }

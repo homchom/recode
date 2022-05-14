@@ -102,7 +102,7 @@ public class FeaturesUI extends LightweightGuiDescription implements IMenu {
 //            in.close();
 //
 //        } catch (Exception e) {
-//            Recode.log(Level.ERROR, String.valueOf(e));
+//            Recode.error(String.valueOf(e));
 //        }
 //
 //        panel.setHost(this);

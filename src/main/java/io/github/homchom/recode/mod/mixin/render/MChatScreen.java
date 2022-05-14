@@ -13,21 +13,21 @@ import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+@SuppressWarnings("ALL")
 @Mixin(ChatScreen.class)
 public class MChatScreen {
-
     @Shadow
-    protected EditBox chatField;
+    protected EditBox input;
 
-    @Shadow private String originalChatText;
+    @Shadow private String initial;
 
     @Inject(method = "render", at = @At("INVOKE"))
-    private void render(PoseStack matrices, int mouseX, int mouseY, float delta,
+    private void render(PoseStack poseStack, int mouseX, int mouseY, float delta,
         CallbackInfo ci) {
         if (Config.getBoolean("highlightVarSyntax")) {
             Minecraft mc = Recode.MC;
 
-            String text = chatField.getValue();
+            String text = input.getValue();
 
             if (text.startsWith("/") && !(
                 text.startsWith("/var") ||
@@ -52,14 +52,14 @@ public class MChatScreen {
             Component formatted = VarSyntaxHighlighter.highlight(text);
 
             if (formatted != null) {
-                mc.font.drawShadow(matrices, formatted, 4, mc.screen.height - 25,
+                mc.font.drawShadow(poseStack, formatted, 4, mc.screen.height - 25,
                     0xffffff);
             }
         }
     }
 
-    @ModifyArg(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ChatScreen;fill(Lnet/minecraft/client/util/math/MatrixStack;IIIII)V"), index = 5)
-    private int getTextboxColour(int defaultColour) {
+    @ModifyArg(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/ChatScreen;fill(Lcom/mojang/blaze3d/vertex/PoseStack;IIIII)V"), index = 5)
+    private int getTextboxColor(int defaultColour) {
         ChatShortcut currentChatShortcut = ChatShortcut.getCurrentChatShortcut();
 
         // if there is one active - use it
@@ -70,7 +70,7 @@ public class MChatScreen {
         else return defaultColour;
     }
 
-    @ModifyArg(method = "keyPressed", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ChatScreen;sendMessage(Ljava/lang/String;)V"), index = 0)
+    @ModifyArg(method = "keyPressed", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/ChatScreen;sendMessage(Ljava/lang/String;)V"), index = 0)
     private String insertPrefix(String interceptedMessage) {
         ChatShortcut currentChatShortcut = ChatShortcut.getCurrentChatShortcut();
 

@@ -8,11 +8,11 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+@SuppressWarnings("ALL")
 @Mixin(ClientPacketListener.class)
 public class MItemInsert {
-
-    @Inject(method = "onInventory", at = @At("HEAD"))
-    public void onCreativeInventoryAction(ClientboundContainerSetContentPacket packet, CallbackInfo ci) {
+    @Inject(method = "handleContainerContent", at = @At("HEAD"))
+    public void handleContainerContent(ClientboundContainerSetContentPacket packet, CallbackInfo ci) {
         if (packet.getContainerId() == 0) {
             for (ItemStack stack : packet.getItems()) {
                 if (TemplateUtils.isTemplate(stack)) {

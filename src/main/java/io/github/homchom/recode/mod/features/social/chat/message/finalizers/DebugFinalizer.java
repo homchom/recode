@@ -9,7 +9,7 @@ public class DebugFinalizer extends MessageFinalizer {
     @Override
     protected void receive(Message message) {
         if (Config.getBoolean("debugMode")) {
-            Recode.log(message.toString());
+            Recode.info(message.toString());
         }
     }
 }

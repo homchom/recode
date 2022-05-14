@@ -22,13 +22,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Map;
 
+@SuppressWarnings("ALL")
 @Mixin(ItemModelShaper.class)
 public class MItemModels {
-
     int spriteIndex = 0;
 
-    @Inject(method = "getModel(Lnet/minecraft/item/ItemStack;)Lnet/minecraft/client/render/model/BakedModel;", at = @At("HEAD"), cancellable = true)
-    private void getModel(ItemStack stack, CallbackInfoReturnable<BakedModel> cir) {
+    @Inject(method = "getItemModel(Lnet/minecraft/world/item/ItemStack;)Lnet/minecraft/client/resources/model/BakedModel;", at = @At("HEAD"), cancellable = true)
+    private void getItemModel(ItemStack stack, CallbackInfoReturnable<BakedModel> cir) {
         if (!Config.getBoolean("betaItemTextures")) {
             return;
         }
@@ -133,5 +133,4 @@ public class MItemModels {
 
         }
     }
-
 }

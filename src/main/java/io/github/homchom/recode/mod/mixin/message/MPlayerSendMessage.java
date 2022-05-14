@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+@SuppressWarnings("ALL")
 @Mixin(LocalPlayer.class)
 public class MPlayerSendMessage {
     private final Minecraft minecraftClient = Minecraft.getInstance();
@@ -33,8 +34,8 @@ public class MPlayerSendMessage {
 //        }
 //    });
 
-    @Inject(method = "sendChatMessage(Ljava/lang/String;)V", at = @At("HEAD"), cancellable = true)
-    public void onMessage(String string, CallbackInfo ci) {
+    @Inject(method = "chat(Ljava/lang/String;)V", at = @At("HEAD"), cancellable = true)
+    public void chat(String string, CallbackInfo ci) {
         String[] args = string.split(" ");
         if (minecraftClient.player != null) {
             if (!string.startsWith("/")) {

@@ -10,7 +10,7 @@ import net.minecraft.client.*;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.network.chat.*;
 import net.minecraft.util.*;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.*;
@@ -20,26 +20,33 @@ import java.util.stream.Collectors;
 
 import static net.minecraft.client.gui.GuiComponent.fill;
 
+@SuppressWarnings("ALL")
 @Mixin(ChatComponent.class)
 public abstract class MSideChatHUD {
-
     @Shadow
     @Final
     private static Logger LOGGER;
+
     private final List<GuiMessage<FormattedCharSequence>> sideVisibleMessages = Lists.newArrayList();
+
     @Shadow
     @Final
-    private Minecraft client;
+    private Minecraft minecraft;
+
     @Shadow
-    private int scrolledLines;
+    private int chatScrollbarPos;
+
     @Shadow
     @Final
-    private List<GuiMessage<FormattedCharSequence>> visibleMessages;
+    private List<GuiMessage<FormattedCharSequence>> trimmedMessages;
+
     @Shadow
     @Final
-    private Deque<Component> messageQueue;
+    private Deque<Component> chatQueue;
+
     @Shadow
-    private boolean hasUnreadNewMessages;
+    private boolean newMessageSinceScroll;
+
     private int oldSideChatWidth = -1;
     private int sideScrolledLines;
 
@@ -49,7 +56,7 @@ public abstract class MSideChatHUD {
     }
 
     @Shadow
-    private static double getMessageOpacityMultiplier(int age) {
+    private static double getTimeFactor(int age) {
         return 0;
     }
 
@@ -60,44 +67,44 @@ public abstract class MSideChatHUD {
     protected abstract boolean isChatHidden();
 
     @Shadow
-    protected abstract void processMessageQueue();
+    protected abstract void processPendingMessages();
 
     @Shadow
-    public abstract double getChatScale();
+    public abstract double getScale();
 
     @Shadow
-    public abstract int getVisibleLineCount();
+    public abstract int getLinesPerPage();
 
     @Shadow
     public abstract int getWidth();
 
     @Shadow
-    public abstract void reset();
+    public abstract void rescaleChat();
 
     @Inject(method = "render", at = @At("HEAD"), cancellable = true)
-    private void render(PoseStack matrices, int tickDelta, CallbackInfo ci) {
+    private void render(PoseStack poseStack, int tickDelta, CallbackInfo ci) {
         List<GuiMessage<FormattedCharSequence>> tempMain = new ArrayList<>();
         List<GuiMessage<FormattedCharSequence>> tempSide = new ArrayList<>();
         if (Config.getBoolean("stackDuplicateMsgs")) {
-            tempMain.addAll(visibleMessages);
+            tempMain.addAll(trimmedMessages);
             tempSide.addAll(sideVisibleMessages);
-            visibleMessages.clear();
-            visibleMessages.addAll(stackMsgs(tempMain));
+            trimmedMessages.clear();
+            trimmedMessages.addAll(stackMsgs(tempMain));
             sideVisibleMessages.clear();
             sideVisibleMessages.addAll(stackMsgs(tempSide));
         }
 
-        this.processMessageQueue();
-        int renderedLines = renderChat(matrices, tickDelta, visibleMessages, 0, getWidth(),
-            scrolledLines);
-        renderChat(matrices, tickDelta, sideVisibleMessages, getSideChatStartX(),
+        this.processPendingMessages();
+        int renderedLines = renderChat(poseStack, tickDelta, trimmedMessages, 0, getWidth(),
+                chatScrollbarPos);
+        renderChat(poseStack, tickDelta, sideVisibleMessages, getSideChatStartX(),
             getSideChatWidth(), sideScrolledLines);
-        renderOthers(matrices, renderedLines);
+        renderOthers(poseStack, renderedLines);
         ci.cancel();
 
         if (Config.getBoolean("stackDuplicateMsgs")) {
-            visibleMessages.clear();
-            visibleMessages.addAll(tempMain);
+            trimmedMessages.clear();
+            trimmedMessages.addAll(tempMain);
             sideVisibleMessages.clear();
             sideVisibleMessages.addAll(tempSide);
         }
@@ -120,28 +127,28 @@ public abstract class MSideChatHUD {
         int newSideChatWidth = getSideChatWidth();
         if (newSideChatWidth != oldSideChatWidth) {
             oldSideChatWidth = newSideChatWidth;
-            reset();
+            rescaleChat();
         }
 
         // will apologise - most code is taken from deobfuscated minecraft jar
         // have attempted to make it as readable as possible but some lines idk man no clue
-        int visibleLineCount = this.getVisibleLineCount();
+        int visibleLineCount = this.getLinesPerPage();
         int visibleMessagesSize = visibleMessages.size();
         int renderedLines = 0;
         if (visibleMessagesSize > 0) {
             boolean chatFocused = this.isChatFocused();
 
-            float d = (float) this.getChatScale();
+            float d = (float) this.getScale();
             int k = Mth.ceil((double) width / d);
             matrices.pushPose();
             matrices.translate(2.0F, 8.0F, 0.0F);
             matrices.scale(d, d, 1f);
             double opacity =
-                this.client.options.chatOpacity * 0.8999999761581421D + 0.10000000149011612D;
-            double backgroundOpacity = this.client.options.textBackgroundOpacity;
-            double lineSpacing = 9.0D * (this.client.options.chatLineSpacing + 1.0D);
-            double lineSpacing2 = -8.0D * (this.client.options.chatLineSpacing + 1.0D)
-                + 4.0D * this.client.options.chatLineSpacing;
+                this.minecraft.options.chatOpacity * 0.8999999761581421D + 0.10000000149011612D;
+            double backgroundOpacity = this.minecraft.options.textBackgroundOpacity;
+            double lineSpacing = 9.0D * (this.minecraft.options.chatLineSpacing + 1.0D);
+            double lineSpacing2 = -8.0D * (this.minecraft.options.chatLineSpacing + 1.0D)
+                + 4.0D * this.minecraft.options.chatLineSpacing;
 
             for (int i = 0; i + scrolledLines < visibleMessages.size() && i < visibleLineCount;
                 ++i) {
@@ -150,7 +157,7 @@ public abstract class MSideChatHUD {
                     int ticksSinceCreation = tickDelta - chatHudLine.getAddedTime();
                     if (ticksSinceCreation < 200 || chatFocused) {
                         double o =
-                            chatFocused ? 1.0D : getMessageOpacityMultiplier(ticksSinceCreation);
+                            chatFocused ? 1.0D : getTimeFactor(ticksSinceCreation);
                         int aa = (int) (255.0D * o * opacity);
                         int ab = (int) (255.0D * o * backgroundOpacity);
                         ++renderedLines;
@@ -161,7 +168,7 @@ public abstract class MSideChatHUD {
                             fill(matrices, -2, (int) (s - lineSpacing), k + 4, (int) s, ab << 24);
                             RenderSystem.enableBlend();
                             matrices.translate(0.0D, 0.0D, 50.0D);
-                            this.client.font.drawShadow(matrices, chatHudLine.getMessage(),
+                            this.minecraft.font.drawShadow(matrices, chatHudLine.getMessage(),
                                 0.0F, (float) ((int) (s + lineSpacing2)), 16777215 + (aa << 24));
                             RenderSystem.disableDepthTest();
                             RenderSystem.disableBlend();
@@ -179,22 +186,22 @@ public abstract class MSideChatHUD {
 
     @SuppressWarnings("deprecation")
     private void renderOthers(PoseStack matrices, int renderedLines) {
-        int visibleMessagesSize = this.visibleMessages.size();
+        int visibleMessagesSize = this.trimmedMessages.size();
         if (visibleMessagesSize == 0) {
             return;
         }
         boolean chatFocused = this.isChatFocused();
 
-        float chatScale = (float) this.getChatScale();
+        float chatScale = (float) this.getScale();
         int k = Mth.ceil((double) this.getWidth() / chatScale);
         matrices.pushPose();
         matrices.translate(2.0F, 8.0F, 0.0F);
         matrices.scale(chatScale, chatScale, 1.0f);
         double opacity =
-            this.client.options.chatOpacity * 0.8999999761581421D + 0.10000000149011612D;
-        double backgroundOpacity = this.client.options.textBackgroundOpacity;
+            this.minecraft.options.chatOpacity * 0.8999999761581421D + 0.10000000149011612D;
+        double backgroundOpacity = this.minecraft.options.textBackgroundOpacity;
 
-        if (!this.messageQueue.isEmpty()) {
+        if (!this.chatQueue.isEmpty()) {
             int m = (int) (128.0D * opacity);
             int w = (int) (255.0D * backgroundOpacity);
             matrices.pushPose();
@@ -202,8 +209,8 @@ public abstract class MSideChatHUD {
             fill(matrices, -2, 0, k + 4, 9, w << 24);
             RenderSystem.enableBlend();
             matrices.translate(0.0D, 0.0D, 50.0D);
-            this.client.font.drawShadow(matrices,
-                new TranslatableComponent("chat.queue", this.messageQueue.size()), 0.0F, 1.0F,
+            this.minecraft.font.drawShadow(matrices,
+                new TranslatableComponent("chat.queue", this.chatQueue.size()), 0.0F, 1.0F,
                 16777215 + (m << 24));
             matrices.popPose();
             RenderSystem.disableDepthTest();
@@ -215,11 +222,11 @@ public abstract class MSideChatHUD {
             matrices.translate(-3.0F, 0.0F, 0.0F);
             int w = visibleMessagesSize * v + visibleMessagesSize;
             int x = renderedLines * v + renderedLines;
-            int y = scrolledLines * x / visibleMessagesSize;
+            int y = chatScrollbarPos * x / visibleMessagesSize;
             int z = x * x / w;
             if (w != x) {
                 int aa = y > 0 ? 170 : 96;
-                int ab = this.hasUnreadNewMessages ? 13382451 : 3355562;
+                int ab = this.newMessageSinceScroll ? 13382451 : 3355562;
                 fill(matrices, 0, -y, 2, -y - z, ab + (aa << 24));
                 fill(matrices, 2, -y, 1, -y - z, 13421772 + (aa << 24));
             }
@@ -229,7 +236,7 @@ public abstract class MSideChatHUD {
     }
 
     private int getSideChatStartX() {
-        return (int) ((this.client.getWindow().getGuiScaledWidth() - getSideChatWidth())
+        return (int) ((this.minecraft.getWindow().getGuiScaledWidth() - getSideChatWidth())
             / getSideChatScale()) - 6;
     }
 
@@ -241,7 +248,7 @@ public abstract class MSideChatHUD {
             return configWidth;
         } else { // else if 0 or less, auto size the side chat
             int rawWidth = Math.min(
-                (this.client.getWindow().getGuiScaledWidth() - getWidth() - 14),
+                (this.minecraft.getWindow().getGuiScaledWidth() - getWidth() - 14),
                 getWidth()
             );
             // if the calculated width <= 0 (window really small), have 1 as a failsafe value
@@ -251,16 +258,16 @@ public abstract class MSideChatHUD {
 
     // just incase i want to re-add the option to change side chat scale
     private double getSideChatScale() {
-        return getChatScale();
+        return getScale();
     }
 
-    @Inject(method = "clear", at = @At("TAIL"))
-    private void clear(boolean clearHistory, CallbackInfo ci) {
+    @Inject(method = "clearMessages", at = @At("TAIL"))
+    private void clearMessages(boolean clearHistory, CallbackInfo ci) {
         sideVisibleMessages.clear();
     }
 
 
-    @Inject(method = "addMessage(Lnet/minecraft/text/Text;IIZ)V", at = @At("TAIL"), cancellable = true)
+    @Inject(method = "addMessage(Lnet/minecraft/network/chat/Component;IIZ)V", at = @At("TAIL"), cancellable = true)
     private void addMessage(Component message, int messageId, int timestamp, boolean refresh,
         CallbackInfo ci) {
         boolean matchedARule = false;
@@ -283,12 +290,12 @@ public abstract class MSideChatHUD {
 
         // if matched rule, remove last from
         if (matchedARule) {
-            int i = Mth.floor((double) this.getWidth() / this.getChatScale());
+            int i = Mth.floor((double) this.getWidth() / this.getScale());
             int addedMessageCount = ComponentRenderUtils.wrapComponents(message, i,
-                this.client.font).size();
+                this.minecraft.font).size();
             // remove the last addedMessageCount messages from the visible messages
             // this has the effect of removing last message sent to main (to go to side instead)
-            visibleMessages.subList(0, addedMessageCount).clear();
+            trimmedMessages.subList(0, addedMessageCount).clear();
         }
     }
 
@@ -298,7 +305,7 @@ public abstract class MSideChatHUD {
         switch (side) {
             case MAIN:
             default:
-                i = Mth.floor((double) this.getWidth() / this.getChatScale());
+                i = Mth.floor((double) this.getWidth() / this.getScale());
                 break;
             case SIDE:
                 i = Mth.floor((double) this.getSideChatWidth() / this.getSideChatScale());
@@ -306,7 +313,7 @@ public abstract class MSideChatHUD {
         }
 
         List<GuiMessage<FormattedCharSequence>> outputChatLines =
-            ComponentRenderUtils.wrapComponents(message, i, this.client.font)
+            ComponentRenderUtils.wrapComponents(message, i, this.minecraft.font)
                 .stream()
                 .map(iTextComponent -> new GuiMessage<>(updateCounter, iTextComponent, chatLineId))
                 .collect(Collectors.toList());
@@ -318,38 +325,38 @@ public abstract class MSideChatHUD {
         switch (chatSide) {
             case MAIN:
             default:
-                return visibleMessages;
+                return trimmedMessages;
             case SIDE:
                 return sideVisibleMessages;
         }
     }
 
-    @Inject(method = "removeMessage", at = @At("TAIL"))
-    private void removeMessage(int messageId, CallbackInfo ci) {
+    @Inject(method = "removeById", at = @At("TAIL"))
+    private void removeById(int messageId, CallbackInfo ci) {
         this.sideVisibleMessages.removeIf((message) ->
             message.getId() == messageId
         );
     }
 
-    @Inject(method = "reset", at = @At("HEAD"))
-    private void reset(CallbackInfo ci) {
+    @Inject(method = "rescaleChat", at = @At("HEAD"))
+    private void rescaleChat(CallbackInfo ci) {
         sideVisibleMessages.clear();
     }
 
     // another copy from minecraft decompiled code
     // the main difference is switching references from main to side chat
     // and subtracting getSideChatStartX() from the adjusted x
-    @Inject(method = "getText", at = @At("HEAD"), cancellable = true)
-    private void getText(double x, double y, CallbackInfoReturnable<Style> cir) {
-        if (this.isChatFocused() && !this.client.options.hideGui && !this.isChatHidden()) {
+    @Inject(method = "getClickedComponentStyleAt", at = @At("HEAD"), cancellable = true)
+    private void getClickedComponentStyleAt(double x, double y, CallbackInfoReturnable<Style> cir) {
+        if (this.isChatFocused() && !this.minecraft.options.hideGui && !this.isChatHidden()) {
             double scale = this.getSideChatScale();
             double adjustedX = (x - 2.0D) - getSideChatStartX();
-            double adjustedY = (double) this.client.getWindow().getGuiScaledHeight() - y - 40.0D;
+            double adjustedY = (double) this.minecraft.getWindow().getGuiScaledHeight() - y - 40.0D;
             adjustedX = Mth.floor(adjustedX / scale);
             adjustedY = Mth.floor(
-                adjustedY / (scale * (this.client.options.chatLineSpacing + 1.0D)));
+                adjustedY / (scale * (this.minecraft.options.chatLineSpacing + 1.0D)));
             if (!(adjustedX < 0.0D) && !(adjustedY < 0.0D)) {
-                int size = Math.min(this.getVisibleLineCount(), this.sideVisibleMessages.size());
+                int size = Math.min(this.getLinesPerPage(), this.sideVisibleMessages.size());
                 if (adjustedX <= (double) Mth.floor(
                     (double) this.getSideChatWidth() / scale)) {
                     if (adjustedY < (double) (9 * size + size)) {
@@ -357,7 +364,7 @@ public abstract class MSideChatHUD {
                         if (line >= 0 && line < this.sideVisibleMessages.size()) {
                             GuiMessage<FormattedCharSequence> chatHudLine = this.sideVisibleMessages.get(
                                 line);
-                            cir.setReturnValue(this.client.font.getSplitter()
+                            cir.setReturnValue(this.minecraft.font.getSplitter()
                                 .componentStyleAtWidth(chatHudLine.getMessage(), (int) adjustedX));
                         }
                     }
@@ -366,17 +373,17 @@ public abstract class MSideChatHUD {
         }
     }
 
-    @Inject(method = "resetScroll", at = @At("TAIL"))
-    private void resetScroll(CallbackInfo ci) {
+    @Inject(method = "resetChatScroll", at = @At("TAIL"))
+    private void resetChatScroll(CallbackInfo ci) {
         sideScrolledLines = 0;
     }
 
-    @Inject(method = "scroll", at = @At("TAIL"))
-    private void scroll(double amount, CallbackInfo ci) {
-        sideScrolledLines = (int) ((double) this.scrolledLines + amount);
+    @Inject(method = "scrollChat", at = @At("TAIL"))
+    private void scrollChat(int amount, CallbackInfo ci) {
+        sideScrolledLines = (int) ((double) this.chatScrollbarPos + amount);
         int i = this.sideVisibleMessages.size();
-        if (sideScrolledLines > i - this.getVisibleLineCount()) {
-            sideScrolledLines = i - this.getVisibleLineCount();
+        if (sideScrolledLines > i - this.getLinesPerPage()) {
+            sideScrolledLines = i - this.getLinesPerPage();
         }
 
         if (sideScrolledLines <= 0) {
@@ -384,7 +391,7 @@ public abstract class MSideChatHUD {
         }
     }
 
-    //Message Stacker
+    // Message Stacker
     public List<GuiMessage<FormattedCharSequence>> stackMsgs(List<GuiMessage<FormattedCharSequence>> msgs) {
         GuiMessage<FormattedCharSequence> last = null;
         int count = 1;

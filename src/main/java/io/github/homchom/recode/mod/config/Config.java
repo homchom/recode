@@ -7,15 +7,17 @@ import net.minecraft.sounds.SoundEvent;
 import java.util.*;
 
 public class Config {
-    private static final ConfigManager CONFIG = ConfigManager.getInstance();
+    private static ConfigManager config() {
+        return ConfigManager.getInstance();
+    }
 
     public static String getString(String key) {
-        ConfigSetting<?> setting = CONFIG.find(key);
+        ConfigSetting<?> setting = config().find(key);
         return getValue(setting, String.class);
     }
 
     public static String getDynamicString(String key, HashMap<String, String> vars) {
-        ConfigSetting<?> setting = CONFIG.find(key);
+        ConfigSetting<?> setting = config().find(key);
         String value = getValue(setting, String.class);
 
         for (String var : vars.keySet()) {
@@ -27,44 +29,45 @@ public class Config {
     }
 
     public static <T extends Enum<T>> T getEnum(String key, Class<T> enumType) {
-        ConfigSetting<?> setting = CONFIG.find(key);
+        ConfigSetting<?> setting = config().find(key);
         return getValue(setting, enumType);
     }
 
     public static Double getDouble(String key) {
-        ConfigSetting<?> setting = CONFIG.find(key);
+        ConfigSetting<?> setting = config().find(key);
         return getValue(setting, Double.class);
     }
 
     public static Integer getInteger(String key) {
-        ConfigSetting<?> setting = CONFIG.find(key);
+        ConfigSetting<?> setting = config().find(key);
         return getValue(setting, Integer.class);
     }
 
     public static Float getFloat(String key) {
-        ConfigSetting<?> setting = CONFIG.find(key);
+        ConfigSetting<?> setting = config().find(key);
         return getValue(setting, Float.class);
     }
 
     public static Boolean getBoolean(String key) {
-        ConfigSetting<?> setting = CONFIG.find(key);
+        if (config() == null) return true;
+        ConfigSetting<?> setting = config().find(key);
         return getValue(setting, Boolean.class);
     }
 
     public static Long getLong(String key) {
-        ConfigSetting<?> setting = CONFIG.find(key);
+        ConfigSetting<?> setting = config().find(key);
         return getValue(setting, Long.class);
     }
 
     public static SoundEvent getSound(String key) {
-        ConfigSetting<?> setting = CONFIG.find(key);
+        ConfigSetting<?> setting = config().find(key);
         ListSetting<String> list = setting.cast();
         return ConfigSounds.getByName(list.getSelected());
     }
 
     @SuppressWarnings("unchecked")
     public static List<String> getStringList(String key) {
-        ConfigSetting<?> setting = CONFIG.find(key);
+        ConfigSetting<?> setting = config().find(key);
         return (List<String>) getValue(setting, List.class);
     }
 
