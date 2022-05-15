@@ -1,8 +1,11 @@
 package io.github.homchom.recode.sys.file;
 
 import io.github.homchom.recode.Recode;
+import net.minecraft.nbt.*;
 
+import javax.annotation.Nullable;
 import java.io.*;
+import java.util.function.Consumer;
 
 public class ExternalFileBuilder {
 
@@ -25,7 +28,7 @@ public class ExternalFileBuilder {
         return this;
     }
 
-    public File buildFile() {
+    public File buildFile(@Nullable Consumer<File> init) {
         File mainFile = new File(Recode.MOD_NAME);
         if (!mainFile.exists()) {
             mainFile.mkdir();
@@ -40,13 +43,29 @@ public class ExternalFileBuilder {
                 } else {
                     file.createNewFile();
                 }
-
+                if (init != null) init.accept(file);
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
         return file;
+    }
 
+    public File buildFile() {
+        return buildFile(null);
+    }
+
+    static File nbt(String name) {
+        return new ExternalFileBuilder()
+                .isDirectory(false)
+                .setName(name)
+                .setFileType("nbt")
+                .buildFile(file -> {
+                    try {
+                        NbtIo.write(new CompoundTag(), file);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
     }
 }

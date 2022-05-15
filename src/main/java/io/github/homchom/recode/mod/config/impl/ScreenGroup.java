@@ -22,7 +22,6 @@ public class ScreenGroup extends ConfigGroup {
         // Title Screen
         ConfigSubGroup titleScreen = new ConfigSubGroup("title_screen");
         titleScreen.register(new BooleanSetting("dfButton", true));
-        titleScreen.register(new BooleanSetting("dfNodeButtons", false));
         this.register(titleScreen);
 
         // Cosmetic

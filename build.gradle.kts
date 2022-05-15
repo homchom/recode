@@ -1,3 +1,5 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
+
 plugins {
     id("fabric-loom") version "0.11-SNAPSHOT"
     id("com.github.johnrengelman.shadow") version "7.1.2"
@@ -40,6 +42,16 @@ dependencies {
         shade(notation)
     }
 
+    fun includeImpl(notation: String) {
+        implementation(notation)
+        include(notation)
+    }
+
+    fun includeModImpl(notation: String) {
+        modImplementation(notation)
+        include(notation)
+    }
+
     val minecraftVersion: String by project
     minecraft("com.mojang:minecraft:$minecraftVersion")
     mappings(loom.officialMojangMappings())
@@ -50,17 +62,17 @@ dependencies {
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
 
     // https://github.com/CottonMC/LibGui/releases
-    modImplementation("io.github.cottonmc:LibGui:5.4.0+1.18.2")
+    includeModImpl("io.github.cottonmc:LibGui:5.4.0+1.18.2")
 
-	modImplementation("com.terraformersmc:modmenu:3.2.1")
-	modImplementation("me.shedaniel.cloth:cloth-config-fabric:6.2.62")
+    modCompileOnly("com.terraformersmc:modmenu:3.2.1")
+    includeModImpl("me.shedaniel.cloth:cloth-config-fabric:6.2.62")
 
     // discord rpc
     shadeImpl("com.jagrosh:DiscordIPC:0.4")
 
     // websocket TODO: clean this up
     shadeImpl("org.java-websocket:Java-WebSocket:1.5.3")
-    modImplementation("javax.websocket:javax.websocket-api:1.1")
+    includeImpl("javax.websocket:javax.websocket-api:1.1")
     shadeImpl("io.socket:socket.io-client:2.0.1")
 }
 
@@ -91,7 +103,13 @@ tasks {
         enabled = false
     }
 
+    val relocate by registering(ConfigureShadowRelocation::class) {
+        target = shadowJar.get()
+        prefix = "$mavenGroup.recode.shadow"
+    }
+
     shadowJar {
+        dependsOn(relocate)
         configurations = listOf(shade)
         destinationDirectory.set(file("build/devlibs"))
         archiveClassifier.set("dev")

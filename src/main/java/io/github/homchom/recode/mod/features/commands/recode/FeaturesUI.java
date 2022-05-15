@@ -9,13 +9,12 @@ import io.github.homchom.recode.sys.renderer.widgets.CButton;
 import io.github.homchom.recode.sys.util.TextUtil;
 import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.*;
 
 public class FeaturesUI extends LightweightGuiDescription implements IMenu {
 
-    private static final ResourceLocation CODEUTILS_LOGO = new ResourceLocation("codeutilities:icon.png");
+    //private static final ResourceLocation CODEUTILS_LOGO = new ResourceLocation("codeutilities:icon.png");
 
     List<CButton> all = new ArrayList<>();
 

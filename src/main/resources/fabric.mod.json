@@ -3,7 +3,7 @@
   "id": "recode",
   "version": "${version}",
   "name": "recode",
-  "description": "A 1.18 fork of CodeUtilities 2.0.",
+  "description": "A 1.18 clone of CodeUtilities 2",
   "contributors": ["homchom", "CodeUtilities"],
   "contact": {
     "sources": "https://github.com/homchom/recode",
@@ -11,6 +11,7 @@
   },
   "environment": "client",
   "license": "LGPL-3.0",
+  "icon": "assets/recode/icon.png",
   "entrypoints": {
     "main": [
       "io.github.homchom.recode.Recode"

@@ -10,6 +10,7 @@ import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.item.ItemStack;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -49,7 +50,7 @@ public class TemplateStorageHandler implements IManager<TemplateItem>, ISave {
     }
 
     // Must contain serialized template list.
-    // For reference, see HotbarStorage#load
+    // For reference, see HotbarManager#load
     @Override
     public void initialize() {
         try {
@@ -68,11 +69,9 @@ public class TemplateStorageHandler implements IManager<TemplateItem>, ISave {
                 TemplateItem templateItem = new TemplateItem(stack);
                 this.register(templateItem);
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     @Override

@@ -95,7 +95,7 @@ public class DFDiscordRPC implements ILoader {
                 presence.setSmallImage(null, null);
             }
 
-            presence.setLargeImage("diamondfirelogo", "mcdiamondfire.com | Recode" + (Recode.BETA ? "-BETA" : ""));
+            presence.setLargeImage("diamondfirelogo", "mcdiamondfire.com | recode" + (Recode.BETA ? "-BETA" : ""));
 
         } else if (state.getMode() == State.Mode.PLAY || state.getMode() == State.Mode.DEV || state.getMode() == State.Mode.BUILD) {
 
