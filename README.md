@@ -5,7 +5,7 @@ A 1.18 clone of [CodeUtilities 2](https://github.com/CodeUtilities/CodeUtilities
 
 Future plans include removing bloat/unnecessary features, improving existing code, adding new features, and migrating to Kotlin.
 
-### Dependencies:
+### Mod Dependencies:
 - Fabric Loader v0.13.3 or newer
 - Fabric API for 1.18.2
 
