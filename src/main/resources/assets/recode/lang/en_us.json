@@ -19,8 +19,6 @@
     "config.recode.option.chestReplacement.tooltip": "Render all chests as a barrel.",
     "config.recode.option.signRenderDistance": "Sign Render Distance",
     "config.recode.option.signRenderDistance.tooltip": "Maximum distance for signs to render.",
-    "config.recode.option.betaItemTextures": "[Beta] Recode Textures",
-    "config.recode.option.betaItemTextures.tooltip": "Allows plots to display custom textures and models on items.",
     "config.recode.option.plotInfoOverlay": "Location Overlay",
     "config.recode.option.plotInfoOverlay.tooltip": "Displays your current DiamondFire location on the screen.",
     "config.recode.subcategory.screen_title_screen": "Title Screen",
