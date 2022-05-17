@@ -22,7 +22,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Map;
 
-@SuppressWarnings("ALL")
 @Mixin(ItemModelShaper.class)
 public class MItemModels {
     int spriteIndex = 0;

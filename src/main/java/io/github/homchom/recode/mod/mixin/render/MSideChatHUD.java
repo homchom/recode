@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 
 import static net.minecraft.client.gui.GuiComponent.fill;
 
-@SuppressWarnings("ALL")
 @Mixin(ChatComponent.class)
 public abstract class MSideChatHUD {
     @Shadow

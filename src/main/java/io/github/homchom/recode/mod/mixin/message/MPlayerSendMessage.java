@@ -14,7 +14,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@SuppressWarnings("ALL")
 @Mixin(LocalPlayer.class)
 public class MPlayerSendMessage {
     private final Minecraft minecraftClient = Minecraft.getInstance();

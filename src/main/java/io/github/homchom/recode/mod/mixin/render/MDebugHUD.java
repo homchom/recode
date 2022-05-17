@@ -10,7 +10,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
 
-@SuppressWarnings("ALL")
 @Mixin(DebugScreenOverlay.class)
 public class MDebugHUD {
     @Inject(method = "getGameInformation", at = @At("RETURN"), cancellable = true)
