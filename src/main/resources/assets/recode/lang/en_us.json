@@ -112,9 +112,6 @@
     "config.recode.option.colorReplacePicker": "Replace Color Picker",
     "config.recode.option.colorReplacePicker.tooltip": "Replaces the color picker with\na color menu equivalent of \"/colors 100\".",
 
-    "config.recode.option.cmdLoadPlots": "/plots loading",
-    "config.recode.option.cmdLoadPlots.tooltip": "Should plots be cached or not for /plots.",
-
     "config.recode.option.socialFeatures": "Enable Social Features",
     "config.recode.option.codeUtilsChat": "Recode Chat",
     "config.recode.option.cosmetics": "Show Cosmetics",

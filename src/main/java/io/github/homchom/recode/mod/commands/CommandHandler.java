@@ -56,7 +56,6 @@ public class CommandHandler implements ILoader {
                 new PJoinCommand(),
                 new SchemCommand(),
                 new RelativeLocCommand(),
-                new PlotsCommand(),
                 new NBSSearchCommand(),
                 new PartnerBracketCommand(),
                 new CodeVaultCommand(),

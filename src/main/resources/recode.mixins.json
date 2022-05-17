@@ -7,7 +7,6 @@
     "game.MMinecraftClient",
     "game.MServerJoin",
     "inventory.MHeldItemTooltip",
-    "inventory.MInventoryListener",
     "inventory.MItemCreative",
     "inventory.MItemInsert",
     "inventory.MItemSlotUpdate",
