@@ -130,8 +130,6 @@
     "config.recode.option.hideJoinLeaveMessages.tooltip": "Hides messages of players joining\nor leaving the current node.",
     "config.recode.option.hideVarScopeMessages": "Hide Variable Scope Messages",
     "config.recode.option.hideVarScopeMessages.tooltip": "Hides messages about changing variable scopes.",
-    "config.recode.option.stackDuplicateMsgs": "Message Stacker",
-    "config.recode.option.stackDuplicateMsgs.tooltip": "Merges multiple messages into one\nif they're the same.",
 
     "config.recode.option.hideScoreboardOnF3": "Hide Scoreboard on F3",
     "config.recode.option.hideScoreboardOnF3.tooltip": "Hides the scoreboard when the F3 menu is active.",
