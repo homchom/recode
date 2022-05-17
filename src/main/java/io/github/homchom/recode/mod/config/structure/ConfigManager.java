@@ -28,7 +28,6 @@ public class ConfigManager implements IManager<ConfigGroup> {
         this.register(new DiscordRPCGroup("discordRPC"));
         this.register(new HidingGroup("hiding"));
         this.register(new KeybindsGroup("keybinds"));
-        this.register(new HighlightGroup("highlight"));
         this.register(new ScreenGroup("screen"));
         this.register(new SidedChatGroup("sidedchat"));
         this.register(new MiscellaneousGroup("misc"));
