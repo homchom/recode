@@ -177,12 +177,6 @@
     "config.recode.option.destroyitemresettype.compact": "Compact Items",
 
 
-    "config.recode.subcategory.misc_audio": "Project: Audio",
-    "config.recode.subcategory.misc_audio.tooltip": "Project: Audio settings",
-    "config.recode.option.audioUrl": "Backend Endpoint",
-    "config.recode.option.audioUrl.tooltip": "The Socket URL to connect to for Project: Audio.",
-    "config.recode.option.audio": "Playback Support",
-    "config.recode.option.audio.tooltip": "Allows plots to play custom sounds / music.",
 
     "config.recode.subcategory.misc_quicknum": "Quick Number Change",
     "config.recode.subcategory.misc_quicknum.tooltip": "Allows you to change a number variable\nsimply by scrolling.",
