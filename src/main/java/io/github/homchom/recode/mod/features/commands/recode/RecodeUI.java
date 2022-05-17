@@ -41,15 +41,15 @@ public class RecodeUI extends LightweightGuiDescription implements IMenu {
         panel.add(featuresButton, 60, 148, 100, 20);
 
         // ------------------------ Contributors Button ------------------------
-        WButton contributorsButton = new WButton(new TextComponent("Contributors"));
+        /*WButton contributorsButton = new WButton(new TextComponent("Contributors"));
         contributorsButton.setOnClick(() -> {
             ContributorsUI gui_2 = new ContributorsUI();
             gui_2.scheduleOpenGui(gui_2);
         });
-        panel.add(contributorsButton, 60, 170, 100, 20);
+        panel.add(contributorsButton, 60, 170, 100, 20);*/
 
         // ------------------------ Bug Report Button ------------------------
-        WButton bugReport = new WButton(new TextComponent("Bug Report"));
+        WButton bugReport = new WButton(new TextComponent("Report Issues"));
         bugReport.setOnClick(() -> {
             String link = "https://github.com/homchom/recode/issues";
 
@@ -62,7 +62,7 @@ public class RecodeUI extends LightweightGuiDescription implements IMenu {
             }, link, false);
             Minecraft.getInstance().tell(() -> Minecraft.getInstance().setScreen(gui_3));
         });
-        panel.add(bugReport, 60, 192, 100, 20);
+        panel.add(bugReport, 60, 170, 100, 20);
 
         // ------------------------ Options Button ------------------------
         WButton options = new WButton(new TextComponent("Options"));
@@ -70,7 +70,7 @@ public class RecodeUI extends LightweightGuiDescription implements IMenu {
             Minecraft mc = Minecraft.getInstance();
             mc.setScreen(ConfigScreen.getScreen(Minecraft.getInstance().screen));
         });
-        panel.add(options, 60, 214, 100, 20);
+        panel.add(options, 60, 192, 100, 20);
     }
 
 }
