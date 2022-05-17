@@ -1,9 +1,11 @@
 package io.github.homchom.recode;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import io.github.homchom.recode.mod.commands.CommandHandler;
 import io.github.homchom.recode.mod.config.Config;
-import io.github.homchom.recode.mod.config.internal.*;
+import io.github.homchom.recode.mod.config.internal.ConfigFile;
+import io.github.homchom.recode.mod.config.internal.ConfigInstruction;
 import io.github.homchom.recode.mod.config.internal.gson.ConfigSerializer;
 import io.github.homchom.recode.mod.config.internal.gson.types.*;
 import io.github.homchom.recode.mod.config.internal.gson.types.list.StringListSerializer;
@@ -14,7 +16,6 @@ import io.github.homchom.recode.mod.events.EventHandler;
 import io.github.homchom.recode.mod.events.interfaces.OtherEvents;
 import io.github.homchom.recode.mod.features.discordrpc.DFDiscordRPC;
 import io.github.homchom.recode.mod.features.social.cosmetics.CosmeticHandler;
-import io.github.homchom.recode.mod.features.social.tab.Client;
 import io.github.homchom.recode.sys.file.FileUtil;
 import io.github.homchom.recode.sys.hypercube.codeaction.ActionDump;
 import io.github.homchom.recode.sys.hypercube.templates.TemplateStorageHandler;
@@ -25,15 +26,19 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.model.*;
-import org.slf4j.*;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelBakery;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.Random;
-import java.util.concurrent.*;
-import java.util.regex.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Recode implements ModInitializer {
     public static final String MOD_ID = "recode";
@@ -122,7 +127,6 @@ public class Recode implements ModInitializer {
         initializer.add(new ConfigManager());
         initializer.add(new TemplateStorageHandler());
         initializer.add(new DFDiscordRPC());
-        initializer.add(new Client());
         initializer.add(new ActionDump());
         initializer.add(new EventHandler());
         initializer.add(new State.Locater());
