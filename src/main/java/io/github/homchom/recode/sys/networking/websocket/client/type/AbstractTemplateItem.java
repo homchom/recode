@@ -1,7 +1,6 @@
 package io.github.homchom.recode.sys.networking.websocket.client.type;
 
-import com.google.gson.JsonObject;
-import io.github.homchom.recode.Recode;
+import com.google.gson.*;
 import io.github.homchom.recode.sys.hypercube.templates.TemplateUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.*;
@@ -13,7 +12,7 @@ public abstract class AbstractTemplateItem extends SocketItem {
 
     @Override
     public ItemStack getItem(String data) throws Exception {
-        JsonObject templateObject = Recode.JSON_PARSER.parse(data).getAsJsonObject();
+        JsonObject templateObject = JsonParser.parseString(data).getAsJsonObject();
 
         String author;
         Component name;

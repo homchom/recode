@@ -1,6 +1,6 @@
 package io.github.homchom.recode.mod.mixin.render;
 
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import io.github.homchom.recode.Recode;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.sys.util.ItemUtil;
@@ -66,7 +66,7 @@ public class MMouseHandler {
                                     CompoundTag publicBukkitValues = tag.getCompound("PublicBukkitValues");
                                     String varItem = publicBukkitValues.getString("hypercube:varitem");
 
-                                    JsonObject parsedJson = Recode.JSON_PARSER.parse(varItem).getAsJsonObject();
+                                    JsonObject parsedJson = JsonParser.parseString(varItem).getAsJsonObject();
                                     JsonObject data = parsedJson.get("data").getAsJsonObject();
 
                                     String name = data.get("name").getAsString();

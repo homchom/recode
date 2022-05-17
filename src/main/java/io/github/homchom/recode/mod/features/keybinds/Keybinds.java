@@ -183,138 +183,138 @@ public class Keybinds implements ClientModInitializer {
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             // play
-            while (play.isDown()) {
+            while (play.consumeClick()) {
                 sendChat("/play");
             }
 
             // build
-            while (build.isDown()) {
+            while (build.consumeClick()) {
                 sendChat("/build");
             }
 
             // dev
-            while (dev.isDown()) {
+            while (dev.consumeClick()) {
                 sendChat("/dev");
             }
 
             // toggle play dev
-            while (toggle_play_dev.isDown()) {
+            while (toggle_play_dev.consumeClick()) {
                 sendChat(DFInfo.currentState.getMode() == State.Mode.PLAY ? "/dev" : "/play");
             }
 
             // toggle play build
-            while (toggle_play_build.isDown()) {
+            while (toggle_play_build.consumeClick()) {
                 sendChat(DFInfo.currentState.getMode() == State.Mode.PLAY ? "/build" : "/play");
             }
 
             // spawn
-            while (spawn.isDown()) {
+            while (spawn.consumeClick()) {
                 sendChat("/s");
             }
 
             // node1
-            while (node1.isDown()) {
+            while (node1.consumeClick()) {
                 sendChat("/node 1");
             }
 
             // node2
-            while (node2.isDown()) {
+            while (node2.consumeClick()) {
                 sendChat("/node 2");
             }
 
             // node3
-            while (node3.isDown()) {
+            while (node3.consumeClick()) {
                 sendChat("/node 3");
             }
 
             // node4
-            while (node4.isDown()) {
+            while (node4.consumeClick()) {
                 sendChat("/node 4");
             }
 
             // node5
-            while (node5.isDown()) {
+            while (node5.consumeClick()) {
                 sendChat("/node 5");
             }
 
             // node beta
-            while (nodeBeta.isDown()) {
+            while (nodeBeta.consumeClick()) {
                 sendChat("/node beta");
             }
 
             // fs normal
-            while (fs_normal.isDown()) {
+            while (fs_normal.consumeClick()) {
                 sendChat("/fs " + Config.getInteger("fsNormal"));
                 FlightspeedToggle.fs_is_normal = true;
             }
 
             // fs med
-            while (fs_med.isDown()) {
+            while (fs_med.consumeClick()) {
                 sendChat("/fs " + Config.getInteger("fsMed"));
             }
 
             // fs fast
-            while (fs_fast.isDown()) {
+            while (fs_fast.consumeClick()) {
                 sendChat("/fs " + Config.getInteger("fsFast"));
             }
 
             // toggle fs normal med
-            while (toggle_fs_normal_med.isDown()) {
+            while (toggle_fs_normal_med.consumeClick()) {
                 FlightspeedToggle.toggleFlightspeed("medium");
             }
 
             // toggle fs normal fast
-            while (toggle_fs_normal_fast.isDown()) {
+            while (toggle_fs_normal_fast.consumeClick()) {
                 FlightspeedToggle.toggleFlightspeed("fast");
             }
 
             // lagslayer
-            while (lagslayer.isDown()) {
+            while (lagslayer.consumeClick()) {
                 sendChat("/lagslayer");
             }
 
             // rc
-            while (rc.isDown()) {
+            while (rc.consumeClick()) {
                 sendChat("/rc");
             }
 
             // rs
-            while (rs.isDown()) {
+            while (rs.consumeClick()) {
                 sendChat("/rs");
             }
 
             // plot spawn
-            while (plotSpawn.isDown()) {
+            while (plotSpawn.consumeClick()) {
                 sendChat("/p s");
             }
 
             // nightvis
-            while (nightvis.isDown()) {
+            while (nightvis.consumeClick()) {
                 sendChat("/nightvis");
             }
 
             // fly
-            while (fly.isDown()) {
+            while (fly.consumeClick()) {
                 sendChat("/fly");
             }
 
             // chat global
-            while (chatGlobal.isDown()) {
+            while (chatGlobal.consumeClick()) {
                 sendChat("/chat global");
             }
 
             // chat local
-            while (chatLocal.isDown()) {
+            while (chatLocal.consumeClick()) {
                 sendChat("/chat local");
             }
 
             // chat none
-            while (chatNone.isDown()) {
+            while (chatNone.consumeClick()) {
                 sendChat("/chat none");
             }
 
             // search
-            while (searchFunction.isDown()) {
+            while (searchFunction.consumeClick()) {
                 if (DFInfo.isOnDF() && DFInfo.currentState.getMode() == State.Mode.DEV && mc.player.isCreative()) {
                     BlockEntity blockEntity = mc.level.getBlockEntity(new BlockPos(mc.hitResult.getLocation()));
 
@@ -331,19 +331,19 @@ public class Keybinds implements ClientModInitializer {
                 }
             }
 
-            while (partnerBracket.isDown()) {
+            while (partnerBracket.consumeClick()) {
                 PartnerBracketCommand.exec();
             }
 
-            while (modv.isDown()) {
+            while (modv.consumeClick()) {
                 sendChat("/mod v");
             }
 
-            while (supportAccept.isDown()) {
+            while (supportAccept.consumeClick()) {
                 sendChat("/support accept");
             }
 
-            while (supportQueue.isDown()) {
+            while (supportQueue.consumeClick()) {
                 sendChat("/support queue");
             }
 
@@ -353,7 +353,7 @@ public class Keybinds implements ClientModInitializer {
                         // filter which also needs to consume all of the wasPressed
                         // e.g. if multiple inputs went by before next frame was drawn
                         boolean pressed = false;
-                        while (KeyMapping.isDown()) {
+                        while (KeyMapping.consumeClick()) {
                             pressed = true;
                         }
                         return pressed;

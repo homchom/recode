@@ -1,6 +1,6 @@
 package io.github.homchom.recode.mod.config.internal;
 
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import io.github.homchom.recode.Recode;
 import io.github.homchom.recode.mod.config.structure.*;
@@ -40,7 +40,7 @@ public class ConfigFile implements ILoader, ISave {
         if (jsonObject == null) {
             try {
                 JsonReader reader = new JsonReader(new FileReader(file));
-                jsonObject = Recode.JSON_PARSER.parse(reader).getAsJsonObject();
+                jsonObject = JsonParser.parseReader(reader).getAsJsonObject();
             } catch (FileNotFoundException | RuntimeException e) {
                 e.printStackTrace();
             }

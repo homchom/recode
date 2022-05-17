@@ -13,16 +13,16 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 
 public class RecodeUI extends LightweightGuiDescription implements IMenu {
-    //private static final ResourceLocation CODEUTILS_LOGO = new ResourceLocation("codeutilities:icon.png");
+    private static final ResourceLocation CODEUTILS_LOGO = new ResourceLocation("recode:icon.png");
 
     @Override
     public void open(String... args) {
         WPlainPanel root = new WPlainPanel();
         root.setSize(220, 220);
 
-        //CImage cImage = new CImage(CODEUTILS_LOGO);
-        //cImage.setSize(128, 128);
-        //root.add(cImage, 46, -10);
+        CImage cImage = new CImage(CODEUTILS_LOGO);
+        cImage.setSize(128, 128);
+        root.add(cImage, 46, -10);
 
         root.add(new WLabel(new TextComponent("recode")), (220 - Minecraft.getInstance().font.width("recode")) / 2, 110);
         root.add(new WLabel(new TextComponent("v" + Recode.MOD_VERSION)), (220 - Minecraft.getInstance().font.width("v" + Recode.MOD_VERSION)) / 2, 120);

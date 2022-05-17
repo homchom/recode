@@ -53,7 +53,7 @@
     "config.recode.option.cosmeticsEnabled": "Show Cosmetics",
     "config.recode.option.cosmeticsEnabled.tooltip": "Shows Recode cosmetics such\nas developer capes and hats.",
     "config.recode.option.loadTabStars": "Load Tablist Stars",
-    "config.recode.option.loadTabStars.tooltip": "Shows other players that are using Recode.",
+    "config.recode.option.loadTabStars.tooltip": "Shows other players that are using recode.",
     "config.recode.option.relocateTabStars": "Relocate Tablist Stars",
     "config.recode.option.relocateTabStars.tooltip": "Shows tablist stars after users names instead of before.",
     "config.recode.option.highlightVarSyntax": "Highlight Variable Syntax",
@@ -65,7 +65,7 @@
     "config.recode.option.previewHeadSkins": "Preview Head Skins",
     "config.recode.option.previewHeadSkins.tooltip": "Shows a preview of the skin from a player head when hovering over one.",
     "config.recode.option.templatePeeking": "Template Peeking",
-    "config.recode.option.templatePeeking.tooltip": "Preview a code template without the\n need of having to place it down",
+    "config.recode.option.templatePeeking.tooltip": "Preview a code template without the\n need of having to place it down\n(NOTE: currently not working)",
 
 
     "config.recode.subcategory.commands_automsg": "Auto /msg",
@@ -185,8 +185,8 @@
     "config.recode.option.hideMutedChat": "[Mod] Hide Muted Chat",
     "config.recode.option.hideMutedChat.tooltip": "Hides chat messages from\nmuted players for moderators.",
 
-    "config.recode.option.cpuOnScreen": "Show CPU on Screen",
-    "config.recode.option.cpuOnScreen.tooltip": "Shows CPU Usage for a plot on the screen\nif /lagslayer is enabled.",
+
+
     "config.recode.option.f3Tps": "Show TPS on Debug Screen",
     "config.recode.option.f3Tps.tooltip": "Shows the client TPS on the Debug Screen (F3).",
     "config.recode.option.quickVarScope": "Quick Variable Scope",
@@ -330,12 +330,12 @@
     "config.recode.option.mod_chat.sound.tooltip": "Sound for chat matching the Mod Chat filter.",
     "config.recode.option.admin_chat.sound.tooltip": "Sound for chat matching the Admin Chat filter.",
 
-    "Recode.command.require_creative_mode": "You must be in creative mode to use this command!",
-    "Recode.command.require_dev_mode": "You must be in dev mode to use this command!",
+    "recode.command.require_creative_mode": "You must be in creative mode to use this command!",
+    "recode.command.require_dev_mode": "You must be in dev mode to use this command!",
 
-    "Recode.template_search.cleared": "Search Cleared!",
-    "Recode.template_search.invalid": "Invalid Action '%s'.",
-    "Recode.template_search.begin_search": "Results of '%s'",
+    "recode.template_search.cleared": "Search Cleared!",
+    "recode.template_search.invalid": "Invalid Action '%s'.",
+    "recode.template_search.begin_search": "Results of '%s'",
 
     "key.category.recode": "Recode",
 

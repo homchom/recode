@@ -4,7 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.homchom.recode.Recode;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.events.interfaces.ChatEvents;
-import io.github.homchom.recode.mod.features.CPU_UsageText;
+import io.github.homchom.recode.mod.features.Lagslayer;
 import io.github.homchom.recode.mod.features.keybinds.FlightspeedToggle;
 import io.github.homchom.recode.mod.features.social.chat.message.Message;
 import io.github.homchom.recode.sys.networking.*;
@@ -15,9 +15,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.chat.*;
-import net.minecraft.network.protocol.game.*;
+import net.minecraft.network.protocol.game.ClientboundChatPacket;
 import net.minecraft.world.InteractionResult;
-import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -135,8 +134,8 @@ public class MMessageListener {
             DFInfo.currentState.sendLocate();
 
             // Auto LagSlayer
-            System.out.println(CPU_UsageText.lagSlayerEnabled);
-            if (!CPU_UsageText.lagSlayerEnabled && Config.getBoolean("autolagslayer")) {
+            System.out.println(Lagslayer.lagSlayerEnabled);
+            if (!Lagslayer.lagSlayerEnabled && Config.getBoolean("autolagslayer")) {
                 ChatUtil.executeCommandSilently("lagslayer");
             }
 
@@ -173,7 +172,7 @@ public class MMessageListener {
             }
 
             // Auto LagSlayer
-            if (!CPU_UsageText.lagSlayerEnabled && Config.getBoolean("autolagslayer")) {
+            if (!Lagslayer.lagSlayerEnabled && Config.getBoolean("autolagslayer")) {
                 ChatUtil.executeCommandSilently("lagslayer");
             }
 
@@ -186,7 +185,7 @@ public class MMessageListener {
                     try {
                         Thread.sleep(20);
                         if (Config.getBoolean("autotime")) {
-                            ChatUtil.executeCommandSilently("time " + Config.getInteger("autotimeval"));
+                            ChatUtil.executeCommandSilently("time " + Config.getLong("autotimeval"));
                         }
                         if (Config.getBoolean("autonightvis")) {
                             ChatUtil.executeCommandSilently("nightvis");

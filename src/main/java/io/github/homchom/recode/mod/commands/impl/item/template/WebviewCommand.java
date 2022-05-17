@@ -1,6 +1,6 @@
 package io.github.homchom.recode.mod.commands.impl.item.template;
 
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import io.github.homchom.recode.Recode;
 import io.github.homchom.recode.sys.hypercube.templates.TemplateUtils;
 import io.github.homchom.recode.sys.player.chat.ChatType;
@@ -56,7 +56,7 @@ public class WebviewCommand extends AbstractTemplateCommand {
 
                 String response = EntityUtils.toString(res.getEntity());
 
-                JsonObject obj = Recode.JSON_PARSER.parse(response).getAsJsonObject();
+                JsonObject obj = JsonParser.parseString(response).getAsJsonObject();
 
                 String link = obj.get("link").getAsString();
 

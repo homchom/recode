@@ -124,16 +124,16 @@
     "config.recode.option.hideMutedChat": "[Mod] Piilota Mykistetty Chätti",
     "config.recode.option.hideMutedChat.tooltip": "Piilottaa chätti viestit \nmykistetyiltä moderaattoreille.",
 
-    "config.recode.option.cpuOnScreen": "Näytä CPU Näytölle",
-    "config.recode.option.cpuOnScreen.tooltip": "Näyttää CPU Käytön plottia varten\njos /lagslayer on käytössä.",
+
+
     "config.recode.option.f3Tps": "Näytä TPS Debug Näytössä",
     "config.recode.option.f3Tps.tooltip": "Näyttää clientin TPS Debug näytössä (F3).",
     "config.recode.option.quickVarScope": "Nopea Muuttuja Laajuus",
     "config.recode.option.quickVarScope.tooltip": "Kirjoittamalla \"-s\", \"-l\" or \"-g\" \nmuttuja nimen jälkeen chätissä vaihtaa sen laajuuden,\nniinkuin /var toimii.",
 
-    "Recode.command.require_creative_mode": "Sinun pitä olla luva tilassa käyttääkseen tätä komentoa!",
+    "recode.command.require_creative_mode": "Sinun pitä olla luva tilassa käyttääkseen tätä komentoa!",
 
-    "Recode.command.require_dev_mode": "Sinun pitä olla ohjelmointi tilassa käyttääkseen tätä komentoa!",
+    "recode.command.require_dev_mode": "Sinun pitä olla ohjelmointi tilassa käyttääkseen tätä komentoa!",
 
     "text.autoconfig.jeremaster.option.streamerMode": "Streamaaja Tila",
     "text.autoconfig.jeremaster.option.streamerMode.tooltip": "Automaattisesta unvanishää sinut ja piilotta seuraavat viestit: Istunnon Vakooja, Mykistetty Chätti, Sosiaalinen Vakooja || Tuki Jono, Tuki Kysynys, Tuki Lähetykset || Moderaattori Lähetykset, Raportit",
@@ -177,8 +177,8 @@
 
     "config.recode.option.autoChatLocal": "Automaattinen /chat local",
     "config.recode.option.autoChatLocal.tooltip": "Automaattisesti suorittaa /chat local",
-    "Recode.template_search.cleared": "Haku nollattu!",
-    "Recode.template_search.invalid_usage": "Väärä ohjelmapalikka %s",
+    "recode.template_search.cleared": "Haku nollattu!",
+    "recode.template_search.invalid_usage": "Väärä ohjelmapalikka %s",
 
     "config.recode.subcategory.commands_automsg": "Automattinen /msg",
     "config.recode.subcategory.commands_automsg.tooltip": "Aloittaa viestittelyn jonkun kanssa\nkuin teet /msg <pelaaja>, mikä tahansa viesti\nautomaattisesti lähetetään vain sille pelaajalle.",

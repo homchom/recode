@@ -1,7 +1,6 @@
 package io.github.homchom.recode.mod.features.social.tab;
 
 import com.google.gson.*;
-import io.github.homchom.recode.Recode;
 import io.github.homchom.recode.sys.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import org.java_websocket.client.WebSocketClient;
@@ -27,7 +26,7 @@ public class RecodeServer extends WebSocketClient {
 
     @Override
     public void onMessage(String message) {
-        JsonObject jsonObject = Recode.JSON_PARSER.parse(message).getAsJsonObject();
+        JsonObject jsonObject = JsonParser.parseString(message).getAsJsonObject();
         WebMessage msg = new WebMessage(jsonObject.get("type").getAsString(), jsonObject.get("content"), jsonObject.get("id").getAsString());
         if (jsonObject.get("type").getAsString().equals("users")) {
             List<User> users2 = new ArrayList<>();

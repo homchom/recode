@@ -1,5 +1,6 @@
 package io.github.homchom.recode.sys.util;
 
+import com.google.gson.JsonParser;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.homchom.recode.Recode;
 import net.minecraft.client.Minecraft;
@@ -150,7 +151,7 @@ public class ItemUtil {
             }
 
             if (publicBukkitNBT.getString("hypercube:varitem").length() > 0) {
-                return Recode.JSON_PARSER.parse(publicBukkitNBT.getString("hypercube:varitem")).getAsJsonObject().get("id").getAsString().equalsIgnoreCase(type);
+                return JsonParser.parseString(publicBukkitNBT.getString("hypercube:varitem")).getAsJsonObject().get("id").getAsString().equalsIgnoreCase(type);
             }
 
             return false;
@@ -162,7 +163,7 @@ public class ItemUtil {
     public static ListTag toListTag(List<ItemStack> stacks) {
         ListTag listTag = new ListTag();
         for (ItemStack stack : stacks) {
-            listTag.add(stack.getTag().copy());
+            listTag.add(stack.save(new CompoundTag()));
         }
 
         return listTag;

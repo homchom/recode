@@ -1,6 +1,6 @@
 package io.github.homchom.recode.mod.mixin.render;
 
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.homchom.recode.Recode;
 import io.github.homchom.recode.mod.config.Config;
@@ -181,7 +181,7 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
             String t = pbv.getString("hypercube:varitem");
             if (t != null) {
                 try {
-                    JsonObject o = Recode.JSON_PARSER.parse(t).getAsJsonObject();
+                    JsonObject o = JsonParser.parseString(t).getAsJsonObject();
                     varitemtype = o.get("id").getAsString();
                     if (Objects.equals(varitemtype, "var") || Objects.equals(varitemtype, "g_val")) {
                         return true;

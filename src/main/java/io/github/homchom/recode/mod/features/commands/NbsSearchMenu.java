@@ -70,7 +70,7 @@ public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
                     "https://untitled-57qvszfgg28u.runkit.sh/search?query=" + URLEncoder
                         .encode(query, "UTF-8"));
 
-                JsonArray results = Recode.JSON_PARSER.parse(sresults).getAsJsonArray();
+                JsonArray results = JsonParser.parseString(sresults).getAsJsonArray();
 
                 mc.execute(() -> {
                     ppanel.remove(loading);

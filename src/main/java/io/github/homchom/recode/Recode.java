@@ -55,7 +55,6 @@ public class Recode implements ModInitializer {
             .registerTypeAdapter(SoundSetting.class, new SoundSerializer())
             .setPrettyPrinting()
             .create();
-    public static final JsonParser JSON_PARSER = new JsonParser();
     public static final Minecraft MC = Minecraft.getInstance();
     public static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
     private static Path optionsTxtPath;
@@ -122,7 +121,6 @@ public class Recode implements ModInitializer {
         initializer.add(new ConfigFile());
         initializer.add(new ConfigManager());
         initializer.add(new TemplateStorageHandler());
-        // initializer.add(new HeadsMenu());
         initializer.add(new DFDiscordRPC());
         initializer.add(new Client());
         initializer.add(new ActionDump());

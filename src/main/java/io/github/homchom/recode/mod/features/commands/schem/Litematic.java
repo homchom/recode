@@ -64,8 +64,7 @@ public class Litematic {
             Minecraft.getInstance().player.displayClientMessage(new TextComponent("§8§m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m"), false);
 
             for (Tag block : palette) {
-                JsonParser parser = Recode.JSON_PARSER;
-                JsonElement blockjson = parser.parse(block.toString());
+                JsonElement blockjson = JsonParser.parseString(block.toString());
                 JsonObject properties = blockjson.getAsJsonObject().getAsJsonObject("Properties");
                 JsonElement blocktype = blockjson.getAsJsonObject().get("Name");
                 StringBuilder property = new StringBuilder();

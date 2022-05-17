@@ -1,7 +1,6 @@
 package io.github.homchom.recode.sys.networking;
 
 import com.google.gson.*;
-import io.github.homchom.recode.Recode;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -78,13 +77,13 @@ public class WebUtil {
     }
 
     public static JsonElement getJson(String url) throws IOException {
-        return Recode.JSON_PARSER.parse(getString(url));
+        return JsonParser.parseString(getString(url));
     }
 
     public static JsonObject getObject(String url) {
         try {
             String jsonObject = WebUtil.getString(url);
-            return Recode.JSON_PARSER.parse(jsonObject).getAsJsonObject();
+            return JsonParser.parseString(jsonObject).getAsJsonObject();
         } catch (JsonSyntaxException | IOException ignored) {
         }
 

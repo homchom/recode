@@ -1,6 +1,6 @@
 package io.github.homchom.recode.mod.features;
 
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import io.github.homchom.recode.Recode;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.sys.file.ILoader;
@@ -46,7 +46,7 @@ public class AudioHandler implements ILoader {
                 socket.on("message", args -> {
                     if (!isActive) return;
                     String jsonText = args[0].toString();
-                    JsonObject json = Recode.JSON_PARSER.parse(jsonText).getAsJsonObject();
+                    JsonObject json = JsonParser.parseString(jsonText).getAsJsonObject();
                     String action = json.get("action").getAsString();
 
                     if (action.equals("play")) {

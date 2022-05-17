@@ -1,6 +1,6 @@
 package io.github.homchom.recode.mod.features;
 
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import io.github.homchom.recode.Recode;
 import io.github.homchom.recode.sys.util.TextUtil;
 import net.minecraft.nbt.CompoundTag;
@@ -54,7 +54,7 @@ public class VarSyntaxHighlighter {
                 CompoundTag vals = item.getOrCreateTagElement("PublicBukkitValues");
                 if (vals.contains("hypercube:varitem")) {
                     String var = vals.getString("hypercube:varitem");
-                    JsonObject json = Recode.JSON_PARSER.parse(var).getAsJsonObject();
+                    JsonObject json = JsonParser.parseString(var).getAsJsonObject();
                     type = json.get("id").getAsString();
                 }
 

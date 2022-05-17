@@ -80,11 +80,13 @@ public class ReceiveChatMessageEvent {
         // highlight name
         if (Config.getBoolean("highlight")) {
             String highlightMatcher = Config.getString("highlightMatcher").replaceAll("\\{name}", mc.player.getName().getString());
+            Recode.info(highlightMatcher);
 
             if (( DFInfo.currentState.getMode() != State.Mode.PLAY && msgWithoutColor.matches("^[^0-z]+.*[a-zA-Z]+: .*"))
                     || (DFInfo.currentState.getMode() == State.Mode.PLAY && msgWithoutColor.matches("^.*[a-zA-Z]+: .*"))) {
                 if ((!msgWithoutColor.matches("^.*" + highlightMatcher + ": .*")) || Config.getBoolean("highlightIgnoreSender")) {
                     if (msgWithoutColor.contains(highlightMatcher)) {
+                        Recode.info("contains highlight matcher");
                         String[] chars = msgWithColor.split("");
                         int i = 0;
                         int newMsgIter = 0;
@@ -146,29 +148,23 @@ public class ReceiveChatMessageEvent {
             cancel = true;
         }
 
-        // hide var scope messages (NOT WORKING RN)
-        if (Config.getBoolean("hideVarScopeMessages")
-                && (
-                // local
-                msgToString.equals("TextComponent{text='', siblings=[TextComponent{text='Scope set to ', siblings=[], style=Style{ color=null, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}, TextComponent{text='LOCAL', siblings=[], style=Style{ color=green, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}, TextComponent{text=' (specific to event thread).', siblings=[], style=Style{ color=white, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}], style=Style{ color=null, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}") ||
-                        // game
-                        msgToString.equals("TextComponent{text='', siblings=[TextComponent{text='Scope set to ', siblings=[], style=Style{ color=null, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}, TextComponent{text='GAME', siblings=[], style=Style{ color=gray, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}, TextComponent{text=' (clears when all players leave).', siblings=[], style=Style{ color=white, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}], style=Style{ color=null, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}") ||
-                        // save
-                        msgToString.equals("TextComponent{text='', siblings=[TextComponent{text='Scope set to ', siblings=[], style=Style{ color=null, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}, TextComponent{text='SAVE', siblings=[], style=Style{ color=yellow, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}, TextComponent{text=' (will be saved).', siblings=[], style=Style{ color=white, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}], style=Style{ color=null, bold=null, italic=null, underlined=null, strikethrough=null, obfuscated=null, clickEvent=null, hoverEvent=null, insertion=null, font=minecraft:default}}")
-        )) {
-            cancel = true;
+        if (DFInfo.currentState.getMode() == State.Mode.DEV) {
+            // hide var scope messages
+            if (Config.getBoolean("hideVarScopeMessages") && stripped.startsWith("Scope set to ")) {
+                cancel = true;
+            }
+
+            if (Config.getBoolean("autoClickEditMsgs") && stripped.startsWith("⏵ Click to edit variable: ")) {
+                if (text.getStyle().getClickEvent().getAction() == Action.SUGGEST_COMMAND) {
+                    String toOpen = text.getStyle().getClickEvent().getValue();
+                    Minecraft.getInstance().tell(() -> Minecraft.getInstance().setScreen(new ChatScreen(toOpen)));
+                }
+            }
         }
 
         // hide msg matching regex
         if (Config.getBoolean("hideMsgMatchingRegex") && stripped.replaceAll("§.", "").matches(Config.getString("hideMsgRegex"))) {
             cancel = true;
-        }
-
-        if (Config.getBoolean("autoClickEditMsgs") && stripped.startsWith("⏵ Click to edit variable: ")) {
-            if (text.getStyle().getClickEvent().getAction() == Action.SUGGEST_COMMAND) {
-                String toOpen = text.getStyle().getClickEvent().getValue();
-                Minecraft.getInstance().tell(() -> Minecraft.getInstance().setScreen(new ChatScreen(toOpen)));
-            }
         }
 
         if (Config.getBoolean("autoTip") && stripped.startsWith("⏵⏵ ")) {

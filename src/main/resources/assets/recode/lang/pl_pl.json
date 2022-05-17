@@ -124,14 +124,14 @@
     "config.recode.option.hideMutedChat": "[Mod] Ukryj Czat Wyciszony",
     "config.recode.option.hideMutedChat.tooltip": "Ukrywa czat od wyciszonych \ngraczy dla moderatorów.",
 
-    "config.recode.option.cpuOnScreen": "Pokaż Zużycie CPU na Ekranie",
-    "config.recode.option.cpuOnScreen.tooltip": "Pokazuje zużycie CPU działki na ekranie\nkiedy /lagslayer jest włączony.",
+
+
     "config.recode.option.f3Tps": "Pokaż TPS na Ekranie Debugowania",
     "config.recode.option.f3Tps.tooltip": "Pokazuje TPS klienta na ekranie debugowania (F3).",
     "config.recode.option.quickVarScope": "Szybki Typ Zmiennej",
     "config.recode.option.quickVarScope.tooltip": "Wpisanie \"-s\", \"-l\" or \"-g\" po a\nnazwie zmiennej zmieni jej typ,\npodobne do tego jak działa /var.",
 
-    "Recode.command.require_creative_mode": "Musisz byc w trybie kreatywnym aby użyc tej komendy!",
+    "recode.command.require_creative_mode": "Musisz byc w trybie kreatywnym aby użyc tej komendy!",
 
     "text.autoconfig.jeremaster.option.streamerMode": "Tryb Streamera",
     "text.autoconfig.jeremaster.option.streamerMode.tooltip": "Automatycznie odkrywa Cię i ukrywa następujące wiadomości: Szpieg Sesji, Wyciszony Czat, Szpieg Wiadomości || Kolejka Pomocy, Pytania, Czat Pomagaczy || Czat Moderatorów, Zgłoszenia",

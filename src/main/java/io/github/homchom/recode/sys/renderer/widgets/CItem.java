@@ -57,7 +57,7 @@ public class CItem extends WItem {
                     ListTag texture = properties.getList("textures",10);
                     String value = texture.getCompound(0).getString("Value");
                     String out = new String(Base64.decodeBase64(value));
-                    JsonObject obj = Recode.JSON_PARSER.parse(out).getAsJsonObject();
+                    JsonObject obj = JsonParser.parseString(out).getAsJsonObject();
                     String id = obj.getAsJsonObject("textures").getAsJsonObject("SKIN").get("url").getAsString();
                     id = StringUtils.substringAfter(id,"texture/");
 

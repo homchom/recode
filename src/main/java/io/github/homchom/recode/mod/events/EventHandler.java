@@ -13,7 +13,8 @@ public class EventHandler implements IManager<Object> {
         register(
                 new ReceiveChatMessageEvent(),
                 new ChangeStateEvent(),
-                new TickEvent()
+                new TickEvent(),
+                new AfterScreenInitEvent()
         );
     }
 

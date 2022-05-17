@@ -1,5 +1,6 @@
 package io.github.homchom.recode.mod.commands.impl.item;
 
+import com.google.gson.JsonParser;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.homchom.recode.Recode;
@@ -47,7 +48,7 @@ public class CustomTextureCommand extends Command {
                                     return;
                                 }
                                 String json = FileUtils.readFileToString(f[0], StandardCharsets.UTF_8);
-                                json = Recode.JSON_PARSER.parse(json).toString();//syntax check & remove intends
+                                json = JsonParser.parseString(json).toString();//syntax check & remove intends
 
                                 CompoundTag tag = getTags(mc);
                                 tag.put("model", StringTag.valueOf(json));

@@ -101,7 +101,7 @@ public class ImportFileCommand extends Command {
 
     private String template(List<JsonObject> iblocks) throws IOException {
         JsonArray blocks = new JsonArray();
-        blocks.add(Recode.JSON_PARSER.parse("{\"id\":\"block\",\"block\":\"func\",\"args\":{\"items\":[]},\"data\":\"file\"}"));
+        blocks.add(JsonParser.parseString("{\"id\":\"block\",\"block\":\"func\",\"args\":{\"items\":[]},\"data\":\"file\"}"));
         for (JsonObject block : iblocks) {
             blocks.add(block);
         }
@@ -112,7 +112,7 @@ public class ImportFileCommand extends Command {
     }
 
     private JsonObject block(List<String> texts, boolean first) {
-        JsonObject var = Recode.JSON_PARSER.parse("{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"file\",\"scope\":\"local\"}},\"slot\":0}").getAsJsonObject();
+        JsonObject var = JsonParser.parseString("{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"file\",\"scope\":\"local\"}},\"slot\":0}").getAsJsonObject();
         JsonArray items = new JsonArray();
         items.add(var);
         for (String text : texts) {

@@ -35,7 +35,6 @@ public class ScreenGroup extends ConfigGroup {
         ConfigSubGroup code = new ConfigSubGroup("code");
         code.register(new BooleanSetting("chestToolTip", true));
         code.register(new BooleanSetting("templatePeeking", false));
-        code.register(new BooleanSetting("cpuOnScreen", true));
         code.register(new BooleanSetting("f3Tps", true));
         code.register(new BooleanSetting("variableScopeView", true));
         code.register(new BooleanSetting("highlightVarSyntax", true));

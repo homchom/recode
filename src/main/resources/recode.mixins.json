@@ -36,8 +36,7 @@
     "render.player.MPlayerListEntry",
     "render.player.MPlayerListHUD",
     "render.screen.MCreativeInventoryScreen",
-    "render.screen.MOptionsScreen",
-    "render.screen.MTitleScreen"
+    "render.screen.MOptionsScreen"
   ],
   "client": [],
   "server": [],

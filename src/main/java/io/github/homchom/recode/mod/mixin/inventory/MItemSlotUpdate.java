@@ -1,7 +1,7 @@
 package io.github.homchom.recode.mod.mixin.inventory;
 
 import io.github.homchom.recode.mod.config.Config;
-import io.github.homchom.recode.mod.features.CPU_UsageText;
+import io.github.homchom.recode.mod.features.Lagslayer;
 import io.github.homchom.recode.mod.features.keybinds.FlightspeedToggle;
 import io.github.homchom.recode.sys.hypercube.templates.*;
 import io.github.homchom.recode.sys.player.DFInfo;
@@ -51,7 +51,7 @@ public class MItemSlotUpdate {
 					}
 				}
 
-				CPU_UsageText.lagSlayerEnabled = false;
+				Lagslayer.lagSlayerEnabled = false;
 
 				// fs toggle
 				FlightspeedToggle.fs_is_normal = true;
@@ -66,7 +66,7 @@ public class MItemSlotUpdate {
 				DFInfo.plotCorner = mc.player.position().add(10, -50, -10);
 
 				// Auto LagSlayer
-				if (!CPU_UsageText.lagSlayerEnabled && Config.getBoolean("autolagslayer")) {
+				if (!Lagslayer.lagSlayerEnabled && Config.getBoolean("autolagslayer")) {
 					ChatUtil.executeCommandSilently("lagslayer");
 				}
 

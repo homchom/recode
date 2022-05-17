@@ -1,7 +1,6 @@
 package io.github.homchom.recode.mod.features.social.tab;
 
 import com.google.gson.*;
-import io.github.homchom.recode.Recode;
 import io.github.homchom.recode.sys.util.StringUtil;
 
 public class WebMessage {
@@ -45,7 +44,7 @@ public class WebMessage {
     private JsonElement parseContent(Object content) {
         if(content instanceof String) {
             //if((((String) content).startsWith("{") && ((String) content).endsWith("}")) || (((String) content).startsWith("[") && ((String) content).endsWith("]"))) {
-                //return Recode.JSON_PARSER.parse((String) content);
+                //return JsonParser.parseString((String) content);
             //} else {
                 return (JsonElement) new JsonPrimitive((String) content);
             //}
@@ -54,7 +53,7 @@ public class WebMessage {
         } else if(content instanceof Boolean) {
             return (JsonElement) new JsonPrimitive((Boolean) content);
         } else if(content instanceof JsonElement) {
-            return Recode.JSON_PARSER.parse(((JsonElement) content).toString());
+            return JsonParser.parseString(((JsonElement) content).toString());
         }
         return null;
     }

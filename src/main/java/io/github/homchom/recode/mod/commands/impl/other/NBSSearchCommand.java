@@ -68,7 +68,7 @@ public class NBSSearchCommand extends Command {
 //
 //                System.out.println(sresults);
 //
-//                JsonArray results = Recode.JSON_PARSER.parse(sresults).getAsJsonArray();
+//                JsonArray results = JsonParser.parseString(sresults).getAsJsonArray();
 //
 //                ChatUtil.sendMessage("Results for " + query,ChatType.INFO_YELLOW);
 //                for (JsonElement e : results) {

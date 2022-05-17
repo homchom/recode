@@ -10,7 +10,6 @@ import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.item.ItemStack;
 
 import java.io.*;
-import java.nio.file.Files;
 import java.util.*;
 import java.util.stream.Collectors;
 

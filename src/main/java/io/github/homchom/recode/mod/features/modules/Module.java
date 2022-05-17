@@ -7,7 +7,6 @@ import io.github.homchom.recode.mod.features.modules.translations.Translation;
 import io.github.homchom.recode.mod.features.modules.triggers.Trigger;
 import io.github.homchom.recode.sys.file.FileUtil;
 import net.fabricmc.loader.api.FabricLoader;
-import org.apache.logging.log4j.Level;
 import org.json.*;
 
 import java.io.*;

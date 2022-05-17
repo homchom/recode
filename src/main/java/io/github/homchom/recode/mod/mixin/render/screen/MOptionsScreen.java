@@ -19,6 +19,6 @@ public class MOptionsScreen extends Screen {
 
     @Inject(method = "init()V", at = @At("RETURN"))
     protected void init(CallbackInfo callbackInfo) {
-        this.addWidget(new Button(this.width / 2 - 75, this.height / 6 + 144 - 6, 150, 20, new TextComponent("Recode"), (buttonWidget) -> Recode.MC.setScreen(ConfigScreen.getScreen(Recode.MC.screen))));
+        this.addRenderableWidget(new Button(this.width / 2 - 75, this.height / 6 + 144 - 6, 150, 20, new TextComponent("Recode"), (buttonWidget) -> Recode.MC.setScreen(ConfigScreen.getScreen(Recode.MC.screen))));
     }
 }

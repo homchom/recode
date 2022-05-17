@@ -1,7 +1,7 @@
 package io.github.homchom.recode.mod.mixin.inventory;
 
 
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.homchom.recode.Recode;
 import io.github.homchom.recode.mod.config.Config;
@@ -57,7 +57,7 @@ public class MHeldItemTooltip {
                             return;
                         }
 
-                        varItemNbt = Recode.JSON_PARSER.parse(
+                        varItemNbt = JsonParser.parseString(
                                 publicBukkitNBT.getString("hypercube:varitem")).getAsJsonObject()
                             .getAsJsonObject("data");
                     } else {
@@ -95,7 +95,7 @@ public class MHeldItemTooltip {
                         if (vals.contains("hypercube:varitem")) {
 
                             String var = vals.getString("hypercube:varitem");
-                            JsonObject json = Recode.JSON_PARSER.parse(var)
+                            JsonObject json = JsonParser.parseString(var)
                                 .getAsJsonObject();
                             String type = json.get("id").getAsString();
 

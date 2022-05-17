@@ -99,7 +99,7 @@ public class TemplatePeeker implements ILoader {
                     if (TemplateUtils.isTemplate(mc.player.getMainHandItem())) {
                         JsonObject encoded = TemplateUtils.fromItemStack(
                             mc.player.getMainHandItem());
-                        JsonArray json = Recode.JSON_PARSER.parse(new String(
+                        JsonArray json = JsonParser.parseString(new String(
                             CompressionUtil.fromGZIP(CompressionUtil.fromBase64(
                                 encoded.get("code").getAsString().getBytes()))
                         )).getAsJsonObject().get("blocks").getAsJsonArray();

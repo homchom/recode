@@ -8,7 +8,6 @@ import io.github.homchom.recode.Recode;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.sys.file.ILoader;
 import io.github.homchom.recode.sys.networking.State;
-import org.apache.logging.log4j.Level;
 
 import java.time.OffsetDateTime;
 import java.util.HashMap;

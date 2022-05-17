@@ -6,7 +6,6 @@ import net.minecraft.world.item.ItemStack;
 import java.util.List;
 
 public class ItemGridPanel extends WPlainPanel {
-
     public ItemGridPanel() {
         super();
     }

@@ -1,6 +1,6 @@
 package io.github.homchom.recode.mod.commands.impl.item.template;
 
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import io.github.homchom.recode.Recode;
 import io.github.homchom.recode.sys.networking.websocket.SocketHandler;
 import io.github.homchom.recode.sys.player.chat.*;
@@ -31,8 +31,8 @@ public class SendTemplateCommand extends AbstractTemplateCommand {
     @Override
     protected void withTemplate(ItemStack stack) {
         CompoundTag rawNBT = Minecraft.getInstance().player.getMainHandItem().getTag();
-        JsonObject bukkitValues = Recode.JSON_PARSER.parse(rawNBT.get("PublicBukkitValues").toString()).getAsJsonObject();
-        JsonObject templateData = Recode.JSON_PARSER.parse(bukkitValues.get("hypercube:codetemplatedata").getAsString().replace("\\", "")).getAsJsonObject();
+        JsonObject bukkitValues = JsonParser.parseString(rawNBT.get("PublicBukkitValues").toString()).getAsJsonObject();
+        JsonObject templateData = JsonParser.parseString(bukkitValues.get("hypercube:codetemplatedata").getAsString().replace("\\", "")).getAsJsonObject();
         JsonObject toSend = new JsonObject();
         toSend.addProperty("received", templateData.toString());
         toSend.addProperty("type", "template");

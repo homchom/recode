@@ -1,7 +1,6 @@
 package io.github.homchom.recode.sys.networking;
 
-import com.google.gson.JsonElement;
-import io.github.homchom.recode.Recode;
+import com.google.gson.*;
 import io.github.homchom.recode.mod.events.interfaces.HyperCubeEvents;
 import io.github.homchom.recode.mod.features.social.chat.message.*;
 import io.github.homchom.recode.mod.features.social.tab.Client;
@@ -74,12 +73,10 @@ public class State {
         }
 
         public String getIdentifier() {
-            if(this == null) return null;
             return identifier;
         }
 
         public String getContinuousVerb() {
-            if(this == null) return null;
             return continuousVerb;
         }
 
@@ -124,7 +121,6 @@ public class State {
         }
 
         public String getIdentifier() {
-            if(this == null) return null;
             return identifier;
         }
 
@@ -159,22 +155,18 @@ public class State {
         }
 
         public String getId() {
-            if(this == null) return null;
             return id;
         }
 
         public String getName() {
-            if(this == null) return null;
             return name;
         }
 
         public String getOwner() {
-            if(this == null) return null;
             return owner;
         }
 
         public String getStatus() {
-            if(this == null) return null;
             return status;
         }
 
@@ -204,29 +196,24 @@ public class State {
     }
 
     public Mode getMode() {
-        if(this == null) return null;
         return mode;
     }
 
     public Node getNode() {
-        if(this == null) return null;
         return node;
     }
 
     public Plot getPlot() {
-        if(this == null) return null;
         return plot;
     }
 
     public boolean isInSession() {
-        if(this == null) return false;
         return session;
     }
 
     public void setInSession(boolean session) {
         State old = this.copy();
-        boolean update = false;
-        if(this.session != session) update = true;
+        boolean update = this.session != session;
         this.session = session;
         if(update) invoker.update(this, old);
     }
@@ -349,7 +336,7 @@ public class State {
     }
 
     public JsonElement toJson() {
-        return Recode.JSON_PARSER.parse(this == null ? "null" : "{\"mode\":"+(this.getMode() == null ? "null" : ("{\"identifier\":\""+this.getMode().getIdentifier()+"\",\"verb\":\""+this.getMode().getContinuousVerb()+"\"}"))+",\"node\":"+(this.getNode() == null ? "null" : ("{\"identifier\":\""+this.getNode().getIdentifier()+"\"}"))+",\"plot\":"+ (this.getPlot() == null ? "null" : ("{\"id\":\""+this.getPlot().getId()+"\",\"name\":\""+this.getPlot().getName()+"\",\"status\":\""+this.getPlot().getStatus()+"\"}"))+"}");
+        return JsonParser.parseString("{\"mode\":"+(this.getMode() == null ? "null" : ("{\"identifier\":\""+this.getMode().getIdentifier()+"\",\"verb\":\""+this.getMode().getContinuousVerb()+"\"}"))+",\"node\":"+(this.getNode() == null ? "null" : ("{\"identifier\":\""+this.getNode().getIdentifier()+"\"}"))+",\"plot\":"+ (this.getPlot() == null ? "null" : ("{\"id\":\""+this.getPlot().getId()+"\",\"name\":\""+this.getPlot().getName()+"\",\"status\":\""+this.getPlot().getStatus()+"\"}"))+"}");
     }
 
     public void sendLocate() {
@@ -415,8 +402,7 @@ public class State {
         @Override
         public void setInSession(boolean session) {
             State old = this.copy();
-            boolean update = false;
-            if(this.session != session) update = true;
+            boolean update = this.session != session;
             this.session = session;
             if(update) invoker.update(this, old);
         }
@@ -424,8 +410,7 @@ public class State {
         @Override
         public void setMode(Mode mode) {
             State old = this.copy();
-            boolean update = false;
-            if(this.mode != mode) update = true;
+            boolean update = this.mode != mode;
             if(mode == Mode.SPAWN || mode == Mode.OFFLINE) this.plot = null;
             if(mode == Mode.OFFLINE) this.node = null;
             this.mode = mode;
@@ -435,8 +420,7 @@ public class State {
         @Override
         public void setNode(Node node) {
             State old = this.copy();
-            boolean update = false;
-            if(this.node != node) update = true;
+            boolean update = this.node != node;
             this.node = node;
             if(update) invoker.update(this, old);
         }
@@ -444,8 +428,7 @@ public class State {
         @Override
         public void setPlot(Plot plot) {
             State old = this.copy();
-            boolean update = false;
-            if(this.plot != plot) update = true;
+            boolean update = this.plot != plot;
             this.plot = plot;
             if(update) invoker.update(this, old);
         }

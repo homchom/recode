@@ -1,7 +1,6 @@
 package io.github.homchom.recode.sys.networking.websocket.client;
 
-import com.google.gson.JsonObject;
-import io.github.homchom.recode.Recode;
+import com.google.gson.*;
 import io.github.homchom.recode.sys.networking.websocket.SocketHandler;
 import io.github.homchom.recode.sys.networking.websocket.client.type.SocketItem;
 import io.github.homchom.recode.sys.renderer.ToasterUtil;
@@ -23,7 +22,7 @@ public class Clients {
             }
             LocalPlayer player = Minecraft.getInstance().player;
 
-            JsonObject data = Recode.JSON_PARSER.parse(line).getAsJsonObject();
+            JsonObject data = JsonParser.parseString(line).getAsJsonObject();
             String type = data.get("type").getAsString();
             String itemData = data.get("data").getAsString();
             String source = data.get("source").getAsString();

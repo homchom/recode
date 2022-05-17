@@ -1,7 +1,6 @@
 package io.github.homchom.recode.sys.hypercube.templates;
 
-import com.google.gson.JsonObject;
-import io.github.homchom.recode.Recode;
+import com.google.gson.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.*;
 import net.minecraft.world.item.ItemStack;
@@ -52,7 +51,7 @@ public class TemplateUtils {
         CompoundTag tag = stack.getTag();
         CompoundTag publicBukkitNBT = tag.getCompound("PublicBukkitValues");
         String template = publicBukkitNBT.getString("hypercube:codetemplatedata");
-        return Recode.JSON_PARSER.parse(template).getAsJsonObject();
+        return JsonParser.parseString(template).getAsJsonObject();
     }
 
     public static boolean isTemplate(ItemStack stack) {

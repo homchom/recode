@@ -126,17 +126,17 @@
     "config.recode.option.hideMutedChat": "[Mod] Nascondi Muted Chat",
     "config.recode.option.hideMutedChat.tooltip": "Nasconde i messaggi in chat da parte\ndelle persone mutate per i moderatori.",
 
-    "config.recode.option.cpuOnScreen": "Mostra CPU sullo Schermo",
-    "config.recode.option.cpuOnScreen.tooltip": "Mostra l'utilizzo della CPU di un plot sullo schermo\nse /lagslayer è attivo.",
+
+
 	"config.recode.option.f3Tps": "Mostra TPS nello Schermo di Debug",
 	"config.recode.option.f3Tps.tooltip": "Mostra i TPS del client nello Schermo di Debug (F3).",
     "config.recode.option.quickVarScope": "Tipo di Variabile Veloce",
     "config.recode.option.quickVarScope.tooltip": "Scrivere \"-s\", \"-l\" o \"-g\" dopo il\nnome della variabile cambierà il suo tipo,\nsimile a come funziona /var.",
 
-    "Recode.command.require_creative_mode": "Devi essere in modalità creativa per utilizzare questo comando!",
-    "Recode.command.require_dev_mode": "Devi essere in dev mode per utilizzare questo comando!",
-    "Recode.template_search.cleared": "Ricerca Annullata!",
-    "Recode.template_search.invalid_usage": "Codeblock Invalido: %s",
+    "recode.command.require_creative_mode": "Devi essere in modalità creativa per utilizzare questo comando!",
+    "recode.command.require_dev_mode": "Devi essere in dev mode per utilizzare questo comando!",
+    "recode.template_search.cleared": "Ricerca Annullata!",
+    "recode.template_search.invalid_usage": "Codeblock Invalido: %s",
 
     "key.category.recode": "Recode",
 

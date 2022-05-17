@@ -56,6 +56,7 @@ public class ConfigManager implements IManager<ConfigGroup> {
 
             // In-memory
             ConfigSetting<?> memory = this.find(key, true);
+            if (memory == null) continue;
 
             // This is only for lists
             if (memory.isList()) {

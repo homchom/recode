@@ -124,14 +124,14 @@
     "config.recode.option.hideMutedChat": "[Mod] Verstecke Stummgeschalteten Chat",
     "config.recode.option.hideMutedChat.tooltip": "Versteckt Chat Nachrichten von\nstummgeschalteten Spielern für Moderatoren.",
 
-    "config.recode.option.cpuOnScreen": "Zeige CPU auf dem Bildschirm",
-    "config.recode.option.cpuOnScreen.tooltip": "Zeigt die CPU Verwendung eines Plots auf dem Bildschirm\nfalls /lagslayer eingeschaltet ist.",
+
+
 	"config.recode.option.f3Tps": "Zeigt die TPS auf dem Debug Bildschirm",
 	"config.recode.option.f3Tps.tooltip": "Zeigt die Client TPS auf dem Debug Bildschirm (F3).",
     "config.recode.option.quickVarScope": "Quick Variable Scope",
     "config.recode.option.quickVarScope.tooltip": "\"-s\", \"-l\" oder \"-g\" nach einem variablen namen\nim chat zu schreiben wird den Umfang verändern,\nähnlich wie /var funktioniert.",
 
-    "Recode.command.require_creative_mode": "Du musst im Kreativmodus sein um diesen Befehl verwenden zu können!",
+    "recode.command.require_creative_mode": "Du musst im Kreativmodus sein um diesen Befehl verwenden zu können!",
 
     "text.autoconfig.jeremaster.option.streamerMode": "Streamer Modus",
     "text.autoconfig.jeremaster.option.streamerMode.tooltip": "Lässt dich automatisch wieder auftauchen und versteckt folgende Nachrichten: Session Spion, Stummgeschalteter Chat, Sozialer Spion || Unterstützungs Warteschlange, Unterstützungsfragen, Unterstützungs Broadcast || Mod Broadcast, Spielerberichte",
