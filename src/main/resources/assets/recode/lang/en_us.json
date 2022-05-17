@@ -9,15 +9,9 @@
     "config.recode.category.misc": "Miscellaneous",
     "config.recode.category.screen": "Screen",
     "config.recode.category.social": "Social Features",
-    "config.recode.category.modules": "Modules",
     "config.recode.category.streamer": "Streamer Mode",
     "config.recode.category.discordRPC": "Discord RPC",
     "config.recode.category.sidedchat": "Chat Splitting",
-
-    "config.recode.category.modules.warning": "Modules may be malicious, use them at your own risk.",
-    "config.recode.category.modules.madeby": "Made by $author$",
-    "config.recode.category.modules.enabled": "Enabled",
-    "config.recode.category.modules.enabled.tooltip": "Enable this module.",
 
     "config.recode.subcategory.screen_world_rendering": "World Rendering",
     "config.recode.subcategory.screen_world_rendering.tooltip": "Features related to rendering a world.",

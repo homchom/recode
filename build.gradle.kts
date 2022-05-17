@@ -117,7 +117,3 @@ tasks {
         inputFile.value(shadowJar.get().archiveFile)
     }
 }
-
-javafx {
-    modules = listOf("javafx.media")
-}
