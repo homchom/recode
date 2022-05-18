@@ -5,7 +5,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.homchom.recode.Recode;
 import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
-import io.github.homchom.recode.mod.commands.arguments.types.FileArgumentType;
+import io.github.homchom.recode.mod.commands.arguments.types.PathArgumentType;
 import io.github.homchom.recode.mod.features.commands.nbs.*;
 import io.github.homchom.recode.mod.features.commands.nbs.exceptions.OutdatedNBSException;
 import io.github.homchom.recode.sys.file.ExternalFile;
@@ -58,7 +58,7 @@ public class NBSCommand extends Command {
     public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("nbs")
                 .then(ArgBuilder.literal("load")
-                        .then(ArgBuilder.argument("filename", FileArgumentType.folder(ExternalFile.NBS_FILES.getFile(), true))
+                        .then(ArgBuilder.argument("filename", PathArgumentType.folder(ExternalFile.NBS_FILES.getFile(), true))
                                 .executes(ctx -> {
                                     if (this.isCreative(mc)) {
                                         String filename = StringArgumentType.getString(ctx, "filename");

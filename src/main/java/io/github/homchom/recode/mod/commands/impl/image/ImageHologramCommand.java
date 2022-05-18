@@ -4,7 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
-import io.github.homchom.recode.mod.commands.arguments.types.FileArgumentType;
+import io.github.homchom.recode.mod.commands.arguments.types.PathArgumentType;
 import io.github.homchom.recode.mod.features.commands.image.ImageToHologram;
 import io.github.homchom.recode.sys.file.ExternalFile;
 import io.github.homchom.recode.sys.hypercube.templates.TemplateUtils;
@@ -23,7 +23,7 @@ public class ImageHologramCommand extends Command {
         cd.register(ArgBuilder.literal("imagehologram")
                 .then(ArgBuilder.literal("load")
                         .then(ArgBuilder.literal("hex")
-                                .then(ArgBuilder.argument("location", FileArgumentType.folder(ExternalFile.IMAGE_FILES.getFile(), true))
+                                .then(ArgBuilder.argument("location", PathArgumentType.folder(ExternalFile.IMAGE_FILES.getFile(), true))
                                         .executes(ctx -> {
                                             try {
                                                 String location = StringArgumentType.getString(ctx, "location");
@@ -47,7 +47,7 @@ public class ImageHologramCommand extends Command {
                                             }
                                         })))
                         .then(ArgBuilder.literal("colorcodes")
-                                .then(ArgBuilder.argument("location", FileArgumentType.folder(ExternalFile.IMAGE_FILES.getFile(), true))
+                                .then(ArgBuilder.argument("location", PathArgumentType.folder(ExternalFile.IMAGE_FILES.getFile(), true))
                                         .executes(ctx -> {
                                             try {
                                                 String location = StringArgumentType.getString(ctx, "location");

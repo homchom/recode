@@ -4,7 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
-import io.github.homchom.recode.mod.commands.arguments.types.StringListArgumentType;
+import io.github.homchom.recode.mod.commands.arguments.types.DefinedObjectArgumentType;
 import io.github.homchom.recode.mod.features.commands.CodeSearcher;
 import io.github.homchom.recode.sys.hypercube.codeaction.*;
 import io.github.homchom.recode.sys.networking.State;
@@ -66,7 +66,7 @@ public class SearchCommand extends Command {
                     })));
 
         cd.register(ArgBuilder.literal("exactsearch")
-                .then(ArgBuilder.argument("codeblock", StringListArgumentType.string(allcodeblocks))
+                .then(ArgBuilder.argument("codeblock", DefinedObjectArgumentType.definedObject(allcodeblocks))
                         .then(ArgBuilder.argument("action", StringArgumentType.greedyString())
                                 .executes(ctx -> { // /exactsearch <codeblock> <action..> (mostly used for the clickevent)
                                     try {
