@@ -14,7 +14,6 @@ public class HidingGroup extends ConfigGroup {
         this.register(new BooleanSetting("hideJoinLeaveMessages", false));
         this.register(new BooleanSetting("hideVarScopeMessages", false));
         this.register(new BooleanSetting("hideScoreboardOnF3", true));
-        this.register(new BooleanSetting("stackDuplicateMsgs", false));
 
         // Regular Expressions
         ConfigSubGroup regex = new ConfigSubGroup("regex");

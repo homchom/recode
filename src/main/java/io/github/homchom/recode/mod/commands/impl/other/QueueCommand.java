@@ -8,7 +8,7 @@ import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
 import io.github.homchom.recode.mod.commands.arguments.types.FreeStringArgumentType;
 import io.github.homchom.recode.mod.features.commands.queue.QueueEntry;
-import io.github.homchom.recode.mod.features.social.tab.*;
+import io.github.homchom.recode.sys.networking.WebUtil;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
@@ -25,74 +25,73 @@ public class QueueCommand extends Command {
                 .executes(ctx -> {
 
                     try {
-                        RecodeServer.requestMessage(new WebMessage("twitch-queue"), message -> {
+                        String content = WebUtil.getString("https://twitch.center/customapi/quote/list?token=18a3878c");
 
-                            String[] splitQueue = message.getContent().getAsString().split("\\n");
-                            LinkedHashSet<QueueEntry> queue = new LinkedHashSet<>();
+                        String[] splitQueue = content.split("\\n");
+                        LinkedHashSet<QueueEntry> queue = new LinkedHashSet<>();
 
-                            int i = 0;
-                            for (String entry : splitQueue) {
-                                QueueEntry queueEntry = new QueueEntry(entry, i);
-                                if(!QueueEntry.HIDDEN_ENTRIES.contains(queueEntry.getPlotId()==null?"?":queueEntry.getPlotId().toString())){
-                                    i++;
-                                    queue.add(
-                                            new QueueEntry(entry, i)
-                                    );
-                                }
+                        int i = 0;
+                        for (String entry : splitQueue) {
+                            QueueEntry queueEntry = new QueueEntry(entry, i);
+                            if(!QueueEntry.HIDDEN_ENTRIES.contains(queueEntry.getPlotId()==null?"?":queueEntry.getPlotId().toString())){
+                                i++;
+                                queue.add(
+                                        new QueueEntry(entry, i)
+                                );
                             }
+                        }
 
-                            Recode.MC.player.playSound(SoundEvents.UI_TOAST_IN, 2F, 1F);
+                        Recode.MC.player.playSound(SoundEvents.UI_TOAST_IN, 2F, 1F);
 
-                            // Temporary: Show in chat instead of menu
-                            ChatUtil.sendMessage(
-                                    new TextComponent("\n§r §r §r §r §r §r §r §r §r §r §r §r ").append(
-                                            new TextComponent("⏪  ")
-                                                    .withStyle(style -> style.withColor(TextColor.fromRgb(0x1f9947))).append(
-                                                    new TextComponent("Recode Twitch Plot Queue  ")
-                                                            .withStyle(style -> style.withColor(TextColor.fromRgb(0x33ffa7))).append(
-                                                            new TextComponent("⏩")
-                                                                    .withStyle(style -> style.withColor(TextColor.fromRgb(0x1f9947)))
-                                                    ))), null);
+                        // Temporary: Show in chat instead of menu
+                        ChatUtil.sendMessage(
+                                new TextComponent("\n§r §r §r §r §r §r §r §r §r §r §r §r ").append(
+                                        new TextComponent("⏪  ")
+                                                .withStyle(style -> style.withColor(TextColor.fromRgb(0x1f9947))).append(
+                                                new TextComponent("Recode Twitch Plot Queue  ")
+                                                        .withStyle(style -> style.withColor(TextColor.fromRgb(0x33ffa7))).append(
+                                                        new TextComponent("⏩")
+                                                                .withStyle(style -> style.withColor(TextColor.fromRgb(0x1f9947)))
+                                                ))), null);
 
-                            for (QueueEntry entry : queue) {
-                                MutableComponent entrymsg = new TextComponent("#" + entry.getPosition())
-                                        .withStyle(style -> style.withColor(TextColor.fromRgb(0x00bbff)
-                                                ).withClickEvent(
-                                                new ClickEvent(
-                                                        ClickEvent.Action.RUN_COMMAND,
-                                                        "/queue hideandjoin "+entry.getPlotId()
-                                                ))
-                                                        .withHoverEvent(
-                                                                new HoverEvent(
-                                                                        HoverEvent.Action.SHOW_TEXT,
-                                                                        new TextComponent("§7Click to join!")
-                                                                )
-                                                        )
-                                        ).append(
-                                        new TextComponent("§8 - ").append(
-                                                new TextComponent(entry.getPlotId()==null?"?":entry.getPlotId().toString())
-                                                        .withStyle(style -> style.withColor(TextColor.fromRgb(0x66e6ff))).append(
-                                                        new TextComponent("§8 - ").append(
-                                                                new TextComponent(entry.getStrippedDescription())
-                                                                        .withStyle(style -> style.withColor(TextColor.fromRgb(0xbff9ff)))
+                        for (QueueEntry entry : queue) {
+                            MutableComponent entrymsg = new TextComponent("#" + entry.getPosition())
+                                    .withStyle(style -> style.withColor(TextColor.fromRgb(0x00bbff)
+                                            ).withClickEvent(
+                                            new ClickEvent(
+                                                    ClickEvent.Action.RUN_COMMAND,
+                                                    "/queue hideandjoin "+entry.getPlotId()
+                                            ))
+                                                    .withHoverEvent(
+                                                            new HoverEvent(
+                                                                    HoverEvent.Action.SHOW_TEXT,
+                                                                    new TextComponent("§7Click to join!")
+                                                            )
+                                                    )
+                                    ).append(
+                                    new TextComponent("§8 - ").append(
+                                            new TextComponent(entry.getPlotId()==null?"?":entry.getPlotId().toString())
+                                                    .withStyle(style -> style.withColor(TextColor.fromRgb(0x66e6ff))).append(
+                                                    new TextComponent("§8 - ").append(
+                                                            new TextComponent(entry.getStrippedDescription())
+                                                                    .withStyle(style -> style.withColor(TextColor.fromRgb(0xbff9ff)))
+                                                    ))));
+                            if(entry.isBeta()) {
+                                entrymsg.append(
+                                        new TextComponent("\n§r §r §r §r §r §r §r §r §r §r §r §r ↑ ")
+                                        .withStyle(style -> style.withColor(TextColor.fromRgb(0x7a2626))).append(
+                                                new TextComponent("This plot may be on ")
+                                                        .withStyle(style -> style.withColor(TextColor.fromRgb(0xc96363))).append(
+                                                        new TextComponent("Node Beta")
+                                                                .withStyle(style -> style.withColor(TextColor.fromRgb(0xd95104))).append(
+                                                                new TextComponent(" ↑")
+                                                                        .withStyle(style -> style.withColor(TextColor.fromRgb(0x7a2626)))
                                                         ))));
-                                if(entry.isBeta()) {
-                                    entrymsg.append(
-                                            new TextComponent("\n§r §r §r §r §r §r §r §r §r §r §r §r ↑ ")
-                                            .withStyle(style -> style.withColor(TextColor.fromRgb(0x7a2626))).append(
-                                                    new TextComponent("This plot may be on ")
-                                                            .withStyle(style -> style.withColor(TextColor.fromRgb(0xc96363))).append(
-                                                            new TextComponent("Node Beta")
-                                                                    .withStyle(style -> style.withColor(TextColor.fromRgb(0xd95104))).append(
-                                                                    new TextComponent(" ↑")
-                                                                            .withStyle(style -> style.withColor(TextColor.fromRgb(0x7a2626)))
-                                                            ))));
-                                }
-                                ChatUtil.sendMessage(entrymsg, null);
                             }
+                            ChatUtil.sendMessage(entrymsg, null);
+                        }
 
-                            ChatUtil.sendMessage("");
-                        });
+                        ChatUtil.sendMessage("");
                     } catch (Exception e) {
                         ChatUtil.sendMessage("Error while requesting");
                         e.printStackTrace();

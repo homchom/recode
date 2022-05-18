@@ -20,7 +20,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.math.BigDecimal;
 import java.util.List;
 
-@SuppressWarnings("ALL")
 @Mixin(MouseHandler.class)
 public class MMouseHandler {
     @Shadow
