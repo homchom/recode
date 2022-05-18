@@ -9,15 +9,10 @@
     "config.recode.category.misc": "Miscellaneous",
     "config.recode.category.screen": "Screen",
     "config.recode.category.social": "Social Features",
-    "config.recode.category.highlight": "Highlighting",
+
     "config.recode.category.streamer": "Streamer Mode",
     "config.recode.category.discordRPC": "Discord RPC",
     "config.recode.category.sidedchat": "Chat Splitting",
-
-    "config.recode.category.modules.warning": "Modules may be malicious, use them at your own risk.",
-    "config.recode.category.modules.madeby": "Made by $author$",
-    "config.recode.category.modules.enabled": "Enabled",
-    "config.recode.category.modules.enabled.tooltip": "Enable this module.",
 
     "config.recode.subcategory.screen_world_rendering": "World Rendering",
     "config.recode.subcategory.screen_world_rendering.tooltip": "Features related to rendering a world.",
@@ -25,8 +20,6 @@
     "config.recode.option.chestReplacement.tooltip": "Render all chests as a barrel.",
     "config.recode.option.signRenderDistance": "Sign Render Distance",
     "config.recode.option.signRenderDistance.tooltip": "Maximum distance for signs to render.",
-    "config.recode.option.betaItemTextures": "[Beta] Recode Textures",
-    "config.recode.option.betaItemTextures.tooltip": "Allows plots to display custom textures and models on items.",
     "config.recode.option.plotInfoOverlay": "Location Overlay",
     "config.recode.option.plotInfoOverlay.tooltip": "Displays your current DiamondFire location on the screen.",
     "config.recode.subcategory.screen_title_screen": "Title Screen",
@@ -51,10 +44,6 @@
     "config.recode.option.variableScopeView.tooltip": "Shows the variable scope under the item name.\n(GAME, SAVE, LOCAL)",
     "config.recode.option.cosmeticsEnabled": "Show Cosmetics",
     "config.recode.option.cosmeticsEnabled.tooltip": "Shows Recode cosmetics such\nas developer capes and hats.",
-    "config.recode.option.loadTabStars": "Load Tablist Stars",
-    "config.recode.option.loadTabStars.tooltip": "Shows other players that are using recode.",
-    "config.recode.option.relocateTabStars": "Relocate Tablist Stars",
-    "config.recode.option.relocateTabStars.tooltip": "Shows tablist stars after users names instead of before.",
     "config.recode.option.highlightVarSyntax": "Highlight Variable Syntax",
     "config.recode.option.highlightVarSyntax.tooltip": "Highlights text, num and var syntax\nlike percent and color codes",
     "config.recode.option.showCodeblockDescription": "Show Code Block Description",
@@ -118,9 +107,6 @@
     "config.recode.option.colorReplacePicker": "Replace Color Picker",
     "config.recode.option.colorReplacePicker.tooltip": "Replaces the color picker with\na color menu equivalent of \"/colors 100\".",
 
-    "config.recode.option.cmdLoadPlots": "/plots loading",
-    "config.recode.option.cmdLoadPlots.tooltip": "Should plots be cached or not for /plots.",
-
     "config.recode.option.socialFeatures": "Enable Social Features",
     "config.recode.option.codeUtilsChat": "Recode Chat",
     "config.recode.option.cosmetics": "Show Cosmetics",
@@ -139,33 +125,10 @@
     "config.recode.option.fsFast": "Flight Speed Fast",
     "config.recode.option.fsFast.tooltip": "Flight speed used for the \"Flight Speed Fast\" keybind.",
 
-    "config.recode.option.highlight": "Highlight Text in Chat",
-    "config.recode.option.highlight.tooltip": "Highlights the text below in chat if it gets mentioned\nin a chat message sent by a player.",
-    "config.recode.option.highlightIgnoreSender": "Highlight Ignore Message Sender",
-    "config.recode.option.highlightIgnoreSender.tooltip": "Ignores the sender of the\nchat message for highlighting.",
-
-    "config.recode.subcategory.highlight_text": "Text",
-    "config.recode.subcategory.highlight_text.tooltip": "Settings for text highlighting.",
-    "config.recode.option.highlightMatcher": "Matcher",
-    "config.recode.option.highlightMatcher.tooltip": "Text to highlight.\n{name} is replaced with your username.",
-    "config.recode.option.highlightPrefix": "Prefix",
-    "config.recode.option.highlightPrefix.tooltip": "The text to put in front of the\nhighlighted text. Supports (hex) color codes.",
-
-    "config.recode.subcategory.highlight_sound": "Highlight Sound",
-    "config.recode.subcategory.highlight_sound.tooltip": "Sound settings for when a\ntext highlight is triggered.",
-    "config.recode.option.highlightSound": "Sound to Play",
-    "config.recode.option.highlightSound.tooltip": "Sound to play when a text highlight\nis triggered. Select \"None\" to disable.",
-    "config.recode.option.highlightSoundVolume": "Volume",
-    "config.recode.option.highlightSoundVolume.tooltip": "Volume of the sound above.",
-    "config.recode.option.highlightOwnSenderSound": "Play Sound if Sender",
-    "config.recode.option.highlightOwnSenderSound.tooltip": "Plays a sound if you are the message sender. Requires:\n- A sound to be selected\n- The message sender to be ignored",
-
     "config.recode.option.hideJoinLeaveMessages": "Hide Join/Leave Messages",
     "config.recode.option.hideJoinLeaveMessages.tooltip": "Hides messages of players joining\nor leaving the current node.",
     "config.recode.option.hideVarScopeMessages": "Hide Variable Scope Messages",
     "config.recode.option.hideVarScopeMessages.tooltip": "Hides messages about changing variable scopes.",
-    "config.recode.option.stackDuplicateMsgs": "Message Stacker",
-    "config.recode.option.stackDuplicateMsgs.tooltip": "Merges multiple messages into one\nif they're the same.",
 
     "config.recode.option.hideScoreboardOnF3": "Hide Scoreboard on F3",
     "config.recode.option.hideScoreboardOnF3.tooltip": "Hides the scoreboard when the F3 menu is active.",
@@ -198,12 +161,6 @@
     "config.recode.option.destroyitemresettype.compact": "Compact Items",
 
 
-    "config.recode.subcategory.misc_audio": "Project: Audio",
-    "config.recode.subcategory.misc_audio.tooltip": "Project: Audio settings",
-    "config.recode.option.audioUrl": "Backend Endpoint",
-    "config.recode.option.audioUrl.tooltip": "The Socket URL to connect to for Project: Audio.",
-    "config.recode.option.audio": "Playback Support",
-    "config.recode.option.audio.tooltip": "Allows plots to play custom sounds / music.",
 
     "config.recode.subcategory.misc_quicknum": "Quick Number Change",
     "config.recode.subcategory.misc_quicknum.tooltip": "Allows you to change a number variable\nsimply by scrolling.",

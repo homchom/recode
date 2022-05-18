@@ -1,19 +1,23 @@
 package io.github.homchom.recode.sys.networking;
 
-import com.google.gson.*;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import io.github.homchom.recode.mod.events.interfaces.HyperCubeEvents;
-import io.github.homchom.recode.mod.features.social.chat.message.*;
-import io.github.homchom.recode.mod.features.social.tab.Client;
+import io.github.homchom.recode.mod.features.social.chat.message.Message;
+import io.github.homchom.recode.mod.features.social.chat.message.MessageType;
 import io.github.homchom.recode.sys.file.ILoader;
 import io.github.homchom.recode.sys.player.DFInfo;
-import io.github.homchom.recode.sys.player.chat.*;
+import io.github.homchom.recode.sys.player.chat.ChatUtil;
+import io.github.homchom.recode.sys.player.chat.MessageGrabber;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import org.java_websocket.enums.ReadyState;
 
-import java.util.*;
+import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.Executors;
-import java.util.regex.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class State {
 
@@ -365,7 +369,6 @@ public class State {
                     if (DFInfo.isOnDF() && mc.player != null) {
                         DFInfo.currentState.sendLocate();
                     }
-                    if (!Client.client.isOpen() && !(Client.client.getReadyState() == ReadyState.NOT_YET_CONNECTED)) Client.connect();
                     try {
                         Thread.sleep(5000);
                     } catch (InterruptedException e) {
