@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+@SuppressWarnings("ALL")
 @Mixin(CreativeModeInventoryScreen.class)
 public class MCreativeInventoryScreen {
     @Shadow @Nullable private Slot destroyItemSlot;

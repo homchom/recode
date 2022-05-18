@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+@SuppressWarnings("ALL")
 @Mixin(ChatScreen.class)
 public class MChatScreen {
     @Shadow
