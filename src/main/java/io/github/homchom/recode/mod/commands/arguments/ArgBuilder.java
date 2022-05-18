@@ -3,6 +3,7 @@ package io.github.homchom.recode.mod.commands.arguments;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import io.github.homchom.recode.sys.player.chat.*;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 
@@ -13,11 +14,21 @@ public final class ArgBuilder {
     }
 
     public static LiteralArgumentBuilder<FabricClientCommandSource> literal(String name) {
-        return LiteralArgument.literal(name);
+        return new LiteralArgumentBuilder<>(name) {
+            @Override
+            public LiteralArgumentBuilder<FabricClientCommandSource> executes(Command<FabricClientCommandSource> command) {
+                return super.executes(onExecute(command));
+            }
+        };
     }
 
-    public static <T> RequiredArgument<FabricClientCommandSource, T> argument(String name, ArgumentType<T> type) {
-        return RequiredArgument.argument(name, type);
+    public static <T> RequiredArgumentBuilder<FabricClientCommandSource, T> argument(String name, ArgumentType<T> type) {
+        return new RequiredArgumentBuilder<>(name, type) {
+            @Override
+            public RequiredArgumentBuilder<FabricClientCommandSource, T> executes(Command<FabricClientCommandSource> command) {
+                return super.executes(onExecute(command));
+            }
+        };
     }
 
     public static <T> Command<T> onExecute(Command<T> cmd) {
