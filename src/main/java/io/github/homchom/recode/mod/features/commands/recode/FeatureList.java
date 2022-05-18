@@ -22,6 +22,10 @@ public class FeatureList {
             "Tablist Stars",
             "A star is displayed next to each CodeUtilities mod user in the tab player list."
         ), new Feature(
+            "Project: Audio",
+            "[red]*Disabled by default, you can enable this feature in config*[reset]\n" +
+            "Plays custom audio in plots. With CodeUtilities, you do not need to open web browser to use Project: Audio."
+        ), new Feature(
             "Side Chat",
             "Gives you 2 chats in which you can seperate messages to. Check out the config for more information."
         ), new Feature(

@@ -3,6 +3,7 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocatio
 plugins {
     id("fabric-loom") version "0.11-SNAPSHOT"
     id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("org.openjfx.javafxplugin") version "0.0.13"
 }
 
 val modVersion: String by project
@@ -72,6 +73,7 @@ dependencies {
     // websocket TODO: clean this up
     shadeImpl("org.java-websocket:Java-WebSocket:1.5.3")
     includeImpl("javax.websocket:javax.websocket-api:1.1")
+    shadeImpl("io.socket:socket.io-client:2.0.1")
 }
 
 java {
@@ -116,4 +118,8 @@ tasks {
     remapJar {
         inputFile.value(shadowJar.get().archiveFile)
     }
+}
+
+javafx {
+    modules = listOf("javafx.media")
 }

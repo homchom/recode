@@ -19,6 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.*;
 
+@SuppressWarnings("ALL")
 @Mixin(Gui.class)
 public class MHeldItemTooltip {
     private static final Map<String, MutableComponent> scopes = new HashMap<>();
