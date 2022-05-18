@@ -20,7 +20,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("ALL")
 @Mixin(ContainerScreen.class)
 public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu> {
     public MContainerScreen(ChestMenu handler, Inventory inventory, Component title) {

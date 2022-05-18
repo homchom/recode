@@ -11,7 +11,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.List;
 import java.util.concurrent.*;
 
-@SuppressWarnings("ALL")
 @Mixin(ReloadableResourceManager.class)
 public class MReloadableResourceManager {
     @Inject(method = "createReload", at = @At("HEAD"))
