@@ -18,7 +18,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.*;
 
-@SuppressWarnings("ALL")
 @Mixin(ItemStack.class)
 public abstract class MItemStack {
     @Shadow

@@ -25,7 +25,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.net.URL;
 import java.util.*;
 
-@SuppressWarnings("ALL")
 @Mixin(Screen.class)
 public class MScreen {
     private final HashMap<String, ResourceLocation> cache = new HashMap<>();

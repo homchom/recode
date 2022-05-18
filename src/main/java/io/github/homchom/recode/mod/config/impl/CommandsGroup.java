@@ -33,8 +33,5 @@ public class CommandsGroup extends ConfigGroup {
         colors.register(new IntegerSetting("colorLines", 5));
         colors.register(new BooleanSetting("colorReplacePicker", false));
         this.register(colors);
-
-        // Non sub-grouped
-        this.register(new BooleanSetting("cmdLoadPlots", true));
     }
 }

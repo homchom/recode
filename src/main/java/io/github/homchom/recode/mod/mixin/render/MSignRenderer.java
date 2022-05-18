@@ -10,7 +10,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@SuppressWarnings("ALL")
 @Mixin(SignRenderer.class)
 public class MSignRenderer {
     private final Minecraft mc = Minecraft.getInstance();

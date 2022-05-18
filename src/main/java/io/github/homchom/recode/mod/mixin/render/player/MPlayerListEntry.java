@@ -10,7 +10,6 @@ import org.spongepowered.asm.mixin.*;
 
 import java.util.Map;
 
-@SuppressWarnings("ALL")
 @Mixin(PlayerInfo.class)
 public class MPlayerListEntry {
     @Shadow

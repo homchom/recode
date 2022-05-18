@@ -14,7 +14,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@SuppressWarnings("ALL")
 @Mixin(Gui.class)
 public class MInGameHUD {
     @Inject(method = "renderEffects", at = @At("RETURN"))

@@ -11,8 +11,7 @@ public enum ExternalFile {
             .isDirectory(true)
             .setName("Images")
             .buildFile()),
-    TEMPLATE_DB(ExternalFileBuilder.nbt("Templates")),
-    PLOTS_DB(ExternalFileBuilder.nbt("Plots"));
+    TEMPLATE_DB(ExternalFileBuilder.nbt("Templates"));
 
     private final File file;
 

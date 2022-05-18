@@ -14,7 +14,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.io.File;
 
-@SuppressWarnings("ALL")
 @Mixin(SkinManager.class)
 public class MSkinManager {
     long loadingTexture = 0;

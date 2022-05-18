@@ -20,13 +20,6 @@ public class MiscellaneousGroup extends ConfigGroup {
                 .setSelected(ConfigSounds.FLUTE));
         this.register(new BooleanSetting("debugMode", false));
 
-
-        // Audio
-        ConfigSubGroup audio = new ConfigSubGroup("audio");
-        audio.register(new BooleanSetting("audio", false));
-        audio.register(new StringSetting("audioUrl", "https://audio.tomoli.me/"));
-        this.register(audio);
-
         // Quick Number Change
         ConfigSubGroup quickNum = new ConfigSubGroup("quicknum");
         quickNum.register(new BooleanSetting("quicknum", true));
