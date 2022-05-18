@@ -1,40 +1,26 @@
 package io.github.homchom.recode.mod.features.commands;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
-import io.github.cottonmc.cotton.gui.widget.WButton;
-import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
-import io.github.cottonmc.cotton.gui.widget.WScrollPanel;
-import io.github.cottonmc.cotton.gui.widget.WText;
+import io.github.cottonmc.cotton.gui.widget.*;
 import io.github.homchom.recode.Recode;
-import io.github.homchom.recode.mod.features.commands.nbs.NBSToTemplate;
-import io.github.homchom.recode.mod.features.commands.nbs.SongData;
+import io.github.homchom.recode.mod.features.commands.nbs.*;
+import io.github.homchom.recode.mod.features.social.tab.RecodeServer;
 import io.github.homchom.recode.sys.hypercube.templates.TemplateUtils;
-import io.github.homchom.recode.sys.networking.WebUtil;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
 import io.github.homchom.recode.sys.renderer.IMenu;
 import io.github.homchom.recode.sys.util.ItemUtil;
 import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.sounds.*;
+import net.minecraft.world.item.*;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
+import java.util.concurrent.*;
 
 public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
 
@@ -80,7 +66,7 @@ public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
 
         Recode.EXECUTOR.submit(() -> {
             try {
-                String sresults = WebUtil.getString(
+                String sresults = RecodeServer.requestURL(
                     "https://untitled-57qvszfgg28u.runkit.sh/search?query=" + URLEncoder
                         .encode(query, "UTF-8"));
 
@@ -111,14 +97,9 @@ public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
                             download.setLabel(new TextComponent("..."));
                             Recode.EXECUTOR
                                 .submit(() -> {
-                                    String notes = null;
-                                    try {
-                                        notes = WebUtil.getString(
-                                            "https://untitled-57qvszfgg28u.runkit.sh/download?format=mcnbs&id="
-                                                + id);
-                                    } catch (IOException ex) {
-                                        throw new RuntimeException(ex);
-                                    }
+                                    String notes = RecodeServer.requestURL(
+                                        "https://untitled-57qvszfgg28u.runkit.sh/download?format=mcnbs&id="
+                                            + id);
                                     String[] notearr = notes.split("=");
                                     int length = Integer
                                         .parseInt(notearr[notearr.length - 1].split(":")[0]);
@@ -149,14 +130,9 @@ public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
                                 preview.setLabel(new TextComponent("..."));
                                 Recode.EXECUTOR
                                     .submit(() -> {
-                                        String snotes = null;
-                                        try {
-                                            snotes = WebUtil.getString(
-                                                    "https://untitled-57qvszfgg28u.runkit.sh/download?format=mcnbs&id="
-                                                            + id);
-                                        } catch (IOException ex) {
-                                            throw new RuntimeException(ex);
-                                        }
+                                        String snotes = RecodeServer.requestURL(
+                                            "https://untitled-57qvszfgg28u.runkit.sh/download?format=mcnbs&id="
+                                                + id);
                                         List<String> notes = new ArrayList<>(
                                             Arrays.asList(snotes.split("=")));
 
@@ -213,8 +189,6 @@ public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
                 err.printStackTrace();
                 loading.setText(new TextComponent("Error"));
                 ChatUtil.sendMessage("Error");
-            } catch (IOException e) {
-                throw new RuntimeException(e);
             }
         });
 

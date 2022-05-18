@@ -16,6 +16,7 @@ public class ScreenGroup extends ConfigGroup {
         ConfigSubGroup worldRendering = new ConfigSubGroup("world_rendering");
         worldRendering.register(new BooleanSetting("chestReplacement", false));
         worldRendering.register(new IntegerSetting("signRenderDistance", 100));
+        worldRendering.register(new BooleanSetting("betaItemTextures", false));
         this.register(worldRendering);
 
         // Title Screen
@@ -25,6 +26,8 @@ public class ScreenGroup extends ConfigGroup {
 
         // Cosmetic
         ConfigSubGroup cosmetic = new ConfigSubGroup("cosmetic");
+        cosmetic.register(new BooleanSetting("loadTabStars", true));
+        cosmetic.register(new BooleanSetting("relocateTabStars", false));
         cosmetic.register(new BooleanSetting("cosmeticsEnabled", true));
         this.register(cosmetic);
 

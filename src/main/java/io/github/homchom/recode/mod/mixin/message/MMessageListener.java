@@ -23,6 +23,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.io.IOException;
 
+@SuppressWarnings("ALL")
 @Mixin(ClientPacketListener.class)
 public class MMessageListener {
     private static long lastPatchCheck = 0;

@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 import static net.minecraft.client.gui.GuiComponent.fill;
 
+@SuppressWarnings("ALL")
 @Mixin(ChatComponent.class)
 public abstract class MSideChatHUD {
     @Shadow
@@ -84,6 +85,14 @@ public abstract class MSideChatHUD {
     private void render(PoseStack poseStack, int tickDelta, CallbackInfo ci) {
         List<GuiMessage<FormattedCharSequence>> tempMain = new ArrayList<>();
         List<GuiMessage<FormattedCharSequence>> tempSide = new ArrayList<>();
+        if (Config.getBoolean("stackDuplicateMsgs")) {
+            tempMain.addAll(trimmedMessages);
+            tempSide.addAll(sideVisibleMessages);
+            trimmedMessages.clear();
+            trimmedMessages.addAll(stackMsgs(tempMain));
+            sideVisibleMessages.clear();
+            sideVisibleMessages.addAll(stackMsgs(tempSide));
+        }
 
         this.processPendingMessages();
         int renderedLines = renderChat(poseStack, tickDelta, trimmedMessages, 0, getWidth(),
@@ -92,6 +101,13 @@ public abstract class MSideChatHUD {
             getSideChatWidth(), sideScrolledLines);
         renderOthers(poseStack, renderedLines);
         ci.cancel();
+
+        if (Config.getBoolean("stackDuplicateMsgs")) {
+            trimmedMessages.clear();
+            trimmedMessages.addAll(tempMain);
+            sideVisibleMessages.clear();
+            sideVisibleMessages.addAll(tempSide);
+        }
     }
 
     /**
@@ -373,5 +389,42 @@ public abstract class MSideChatHUD {
         if (sideScrolledLines <= 0) {
             sideScrolledLines = 0;
         }
+    }
+
+    // Message Stacker
+    public List<GuiMessage<FormattedCharSequence>> stackMsgs(List<GuiMessage<FormattedCharSequence>> msgs) {
+        GuiMessage<FormattedCharSequence> last = null;
+        int count = 1;
+
+        List<GuiMessage<FormattedCharSequence>> copy = new ArrayList<>();
+
+        for (GuiMessage<FormattedCharSequence> msg : msgs) {
+            if (last == null) {
+                last = msg;
+            } else {
+                if (OrderedTextUtil.getString(last.getMessage())
+                    .equals(OrderedTextUtil.getString(msg.getMessage()))) {
+                    count++;
+                } else {
+                    if (count == 1) {
+                        copy.add(last);
+                    } else {
+                        copy.add(new GuiMessage<>(last.getAddedTime(),
+                                FormattedCharSequence.composite(
+                                    last.getMessage(),
+                                    TextUtil.colorCodesToTextComponent(" §bx" + count).getVisualOrderText()),
+                                last.getId()
+                            )
+                        );
+                    }
+                    count = 1;
+                    last = msg;
+                }
+            }
+        }
+        if (last != null) {
+            copy.add(last);
+        }
+        return copy;
     }
 }

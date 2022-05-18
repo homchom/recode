@@ -5,6 +5,7 @@ import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+@SuppressWarnings("ALL")
 @Mixin(Stitcher.class)
 public class MStitcher {
     @Shadow private int storageY;

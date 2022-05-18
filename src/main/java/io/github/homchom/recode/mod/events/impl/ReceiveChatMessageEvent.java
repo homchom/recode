@@ -3,11 +3,12 @@ package io.github.homchom.recode.mod.events.impl;
 import io.github.homchom.recode.Recode;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.events.interfaces.ChatEvents;
+import io.github.homchom.recode.mod.features.modules.triggers.Trigger;
+import io.github.homchom.recode.mod.features.modules.triggers.impl.MessageReceivedTrigger;
 import io.github.homchom.recode.mod.features.social.chat.message.Message;
 import io.github.homchom.recode.sys.networking.State;
 import io.github.homchom.recode.sys.player.DFInfo;
-import io.github.homchom.recode.sys.player.chat.ChatType;
-import io.github.homchom.recode.sys.player.chat.ChatUtil;
+import io.github.homchom.recode.sys.player.chat.*;
 import io.github.homchom.recode.sys.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
@@ -15,8 +16,7 @@ import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.regex.*;
 
 public class ReceiveChatMessageEvent {
     public ReceiveChatMessageEvent() {
@@ -38,6 +38,9 @@ public class ReceiveChatMessageEvent {
         if (mc.player == null) {
             return InteractionResult.FAIL;
         }
+
+        // module trigger
+        Trigger.execute(new MessageReceivedTrigger());
 
         //PJoin command
         if (pjoin) {
@@ -72,6 +75,48 @@ public class ReceiveChatMessageEvent {
         String msgToString = message.toString();
 
         String msgWithColor = TextUtil.textComponentToColorCodes(text);
+        String msgWithoutColor = msgWithColor.replaceAll("§.", "");
+
+        // highlight name
+        if (Config.getBoolean("highlight")) {
+            String highlightMatcher = Config.getString("highlightMatcher").replaceAll("\\{name}", mc.player.getName().getString());
+            Recode.info(highlightMatcher);
+
+            if (( DFInfo.currentState.getMode() != State.Mode.PLAY && msgWithoutColor.matches("^[^0-z]+.*[a-zA-Z]+: .*"))
+                    || (DFInfo.currentState.getMode() == State.Mode.PLAY && msgWithoutColor.matches("^.*[a-zA-Z]+: .*"))) {
+                if ((!msgWithoutColor.matches("^.*" + highlightMatcher + ": .*")) || Config.getBoolean("highlightIgnoreSender")) {
+                    if (msgWithoutColor.contains(highlightMatcher)) {
+                        Recode.info("contains highlight matcher");
+                        String[] chars = msgWithColor.split("");
+                        int i = 0;
+                        int newMsgIter = 0;
+                        StringBuilder getColorCodes = new StringBuilder();
+                        String newMsg = msgWithColor;
+                        String textLeft;
+
+                        for (String currentChar : chars) {
+                            textLeft = msgWithColor.substring(i) + " ";
+                            i++;
+                            if (currentChar.equals("§")) getColorCodes.append(currentChar).append(chars[i]);
+                            if (textLeft.matches("^" + highlightMatcher + "[^a-zA-Z0-9].*")) {
+                                newMsg = newMsg.substring(0, newMsgIter) + Config.getString("highlightPrefix").replaceAll("&", "§")
+                                        + highlightMatcher + getColorCodes + newMsg.substring(newMsgIter).replaceFirst("^" + highlightMatcher, "");
+
+                                newMsgIter = newMsgIter + Config.getString("highlightPrefix").length() + getColorCodes.toString().length();
+                            }
+                            newMsgIter++;
+                        }
+                        mc.player.displayClientMessage(TextUtil.colorCodesToTextComponent(newMsg), false);
+                        if (Config.getBoolean("highlightOwnSenderSound") ||
+                                (!msgWithoutColor.matches("^.*" + highlightMatcher + ": .+"))) {
+                            ChatUtil.playSound(
+                                    Config.getSound("highlightSound"), 1, Config.getFloat("highlightSoundVolume"));
+                        }
+                        cancel = true;
+                    }
+                }
+            }
+        }
 
         // hide join/leave messages
         if (Config.getBoolean("hideJoinLeaveMessages")
