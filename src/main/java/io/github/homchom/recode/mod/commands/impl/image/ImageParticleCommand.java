@@ -25,12 +25,11 @@ public class ImageParticleCommand extends Command {
     public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("imageparticle")
                 .then(ArgBuilder.literal("load")
-                        .then(ArgBuilder.argument("filename", PathArgumentType.folder(ExternalFile.IMAGE_FILES.getFile(), true))
+                        .then(ArgBuilder.argument("filename", PathArgumentType.folder(ExternalFile.IMAGE_FILES.getPath(), true))
                                 .executes(ctx -> {
                                     try {
-                                        String location = StringArgumentType.getString(ctx, "filename");
-                                        String fileName = location + (location.endsWith(".png") ? "" : ".png");
-                                        File f = new File(ExternalFile.IMAGE_FILES.getFile(), fileName);
+                                        File f = PathArgumentType.getPath(ctx, "filename").toFile();
+                                        String fileName = f.getName();
 
                                         if (f.exists()) {
                                             ParticleImage image = ImageToParticle.convert(f);

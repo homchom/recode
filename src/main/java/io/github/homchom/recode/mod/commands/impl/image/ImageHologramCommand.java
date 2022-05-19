@@ -23,17 +23,16 @@ public class ImageHologramCommand extends Command {
         cd.register(ArgBuilder.literal("imagehologram")
                 .then(ArgBuilder.literal("load")
                         .then(ArgBuilder.literal("hex")
-                                .then(ArgBuilder.argument("location", PathArgumentType.folder(ExternalFile.IMAGE_FILES.getFile(), true))
+                                .then(ArgBuilder.argument("location", PathArgumentType.folder(ExternalFile.IMAGE_FILES.getPath(), true))
                                         .executes(ctx -> {
                                             try {
-                                                String location = StringArgumentType.getString(ctx, "location");
-                                                File f = new File(ExternalFile.IMAGE_FILES.getFile(), location + (location.endsWith(".png") ? "" : ".png"));
+                                                File f = PathArgumentType.getPath(ctx, "location").toFile();
 
                                                 if (f.exists()) {
                                                     String[] strings = ImageToHologram.convertWithHex(f);
 
                                                     ItemStack stack = new ItemStack(Items.ENDER_CHEST);
-                                                    TemplateUtils.compressTemplateNBT(stack, StringArgumentType.getString(ctx, "location"), mc.player.getName().getContents(), convert(strings));
+                                                    TemplateUtils.compressTemplateNBT(stack, f.getName(), mc.player.getName().getContents(), convert(strings));
                                                     ItemUtil.giveCreativeItem(stack, true);
                                                     ChatUtil.sendMessage("Image loaded! Change the first Set Variable to the location!", ChatType.SUCCESS);
                                                 } else {
@@ -47,17 +46,16 @@ public class ImageHologramCommand extends Command {
                                             }
                                         })))
                         .then(ArgBuilder.literal("colorcodes")
-                                .then(ArgBuilder.argument("location", PathArgumentType.folder(ExternalFile.IMAGE_FILES.getFile(), true))
+                                .then(ArgBuilder.argument("location", PathArgumentType.folder(ExternalFile.IMAGE_FILES.getPath(), true))
                                         .executes(ctx -> {
                                             try {
-                                                String location = StringArgumentType.getString(ctx, "location");
-                                                File f = new File(ExternalFile.IMAGE_FILES.getFile(), location + (location.endsWith(".png") ? "" : ".png"));
+                                                File f = PathArgumentType.getPath(ctx, "location").toFile();
 
                                                 if (f.exists()) {
                                                     String[] strings = ImageToHologram.convertWithColorCodes(f);
 
                                                     ItemStack stack = new ItemStack(Items.ENDER_CHEST);
-                                                    TemplateUtils.compressTemplateNBT(stack, StringArgumentType.getString(ctx, "location"), mc.player.getName().getContents(), convert(strings));
+                                                    TemplateUtils.compressTemplateNBT(stack, f.getName(), mc.player.getName().getContents(), convert(strings));
                                                     ItemUtil.giveCreativeItem(stack, true);
                                                     ChatUtil.sendMessage("Image loaded! Change the first Set Variable to the location!", ChatType.SUCCESS);
                                                 } else {

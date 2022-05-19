@@ -58,18 +58,12 @@ public class NBSCommand extends Command {
     public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("nbs")
                 .then(ArgBuilder.literal("load")
-                        .then(ArgBuilder.argument("filename", PathArgumentType.folder(ExternalFile.NBS_FILES.getFile(), true))
+                        .then(ArgBuilder.argument("filename", PathArgumentType.folder(ExternalFile.NBS_FILES.getPath(), true))
                                 .executes(ctx -> {
                                     if (this.isCreative(mc)) {
-                                        String filename = StringArgumentType.getString(ctx, "filename");
-                                        String childName = filename + (filename.endsWith(".nbs") ? "" : ".nbs");
-                                        File file = new File(ExternalFile.NBS_FILES.getFile(), childName);
+                                        File file = PathArgumentType.getPath(ctx, "filename").toFile();
 
-                                        if (file.exists()) {
-                                            loadNbs(file, childName);
-                                        } else {
-                                            ChatUtil.sendMessage("The file §6" + childName + "§c was not found.", ChatType.FAIL);
-                                        }
+                                        loadNbs(file, file.getName());
                                     }
                                     return 1;
                                 })

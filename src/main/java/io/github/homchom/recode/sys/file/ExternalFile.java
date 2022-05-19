@@ -1,25 +1,29 @@
 package io.github.homchom.recode.sys.file;
 
-import java.io.File;
+import java.nio.file.Path;
 
 public enum ExternalFile {
-    NBS_FILES(new ExternalFileBuilder()
+    NBS_FILES(builder()
             .isDirectory(true)
             .setName("NBS Files")
-            .buildFile()),
-    IMAGE_FILES(new ExternalFileBuilder()
+            .build()),
+    IMAGE_FILES(builder()
             .isDirectory(true)
             .setName("Images")
-            .buildFile()),
-    TEMPLATE_DB(ExternalFileBuilder.nbt("Templates"));
+            .build()),
+    TEMPLATE_DB(ExternalFileBuilder.nbt("Templates.nbt"));
 
-    private final File file;
+    private final Path path;
 
-    ExternalFile(File file) {
-        this.file = file;
+    ExternalFile(Path path) {
+        this.path = path;
     }
 
-    public File getFile() {
-        return file;
+    public Path getPath() {
+        return path;
+    }
+
+    public static ExternalFileBuilder builder() {
+        return new ExternalFileBuilder();
     }
 }

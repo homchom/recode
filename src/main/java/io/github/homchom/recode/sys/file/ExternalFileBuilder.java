@@ -1,25 +1,24 @@
 package io.github.homchom.recode.sys.file;
 
 import io.github.homchom.recode.Recode;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.nbt.*;
 
 import javax.annotation.Nullable;
 import java.io.*;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
 import java.util.function.Consumer;
 
 public class ExternalFileBuilder {
 
     String fileName;
-    String fileType = "unk";
     boolean directory = false;
 
     public ExternalFileBuilder setName(String fileName) {
         this.fileName = fileName;
-        return this;
-    }
-
-    public ExternalFileBuilder setFileType(String fileType) {
-        this.fileType = fileType;
         return this;
     }
 
@@ -28,41 +27,61 @@ public class ExternalFileBuilder {
         return this;
     }
 
-    public File buildFile(@Nullable Consumer<File> init) {
-        File mainFile = new File(Recode.MOD_NAME);
-        if (!mainFile.exists()) {
-            mainFile.mkdir();
-        }
+    private Path getMainDir() throws IOException {
+        Path path = FabricLoader.getInstance().getGameDir().resolve(Recode.MOD_NAME);
+        Files.createDirectory(path);
+        return path;
+    }
 
-        File file = new File(mainFile, fileName + (directory ? "" : "." + fileType));
+    public Path buildRaw(@Nullable Consumer<Path> init) throws IOException {
+        Path mainDir = getMainDir();
 
-        try {
-            if (!file.exists()) {
-                if (directory) {
-                    file.mkdir();
-                } else {
-                    file.createNewFile();
-                }
-                if (init != null) init.accept(file);
+        Path path = mainDir.resolve(fileName);
+
+        // Yes, I know this is very verbose, but it's very extensive, and is the same logic used by the JRE internally.
+        if (directory) {
+            try {
+                Files.createDirectory(path);
+            } catch (FileAlreadyExistsException x) {
+                if (!Files.isDirectory(path, LinkOption.NOFOLLOW_LINKS))
+                    throw x;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } else {
+            try {
+                Files.createFile(path);
+            } catch (FileAlreadyExistsException x) {
+                if (!Files.isRegularFile(path, LinkOption.NOFOLLOW_LINKS))
+                    throw x;
+            }
         }
-        return file;
+        if (init != null) init.accept(path);
+
+        return path;
     }
 
-    public File buildFile() {
-        return buildFile(null);
+    public Path buildRaw() throws IOException {
+        return buildRaw(null);
     }
 
-    static File nbt(String name) {
+    public Path build(@Nullable Consumer<Path> init) {
+        try {
+            return buildRaw(init);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Path build() {
+        return build(null);
+    }
+
+    static Path nbt(String name) {
         return new ExternalFileBuilder()
                 .isDirectory(false)
                 .setName(name)
-                .setFileType("nbt")
-                .buildFile(file -> {
+                .build(path -> {
                     try {
-                        NbtIo.write(new CompoundTag(), file);
+                        NbtIo.write(new CompoundTag(), path.toFile());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

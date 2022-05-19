@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class TemplateStorageHandler implements IManager<TemplateItem>, ISave {
 
-    private static final File FILE = ExternalFile.TEMPLATE_DB.getFile();
+    private static final File FILE = ExternalFile.TEMPLATE_DB.getPath().toFile();
     private static final int MAX_SIZE = 55;
     private static TemplateStorageHandler instance;
     private final List<TemplateItem> registeredTemplates = new ArrayList<>(MAX_SIZE);
