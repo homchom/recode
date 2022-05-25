@@ -32,11 +32,11 @@ public class CodeInitializer {
         Arrays.stream(managers).forEach(IManager::initialize);
     }
 
-    public void addIf(ILoader loader, boolean b) {
+    public void addif (ILoader loader, boolean b) {
         if (b) loader.load();
     }
 
-    public void addIf(IManager<?> manager, boolean b) {
+    public void addif (IManager<?> manager, boolean b) {
         if (b) manager.initialize();
     }
 

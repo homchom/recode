@@ -17,7 +17,7 @@ public class ActionDump implements ILoader {
         try{
             JsonObject actionDump = WebUtil.getObject(
                 "https://raw.githubusercontent.com/CodeUtilities/data/main/actiondump/db.json");
-            if(!actionDump.isJsonNull()){
+            if (!actionDump.isJsonNull()){
                 //gather codeblocks
                 JsonArray codeblockArray = actionDump.getAsJsonArray("codeblocks");
                 codeblockArray.forEach(jsonElement -> {
@@ -67,15 +67,15 @@ public class ActionDump implements ILoader {
     private static ArrayList<String> autoCompleteActions(String query){
         ArrayList<String> results = new ArrayList<>();
         for(String s : actions.keySet()){
-            if(!actions.get(s).getIcon().getName().equals("")){
-                if(s.equalsIgnoreCase(query) || actions.get(s).getIcon().getName().equalsIgnoreCase(query)){
+            if (!actions.get(s).getIcon().getName().equals("")){
+                if (s.equalsIgnoreCase(query) || actions.get(s).getIcon().getName().equalsIgnoreCase(query)){
                     results.add(0, s);
                 }
-                if(s.toLowerCase().contains(query.toLowerCase()) || actions.get(s).getIcon().getName().toLowerCase().contains(query.toLowerCase())){
+                if (s.toLowerCase().contains(query.toLowerCase()) || actions.get(s).getIcon().getName().toLowerCase().contains(query.toLowerCase())){
                     results.add(s);
                 }else{
                     for(String alias : actions.get(s).getAliases()){
-                        if(alias.toLowerCase().contains(query.toLowerCase())){
+                        if (alias.toLowerCase().contains(query.toLowerCase())){
                             results.add(s);
                             break;
                         }
@@ -89,19 +89,19 @@ public class ActionDump implements ILoader {
     private static ArrayList<String> autoCompleteCodeBlocks(String query){
         ArrayList<String> results = new ArrayList<>();
         for(Map.Entry<String, CodeBlock> entry : codeblocks.entrySet()){
-            if(entry.getValue().getIdentifier().equalsIgnoreCase(query)){
+            if (entry.getValue().getIdentifier().equalsIgnoreCase(query)){
                 results.add(0, entry.getKey());
                 continue;
             }
-            if(entry.getKey().equalsIgnoreCase(query)){
+            if (entry.getKey().equalsIgnoreCase(query)){
                 results.add(0, entry.getKey());
                 continue;
             }
-            if(entry.getValue().getIdentifier().toLowerCase().contains(query.toLowerCase())){
+            if (entry.getValue().getIdentifier().toLowerCase().contains(query.toLowerCase())){
                 results.add(entry.getKey());
                 continue;
             }
-            if(entry.getKey().toLowerCase().contains(query.toLowerCase())){
+            if (entry.getKey().toLowerCase().contains(query.toLowerCase())){
                 results.add(entry.getKey());
                 continue;
             }

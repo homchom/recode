@@ -5,16 +5,17 @@ import io.github.homchom.recode.mod.events.impl.*;
 
 import java.util.*;
 
-public class EventHandler implements IManager<Object> {
+public class LegacyEventHandler implements IManager<Object> {
     private final List<Object> registeredEvents = new ArrayList<>();
 
     @Override
     public void initialize() {
         register(
-                new ReceiveChatMessageEvent(),
-                new ChangeStateEvent(),
-                new TickEvent(),
-                new AfterScreenInitEvent()
+                new LegacyAfterScreenInitEvent(),
+                new LegacyChangeStateEvent(),
+                new LegacyReceiveChatMessageEvent(),
+                new LegacyReceiveSoundEvent(),
+                new LegacyJoinEvent()
         );
     }
 

@@ -133,10 +133,10 @@ public class SearchCommand extends Command {
     }
 
     private HoverEvent createHoverEvent(Object hover, String clickHere){
-        if(hover instanceof String){
+        if (hover instanceof String){
             return new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextUtil.colorCodesToTextComponent(clickHere));
         }
-        if(hover instanceof ItemStack){
+        if (hover instanceof ItemStack){
             return new HoverEvent(HoverEvent.Action.SHOW_ITEM, new HoverEvent.ItemStackInfo(ItemUtil.addLore((ItemStack) hover, new String[]{TextUtil.toTextString(""), TextUtil.toTextString(clickHere)})));
         }
         return null;

@@ -12,7 +12,7 @@ public class ColoredText extends TextComponent {
 
         ChatFormatting formatting = ChatFormatting.getByCode(code.charAt(0));
 
-        if(formatting == null) {
+        if (formatting == null) {
             this.withStyle(style -> style.withColor(TextColor.fromRgb(Integer.parseInt(code, 16))));
         }else {
             this.withStyle(style -> style.withColor(TextColor.fromLegacyFormat(formatting)));

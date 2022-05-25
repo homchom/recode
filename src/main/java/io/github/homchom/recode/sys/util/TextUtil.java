@@ -108,7 +108,7 @@ public class TextUtil {
     }
 
 //    public static Text colorCodesToTextComponent(String message) {
-//        if(message.equals("")) return Text.Serializer.fromJson("{\"text\": \"\"}");
+//        if (message.equals("")) return Text.Serializer.fromJson("{\"text\": \"\"}");
 //        message = "§f" + message;
 //        String sibling, literalColorCodes, color = null, text;
 //        String bold, italic, underlined, strikethrough, obfuscated;

@@ -251,7 +251,7 @@ public abstract class MSideChatHUD {
     }
 
 
-    @Inject(method = "addMessage(Lnet/minecraft/network/chat/Component;IIZ)V", at = @At("TAIL"), cancellable = true)
+    @Inject(method = "addMessage(Lnet/minecraft/network/chat/Component;IIZ)V", at = @At("TAIL"))
     private void addMessage(Component message, int messageId, int timestamp, boolean refresh,
         CallbackInfo ci) {
         boolean matchedARule = false;

@@ -85,7 +85,7 @@ public class ItemUtil {
     public static void setLore(ItemStack itemStack, Component[] lores){
         ListTag loreTag = new ListTag();
         for(Component lore : lores) {
-            if(lore == null){
+            if (lore == null){
                 itemStack.getTagElement("display").put("Lore", loreTag);
                 return;
             }
@@ -97,7 +97,7 @@ public class ItemUtil {
     public static ItemStack setLore(ItemStack itemStack, String[] lores){
         ListTag loreTag = new ListTag();
         for(String lore : lores) {
-            if(lore == null){
+            if (lore == null){
                 itemStack.getTagElement("display").put("Lore", loreTag);
                 return itemStack;
             }
@@ -109,11 +109,11 @@ public class ItemUtil {
 
     public static ItemStack addLore(ItemStack itemStack, String[] lores){
         ListTag loreTag = new ListTag();
-        if(itemStack.getOrCreateTagElement("display").contains("Lore")){
+        if (itemStack.getOrCreateTagElement("display").contains("Lore")){
             loreTag = itemStack.getTagElement("display").getList("Lore", 8);
         }
         for(String lore : lores) {
-            if(lore == null){
+            if (lore == null){
                 break;
             }
             loreTag.add(StringTag.valueOf(lore));

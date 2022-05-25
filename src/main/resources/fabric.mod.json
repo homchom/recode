@@ -4,7 +4,7 @@
   "version": "${version}",
   "name": "recode",
   "description": "A 1.18 clone of CodeUtilities 2",
-  "contributors": ["homchom", "CodeUtilities"],
+  "contributors": ["homchom", "tk2217", "CodeUtilities"],
   "contact": {
     "sources": "https://github.com/homchom/recode",
     "issues": "https://discord.gg/ndGVFutEHg"

@@ -110,9 +110,9 @@ public class StringUtil {
     }
 
     public static String[] toStringArray(JsonArray array) {
-        if(array == null)
+        if (array == null)
             return null;
-        if(array.size() == 0)
+        if (array.size() == 0)
             return new String[0];
 
         String[] arr = new String[array.size()];
@@ -123,7 +123,7 @@ public class StringUtil {
     }
 
     public static HashSet<String[]> toStringListHashSet(JsonArray array) {
-        if(array == null)
+        if (array == null)
             return null;
 
         HashSet<String[]> arr = new HashSet<>();

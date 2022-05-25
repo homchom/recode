@@ -1,19 +1,16 @@
 package io.github.homchom.recode;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 import io.github.homchom.recode.mod.commands.CommandHandler;
 import io.github.homchom.recode.mod.config.Config;
-import io.github.homchom.recode.mod.config.internal.ConfigFile;
-import io.github.homchom.recode.mod.config.internal.ConfigInstruction;
+import io.github.homchom.recode.mod.config.internal.*;
 import io.github.homchom.recode.mod.config.internal.gson.ConfigSerializer;
 import io.github.homchom.recode.mod.config.internal.gson.types.*;
 import io.github.homchom.recode.mod.config.internal.gson.types.list.StringListSerializer;
 import io.github.homchom.recode.mod.config.structure.ConfigManager;
 import io.github.homchom.recode.mod.config.types.*;
 import io.github.homchom.recode.mod.config.types.list.StringListSetting;
-import io.github.homchom.recode.mod.events.EventHandler;
-import io.github.homchom.recode.mod.events.interfaces.OtherEvents;
+import io.github.homchom.recode.mod.events.LegacyEventHandler;
 import io.github.homchom.recode.mod.features.discordrpc.DFDiscordRPC;
 import io.github.homchom.recode.mod.features.social.cosmetics.CosmeticHandler;
 import io.github.homchom.recode.sys.file.FileUtil;
@@ -23,22 +20,18 @@ import io.github.homchom.recode.sys.networking.State;
 import io.github.homchom.recode.sys.networking.websocket.SocketHandler;
 import io.github.homchom.recode.sys.util.LimitedHashmap;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelBakery;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.minecraft.client.resources.model.*;
+import org.slf4j.*;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.Random;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.concurrent.*;
+import java.util.regex.*;
 
 public class Recode implements ModInitializer {
     public static final String MOD_ID = "recode";
@@ -62,7 +55,6 @@ public class Recode implements ModInitializer {
             .create();
     public static final Minecraft MC = Minecraft.getInstance();
     public static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
-    private static Path optionsTxtPath;
     public static String MOD_VERSION;
     public static String PLAYER_NAME = null;
     public static String PLAYER_UUID = null;
@@ -82,22 +74,22 @@ public class Recode implements ModInitializer {
         LOGGER.error("[" + MOD_NAME + "] " + message);
     }
 
-    public static void onClose() {
-        LOGGER.info("Closing...");
+    public static void onClose(Minecraft mc) {
+        info("Closing...");
         try {
             ConfigFile.getInstance().save();
             TemplateStorageHandler.getInstance().save();
             CosmeticHandler.INSTANCE.shutdownExecutorService();
         } catch (Exception err) {
-            LOGGER.error("Error");
+            error("Error");
             err.printStackTrace();
         }
-        LOGGER.info("Closed.");
+        info("Closed.");
     }
 
     @Override
     public void onInitialize() {
-        optionsTxtPath = FabricLoader.getInstance().getGameDir().resolve("options.txt");
+        Path optionsTxtPath = FabricLoader.getInstance().getGameDir().resolve("options.txt");
         try {
             OPTIONSTXT = FileUtil.readFile(optionsTxtPath.toString(), Charset.defaultCharset());
         } catch (IOException e) {
@@ -106,8 +98,10 @@ public class Recode implements ModInitializer {
 
         MOD_VERSION = FabricLoader.getInstance().getModContainer(MOD_ID).get().getMetadata().getVersion().getFriendlyString();
         info("Initializing");
-//        Runtime.getRuntime().addShutdownHook(new Thread(this::onClose));
         System.setProperty("java.awt.headless", "false");
+
+        ClientLifecycleEvents.CLIENT_STOPPING.register(Recode::onClose);
+
         //System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2,TLSv1.3");
 
         // Get lang
@@ -128,16 +122,13 @@ public class Recode implements ModInitializer {
         initializer.add(new TemplateStorageHandler());
         initializer.add(new DFDiscordRPC());
         initializer.add(new ActionDump());
-        initializer.add(new EventHandler());
+        initializer.add(new LegacyEventHandler());
         initializer.add(new State.Locater());
         initializer.add(new CommandHandler());
 
         // Initializes only if the given condition is met. (this case: config value)
-        initializer.addIf(new SocketHandler(), Config.getBoolean("itemApi"));
+        initializer.addif (new SocketHandler(), Config.getBoolean("itemApi"));
         MC.tell(CosmeticHandler.INSTANCE::load);
-
-        ClientTickEvents.START_CLIENT_TICK
-                .register(client -> OtherEvents.TICK.invoker().tick(client));
 
         info("Initialized successfully!");
     }

@@ -59,7 +59,7 @@ public class ConfigSerializer implements JsonSerializer<ConfigInstruction>, Json
             String key = entry.getKey();
             ConfigSetting<?> value = entry.getValue();
             if (value instanceof TextDescription) continue;
-            System.out.println("[CuConfig] saving " + key + " (" + value + ")");
+            //System.out.println("[CuConfig] saving " + key + " (" + value + ")");
             json.add(key, Recode.GSON.toJsonTree(value));
         }
         return json;

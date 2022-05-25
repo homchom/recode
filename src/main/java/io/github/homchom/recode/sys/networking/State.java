@@ -1,27 +1,23 @@
 package io.github.homchom.recode.sys.networking;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-import io.github.homchom.recode.mod.events.interfaces.HyperCubeEvents;
-import io.github.homchom.recode.mod.features.social.chat.message.Message;
-import io.github.homchom.recode.mod.features.social.chat.message.MessageType;
+import com.google.gson.*;
+import io.github.homchom.recode.event.*;
+import io.github.homchom.recode.mod.features.social.chat.message.*;
 import io.github.homchom.recode.sys.file.ILoader;
 import io.github.homchom.recode.sys.player.DFInfo;
-import io.github.homchom.recode.sys.player.chat.ChatUtil;
-import io.github.homchom.recode.sys.player.chat.MessageGrabber;
+import io.github.homchom.recode.sys.player.chat.*;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function2;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
-import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.Executors;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.regex.*;
 
 public class State {
-
-    private final HyperCubeEvents invoker = HyperCubeEvents.CHANGE_STATE.invoker();
+    protected final Function2<State, State, Unit> invoker =
+            EventExtensions.getCall(RecodeEvents.CHANGE_DF_STATE);
     private static final String EMPTY = "                                       ";
     private static final Minecraft mc = Minecraft.getInstance();
     private static Timer locateTimer = new Timer();
@@ -50,7 +46,7 @@ public class State {
         this.node = node;
         this.plot = plot;
         this.session = session;
-        invoker.update(this, this);
+        invoker.invoke(this, this);
     }
 
     public State(String modeid, String nodeid, Plot plot, boolean session) {
@@ -58,7 +54,7 @@ public class State {
         this.node = Node.getByIdentifier(nodeid);
         this.plot = plot;
         this.session = session;
-        invoker.update(this, this);
+        invoker.invoke(this, this);
     }
 
     public enum Mode {
@@ -86,7 +82,7 @@ public class State {
 
         public static Mode getByIdentifier(String identifier) {
             for(Mode mode : values()) {
-                if(mode.getIdentifier().equalsIgnoreCase(identifier)) {
+                if (mode.getIdentifier().equalsIgnoreCase(identifier)) {
                     return mode;
                 }
             }
@@ -130,7 +126,7 @@ public class State {
 
         public static Node getByIdentifier(String identifier) {
             for(Node node : values()) {
-                if(node.getIdentifier().equalsIgnoreCase(identifier)) {
+                if (node.getIdentifier().equalsIgnoreCase(identifier)) {
                     return node;
                 }
             }
@@ -219,11 +215,11 @@ public class State {
         State old = this.copy();
         boolean update = this.session != session;
         this.session = session;
-        if(update) invoker.update(this, old);
+        if (update) invoker.invoke(this, old);
     }
 
     public void setMode(Mode mode) {
-        if(mode == Mode.SPAWN) this.setPlot(null);
+        if (mode == Mode.SPAWN) this.setPlot(null);
         this.mode = mode;
     }
 
@@ -311,7 +307,7 @@ public class State {
             }
 
             // CUSTOM STATUS
-            String lines[] = text.split("\\r?\\n");
+            String[] lines = text.split("\\r?\\n");
             String customStatus = "";
             if (!lines[4].contains("Owner: ")) {
                 pattern = Pattern.compile("→ (.+)");
@@ -344,8 +340,8 @@ public class State {
     }
 
     public void sendLocate() {
-        if(mc.player != null){
-            if(!mc.player.isDeadOrDying()){
+        if (mc.player != null){
+            if (!mc.player.isDeadOrDying()){
                 locateTimer.cancel();
                 locateTimer = new Timer();
                 locateTimer.schedule(new TimerTask() {
@@ -361,7 +357,6 @@ public class State {
     }
 
     public static class Locater implements ILoader {
-
         @Override
         public void load() {
             Thread thread = new Thread(() -> {
@@ -383,9 +378,6 @@ public class State {
     }
 
     public static class CurrentState extends State {
-
-        private final HyperCubeEvents invoker = HyperCubeEvents.CHANGE_STATE.invoker();
-
         public CurrentState() {
             super();
         }
@@ -398,8 +390,8 @@ public class State {
             super(mode, node, plot, session);
         }
 
-        public CurrentState(String modeid, String nodeid, Plot plot, boolean session) {
-            super(modeid, nodeid, plot, session);
+        public CurrentState(String modeId, String nodeId, Plot plot, boolean session) {
+            super(modeId, nodeId, plot, session);
         }
 
         @Override
@@ -407,17 +399,17 @@ public class State {
             State old = this.copy();
             boolean update = this.session != session;
             this.session = session;
-            if(update) invoker.update(this, old);
+            if (update) invoker.invoke(this, old);
         }
 
         @Override
         public void setMode(Mode mode) {
             State old = this.copy();
             boolean update = this.mode != mode;
-            if(mode == Mode.SPAWN || mode == Mode.OFFLINE) this.plot = null;
-            if(mode == Mode.OFFLINE) this.node = null;
+            if (mode == Mode.SPAWN || mode == Mode.OFFLINE) this.plot = null;
+            if (mode == Mode.OFFLINE) this.node = null;
             this.mode = mode;
-            if(update) invoker.update(this, old);
+            if (update) invoker.invoke(this, old);
         }
 
         @Override
@@ -425,7 +417,7 @@ public class State {
             State old = this.copy();
             boolean update = this.node != node;
             this.node = node;
-            if(update) invoker.update(this, old);
+            if (update) invoker.invoke(this, old);
         }
 
         @Override
@@ -433,7 +425,7 @@ public class State {
             State old = this.copy();
             boolean update = this.plot != plot;
             this.plot = plot;
-            if(update) invoker.update(this, old);
+            if (update) invoker.invoke(this, old);
         }
     }
 }

@@ -1,33 +1,30 @@
 package io.github.homchom.recode.mod.events.impl;
 
 import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.event.*;
 import io.github.homchom.recode.mod.config.Config;
-import io.github.homchom.recode.mod.events.interfaces.ChatEvents;
 import io.github.homchom.recode.mod.features.social.chat.message.Message;
 import io.github.homchom.recode.sys.networking.State;
 import io.github.homchom.recode.sys.player.DFInfo;
-import io.github.homchom.recode.sys.player.chat.ChatType;
-import io.github.homchom.recode.sys.player.chat.ChatUtil;
+import io.github.homchom.recode.sys.player.chat.*;
 import io.github.homchom.recode.sys.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.InteractionResult;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.regex.*;
 
-public class ReceiveChatMessageEvent {
-    public ReceiveChatMessageEvent() {
-        ChatEvents.RECEIVE_MESSAGE.register(this::run);
+public class LegacyReceiveChatMessageEvent {
+    public LegacyReceiveChatMessageEvent() {
+        RecodeEvents.RECEIVE_CHAT_MESSAGE.register(this::run);
     }
 
     public static boolean pjoin = false;
 
     public static String tipPlayer = "";
 
-    private InteractionResult run(Message message) {
+    private EventResult run(Message message) {
         Minecraft mc = Minecraft.getInstance();
 
         Component text = message.getText();
@@ -36,7 +33,7 @@ public class ReceiveChatMessageEvent {
         boolean cancel = false;
 
         if (mc.player == null) {
-            return InteractionResult.FAIL;
+            return EventResult.FAILURE;
         }
 
         //PJoin command
@@ -138,8 +135,9 @@ public class ReceiveChatMessageEvent {
 
         //Cancelling (set cancel to true)
         if (cancel) {
-            return InteractionResult.SUCCESS;
+            return EventResult.FAILURE;
         }
-        return InteractionResult.PASS;
+
+        return EventResult.PASS;
     }
 }

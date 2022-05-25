@@ -14,8 +14,8 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 
-public class AfterScreenInitEvent {
-	public AfterScreenInitEvent() {
+public class LegacyAfterScreenInitEvent {
+	public LegacyAfterScreenInitEvent() {
 		ScreenEvents.AFTER_INIT.register(this::afterScreenInit);
 	}
 

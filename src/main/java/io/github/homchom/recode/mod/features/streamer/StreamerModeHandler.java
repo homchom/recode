@@ -72,7 +72,7 @@ public class StreamerModeHandler {
     // Looking for #handleMessage? This has been moved to mod.features.social.chat.message
 
     // Only triggers when joining DF or switching nodes
-    public static void handleServerJoin(ClientboundLoginPacket packet, CallbackInfo ci) {
+    public static void handleServerJoin() {
         if (!enabled()) return;
 
         // Run "/adminv off" and hide the message

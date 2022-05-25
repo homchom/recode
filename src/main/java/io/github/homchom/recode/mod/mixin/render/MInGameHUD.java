@@ -27,7 +27,7 @@ public class MInGameHUD {
             tr.drawShadow(stack, new TextComponent(CodeSearcher.searchValue), 2, 12, 0xffffff);
         }
 
-        if(Config.getBoolean("plotInfoOverlay")) {
+        if (Config.getBoolean("plotInfoOverlay")) {
             StateOverlayHandler.drawStateOverlay(tr, stack);
         }
     }

@@ -14,7 +14,7 @@ public class Argument {
     private final String text;
 
     Argument(JsonObject jsonObject){
-        if(jsonObject.has("text")){
+        if (jsonObject.has("text")){
             this.type = null;
             this.text = jsonObject.get("text").getAsString();
             this.plural = false;
