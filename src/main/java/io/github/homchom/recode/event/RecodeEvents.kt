@@ -25,10 +25,3 @@ object RecodeEvents {
         }
     }
 }
-
-fun test() {
-    RecodeEvents.RECEIVE_SOUND.register { packet ->
-        println("received sound ${packet.sound}")
-        EventResult.PASS
-    }
-}

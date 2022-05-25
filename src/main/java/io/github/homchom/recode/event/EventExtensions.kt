@@ -21,6 +21,5 @@ inline fun <T> handleEventWithResult(
     return PASS
 }
 
-fun <T : (A) -> EventResult, A> handleEventWithResult(listeners: Array<T>, a: A): EventResult {
-    return handleEventWithResult<T>(listeners) { invoke(a) }
-}
+fun <A> handleEventWithResult(listeners: Array<(A) -> EventResult>, a: A) =
+    handleEventWithResult<(A) -> EventResult>(listeners) { invoke(a) }

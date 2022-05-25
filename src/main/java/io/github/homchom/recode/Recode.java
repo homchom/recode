@@ -127,7 +127,7 @@ public class Recode implements ModInitializer {
         initializer.add(new CommandHandler());
 
         // Initializes only if the given condition is met. (this case: config value)
-        initializer.addif (new SocketHandler(), Config.getBoolean("itemApi"));
+        initializer.addIf(new SocketHandler(), Config.getBoolean("itemApi"));
         MC.tell(CosmeticHandler.INSTANCE::load);
 
         info("Initialized successfully!");
