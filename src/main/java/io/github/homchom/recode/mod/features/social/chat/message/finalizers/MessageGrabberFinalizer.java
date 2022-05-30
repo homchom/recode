@@ -7,7 +7,7 @@ public class MessageGrabberFinalizer extends MessageFinalizer {
 
     @Override
     protected void receive(Message message) {
-        if(MessageGrabber.isActive()) {
+        if (MessageGrabber.isActive()) {
             MessageGrabber.supply(message);
         }
     }

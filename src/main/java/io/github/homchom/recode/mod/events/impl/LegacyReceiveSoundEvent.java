@@ -1,17 +1,21 @@
 package io.github.homchom.recode.mod.events.impl;
 
+import io.github.homchom.recode.event.*;
 import net.minecraft.network.protocol.game.ClientboundSoundPacket;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-public class ReceiveSoundEvent {
+public class LegacyReceiveSoundEvent {
+    private static int cancelNextSounds;
 
-    public static int cancelNextSounds;
+    public LegacyReceiveSoundEvent() {
+        RecodeEvents.RECEIVE_SOUND.register(this::run);
+    }
 
-    public static void run(ClientboundSoundPacket packet, CallbackInfo ci) {
+    private EventResult run(ClientboundSoundPacket packet) {
         if (cancelNextSounds > 0) {
             cancelNextSounds--;
-            ci.cancel();
+            return EventResult.FAILURE;
         }
+        return EventResult.PASS;
     }
 
     public static void cancelNextSounds(int amount) {

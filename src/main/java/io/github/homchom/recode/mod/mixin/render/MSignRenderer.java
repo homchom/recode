@@ -14,9 +14,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MSignRenderer {
     private final Minecraft mc = Minecraft.getInstance();
 
-    @Inject(method = "render", at = @At("HEAD"))
+    @Inject(method = "render(Lnet/minecraft/world/level/block/entity/SignBlockEntity;FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;II)V", at = @At("HEAD"), cancellable = true)
     public void render(SignBlockEntity signBlockEntity, float f, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j, CallbackInfo ci) {
         if (!signBlockEntity.getBlockPos().closerThan(mc.cameraEntity.blockPosition(), Config.getInteger("signRenderDistance")))
-            return;
+            ci.cancel();
     }
 }

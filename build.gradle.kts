@@ -1,8 +1,10 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id("fabric-loom") version "0.11-SNAPSHOT"
     id("com.github.johnrengelman.shadow") version "7.1.2"
+    kotlin("jvm") version "1.6.21"
 }
 
 val modVersion: String by project
@@ -60,6 +62,8 @@ dependencies {
     val fabricVersion: String by project
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
 
+    includeModImpl("net.fabricmc:fabric-language-kotlin:1.7.4+kotlin.1.6.21")
+
     // https://github.com/CottonMC/LibGui/releases
     includeModImpl("io.github.cottonmc:LibGui:5.4.0+1.18.2")
 
@@ -72,6 +76,8 @@ dependencies {
     // websocket TODO: clean this up
     shadeImpl("org.java-websocket:Java-WebSocket:1.5.3")
     includeImpl("javax.websocket:javax.websocket-api:1.1")
+
+    //implementation(kotlin("stdlib-jdk8"))
 }
 
 java {
@@ -87,6 +93,12 @@ java {
 tasks {
     withType<JavaCompile> {
         options.encoding = "UTF-8"
+    }
+
+    withType<KotlinCompile> {
+        kotlinOptions {
+            jvmTarget = "17"
+        }
     }
 
     processResources {

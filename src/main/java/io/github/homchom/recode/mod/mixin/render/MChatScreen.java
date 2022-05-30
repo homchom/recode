@@ -18,9 +18,11 @@ public class MChatScreen {
     @Shadow
     protected EditBox input;
 
-    @Shadow private String initial;
+    @Shadow
+    @Final
+    private String initial;
 
-    @Inject(method = "render", at = @At("INVOKE"))
+    @Inject(method = "render", at = @At("TAIL"))
     private void render(PoseStack poseStack, int mouseX, int mouseY, float delta,
         CallbackInfo ci) {
         if (Config.getBoolean("highlightVarSyntax")) {

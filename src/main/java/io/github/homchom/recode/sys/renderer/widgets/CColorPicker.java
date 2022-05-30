@@ -40,8 +40,8 @@ public class CColorPicker extends WWidget {
 
 
         for (int i = 0; i <= wheelwidth; i++) {
-            if(isLeftClickDown()) {
-                if(mouseX >= x && mouseY >= y && mouseX <= x + wheelwidth && mouseY <= y + wheelheight) {
+            if (isLeftClickDown()) {
+                if (mouseX >= x && mouseY >= y && mouseX <= x + wheelwidth && mouseY <= y + wheelheight) {
                     pickedColor.setSaturation((mouseX - x) / wheelwidth);
                     pickedColor.setBrightness(1f - ((mouseY - y) / wheelheight));
                 }
@@ -57,13 +57,13 @@ public class CColorPicker extends WWidget {
         }
 
         for (int i = 0; i <= wheelheight; i++) {
-            if(isLeftClickDown()) {
-                if(mouseX >= x + hueSliderOffset && mouseY >= y && mouseX <= x + hueSliderOffset + hueSliderWidth && mouseY <= y + wheelheight) {
+            if (isLeftClickDown()) {
+                if (mouseX >= x + hueSliderOffset && mouseY >= y && mouseX <= x + hueSliderOffset + hueSliderWidth && mouseY <= y + wheelheight) {
                     pickedColor.setHue(Mth.clamp((mouseY - y) / wheelheight, 0f, 1f));
                 }
             }
             RenderUtil.drawRect(matrixStack, (int) (x + hueSliderOffset), y + i, (int) (x + hueSliderOffset + hueSliderWidth), y + i+1, Color.getHSBColor(i / wheelheight, 1f, 1f));
-            if(pickedColor.getHue() == i / wheelheight) {
+            if (pickedColor.getHue() == i / wheelheight) {
                 RenderUtil.drawRect(matrixStack, (int) (x + hueSliderOffset - 1), y + i, (int) (x + hueSliderOffset + hueSliderWidth + 1), y + i + 1, Color.WHITE);
             }
         }
@@ -71,7 +71,7 @@ public class CColorPicker extends WWidget {
 
     @Override
     public InputResult onMouseDown(int x, int y, int button) {
-        if(button == 0){
+        if (button == 0){
             leftClickDown = true;
         }
         return super.onMouseDown(x, y, button);
@@ -79,7 +79,7 @@ public class CColorPicker extends WWidget {
 
     @Override
     public InputResult onMouseUp(int x, int y, int button) {
-        if(button == 0){
+        if (button == 0){
             leftClickDown = false;
         }
         return super.onMouseUp(x, y, button);
@@ -92,10 +92,10 @@ public class CColorPicker extends WWidget {
 
         try{
             Color decodedHex = Color.decode(ColorsMenu.getGUI().hexInput.getText());
-            if(!ColorsMenu.getGUI().hexInput.isFocused() && !lastHex.equals(hex)){
+            if (!ColorsMenu.getGUI().hexInput.isFocused() && !lastHex.equals(hex)){
                 lastHex = hex;
                 ColorsMenu.getGUI().hexInput.setText(hex);
-            }else if(!lastHex.equals(ColorsMenu.getGUI().hexInput.getText())){
+            }else if (!lastHex.equals(ColorsMenu.getGUI().hexInput.getText())){
                 setColor(decodedHex);
             }
             ColorsMenu.getGUI().hexInput.setDisabledColor((0xFF000000));
@@ -106,10 +106,10 @@ public class CColorPicker extends WWidget {
 
         try{
             int r = Integer.parseInt(ColorsMenu.getGUI().rInput.getText());
-            if(!ColorsMenu.getGUI().rInput.isFocused() && lastR != color.getRed()){
+            if (!ColorsMenu.getGUI().rInput.isFocused() && lastR != color.getRed()){
                 lastR = color.getRed();
                 ColorsMenu.getGUI().rInput.setText(""+color.getRed());
-            }else if(lastR != r){
+            }else if (lastR != r){
                 setColor(new Color(r, color.getGreen(), color.getBlue()));
             }
             ColorsMenu.getGUI().rInput.setDisabledColor((0xFF000000));
@@ -120,10 +120,10 @@ public class CColorPicker extends WWidget {
 
         try{
             int g = Integer.parseInt(ColorsMenu.getGUI().gInput.getText());
-            if(!ColorsMenu.getGUI().gInput.isFocused() && lastG != color.getGreen()){
+            if (!ColorsMenu.getGUI().gInput.isFocused() && lastG != color.getGreen()){
                 lastG = color.getGreen();
                 ColorsMenu.getGUI().gInput.setText(""+color.getGreen());
-            }else if(lastG != g){
+            }else if (lastG != g){
                 setColor(new Color(color.getRed(), g, color.getBlue()));
             }
             ColorsMenu.getGUI().gInput.setDisabledColor((0xFF000000));
@@ -134,10 +134,10 @@ public class CColorPicker extends WWidget {
 
         try{
             int b = Integer.parseInt(ColorsMenu.getGUI().bInput.getText());
-            if(!ColorsMenu.getGUI().bInput.isFocused() && lastB != color.getBlue()){
+            if (!ColorsMenu.getGUI().bInput.isFocused() && lastB != color.getBlue()){
                 lastB = color.getBlue();
                 ColorsMenu.getGUI().bInput.setText(""+color.getBlue());
-            }else if(lastB != b){
+            }else if (lastB != b){
                 setColor(new Color(color.getRed(), color.getGreen(), b));
             }
             ColorsMenu.getGUI().bInput.setDisabledColor((0xFF000000));

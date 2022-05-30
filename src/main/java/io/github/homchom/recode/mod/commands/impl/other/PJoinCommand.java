@@ -4,7 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
 import io.github.homchom.recode.mod.commands.arguments.types.PlayerArgumentType;
-import io.github.homchom.recode.mod.events.impl.ReceiveChatMessageEvent;
+import io.github.homchom.recode.mod.events.impl.LegacyReceiveChatMessageEvent;
 import io.github.homchom.recode.sys.player.chat.*;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
@@ -49,7 +49,7 @@ public class PJoinCommand extends Command {
 
         mc.player.chat("/locate " + player);
 
-        ReceiveChatMessageEvent.pjoin = true;
+        LegacyReceiveChatMessageEvent.pjoin = true;
         ChatUtil.sendMessage("Joining the plot §e" + player + "§b is currently playing...", ChatType.INFO_BLUE);
 
         new Thread(() -> {
@@ -59,10 +59,10 @@ public class PJoinCommand extends Command {
                 e.printStackTrace();
             }
 
-            if (ReceiveChatMessageEvent.pjoin) {
+            if (LegacyReceiveChatMessageEvent.pjoin) {
                 ChatUtil.sendMessage("Timeout error while trying to join the plot.", ChatType.FAIL);
             }
-            ReceiveChatMessageEvent.pjoin = false;
+            LegacyReceiveChatMessageEvent.pjoin = false;
         }).start();
         return 1;
     }

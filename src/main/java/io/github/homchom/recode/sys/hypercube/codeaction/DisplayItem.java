@@ -37,7 +37,7 @@ public class DisplayItem {
         this.advanced = jsonObject.get("advanced").getAsBoolean();
         this.loadedItem = jsonObject.get("loadedItem").getAsString();
         this.tags = jsonObject.has("tags") ? jsonObject.get("tags").getAsInt() : 0;
-        if(jsonObject.has("arguments")) {
+        if (jsonObject.has("arguments")) {
             JsonArray args = jsonObject.get("arguments").getAsJsonArray();
             this.arguments = new Argument[args.size()];
             int i = 0;

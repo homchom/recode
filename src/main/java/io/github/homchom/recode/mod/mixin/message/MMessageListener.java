@@ -2,8 +2,8 @@ package io.github.homchom.recode.mod.mixin.message;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.event.*;
 import io.github.homchom.recode.mod.config.Config;
-import io.github.homchom.recode.mod.events.interfaces.ChatEvents;
 import io.github.homchom.recode.mod.features.Lagslayer;
 import io.github.homchom.recode.mod.features.keybinds.FlightspeedToggle;
 import io.github.homchom.recode.mod.features.social.chat.message.Message;
@@ -11,12 +11,12 @@ import io.github.homchom.recode.sys.networking.*;
 import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
 import io.github.homchom.recode.sys.util.VersionUtil;
+import kotlin.jvm.functions.Function1;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.chat.*;
 import net.minecraft.network.protocol.game.ClientboundChatPacket;
-import net.minecraft.world.InteractionResult;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -29,14 +29,15 @@ public class MMessageListener {
     private static long lastBuildCheck = 0;
     private final Minecraft minecraftClient = Minecraft.getInstance();
     private boolean motdShown = false;
-    private final ChatEvents invoker = ChatEvents.RECEIVE_MESSAGE.invoker();
+    private final Function1<Message, EventResult> invoker =
+            EventExtensions.getCall(RecodeEvents.RECEIVE_CHAT_MESSAGE);
 
     @Inject(method = "handleChat", at = @At("HEAD"), cancellable = true)
     private void handleChat(ClientboundChatPacket packet, CallbackInfo ci) {
         if (DFInfo.isOnDF()) {
             if (packet.getType() == ChatType.CHAT || packet.getType() == ChatType.SYSTEM) {
                 if (RenderSystem.isOnRenderThread()) {
-                    if (invoker.receive(new Message(packet, ci)).equals(InteractionResult.SUCCESS)) ci.cancel();
+                    if (invoker.invoke(new Message(packet, ci)) == EventResult.FAILURE) ci.cancel();
                     try {
                         this.updateVersion(packet.getMessage());
                         this.updateState(packet.getMessage());

@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Minecraft.class)
 public class MClient {
-    @Inject(method = "setScreen(Lnet/minecraft/client/gui/screens/Screen;)V", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "setScreen(Lnet/minecraft/client/gui/screens/Screen;)V", at = @At("HEAD"))
     public void setScreen(@Nullable Screen screen, CallbackInfo cbi) {
         if (Minecraft.getInstance().player == null) {
             DFInfo.currentState.setMode(State.Mode.OFFLINE);

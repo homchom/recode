@@ -39,5 +39,4 @@ public class CodeInitializer {
     public void addIf(IManager<?> manager, boolean b) {
         if (b) manager.initialize();
     }
-
 }

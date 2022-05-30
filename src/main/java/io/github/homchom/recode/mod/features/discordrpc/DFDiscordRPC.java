@@ -54,7 +54,7 @@ public class DFDiscordRPC implements ILoader {
     }
 
     public void connect() {
-        if(!isConnected()){
+        if (!isConnected()){
             try {
                 client.connect();
             } catch (NoDiscordClientException e) {
@@ -64,7 +64,7 @@ public class DFDiscordRPC implements ILoader {
     }
 
     public void close() {
-        if(isConnected()) {
+        if (isConnected()) {
             client.close();
         }
     }

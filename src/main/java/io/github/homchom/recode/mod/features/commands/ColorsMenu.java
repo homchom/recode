@@ -56,7 +56,7 @@ public class ColorsMenu extends LightweightGuiDescription implements IMenu {
             root.add(previewText, 128-(textWidth), 20, textWidth, 8);
 
             updateRecentColors(root);
-            if(ColorUtil.recentColors.size() > 0){
+            if (ColorUtil.recentColors.size() > 0){
                 String recentTextString = new TranslatableComponent("key.recode.colors.recent_colors").resolve(mc.player.createCommandSourceStack(), mc.player, 1).getString();
                 int recentTextWidth = Minecraft.getInstance().font.width(recentTextString);
                 recentText = new WText(new TextComponent(recentTextString));

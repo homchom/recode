@@ -2,7 +2,7 @@ package io.github.homchom.recode.sys.player;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.homchom.recode.Recode;
-import io.github.homchom.recode.mod.events.interfaces.HyperCubeEvents;
+import io.github.homchom.recode.event.*;
 import io.github.homchom.recode.sys.networking.State;
 import net.minecraft.world.phys.Vec3;
 
@@ -47,9 +47,11 @@ public class DFInfo {
     }
 
     public static void setCurrentState(State state) {
-        State.CurrentState newstate = new State.CurrentState(state);
-        if(!currentState.equals(newstate)) HyperCubeEvents.CHANGE_STATE.invoker().update(newstate, currentState);
-        currentState = newstate;
+        State.CurrentState newState = new State.CurrentState(state);
+        if (!currentState.equals(newState)) {
+            EventExtensions.getCall(RecodeEvents.CHANGE_DF_STATE).invoke(newState, currentState);
+        }
+        currentState = newState;
     }
 
     public static float TPS = 0.0f;

@@ -2,7 +2,7 @@ package io.github.homchom.recode.mod.features.social.chat.message;
 
 import io.github.homchom.recode.Recode;
 import io.github.homchom.recode.mod.config.Config;
-import io.github.homchom.recode.mod.events.impl.ReceiveSoundEvent;
+import io.github.homchom.recode.mod.events.impl.LegacyReceiveSoundEvent;
 import io.github.homchom.recode.sys.player.chat.MessageGrabber;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundChatPacket;
@@ -71,7 +71,7 @@ public class Message {
         callback.cancel();
 
         if (type.hasSound()) {
-            ReceiveSoundEvent.cancelNextSound();
+            LegacyReceiveSoundEvent.cancelNextSound();
         }
         MessageGrabber.hide(type.getMessageAmount() - 1);
 

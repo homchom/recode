@@ -33,7 +33,7 @@ public class QueueCommand extends Command {
                         int i = 0;
                         for (String entry : splitQueue) {
                             QueueEntry queueEntry = new QueueEntry(entry, i);
-                            if(!QueueEntry.HIDDEN_ENTRIES.contains(queueEntry.getPlotId()==null?"?":queueEntry.getPlotId().toString())){
+                            if (!QueueEntry.HIDDEN_ENTRIES.contains(queueEntry.getPlotId()==null?"?":queueEntry.getPlotId().toString())){
                                 i++;
                                 queue.add(
                                         new QueueEntry(entry, i)
@@ -76,7 +76,7 @@ public class QueueCommand extends Command {
                                                             new TextComponent(entry.getStrippedDescription())
                                                                     .withStyle(style -> style.withColor(TextColor.fromRgb(0xbff9ff)))
                                                     ))));
-                            if(entry.isBeta()) {
+                            if (entry.isBeta()) {
                                 entrymsg.append(
                                         new TextComponent("\n§r §r §r §r §r §r §r §r §r §r §r §r ↑ ")
                                         .withStyle(style -> style.withColor(TextColor.fromRgb(0x7a2626))).append(
@@ -106,9 +106,9 @@ public class QueueCommand extends Command {
                                     String id = ctx.getArgument("id", String.class);
                                     String type = ctx.getArgument("type", String.class);
 
-                                    if(!id.equals("null")) {
+                                    if (!id.equals("null")) {
 
-                                        if(type.equals("hideandjoin")) {
+                                        if (type.equals("hideandjoin")) {
 
                                             QueueEntry.HIDDEN_ENTRIES.add(id);
 
@@ -134,7 +134,7 @@ public class QueueCommand extends Command {
                                                             )), false);
                                         }
 
-                                        if(type.equals("show")) {
+                                        if (type.equals("show")) {
                                             QueueEntry.HIDDEN_ENTRIES.remove(id);
 
                                             mc.player.displayClientMessage(new TextComponent("⏩ ")

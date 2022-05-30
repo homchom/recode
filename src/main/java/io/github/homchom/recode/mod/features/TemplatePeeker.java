@@ -120,7 +120,7 @@ public class TemplatePeeker implements ILoader {
                                 }
                                 if (!type.equals("else")) {
                                     ArrayList<CodeBlock> blocknames = ActionDump.getCodeBlock(type);
-                                    if(blocknames.size() == 0) return true;
+                                    if (blocknames.size() == 0) return true;
                                     String name = blocknames.get(0).getName();
 
                                     String action = "";
