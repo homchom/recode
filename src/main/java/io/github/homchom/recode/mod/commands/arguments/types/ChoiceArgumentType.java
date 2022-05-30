@@ -11,16 +11,16 @@ import net.minecraft.network.chat.TextComponent;
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 
-public class DefinedObjectArgumentType implements ArgumentType<String> {
+public class ChoiceArgumentType implements ArgumentType<String> {
     public static final SimpleCommandExceptionType UNKNOWN_TYPE_EXCEPTION = new SimpleCommandExceptionType(new TextComponent("Unknown type"));
     private final String[] suggestions;
 
-    private DefinedObjectArgumentType(String[] suggestions) {
+    private ChoiceArgumentType(String[] suggestions) {
         this.suggestions = suggestions;
     }
 
-    public static DefinedObjectArgumentType definedObject(String[] suggestions) {
-        return new DefinedObjectArgumentType(suggestions);
+    public static ChoiceArgumentType choice(String[] suggestions) {
+        return new ChoiceArgumentType(suggestions);
     }
 
     public String parse(StringReader stringReader) throws CommandSyntaxException {

@@ -4,7 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
-import io.github.homchom.recode.mod.commands.arguments.types.DefinedObjectArgumentType;
+import io.github.homchom.recode.mod.commands.arguments.types.ChoiceArgumentType;
 import io.github.homchom.recode.sys.util.ItemUtil;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.ChatFormatting;
@@ -22,7 +22,7 @@ public class RelativeLocCommand extends Command {
     @Override
     public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("relativeloc")
-                .then(ArgBuilder.argument("target", DefinedObjectArgumentType.definedObject(TARGET_TYPES))
+                .then(ArgBuilder.argument("target", ChoiceArgumentType.choice(TARGET_TYPES))
                         .then(ArgBuilder.argument("forwards", FloatArgumentType.floatArg())
                                 .then(ArgBuilder.argument("upwards", FloatArgumentType.floatArg())
                                         .then(ArgBuilder.argument("right", FloatArgumentType.floatArg())
