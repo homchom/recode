@@ -1,6 +1,6 @@
 package io.github.homchom.recode.mod.features.social.chat.message.checks;
 
-import io.github.homchom.recode.mod.features.Lagslayer;
+import io.github.homchom.recode.mod.features.LagslayerHUD;
 import io.github.homchom.recode.mod.features.social.chat.message.*;
 
 public class LagslayerStopCheck extends MessageCheck {
@@ -22,6 +22,6 @@ public class LagslayerStopCheck extends MessageCheck {
 
     @Override
     public void onReceive(Message message) {
-        Lagslayer.lagSlayerEnabled = false;
+        LagslayerHUD.lagSlayerEnabled = false;
     }
 }

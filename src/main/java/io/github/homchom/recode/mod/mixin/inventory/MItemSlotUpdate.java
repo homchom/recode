@@ -1,8 +1,7 @@
 package io.github.homchom.recode.mod.mixin.inventory;
 
 import io.github.homchom.recode.mod.config.Config;
-import io.github.homchom.recode.mod.features.Lagslayer;
-import io.github.homchom.recode.mod.features.keybinds.FlightspeedToggle;
+import io.github.homchom.recode.mod.features.LagslayerHUD;
 import io.github.homchom.recode.sys.hypercube.templates.*;
 import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.*;
@@ -50,10 +49,7 @@ public class MItemSlotUpdate {
 					}
 				}
 
-				Lagslayer.lagSlayerEnabled = false;
-
-				// fs toggle
-				FlightspeedToggle.fs_is_normal = true;
+				LagslayerHUD.lagSlayerEnabled = false;
 			}
 
 			if (DFInfo.isOnDF() && mc.player.isCreative() && stack.getHoverName().getString().contains("Player Event")
@@ -65,12 +61,9 @@ public class MItemSlotUpdate {
 				DFInfo.plotCorner = mc.player.position().add(10, -50, -10);
 
 				// Auto LagSlayer
-				if (!Lagslayer.lagSlayerEnabled && Config.getBoolean("autolagslayer")) {
+				if (!LagslayerHUD.lagSlayerEnabled && Config.getBoolean("autolagslayer")) {
 					ChatUtil.executeCommandSilently("lagslayer");
 				}
-
-				// fs toggle
-				FlightspeedToggle.fs_is_normal = true;
 			}
 		}
 	}

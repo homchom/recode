@@ -13,7 +13,6 @@ import java.nio.file.Path;
 import java.util.function.Consumer;
 
 public class ExternalFileBuilder {
-
     String fileName;
     boolean directory = false;
 
@@ -29,29 +28,26 @@ public class ExternalFileBuilder {
 
     private Path getMainDir() throws IOException {
         Path path = FabricLoader.getInstance().getGameDir().resolve(Recode.MOD_NAME);
-        Files.createDirectory(path);
+        if (!Files.isDirectory(path)) Files.createDirectory(path);
         return path;
     }
 
     public Path buildRaw(@Nullable Consumer<Path> init) throws IOException {
-        Path mainDir = getMainDir();
+        Path path = getMainDir().resolve(fileName);
 
-        Path path = mainDir.resolve(fileName);
-
-        // Yes, I know this is very verbose, but it's very extensive, and is the same logic used by the JRE internally.
+        // Yes, I know this is very verbose, but it's very extensive, and is the same logic
+        // used by the JRE internally.
         if (directory) {
             try {
                 Files.createDirectory(path);
             } catch (FileAlreadyExistsException x) {
-                if (!Files.isDirectory(path, LinkOption.NOFOLLOW_LINKS))
-                    throw x;
+                if (!Files.isDirectory(path, LinkOption.NOFOLLOW_LINKS)) throw x;
             }
         } else {
             try {
                 Files.createFile(path);
             } catch (FileAlreadyExistsException x) {
-                if (!Files.isRegularFile(path, LinkOption.NOFOLLOW_LINKS))
-                    throw x;
+                if (!Files.isRegularFile(path, LinkOption.NOFOLLOW_LINKS)) throw x;
             }
         }
         if (init != null) init.accept(path);

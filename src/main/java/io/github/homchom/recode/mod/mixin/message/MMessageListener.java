@@ -4,33 +4,33 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.homchom.recode.Recode;
 import io.github.homchom.recode.event.*;
 import io.github.homchom.recode.mod.config.Config;
-import io.github.homchom.recode.mod.features.Lagslayer;
-import io.github.homchom.recode.mod.features.keybinds.FlightspeedToggle;
+import io.github.homchom.recode.mod.features.LagslayerHUD;
 import io.github.homchom.recode.mod.features.social.chat.message.Message;
-import io.github.homchom.recode.sys.networking.*;
+import io.github.homchom.recode.sys.networking.State;
 import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
-import io.github.homchom.recode.sys.util.VersionUtil;
 import kotlin.jvm.functions.Function1;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.chat.*;
-import net.minecraft.network.protocol.game.ClientboundChatPacket;
+import net.minecraft.network.protocol.game.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.io.IOException;
+import java.util.regex.Pattern;
 
 @Mixin(ClientPacketListener.class)
 public class MMessageListener {
+    private final Minecraft minecraftClient = Minecraft.getInstance();
     private static long lastPatchCheck = 0;
     private static long lastBuildCheck = 0;
-    private final Minecraft minecraftClient = Minecraft.getInstance();
     //private boolean motdShown = false;
+
     private final Function1<Message, EventResult> invoker =
             EventExtensions.getCall(RecodeEvents.RECEIVE_CHAT_MESSAGE);
+
+    private final Pattern lsRegex = Pattern.compile("^CPU Usage: \\[▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮] \\(.*%\\)$");
 
     @Inject(method = "handleChat", at = @At("HEAD"), cancellable = true)
     private void handleChat(ClientboundChatPacket packet, CallbackInfo ci) {
@@ -46,6 +46,17 @@ public class MMessageListener {
                         Recode.error("Error while trying to parse the chat text!");
                     }
                 }
+            }
+        }
+    }
+
+    @Inject(method = "setActionBarText", at = @At("HEAD"), cancellable = true)
+    private void setActionBarText(ClientboundSetActionBarTextPacket packet, CallbackInfo ci) {
+        if (minecraftClient.player == null) return;
+        if (lsRegex.matcher(packet.getText().getString()).matches()) {
+            if (Config.getBoolean("cpuOnScreen")) {
+                LagslayerHUD.updateCPU(packet);
+                ci.cancel();
             }
         }
     }
@@ -125,23 +136,15 @@ public class MMessageListener {
 
         String text = component.getString();
 
-        // Flight speed
-        if (text.matches("^Set flight speed to: \\d+% of default speed\\.$") && !text.matches("^Set flight speed to: 100% of default speed\\.$")) {
-            FlightspeedToggle.fs_is_normal = false;
-        }
-
         // Play Mode
         if (text.matches("^Joined game: .* by .*$")) {
             DFInfo.currentState.sendLocate();
 
             // Auto LagSlayer
-            System.out.println(Lagslayer.lagSlayerEnabled);
-            if (!Lagslayer.lagSlayerEnabled && Config.getBoolean("autolagslayer")) {
+            System.out.println(LagslayerHUD.lagSlayerEnabled);
+            if (!LagslayerHUD.lagSlayerEnabled && Config.getBoolean("autolagslayer")) {
                 ChatUtil.executeCommandSilently("lagslayer");
             }
-
-            // fs toggle
-            FlightspeedToggle.fs_is_normal = true;
         }
 
         // Enter Session
@@ -173,12 +176,9 @@ public class MMessageListener {
             }
 
             // Auto LagSlayer
-            if (!Lagslayer.lagSlayerEnabled && Config.getBoolean("autolagslayer")) {
+            if (!LagslayerHUD.lagSlayerEnabled && Config.getBoolean("autolagslayer")) {
                 ChatUtil.executeCommandSilently("lagslayer");
             }
-
-            // fs toggle
-            FlightspeedToggle.fs_is_normal = true;
 
             long time = System.currentTimeMillis() / 1000L;
             if (time - lastBuildCheck > 1) {
@@ -203,9 +203,6 @@ public class MMessageListener {
 
         // Dev Mode (more moved to MixinItemSlotUpdate)
         if (minecraftClient.player.isCreative() && text.matches("^» You are now in dev mode\\.$")) {
-            // fs toggle
-            FlightspeedToggle.fs_is_normal = true;
-
             new Thread(() -> {
                 try {
                     Thread.sleep(10);

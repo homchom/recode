@@ -57,6 +57,8 @@
     "config.recode.option.previewHeadSkins.tooltip": "Shows a preview of the skin from a player head when hovering over one.",
     "config.recode.option.templatePeeking": "Template Peeking",
     "config.recode.option.templatePeeking.tooltip": "Preview a code template without the\n need of having to place it down\n(NOTE: currently not working)",
+    "config.recode.option.cpuOnScreen": "Show LagSlayer on Screen",
+    "config.recode.option.cpuOnScreen.tooltip": "Display the LagSlayer CPU bar on the screen\ndirectly instead of the action bar.",
 
 
     "config.recode.subcategory.commands_automsg": "Auto /msg",
@@ -298,14 +300,6 @@
 
     "key.category.recode": "Recode",
 
-    "key.recode.play": "Mode Play",
-    "key.recode.build": "Mode Build",
-    "key.recode.dev": "Mode Dev",
-
-    "key.recode.fs_normal": "Flight Speed Normal",
-    "key.recode.fs_med": "Flight Speed Medium",
-    "key.recode.fs_fast": "Flight Speed Fast",
-
     "key.recode.spawn": "Spawn",
     "key.recode.plot_spawn": "Plot Spawn",
 
@@ -314,24 +308,13 @@
     "key.recode.fly": "Toggle Flight",
     "key.recode.toggle_play_dev": "Toggle Mode Play <-> Dev",
     "key.recode.toggle_play_build": "Toggle Mode Play <-> Build",
-    "key.recode.toggle_fs_normal_med": "Toggle Flight Speed Normal <-> Medium",
-    "key.recode.toggle_fs_normal_fast": "Toggle Flight Speed Normal <-> Fast",
+    "key.recode.toggle_fs_medium": "Toggle Flight Speed Normal <-> Medium",
+    "key.recode.toggle_fs_fast": "Toggle Flight Speed Normal <-> Fast",
 
     "key.recode.rs": "Inventory Reset",
     "key.recode.rc": "Inventory Compact",
 
-    "key.recode.chat_global": "Chat Global",
-    "key.recode.chat_local": "Chat Local",
-    "key.recode.chat_none": "Chat None",
-
     "key.recode.search": "Function/Process Search",
-
-    "key.recode.node1": "Node 1",
-    "key.recode.node2": "Node 2",
-    "key.recode.node3": "Node 3",
-    "key.recode.node4": "Node 4",
-    "key.recode.node5": "Node 5",
-    "key.recode.node_beta": "Node Beta",
 
     "key.recode.colors.recent_colors": "Recent Colors",
     "key.recode.partnerBracket": "Show Partner Bracket",

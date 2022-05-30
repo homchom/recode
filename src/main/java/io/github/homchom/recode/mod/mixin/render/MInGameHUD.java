@@ -18,6 +18,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MInGameHUD {
     @Inject(method = "renderEffects", at = @At("RETURN"))
     private void renderEffects(PoseStack stack, CallbackInfo ci) {
+        LagslayerHUD.onRender(stack);
+
         Minecraft mc = Recode.MC;
         Font tr = mc.font;
 
