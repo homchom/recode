@@ -1,6 +1,9 @@
 package io.github.homchom.recode.sys.hypercube.templates;
 
 import com.google.gson.*;
+import io.github.homchom.recode.sys.player.chat.ChatType;
+import io.github.homchom.recode.sys.player.chat.ChatUtil;
+import io.github.homchom.recode.sys.util.ItemUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.*;
 import net.minecraft.world.item.ItemStack;
@@ -8,7 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-public class TemplateUtils {
+public class TemplateUtil {
 
     public static final int VERSION = 1;
 
@@ -47,7 +50,7 @@ public class TemplateUtils {
 
     }
 
-    public static JsonObject fromItemStack(ItemStack stack) {
+    public static JsonObject read(ItemStack stack) {
         CompoundTag tag = stack.getTag();
         CompoundTag publicBukkitNBT = tag.getCompound("PublicBukkitValues");
         String template = publicBukkitNBT.getString("hypercube:codetemplatedata");

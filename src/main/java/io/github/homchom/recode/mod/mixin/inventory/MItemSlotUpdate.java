@@ -24,7 +24,7 @@ public class MItemSlotUpdate {
 	public void handleContainerSetSlot(ClientboundContainerSetSlotPacket packet, CallbackInfo ci) {
 		if (packet.getContainerId() == 0) {
 			ItemStack stack = packet.getItem();
-			if (TemplateUtils.isTemplate(stack)) {
+			if (TemplateUtil.isTemplate(stack)) {
 				TemplateStorageHandler.addTemplate(stack);
 			}
 

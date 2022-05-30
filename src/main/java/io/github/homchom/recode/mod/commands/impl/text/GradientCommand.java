@@ -4,7 +4,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
-import io.github.homchom.recode.mod.commands.arguments.types.FreeStringArgumentType;
 import io.github.homchom.recode.sys.networking.State;
 import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.ChatType;
@@ -21,8 +20,8 @@ public class GradientCommand extends Command {
     @Override
     public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("gradient")
-                .then(ArgBuilder.argument("startColor", FreeStringArgumentType.string())
-                        .then(ArgBuilder.argument("endColor", FreeStringArgumentType.string())
+                .then(ArgBuilder.argument("startColor", StringArgumentType.string())
+                        .then(ArgBuilder.argument("endColor", StringArgumentType.string())
                                 .then(ArgBuilder.argument("text", StringArgumentType.greedyString())
                                         .executes(ctx -> {
                                             String text = ctx.getArgument("text", String.class);

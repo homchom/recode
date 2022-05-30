@@ -13,7 +13,7 @@ import io.github.cottonmc.cotton.gui.widget.WText;
 import io.github.homchom.recode.Recode;
 import io.github.homchom.recode.mod.features.commands.nbs.NBSToTemplate;
 import io.github.homchom.recode.mod.features.commands.nbs.SongData;
-import io.github.homchom.recode.sys.hypercube.templates.TemplateUtils;
+import io.github.homchom.recode.sys.hypercube.templates.TemplateUtil;
 import io.github.homchom.recode.sys.networking.WebUtil;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
 import io.github.homchom.recode.sys.renderer.IMenu;
@@ -128,7 +128,7 @@ public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
                                     String code = new NBSToTemplate(d).convert();
 
                                     ItemStack stack = new ItemStack(Items.NOTE_BLOCK);
-                                    TemplateUtils
+                                    TemplateUtil
                                         .compressTemplateNBT(stack, d.getName(), d.getAuthor(), code);
 
                                     stack.setHoverName(

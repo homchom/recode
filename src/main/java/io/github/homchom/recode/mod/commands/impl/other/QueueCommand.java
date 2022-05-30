@@ -2,11 +2,11 @@ package io.github.homchom.recode.mod.commands.impl.other;
 
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.github.homchom.recode.Recode;
 import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
-import io.github.homchom.recode.mod.commands.arguments.types.FreeStringArgumentType;
 import io.github.homchom.recode.mod.features.commands.queue.QueueEntry;
 import io.github.homchom.recode.sys.networking.WebUtil;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
@@ -100,8 +100,8 @@ public class QueueCommand extends Command {
 
                     return 1;
                 });
-                cmd.then(ArgBuilder.argument("type", FreeStringArgumentType.string())
-                        .then(ArgBuilder.argument("id", FreeStringArgumentType.string())
+                cmd.then(ArgBuilder.argument("type", StringArgumentType.word())
+                        .then(ArgBuilder.argument("id", StringArgumentType.word())
                                 .executes(ctx -> {
                                     String id = ctx.getArgument("id", String.class);
                                     String type = ctx.getArgument("type", String.class);

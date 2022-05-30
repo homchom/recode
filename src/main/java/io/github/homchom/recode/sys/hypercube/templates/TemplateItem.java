@@ -10,7 +10,7 @@ public class TemplateItem {
     final ItemStack stack;
 
     public TemplateItem(ItemStack stack) {
-        this.code = TemplateUtils.fromItemStack(stack).get("code").getAsString();
+        this.code = TemplateUtil.read(stack).get("code").getAsString();
         this.stack = stack;
     }
 

@@ -1,10 +1,9 @@
 package io.github.homchom.recode.mod.features.commands.schem;
 
 import com.google.gson.*;
-import io.github.homchom.recode.Recode;
 import io.github.homchom.recode.mod.features.commands.schem.loaders.LitematicaBitArray;
 import io.github.homchom.recode.mod.features.commands.schem.utils.*;
-import io.github.homchom.recode.sys.hypercube.templates.TemplateUtils;
+import io.github.homchom.recode.sys.hypercube.templates.TemplateUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.*;
 import net.minecraft.network.chat.TextComponent;
@@ -121,7 +120,7 @@ public class Litematic {
                         nbt.append(",{\"id\":\"block\",\"block\":\"call_func\",\"args\":{\"items\":[]},\"data\":\"Build").append(functions + 1).append("\"}");
                         nbt.append("]}");
                         ItemStack item = Blocks.TWISTING_VINES.asItem().getDefaultInstance();
-                        TemplateUtils.compressTemplateNBT(item, file.getName(), "SchemaDF", nbt.toString());
+                        TemplateUtil.compressTemplateNBT(item, file.getName(), "SchemaDF", nbt.toString());
                         item.setHoverName(new TextComponent("§d" + file.getName() + functions));
                         Minecraft.getInstance().gameMode.handleCreativeModeItemAdd(item, functions + 8);
                         codeblocks = 1;
@@ -145,7 +144,7 @@ public class Litematic {
                 nbt.append(",{\"id\":\"block\",\"block\":\"call_func\",\"args\":{\"items\":[]},\"data\":\"Build").append(functions + 1).append("\"}");
                 nbt.append("]}");
                 ItemStack item = Blocks.TWISTING_VINES.asItem().getDefaultInstance();
-                TemplateUtils.compressTemplateNBT(item, file.getName(), "SchemaDF", nbt.toString());
+                TemplateUtil.compressTemplateNBT(item, file.getName(), "SchemaDF", nbt.toString());
                 item.setHoverName(new TextComponent("§d" + file.getName() + functions));
                 Minecraft.getInstance().gameMode.handleCreativeModeItemAdd(item, functions + 8);
                 codeblocks = 1;
@@ -173,7 +172,7 @@ public class Litematic {
                         nbt.append(",{\"id\":\"block\",\"block\":\"call_func\",\"args\":{\"items\":[]},\"data\":\"Build").append(functions + 1).append("\"}");
                         nbt.append("]}");
                         ItemStack item = Blocks.TWISTING_VINES.asItem().getDefaultInstance();
-                        TemplateUtils.compressTemplateNBT(item, file.getName(), "SchemaDF", nbt.toString());
+                        TemplateUtil.compressTemplateNBT(item, file.getName(), "SchemaDF", nbt.toString());
                         item.setHoverName(new TextComponent("§d" + file.getName() + functions));
                         Minecraft.getInstance().gameMode.handleCreativeModeItemAdd(item, functions + 8);
                         codeblocks = 1;
@@ -195,7 +194,7 @@ public class Litematic {
             nbt.append("]}");
 
             ItemStack item = Blocks.TWISTING_VINES.asItem().getDefaultInstance();
-            TemplateUtils.compressTemplateNBT(item, file.getName(), "Schem2DF", nbt.toString());
+            TemplateUtil.compressTemplateNBT(item, file.getName(), "Schem2DF", nbt.toString());
             item.setHoverName(new TextComponent("§d" + file.getName() + functions));
             Minecraft.getInstance().gameMode.handleCreativeModeItemAdd(item, functions + 8);
 
