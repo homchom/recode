@@ -70,7 +70,6 @@ public class DFDiscordRPC implements ILoader {
     }
 
     public void update(State state) {
-
         if (!isConnected() && Config.getBoolean("discordRPC")) {
             connect();
         } else if (isConnected() && !Config.getBoolean("discordRPC")) {
@@ -84,7 +83,6 @@ public class DFDiscordRPC implements ILoader {
         vars.put("node.id", state.getNode() != null ? state.getNode().getIdentifier() : "?");
 
         if (state.getMode() == State.Mode.SPAWN) {
-
             presence.setDetails(dyn("discordRPCSpawnDetails"));
             presence.setState(dyn("discordRPCSpawnState"));
 
@@ -94,10 +92,9 @@ public class DFDiscordRPC implements ILoader {
                 presence.setSmallImage(null, null);
             }
 
-            presence.setLargeImage("diamondfirelogo", "mcdiamondfire.com | recode" + (Recode.BETA ? "-BETA" : ""));
+            presence.setLargeImage("diamondfirelogo", getLargeImageText());
 
         } else if (state.getMode() == State.Mode.PLAY || state.getMode() == State.Mode.DEV || state.getMode() == State.Mode.BUILD) {
-
             // Put vars
             vars.put("plot.name", state.getPlot().getName());
             vars.put("plot.id", state.getPlot().getId());
@@ -115,7 +112,7 @@ public class DFDiscordRPC implements ILoader {
                     presence.setSmallImage("supportsession", "In Support Session (" + state.getMode().getContinuousVerb() + ")");
                 }
             }
-            presence.setLargeImage("diamondfirelogo", state.getPlot().getStatus().equals("") ? "mcdiamondfire.com | CodeUtilities 2.2.2" + (Recode.BETA ? "-BETA" : "") : state.getPlot().getStatus());
+            presence.setLargeImage("diamondfirelogo", state.getPlot().getStatus().equals("") ? getLargeImageText() : state.getPlot().getStatus());
         } else {
             close();
             return;
@@ -149,6 +146,10 @@ public class DFDiscordRPC implements ILoader {
         if (Config.getBoolean("discordRPC")) {
             client.sendRichPresence(presence.build());
         }
+    }
+
+    private String getLargeImageText() {
+        return "mcdiamondfire.com | recode " + Recode.MOD_VERSION;
     }
 
     private static String dyn(String key) {

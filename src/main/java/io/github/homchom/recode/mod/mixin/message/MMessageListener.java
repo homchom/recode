@@ -28,7 +28,7 @@ public class MMessageListener {
     private static long lastPatchCheck = 0;
     private static long lastBuildCheck = 0;
     private final Minecraft minecraftClient = Minecraft.getInstance();
-    private boolean motdShown = false;
+    //private boolean motdShown = false;
     private final Function1<Message, EventResult> invoker =
             EventExtensions.getCall(RecodeEvents.RECEIVE_CHAT_MESSAGE);
 
@@ -61,7 +61,8 @@ public class MMessageListener {
                 if (time - lastPatchCheck > 2) {
                     String patchText = text.replaceAll("Current patch: (.*)\\. See the patch notes with /patch!", "$1");
 
-                    if (!motdShown) {
+                    // TODO: reimplement?
+                    /*if (!motdShown) {
                         try {
                             String str = WebUtil.getString("https://codeutilities.github.io/data/motd.txt");
                             for (String string : str.split("\n")) {
@@ -94,7 +95,7 @@ public class MMessageListener {
                         }
 
                         motdShown = true;
-                    }
+                    }*/
 
                     DFInfo.isPatchNewer(patchText, "0"); //very lazy validation lol
                     DFInfo.patchId = patchText;

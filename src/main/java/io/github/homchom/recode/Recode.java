@@ -36,7 +36,6 @@ import java.util.regex.*;
 public class Recode implements ModInitializer {
     public static final String MOD_ID = "recode";
     public static final String MOD_NAME = "recode";
-    public static final boolean BETA = false; // todo: we're changing how "betas" work so this will need to be changed.
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     public static final Random RANDOM = new Random();
     public static final Gson GSON = new GsonBuilder()
