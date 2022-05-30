@@ -1,8 +1,10 @@
 package io.github.homchom.recode.mod.commands.impl.image;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.tree.ArgumentCommandNode;
 import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
 import io.github.homchom.recode.mod.commands.arguments.types.PathArgumentType;
@@ -19,7 +21,7 @@ import net.minecraft.world.item.*;
 import java.io.File;
 import java.nio.file.Path;
 
-public class ImageHologramCommand extends Command {
+public class ImageHologramCommand extends AbstractImageCommand {
 
     @Override
     public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd) {
@@ -47,14 +49,13 @@ public class ImageHologramCommand extends Command {
         return "/imagehologram";
     }
 
-    private RequiredArgumentBuilder<FabricClientCommandSource, Path> locationArgument(boolean useHex) {
-        return ArgBuilder.argument("location", PathArgumentType.folder(ExternalFile.IMAGE_FILES.getPath(), true))
-                .executes(ctx -> execute(ctx, useHex));
+    private ArgumentCommandNode<FabricClientCommandSource, Path> locationArgument(boolean useHex) {
+        return fileArgument(path -> execute(path, useHex));
     }
 
-    private int execute(CommandContext<FabricClientCommandSource> ctx, boolean useHex) {
+    private int execute(Path path, boolean useHex) {
         try {
-            File f = PathArgumentType.getPath(ctx, "location").toFile();
+            File f = path.toFile();
 
             String[] strings = useHex ? ImageToHologram.convertWithHex(f) : ImageToHologram.convertWithColorCodes(f);
 
