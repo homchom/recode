@@ -3,7 +3,7 @@ package io.github.homchom.recode.mod.features.commands;
 import com.google.gson.*;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WGridPanel;
-import io.github.homchom.recode.sys.hypercube.templates.TemplateUtils;
+import io.github.homchom.recode.sys.hypercube.templates.TemplateUtil;
 import io.github.homchom.recode.sys.renderer.widgets.*;
 import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.core.Registry;
@@ -40,7 +40,7 @@ public class TemplateSearchMenu extends LightweightGuiDescription {
             ItemStack templateItem = new ItemStack(Registry.ITEM.get(new ResourceLocation(template.get("material").getAsString())));
 
             try {
-                TemplateUtils.applyRawTemplateNBT(templateItem, name, uploader, template.get("data").getAsString());
+                TemplateUtil.applyRawTemplateNBT(templateItem, name, uploader, template.get("data").getAsString());
             } catch (Exception err) {
                 err.printStackTrace();
                 templateItem.setHoverName(new TextComponent("§cFailed to load item."));

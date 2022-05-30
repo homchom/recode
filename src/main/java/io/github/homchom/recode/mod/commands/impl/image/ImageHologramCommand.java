@@ -1,13 +1,15 @@
 package io.github.homchom.recode.mod.commands.impl.image;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
 import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
 import io.github.homchom.recode.mod.commands.arguments.types.PathArgumentType;
 import io.github.homchom.recode.mod.features.commands.image.ImageToHologram;
 import io.github.homchom.recode.sys.file.ExternalFile;
-import io.github.homchom.recode.sys.hypercube.templates.TemplateUtils;
+import io.github.homchom.recode.sys.hypercube.templates.TemplateUtil;
+import io.github.homchom.recode.sys.hypercube.templates.Templates;
 import io.github.homchom.recode.sys.player.chat.*;
 import io.github.homchom.recode.sys.util.ItemUtil;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
@@ -15,6 +17,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.*;
 
 import java.io.File;
+import java.nio.file.Path;
 
 public class ImageHologramCommand extends Command {
 
@@ -23,51 +26,9 @@ public class ImageHologramCommand extends Command {
         cd.register(ArgBuilder.literal("imagehologram")
                 .then(ArgBuilder.literal("load")
                         .then(ArgBuilder.literal("hex")
-                                .then(ArgBuilder.argument("location", PathArgumentType.folder(ExternalFile.IMAGE_FILES.getPath(), true))
-                                        .executes(ctx -> {
-                                            try {
-                                                File f = PathArgumentType.getPath(ctx, "location").toFile();
-
-                                                if (f.exists()) {
-                                                    String[] strings = ImageToHologram.convertWithHex(f);
-
-                                                    ItemStack stack = new ItemStack(Items.ENDER_CHEST);
-                                                    TemplateUtils.compressTemplateNBT(stack, f.getName(), mc.player.getName().getContents(), convert(strings));
-                                                    ItemUtil.giveCreativeItem(stack, true);
-                                                    ChatUtil.sendMessage("Image loaded! Change the first Set Variable to the location!", ChatType.SUCCESS);
-                                                } else {
-                                                    ChatUtil.sendMessage("That image doesn't exist.", ChatType.FAIL);
-                                                }
-                                                return 1;
-                                            } catch (Exception e) {
-                                                ChatUtil.sendMessage("Error while executing the command.", ChatType.FAIL);
-                                                e.printStackTrace();
-                                                return 0;
-                                            }
-                                        })))
+                                .then(locationArgument(true)))
                         .then(ArgBuilder.literal("colorcodes")
-                                .then(ArgBuilder.argument("location", PathArgumentType.folder(ExternalFile.IMAGE_FILES.getPath(), true))
-                                        .executes(ctx -> {
-                                            try {
-                                                File f = PathArgumentType.getPath(ctx, "location").toFile();
-
-                                                if (f.exists()) {
-                                                    String[] strings = ImageToHologram.convertWithColorCodes(f);
-
-                                                    ItemStack stack = new ItemStack(Items.ENDER_CHEST);
-                                                    TemplateUtils.compressTemplateNBT(stack, f.getName(), mc.player.getName().getContents(), convert(strings));
-                                                    ItemUtil.giveCreativeItem(stack, true);
-                                                    ChatUtil.sendMessage("Image loaded! Change the first Set Variable to the location!", ChatType.SUCCESS);
-                                                } else {
-                                                    ChatUtil.sendMessage("That image doesn't exist.", ChatType.FAIL);
-                                                }
-                                                return 1;
-                                            } catch (Exception e) {
-                                                ChatUtil.sendMessage("Error while executing the command.", ChatType.FAIL);
-                                                e.printStackTrace();
-                                                return 0;
-                                            }
-                                        })))
+                                .then(locationArgument(false)))
                 )
         );
     }
@@ -84,6 +45,27 @@ public class ImageHologramCommand extends Command {
     @Override
     public String getName() {
         return "/imagehologram";
+    }
+
+    private RequiredArgumentBuilder<FabricClientCommandSource, Path> locationArgument(boolean useHex) {
+        return ArgBuilder.argument("location", PathArgumentType.folder(ExternalFile.IMAGE_FILES.getPath(), true))
+                .executes(ctx -> execute(ctx, useHex));
+    }
+
+    private int execute(CommandContext<FabricClientCommandSource> ctx, boolean useHex) {
+        try {
+            File f = PathArgumentType.getPath(ctx, "location").toFile();
+
+            String[] strings = useHex ? ImageToHologram.convertWithHex(f) : ImageToHologram.convertWithColorCodes(f);
+
+            Templates.giveUserTemplate(Items.GLOW_ITEM_FRAME, f.getName(), convert(strings));
+            ChatUtil.sendMessage("Image loaded! Change the first Set Variable to the location!", ChatType.SUCCESS);
+            return 1;
+        } catch (Exception e) {
+            ChatUtil.sendMessage("Error while executing the command.", ChatType.FAIL);
+            e.printStackTrace();
+            return 0;
+        }
     }
 
     private String convert(String[] layers) {

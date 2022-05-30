@@ -14,7 +14,7 @@ public class MItemInsert {
     public void handleContainerContent(ClientboundContainerSetContentPacket packet, CallbackInfo ci) {
         if (packet.getContainerId() == 0) {
             for (ItemStack stack : packet.getItems()) {
-                if (TemplateUtils.isTemplate(stack)) {
+                if (TemplateUtil.isTemplate(stack)) {
                     TemplateStorageHandler.addTemplate(stack);
                 }
             }

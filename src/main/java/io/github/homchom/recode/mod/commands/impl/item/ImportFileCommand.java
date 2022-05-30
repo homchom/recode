@@ -80,7 +80,7 @@ public class ImportFileCommand extends Command {
                                     ChatUtil.sendMessage("Your file is too large!", ChatType.FAIL);
                                 } else {
                                     ItemStack item = new ItemStack(Items.ENDER_CHEST);
-                                    TemplateUtils.applyRawTemplateNBT(item, f.getName(), "CodeUtilities", template);
+                                    TemplateUtil.applyRawTemplateNBT(item, f.getName(), "CodeUtilities", template);
                                     ItemUtil.giveCreativeItem(item, files.length == 1);
                                     if (files.length != 1) Thread.sleep(500);
                                     valid++;

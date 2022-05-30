@@ -13,7 +13,7 @@ public class MItemCreative {
     @Inject(method = "handleSetCreativeModeSlot", at = @At("HEAD"))
     public void handleSetCreativeModeSlot(ServerboundSetCreativeModeSlotPacket packet, CallbackInfo ci) {
         ItemStack stack = packet.getItem();
-        if (TemplateUtils.isTemplate(stack)) {
+        if (TemplateUtil.isTemplate(stack)) {
             TemplateStorageHandler.addTemplate(stack);
         }
     }

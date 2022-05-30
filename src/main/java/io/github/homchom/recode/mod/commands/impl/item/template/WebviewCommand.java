@@ -2,7 +2,7 @@ package io.github.homchom.recode.mod.commands.impl.item.template;
 
 import com.google.gson.*;
 import io.github.homchom.recode.Recode;
-import io.github.homchom.recode.sys.hypercube.templates.TemplateUtils;
+import io.github.homchom.recode.sys.hypercube.templates.TemplateUtil;
 import io.github.homchom.recode.sys.player.chat.ChatType;
 import io.github.homchom.recode.sys.player.chat.*;
 import net.minecraft.network.chat.*;
@@ -38,7 +38,7 @@ public class WebviewCommand extends AbstractTemplateCommand {
         ChatUtil.sendMessage("Generating template link...", ChatType.INFO_BLUE);
 
         Recode.EXECUTOR.submit(() -> {
-            JsonObject template = TemplateUtils.fromItemStack(stack);
+            JsonObject template = TemplateUtil.read(stack);
             String data = template.get("code").getAsString();
             try {
                 HttpClient httpClient = HttpClientBuilder.create().build();

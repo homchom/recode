@@ -1,7 +1,7 @@
 package io.github.homchom.recode.sys.networking.websocket.client.type;
 
 import com.google.gson.*;
-import io.github.homchom.recode.sys.hypercube.templates.TemplateUtils;
+import io.github.homchom.recode.sys.hypercube.templates.TemplateUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.*;
 import net.minecraft.world.item.*;
@@ -33,11 +33,11 @@ public abstract class AbstractTemplateItem extends SocketItem {
         if (templateObject.has("version")) {
             version = templateObject.get("version").getAsInt();
         } else {
-            version = TemplateUtils.VERSION;
+            version = TemplateUtil.VERSION;
         }
 
         stack.setHoverName(name);
-        TemplateUtils.applyRawTemplateNBT(stack, name, author, templateData, version);
+        TemplateUtil.applyRawTemplateNBT(stack, name, author, templateData, version);
         return stack;
     }
 
