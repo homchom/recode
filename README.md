@@ -1,7 +1,7 @@
 # recode
 ![logo](logo.png)
 
-A 1.18 clone of [CodeUtilities 2](https://github.com/CodeUtilities/CodeUtilities-2.0) (a utility-focused Fabric mod for DiamondFire).
+recode is a 1.18 clone of [CodeUtilities 2](https://github.com/CodeUtilities/CodeUtilities-2.0), a utility-focused Fabric mod for DiamondFire.
 
 ### Mod Dependencies:
 - Fabric Loader v0.13.3 or newer
