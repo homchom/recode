@@ -2,7 +2,7 @@ package io.github.homchom.recode.mod.features.social.chat.message.checks;
 
 import io.github.homchom.recode.Recode;
 import io.github.homchom.recode.mod.features.social.chat.message.*;
-import io.github.homchom.recode.sys.networking.State;
+import io.github.homchom.recode.sys.networking.DFState;
 import io.github.homchom.recode.sys.player.DFInfo;
 
 import java.util.Collection;
@@ -16,7 +16,7 @@ public class JoinDiamondFireCheck extends MessageCheck {
 
     @Override
     public boolean check(Message message, String stripped) {
-        return DFInfo.currentState.getMode() == State.Mode.SPAWN && stripped.equals("◆ Welcome back to DiamondFire! ◆");
+        return DFInfo.currentState.getMode() == DFState.Mode.SPAWN && stripped.equals("◆ Welcome back to DiamondFire! ◆");
     }
 
     @Override

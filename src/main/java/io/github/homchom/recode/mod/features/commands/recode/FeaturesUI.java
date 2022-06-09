@@ -22,7 +22,7 @@ public class FeaturesUI extends LightweightGuiDescription implements IMenu {
     public void open(String... args) throws CommandSyntaxException {
         WPlainPanel root = new WPlainPanel();
 
-        List<Feature> features = FeatureList.get();
+        List<LegacyFeature> features = FeatureList.get();
 
         WPlainPanel btnList = new WPlainPanel();
 
@@ -31,7 +31,7 @@ public class FeaturesUI extends LightweightGuiDescription implements IMenu {
         root.add(text, 110, 10, 190, 190);
 
         int y = 0;
-        for (Feature f : features) {
+        for (LegacyFeature f : features) {
             CButton btn = new CButton();
             btn.setLabel(new TextComponent(f.getName()));
             btn.setAlignment(HorizontalAlignment.LEFT);
@@ -74,14 +74,14 @@ public class FeaturesUI extends LightweightGuiDescription implements IMenu {
 //        scrollPanel.setHost(this);
 //
 //        root.add(scrollPanel, 0, 0, 425, 220);
-//        panel.add(new WLabel(new LiteralText("CodeUtilities Features || v" + Recode.MOD_VERSION)), 4, 4);
+//        panel.add(new WLabel(new LiteralText("CodeUtilities Features || v" + Recode.getVersion())), 4, 4);
 //
 //        CImage cImage = new CImage(CODEUTILS_LOGO);
 //        cImage.setSize(60, 60);
 //        panel.add(cImage, 355, 0);
 //
 //        try {
-//            URL oracle = new URL("https://raw.githubusercontent.com/CodeUtilities/data/main/menus/featuresGUI-" + Recode.MOD_VERSION + ".txt");
+//            URL oracle = new URL("https://raw.githubusercontent.com/CodeUtilities/data/main/menus/featuresGUI-" + Recode.getVersion() + ".txt");
 //            BufferedReader in = new BufferedReader(
 //                    new InputStreamReader(oracle.openStream()));
 //

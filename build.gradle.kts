@@ -1,5 +1,6 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.gradle.kotlin.dsl.DependencyHandlerScope
 
 plugins {
     id("fabric-loom") version "0.11-SNAPSHOT"
@@ -32,27 +33,12 @@ repositories {
     mavenCentral()
 }
 
-val shade by configurations.creating {
+val shade: Configuration by configurations.creating {
     isCanBeResolved = true
     exclude(group = "org.slf4j")
 }
 
 dependencies {
-    fun shadeImpl(notation: String) {
-        implementation(notation)
-        shade(notation)
-    }
-
-    fun includeImpl(notation: String) {
-        implementation(notation)
-        include(notation)
-    }
-
-    fun includeModImpl(notation: String) {
-        modImplementation(notation)
-        include(notation)
-    }
-
     val minecraftVersion: String by project
     minecraft("com.mojang:minecraft:$minecraftVersion")
     mappings(loom.officialMojangMappings())
@@ -61,8 +47,8 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:$loaderVersion")
     val fabricVersion: String by project
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
-
-    includeModImpl("net.fabricmc:fabric-language-kotlin:1.7.4+kotlin.1.6.21")
+    val kotlinVersion: String by project
+    includeModImpl("net.fabricmc:fabric-language-kotlin:1.7.4+kotlin.$kotlinVersion")
 
     // https://github.com/CottonMC/LibGui/releases
     includeModImpl("io.github.cottonmc:LibGui:5.4.0+1.18.2")
@@ -76,8 +62,6 @@ dependencies {
     // websocket TODO: clean this up
     shadeImpl("org.java-websocket:Java-WebSocket:1.5.3")
     includeImpl("javax.websocket:javax.websocket-api:1.1")
-
-    //implementation(kotlin("stdlib-jdk8"))
 }
 
 java {
@@ -98,6 +82,7 @@ tasks {
     withType<KotlinCompile> {
         kotlinOptions {
             jvmTarget = "17"
+            freeCompilerArgs = listOf("-Xjvm-default=all")
         }
     }
 
@@ -115,7 +100,7 @@ tasks {
 
     val relocate by registering(ConfigureShadowRelocation::class) {
         target = shadowJar.get()
-        prefix = "$mavenGroup.recode.shadow"
+        prefix = "$mavenGroup.recode.shaded"
     }
 
     shadowJar {
@@ -128,4 +113,36 @@ tasks {
     remapJar {
         inputFile.value(shadowJar.get().archiveFile)
     }
+}
+
+typealias DependencyConfig = Action<ExternalModuleDependency>
+
+fun DependencyHandlerScope.shadeImpl(notation: String) {
+    implementation(notation)
+    shade(notation)
+}
+
+fun DependencyHandlerScope.shadeImpl(notation: String, config: DependencyConfig) {
+    implementation(notation, config)
+    shade(notation)
+}
+
+fun DependencyHandlerScope.includeImpl(notation: String) {
+    implementation(notation)
+    include(notation)
+}
+
+fun DependencyHandlerScope.includeImpl(notation: String, config: DependencyConfig) {
+    implementation(notation, config)
+    include(notation, config)
+}
+
+fun DependencyHandlerScope.includeModImpl(notation: String) {
+    modImplementation(notation)
+    include(notation)
+}
+
+fun DependencyHandlerScope.includeModImpl(notation: String, config: DependencyConfig) {
+    modImplementation(notation, config)
+    include(notation, config)
 }

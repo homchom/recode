@@ -34,14 +34,15 @@ public class SchemCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "[blue]/schem load <file>[reset]\n" +
-               "[blue]/schem builder[reset]\n" +
-               "[blue]/schem saver[reset]\n" +
-               "[blue]/schem transferer[reset]\n" +
-               "\n" +
-               "Converts structure files to code templates, to automatically build them in your plot.\n" +
-               "For the usage of builder/saver/transferer, please refer to the description of each code template.\n" +
-               "Supported structure file formats: [green].schematic .schem .litematic[reset]";
+        return """
+                [blue]/schem load <file>[reset]
+                [blue]/schem builder[reset]
+                [blue]/schem saver[reset]
+                [blue]/schem transferer[reset]
+
+                Converts structure files to code templates, to automatically build them in your plot.
+                For the usage of builder/saver/transferer, please refer to the description of each code template.
+                Supported structure file formats: [green].schematic .schem .litematic[reset]""";
     }
 
     @Override
@@ -91,30 +92,19 @@ public class SchemCommand extends Command {
                                     new Thread(() -> {
                                         try {
                                             MSchematicReader reader;
-
                                             switch (finalFormat) {
-                                                case "schematic":
-                                                    try {
-                                                        NBTInputStream nbtStream = new NBTInputStream(new GZIPInputStream(new FileInputStream(finalFile)));
-                                                        reader = new MCEditSchematicLoader(nbtStream);
-                                                    } catch (IOException ignored) {
-                                                        NBTInputStream nbtStream = new NBTInputStream(new GZIPInputStream(new FileInputStream(finalFile)));
-                                                        reader = new MSpongeSchematicReader(nbtStream);
-                                                    }
-                                                    break;
-                                                case "schem": {
+                                                case "schematic", "schem" -> {
                                                     NBTInputStream nbtStream = new NBTInputStream(new GZIPInputStream(new FileInputStream(finalFile)));
                                                     reader = new MSpongeSchematicReader(nbtStream);
-                                                    break;
                                                 }
-                                                case "litematic": {
+                                                case "litematic" -> {
                                                     NBTInputStream nbtStream = new NBTInputStream(new GZIPInputStream(new FileInputStream(finalFile)));
                                                     reader = new LitematicaLoader(nbtStream);
-                                                    break;
                                                 }
-                                                default:
+                                                default -> {
                                                     ChatUtil.sendMessage("[Schem2DF] The file has to be a litematic, schematic, schem or vanilla nbt format.", ChatType.FAIL);
                                                     return;
+                                                }
                                             }
 
                                             ChatUtil.sendMessage("[Schem2DF] Loading the file §e" + finalFile.getName() + "§e...", ChatType.INFO_YELLOW);

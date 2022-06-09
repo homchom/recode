@@ -27,8 +27,6 @@
     "config.recode.option.plotInfoOverlay.tooltip": "Displays your current DiamondFire location on the screen.",
     "config.recode.subcategory.screen_title_screen": "Title Screen",
     "config.recode.subcategory.screen_title_screen.tooltip": "Options related to the Minecraft title screen.",
-    "config.recode.subcategory.screen_cosmetic": "Cosmetic",
-    "config.recode.subcategory.screen_cosmetic.tooltip": "Options that change the experience cosmetically.",
     "config.recode.subcategory.screen_code": "Code",
     "config.recode.subcategory.screen_code.tooltip": "Options that can help render information while coding.",
 
@@ -45,8 +43,6 @@
     "config.recode.option.itemApi.tooltip": "Used for sending items from third party programs.",
     "config.recode.option.variableScopeView": "Variable Scope View",
     "config.recode.option.variableScopeView.tooltip": "Shows the variable scope under the item name.\n(GAME, SAVE, LOCAL)",
-    "config.recode.option.cosmeticsEnabled": "Show Cosmetics",
-    "config.recode.option.cosmeticsEnabled.tooltip": "Shows Recode cosmetics such\nas developer capes and hats.",
     "config.recode.option.highlightVarSyntax": "Highlight Variable Syntax",
     "config.recode.option.highlightVarSyntax.tooltip": "Highlights text, num and var syntax\nlike percent and color codes",
     "config.recode.option.showCodeblockDescription": "Show Code Block Description",
@@ -112,15 +108,6 @@
     "config.recode.option.colorReplacePicker": "Replace Color Picker",
     "config.recode.option.colorReplacePicker.tooltip": "Replaces the color picker with\na color menu equivalent of \"/colors 100\".",
 
-    "config.recode.option.socialFeatures": "Enable Social Features",
-    "config.recode.option.codeUtilsChat": "Recode Chat",
-    "config.recode.option.cosmetics": "Show Cosmetics",
-    "config.recode.option.cosmetics.tooltip": "Does not hide capes.",
-    "config.recode.option.allParty": "Allow party invites from everyone.",
-
-    "config.recode.option.functionProcessSearch": "[??] Function/Process Search",
-    "config.recode.option.functionProcessSearch.tooltip": "Shows you the all nearby usages of a functions or processes.",
-
     "config.recode.subcategory.keybinds_flightspeed": "Flight Speed Keybind Values",
     "config.recode.subcategory.keybinds_flightspeed.tooltip": "Values used for the Flight Speed keybinds found\nin the \"Options -> Controls -> Recode\" menu.",
     "config.recode.option.fsNormal": "Flight Speed Normal",
@@ -152,10 +139,6 @@
     "config.recode.option.hideMutedChat": "[Mod] Hide Muted Chat",
     "config.recode.option.hideMutedChat.tooltip": "Hides chat messages from\nmuted players for moderators.",
 
-
-
-    "config.recode.option.f3Tps": "Show TPS on Debug Screen",
-    "config.recode.option.f3Tps.tooltip": "Shows the client TPS on the Debug Screen (F3).",
     "config.recode.option.quickVarScope": "Quick Variable Scope",
     "config.recode.option.quickVarScope.tooltip": "Typing \"-s\", \"-l\" or \"-g\" after a\nvariable name in chat will change its scope,\nsimilar to the way /var works.",
     "config.recode.option.destroyItemReset": "Destroy Item Reset",
@@ -164,8 +147,6 @@
     "config.recode.option.destroyitemresettype.off": "Off",
     "config.recode.option.destroyitemresettype.standard": "Standard Items",
     "config.recode.option.destroyitemresettype.compact": "Compact Items",
-
-
 
     "config.recode.subcategory.misc_quicknum": "Quick Number Change",
     "config.recode.subcategory.misc_quicknum.tooltip": "Allows you to change a number variable\nsimply by scrolling.",

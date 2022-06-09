@@ -1,27 +1,28 @@
 package io.github.homchom.recode.event
 
 import io.github.homchom.recode.mod.features.social.chat.message.Message
-import io.github.homchom.recode.sys.networking.State
+import io.github.homchom.recode.render.RGBA
+import io.github.homchom.recode.sys.networking.DFState
 import net.minecraft.network.protocol.game.ClientboundSoundPacket
+import net.minecraft.world.level.block.entity.BlockEntity
 
 object RecodeEvents {
     // Game
-    @JvmField
-    val RECEIVE_SOUND = createEvent<(packet: ClientboundSoundPacket) -> EventResult> { listeners ->
-        { packet -> handleEventWithResult(listeners, packet) }
+    @JvmField val PLAY_SOUND = createValidatedEvent<ClientboundSoundPacket>()
+
+    // Rendering
+    @JvmField val RENDER_BLOCK_ENTITY = createValidatedEvent<BlockEntity>()
+    @JvmField val OUTLINE_BLOCK_ENTITY = createEvent<BlockEntity, OutlineResult>()
+
+    class OutlineResult {
+        var outlineColor: RGBA? = null
     }
 
     // Chat
-    @JvmField
-    val RECEIVE_CHAT_MESSAGE = createEvent<(Message) -> EventResult> { listeners ->
-        { message -> handleEventWithResult(listeners, message) }
-    }
+    @JvmField val RECEIVE_CHAT_MESSAGE = createValidatedEvent<Message>()
 
     // DF
-    @JvmField
-    val CHANGE_DF_STATE = createEvent<(new: State, old: State) -> Unit> { listeners ->
-        { new, old ->
-            for (listener in listeners) listener(new, old)
-        }
-    }
+    @JvmField val CHANGE_DF_STATE = createHook<StateChange>()
+
+    data class StateChange(val new: DFState, val old: DFState)
 }

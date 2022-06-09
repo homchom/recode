@@ -7,15 +7,14 @@ public class LegacyReceiveSoundEvent {
     private static int cancelNextSounds;
 
     public LegacyReceiveSoundEvent() {
-        RecodeEvents.RECEIVE_SOUND.register(this::run);
+        RecodeEvents.PLAY_SOUND.listen(this::run);
     }
 
-    private EventResult run(ClientboundSoundPacket packet) {
+    private void run(EventValidator result, ClientboundSoundPacket packet) {
         if (cancelNextSounds > 0) {
             cancelNextSounds--;
-            return EventResult.FAILURE;
+            result.setValid(false);
         }
-        return EventResult.PASS;
     }
 
     public static void cancelNextSounds(int amount) {

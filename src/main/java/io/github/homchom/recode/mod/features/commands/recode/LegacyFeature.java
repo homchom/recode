@@ -1,11 +1,10 @@
 package io.github.homchom.recode.mod.features.commands.recode;
 
-public class Feature {
-
+public class LegacyFeature {
     private final String name;
     private final String description;
 
-    public Feature(String name, String description) {
+    public LegacyFeature(String name, String description) {
         this.name = name;
         this.description = description;
     }

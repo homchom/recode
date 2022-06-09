@@ -5,7 +5,7 @@ import io.github.homchom.recode.Recode;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.*;
 import io.github.homchom.recode.mod.features.commands.CodeSearcher;
-import io.github.homchom.recode.sys.networking.State;
+import io.github.homchom.recode.sys.networking.DFState;
 import io.github.homchom.recode.sys.player.DFInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
@@ -23,10 +23,10 @@ public class MInGameHUD {
         Minecraft mc = Recode.MC;
         Font tr = mc.font;
 
-        if (CodeSearcher.searchType != null && CodeSearcher.searchValue != null && DFInfo.isOnDF() && DFInfo.currentState.getMode() == State.Mode.DEV) {
-
-            tr.drawShadow(stack, new TextComponent("Searching usages of " + CodeSearcher.searchType.toString()).withStyle(style -> style.withUnderlined(true)), 2, 2, 0xffffff);
-            tr.drawShadow(stack, new TextComponent(CodeSearcher.searchValue), 2, 12, 0xffffff);
+        if (CodeSearcher.searchType != null && CodeSearcher.searchValue != null && DFInfo.isOnDF() && DFInfo.currentState.getMode() == DFState.Mode.DEV) {
+            tr.draw(stack, new TextComponent("Searching for usages of " +
+                    CodeSearcher.searchType.toString() + ": " + CodeSearcher.searchValue
+            ), 4, 4, 0xffffff);
         }
 
         if (Config.getBoolean("plotInfoOverlay")) {

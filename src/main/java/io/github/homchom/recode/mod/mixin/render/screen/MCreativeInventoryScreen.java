@@ -3,7 +3,7 @@ package io.github.homchom.recode.mod.mixin.render.screen;
 import io.github.homchom.recode.Recode;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.config.internal.DestroyItemResetType;
-import io.github.homchom.recode.sys.networking.State;
+import io.github.homchom.recode.sys.networking.DFState;
 import io.github.homchom.recode.sys.player.DFInfo;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.world.inventory.*;
@@ -19,7 +19,7 @@ public class MCreativeInventoryScreen {
     @Inject(method = "slotClicked", at = @At("HEAD"), cancellable = true)
     public void slotClicked(Slot slot, int invSlot, int clickData, ClickType actionType, CallbackInfo ci) {
         DestroyItemResetType resetType = Config.getEnum("destroyItemReset", DestroyItemResetType.class);
-        if (resetType != DestroyItemResetType.OFF && DFInfo.isOnDF() && DFInfo.currentState.getMode() == State.CurrentState.Mode.DEV
+        if (resetType != DestroyItemResetType.OFF && DFInfo.isOnDF() && DFInfo.currentState.getMode() == DFState.CurrentState.Mode.DEV
                 && actionType == ClickType.QUICK_MOVE && slot == this.destroyItemSlot) {
             Recode.MC.setScreen(null);
             String cmd = "";

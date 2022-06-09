@@ -2,10 +2,8 @@ package io.github.homchom.recode.mod.features.streamer;
 
 import io.github.homchom.recode.Recode;
 import io.github.homchom.recode.mod.config.Config;
-import io.github.homchom.recode.sys.networking.State;
+import io.github.homchom.recode.sys.networking.DFState;
 import io.github.homchom.recode.sys.player.chat.MessageGrabber;
-import net.minecraft.network.protocol.game.ClientboundLoginPacket;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 public class StreamerModeHandler {
 
@@ -93,12 +91,12 @@ public class StreamerModeHandler {
         }
     }
 
-    public static void handleStateChange(State oldState, State newState) {
+    public static void handleStateChange(DFState oldState, DFState newState) {
         if (!enabled()) return;
 
         // If the state is changed to mode play, run "/chat local"
         // Note: May trigger simultaneously with StreamerHandler#handleServerJoin, but this is not a problem
-        if (autoChatLocal() && newState.mode.equals(State.Mode.PLAY)) {
+        if (autoChatLocal() && newState.mode.equals(DFState.Mode.PLAY)) {
             Recode.MC.player.chat("/c l");
             MessageGrabber.hide(1);
         }

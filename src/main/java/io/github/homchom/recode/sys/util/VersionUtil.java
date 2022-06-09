@@ -21,7 +21,7 @@ public class VersionUtil {
 
     public static int getCurrentVersionInt() {
         try {
-            return Integer.parseInt(Recode.MOD_VERSION);
+            return Integer.parseInt(Recode.getVersion());
         }catch (NumberFormatException e) {
             return -1;
         }

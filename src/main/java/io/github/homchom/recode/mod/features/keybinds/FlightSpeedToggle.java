@@ -4,12 +4,14 @@ import io.github.homchom.recode.mod.config.Config;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 
+import java.util.Objects;
+
 public class FlightSpeedToggle {
     private final float normalFs = percentToFs(Config.getInteger("fsNormal"));
 
     public void toggleFlightSpeed(int percent) {
         LocalPlayer player = Minecraft.getInstance().player;
-        assert player != null;
+        Objects.requireNonNull(player);
 
         float current = player.getAbilities().getFlyingSpeed();
         int target = current == normalFs ? percent : Config.getInteger("fsNormal");

@@ -8,6 +8,7 @@ import io.github.homchom.recode.mod.config.types.list.*;
 import me.shedaniel.clothconfig2.api.*;
 import me.shedaniel.clothconfig2.impl.builders.*;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.*;
 
@@ -34,13 +35,15 @@ public class ConfigScreen implements ITranslatable {
         ConfigEntryBuilder entryBuilder = builder.entryBuilder();
 
         List<ConfigGroup> groups = CONFIG.getRegistered();
+
+        String playerUUID = Minecraft.getInstance().getUser().getUuid();
+
         // Optimized loop
         for (ConfigGroup group : groups) {
-
-            if (!((Recode.PLAYER_UUID.equals(Recode.JEREMASTER_UUID) ||
-                    Recode.PLAYER_UUID.equals(Recode.JEREMASTER_UUID.replaceAll("-", ""))) ||
-                    (Recode.PLAYER_UUID.equals(Recode.RYANLAND_UUID) ||
-                            Recode.PLAYER_UUID.equals(Recode.RYANLAND_UUID.replaceAll("-", ""))))
+            if (!((playerUUID.equals(Recode.JEREMASTER_UUID) ||
+                    playerUUID.equals(Recode.JEREMASTER_UUID.replaceAll("-", ""))) ||
+                    (playerUUID.equals(Recode.RYANLAND_UUID) ||
+                            playerUUID.equals(Recode.RYANLAND_UUID.replaceAll("-", ""))))
             && group.getName().equals("streamer")) {
                 continue;
             }

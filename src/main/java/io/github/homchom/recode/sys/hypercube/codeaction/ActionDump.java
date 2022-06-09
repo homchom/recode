@@ -6,6 +6,7 @@ import io.github.homchom.recode.sys.networking.WebUtil;
 
 import java.util.*;
 
+// TODO: move this to separate repo
 public class ActionDump implements ILoader {
 
     private static JsonObject types;
@@ -18,14 +19,14 @@ public class ActionDump implements ILoader {
             JsonObject actionDump = WebUtil.getObject(
                 "https://raw.githubusercontent.com/CodeUtilities/data/main/actiondump/db.json");
             if (!actionDump.isJsonNull()){
-                //gather codeblocks
+                // gather codeblocks
                 JsonArray codeblockArray = actionDump.getAsJsonArray("codeblocks");
                 codeblockArray.forEach(jsonElement -> {
                     JsonObject codeblock = jsonElement.getAsJsonObject();
                     codeblocks.put(codeblock.get("name").getAsString(), new CodeBlock(codeblock));
                 });
 
-                //gather actions
+                // gather actions
                 HashMap<String, Integer> dupes = new HashMap<>();
                 JsonArray actionsArray = actionDump.getAsJsonArray("actions");
                 actionsArray.forEach(jsonElement -> {

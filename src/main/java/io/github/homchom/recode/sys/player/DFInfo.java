@@ -2,15 +2,15 @@ package io.github.homchom.recode.sys.player;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.homchom.recode.Recode;
-import io.github.homchom.recode.event.*;
-import io.github.homchom.recode.sys.networking.State;
+import io.github.homchom.recode.event.RecodeEvents;
+import io.github.homchom.recode.sys.networking.DFState;
 import net.minecraft.world.phys.Vec3;
 
 public class DFInfo {
 
     public static final String IP = "mcdiamondfire.com";
     public static String patchId = "5.3";
-    public static State.CurrentState currentState = new State.CurrentState();
+    public static DFState.CurrentState currentState = new DFState.CurrentState();
     public static boolean isInBeta = false;
     public static Vec3 plotCorner = null;
 
@@ -46,35 +46,11 @@ public class DFInfo {
         return Recode.MC.getCurrentServer().ip.contains("mcdiamondfire.com");
     }
 
-    public static void setCurrentState(State state) {
-        State.CurrentState newState = new State.CurrentState(state);
+    public static void setCurrentState(DFState state) {
+        DFState.CurrentState newState = new DFState.CurrentState(state);
         if (!currentState.equals(newState)) {
-            EventExtensions.getCall(RecodeEvents.CHANGE_DF_STATE).invoke(newState, currentState);
+            RecodeEvents.CHANGE_DF_STATE.invoke(new RecodeEvents.StateChange(newState, currentState));
         }
         currentState = newState;
-    }
-
-    public static float TPS = 0.0f;
-    private static long lastTpsTimestamp = 0;
-
-    public static void calculateTps(long packetTimestamp) {
-        if (!RenderSystem.isOnRenderThread()) {
-            return;
-        }
-
-        if (lastTpsTimestamp == 0) {
-            lastTpsTimestamp = packetTimestamp;
-            return;
-        }
-        if (packetTimestamp - lastTpsTimestamp == 0) {
-            lastTpsTimestamp = packetTimestamp;
-            return;
-        }
-
-        long milliDiff = packetTimestamp - lastTpsTimestamp;
-        float secDiff = milliDiff / 1000f;
-
-        TPS = 20.0f / secDiff;
-        lastTpsTimestamp = packetTimestamp;
     }
 }

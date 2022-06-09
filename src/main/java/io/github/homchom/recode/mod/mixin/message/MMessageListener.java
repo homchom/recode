@@ -6,14 +6,14 @@ import io.github.homchom.recode.event.*;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.LagslayerHUD;
 import io.github.homchom.recode.mod.features.social.chat.message.Message;
-import io.github.homchom.recode.sys.networking.State;
+import io.github.homchom.recode.sys.networking.DFState;
 import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
-import kotlin.jvm.functions.Function1;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.chat.*;
 import net.minecraft.network.protocol.game.*;
+import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -22,13 +22,9 @@ import java.util.regex.Pattern;
 
 @Mixin(ClientPacketListener.class)
 public class MMessageListener {
-    private final Minecraft minecraftClient = Minecraft.getInstance();
     private static long lastPatchCheck = 0;
     private static long lastBuildCheck = 0;
     //private boolean motdShown = false;
-
-    private final Function1<Message, EventResult> invoker =
-            EventExtensions.getCall(RecodeEvents.RECEIVE_CHAT_MESSAGE);
 
     private final Pattern lsRegex = Pattern.compile("^CPU Usage: \\[▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮] \\(.*%\\)$");
 
@@ -37,7 +33,9 @@ public class MMessageListener {
         if (DFInfo.isOnDF()) {
             if (packet.getType() == ChatType.CHAT || packet.getType() == ChatType.SYSTEM) {
                 if (RenderSystem.isOnRenderThread()) {
-                    if (invoker.invoke(new Message(packet, ci)) == EventResult.FAILURE) ci.cancel();
+                    boolean result = EventValidation.validate(
+                            RecodeEvents.RECEIVE_CHAT_MESSAGE, new Message(packet, ci));
+                    if (!result) ci.cancel();
                     try {
                         this.updateVersion(packet.getMessage());
                         this.updateState(packet.getMessage());
@@ -52,7 +50,7 @@ public class MMessageListener {
 
     @Inject(method = "setActionBarText", at = @At("HEAD"), cancellable = true)
     private void setActionBarText(ClientboundSetActionBarTextPacket packet, CallbackInfo ci) {
-        if (minecraftClient.player == null) return;
+        if (Minecraft.getInstance().player == null) return;
         if (lsRegex.matcher(packet.getText().getString()).matches()) {
             if (Config.getBoolean("cpuOnScreen")) {
                 LagslayerHUD.updateCPU(packet);
@@ -62,7 +60,7 @@ public class MMessageListener {
     }
 
     private void updateVersion(Component component) {
-        if (minecraftClient.player == null) return;
+        if (Minecraft.getInstance().player == null) return;
 
         String text = component.getString();
 
@@ -132,7 +130,8 @@ public class MMessageListener {
     }
 
     private void updateState(Component component) {
-        if (minecraftClient.player == null) return;
+        Player player = Minecraft.getInstance().player;
+        if (player == null) return;
 
         String text = component.getString();
 
@@ -156,7 +155,7 @@ public class MMessageListener {
         }
 
         // End Session
-        if (text.matches("^" + minecraftClient.player.getName().getContents() + " finished a session with .*\\. ▶ .*$")) {
+        if (text.matches("^" + player.getName().getContents() + " finished a session with .*\\. ▶ .*$")) {
             if (DFInfo.currentState.isInSession()) {
                 DFInfo.currentState.setInSession(false);
                 DFInfo.currentState.sendLocate();
@@ -170,8 +169,8 @@ public class MMessageListener {
         }
 
         // Build Mode
-        if (minecraftClient.player.isCreative() && text.matches("^» You are now in build mode\\.$")) {
-            if (DFInfo.currentState.getMode() != State.Mode.BUILD) {
+        if (player.isCreative() && text.matches("^» You are now in build mode\\.$")) {
+            if (DFInfo.currentState.getMode() != DFState.Mode.BUILD) {
                 DFInfo.currentState.sendLocate();
             }
 
@@ -202,7 +201,7 @@ public class MMessageListener {
         }
 
         // Dev Mode (more moved to MixinItemSlotUpdate)
-        if (minecraftClient.player.isCreative() && text.matches("^» You are now in dev mode\\.$")) {
+        if (player.isCreative() && text.matches("^» You are now in dev mode\\.$")) {
             new Thread(() -> {
                 try {
                     Thread.sleep(10);

@@ -5,7 +5,7 @@ import com.mojang.blaze3d.platform.InputConstants.Type;
 import io.github.homchom.recode.mod.commands.impl.other.PartnerBracketCommand;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.commands.CodeSearcher;
-import io.github.homchom.recode.sys.networking.State;
+import io.github.homchom.recode.sys.networking.DFState;
 import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.sidedchat.ChatShortcut;
 import net.fabricmc.api.ClientModInitializer;
@@ -16,7 +16,7 @@ import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.*;
 
-import java.util.Optional;
+import java.util.*;
 
 public class Keybinds implements ClientModInitializer {
 
@@ -125,12 +125,12 @@ public class Keybinds implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             // toggle play dev
             while (toggle_play_dev.consumeClick()) {
-                sendChat(DFInfo.currentState.getMode() == State.Mode.PLAY ? "/dev" : "/play");
+                sendChat(DFInfo.currentState.getMode() == DFState.Mode.PLAY ? "/dev" : "/play");
             }
 
             // toggle play build
             while (toggle_play_build.consumeClick()) {
-                sendChat(DFInfo.currentState.getMode() == State.Mode.PLAY ? "/build" : "/play");
+                sendChat(DFInfo.currentState.getMode() == DFState.Mode.PLAY ? "/build" : "/play");
             }
 
             // spawn
@@ -179,7 +179,7 @@ public class Keybinds implements ClientModInitializer {
 
             // search
             while (searchFunction.consumeClick()) {
-                if (DFInfo.isOnDF() && DFInfo.currentState.getMode() == State.Mode.DEV && mc.player.isCreative()) {
+                if (DFInfo.isOnDF() && DFInfo.currentState.getMode() == DFState.Mode.DEV && mc.player.isCreative()) {
                     BlockEntity blockEntity = mc.level.getBlockEntity(new BlockPos(mc.hitResult.getLocation()));
 
                     if (blockEntity != null) {
@@ -235,7 +235,6 @@ public class Keybinds implements ClientModInitializer {
     }
 
     private void sendChat(String message) {
-        assert mc.player != null;
-        mc.player.chat(message);
+        Objects.requireNonNull(mc.player).chat(message);
     }
 }

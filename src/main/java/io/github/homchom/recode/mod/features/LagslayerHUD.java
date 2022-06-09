@@ -7,7 +7,7 @@ import io.github.homchom.recode.Recode;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.*;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 
 public class LagslayerHUD {
@@ -54,7 +54,7 @@ public class LagslayerHUD {
         }
 
         try {
-            renderComponent(stack, Component.nullToEmpty("CPU Usage:"), 3, ChatFormatting.GOLD.getColor());
+            renderComponent(stack, new TextComponent("CPU Usage:"), 3, ChatFormatting.GOLD.getColor());
             renderComponent(stack, barsComponent, 2);
             renderComponent(stack, numberComponent, 1);
         } catch (Exception e) {

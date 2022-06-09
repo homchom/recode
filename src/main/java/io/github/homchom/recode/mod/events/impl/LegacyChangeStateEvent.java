@@ -4,22 +4,18 @@ import io.github.homchom.recode.event.RecodeEvents;
 import io.github.homchom.recode.mod.features.StateOverlayHandler;
 import io.github.homchom.recode.mod.features.discordrpc.DFDiscordRPC;
 import io.github.homchom.recode.mod.features.streamer.StreamerModeHandler;
-import io.github.homchom.recode.sys.networking.State;
+import io.github.homchom.recode.sys.networking.DFState;
 import io.github.homchom.recode.sys.player.chat.MessageGrabber;
-import kotlin.Unit;
 
 public class LegacyChangeStateEvent {
     public LegacyChangeStateEvent() {
-        RecodeEvents.CHANGE_DF_STATE.register((newState, oldState) -> {
-            run(newState, oldState);
-            return Unit.INSTANCE;
-        });
+        RecodeEvents.CHANGE_DF_STATE.listen(context -> run(context.getNew(), context.getOld()));
     }
 
-    private void run(State newState, State oldState) {
+    private void run(DFState newState, DFState oldState) {
         StreamerModeHandler.handleStateChange(oldState, newState);
 
-        if (newState.mode == State.Mode.OFFLINE) {
+        if (newState.mode == DFState.Mode.OFFLINE) {
             MessageGrabber.reset();
         }
 

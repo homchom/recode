@@ -1,0 +1,35 @@
+{
+  "required": true,
+  "package": "io.github.homchom.recode.mod.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "game.MClient",
+    "game.MMinecraftClient",
+    "inventory.MHeldItemTooltip",
+    "inventory.MItemCreative",
+    "inventory.MItemInsert",
+    "inventory.MItemSlotUpdate",
+    "inventory.MItemStack",
+    "message.MMessageListener",
+    "message.MPlayerSendMessage",
+    "message.MReceivedSound",
+    "render.MChatScreen",
+    "render.MChestBlock",
+    "render.MChestRenderer",
+    "render.MContainerScreen",
+    "render.MInGameHUD",
+    "render.MMouseHandler",
+    "render.MScreen",
+    "render.MSideChatHUD",
+    "render.MStitcher",
+    "render.MWindow",
+    "render.TextureMapAccessor",
+    "render.screen.MCreativeInventoryScreen",
+    "render.screen.MOptionsScreen"
+  ],
+  "client": [],
+  "server": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

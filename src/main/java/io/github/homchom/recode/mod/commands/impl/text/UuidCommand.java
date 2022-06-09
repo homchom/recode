@@ -6,7 +6,7 @@ import io.github.homchom.recode.Recode;
 import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
 import io.github.homchom.recode.mod.commands.arguments.types.PlayerArgumentType;
-import io.github.homchom.recode.sys.networking.State;
+import io.github.homchom.recode.sys.networking.DFState;
 import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.ChatType;
 import io.github.homchom.recode.sys.player.chat.*;
@@ -47,7 +47,7 @@ public class UuidCommand extends Command {
                                             ).withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, fullUUID)));
                                     this.sendMessage(mc, text);
 
-                                    if (this.isCreative(mc) && DFInfo.isOnDF() && DFInfo.currentState.getMode() == State.Mode.DEV) {
+                                    if (this.isCreative(mc) && DFInfo.isOnDF() && DFInfo.currentState.getMode() == DFState.Mode.DEV) {
                                         this.sendChatMessage(mc, "/txt " + fullUUID);
                                     }
                                 } catch (IOException e) {

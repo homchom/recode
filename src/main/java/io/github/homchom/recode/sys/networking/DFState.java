@@ -1,13 +1,11 @@
 package io.github.homchom.recode.sys.networking;
 
 import com.google.gson.*;
-import io.github.homchom.recode.event.*;
+import io.github.homchom.recode.event.RecodeEvents;
 import io.github.homchom.recode.mod.features.social.chat.message.*;
 import io.github.homchom.recode.sys.file.ILoader;
 import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.*;
-import kotlin.Unit;
-import kotlin.jvm.functions.Function2;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
@@ -15,9 +13,7 @@ import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.regex.*;
 
-public class State {
-    protected final Function2<State, State, Unit> invoker =
-            EventExtensions.getCall(RecodeEvents.CHANGE_DF_STATE);
+public class DFState {
     private static final String EMPTY = "                                       ";
     private static final Minecraft mc = Minecraft.getInstance();
     private static Timer locateTimer = new Timer();
@@ -27,34 +23,34 @@ public class State {
     public Node node;
     public boolean session;
 
-    public State() {
+    public DFState() {
         this.mode = null;
         this.node = null;
         this.plot = null;
         this.session = false;
     }
 
-    public State(State state) {
+    public DFState(DFState state) {
         this.mode = state.getMode();
         this.node = state.getNode();
         this.plot = state.getPlot();
         this.session = state.isInSession();
     }
 
-    public State(Mode mode, Node node, Plot plot, boolean session) {
+    public DFState(Mode mode, Node node, Plot plot, boolean session) {
         this.mode = mode;
         this.node = node;
         this.plot = plot;
         this.session = session;
-        invoker.invoke(this, this);
+        notifyStateChange(this, this);
     }
 
-    public State(String modeid, String nodeid, Plot plot, boolean session) {
+    public DFState(String modeid, String nodeid, Plot plot, boolean session) {
         this.mode = Mode.getByIdentifier(modeid);
         this.node = Node.getByIdentifier(nodeid);
         this.plot = plot;
         this.session = session;
-        invoker.invoke(this, this);
+        notifyStateChange(this, this);
     }
 
     public enum Mode {
@@ -212,10 +208,10 @@ public class State {
     }
 
     public void setInSession(boolean session) {
-        State old = this.copy();
+        DFState old = this.copy();
         boolean update = this.session != session;
         this.session = session;
-        if (update) invoker.invoke(this, old);
+        if (update) notifyStateChange(this, old);
     }
 
     public void setMode(Mode mode) {
@@ -245,7 +241,7 @@ public class State {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        State state = (State) o;
+        DFState state = (DFState) o;
         return session == state.session &&
                 Objects.equals(plot, state.plot) &&
                 mode == state.mode &&
@@ -254,18 +250,18 @@ public class State {
 
     @Override
     public int hashCode() {
-        return Objects.hash(invoker, plot, mode, node);
+        return Objects.hash(plot, mode, node);
     }
 
-    public State copy() {
-        return new State(this);
+    public DFState copy() {
+        return new DFState(this);
     }
 
-    public static State fromLocate(Message message) {
+    public static DFState fromLocate(Message message) {
         Component msg = message.getText();
 
         String text = msg.getString().replaceAll("§.", "");
-        State finalstate = new State();
+        DFState finalstate = new DFState();
 
         if (text.startsWith(EMPTY + "\nYou are currently at spawn\n")) {
             finalstate.setMode(Mode.SPAWN);
@@ -317,8 +313,8 @@ public class State {
                 }
             }
 
-            finalstate.setNode(State.Node.getByIdentifier(node));
-            finalstate.setPlot(new State.Plot(name, owner, id, customStatus));
+            finalstate.setNode(DFState.Node.getByIdentifier(node));
+            finalstate.setPlot(new DFState.Plot(name, owner, id, customStatus));
 
             if (text.startsWith(EMPTY + "\nYou are currently playing on:")) {
                 finalstate.setMode(Mode.PLAY);
@@ -356,6 +352,10 @@ public class State {
         }
     }
 
+    private static void notifyStateChange(DFState newState, DFState oldState) {
+        RecodeEvents.CHANGE_DF_STATE.invoke(new RecodeEvents.StateChange(newState, oldState));
+    }
+
     public static class Locater implements ILoader {
         @Override
         public void load() {
@@ -377,12 +377,12 @@ public class State {
         }
     }
 
-    public static class CurrentState extends State {
+    public static class CurrentState extends DFState {
         public CurrentState() {
             super();
         }
 
-        public CurrentState(State state) {
+        public CurrentState(DFState state) {
             super(state);
         }
 
@@ -396,36 +396,36 @@ public class State {
 
         @Override
         public void setInSession(boolean session) {
-            State old = this.copy();
+            DFState old = this.copy();
             boolean update = this.session != session;
             this.session = session;
-            if (update) invoker.invoke(this, old);
+            if (update) notifyStateChange(this, old);
         }
 
         @Override
         public void setMode(Mode mode) {
-            State old = this.copy();
+            DFState old = this.copy();
             boolean update = this.mode != mode;
             if (mode == Mode.SPAWN || mode == Mode.OFFLINE) this.plot = null;
             if (mode == Mode.OFFLINE) this.node = null;
             this.mode = mode;
-            if (update) invoker.invoke(this, old);
+            if (update) notifyStateChange(this, old);
         }
 
         @Override
         public void setNode(Node node) {
-            State old = this.copy();
+            DFState old = this.copy();
             boolean update = this.node != node;
             this.node = node;
-            if (update) invoker.invoke(this, old);
+            if (update) notifyStateChange(this, old);
         }
 
         @Override
         public void setPlot(Plot plot) {
-            State old = this.copy();
+            DFState old = this.copy();
             boolean update = this.plot != plot;
             this.plot = plot;
-            if (update) invoker.invoke(this, old);
+            if (update) notifyStateChange(this, old);
         }
     }
 }

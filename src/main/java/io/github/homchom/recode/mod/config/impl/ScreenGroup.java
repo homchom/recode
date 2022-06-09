@@ -23,17 +23,11 @@ public class ScreenGroup extends ConfigGroup {
         titleScreen.register(new BooleanSetting("dfButton", true));
         this.register(titleScreen);
 
-        // Cosmetic
-        ConfigSubGroup cosmetic = new ConfigSubGroup("cosmetic");
-        cosmetic.register(new BooleanSetting("cosmeticsEnabled", true));
-        this.register(cosmetic);
-
         // Code
         ConfigSubGroup code = new ConfigSubGroup("code");
         code.register(new BooleanSetting("chestToolTip", true));
         code.register(new BooleanSetting("templatePeeking", false));
         code.register(new BooleanSetting("cpuOnScreen", true));
-        code.register(new BooleanSetting("f3Tps", true));
         code.register(new BooleanSetting("variableScopeView", true));
         code.register(new BooleanSetting("highlightVarSyntax", true));
         code.register(new BooleanSetting("showCodeblockDescription", true));

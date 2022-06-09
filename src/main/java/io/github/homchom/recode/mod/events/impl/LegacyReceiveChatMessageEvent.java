@@ -4,7 +4,7 @@ import io.github.homchom.recode.Recode;
 import io.github.homchom.recode.event.*;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.social.chat.message.Message;
-import io.github.homchom.recode.sys.networking.State;
+import io.github.homchom.recode.sys.networking.DFState;
 import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.*;
 import io.github.homchom.recode.sys.util.TextUtil;
@@ -17,24 +17,25 @@ import java.util.regex.*;
 
 public class LegacyReceiveChatMessageEvent {
     public LegacyReceiveChatMessageEvent() {
-        RecodeEvents.RECEIVE_CHAT_MESSAGE.register(this::run);
+        RecodeEvents.RECEIVE_CHAT_MESSAGE.listen(this::run);
     }
 
     public static boolean pjoin = false;
 
     public static String tipPlayer = "";
 
-    private EventResult run(Message message) {
+    private void run(EventValidator result, Message message) {
         Minecraft mc = Minecraft.getInstance();
+
+        if (mc.player == null) {
+            result.setValid(false);
+            return;
+        }
 
         Component text = message.getText();
         String stripped = text.getString();
 
         boolean cancel = false;
-
-        if (mc.player == null) {
-            return EventResult.FAILURE;
-        }
 
         //PJoin command
         if (pjoin) {
@@ -50,7 +51,7 @@ public class LegacyReceiveChatMessageEvent {
                     while (matcher.find()) {
                         id = matcher.group();
                     }
-                    id = id.replaceAll("\\[|]|\n", "");
+                    id = id.replaceAll("[\\[]\n]", "");
 
                     String cmd = "/join " + id;
 
@@ -100,7 +101,7 @@ public class LegacyReceiveChatMessageEvent {
             cancel = true;
         }
 
-        if (DFInfo.currentState.getMode() == State.Mode.DEV) {
+        if (DFInfo.currentState.getMode() == DFState.Mode.DEV) {
             // hide var scope messages
             if (Config.getBoolean("hideVarScopeMessages") && stripped.startsWith("Scope set to ")) {
                 cancel = true;
@@ -122,7 +123,7 @@ public class LegacyReceiveChatMessageEvent {
         if (Config.getBoolean("autoTip") && stripped.startsWith("⏵⏵ ")) {
             if (msgWithColor.matches("§x§a§a§5§5§f§f⏵⏵ §f§l\\w+§7 is using a §x§f§f§f§f§a§a§l2§x§f§f§f§f§a§a§lx§7 booster.")) {
                 tipPlayer = stripped.split("§f§l")[1].split("§7")[0];
-            } else if (msgWithColor.matches("§x§a§a§5§5§f§f⏵⏵ §7Use §x§f§f§f§f§a§a\\/tip§7 to show your appreciation and receive a §x§f§f§d§4§2§a□ token notch§7!")) {
+            } else if (msgWithColor.matches("§x§a§a§5§5§f§f⏵⏵ §7Use §x§f§f§f§f§a§a/tip§7 to show your appreciation and receive a §x§f§f§d§4§2§a□ token notch§7!")) {
                 Recode.EXECUTOR.submit(() -> {
                     try {
                         Thread.sleep(3000);
@@ -132,12 +133,6 @@ public class LegacyReceiveChatMessageEvent {
             }
         }
 
-
-        //Cancelling (set cancel to true)
-        if (cancel) {
-            return EventResult.FAILURE;
-        }
-
-        return EventResult.PASS;
+        result.setValid(!cancel);
     }
 }
