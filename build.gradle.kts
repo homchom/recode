@@ -110,6 +110,8 @@ tasks {
         configurations = listOf(shade)
         destinationDirectory.set(file("build/devlibs"))
         archiveClassifier.set("dev")
+
+        from("LICENSE")
     }
 
     remapJar {

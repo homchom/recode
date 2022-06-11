@@ -6,7 +6,7 @@ import io.github.homchom.recode.init.RModule
 import io.github.homchom.recode.mc
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 
-@OptIn(GlobalUsesCustomOutlineProcessor::class)
+@OptIn(GlobalUsesCustomOutlines::class)
 class CustomOutlineProcessor : ModuleDefinition {
     override val dependencies = none()
 
@@ -36,4 +36,4 @@ interface OutlineProcessor {
 
 @RequiresOptIn("CustomOutlineProcessor must be enabled wherever this is used. Other " +
         "modules using this should add it as a dependency and opt in")
-annotation class GlobalUsesCustomOutlineProcessor
+annotation class GlobalUsesCustomOutlines

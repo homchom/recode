@@ -1,3 +1,5 @@
+@file:JvmName("Recode")
+
 package io.github.homchom.recode
 
 import com.google.gson.Gson
@@ -31,10 +33,10 @@ import java.util.concurrent.Executors
 
 private val logger = LoggerFactory.getLogger(MOD_ID)
 
-lateinit var MOD_VERSION: String
+lateinit var modVersion: String
     private set
 
-class Recode : EntrypointModule {
+class RecodeMod : EntrypointModule {
     // TODO: move feature groups to a config module
     override val dependencies = listOf(
         RenderingFeatureGroup()
@@ -43,7 +45,7 @@ class Recode : EntrypointModule {
     override fun RModule.onInit() {
         logInfo("Initializing...")
 
-        MOD_VERSION = FabricLoader.getInstance().getModContainer(MOD_ID).get()
+        modVersion = FabricLoader.getInstance().getModContainer(MOD_ID).get()
             .metadata.version.friendlyString
 
         System.setProperty("java.awt.headless", "false")
@@ -97,10 +99,6 @@ object LegacyRecode {
 
     @JvmField
     val EXECUTOR: ExecutorService = Executors.newCachedThreadPool()
-
-    @JvmStatic
-    lateinit var version: String
-        private set
 
     // TODO: replace with Permission class
     const val JEREMASTER_UUID = "6c669475-3026-4603-b3e7-52c97681ad3a"

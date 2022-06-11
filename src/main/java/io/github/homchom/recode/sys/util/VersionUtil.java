@@ -1,7 +1,7 @@
 package io.github.homchom.recode.sys.util;
 
 import com.google.gson.*;
-import io.github.homchom.recode.LegacyRecode;
+import io.github.homchom.recode.Recode;
 import io.github.homchom.recode.sys.networking.WebUtil;
 
 import java.io.IOException;
@@ -21,7 +21,7 @@ public class VersionUtil {
 
     public static int getCurrentVersionInt() {
         try {
-            return Integer.parseInt(LegacyRecode.getVersion());
+            return Integer.parseInt(Recode.getModVersion());
         }catch (NumberFormatException e) {
             return -1;
         }

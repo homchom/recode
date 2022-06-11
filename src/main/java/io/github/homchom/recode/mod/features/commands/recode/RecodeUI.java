@@ -2,7 +2,7 @@ package io.github.homchom.recode.mod.features.commands.recode;
 
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.*;
-import io.github.homchom.recode.LegacyRecode;
+import io.github.homchom.recode.Recode;
 import io.github.homchom.recode.mod.config.menu.ConfigScreen;
 import io.github.homchom.recode.sys.renderer.IMenu;
 import io.github.homchom.recode.sys.renderer.widgets.CImage;
@@ -25,7 +25,7 @@ public class RecodeUI extends LightweightGuiDescription implements IMenu {
         root.add(cImage, 46, -10);
 
         root.add(new WLabel(new TextComponent("recode")), (220 - Minecraft.getInstance().font.width("recode")) / 2, 110);
-        root.add(new WLabel(new TextComponent("v" + LegacyRecode.getVersion())), (220 - Minecraft.getInstance().font.width("v" + LegacyRecode.getVersion())) / 2, 120);
+        root.add(new WLabel(new TextComponent("v" + Recode.getModVersion())), (220 - Minecraft.getInstance().font.width("v" + Recode.getModVersion())) / 2, 120);
 
         addButtons(root);
         setRootPanel(root);
@@ -41,6 +41,7 @@ public class RecodeUI extends LightweightGuiDescription implements IMenu {
         panel.add(featuresButton, 60, 148, 100, 20);
 
         // ------------------------ Contributors Button ------------------------
+        // TODO: re-add?
         /*WButton contributorsButton = new WButton(new TextComponent("Contributors"));
         contributorsButton.setOnClick(() -> {
             ContributorsUI gui_2 = new ContributorsUI();
