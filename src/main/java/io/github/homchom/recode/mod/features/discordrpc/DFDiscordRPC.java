@@ -4,7 +4,7 @@ import com.jagrosh.discordipc.*;
 import com.jagrosh.discordipc.entities.RichPresence;
 import com.jagrosh.discordipc.entities.pipe.PipeStatus;
 import com.jagrosh.discordipc.exceptions.NoDiscordClientException;
-import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.sys.file.ILoader;
 import io.github.homchom.recode.sys.networking.DFState;
@@ -34,11 +34,11 @@ public class DFDiscordRPC implements ILoader {
     @Override
     public void load() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            Recode.info("Closing Discord hook.");
+            LegacyRecode.info("Closing Discord hook.");
             try {
                 close();
             } catch (Exception e) {
-                Recode.error("Error while closing Discord hook.");
+                LegacyRecode.error("Error while closing Discord hook.");
             }
         }));
 
@@ -149,7 +149,7 @@ public class DFDiscordRPC implements ILoader {
     }
 
     private String getLargeImageText() {
-        return "mcdiamondfire.com | recode " + Recode.getVersion();
+        return "mcdiamondfire.com | recode " + LegacyRecode.getVersion();
     }
 
     private static String dyn(String key) {

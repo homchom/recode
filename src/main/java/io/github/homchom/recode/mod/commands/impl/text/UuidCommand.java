@@ -2,7 +2,7 @@ package io.github.homchom.recode.mod.commands.impl.text;
 
 import com.google.gson.*;
 import com.mojang.brigadier.CommandDispatcher;
-import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
 import io.github.homchom.recode.mod.commands.arguments.types.PlayerArgumentType;
@@ -27,7 +27,7 @@ public class UuidCommand extends Command {
         cd.register(ArgBuilder.literal("uuid")
                 .then(ArgBuilder.argument("username", PlayerArgumentType.player())
                         .executes(ctx -> {
-                            Recode.EXECUTOR.submit(() -> {
+                            LegacyRecode.EXECUTOR.submit(() -> {
                                 String username = ctx.getArgument("username", String.class);
                                 String url = "https://api.mojang.com/users/profiles/minecraft/" + username;
                                 try {

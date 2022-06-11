@@ -1,6 +1,6 @@
 package io.github.homchom.recode.mod.events.impl;
 
-import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.event.*;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.social.chat.message.Message;
@@ -124,7 +124,7 @@ public class LegacyReceiveChatMessageEvent {
             if (msgWithColor.matches("§x§a§a§5§5§f§f⏵⏵ §f§l\\w+§7 is using a §x§f§f§f§f§a§a§l2§x§f§f§f§f§a§a§lx§7 booster.")) {
                 tipPlayer = stripped.split("§f§l")[1].split("§7")[0];
             } else if (msgWithColor.matches("§x§a§a§5§5§f§f⏵⏵ §7Use §x§f§f§f§f§a§a/tip§7 to show your appreciation and receive a §x§f§f§d§4§2§a□ token notch§7!")) {
-                Recode.EXECUTOR.submit(() -> {
+                LegacyRecode.EXECUTOR.submit(() -> {
                     try {
                         Thread.sleep(3000);
                     } catch (Exception ignored) {}

@@ -2,7 +2,7 @@ package io.github.homchom.recode.mod.commands.impl.item;
 
 import com.google.gson.*;
 import com.mojang.brigadier.CommandDispatcher;
-import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
 import io.github.homchom.recode.sys.hypercube.templates.*;
@@ -27,7 +27,7 @@ public class ImportFileCommand extends Command {
                     if (!isCreative(mc)) return -1;
 
                     ChatUtil.sendMessage("Opening File Picker", ChatType.INFO_BLUE);
-                    Recode.EXECUTOR.submit(() -> {
+                    LegacyRecode.EXECUTOR.submit(() -> {
                         try {
                             FileDialog fd = new FileDialog((Dialog) null, "Choose a text file", FileDialog.LOAD);
                             fd.setMultipleMode(true);

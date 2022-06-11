@@ -1,6 +1,7 @@
 package io.github.homchom.recode.event
 
 import io.github.homchom.recode.mod.features.social.chat.message.Message
+import io.github.homchom.recode.render.GlobalUsesCustomOutlineProcessor
 import io.github.homchom.recode.render.RGBA
 import io.github.homchom.recode.sys.networking.DFState
 import net.minecraft.network.protocol.game.ClientboundSoundPacket
@@ -12,6 +13,8 @@ object RecodeEvents {
 
     // Rendering
     @JvmField val RENDER_BLOCK_ENTITY = createValidatedEvent<BlockEntity>()
+
+    @GlobalUsesCustomOutlineProcessor
     @JvmField val OUTLINE_BLOCK_ENTITY = createEvent<BlockEntity, OutlineResult>()
 
     class OutlineResult {

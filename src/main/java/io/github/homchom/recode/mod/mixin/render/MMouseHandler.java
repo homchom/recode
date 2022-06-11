@@ -1,7 +1,7 @@
 package io.github.homchom.recode.mod.mixin.render;
 
 import com.google.gson.*;
-import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.sys.util.ItemUtil;
 import net.minecraft.ChatFormatting;
@@ -32,12 +32,12 @@ public class MMouseHandler {
 
     @Inject(method = "onScroll(JDD)V", at = @At("HEAD"))
     private void onScroll(long window, double horiz, double vertical, CallbackInfo ci) {
-        Screen screen = Recode.MC.screen;
+        Screen screen = LegacyRecode.MC.screen;
         if (screen instanceof ContainerScreen && Config.getBoolean("quicknum")) {
             AbstractContainerMenu handler = ((ContainerScreen) screen).getMenu();
             List<Slot> slotList = handler.slots;
 
-            double scale = Recode.MC.getWindow().getGuiScale();
+            double scale = LegacyRecode.MC.getWindow().getGuiScale();
 
             double mouseX = xpos;
             double mouseY = ypos;
@@ -53,8 +53,8 @@ public class MMouseHandler {
                 if (sX < mouseX && mouseX < sX + (16 * scale)) {
                     if (sY < mouseY && mouseY < sY + (16 * scale)) {
                         if (System.currentTimeMillis() >= cd) {
-                            if (Recode.MC.player != null && Recode.MC.gameMode != null && ItemUtil.isVar(slot.getItem(), "num")) {
-                                if (Recode.MC.player.isCreative()) {
+                            if (LegacyRecode.MC.player != null && LegacyRecode.MC.gameMode != null && ItemUtil.isVar(slot.getItem(), "num")) {
+                                if (LegacyRecode.MC.player.isCreative()) {
                                     cd = System.currentTimeMillis() + 250;
                                     ItemStack itemStack = slot.getItem().copy();
 
@@ -77,31 +77,31 @@ public class MMouseHandler {
                                             if (vertical > 0) {
                                                 bigDecimal = bigDecimal.add(BigDecimal.valueOf(Config.getDouble("quicknumSecondaryAmount")));
                                                 if (Config.getBoolean("quicknumSound"))
-                                                    Recode.MC.player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT, SoundSource.PLAYERS, 1, 1);
+                                                    LegacyRecode.MC.player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT, SoundSource.PLAYERS, 1, 1);
                                             } else {
                                                 bigDecimal = bigDecimal.subtract(BigDecimal.valueOf(Config.getDouble("quicknumSecondaryAmount")));
                                                 if (Config.getBoolean("quicknumSound"))
-                                                    Recode.MC.player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT, SoundSource.PLAYERS, 1, 0);
+                                                    LegacyRecode.MC.player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT, SoundSource.PLAYERS, 1, 0);
                                             }
                                         } else if (Screen.hasShiftDown()) {
                                             if (vertical > 0) {
                                                 bigDecimal = bigDecimal.add(BigDecimal.valueOf(Config.getDouble("quicknumTertiaryAmount")));
                                                 if (Config.getBoolean("quicknumSound"))
-                                                    Recode.MC.player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT, SoundSource.PLAYERS, 1, 1);
+                                                    LegacyRecode.MC.player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT, SoundSource.PLAYERS, 1, 1);
                                             } else {
                                                 bigDecimal = bigDecimal.subtract(BigDecimal.valueOf(Config.getDouble("quicknumTertiaryAmount")));
                                                 if (Config.getBoolean("quicknumSound"))
-                                                    Recode.MC.player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT, SoundSource.PLAYERS, 1, 0);
+                                                    LegacyRecode.MC.player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT, SoundSource.PLAYERS, 1, 0);
                                             }
                                         } else {
                                             if (vertical > 0) {
                                                 bigDecimal = bigDecimal.add(BigDecimal.valueOf(Config.getDouble("quicknumPrimaryAmount")));
                                                 if (Config.getBoolean("quicknumSound"))
-                                                    Recode.MC.player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT, SoundSource.PLAYERS, 1, 1);
+                                                    LegacyRecode.MC.player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT, SoundSource.PLAYERS, 1, 1);
                                             } else {
                                                 bigDecimal = bigDecimal.subtract(BigDecimal.valueOf(Config.getDouble("quicknumPrimaryAmount")));
                                                 if (Config.getBoolean("quicknumSound"))
-                                                    Recode.MC.player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT, SoundSource.PLAYERS, 1, 0);
+                                                    LegacyRecode.MC.player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT, SoundSource.PLAYERS, 1, 0);
                                             }
                                         }
 
@@ -120,7 +120,7 @@ public class MMouseHandler {
                                         ItemUtil.setContainerItem(slot.index, itemStack);
                                     } catch (NumberFormatException e) {
                                         if (Config.getBoolean("quicknumSound"))
-                                            Recode.MC.player.playNotifySound(SoundEvents.NOTE_BLOCK_DIDGERIDOO, SoundSource.PLAYERS, 1, 0);
+                                            LegacyRecode.MC.player.playNotifySound(SoundEvents.NOTE_BLOCK_DIDGERIDOO, SoundSource.PLAYERS, 1, 0);
                                     }
                                 }
                             }

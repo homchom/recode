@@ -1,7 +1,7 @@
 package io.github.homchom.recode.mod.config.internal.gson;
 
 import com.google.gson.*;
-import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.internal.ConfigInstruction;
 import io.github.homchom.recode.mod.config.structure.ConfigSetting;
 import io.github.homchom.recode.mod.config.types.*;
@@ -28,19 +28,19 @@ public class ConfigSerializer implements JsonSerializer<ConfigInstruction>, Json
                     JsonPrimitive primitive = jsonElement.getAsJsonPrimitive();
 
                     if (primitive.isString()) {
-                        setting = Recode.GSON.fromJson(primitive, StringSetting.class);
+                        setting = LegacyRecode.GSON.fromJson(primitive, StringSetting.class);
                     } else if (primitive.isBoolean()) {
-                        setting = Recode.GSON.fromJson(primitive, BooleanSetting.class);
+                        setting = LegacyRecode.GSON.fromJson(primitive, BooleanSetting.class);
                     } else if (primitive.isNumber()) {
                         Number number = primitive.getAsNumber();
                         if (number instanceof Integer) {
-                            setting = Recode.GSON.fromJson(primitive, IntegerSetting.class);
+                            setting = LegacyRecode.GSON.fromJson(primitive, IntegerSetting.class);
                         } else if (number instanceof Double) {
-                            setting = Recode.GSON.fromJson(primitive, DoubleSetting.class);
+                            setting = LegacyRecode.GSON.fromJson(primitive, DoubleSetting.class);
                         } else if (number instanceof Float) {
-                            setting = Recode.GSON.fromJson(primitive, FloatSetting.class);
+                            setting = LegacyRecode.GSON.fromJson(primitive, FloatSetting.class);
                         } else if (number instanceof Long) {
-                            setting = Recode.GSON.fromJson(primitive, LongSetting.class);
+                            setting = LegacyRecode.GSON.fromJson(primitive, LongSetting.class);
                         }
                     }
                 }
@@ -60,7 +60,7 @@ public class ConfigSerializer implements JsonSerializer<ConfigInstruction>, Json
             ConfigSetting<?> value = entry.getValue();
             if (value instanceof TextDescription) continue;
             //System.out.println("[CuConfig] saving " + key + " (" + value + ")");
-            json.add(key, Recode.GSON.toJsonTree(value));
+            json.add(key, LegacyRecode.GSON.toJsonTree(value));
         }
         return json;
     }

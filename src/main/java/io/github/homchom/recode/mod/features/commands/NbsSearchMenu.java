@@ -1,18 +1,11 @@
 package io.github.homchom.recode.mod.features.commands;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
-import io.github.cottonmc.cotton.gui.widget.WButton;
-import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
-import io.github.cottonmc.cotton.gui.widget.WScrollPanel;
-import io.github.cottonmc.cotton.gui.widget.WText;
-import io.github.homchom.recode.Recode;
-import io.github.homchom.recode.mod.features.commands.nbs.NBSToTemplate;
-import io.github.homchom.recode.mod.features.commands.nbs.SongData;
+import io.github.cottonmc.cotton.gui.widget.*;
+import io.github.homchom.recode.LegacyRecode;
+import io.github.homchom.recode.mod.features.commands.nbs.*;
 import io.github.homchom.recode.sys.hypercube.templates.TemplateUtil;
 import io.github.homchom.recode.sys.networking.WebUtil;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
@@ -21,20 +14,13 @@ import io.github.homchom.recode.sys.util.ItemUtil;
 import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.sounds.*;
+import net.minecraft.world.item.*;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
+import java.util.concurrent.*;
 
 public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
 
@@ -63,7 +49,7 @@ public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
 
     @Override
     public void open(String... args) throws CommandSyntaxException {
-        Minecraft mc = Recode.MC;
+        Minecraft mc = LegacyRecode.MC;
         WPlainPanel root = new WPlainPanel();
         root.setSize(300, 240);
 
@@ -78,7 +64,7 @@ public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
 
         WScrollPanel spanel = new WScrollPanel(ppanel);
 
-        Recode.EXECUTOR.submit(() -> {
+        LegacyRecode.EXECUTOR.submit(() -> {
             try {
                 String sresults = WebUtil.getString(
                     "https://untitled-57qvszfgg28u.runkit.sh/search?query=" + URLEncoder
@@ -109,7 +95,7 @@ public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
 
                         download.setOnClick(() -> {
                             download.setLabel(new TextComponent("..."));
-                            Recode.EXECUTOR
+                            LegacyRecode.EXECUTOR
                                 .submit(() -> {
                                     String notes = null;
                                     try {
@@ -147,7 +133,7 @@ public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
                             if (previewId != id) {
                                 previewId = id;
                                 preview.setLabel(new TextComponent("..."));
-                                Recode.EXECUTOR
+                                LegacyRecode.EXECUTOR
                                     .submit(() -> {
                                         String snotes = null;
                                         try {
@@ -166,7 +152,7 @@ public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
                                         int[] index = {0};
                                         ScheduledExecutorService scheduler = Executors
                                             .newScheduledThreadPool(1);
-                                        scheduler.scheduleAtFixedRate(() -> Recode.MC.submit(() -> { //apparently playing sounds non-sync can crash the game
+                                        scheduler.scheduleAtFixedRate(() -> LegacyRecode.MC.submit(() -> { //apparently playing sounds non-sync can crash the game
                                             if (previewId != id
                                                 || mc.screen == null) {
                                                 scheduler.shutdown();

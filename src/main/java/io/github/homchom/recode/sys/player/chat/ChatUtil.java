@@ -1,6 +1,6 @@
 package io.github.homchom.recode.sys.player.chat;
 
-import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.color.MinecraftColors;
@@ -26,12 +26,12 @@ public class ChatUtil {
 
     public static void playSound(SoundEvent sound, float pitch, float volume) {
         if (sound != null) {
-            Recode.MC.player.playSound(sound, volume, pitch);
+            LegacyRecode.MC.player.playSound(sound, volume, pitch);
         }
     }
 
     public static void chat(String message) {
-        Recode.MC.player.chat(message);
+        LegacyRecode.MC.player.chat(message);
     }
 
     public static void executeCommand(String command) {
@@ -64,7 +64,7 @@ public class ChatUtil {
     }
 
     public static void sendMessage(MutableComponent text, @Nullable ChatType chatType) {
-        LocalPlayer player = Recode.MC.player;
+        LocalPlayer player = LegacyRecode.MC.player;
         if (player == null) {
             return;
         }

@@ -3,7 +3,7 @@ package io.github.homchom.recode.mod.commands.impl.other;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
-import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
 import io.github.homchom.recode.sys.player.chat.*;
@@ -33,7 +33,7 @@ public class PartnerBracketCommand extends Command {
             ChatUtil.sendMessage("Disabled Bracket view.", ChatType.INFO_BLUE);
             return;
         }
-        Minecraft mc = Recode.MC;
+        Minecraft mc = LegacyRecode.MC;
         BlockPos pos = new BlockPos(mc.hitResult.getLocation());
         if (!isPiston(pos)) {
             if (isPiston(pos.north())) {
@@ -86,12 +86,12 @@ public class PartnerBracketCommand extends Command {
     }
 
     private static boolean getDir(BlockPos pos) {
-        return Recode.MC.level.getBlockState(pos).getValue(BlockStateProperties.FACING) == Direction.NORTH;
+        return LegacyRecode.MC.level.getBlockState(pos).getValue(BlockStateProperties.FACING) == Direction.NORTH;
     }
 
     private static boolean isPiston(BlockPos pos) {
-        return Recode.MC.level.getBlockState(pos).is(Blocks.PISTON)
-            || Recode.MC.level.getBlockState(pos).is(Blocks.STICKY_PISTON);
+        return LegacyRecode.MC.level.getBlockState(pos).is(Blocks.PISTON)
+            || LegacyRecode.MC.level.getBlockState(pos).is(Blocks.STICKY_PISTON);
     }
 
     @Override

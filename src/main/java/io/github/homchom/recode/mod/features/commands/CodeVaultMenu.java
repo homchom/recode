@@ -4,10 +4,10 @@ import com.google.gson.*;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.*;
-import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.sys.networking.WebUtil;
 import io.github.homchom.recode.sys.player.chat.ChatType;
-import io.github.homchom.recode.sys.player.chat.ChatUtil;
+import io.github.homchom.recode.sys.player.chat.*;
 import io.github.homchom.recode.sys.renderer.IMenu;
 import io.github.homchom.recode.sys.renderer.widgets.ItemScrollablePanel;
 import net.fabricmc.fabric.api.util.TriState;
@@ -177,6 +177,6 @@ public class CodeVaultMenu extends LightweightGuiDescription implements IMenu {
                 err.printStackTrace();
             }
         }
-        Recode.MC.submit(this::update);
+        LegacyRecode.MC.submit(this::update);
     }
 }

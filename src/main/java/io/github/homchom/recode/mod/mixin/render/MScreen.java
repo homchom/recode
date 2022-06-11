@@ -5,7 +5,7 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.vertex.PoseStack;
-import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.sys.renderer.TexturedOtherPlayerEntity;
 import net.minecraft.client.Minecraft;
@@ -31,7 +31,7 @@ public class MScreen {
 
     @Inject(method = "onClose", at = @At("HEAD"))
     private void onClose(CallbackInfo ci) {
-        Recode.signText = new String[0];
+        LegacyRecode.signText = new String[0];
     }
 
     @Inject(method = "renderTooltip(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/item/ItemStack;II)V", at = @At("HEAD"))
@@ -55,7 +55,7 @@ public class MScreen {
                             gameProfile = NbtUtils.readGameProfile(compoundTag.getCompound("SkullOwner"));
                         }
 
-                        Minecraft mc = Recode.MC;
+                        Minecraft mc = LegacyRecode.MC;
 
                         Map<Type, MinecraftProfileTexture> textures = mc.getSkinManager().getInsecureSkinInformation(gameProfile);
                         if (textures.containsKey(Type.SKIN)) {

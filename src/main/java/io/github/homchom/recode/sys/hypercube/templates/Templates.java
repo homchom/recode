@@ -1,14 +1,11 @@
 package io.github.homchom.recode.sys.hypercube.templates;
 
-import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.sys.player.chat.ChatType;
-import io.github.homchom.recode.sys.player.chat.ChatUtil;
+import io.github.homchom.recode.sys.player.chat.*;
 import io.github.homchom.recode.sys.util.ItemUtil;
-import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.*;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.Enchantments;
 
 public class Templates {
@@ -51,7 +48,7 @@ public class Templates {
     }
 
     public static void giveUserTemplate(ItemStack stack, String name, String codeData) {
-        giveRawTemplate(stack, name, Recode.MC.player.getName().getContents(), codeData);
+        giveRawTemplate(stack, name, LegacyRecode.MC.player.getName().getContents(), codeData);
     }
 
     public static void giveRawTemplate(ItemStack stack, String name, String author, String codeData) {

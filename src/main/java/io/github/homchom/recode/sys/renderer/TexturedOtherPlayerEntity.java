@@ -1,7 +1,7 @@
 package io.github.homchom.recode.sys.renderer;
 
 import com.mojang.authlib.GameProfile;
-import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.LegacyRecode;
 import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.PlayerModelPart;
@@ -13,7 +13,7 @@ public class TexturedOtherPlayerEntity extends RemotePlayer {
     ResourceLocation texture;
 
     public TexturedOtherPlayerEntity(ResourceLocation texture) {
-        super(Recode.MC.level, new GameProfile(UUID.fromString("00000000-0000-0000-0000-000000000000"),""));
+        super(LegacyRecode.MC.level, new GameProfile(UUID.fromString("00000000-0000-0000-0000-000000000000"),""));
         this.texture = texture;
     }
 

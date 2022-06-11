@@ -1,7 +1,7 @@
 package io.github.homchom.recode.mod.commands.impl.other;
 
 import com.mojang.brigadier.CommandDispatcher;
-import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
 import io.github.homchom.recode.mod.commands.arguments.types.PathArgumentType;
@@ -24,7 +24,7 @@ import java.io.*;
 public class NBSCommand extends Command {
 
     public static void loadNbs(File file, String fileName) {
-        Recode.EXECUTOR.submit(() -> {
+        LegacyRecode.EXECUTOR.submit(() -> {
             try {
                 SongData d = NBSDecoder.parse(file);
                 String code = new NBSToTemplate(d).convert();

@@ -1,7 +1,7 @@
 package io.github.homchom.recode.mod.features;
 
 import com.google.gson.*;
-import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.sys.util.TextUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -25,6 +25,7 @@ public class VarSyntaxHighlighter {
         "%random(",
         "%round(",
         "%index(",
+        "%entry(",
         "%var(",
         "%math("
     );
@@ -45,7 +46,7 @@ public class VarSyntaxHighlighter {
     );
 
     public static Component highlight(String msg) {
-        ItemStack item = Recode.MC.player.getMainHandItem();
+        ItemStack item = LegacyRecode.MC.player.getMainHandItem();
 
         String type = "";
 

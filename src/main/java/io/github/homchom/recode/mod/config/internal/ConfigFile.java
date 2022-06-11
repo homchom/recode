@@ -2,7 +2,7 @@ package io.github.homchom.recode.mod.config.internal;
 
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
-import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.structure.*;
 import io.github.homchom.recode.sys.file.*;
 import net.fabricmc.loader.api.FabricLoader;
@@ -46,7 +46,7 @@ public class ConfigFile implements ILoader, ISave {
             }
         }
         // Deserialize all the values from the config
-        this.configInstruction = Recode.GSON.fromJson(jsonObject, ConfigInstruction.class);
+        this.configInstruction = LegacyRecode.GSON.fromJson(jsonObject, ConfigInstruction.class);
     }
 
     @Override
@@ -69,7 +69,7 @@ public class ConfigFile implements ILoader, ISave {
 
         try {
             FileWriter configWriter = new FileWriter(this.configPath.toFile());
-            configWriter.write(Recode.GSON.toJson(instruction));
+            configWriter.write(LegacyRecode.GSON.toJson(instruction));
             configWriter.flush();
         } catch (IOException e) {
             e.printStackTrace();

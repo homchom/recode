@@ -1,6 +1,6 @@
 package io.github.homchom.recode.mod.config.menu;
 
-import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.internal.ITranslatable;
 import io.github.homchom.recode.mod.config.structure.*;
 import io.github.homchom.recode.mod.config.types.*;
@@ -40,10 +40,10 @@ public class ConfigScreen implements ITranslatable {
 
         // Optimized loop
         for (ConfigGroup group : groups) {
-            if (!((playerUUID.equals(Recode.JEREMASTER_UUID) ||
-                    playerUUID.equals(Recode.JEREMASTER_UUID.replaceAll("-", ""))) ||
-                    (playerUUID.equals(Recode.RYANLAND_UUID) ||
-                            playerUUID.equals(Recode.RYANLAND_UUID.replaceAll("-", ""))))
+            if (!((playerUUID.equals(LegacyRecode.JEREMASTER_UUID) ||
+                    playerUUID.equals(LegacyRecode.JEREMASTER_UUID.replaceAll("-", ""))) ||
+                    (playerUUID.equals(LegacyRecode.RYANLAND_UUID) ||
+                            playerUUID.equals(LegacyRecode.RYANLAND_UUID.replaceAll("-", ""))))
             && group.getName().equals("streamer")) {
                 continue;
             }

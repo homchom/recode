@@ -2,7 +2,9 @@ package io.github.homchom.recode.feature
 
 import io.github.homchom.recode.init.RModule
 
-abstract class Feature(name: String) : Configurable(name)
+abstract class Feature(name: String) : Configurable(name) {
+    override val isPersistent = true
+}
 
 // TODO: update when config is integrated
 abstract class FeatureGroup(name: String) : Configurable(name) {

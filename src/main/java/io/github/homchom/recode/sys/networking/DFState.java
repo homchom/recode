@@ -356,6 +356,7 @@ public class DFState {
         RecodeEvents.CHANGE_DF_STATE.invoke(new RecodeEvents.StateChange(newState, oldState));
     }
 
+    // TODO: remove this entirely
     public static class Locater implements ILoader {
         @Override
         public void load() {
@@ -365,7 +366,7 @@ public class DFState {
                         DFInfo.currentState.sendLocate();
                     }
                     try {
-                        Thread.sleep(5000);
+                        Thread.sleep(10_000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

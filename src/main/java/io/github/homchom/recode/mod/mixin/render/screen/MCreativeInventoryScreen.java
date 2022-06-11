@@ -1,6 +1,6 @@
 package io.github.homchom.recode.mod.mixin.render.screen;
 
-import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.config.internal.DestroyItemResetType;
 import io.github.homchom.recode.sys.networking.DFState;
@@ -21,7 +21,7 @@ public class MCreativeInventoryScreen {
         DestroyItemResetType resetType = Config.getEnum("destroyItemReset", DestroyItemResetType.class);
         if (resetType != DestroyItemResetType.OFF && DFInfo.isOnDF() && DFInfo.currentState.getMode() == DFState.CurrentState.Mode.DEV
                 && actionType == ClickType.QUICK_MOVE && slot == this.destroyItemSlot) {
-            Recode.MC.setScreen(null);
+            LegacyRecode.MC.setScreen(null);
             String cmd = "";
             switch (resetType) {
                 case STANDARD:
@@ -31,7 +31,7 @@ public class MCreativeInventoryScreen {
                     cmd = "/rc";
                     break;
             }
-            Recode.MC.player.chat(cmd);
+            LegacyRecode.MC.player.chat(cmd);
             ci.cancel();
         }
     }

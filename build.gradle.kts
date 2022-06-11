@@ -3,9 +3,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.gradle.kotlin.dsl.DependencyHandlerScope
 
 plugins {
-    id("fabric-loom") version "0.11-SNAPSHOT"
+    kotlin("jvm") version "1.7.0"
+    id("fabric-loom") version "0.12-SNAPSHOT"
     id("com.github.johnrengelman.shadow") version "7.1.2"
-    kotlin("jvm") version "1.6.21"
 }
 
 val modVersion: String by project
@@ -47,8 +47,11 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:$loaderVersion")
     val fabricVersion: String by project
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
+
     val kotlinVersion: String by project
-    includeModImpl("net.fabricmc:fabric-language-kotlin:1.7.4+kotlin.$kotlinVersion")
+    shadeApi(kotlin("stdlib", "1.7.0"))
+    shadeApi(kotlin("stdlib-jdk7", "1.7.0"))
+    shadeApi(kotlin("stdlib-jdk8", "1.7.0"))
 
     // https://github.com/CottonMC/LibGui/releases
     includeModImpl("io.github.cottonmc:LibGui:5.4.0+1.18.2")
@@ -69,8 +72,7 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 
 	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-	// if it is present.
-	// If you remove this line, sources will not be generated.
+	// if it is present. If you remove this line, sources will not be generated.
 	withSourcesJar()
 }
 
@@ -117,32 +119,32 @@ tasks {
 
 typealias DependencyConfig = Action<ExternalModuleDependency>
 
-fun DependencyHandlerScope.shadeImpl(notation: String) {
+fun DependencyHandlerScope.shadeImpl(notation: Any) {
     implementation(notation)
     shade(notation)
 }
 
-fun DependencyHandlerScope.shadeImpl(notation: String, config: DependencyConfig) {
-    implementation(notation, config)
+fun DependencyHandlerScope.shadeApi(notation: Any) {
+    api(notation)
     shade(notation)
 }
 
-fun DependencyHandlerScope.includeImpl(notation: String) {
+fun DependencyHandlerScope.includeImpl(notation: Any) {
     implementation(notation)
     include(notation)
 }
 
-fun DependencyHandlerScope.includeImpl(notation: String, config: DependencyConfig) {
-    implementation(notation, config)
-    include(notation, config)
+fun DependencyHandlerScope.includeApi(notation: Any) {
+    api(notation)
+    include(notation)
 }
 
-fun DependencyHandlerScope.includeModImpl(notation: String) {
+fun DependencyHandlerScope.includeModImpl(notation: Any) {
     modImplementation(notation)
     include(notation)
 }
 
-fun DependencyHandlerScope.includeModImpl(notation: String, config: DependencyConfig) {
-    modImplementation(notation, config)
-    include(notation, config)
+fun DependencyHandlerScope.includeModApi(notation: Any) {
+    modApi(notation)
+    include(notation)
 }

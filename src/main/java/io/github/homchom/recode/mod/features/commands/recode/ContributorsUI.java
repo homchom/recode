@@ -4,7 +4,7 @@ import com.google.gson.*;
 import com.mojang.blaze3d.platform.NativeImage;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.*;
-import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.sys.networking.WebUtil;
 import io.github.homchom.recode.sys.renderer.IMenu;
 import io.github.homchom.recode.sys.renderer.widgets.CImage;
@@ -57,7 +57,7 @@ public class ContributorsUI extends LightweightGuiDescription implements IMenu {
             if (contributor.getAvatar() == null) {
                 try {
                     URL url = new URL(contributor.getAvatarUrl());
-                    ResourceLocation identifier = Recode.MC.getTextureManager().register("contributor_" + contributor.getName().toLowerCase(), new DynamicTexture(NativeImage.read(url.openStream())));
+                    ResourceLocation identifier = LegacyRecode.MC.getTextureManager().register("contributor_" + contributor.getName().toLowerCase(), new DynamicTexture(NativeImage.read(url.openStream())));
                     contributor.setAvatar(identifier);
 
                 } catch (IOException e) {

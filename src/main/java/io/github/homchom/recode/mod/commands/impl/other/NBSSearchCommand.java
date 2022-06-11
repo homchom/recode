@@ -2,7 +2,7 @@ package io.github.homchom.recode.mod.commands.impl.other;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.features.commands.NbsSearchMenu;
 import io.github.homchom.recode.sys.player.chat.*;
@@ -19,7 +19,7 @@ public class NBSSearchCommand extends Command {
         cd.register(literal("nbssearch")
             .then(argument("query", StringArgumentType.greedyString())
                 .executes(ctx -> {
-                    if (!Recode.MC.player.isCreative()) {
+                    if (!LegacyRecode.MC.player.isCreative()) {
                         ChatUtil.sendMessage("You need to be in creative mode for this command to work!", ChatType.FAIL);
                         return -1;
                     }

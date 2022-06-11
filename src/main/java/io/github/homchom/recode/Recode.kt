@@ -3,7 +3,8 @@ package io.github.homchom.recode
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import io.github.homchom.recode.feature.RenderingFeatureGroup
-import io.github.homchom.recode.init.init
+import io.github.homchom.recode.init.EntrypointModule
+import io.github.homchom.recode.init.RModule
 import io.github.homchom.recode.mod.commands.CommandHandler
 import io.github.homchom.recode.mod.config.Config
 import io.github.homchom.recode.mod.config.internal.ConfigFile
@@ -20,7 +21,6 @@ import io.github.homchom.recode.sys.hypercube.codeaction.ActionDump
 import io.github.homchom.recode.sys.hypercube.templates.TemplateStorageHandler
 import io.github.homchom.recode.sys.networking.DFState.Locater
 import io.github.homchom.recode.sys.networking.websocket.SocketHandler
-import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.Minecraft
@@ -29,20 +29,54 @@ import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-object Recode : ModInitializer {
+private val logger = LoggerFactory.getLogger(MOD_ID)
+
+lateinit var MOD_VERSION: String
+    private set
+
+class Recode : EntrypointModule {
     // TODO: move feature groups to a config module
-    private val rootModules = listOf(
-       RenderingFeatureGroup()
+    override val dependencies = listOf(
+        RenderingFeatureGroup()
     )
 
-    private val logger = LoggerFactory.getLogger(MOD_ID)
+    override fun RModule.onInit() {
+        logInfo("Initializing...")
 
+        MOD_VERSION = FabricLoader.getInstance().getModContainer(MOD_ID).get()
+            .metadata.version.friendlyString
+
+        System.setProperty("java.awt.headless", "false")
+
+        ClientLifecycleEvents.CLIENT_STOPPING.register { onDisable() }
+
+        LegacyRecode.onInitialize()
+
+        logInfo("Initialized successfully!")
+    }
+
+    override fun RModule.onClose() {
+        logInfo("Closing...")
+
+        // TODO: clean up
+        try {
+            ConfigFile.getInstance().save()
+            TemplateStorageHandler.getInstance().save()
+        } catch (err: Exception) {
+            logError("Error")
+            err.printStackTrace()
+        }
+
+        logInfo("Closed.")
+    }
+}
+
+@Deprecated("Use top-level or Kotlin equivalents")
+object LegacyRecode {
     @JvmField
-    @Deprecated("Use kotlin.random")
     val RANDOM = Random()
 
     @JvmField
-    @Deprecated("Use kotlinx.serialization")
     val GSON: Gson = GsonBuilder()
         .registerTypeAdapter(ConfigInstruction::class.java, ConfigSerializer())
         .registerTypeAdapter(BooleanSetting::class.java, BooleanSerializer())
@@ -59,7 +93,6 @@ object Recode : ModInitializer {
         .create()
 
     @JvmField
-    @Deprecated("Use 'mc' top-level property")
     val MC: Minecraft = Minecraft.getInstance()
 
     @JvmField
@@ -77,20 +110,8 @@ object Recode : ModInitializer {
     @JvmField
     var signText = arrayOf<String>() // stores the text of the code sign corresponding to the currently open chest
 
-    override fun onInitialize() {
-        info("Initializing...")
-
-        version = FabricLoader.getInstance().getModContainer(MOD_ID).get()
-            .metadata.version.friendlyString
-
-        System.setProperty("java.awt.headless", "false")
-
-        ClientLifecycleEvents.CLIENT_STOPPING.register(::onClose)
-
+    fun onInitialize() {
         //System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2,TLSv1.3");
-
-        // Initialize root modules
-        for (module in rootModules) module.init()
 
         // Initialize legacy code
         val initializer = CodeInitializer()
@@ -105,25 +126,15 @@ object Recode : ModInitializer {
 
         // Initializes only if the given condition is met. (this case: config value)
         initializer.addIf(SocketHandler(), Config.getBoolean("itemApi"))
-
-        info("Initialized successfully!")
-    }
-
-    private fun onClose(mc: Minecraft) {
-        info("Closing...")
-        try {
-            ConfigFile.getInstance().save()
-            TemplateStorageHandler.getInstance().save()
-        } catch (err: Exception) {
-            error("Error")
-            err.printStackTrace()
-        }
-        info("Closed.")
     }
 
     @JvmStatic
-    fun info(message: String) = logger.info("[$MOD_NAME] $message")
+    fun info(message: String) = logInfo("[$MOD_NAME] $message")
 
     @JvmStatic
-    fun error(message: String) = logger.error("[$MOD_NAME] $message")
+    fun error(message: String) = logError("[$MOD_NAME] $message")
 }
+
+fun logInfo(message: String) = logger.info("[$MOD_NAME] $message")
+
+fun logError(message: String) = logger.error("[$MOD_NAME] $message")

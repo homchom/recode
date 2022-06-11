@@ -2,7 +2,7 @@ package io.github.homchom.recode.mod.features.commands.recode;
 
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.*;
-import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.menu.ConfigScreen;
 import io.github.homchom.recode.sys.renderer.IMenu;
 import io.github.homchom.recode.sys.renderer.widgets.CImage;
@@ -25,7 +25,7 @@ public class RecodeUI extends LightweightGuiDescription implements IMenu {
         root.add(cImage, 46, -10);
 
         root.add(new WLabel(new TextComponent("recode")), (220 - Minecraft.getInstance().font.width("recode")) / 2, 110);
-        root.add(new WLabel(new TextComponent("v" + Recode.getVersion())), (220 - Minecraft.getInstance().font.width("v" + Recode.getVersion())) / 2, 120);
+        root.add(new WLabel(new TextComponent("v" + LegacyRecode.getVersion())), (220 - Minecraft.getInstance().font.width("v" + LegacyRecode.getVersion())) / 2, 120);
 
         addButtons(root);
         setRootPanel(root);

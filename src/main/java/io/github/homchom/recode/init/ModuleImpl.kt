@@ -1,17 +1,18 @@
+@file:JvmName("ModuleInit")
+
 package io.github.homchom.recode.init
 
 /**
- * Loads and enables this module. Should only be called by top-level modules.
+ * Loads and enables this module.
  */
-fun ModuleDefinition.init() = load(ModuleLoader()).enable()
+@ForEntrypointUse
+fun EntrypointModule.init() = ModuleLoader.load(this).enable()
 
-private fun ModuleDefinition.load(loader: ModuleLoader) = ModuleImpl(this, loader)
-
-private class ModuleLoader : ModuleBuilder {
+private object ModuleLoader : ModuleBuilder {
     private val loaded = mutableMapOf<ModuleDefinition, ModuleImpl>()
 
     override fun load(module: ModuleDefinition) =
-        loaded[module] ?: module.load(this).also { impl ->
+        loaded[module] ?: ModuleImpl(module, this).also { impl ->
             loaded[module] = impl
             with(module) { impl.onLoad() }
         }

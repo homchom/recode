@@ -1,6 +1,6 @@
 package io.github.homchom.recode.mod.mixin.render;
 
-import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.LegacyRecode;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.*;
@@ -22,20 +22,20 @@ public class MChestBlock {
         BlockEntity be = world.getBlockEntity(signloc);
         if (be instanceof SignBlockEntity) {
             SignBlockEntity sign = (SignBlockEntity) be;
-            Recode.signText = new String[]{
+            LegacyRecode.signText = new String[]{
                 sign.getMessage(0, false).getString(),
                 sign.getMessage(1, false).getString(),
                 sign.getMessage(2, false).getString(),
                 sign.getMessage(3, false).getString()
             };
-            Recode.EXECUTOR.submit(() -> {
+            LegacyRecode.EXECUTOR.submit(() -> {
                 try {
                   Thread.sleep(1000);
                 } catch (Exception ignored) {}
-                if (!(Recode.MC.screen instanceof ContainerScreen)) {
-                    Recode.signText = new String[0];
+                if (!(LegacyRecode.MC.screen instanceof ContainerScreen)) {
+                    LegacyRecode.signText = new String[0];
                 }
             });
-        } else Recode.signText = new String[0];
+        } else LegacyRecode.signText = new String[0];
     }
 }

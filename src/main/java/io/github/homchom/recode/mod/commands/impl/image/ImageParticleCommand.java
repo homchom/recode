@@ -9,7 +9,7 @@ import io.github.homchom.recode.sys.util.TemplateConstants;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.SystemToast;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.Items;
 
 import java.io.IOException;
 import java.nio.file.Path;

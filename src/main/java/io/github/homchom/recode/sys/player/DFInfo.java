@@ -1,7 +1,6 @@
 package io.github.homchom.recode.sys.player;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.event.RecodeEvents;
 import io.github.homchom.recode.sys.networking.DFState;
 import net.minecraft.world.phys.Vec3;
@@ -42,8 +41,8 @@ public class DFInfo {
     }
 
     public static boolean isOnDF() {
-        if (Recode.MC.getCurrentServer() == null) return false;
-        return Recode.MC.getCurrentServer().ip.contains("mcdiamondfire.com");
+        if (LegacyRecode.MC.getCurrentServer() == null) return false;
+        return LegacyRecode.MC.getCurrentServer().ip.contains("mcdiamondfire.com");
     }
 
     public static void setCurrentState(DFState state) {

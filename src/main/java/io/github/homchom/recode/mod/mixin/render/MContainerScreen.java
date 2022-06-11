@@ -2,7 +2,7 @@ package io.github.homchom.recode.mod.mixin.render;
 
 import com.google.gson.*;
 import com.mojang.blaze3d.vertex.PoseStack;
-import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.sys.hypercube.codeaction.*;
 import io.github.homchom.recode.sys.util.TextUtil;
@@ -28,7 +28,7 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
 
     @Inject(method = "render", at = @At("RETURN"))
     private void render(PoseStack poseStack, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        String[] signt = Recode.signText;
+        String[] signt = LegacyRecode.signText;
         if (signt.length != 4) {
             return;
         }
@@ -153,7 +153,7 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
         int y = 0;
         for (String line : errors) {
             Component text = TextUtil.colorCodesToTextComponent("§c" + line);
-            Recode.MC.font.draw(matrices, text, Recode.MC.screen.width - font.width(text) - 10, 10 + y, 0xffffff);
+            LegacyRecode.MC.font.draw(matrices, text, LegacyRecode.MC.screen.width - font.width(text) - 10, 10 + y, 0xffffff);
             y += 10;
         }
     }
@@ -247,11 +247,11 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
     private void showDesc(Action a, PoseStack matrices) {
         DisplayItem icon = a.getIcon();
 
-        List<Component> desc = icon.toItemStack().getTooltipLines(Recode.MC.player, Default.NORMAL);
+        List<Component> desc = icon.toItemStack().getTooltipLines(LegacyRecode.MC.player, Default.NORMAL);
 
         int y = 0;
         for (Component line : desc) {
-            Recode.MC.font.draw(matrices, line, 10, 10 + y, 0xffffff);
+            LegacyRecode.MC.font.draw(matrices, line, 10, 10 + y, 0xffffff);
             y += 10;
         }
     }

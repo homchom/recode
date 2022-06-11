@@ -1,6 +1,6 @@
 package io.github.homchom.recode.mod.features.social.chat.message;
 
-import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.events.impl.LegacyReceiveSoundEvent;
 import io.github.homchom.recode.sys.player.chat.MessageGrabber;
@@ -76,7 +76,7 @@ public class Message {
         MessageGrabber.hide(type.getMessageAmount() - 1);
 
         if (Config.getBoolean("debugMode")) {
-            Recode.info("[CANCELLED] " + text.toString());
+            LegacyRecode.info("[CANCELLED] " + text.toString());
         }
     }
 }

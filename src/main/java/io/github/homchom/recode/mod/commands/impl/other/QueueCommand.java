@@ -4,7 +4,7 @@ package io.github.homchom.recode.mod.commands.impl.other;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
 import io.github.homchom.recode.mod.features.commands.queue.QueueEntry;
@@ -41,7 +41,7 @@ public class QueueCommand extends Command {
                             }
                         }
 
-                        Recode.MC.player.playSound(SoundEvents.UI_TOAST_IN, 2F, 1F);
+                        LegacyRecode.MC.player.playSound(SoundEvents.UI_TOAST_IN, 2F, 1F);
 
                         // Temporary: Show in chat instead of menu
                         ChatUtil.sendMessage(

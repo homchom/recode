@@ -3,23 +3,25 @@ package io.github.homchom.recode.feature.rendering
 import io.github.homchom.recode.event.RecodeEvents
 import io.github.homchom.recode.feature.Feature
 import io.github.homchom.recode.init.RModule
-import io.github.homchom.recode.init.addToEvent
+import io.github.homchom.recode.init.listenTo
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.mod.features.commands.CodeSearcher
+import io.github.homchom.recode.render.CustomOutlineProcessor
+import io.github.homchom.recode.render.GlobalUsesCustomOutlineProcessor
 import io.github.homchom.recode.render.RGBA
 import io.github.homchom.recode.sys.networking.DFState
 import io.github.homchom.recode.sys.player.DFInfo
-import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.SignBlockEntity
 import kotlin.math.sqrt
 
+@OptIn(GlobalUsesCustomOutlineProcessor::class)
 class FCodeSearch : Feature("Code Search") {
-    override val dependencies = none()
+    override val dependencies = listOf(
+        CustomOutlineProcessor()
+    )
 
-    override fun RModule.onLoad() = Unit
-
-    override fun RModule.onEnable() {
-        addToEvent(RecodeEvents.OUTLINE_BLOCK_ENTITY) { blockEntity: BlockEntity ->
+    override fun RModule.onLoad() {
+        listenTo(RecodeEvents.OUTLINE_BLOCK_ENTITY) { blockEntity ->
             if (blockEntity is SignBlockEntity) {
                 if (DFInfo.currentState.getMode() == DFState.Mode.DEV && mc.player!!.isCreative) {
                     if (CodeSearcher.isSignMatch(blockEntity)) {
@@ -33,5 +35,6 @@ class FCodeSearch : Feature("Code Search") {
         }
     }
 
+    override fun RModule.onEnable() = Unit
     override fun RModule.onDisable() = Unit
 }

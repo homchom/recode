@@ -37,20 +37,16 @@ sealed interface ModuleDependency : RModule {
     }
 }
 
-interface ModuleDefinition {
-    val isPersistent get() = false
-
-    val dependencies: List<ModuleDefinition>
-
-    fun RModule.onLoad()
-    fun RModule.onEnable()
-    fun RModule.onDisable()
-
-    fun none() = emptyList<ModuleDefinition>()
-}
-
-inline fun <T, R> RModule.addToEvent(event: REvent<T, R>, crossinline listener: R.(T) -> Unit) =
+/**
+ * Listens to [event], running [listener] if the module is enabled.
+ * For non-recode events, listen manually instead.
+ */
+inline fun <T, R> RModule.listenTo(event: REvent<T, R>, crossinline listener: R.(T) -> Unit) =
     event.listen { context -> if (isEnabled) listener(context) }
 
-inline fun <T> RModule.addToHook(hook: RHook<T>, crossinline listener: (T) -> Unit) =
+/**
+ * Listens to [hook], running [listener] if the module is enabled.
+ * For non-recode hooks, listen manually instead.
+ */
+inline fun <T> RModule.listenTo(hook: RHook<T>, crossinline listener: (T) -> Unit) =
     hook.listen { context -> if (isEnabled) listener(context) }

@@ -1,7 +1,7 @@
 package io.github.homchom.recode.mod.mixin.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.*;
 import io.github.homchom.recode.mod.features.commands.CodeSearcher;
@@ -20,7 +20,7 @@ public class MInGameHUD {
     private void renderEffects(PoseStack stack, CallbackInfo ci) {
         LagslayerHUD.onRender(stack);
 
-        Minecraft mc = Recode.MC;
+        Minecraft mc = LegacyRecode.MC;
         Font tr = mc.font;
 
         if (CodeSearcher.searchType != null && CodeSearcher.searchValue != null && DFInfo.isOnDF() && DFInfo.currentState.getMode() == DFState.Mode.DEV) {
@@ -36,7 +36,7 @@ public class MInGameHUD {
 
     @Inject(at = @At("HEAD"), method = "displayScoreboardSidebar", cancellable = true)
     private void displayScoreboardSidebar(CallbackInfo info) {
-        Minecraft client = Recode.MC;
+        Minecraft client = LegacyRecode.MC;
         if (Config.getBoolean("hideScoreboardOnF3")) {
             if (client.options.renderDebug) {
                 info.cancel();

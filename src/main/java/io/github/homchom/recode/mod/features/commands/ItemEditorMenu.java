@@ -2,7 +2,7 @@ package io.github.homchom.recode.mod.features.commands;
 
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.*;
-import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.sys.renderer.IMenu;
 import io.github.homchom.recode.sys.renderer.widgets.CItem;
 import io.github.homchom.recode.sys.util.TextUtil;
@@ -23,7 +23,7 @@ public class ItemEditorMenu extends LightweightGuiDescription implements IMenu {
 
     @Override
     public void open(String... args) {
-        Minecraft mc = Recode.MC;
+        Minecraft mc = LegacyRecode.MC;
         final ItemStack[] item = {itemStack.copy()};
         WGridPanel root = new WGridPanel(1);
         root.setSize(256, 240);

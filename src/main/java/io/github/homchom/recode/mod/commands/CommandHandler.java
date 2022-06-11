@@ -1,6 +1,6 @@
 package io.github.homchom.recode.mod.commands;
 
-import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.commands.impl.image.*;
 import io.github.homchom.recode.mod.commands.impl.item.*;
 import io.github.homchom.recode.mod.commands.impl.item.template.*;
@@ -64,7 +64,7 @@ public class CommandHandler implements ILoader {
     }
 
     public void register(Command cmd) {
-        cmd.register(Recode.MC, ClientCommandManager.DISPATCHER);
+        cmd.register(LegacyRecode.MC, ClientCommandManager.DISPATCHER);
         cmds.add(cmd);
     }
 

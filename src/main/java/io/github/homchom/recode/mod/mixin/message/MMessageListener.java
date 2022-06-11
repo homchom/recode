@@ -1,7 +1,7 @@
 package io.github.homchom.recode.mod.mixin.message;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.event.*;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.LagslayerHUD;
@@ -41,7 +41,7 @@ public class MMessageListener {
                         this.updateState(packet.getMessage());
                     } catch (Exception e) {
                         e.printStackTrace();
-                        Recode.error("Error while trying to parse the chat text!");
+                        LegacyRecode.error("Error while trying to parse the chat text!");
                     }
                 }
             }
@@ -109,7 +109,7 @@ public class MMessageListener {
                     DFInfo.isPatchNewer(patchText, "0"); //very lazy validation lol
                     DFInfo.patchId = patchText;
                     DFInfo.currentState.sendLocate();
-                    Recode.info("DiamondFire Patch " + DFInfo.patchId + " detected!");
+                    LegacyRecode.info("DiamondFire Patch " + DFInfo.patchId + " detected!");
 
                     lastPatchCheck = time;
 
@@ -123,7 +123,7 @@ public class MMessageListener {
                     }
                 }
             } catch (Exception e) {
-                Recode.info("Error on parsing patch number!");
+                LegacyRecode.info("Error on parsing patch number!");
                 e.printStackTrace();
             }
         }
@@ -191,7 +191,7 @@ public class MMessageListener {
                             ChatUtil.executeCommandSilently("nightvis");
                         }
                     } catch (Exception e) {
-                        Recode.error("Error while executing the task!");
+                        LegacyRecode.error("Error while executing the task!");
                         e.printStackTrace();
                     }
                 }).start();
@@ -206,7 +206,7 @@ public class MMessageListener {
                 try {
                     Thread.sleep(10);
                     if (Config.getBoolean("autoRC")) {
-                        Recode.MC.player.chat("/rc");
+                        LegacyRecode.MC.player.chat("/rc");
                     }
                     if (Config.getBoolean("autotime")) {
                         ChatUtil.executeCommandSilently("time " + Config.getLong("autotimeval"));
@@ -215,7 +215,7 @@ public class MMessageListener {
                         ChatUtil.executeCommandSilently("nightvis");
                     }
                 } catch (Exception e) {
-                    Recode.error("Error while executing the task!");
+                    LegacyRecode.error("Error while executing the task!");
                     e.printStackTrace();
                 }
             }).start();

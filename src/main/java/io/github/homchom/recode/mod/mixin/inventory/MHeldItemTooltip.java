@@ -3,7 +3,7 @@ package io.github.homchom.recode.mod.mixin.inventory;
 
 import com.google.gson.*;
 import com.mojang.blaze3d.vertex.PoseStack;
-import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.VarSyntaxHighlighter;
 import io.github.homchom.recode.sys.util.*;
@@ -87,7 +87,7 @@ public class MHeldItemTooltip {
 
             if (Config.getBoolean("highlightVarSyntax")) {
                 try {
-                    ItemStack item = Recode.MC.player.getMainHandItem();
+                    ItemStack item = LegacyRecode.MC.player.getMainHandItem();
 
                     if (item.getItem() != Items.AIR) {
                         CompoundTag vals = item.getOrCreateTagElement("PublicBukkitValues");

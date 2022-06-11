@@ -2,7 +2,7 @@ package io.github.homchom.recode.sys.util;
 
 import com.google.gson.JsonParser;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.LegacyRecode;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.*;
 import net.minecraft.nbt.*;
@@ -16,7 +16,7 @@ import java.util.*;
 
 public class ItemUtil {
     public static void giveCreativeItem(ItemStack item, boolean preferHand) {
-        Minecraft mc = Recode.MC;
+        Minecraft mc = LegacyRecode.MC;
         NonNullList<ItemStack> inv = mc.player.getInventory().items;
 
         if (preferHand) {
@@ -53,7 +53,7 @@ public class ItemUtil {
      * @param itemStack The item stack to replace it with
      */
     public static void setContainerItem(int slot, ItemStack itemStack) {
-        Minecraft mc = Recode.MC;
+        Minecraft mc = LegacyRecode.MC;
 
         // this method kinda doesnt work in survival mode so let's throw an exception if this happens.
         if (!mc.player.isCreative()) {
@@ -62,14 +62,14 @@ public class ItemUtil {
 
         // replace the 8th slot with the item we want to set.
         ItemStack replacedItem = mc.player.getInventory().getItem(7);
-        Recode.MC.gameMode.handleCreativeModeItemAdd(itemStack, 43);
+        LegacyRecode.MC.gameMode.handleCreativeModeItemAdd(itemStack, 43);
         mc.player.getInventory().setItem(7, itemStack);
 
         // simulates pressing the 8 key on the slot we want to change.
-        Recode.MC.gameMode.handleInventoryMouseClick(mc.player.containerMenu.containerId, slot, 7, ClickType.SWAP, Recode.MC.player);
+        LegacyRecode.MC.gameMode.handleInventoryMouseClick(mc.player.containerMenu.containerId, slot, 7, ClickType.SWAP, LegacyRecode.MC.player);
 
         // change the 8th slot back to what it was before.
-        Recode.MC.gameMode.handleCreativeModeItemAdd(replacedItem, 43);
+        LegacyRecode.MC.gameMode.handleCreativeModeItemAdd(replacedItem, 43);
         mc.player.getInventory().setItem(7, replacedItem);
     }
 

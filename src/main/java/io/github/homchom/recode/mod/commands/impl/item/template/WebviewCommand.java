@@ -1,7 +1,7 @@
 package io.github.homchom.recode.mod.commands.impl.item.template;
 
 import com.google.gson.*;
-import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.sys.hypercube.templates.TemplateUtil;
 import io.github.homchom.recode.sys.player.chat.ChatType;
 import io.github.homchom.recode.sys.player.chat.*;
@@ -37,7 +37,7 @@ public class WebviewCommand extends AbstractTemplateCommand {
     protected void withTemplate(ItemStack stack) {
         ChatUtil.sendMessage("Generating template link...", ChatType.INFO_BLUE);
 
-        Recode.EXECUTOR.submit(() -> {
+        LegacyRecode.EXECUTOR.submit(() -> {
             JsonObject template = TemplateUtil.read(stack);
             String data = template.get("code").getAsString();
             try {

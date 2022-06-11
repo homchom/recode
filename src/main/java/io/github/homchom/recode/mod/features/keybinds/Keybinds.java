@@ -26,7 +26,6 @@ public class Keybinds implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-
         // =======================================================
         // Initialize
         // =======================================================

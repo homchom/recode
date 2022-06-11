@@ -1,6 +1,6 @@
 package io.github.homchom.recode.mod.features.streamer;
 
-import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.sys.networking.DFState;
 import io.github.homchom.recode.sys.player.chat.MessageGrabber;
@@ -75,12 +75,12 @@ public class StreamerModeHandler {
 
         // Run "/adminv off" and hide the message
         if (autoAdminV()) {
-            Recode.MC.player.chat("/adminv off");
+            LegacyRecode.MC.player.chat("/adminv off");
         }
 
         // Run "/chat local" and hide the message
         if (autoChatLocal()) {
-            Recode.MC.player.chat("/c l");
+            LegacyRecode.MC.player.chat("/c l");
         }
 
         // Hide messages
@@ -97,7 +97,7 @@ public class StreamerModeHandler {
         // If the state is changed to mode play, run "/chat local"
         // Note: May trigger simultaneously with StreamerHandler#handleServerJoin, but this is not a problem
         if (autoChatLocal() && newState.mode.equals(DFState.Mode.PLAY)) {
-            Recode.MC.player.chat("/c l");
+            LegacyRecode.MC.player.chat("/c l");
             MessageGrabber.hide(1);
         }
     }

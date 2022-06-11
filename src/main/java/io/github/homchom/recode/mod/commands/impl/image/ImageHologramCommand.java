@@ -1,22 +1,14 @@
 package io.github.homchom.recode.mod.commands.impl.image;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.builder.ArgumentBuilder;
-import com.mojang.brigadier.builder.RequiredArgumentBuilder;
-import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.ArgumentCommandNode;
-import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
-import io.github.homchom.recode.mod.commands.arguments.types.PathArgumentType;
 import io.github.homchom.recode.mod.features.commands.image.ImageToHologram;
-import io.github.homchom.recode.sys.file.ExternalFile;
-import io.github.homchom.recode.sys.hypercube.templates.TemplateUtil;
 import io.github.homchom.recode.sys.hypercube.templates.Templates;
 import io.github.homchom.recode.sys.player.chat.*;
-import io.github.homchom.recode.sys.util.ItemUtil;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.Items;
 
 import java.io.File;
 import java.nio.file.Path;

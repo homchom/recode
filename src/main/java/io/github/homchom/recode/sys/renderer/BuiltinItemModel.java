@@ -1,7 +1,7 @@
 package io.github.homchom.recode.sys.renderer;
 
 import com.google.common.collect.Lists;
-import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.LegacyRecode;
 import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
@@ -40,7 +40,7 @@ public class BuiltinItemModel implements BakedModel {
 
     @Override
     public TextureAtlasSprite getParticleIcon() {
-        return Recode.MC.getModelManager().getModel(new ModelResourceLocation("missing")).getParticleIcon();
+        return LegacyRecode.MC.getModelManager().getModel(new ModelResourceLocation("missing")).getParticleIcon();
     }
 
     @Override

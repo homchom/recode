@@ -1,7 +1,7 @@
 package io.github.homchom.recode.mod.commands.impl.item.template;
 
 import com.google.gson.*;
-import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.sys.networking.websocket.SocketHandler;
 import io.github.homchom.recode.sys.player.chat.*;
 import net.minecraft.client.Minecraft;
@@ -38,7 +38,7 @@ public class SendTemplateCommand extends AbstractTemplateCommand {
         toSend.addProperty("type", "template");
         SocketHandler.getInstance().sendData(toSend.toString());
 
-        Recode.MC.player.playSound(SoundEvents.FIREWORK_ROCKET_LAUNCH, 200, 1);
+        LegacyRecode.MC.player.playSound(SoundEvents.FIREWORK_ROCKET_LAUNCH, 200, 1);
         ChatUtil.sendMessage("Sent your current held item to any connected clients!", ChatType.INFO_BLUE);
     }
 }

@@ -2,7 +2,7 @@ package io.github.homchom.recode.sys.renderer.widgets;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
-import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.sys.networking.DFState;
 import io.github.homchom.recode.sys.player.DFInfo;
@@ -36,14 +36,14 @@ public class ChestHud {
 
         if (DFInfo.currentState.getMode() == DFState.Mode.DEV && Config.getBoolean("chestToolTip")) {
             if (Config.getBoolean("chestToolTipType")) {
-                ItemStack item = Recode.MC.player.getInventory().getItem(17);
+                ItemStack item = LegacyRecode.MC.player.getInventory().getItem(17);
 
                 int i = ((screen.width) / 2) + 85;
                 int j = (screen.height) / 2 - 68;
 
                 // check if block in dev area later.
-                if (Recode.MC.getWindow().getGuiScaledWidth() >= 600) {
-                    List<Component> lines = item.getTooltipLines(Recode.MC.player, TooltipFlag.Default.NORMAL);
+                if (LegacyRecode.MC.getWindow().getGuiScaledWidth() >= 600) {
+                    List<Component> lines = item.getTooltipLines(LegacyRecode.MC.player, TooltipFlag.Default.NORMAL);
                     GL11.glTranslatef(0f, 0f, -1f);
                     screen.renderTooltip(matrices, Lists.transform(lines, Component::getVisualOrderText), i, j);
                     GL11.glTranslatef(0f, 0f, 1f);
@@ -51,7 +51,7 @@ public class ChestHud {
 
             } else {
                 ChestMenu handler = ((ContainerScreen) screen).getMenu();
-                Minecraft mc = Recode.MC;
+                Minecraft mc = LegacyRecode.MC;
                 LocalPlayer player = mc.player;
 
                 Container inventory = player.getInventory();

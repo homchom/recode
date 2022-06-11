@@ -1,7 +1,7 @@
 package io.github.homchom.recode.mod.mixin.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import io.github.homchom.recode.Recode;
+import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.VarSyntaxHighlighter;
 import io.github.homchom.recode.sys.sidedchat.ChatShortcut;
@@ -26,7 +26,7 @@ public class MChatScreen {
     private void render(PoseStack poseStack, int mouseX, int mouseY, float delta,
         CallbackInfo ci) {
         if (Config.getBoolean("highlightVarSyntax")) {
-            Minecraft mc = Recode.MC;
+            Minecraft mc = LegacyRecode.MC;
 
             String text = input.getValue();
 
