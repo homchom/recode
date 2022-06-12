@@ -6,7 +6,7 @@ import io.github.homchom.recode.event.*;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.LagslayerHUD;
 import io.github.homchom.recode.mod.features.social.chat.message.Message;
-import io.github.homchom.recode.sys.networking.DFState;
+import io.github.homchom.recode.sys.networking.LegacyState;
 import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
 import net.minecraft.client.Minecraft;
@@ -170,7 +170,7 @@ public class MMessageListener {
 
         // Build Mode
         if (player.isCreative() && text.matches("^» You are now in build mode\\.$")) {
-            if (DFInfo.currentState.getMode() != DFState.Mode.BUILD) {
+            if (DFInfo.currentState.getMode() != LegacyState.Mode.BUILD) {
                 DFInfo.currentState.sendLocate();
             }
 

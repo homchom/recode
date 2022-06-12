@@ -5,7 +5,7 @@ import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.*;
 import io.github.homchom.recode.mod.features.commands.CodeSearcher;
-import io.github.homchom.recode.sys.networking.DFState;
+import io.github.homchom.recode.sys.networking.LegacyState;
 import io.github.homchom.recode.sys.player.DFInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
@@ -23,7 +23,7 @@ public class MInGameHUD {
         Minecraft mc = LegacyRecode.MC;
         Font tr = mc.font;
 
-        if (CodeSearcher.searchType != null && CodeSearcher.searchValue != null && DFInfo.isOnDF() && DFInfo.currentState.getMode() == DFState.Mode.DEV) {
+        if (CodeSearcher.searchType != null && CodeSearcher.searchValue != null && DFInfo.isOnDF() && DFInfo.currentState.getMode() == LegacyState.Mode.DEV) {
             tr.draw(stack, new TextComponent("Searching for usages of " +
                     CodeSearcher.searchType.toString() + ": " + CodeSearcher.searchValue
             ), 4, 4, 0xffffff);

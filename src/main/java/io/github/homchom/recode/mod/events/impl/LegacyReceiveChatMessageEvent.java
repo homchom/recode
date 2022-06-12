@@ -4,7 +4,7 @@ import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.event.*;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.social.chat.message.Message;
-import io.github.homchom.recode.sys.networking.DFState;
+import io.github.homchom.recode.sys.networking.LegacyState;
 import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.*;
 import io.github.homchom.recode.sys.util.TextUtil;
@@ -101,7 +101,7 @@ public class LegacyReceiveChatMessageEvent {
             cancel = true;
         }
 
-        if (DFInfo.currentState.getMode() == DFState.Mode.DEV) {
+        if (DFInfo.currentState.getMode() == LegacyState.Mode.DEV) {
             // hide var scope messages
             if (Config.getBoolean("hideVarScopeMessages") && stripped.startsWith("Scope set to ")) {
                 cancel = true;

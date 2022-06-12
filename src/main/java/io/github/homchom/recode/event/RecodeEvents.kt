@@ -3,7 +3,7 @@ package io.github.homchom.recode.event
 import io.github.homchom.recode.mod.features.social.chat.message.Message
 import io.github.homchom.recode.render.GlobalUsesCustomOutlines
 import io.github.homchom.recode.render.RGBA
-import io.github.homchom.recode.sys.networking.DFState
+import io.github.homchom.recode.sys.networking.LegacyState
 import net.minecraft.network.protocol.game.ClientboundSoundPacket
 import net.minecraft.world.level.block.entity.BlockEntity
 
@@ -27,5 +27,5 @@ object RecodeEvents {
     // DF
     @JvmField val CHANGE_DF_STATE = createHook<StateChange>()
 
-    data class StateChange(val new: DFState, val old: DFState)
+    data class StateChange(val new: LegacyState, val old: LegacyState)
 }

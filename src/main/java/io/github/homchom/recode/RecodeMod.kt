@@ -21,7 +21,7 @@ import io.github.homchom.recode.mod.events.LegacyEventHandler
 import io.github.homchom.recode.mod.features.discordrpc.DFDiscordRPC
 import io.github.homchom.recode.sys.hypercube.codeaction.ActionDump
 import io.github.homchom.recode.sys.hypercube.templates.TemplateStorageHandler
-import io.github.homchom.recode.sys.networking.DFState.Locater
+import io.github.homchom.recode.sys.networking.LegacyState.Locater
 import io.github.homchom.recode.sys.networking.websocket.SocketHandler
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
 import net.fabricmc.loader.api.FabricLoader

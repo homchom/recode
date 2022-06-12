@@ -13,7 +13,8 @@ import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.regex.*;
 
-public class DFState {
+@Deprecated
+public class LegacyState {
     private static final String EMPTY = "                                       ";
     private static final Minecraft mc = Minecraft.getInstance();
     private static Timer locateTimer = new Timer();
@@ -23,21 +24,21 @@ public class DFState {
     public Node node;
     public boolean session;
 
-    public DFState() {
+    public LegacyState() {
         this.mode = null;
         this.node = null;
         this.plot = null;
         this.session = false;
     }
 
-    public DFState(DFState state) {
+    public LegacyState(LegacyState state) {
         this.mode = state.getMode();
         this.node = state.getNode();
         this.plot = state.getPlot();
         this.session = state.isInSession();
     }
 
-    public DFState(Mode mode, Node node, Plot plot, boolean session) {
+    public LegacyState(Mode mode, Node node, Plot plot, boolean session) {
         this.mode = mode;
         this.node = node;
         this.plot = plot;
@@ -45,7 +46,7 @@ public class DFState {
         notifyStateChange(this, this);
     }
 
-    public DFState(String modeid, String nodeid, Plot plot, boolean session) {
+    public LegacyState(String modeid, String nodeid, Plot plot, boolean session) {
         this.mode = Mode.getByIdentifier(modeid);
         this.node = Node.getByIdentifier(nodeid);
         this.plot = plot;
@@ -122,7 +123,7 @@ public class DFState {
 
         public static Node getByIdentifier(String identifier) {
             for(Node node : values()) {
-                if (node.getIdentifier().equalsIgnoreCase(identifier)) {
+                if (node.getIdentifier().equals(identifier)) {
                     return node;
                 }
             }
@@ -208,7 +209,7 @@ public class DFState {
     }
 
     public void setInSession(boolean session) {
-        DFState old = this.copy();
+        LegacyState old = this.copy();
         boolean update = this.session != session;
         this.session = session;
         if (update) notifyStateChange(this, old);
@@ -241,7 +242,7 @@ public class DFState {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        DFState state = (DFState) o;
+        LegacyState state = (LegacyState) o;
         return session == state.session &&
                 Objects.equals(plot, state.plot) &&
                 mode == state.mode &&
@@ -253,15 +254,15 @@ public class DFState {
         return Objects.hash(plot, mode, node);
     }
 
-    public DFState copy() {
-        return new DFState(this);
+    public LegacyState copy() {
+        return new LegacyState(this);
     }
 
-    public static DFState fromLocate(Message message) {
+    public static LegacyState fromLocate(Message message) {
         Component msg = message.getText();
 
         String text = msg.getString().replaceAll("§.", "");
-        DFState finalstate = new DFState();
+        LegacyState finalstate = new LegacyState();
 
         if (text.startsWith(EMPTY + "\nYou are currently at spawn\n")) {
             finalstate.setMode(Mode.SPAWN);
@@ -313,8 +314,8 @@ public class DFState {
                 }
             }
 
-            finalstate.setNode(DFState.Node.getByIdentifier(node));
-            finalstate.setPlot(new DFState.Plot(name, owner, id, customStatus));
+            finalstate.setNode(LegacyState.Node.getByIdentifier(node));
+            finalstate.setPlot(new LegacyState.Plot(name, owner, id, customStatus));
 
             if (text.startsWith(EMPTY + "\nYou are currently playing on:")) {
                 finalstate.setMode(Mode.PLAY);
@@ -352,7 +353,7 @@ public class DFState {
         }
     }
 
-    private static void notifyStateChange(DFState newState, DFState oldState) {
+    private static void notifyStateChange(LegacyState newState, LegacyState oldState) {
         RecodeEvents.CHANGE_DF_STATE.invoke(new RecodeEvents.StateChange(newState, oldState));
     }
 
@@ -378,12 +379,12 @@ public class DFState {
         }
     }
 
-    public static class CurrentState extends DFState {
+    public static class CurrentState extends LegacyState {
         public CurrentState() {
             super();
         }
 
-        public CurrentState(DFState state) {
+        public CurrentState(LegacyState state) {
             super(state);
         }
 
@@ -397,7 +398,7 @@ public class DFState {
 
         @Override
         public void setInSession(boolean session) {
-            DFState old = this.copy();
+            LegacyState old = this.copy();
             boolean update = this.session != session;
             this.session = session;
             if (update) notifyStateChange(this, old);
@@ -405,7 +406,7 @@ public class DFState {
 
         @Override
         public void setMode(Mode mode) {
-            DFState old = this.copy();
+            LegacyState old = this.copy();
             boolean update = this.mode != mode;
             if (mode == Mode.SPAWN || mode == Mode.OFFLINE) this.plot = null;
             if (mode == Mode.OFFLINE) this.node = null;
@@ -415,7 +416,7 @@ public class DFState {
 
         @Override
         public void setNode(Node node) {
-            DFState old = this.copy();
+            LegacyState old = this.copy();
             boolean update = this.node != node;
             this.node = node;
             if (update) notifyStateChange(this, old);
@@ -423,7 +424,7 @@ public class DFState {
 
         @Override
         public void setPlot(Plot plot) {
-            DFState old = this.copy();
+            LegacyState old = this.copy();
             boolean update = this.plot != plot;
             this.plot = plot;
             if (update) notifyStateChange(this, old);

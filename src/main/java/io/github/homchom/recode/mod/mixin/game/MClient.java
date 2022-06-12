@@ -1,7 +1,7 @@
 package io.github.homchom.recode.mod.mixin.game;
 
 import blue.endless.jankson.annotation.Nullable;
-import io.github.homchom.recode.sys.networking.DFState;
+import io.github.homchom.recode.sys.networking.LegacyState;
 import io.github.homchom.recode.sys.player.DFInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -14,7 +14,7 @@ public class MClient {
     @Inject(method = "setScreen(Lnet/minecraft/client/gui/screens/Screen;)V", at = @At("HEAD"))
     public void setScreen(@Nullable Screen screen, CallbackInfo cbi) {
         if (Minecraft.getInstance().player == null) {
-            DFInfo.currentState.setMode(DFState.Mode.OFFLINE);
+            DFInfo.currentState.setMode(LegacyState.Mode.OFFLINE);
         }
     }
 }

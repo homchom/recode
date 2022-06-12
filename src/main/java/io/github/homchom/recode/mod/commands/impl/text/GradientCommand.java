@@ -4,7 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
-import io.github.homchom.recode.sys.networking.DFState;
+import io.github.homchom.recode.sys.networking.LegacyState;
 import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.ChatType;
 import io.github.homchom.recode.sys.player.chat.*;
@@ -111,7 +111,7 @@ public class GradientCommand extends Command {
                                             ChatUtil.sendMessage("Copied text!", ChatType.SUCCESS);
                                             mc.player.displayClientMessage(base, false);
 
-                                            if (DFInfo.currentState.getMode() == DFState.Mode.DEV) {
+                                            if (DFInfo.currentState.getMode() == LegacyState.Mode.DEV) {
                                                 mc.player.chat("/txt " + sb);
                                             }
 

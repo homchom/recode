@@ -5,7 +5,7 @@ import com.mojang.blaze3d.platform.InputConstants.Type;
 import io.github.homchom.recode.mod.commands.impl.other.PartnerBracketCommand;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.commands.CodeSearcher;
-import io.github.homchom.recode.sys.networking.DFState;
+import io.github.homchom.recode.sys.networking.LegacyState;
 import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.sidedchat.ChatShortcut;
 import net.fabricmc.api.ClientModInitializer;
@@ -223,7 +223,7 @@ public class Keybinds implements ClientModInitializer {
 
             // search
             while (searchFunction.consumeClick()) {
-                if (DFInfo.isOnDF() && DFInfo.currentState.getMode() == DFState.Mode.DEV && mc.player.isCreative()) {
+                if (DFInfo.isOnDF() && DFInfo.currentState.getMode() == LegacyState.Mode.DEV && mc.player.isCreative()) {
                     BlockEntity blockEntity = mc.level.getBlockEntity(new BlockPos(mc.hitResult.getLocation()));
 
                     if (blockEntity != null) {

@@ -1,7 +1,7 @@
 package io.github.homchom.recode.mod.features.social.chat.message.checks;
 
 import io.github.homchom.recode.mod.features.social.chat.message.*;
-import io.github.homchom.recode.sys.networking.DFState;
+import io.github.homchom.recode.sys.networking.LegacyState;
 import io.github.homchom.recode.sys.player.DFInfo;
 import net.minecraft.network.chat.ClickEvent.Action;
 
@@ -20,6 +20,6 @@ public class LocateCheck extends MessageCheck {
 
     @Override
     public void onReceive(Message message) {
-        DFInfo.setCurrentState(DFState.fromLocate(message));
+        DFInfo.setCurrentState(LegacyState.fromLocate(message));
     }
 }

@@ -2,7 +2,7 @@ package io.github.homchom.recode.mod.features;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.homchom.recode.LegacyRecode;
-import io.github.homchom.recode.sys.networking.DFState;
+import io.github.homchom.recode.sys.networking.LegacyState;
 import io.github.homchom.recode.sys.player.DFInfo;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
@@ -11,9 +11,9 @@ import net.minecraft.util.FormattedCharSequence;
 
 public class StateOverlayHandler {
 
-    private static DFState state;
+    private static LegacyState state;
 
-    public static void setState(DFState state) {
+    public static void setState(LegacyState state) {
         StateOverlayHandler.state = state;
     }
 

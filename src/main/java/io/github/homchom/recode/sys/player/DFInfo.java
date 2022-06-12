@@ -2,14 +2,14 @@ package io.github.homchom.recode.sys.player;
 
 import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.event.RecodeEvents;
-import io.github.homchom.recode.sys.networking.DFState;
+import io.github.homchom.recode.sys.networking.LegacyState;
 import net.minecraft.world.phys.Vec3;
 
 public class DFInfo {
 
     public static final String IP = "mcdiamondfire.com";
     public static String patchId = "5.3";
-    public static DFState.CurrentState currentState = new DFState.CurrentState();
+    public static LegacyState.CurrentState currentState = new LegacyState.CurrentState();
     public static boolean isInBeta = false;
     public static Vec3 plotCorner = null;
 
@@ -45,8 +45,8 @@ public class DFInfo {
         return LegacyRecode.MC.getCurrentServer().ip.contains("mcdiamondfire.com");
     }
 
-    public static void setCurrentState(DFState state) {
-        DFState.CurrentState newState = new DFState.CurrentState(state);
+    public static void setCurrentState(LegacyState state) {
+        LegacyState.CurrentState newState = new LegacyState.CurrentState(state);
         if (!currentState.equals(newState)) {
             RecodeEvents.CHANGE_DF_STATE.invoke(new RecodeEvents.StateChange(newState, currentState));
         }

@@ -9,7 +9,7 @@ import io.github.homchom.recode.mod.features.commands.CodeSearcher
 import io.github.homchom.recode.render.CustomOutlineProcessor
 import io.github.homchom.recode.render.GlobalUsesCustomOutlines
 import io.github.homchom.recode.render.RGBA
-import io.github.homchom.recode.sys.networking.DFState
+import io.github.homchom.recode.sys.networking.LegacyState
 import io.github.homchom.recode.sys.player.DFInfo
 import net.minecraft.world.level.block.entity.SignBlockEntity
 import kotlin.math.sqrt
@@ -23,7 +23,7 @@ class FCodeSearch : Feature("Code Search") {
     override fun RModule.onLoad() {
         listenTo(RecodeEvents.OUTLINE_BLOCK_ENTITY) { blockEntity ->
             if (blockEntity is SignBlockEntity) {
-                if (DFInfo.currentState.getMode() == DFState.Mode.DEV && mc.player!!.isCreative) {
+                if (DFInfo.currentState.getMode() == LegacyState.Mode.DEV && mc.player!!.isCreative) {
                     if (CodeSearcher.isSignMatch(blockEntity)) {
                         val distance = sqrt(blockEntity.getBlockPos()
                             .distSqr(mc.cameraEntity!!.blockPosition()))
