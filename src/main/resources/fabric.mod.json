@@ -20,7 +20,7 @@
       "io.github.homchom.recode.mod.config.ModMenuIntegration"
     ],
     "client": [
-      "io.github.homchom.recode.mod.features.keybinds.Keybinds"
+      "io.github.homchom.recode.mod.features.Keybinds"
     ],
     "server": []
   },

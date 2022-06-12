@@ -281,19 +281,27 @@
 
     "key.category.recode": "Recode",
 
+    "key.recode.play": "Mode Play",
+    "key.recode.build": "Mode Build",
+    "key.recode.dev": "Mode Dev",
+
+    "key.recode.fs_normal": "Flight Speed Normal",
+    "key.recode.fs_med": "Flight Speed Medium",
+    "key.recode.fs_fast": "Flight Speed Fast",
+
     "key.recode.spawn": "Spawn",
     "key.recode.plot_spawn": "Plot Spawn",
 
     "key.recode.nightvis": "Toggle Night Vision",
     "key.recode.lagslayer": "Toggle CPU Usage",
     "key.recode.fly": "Toggle Flight",
-    "key.recode.toggle_play_dev": "Toggle Mode Play <-> Dev",
-    "key.recode.toggle_play_build": "Toggle Mode Play <-> Build",
-    "key.recode.toggle_fs_medium": "Toggle Flight Speed Normal <-> Medium",
-    "key.recode.toggle_fs_fast": "Toggle Flight Speed Normal <-> Fast",
 
     "key.recode.rs": "Inventory Reset",
     "key.recode.rc": "Inventory Compact",
+
+    "key.recode.chat_global": "Chat Global",
+    "key.recode.chat_local": "Chat Local",
+    "key.recode.chat_none": "Chat None",
 
     "key.recode.search": "Function/Process Search",
 
