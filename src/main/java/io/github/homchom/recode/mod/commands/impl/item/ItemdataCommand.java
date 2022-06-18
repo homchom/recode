@@ -26,18 +26,21 @@ public class ItemdataCommand extends Command {
                         mc.player.displayClientMessage(new TextComponent(nbt.toString()), false);
 
 
+                        //String formatted = nbt.toText("  ", 0).getString();
                         String unformatted = nbt.toString();
 
                         TextComponent msg1 = new TextComponent("§5Click here to copy a ");
+                        //TextComponent msg2 = new TextComponent("§d§lFormatted§5, ");
                         TextComponent msg3 = new TextComponent("§d§lUnformatted");
                         TextComponent msg4 = new TextComponent("§5 or ");
                         TextComponent msg5 = new TextComponent("§d§l/dfgive");
                         TextComponent msg6 = new TextComponent("§5 version!");
 
+                        //msg2.withStyle((style) -> style.withClickEvent(new ClickEvent(Action.RUN_COMMAND, "/copytxt " + formatted)));
                         msg3.withStyle((style) -> style.withClickEvent(new ClickEvent(Action.RUN_COMMAND, "/copytxt " + unformatted)));
                         msg5.withStyle((style) -> style.withClickEvent(new ClickEvent(Action.RUN_COMMAND, "/copytxt " + "/dfgive " + Registry.ITEM.getKey(item.getItem()) + unformatted + " 1")));
 
-                        this.sendMessage(mc, msg1.append(msg3).append(msg4).append(msg5).append(msg6));
+                        this.sendMessage(mc, msg1/*.append(msg2)*/.append(msg3).append(msg4).append(msg5).append(msg6));
 
                     } else {
                         ChatUtil.sendMessage("No NBT data found!", ChatType.FAIL);
