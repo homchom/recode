@@ -18,13 +18,6 @@ public class ColorCommand extends Command {
     @Override
     public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd) {
         cd.register(ArgBuilder.literal("color")
-                /*
-                .then(ArgBuilder.literal("pick")).executes((context -> {
-                    ColorPickerMenu colorPickerMenu = new ColorPickerMenu();
-                    colorPickerMenu.openAsync(colorPickerMenu);
-                    return 1; //TODO command for the menu?
-                }))
-                 */
                 .then(ArgBuilder.literal("rgb")
                         .then(ArgBuilder.argument("r", IntegerArgumentType.integer(0, 255))
                                 .then(ArgBuilder.argument("g", IntegerArgumentType.integer(0, 255)).

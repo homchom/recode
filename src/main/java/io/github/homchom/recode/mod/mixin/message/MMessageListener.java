@@ -24,7 +24,6 @@ import java.util.regex.Pattern;
 public class MMessageListener {
     private static long lastPatchCheck = 0;
     private static long lastBuildCheck = 0;
-    //private boolean motdShown = false;
 
     private final Pattern lsRegex = Pattern.compile("^CPU Usage: \\[▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮] \\(.*%\\)$");
 

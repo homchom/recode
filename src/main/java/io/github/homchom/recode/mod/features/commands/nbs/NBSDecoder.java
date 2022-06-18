@@ -106,12 +106,6 @@ public class NBSDecoder {
                     finepitch = readShort(dataInputStream);
                 }
 
-                //System.out.println("==NOTE #" + debugNoteCount + "==");
-                //System.out.println("  Tick: " + tick);
-                //System.out.println("  Instrument ID: " + instrument);
-                //System.out.println("  Jump to the next tick: " + tCopy);
-                //System.out.println("  Jump to the next layer: " + jumpLayers);
-
                 instrumentList[layer][tick] = instrument;
                 pitchList[layer][tick] = note;
                 finepitchList[layer][tick] = finepitch;
@@ -151,11 +145,6 @@ public class NBSDecoder {
                     String finalVelocity = new BigDecimal(averageVelocity).setScale(3, BigDecimal.ROUND_FLOOR).stripTrailingZeros().toPlainString();
                     String finalPanning = new BigDecimal(preFinalPanning).setScale(3, BigDecimal.ROUND_FLOOR).stripTrailingZeros().toPlainString();
 
-                    //COOL DEBUG CODE STARTS FROM HERE
-                    //System.out.println("Pre-Final Panning: " + preFinalPanning);
-                    //System.out.println("Final Panning: " + finalPanning);
-                    //COOL DEBUG CODE ENDS HERE
-
                     String finalString;
                     if (preFinalPanning == 0) {
                         finalString = "," + finalVelocity;
@@ -193,11 +182,6 @@ public class NBSDecoder {
             }
         }
 
-        //EPIC DEBUG CODE STARTS FROM HERE
-        //System.out.println("List length: " + jumpTickList.size());
-        //System.out.println("Array length: " + jumpTickArray.length);
-        //EPIC DEBUG CODE ENDS HERE
-
         dataInputStream.close();
 
         for (int currentTick = 0; currentTick < length + 1; currentTick++) {
@@ -221,9 +205,6 @@ public class NBSDecoder {
                         int noteFinePitch = finepitchList[i][currentTick];
                         int noteKeyOffset = 0;
 
-                        //ANOTHER EPIC DEBUG CODE STARTS FROM HERE
-                        //System.out.println("Note ID: " + noteID);
-                        //ANOTHER EPIC DEBUG CODE ENDS HERE
 
                         if (noteInstrument >= vanillaInstruments) {
                             int instrumentId = noteInstrument - vanillaInstruments;
@@ -241,10 +222,6 @@ public class NBSDecoder {
             }
         }
 
-        //YET ANOTHER EPIC DEBUG CODE STARTS FROM HERE
-        //System.out.println("Note Data: " + stringBuilder.toString());
-        //System.out.println("Layer Data: " + layerStringBuilder.toString());
-        //YET ANOTHER EPIC DEBUG CODE ENDS HERE
 
         return new SongData(title, author, speed, (int) Math.ceil((length + 1.0) / (4 * timeSignature)) * (4 * timeSignature), stringBuilder.toString(), file, layerStringBuilder.toString(), (loopTick + 1), loopCount, customInstruments);
     }

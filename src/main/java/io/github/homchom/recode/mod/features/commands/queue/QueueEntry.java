@@ -28,9 +28,7 @@ public class QueueEntry {
         this.description = rawEntry.replaceFirst(DESCRIPTION_REGEX, "");
 
         // Queue Position
-        this.position = i/*Integer.parseInt(
-                rawEntry.replaceFirst(POSITION_REGEX, "")
-        )*/;
+        this.position = i;
 
         // Plot ID
         Matcher matcher = ENTRY_PLOT_ID_REGEX.matcher(description);

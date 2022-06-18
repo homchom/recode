@@ -47,14 +47,9 @@ public class LitematicaLoader extends MNBTSchematicReader {
         schematic.lastModified = metadata.getLong("TimeModified");
 
         int volume = metadata.getInt("TotalVolume");
-        //int totalBlocks = metadata.getInt("TotalBlocks");
 
         CompoundTag regions = requireTag(schematicData, "Regions", CompoundTag.class);
         CompoundTag litematicdata = requireTag(regions.getValue(), name, CompoundTag.class);
-        //CompoundTag position = requireTag(litematicdata.getValue(), "Position", CompoundTag.class);
-        //int offsetx = position.getInt("x");
-        //int offsety = position.getInt("y");
-        //int offsetz = position.getInt("z");
 
         List<CompoundTag> palette = litematicdata.getList("BlockStatePalette", CompoundTag.class);
         long[] longblockstates = litematicdata.getLongArray("BlockStates");
