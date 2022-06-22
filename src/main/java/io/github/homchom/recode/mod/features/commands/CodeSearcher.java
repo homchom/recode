@@ -50,7 +50,7 @@ public class CodeSearcher {
     public enum SearchType {
         PLAYER_ACTION("PLAYER ACTION"),
         IF_PLAYER("IF PLAYER"),
-        FUNC("CALL FUNCTION", "FUNCTION"),
+        FUNC("FUNCTION", "CALL FUNCTION"),
         ENTITY_EVENT("ENTITY EVENT"),
         SET_VAR("SET VARIABLE"),
         IF_ENTITY("IF ENTITY"),
@@ -60,7 +60,7 @@ public class CodeSearcher {
         EVENT("PLAYER EVENT"),
         GAME_ACTION("GAME ACTION"),
         ELSE("ELSE"),
-        PROCESS("START PROCESS", "PROCESS"),
+        PROCESS("PROCESS", "START PROCESS"),
         CONTROL("CONTROL"),
         REPEAT("REPEAT"),
         IF_GAME("IF GAME");

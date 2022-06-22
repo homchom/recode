@@ -35,6 +35,9 @@
     "libgui": "~5.4.0",
     "cloth-config": "~6.2.62"
   },
+  "conflicts": {
+    "codeutilities": "*"
+  },
   "custom": {
     "modmenu:clientsideOnly": true
   }

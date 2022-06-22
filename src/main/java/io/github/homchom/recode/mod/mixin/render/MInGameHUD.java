@@ -25,7 +25,7 @@ public class MInGameHUD {
 
         if (CodeSearcher.searchType != null && CodeSearcher.searchValue != null && DFInfo.isOnDF() && DFInfo.currentState.getMode() == LegacyState.Mode.DEV) {
             tr.draw(stack, new TextComponent("Searching for usages of " +
-                    CodeSearcher.searchType.toString() + ": " + CodeSearcher.searchValue
+                    CodeSearcher.searchType.getSignText().get(0) + ": " + CodeSearcher.searchValue
             ), 4, 4, 0xffffff);
         }
 
@@ -36,9 +36,8 @@ public class MInGameHUD {
 
     @Inject(at = @At("HEAD"), method = "displayScoreboardSidebar", cancellable = true)
     private void displayScoreboardSidebar(CallbackInfo info) {
-        Minecraft client = LegacyRecode.MC;
         if (Config.getBoolean("hideScoreboardOnF3")) {
-            if (client.options.renderDebug) {
+            if (Minecraft.getInstance().options.renderDebug) {
                 info.cancel();
             }
         }

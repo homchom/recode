@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(BlockEntityRenderDispatcher.class)
+@Mixin(value = BlockEntityRenderDispatcher.class, priority = 100)
 public class MBlockEntityRenderDispatcher {
 	@Inject(method = "render", at = @At("HEAD"), cancellable = true)
 	public void renderBlockEntities(
