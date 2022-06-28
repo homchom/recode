@@ -3,14 +3,11 @@ package io.github.homchom.recode.sys.networking;
 import com.google.gson.*;
 import io.github.homchom.recode.event.RecodeEvents;
 import io.github.homchom.recode.mod.features.social.chat.message.*;
-import io.github.homchom.recode.sys.file.ILoader;
-import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
 import java.util.*;
-import java.util.concurrent.Executors;
 import java.util.regex.*;
 
 @Deprecated
