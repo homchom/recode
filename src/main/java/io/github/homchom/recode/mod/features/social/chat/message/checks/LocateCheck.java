@@ -20,6 +20,6 @@ public class LocateCheck extends MessageCheck {
 
     @Override
     public void onReceive(Message message) {
-        DFInfo.setCurrentState(LegacyState.fromLocate(message));
+        DFInfo.setCurrentState(LegacyState.fromLocate(message, DFInfo.currentState));
     }
 }

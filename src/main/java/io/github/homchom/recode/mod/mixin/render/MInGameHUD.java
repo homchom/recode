@@ -10,6 +10,8 @@ import io.github.homchom.recode.sys.player.DFInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.Vec2;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
