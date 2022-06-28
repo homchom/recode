@@ -196,9 +196,11 @@ public class TextUtil {
     }
 
     public static String toTextString(String text) {
-        return TextUtil.toString(
-                TextUtil.colorCodesToTextComponent(text.replaceAll("&", "§").replaceAll("\"", "''")))
-            .replaceAll("''", "\\\\\"");
+        return TextUtil.toString(TextUtil.colorCodesToTextComponent(text.replaceAll("&", "§").replaceAll("\"", "''").replaceAll("''", "\\\\\"")));
+    }
+
+    public static String toUncoloredString(String text){
+        return TextUtil.toString(TextUtil.colorCodesToTextComponent(text.replaceAll("\"", "''").replaceAll("''", "\\\\\"")));
     }
 
 }
