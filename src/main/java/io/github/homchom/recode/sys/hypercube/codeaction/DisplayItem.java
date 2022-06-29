@@ -186,9 +186,8 @@ public class DisplayItem {
                 if (this.example.length > 0) {
                     lore.add(TextUtil.toUncoloredString(""));
                     lore.add(TextUtil.toUncoloredString("§fExample:"));
-                    System.out.println(this.example);
                     for (String ex : this.example) {
-                        lore.add(TextUtil.toUncoloredString("§7" + ex));
+                        lore.add(TextUtil.toUncoloredString(TextUtil.formatValues("§7" + ex)));
                     }
                 }
 
@@ -198,7 +197,7 @@ public class DisplayItem {
                     for (String[] addInfo : this.additionalInfo) {
                         int i = 0;
                         for (String info : addInfo) {
-                            lore.add(TextUtil.toUncoloredString((i == 0 ? "§b» " : "") + "§7" + info));
+                            lore.add(TextUtil.toUncoloredString(TextUtil.formatValues((i == 0 ? "§b» " : "") + "§7" + info)));
                             i++;
                         }
                     }
@@ -218,7 +217,7 @@ public class DisplayItem {
 
                 if (!this.requiredRank.equals("")) {
                     Types rank = ActionDump.valueOf(this.requiredRank.toUpperCase());
-                    lore.add(TextUtil.toUncoloredString(rank.getColor() + "Unlocked with " + rank.getName()));
+                    lore.add(TextUtil.toUncoloredString(rank.getColor() + rank.getName() + " Exclusive"));
                 }
 
             }
@@ -226,7 +225,6 @@ public class DisplayItem {
             String[] fullLore = new String[lore.size()];
             int i = 0;
             for (String loretext : lore) {
-                System.out.println(loretext);
                 fullLore[i] = loretext;
                 i++;
             }
