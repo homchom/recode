@@ -13,7 +13,7 @@ fun Component.matchAnywhere(matcher: (Component) -> Boolean): Boolean {
     var components = this.siblings.toMutableList()
 
     while (components.isNotEmpty()) {
-        val oldComponents = components.toMutableList()
+        val oldComponents = components
         components = mutableListOf()
 
         for (elem in oldComponents) {
@@ -26,12 +26,12 @@ fun Component.matchAnywhere(matcher: (Component) -> Boolean): Boolean {
     return false
 }
 
-fun Component.orderedMatch(matchers: Array<(Component) -> Boolean>): Boolean {
-    fun Component.matchRecursive(matcher: (Component) -> Boolean): Boolean = matcher(this) || this.siblings.any { it.matchRecursive(matcher) }
+fun Component.matchRecursive(matcher: (Component) -> Boolean): Boolean = matcher(this) || this.siblings.any { it.matchRecursive(matcher) }
 
+fun Component.orderedMatch(matchers: Array<(Component) -> Boolean>): Boolean {
     var i = 0
 
-    this.matchRecursive {
+    return this.matchRecursive {
         val matched = matchers[i](it)
         if (matched) i++
 
