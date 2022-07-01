@@ -74,57 +74,136 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
         List<Argument> rawArgs = Arrays.asList(ditem.getArguments());
         List<List<Integer>> currentOptions = new ArrayList<>();
         List<Integer> optionList = new ArrayList<>();
+        Boolean checkingOR = false;
+        Boolean valid = false;
+        Boolean passedAll = true;
         Integer current = 0;
         Integer slot = 0;
         Integer checkSlot = 0;
 
+        // Check if the first argument is an OR
+        while (current < rawArgs.size()) {
+            Argument rarg = rawArgs.get(current);
+            if (rarg.getType() == null && rarg.getText().matches("OR")) {
+                checkingOR = true;
+            }
+            if (rarg.getType() == null) {
+                break;
+            }
+            current ++;
+        }
+
+        current = 0;
+        // Check for any errors
         while (current < rawArgs.size()) {
             Argument rarg = rawArgs.get(current);
             if (rarg.getType() != null) { optionList.add(current); }
+            if (!checkingOR) {
+                if (optionList.size() != 0) {
+                    currentOptions.add(optionList);
+                }
+                List<String> expected = new ArrayList<>();
+                for (List options : currentOptions) {
+                    checkSlot = slot;
+                    valid = true;
+                    Argument lastChecked = null;
+                    for (Object checkOption : options) {
+                        Argument checkArgument = rawArgs.get((Integer) checkOption);
+                        if (lastChecked != null && lastChecked.isPlural() && typeCheck(lastChecked.getType(), items.get(checkSlot))) {
+                            checkSlot ++;
+                            continue;
+                        }
+                        lastChecked = checkArgument;
+                        if (!typeCheck(checkArgument.getType(), items.get(checkSlot))) {
+                            if (checkArgument.isOptional() && !items.get(checkSlot).isEmpty()) {
+                                if (!expected.contains("NONE")) { expected.add("NONE"); }
+                                valid = false;
+                                break;
+                            }
+                            if (!checkArgument.isOptional()) {
+                                valid = false;
+                                break;
+                            }
+                        }
+                        checkSlot ++;
+                    }
+                    if (!valid) {
+                        expected.add(lastChecked.getType());
+                    } else {
+                        expected = new ArrayList<>();
+                        break;
+                    }
+                }
+                if (expected.size() != 0) {
+                    errors.add("§cExpected one of §6" + expected + " §cin slot " + (checkSlot + 1) + " but got §6" + getType(items.get(checkSlot)));
+                    slot = checkSlot;
+                    passedAll = false;
+                    break;
+                }else { slot = checkSlot; }
+                currentOptions = new ArrayList<>();
+                optionList = new ArrayList<>();
+            }
             if (rarg.getType() == null) {
                 if (rarg.getText().equals("OR")) {
                     currentOptions.add(optionList);
                     optionList = new ArrayList<>();
                 }else {
-                    if (optionList.size() != 0) { currentOptions.add(optionList); }
-                    List<String> expected = new ArrayList<>();
-                    for (List options : currentOptions) {
-                        checkSlot = slot;
-                        Boolean valid = true;
-                        Argument lastChecked = null;
-                        for (Object checkOption : options) {
-                            Argument checkArgument = rawArgs.get((Integer) checkOption);
-                            if (lastChecked != null && lastChecked.isPlural() && typeCheck(lastChecked.getType(), items.get(slot))) {
-                                checkSlot += 1;
-                                continue;
+                    if (checkingOR) {
+                        if (optionList.size() != 0) {
+                            currentOptions.add(optionList);
+                        }
+                        List<String> expected = new ArrayList<>();
+                        for (List options : currentOptions) {
+                            checkSlot = slot;
+                            valid = true;
+                            Argument lastChecked = null;
+                            for (Object checkOption : options) {
+                                Argument checkArgument = rawArgs.get((Integer) checkOption);
+                                if (lastChecked != null && lastChecked.isPlural() && typeCheck(lastChecked.getType(), items.get(checkSlot))) {
+                                    checkSlot ++;
+                                    continue;
+                                }
+                                lastChecked = checkArgument;
+                                if (!typeCheck(checkArgument.getType(), items.get(checkSlot))) {
+                                    if (checkArgument.isOptional() && !items.get(checkSlot).isEmpty()) {
+                                        if (!expected.contains("NONE")) { expected.add("NONE"); }
+                                        valid = false;
+                                        break;
+                                    }
+                                    if (!checkArgument.isOptional()) {
+                                        valid = false;
+                                        break;
+                                    }
+                                }
+                                checkSlot ++;
                             }
-                            lastChecked = checkArgument;
-                            if (!typeCheck(checkArgument.getType(), items.get(slot)) && !checkArgument.isOptional()) {
-                                valid = false;
+                            if (!valid) {
+                                expected.add(lastChecked.getType());
+                            } else {
+                                expected = new ArrayList<>();
                                 break;
                             }
-                            checkSlot += 1;
                         }
-                        if (!valid) {
-                            expected.add(lastChecked.getType());
-                        }else {
-                            expected = new ArrayList<>();
+                        if (expected.size() != 0) {
+                            errors.add("§cExpected one of §6" + expected + " §cin slot " + (checkSlot + 1) + " but got §6" + getType(items.get(checkSlot)));
                             slot = checkSlot;
+                            passedAll = false;
                             break;
-                        }
+                        }else { slot = checkSlot; }
+                        currentOptions = new ArrayList<>();
+                        optionList = new ArrayList<>();
                     }
-                    if (expected.size() != 0) { errors.add("§cExpected one of §6" + expected + " §cat " + (checkSlot + 1) + " but got §6" + getType(items.get(checkSlot))); }
-                    currentOptions = new ArrayList<>();
-                    optionList = new ArrayList<>();
+                    checkingOR = !checkingOR;
                 }
             }
             current ++;
         }
         Integer slotCheckIndex = 0;
+        if (passedAll) { slot --; };
         for (ItemStack slotCheck : items) {
-            if (25-ditem.getTags() >= slotCheckIndex) { break; }
-            if (slotCheckIndex > slot && !slotCheck.isEmpty()) {
-                errors.add("§cExpected §eNONE §6at " + (slotCheckIndex + 1) + " but got §6" + getType(slotCheck));
+            if (slotCheckIndex >= 25-ditem.getTags()) { break; }
+            if (slotCheckIndex >= slot + 1 && !slotCheck.isEmpty()) {
+                errors.add("§cExpected §6NONE §cat " + (slotCheckIndex + 1) + " but got §6" + getType(slotCheck));
             }
             slotCheckIndex ++;
         }
@@ -172,6 +251,7 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
                 }
             }
         }
+
         switch (type) {
             case "NONE":
                 if (item.getItem() == Items.AIR) {
