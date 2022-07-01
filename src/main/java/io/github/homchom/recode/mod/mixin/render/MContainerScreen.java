@@ -77,6 +77,7 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
         Boolean checkingOR = false;
         Boolean valid = false;
         Boolean passedAll = true;
+        Boolean startsOR = false;
         Integer current = 0;
         Integer slot = 0;
         Integer checkSlot = 0;
@@ -86,6 +87,7 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
             Argument rarg = rawArgs.get(current);
             if (rarg.getType() == null && rarg.getText().matches("OR")) {
                 checkingOR = true;
+                startsOR = true;
             }
             if (rarg.getType() == null) {
                 break;
@@ -199,7 +201,7 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
             current ++;
         }
         Integer slotCheckIndex = 0;
-        if (passedAll) { slot --; };
+        if (passedAll && !startsOR) { slot --; };
         for (ItemStack slotCheck : items) {
             if (slotCheckIndex >= 25-ditem.getTags()) { break; }
             if (slotCheckIndex >= slot + 1 && !slotCheck.isEmpty()) {
