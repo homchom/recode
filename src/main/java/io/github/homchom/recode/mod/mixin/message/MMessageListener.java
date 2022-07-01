@@ -133,7 +133,7 @@ public class MMessageListener {
             if (!DFInfo.currentState.isInSession()) {
                 new Thread(() -> {
                     try {
-                        Thread.sleep(500);
+                        Thread.sleep(1300);
                         if (DFInfo.currentState.getMode() != LegacyState.Mode.DEV) {
                             DFInfo.currentState.sendLocate();
                         }
@@ -155,7 +155,7 @@ public class MMessageListener {
                 DFInfo.currentState.setInSession(false);
                 new Thread(() -> {
                     try {
-                        Thread.sleep(500);
+                        Thread.sleep(1500);
                         DFInfo.currentState.sendLocate();
                     } catch(Exception e){
                         LegacyRecode.error("Error while executing the task!");

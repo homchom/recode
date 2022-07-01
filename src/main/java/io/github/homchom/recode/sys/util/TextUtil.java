@@ -220,9 +220,11 @@ public class TextUtil {
             }
             if (lastColor == "§") {
                 lastColor = "§" + character;
-            }else if (character.matches("\\d")) {
-                output = output + numberColor + character + lastColor; // Color any number, marked by being outside of quotation marks
-                continue;
+            }else if (!activeQuote) {
+                if (character.matches("\\d")) {
+                    output = output + numberColor + character + lastColor; // Color any number, marked by being outside of quotation marks
+                    continue;
+                }
             }
             if (character.matches("§")) { lastColor = "§"; }
             if (activeQuote) {

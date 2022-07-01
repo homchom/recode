@@ -55,7 +55,7 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
         }
         DisplayItem ditem = a.getIcon();
 
-        if (ditem.getArguments()==null) {
+        if (ditem.getArguments() == null) {
             //happens for things like select entities by condition
             return;
         }
@@ -72,87 +72,70 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
         List<String> errors = new ArrayList<>();
 
         List<Argument> rawArgs = Arrays.asList(ditem.getArguments());
-        List<List<Argument>> possible = new ArrayList<>();
-        List<Argument> current = new ArrayList<>();
-        List<Argument> always = new ArrayList<>();
+        List<List<Integer>> currentOptions = new ArrayList<>();
+        List<Integer> optionList = new ArrayList<>();
+        Integer current = 0;
+        Integer slot = 0;
+        Integer checkSlot = 0;
 
-        for (Argument rarg : rawArgs) {
+        while (current < rawArgs.size()) {
+            Argument rarg = rawArgs.get(current);
+            if (rarg.getType() != null) { optionList.add(current); }
             if (rarg.getType() == null) {
-                if (Objects.equals(rarg.getText(), "")) {
-                    if (rawArgs.indexOf(rarg) != rawArgs.size() - 1) {//check is needed since for FallingBlock there are two empty lines
-                        //empty line showing where to trim the or
-                        always.addAll(current);
-                        current.clear();
+                if (rarg.getText().equals("OR")) {
+                    currentOptions.add(optionList);
+                    optionList = new ArrayList<>();
+                }else {
+                    if (optionList.size() != 0) { currentOptions.add(optionList); }
+                    List<String> expected = new ArrayList<>();
+                    for (List options : currentOptions) {
+                        checkSlot = slot;
+                        Boolean valid = true;
+                        Argument lastChecked = null;
+                        for (Object checkOption : options) {
+                            Argument checkArgument = rawArgs.get((Integer) checkOption);
+                            if (lastChecked != null && lastChecked.isPlural() && typeCheck(lastChecked.getType(), items.get(slot))) {
+                                checkSlot += 1;
+                                continue;
+                            }
+                            lastChecked = checkArgument;
+                            if (!typeCheck(checkArgument.getType(), items.get(slot)) && !checkArgument.isOptional()) {
+                                valid = false;
+                                break;
+                            }
+                            checkSlot += 1;
+                        }
+                        if (!valid) {
+                            expected.add(lastChecked.getType());
+                        }else {
+                            expected = new ArrayList<>();
+                            slot = checkSlot;
+                            break;
+                        }
                     }
-                } else {
-                    //or
-                    List<Argument> p = new ArrayList<>();
-                    p.addAll(always);
-                    p.addAll(current);
-                    possible.add(p);
-                    current.clear();
+                    if (expected.size() != 0) { errors.add("§cExpected one of §6" + expected + " §cat " + (checkSlot + 1) + " but got §6" + getType(items.get(checkSlot))); }
+                    currentOptions = new ArrayList<>();
+                    optionList = new ArrayList<>();
                 }
-            } else if (!Objects.equals(rarg.getType(), "NONE")) {
-                current.add(rarg);
             }
+            current ++;
         }
-        List<Argument> p = new ArrayList<>();
-        p.addAll(always);
-        p.addAll(current);
-        possible.add(p);
-        current.clear();
-
-        List<List<Argument>> possible2 = new ArrayList<>();
-        for (List<Argument> args : possible) {
-            possible2.addAll(genPossible(args, 0));
+        Integer slotCheckIndex = 0;
+        for (ItemStack slotCheck : items) {
+            if (25-ditem.getTags() >= slotCheckIndex) { break; }
+            if (slotCheckIndex > slot && !slotCheck.isEmpty()) {
+                errors.add("§cExpected §eNONE §6at " + (slotCheckIndex + 1) + " but got §6" + getType(slotCheck));
+            }
+            slotCheckIndex ++;
         }
 
-        int furthest = 0;
-        HashSet<String> fixes = new HashSet<>();
-        boolean valid = false;
-        main:
-        for (List<Argument> args : possible2) {
-            int itemi = 0;
-            Argument last = null;
-            for (int argi = 0; argi < args.size(); argi++) {
-                if (itemi >= 26) {
-                    continue main;
-                }
-                Argument arg = args.get(argi);
-                if (typeCheck(arg.getType(), items.get(itemi))) {
-                    itemi++;
-                    last = arg;
-                } else if (last != null && last.isPlural() && typeCheck(last.getType(), items.get(itemi))) {
-                    argi--;
-                    itemi++;
-                } else if (furthest < itemi) {
-                    furthest = itemi;
-                    fixes = new HashSet<>();
-                    fixes.add(arg.getType());
-                    continue main;
-                } else {
-                    continue main;
-                }
-            }
-            while (itemi < items.size()) {
-                if (last != null && last.isPlural() && typeCheck(last.getType(), items.get(itemi))) {
-                    itemi++;
-                } else if (items.get(itemi).getItem() != Items.AIR) {
-                    furthest = itemi;
-                    fixes.add("AIR");
-                    continue main;
-                }
-                itemi++;
-            }
-            valid = true;
-        }
-        if (!valid) {
-            errors.add("Expected one of " + fixes + " at " + (furthest + 1) + " but got " + items.get(furthest).getItem());
-        }
+//        if (!valid) {
+//            errors.add("§cExpected one of §e" + fixes + " §cat " + (furthest + 1) + " but got " + items.get(furthest).getItem());
+//        }
 
         int y = 0;
         for (String line : errors) {
-            Component text = TextUtil.colorCodesToTextComponent("§c" + line);
+            Component text = TextUtil.colorCodesToTextComponent(line);
             LegacyRecode.MC.font.draw(matrices, text, LegacyRecode.MC.screen.width - font.width(text) - 10, 10 + y, 0xffffff);
             y += 10;
         }
@@ -189,15 +172,19 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
                 }
             }
         }
-
         switch (type) {
-            case "ITEM":
+            case "NONE":
+                if (item.getItem() == Items.AIR) {
+                    return true;
+                }
+                break;
             case "BLOCK":
             case "PROJECTILE":
             case "VEHICLE":
             case "SPAWN_EGG":
             case "ENTITY_TYPE":
-                if (item.getItem() != Items.AIR) {
+            case "ITEM":
+                if (item.getItem() != Items.AIR && varitemtype.matches("")) {
                     return true;
                 }
                 break;
@@ -242,6 +229,35 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
                 return true;
         }
         return false;
+    }
+
+    private String getType (ItemStack item) {
+        CompoundTag pbv = item.getTagElement("PublicBukkitValues");
+        String varitemtype = "";
+        Map<String, String> convert = new HashMap<String,String>();
+        convert.put("num", "Number");
+        convert.put("txt", "Text");
+        convert.put("loc", "Location");
+        convert.put("vec", "Vector");
+        convert.put("snd", "Sound");
+        convert.put("part", "Particle");
+        convert.put("pot", "Potion");
+        convert.put("var", "Variable");
+        convert.put("g_val", "Game Value");
+        if (pbv != null) {
+            String t = pbv.getString("hypercube:varitem");
+            if (t != null) {
+                try {
+                    JsonObject o = JsonParser.parseString(t).getAsJsonObject();
+                    varitemtype = o.get("id").getAsString();
+                    return convert.get(varitemtype);
+                } catch (Exception ignored) {}
+            }
+        }else {
+            if (item.getItem() != Items.AIR) { return "Item"; }
+            return "None";
+        }
+        return "UNKNOWN";
     }
 
     private void showDesc(Action a, PoseStack matrices) {
