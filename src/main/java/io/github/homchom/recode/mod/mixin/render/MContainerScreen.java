@@ -74,6 +74,7 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
         List<Argument> rawArgs = Arrays.asList(ditem.getArguments());
         List<List<Integer>> currentOptions = new ArrayList<>();
         List<Integer> optionList = new ArrayList<>();
+        Argument lastChecked = null;
         Boolean checkingOR = false;
         Boolean valid = false;
         Boolean passedAll = true;
@@ -108,7 +109,6 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
                 for (List options : currentOptions) {
                     checkSlot = slot;
                     valid = true;
-                    Argument lastChecked = null;
                     for (Object checkOption : options) {
                         Argument checkArgument = rawArgs.get((Integer) checkOption);
                         if (lastChecked != null && lastChecked.isPlural() && typeCheck(lastChecked.getType(), items.get(checkSlot))) {
@@ -118,9 +118,7 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
                         lastChecked = checkArgument;
                         if (!typeCheck(checkArgument.getType(), items.get(checkSlot))) {
                             if (checkArgument.isOptional() && !items.get(checkSlot).isEmpty()) {
-                                if (!expected.contains("NONE")) { expected.add("NONE"); }
-                                valid = false;
-                                break;
+                                continue;
                             }
                             if (!checkArgument.isOptional()) {
                                 valid = false;
@@ -158,7 +156,6 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
                         for (List options : currentOptions) {
                             checkSlot = slot;
                             valid = true;
-                            Argument lastChecked = null;
                             for (Object checkOption : options) {
                                 Argument checkArgument = rawArgs.get((Integer) checkOption);
                                 if (lastChecked != null && lastChecked.isPlural() && typeCheck(lastChecked.getType(), items.get(checkSlot))) {
@@ -168,9 +165,7 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
                                 lastChecked = checkArgument;
                                 if (!typeCheck(checkArgument.getType(), items.get(checkSlot))) {
                                     if (checkArgument.isOptional() && !items.get(checkSlot).isEmpty()) {
-                                        if (!expected.contains("NONE")) { expected.add("NONE"); }
-                                        valid = false;
-                                        break;
+                                        continue;
                                     }
                                     if (!checkArgument.isOptional()) {
                                         valid = false;
@@ -204,15 +199,15 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
         if (passedAll && !startsOR) { slot --; };
         for (ItemStack slotCheck : items) {
             if (slotCheckIndex >= 25-ditem.getTags()) { break; }
+            if (lastChecked != null && lastChecked.isPlural() && typeCheck(lastChecked.getType(), slotCheck)) {
+                slotCheckIndex ++;
+                continue;
+            }
             if (slotCheckIndex >= slot + 1 && !slotCheck.isEmpty()) {
                 errors.add("§cExpected §6NONE §cat " + (slotCheckIndex + 1) + " but got §6" + getType(slotCheck));
             }
             slotCheckIndex ++;
         }
-
-//        if (!valid) {
-//            errors.add("§cExpected one of §e" + fixes + " §cat " + (furthest + 1) + " but got " + items.get(furthest).getItem());
-//        }
 
         int y = 0;
         for (String line : errors) {
@@ -252,6 +247,13 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
                 } catch (Exception ignored) {
                 }
             }
+        }
+
+        switch (varitemtype) {
+            case "var":
+                return true;
+            case "g_val":
+                return true;
         }
 
         switch (type) {
