@@ -13,9 +13,6 @@ import net.minecraft.network.chat.TextComponent;
 import java.util.*;
 
 public class FeaturesUI extends LightweightGuiDescription implements IMenu {
-
-    //private static final ResourceLocation CODEUTILS_LOGO = new ResourceLocation("codeutilities:icon.png");
-
     List<CButton> all = new ArrayList<>();
 
     @Override
@@ -35,7 +32,7 @@ public class FeaturesUI extends LightweightGuiDescription implements IMenu {
             CButton btn = new CButton();
             btn.setLabel(new TextComponent(f.getName()));
             btn.setAlignment(HorizontalAlignment.LEFT);
-            btnList.add(btn, 0, y, 95, 15);
+            btnList.add(btn, 5, y + 5, 95, 15);
             btn.setOnClick(() -> {
                 all.forEach(b -> b.setEnabled(true));
                 btn.setEnabled(false);
@@ -63,48 +60,4 @@ public class FeaturesUI extends LightweightGuiDescription implements IMenu {
         setRootPanel(root);
         root.validate(this);
     }
-
-//    @Override
-//    public void open(String... args) {
-//        WPlainPanel root = new WPlainPanel();
-//        root.setSize(425, 220);
-//
-//        WPlainPanel panel = new WPlainPanel();
-//        WScrollPanel scrollPanel = new WScrollPanel(panel);
-//        scrollPanel.setHost(this);
-//
-//        root.add(scrollPanel, 0, 0, 425, 220);
-//        panel.add(new WLabel(new LiteralText("CodeUtilities Features || v" + Recode.getVersion())), 4, 4);
-//
-//        CImage cImage = new CImage(CODEUTILS_LOGO);
-//        cImage.setSize(60, 60);
-//        panel.add(cImage, 355, 0);
-//
-//        try {
-//            URL oracle = new URL("https://raw.githubusercontent.com/CodeUtilities/data/main/menus/featuresGUI-" + Recode.getVersion() + ".txt");
-//            BufferedReader in = new BufferedReader(
-//                    new InputStreamReader(oracle.openStream()));
-//
-//            String inputLine;
-//            int y = 14;
-//
-//            while ((inputLine = in.readLine()) != null) {
-//                y += 10;
-//                if (inputLine.contains("-")) {
-//                    String[] inls = inputLine.replace("§l/§r", "/").split("-");
-//                    String[] colors = {"§x§C§C§5§D§0§0", "§x§3§3§0§3§0§0", "§x§C§C§5§2§0§0"};
-//                    Text txt = TextUtil.colorCodesToTextComponent(colors[0]+inls[0]+colors[1]+" - "+colors[2]+inls[1]);
-//                    panel.add(new WLabel(txt), 4, y);
-//                }
-//            }
-//
-//            in.close();
-//
-//        } catch (Exception e) {
-//            Recode.error(String.valueOf(e));
-//        }
-//
-//        panel.setHost(this);
-//        setRootPanel(root);
-//    }
 }

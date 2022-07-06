@@ -14,16 +14,6 @@ public class SongData {
     String notes;
 
     public SongData(String name, String author, float speed, int length, String notes, String fileName, String layers, int loopTick, int loopCount, int customInstrumentCount) {
-//        System.out.println("Name"+name);
-//        System.out.println("Author"+author);
-//        System.out.println("Speed"+speed);
-//        System.out.println("Length"+length);
-//        System.out.println("Notes"+notes);
-//        System.out.println("FileName"+fileName);
-//        System.out.println("Layers"+layers);
-//        System.out.println("LoopTick"+loopTick);
-//        System.out.println("LoopCount"+loopCount);
-//        System.out.println("CIC"+customInstrumentCount);
         this.name = name;
         this.author = author;
         this.speed = speed;
