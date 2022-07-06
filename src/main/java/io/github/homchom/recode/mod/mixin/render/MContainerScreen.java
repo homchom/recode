@@ -134,8 +134,8 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
                         break;
                     }
                 }
-                if (expected.size() != 0) {
-                    errors.add("§cExpected one of §6" + expected + " §cin slot " + (checkSlot + 1) + " but got §6" + getType(items.get(checkSlot)));
+                if (expected.size() == 1) {
+                    errors.add("§cExpected §6" + expected.get(0) + " §cin slot " + (checkSlot + 1) + " but got §6" + getType(items.get(checkSlot)));
                     slot = checkSlot;
                     passedAll = false;
                     break;
@@ -195,8 +195,51 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
             }
             current ++;
         }
+
+        // Check for any OR that is at the end of the argument list
+        if (checkingOR) {
+            if (optionList.size() != 0) {
+                currentOptions.add(optionList);
+            }
+            List<String> expected = new ArrayList<>();
+            for (List options : currentOptions) {
+                checkSlot = slot;
+                valid = true;
+                for (Object checkOption : options) {
+                    Argument checkArgument = rawArgs.get((Integer) checkOption);
+                    if (lastChecked != null && lastChecked.isPlural() && typeCheck(lastChecked.getType(), items.get(checkSlot))) {
+                        checkSlot ++;
+                        continue;
+                    }
+                    lastChecked = checkArgument;
+                    if (!typeCheck(checkArgument.getType(), items.get(checkSlot))) {
+                        if (checkArgument.isOptional() && !items.get(checkSlot).isEmpty()) {
+                            continue;
+                        }
+                        if (!checkArgument.isOptional()) {
+                            valid = false;
+                            break;
+                        }
+                    }
+                    checkSlot ++;
+                }
+                if (!valid) {
+                    expected.add(lastChecked.getType());
+                } else {
+                    expected = new ArrayList<>();
+                    break;
+                }
+            }
+            if (expected.size() != 0) {
+                errors.add("§cExpected one of §6" + expected + " §cin slot " + (checkSlot + 1) + " but got §6" + getType(items.get(checkSlot)));
+                slot = checkSlot;
+                passedAll = false;
+            }else { slot = checkSlot; }
+        }
+
+        // Check for extra data not requested by arguments.
         Integer slotCheckIndex = 0;
-        if (passedAll && !startsOR) { slot --; };
+        if (passedAll && startsOR) { slot --; }
         for (ItemStack slotCheck : items) {
             if (slotCheckIndex >= 25-ditem.getTags()) { break; }
             if (lastChecked != null && lastChecked.isPlural() && typeCheck(lastChecked.getType(), slotCheck)) {
@@ -204,7 +247,7 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
                 continue;
             }
             if (slotCheckIndex >= slot + 1 && !slotCheck.isEmpty()) {
-                errors.add("§cExpected §6NONE §cat " + (slotCheckIndex + 1) + " but got §6" + getType(slotCheck));
+                errors.add("§cExpected §6NONE §cin slot " + (slotCheckIndex + 1) + " but got §6" + getType(slotCheck));
             }
             slotCheckIndex ++;
         }
