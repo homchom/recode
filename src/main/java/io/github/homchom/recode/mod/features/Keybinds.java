@@ -129,12 +129,7 @@ public class Keybinds implements ClientModInitializer {
             )), chatShortcut);
         }
 
-//        // Sided Chat
-//        Map<ChatType, KeyMapping> chatTypeKeyMappingMap = new HashMap<>();
-//        for (ChatRule.ChatRuleType chatType :
-//                ChatType.values()) {
-//            chatTypeKeyMappingMap.put(Chat)
-//        }
+        // Sided Chat
 
         // =======================================================
         // Events

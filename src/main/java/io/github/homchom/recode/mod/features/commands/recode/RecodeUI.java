@@ -40,14 +40,6 @@ public class RecodeUI extends LightweightGuiDescription implements IMenu {
         });
         panel.add(featuresButton, 60, 148, 100, 20);
 
-        // ------------------------ Contributors Button ------------------------
-        // TODO: re-add?
-        /*WButton contributorsButton = new WButton(new TextComponent("Contributors"));
-        contributorsButton.setOnClick(() -> {
-            ContributorsUI gui_2 = new ContributorsUI();
-            gui_2.scheduleOpenGui(gui_2);
-        });
-        panel.add(contributorsButton, 60, 170, 100, 20);*/
 
         // ------------------------ Bug Report Button ------------------------
         WButton bugReport = new WButton(new TextComponent("Report Issues"));

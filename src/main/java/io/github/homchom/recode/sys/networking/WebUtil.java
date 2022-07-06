@@ -31,19 +31,6 @@ public class WebUtil {
 
     private static final HostnameVerifier allHostsValid = (hostname, session) -> true;
 
-    static {
-        // This was messing up ssl for MinecraftCapes
-//        try {
-//            SSLContext sc = SSLContext.getInstance("SSL");
-//            sc.init(null, trustAllCerts, new java.security.SecureRandom());
-//            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-//            HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
-//        } catch (NoSuchAlgorithmException | KeyManagementException e) {
-//            e.printStackTrace();
-//        }
-
-    }
-
     public static String getString(String urlToRead, Charset charset) throws IOException {
         URL url = new URL(urlToRead);
         BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream(), charset));

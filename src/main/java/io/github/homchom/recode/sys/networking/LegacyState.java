@@ -344,7 +344,6 @@ public class LegacyState {
                 locateTimer.schedule(new TimerTask() {
                     @Override
                     public void run() {
-//                        ChatUtil.executeCommandSilently("locate");
                         ChatUtil.executeCommand("locate");
                         MessageGrabber.hide(1, MessageType.LOCATE);
                     }
