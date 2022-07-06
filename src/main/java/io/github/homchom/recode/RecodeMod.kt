@@ -100,10 +100,6 @@ object LegacyRecode {
     @JvmField
     val EXECUTOR: ExecutorService = Executors.newCachedThreadPool()
 
-    // TODO: replace with Permission class
-    const val JEREMASTER_UUID = "6c669475-3026-4603-b3e7-52c97681ad3a"
-    const val RYANLAND_UUID = "3134fb4d-a345-4c5e-9513-97c2c951223e"
-
     // TODO: replace with something... better
     @JvmField
     var signText = arrayOf<String>() // stores the text of the code sign corresponding to the currently open chest
