@@ -35,7 +35,6 @@ public class ColorsMenu extends LightweightGuiDescription implements IMenu {
             setRootPanel(root);
             root.setSize(256, 240);
 
-            // root.add(new CColoredRectangle(new Color(0, 0, 0, 100), new Color(255, 255, 255, 100)), 0, 80, 256, 120);
             colorPicker = new CColorPicker(1f, new HSBColor(0, 1, 1));
             root.add(colorPicker, 10, 90);
 

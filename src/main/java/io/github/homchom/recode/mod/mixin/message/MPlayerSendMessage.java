@@ -17,21 +17,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(LocalPlayer.class)
 public class MPlayerSendMessage {
     private final Minecraft minecraftClient = Minecraft.getInstance();
-//    private boolean stopTimer = false;
-//    private final Thread conversationTimer = new Thread(() -> {
-//        while (true) {
-//            if (stopTimer) {
-//                stopTimer = false;
-//                stopConversationTimer();
-//            }
-//            if (System.currentTimeMillis() - Config.getLong("automsg_timeoutNumber") >= Long.parseLong(DFInfo.conversationUpdateTime)) {
-//                ChatUtil.sendMessage("Your conversation with " + DFInfo.currentConversation + " was inactive and ended.", ChatType.INFO_BLUE);
-//                DFInfo.currentConversation = null;
-//                DFInfo.conversationUpdateTime = null;
-//                stopConversationTimer();
-//            }
-//        }
-//    });
 
     @Inject(method = "chat(Ljava/lang/String;)V", at = @At("HEAD"), cancellable = true)
     public void chat(String string, CallbackInfo ci) {
@@ -123,23 +108,4 @@ public class MPlayerSendMessage {
             minecraftClient.player.chat("/msg " + ConversationTimer.currentConversation + " " + message);
         }
     }
-
-
-//    private void startConversationTimer() {
-//        synchronized (conversationTimer) {
-//            Thread.State timerState = conversationTimer.getState();
-//            if (timerState == Thread.State.NEW) conversationTimer.start();
-//            if (timerState == Thread.State.WAITING) conversationTimer.notify();
-//        }
-//    }
-
-//    private void stopConversationTimer() {
-//        synchronized (conversationTimer) {
-//            try {
-//                conversationTimer.wait();
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
 }
