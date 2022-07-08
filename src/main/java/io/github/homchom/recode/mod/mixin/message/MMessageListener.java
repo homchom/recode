@@ -29,7 +29,6 @@ public class MMessageListener {
     @Inject(method = "handleChat", at = @At("HEAD"), cancellable = true)
     private void handleChat(ClientboundChatPacket packet, CallbackInfo ci) {
         if (DFInfo.isOnDF() && RenderSystem.isOnRenderThread()) {
-            Recode.logInfo(packet.getType().name());
             if (packet.getType() != ChatType.GAME_INFO) {
                 boolean result = EventValidation.validate(
                         RecodeEvents.RECEIVE_CHAT_MESSAGE, packet.getMessage());

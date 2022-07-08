@@ -73,13 +73,11 @@ public class LegacyReceiveChatMessageEvent {
         // highlight name
         if (Config.getBoolean("highlight")) {
             String highlightMatcher = Config.getString("highlightMatcher").replaceAll("\\{name}", mc.player.getName().getString());
-            Recode.logInfo(highlightMatcher);
 
             if (( DFInfo.currentState.getMode() != LegacyState.Mode.PLAY && msgWithoutColor.matches("^[^0-z]+.*[a-zA-Z]+: .*"))
                     || (DFInfo.currentState.getMode() == LegacyState.Mode.PLAY && msgWithoutColor.matches("^.*[a-zA-Z]+: .*"))) {
                 if ((!msgWithoutColor.matches("^.*" + highlightMatcher + ": .*")) || Config.getBoolean("highlightIgnoreSender")) {
                     if (msgWithoutColor.contains(highlightMatcher)) {
-                        Recode.logInfo("contains highlight matcher");
                         String[] chars = msgWithColor.split("");
                         int i = 0;
                         int newMsgIter = 0;
