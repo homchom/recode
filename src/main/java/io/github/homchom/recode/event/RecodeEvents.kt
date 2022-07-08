@@ -1,9 +1,9 @@
 package io.github.homchom.recode.event
 
-import io.github.homchom.recode.mod.features.social.chat.message.Message
 import io.github.homchom.recode.render.GlobalUsesCustomOutlines
-import io.github.homchom.recode.render.RGBA
 import io.github.homchom.recode.sys.networking.LegacyState
+import io.github.homchom.recode.ui.RGBAColor
+import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.game.ClientboundSoundPacket
 import net.minecraft.world.level.block.entity.BlockEntity
 
@@ -18,11 +18,11 @@ object RecodeEvents {
     @JvmField val OUTLINE_BLOCK_ENTITY = createEvent<BlockEntity, OutlineResult>()
 
     class OutlineResult {
-        var outlineColor: RGBA? = null
+        var outlineColor: RGBAColor? = null
     }
 
     // Chat
-    @JvmField val RECEIVE_CHAT_MESSAGE = createValidatedEvent<Message>()
+    @JvmField val RECEIVE_CHAT_MESSAGE = createValidatedEvent<Component>()
 
     // DF
     @JvmField val CHANGE_DF_STATE = createHook<StateChange>()

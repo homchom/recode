@@ -1,11 +1,10 @@
 package io.github.homchom.recode.mod.mixin.message;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import io.github.homchom.recode.LegacyRecode;
+import io.github.homchom.recode.*;
 import io.github.homchom.recode.event.*;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.LagslayerHUD;
-import io.github.homchom.recode.mod.features.social.chat.message.Message;
 import io.github.homchom.recode.sys.networking.LegacyState;
 import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
@@ -29,19 +28,18 @@ public class MMessageListener {
 
     @Inject(method = "handleChat", at = @At("HEAD"), cancellable = true)
     private void handleChat(ClientboundChatPacket packet, CallbackInfo ci) {
-        if (DFInfo.isOnDF()) {
-            if (packet.getType() == ChatType.CHAT || packet.getType() == ChatType.SYSTEM) {
-                if (RenderSystem.isOnRenderThread()) {
-                    boolean result = EventValidation.validate(
-                            RecodeEvents.RECEIVE_CHAT_MESSAGE, new Message(packet, ci));
-                    if (!result) ci.cancel();
-                    try {
-                        this.updateVersion(packet.getMessage());
-                        this.updateState(packet.getMessage());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        LegacyRecode.error("Error while trying to parse the chat text!");
-                    }
+        if (DFInfo.isOnDF() && RenderSystem.isOnRenderThread()) {
+            Recode.logInfo(packet.getType().name());
+            if (packet.getType() != ChatType.GAME_INFO) {
+                boolean result = EventValidation.validate(
+                        RecodeEvents.RECEIVE_CHAT_MESSAGE, packet.getMessage());
+                if (!result) ci.cancel();
+                try {
+                    this.updateVersion(packet.getMessage());
+                    this.updateState(packet.getMessage());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    LegacyRecode.error("Error while trying to parse the chat text!");
                 }
             }
         }

@@ -8,9 +8,9 @@ import io.github.homchom.recode.mc
 import io.github.homchom.recode.mod.features.commands.CodeSearcher
 import io.github.homchom.recode.render.CustomOutlineProcessor
 import io.github.homchom.recode.render.GlobalUsesCustomOutlines
-import io.github.homchom.recode.render.RGBA
 import io.github.homchom.recode.sys.networking.LegacyState
 import io.github.homchom.recode.sys.player.DFInfo
+import io.github.homchom.recode.ui.rgba
 import net.minecraft.world.level.block.entity.SignBlockEntity
 import kotlin.math.sqrt
 
@@ -28,7 +28,7 @@ class FCodeSearch : Feature("Code Search") {
                         val distance = sqrt(blockEntity.getBlockPos()
                             .distSqr(mc.cameraEntity!!.blockPosition()))
                         val alpha = (distance.coerceIn(1.0, 15.0) * 17).toInt()
-                        outlineColor = RGBA(255, 255, 255, alpha)
+                        outlineColor = rgba(255, 255, 255, alpha)
                     }
                 }
             }

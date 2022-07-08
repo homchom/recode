@@ -6,17 +6,15 @@ import io.github.homchom.recode.mod.features.social.chat.message.checks.*;
  * Before a message is sent to the client, all message checks are evaluated
  */
 public abstract class MessageCheck {
-
     // Define message checks here
     private static final MessageCheck[] checks = new MessageCheck[]{
-
             // General
             new LocateCheck(),
             new DirectMessageCheck(),
             new PlotAdCheck(),
             new JoinDiamondFireCheck(),
 
-            // Lagslayer
+            // LagSlayer
             new LagslayerStartCheck(),
             new LagslayerStopCheck(),
 
@@ -40,7 +38,6 @@ public abstract class MessageCheck {
 
             // Custom regex
             new StreamerModeRegexCheck()
-
     };
 
     public abstract MessageType getType();

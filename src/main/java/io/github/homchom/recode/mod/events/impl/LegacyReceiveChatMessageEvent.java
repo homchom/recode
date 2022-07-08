@@ -3,7 +3,6 @@ package io.github.homchom.recode.mod.events.impl;
 import io.github.homchom.recode.*;
 import io.github.homchom.recode.event.*;
 import io.github.homchom.recode.mod.config.Config;
-import io.github.homchom.recode.mod.features.social.chat.message.Message;
 import io.github.homchom.recode.sys.networking.LegacyState;
 import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.*;
@@ -24,7 +23,7 @@ public class LegacyReceiveChatMessageEvent {
 
     public static String tipPlayer = "";
 
-    private void run(EventValidator result, Message message) {
+    private void run(EventValidator result, Component message) {
         Minecraft mc = Minecraft.getInstance();
 
         if (mc.player == null) {
@@ -32,8 +31,7 @@ public class LegacyReceiveChatMessageEvent {
             return;
         }
 
-        Component text = message.getText();
-        String stripped = text.getString();
+        String stripped = message.getString();
 
         boolean cancel = false;
 
@@ -45,17 +43,17 @@ public class LegacyReceiveChatMessageEvent {
                     ChatUtil.sendMessage("This player is not in a plot.", ChatType.FAIL);
                 } else {
                     // PLOT ID
-                    Pattern pattern = Pattern.compile("\\[[0-9]+]\n");
+                    Pattern pattern = Pattern.compile("\\[\\d+]\n");
                     Matcher matcher = pattern.matcher(msg);
                     String id = "";
                     while (matcher.find()) {
                         id = matcher.group();
                     }
-                    id = id.replaceAll("[\\[]\n]", "");
+                    id = id.replaceAll("[\\[\\]\n]", "");
 
                     String cmd = "/join " + id;
 
-                    if (cmd.matches("/join [0-9]+")) {
+                    if (cmd.matches("/join \\d+")) {
                         mc.player.chat(cmd);
                     } else {
                         ChatUtil.sendMessage("Error while trying to join the plot.", ChatType.FAIL);
@@ -69,7 +67,7 @@ public class LegacyReceiveChatMessageEvent {
 
         String msgToString = message.toString();
 
-        String msgWithColor = TextUtil.textComponentToColorCodes(text);
+        String msgWithColor = TextUtil.textComponentToColorCodes(message);
         String msgWithoutColor = msgWithColor.replaceAll("§.", "");
 
         // highlight name
@@ -150,8 +148,8 @@ public class LegacyReceiveChatMessageEvent {
             }
 
             if (Config.getBoolean("autoClickEditMsgs") && stripped.startsWith("⏵ Click to edit variable: ")) {
-                if (text.getStyle().getClickEvent().getAction() == Action.SUGGEST_COMMAND) {
-                    String toOpen = text.getStyle().getClickEvent().getValue();
+                if (message.getStyle().getClickEvent().getAction() == Action.SUGGEST_COMMAND) {
+                    String toOpen = message.getStyle().getClickEvent().getValue();
                     Minecraft.getInstance().tell(() -> Minecraft.getInstance().setScreen(new ChatScreen(toOpen)));
                 }
             }

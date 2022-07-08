@@ -4,9 +4,10 @@ package io.github.homchom.recode.render
 
 import com.mojang.blaze3d.vertex.VertexMultiConsumer
 import io.github.homchom.recode.mc
+import io.github.homchom.recode.ui.RGBAColor
 import net.minecraft.client.renderer.MultiBufferSource
 
-fun MultiBufferSource.withOutline(color: RGBA) = MultiBufferSource { type ->
+fun MultiBufferSource.withOutline(color: RGBAColor) = MultiBufferSource { type ->
     val buffer = getBuffer(type)
     val outline = type.outline()
     if (outline.isPresent) {
