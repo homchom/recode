@@ -39,20 +39,20 @@ class TextBuilder(val style: Style = Style.EMPTY) {
     val ChangePage: TextClickAction get() = ClickEventAction(ClickEvent.Action.CHANGE_PAGE)
     val CopyToClipboard: TextClickAction get() = ClickEventAction(ClickEvent.Action.COPY_TO_CLIPBOARD)
 
-    val ShowText: HoverEvent.Action<Component> get() = HoverEvent.Action.SHOW_TEXT
-    val ShowItem: HoverEvent.Action<ItemStackInfo> get() = HoverEvent.Action.SHOW_ITEM
-    val ShowEntity: HoverEvent.Action<EntityTooltipInfo> get() = HoverEvent.Action.SHOW_ENTITY
-
     object Insert : TextClickAction {
         override fun applyTo(style: Style, string: String): Style = style.withInsertion(string)
     }
 
+    val ShowText: HoverEvent.Action<Component> get() = HoverEvent.Action.SHOW_TEXT
+    val ShowItem: HoverEvent.Action<ItemStackInfo> get() = HoverEvent.Action.SHOW_ITEM
+    val ShowEntity: HoverEvent.Action<EntityTooltipInfo> get() = HoverEvent.Action.SHOW_ENTITY
+
     fun append(component: MutableComponent, style: Style = this.style) {
-        text.append(component.setStyle(style))
+        text += component.setStyle(style)
     }
 
     inline fun appendBlock(scope: TextScope, style: Style) {
-        text.append(TextBuilder(style).apply(scope).text)
+        text += TextBuilder(style).apply(scope).text
     }
 
     fun translate(key: String, vararg args: Any) = append(TranslatableComponent(key, args))
