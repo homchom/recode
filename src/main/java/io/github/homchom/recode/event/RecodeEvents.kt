@@ -9,23 +9,23 @@ import net.minecraft.world.level.block.entity.BlockEntity
 
 object RecodeEvents {
     // Game
-    @JvmField val PLAY_SOUND = createValidatedEvent<ClientboundSoundPacket>()
+    @JvmField val PlaySound = createValidatedEvent<ClientboundSoundPacket>()
 
     // Rendering
-    @JvmField val RENDER_BLOCK_ENTITY = createValidatedEvent<BlockEntity>()
+    @JvmField val RenderBlockEntity = createValidatedEvent<BlockEntity>()
 
     @GlobalUsesCustomOutlines
-    @JvmField val OUTLINE_BLOCK_ENTITY = createEvent<BlockEntity, OutlineResult>()
+    @JvmField val OutlineBlockEntity = createEvent<BlockEntity, OutlineResult>()
 
     class OutlineResult {
         var outlineColor: RGBAColor? = null
     }
 
     // Chat
-    @JvmField val RECEIVE_CHAT_MESSAGE = createValidatedEvent<Component>()
+    @JvmField val ReceiveChatMessage = createValidatedEvent<Component>()
 
     // DF
-    @JvmField val CHANGE_DF_STATE = createHook<StateChange>()
+    @JvmField val ChangeDFState = createHook<StateChange>()
 
     data class StateChange(val new: LegacyState, val old: LegacyState)
 }

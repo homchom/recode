@@ -24,7 +24,7 @@ import java.io.*;
 public class NBSCommand extends Command {
 
     public static void loadNbs(File file, String fileName) {
-        LegacyRecode.EXECUTOR.submit(() -> {
+        LegacyRecode.executor.submit(() -> {
             try {
                 SongData d = NBSDecoder.parse(file);
                 String code = new NBSToTemplate(d).convert();

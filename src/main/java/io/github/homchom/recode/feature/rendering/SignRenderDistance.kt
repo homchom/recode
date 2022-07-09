@@ -13,7 +13,7 @@ class FSignRenderDistance : Feature("Sign Render Distance") {
     override val dependencies = none()
 
     override fun RModule.onLoad() {
-        listenTo(RecodeEvents.RENDER_BLOCK_ENTITY) { blockEntity: BlockEntity ->
+        listenTo(RecodeEvents.RenderBlockEntity) { blockEntity: BlockEntity ->
             if (blockEntity is SignBlockEntity) {
                 val cameraPos = mc.cameraEntity!!.blockPosition()
                 val distance = Config.getInteger("signRenderDistance").toDouble()

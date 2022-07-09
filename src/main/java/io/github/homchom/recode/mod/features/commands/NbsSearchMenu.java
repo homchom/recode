@@ -64,7 +64,7 @@ public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
 
         WScrollPanel spanel = new WScrollPanel(ppanel);
 
-        LegacyRecode.EXECUTOR.submit(() -> {
+        LegacyRecode.executor.submit(() -> {
             try {
                 String sresults = WebUtil.getString(
                     "https://untitled-57qvszfgg28u.runkit.sh/search?query=" + URLEncoder
@@ -95,7 +95,7 @@ public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
 
                         download.setOnClick(() -> {
                             download.setLabel(new TextComponent("..."));
-                            LegacyRecode.EXECUTOR
+                            LegacyRecode.executor
                                 .submit(() -> {
                                     String notes = null;
                                     try {
@@ -133,7 +133,7 @@ public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
                             if (previewId != id) {
                                 previewId = id;
                                 preview.setLabel(new TextComponent("..."));
-                                LegacyRecode.EXECUTOR
+                                LegacyRecode.executor
                                     .submit(() -> {
                                         String snotes = null;
                                         try {

@@ -21,7 +21,7 @@ class FCodeSearch : Feature("Code Search") {
     )
 
     override fun RModule.onLoad() {
-        listenTo(RecodeEvents.OUTLINE_BLOCK_ENTITY) { blockEntity ->
+        listenTo(RecodeEvents.OutlineBlockEntity) { blockEntity ->
             if (blockEntity is SignBlockEntity) {
                 if (DFInfo.currentState.getMode() == LegacyState.Mode.DEV && mc.player!!.isCreative) {
                     if (CodeSearcher.isSignMatch(blockEntity)) {

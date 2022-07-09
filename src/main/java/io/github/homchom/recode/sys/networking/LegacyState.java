@@ -342,7 +342,7 @@ public class LegacyState {
     }
 
     private static void notifyStateChange(LegacyState newState, LegacyState oldState) {
-        RecodeEvents.CHANGE_DF_STATE.invoke(new RecodeEvents.StateChange(newState, oldState));
+        RecodeEvents.ChangeDFState.invoke(new RecodeEvents.StateChange(newState, oldState));
     }
 
     public static class CurrentState extends LegacyState {

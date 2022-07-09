@@ -30,7 +30,7 @@ import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-private val logger = LoggerFactory.getLogger(MOD_ID)
+private val Logger = LoggerFactory.getLogger(MOD_ID)
 
 lateinit var modVersion: String
     private set
@@ -97,7 +97,7 @@ object LegacyRecode {
     val MC: Minecraft = Minecraft.getInstance()
 
     @JvmField
-    val EXECUTOR: ExecutorService = Executors.newCachedThreadPool()
+    val executor: ExecutorService = Executors.newCachedThreadPool()
 
     // TODO: replace with something... better
     @JvmField
@@ -127,6 +127,6 @@ object LegacyRecode {
     fun error(message: String) = logError("[$MOD_NAME] $message")
 }
 
-fun logInfo(message: String) = logger.info("[$MOD_NAME] $message")
+fun logInfo(message: String) = Logger.info("[$MOD_NAME] $message")
 
-fun logError(message: String) = logger.error("[$MOD_NAME] $message")
+fun logError(message: String) = Logger.error("[$MOD_NAME] $message")

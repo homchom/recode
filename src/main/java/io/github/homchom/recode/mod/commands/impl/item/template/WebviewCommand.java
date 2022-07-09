@@ -37,7 +37,7 @@ public class WebviewCommand extends AbstractTemplateCommand {
     protected void withTemplate(ItemStack stack) {
         ChatUtil.sendMessage("Generating template link...", ChatType.INFO_BLUE);
 
-        LegacyRecode.EXECUTOR.submit(() -> {
+        LegacyRecode.executor.submit(() -> {
             JsonObject template = TemplateUtil.read(stack);
             String data = template.get("code").getAsString();
             try {

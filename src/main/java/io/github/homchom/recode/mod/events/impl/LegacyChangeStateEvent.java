@@ -9,7 +9,7 @@ import io.github.homchom.recode.sys.player.chat.MessageGrabber;
 
 public class LegacyChangeStateEvent {
     public LegacyChangeStateEvent() {
-        RecodeEvents.CHANGE_DF_STATE.listen(context -> run(context.getNew(), context.getOld()));
+        RecodeEvents.ChangeDFState.listen(context -> run(context.getNew(), context.getOld()));
     }
 
     private void run(LegacyState newState, LegacyState oldState) {

@@ -15,7 +15,7 @@ class CustomOutlineProcessor : ModuleDefinition {
             if (isEnabled) {
                 val processor = mc.levelRenderer as OutlineProcessor
                 if (processor.canProcessOutlines()) {
-                    if (RecodeEvents.OUTLINE_BLOCK_ENTITY.prevResult != null) {
+                    if (RecodeEvents.OutlineBlockEntity.prevResult != null) {
                         processor.processOutlines(mc.frameTime)
                         mc.mainRenderTarget.bindWrite(false)
                     }

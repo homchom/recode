@@ -7,7 +7,7 @@ public class LegacyReceiveSoundEvent {
     private static int cancelNextSounds;
 
     public LegacyReceiveSoundEvent() {
-        RecodeEvents.PLAY_SOUND.listen(this::run);
+        RecodeEvents.PlaySound.listen(this::run);
     }
 
     private void run(EventValidator result, ClientboundSoundPacket packet) {

@@ -28,7 +28,7 @@ public class MChestBlock {
                 sign.getMessage(2, false).getString(),
                 sign.getMessage(3, false).getString()
             };
-            LegacyRecode.EXECUTOR.submit(() -> {
+            LegacyRecode.executor.submit(() -> {
                 try {
                   Thread.sleep(1000);
                 } catch (Exception ignored) {}

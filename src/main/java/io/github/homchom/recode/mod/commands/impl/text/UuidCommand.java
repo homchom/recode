@@ -27,7 +27,7 @@ public class UuidCommand extends Command {
         cd.register(ArgBuilder.literal("uuid")
                 .then(ArgBuilder.argument("username", PlayerArgumentType.player())
                         .executes(ctx -> {
-                            LegacyRecode.EXECUTOR.submit(() -> {
+                            LegacyRecode.executor.submit(() -> {
                                 String username = ctx.getArgument("username", String.class);
                                 String url = "https://api.mojang.com/users/profiles/minecraft/" + username;
                                 try {

@@ -11,7 +11,7 @@ typealias TextScope = TextBuilder.() -> Unit
 
 inline fun text(builder: TextScope) = TextBuilder().apply(builder).text
 
-@Suppress("PropertyName")
+@Suppress("PropertyName", "unused")
 class TextBuilder(val style: Style = Style.EMPTY) {
     var text = TextComponent("")
 
@@ -32,16 +32,12 @@ class TextBuilder(val style: Style = Style.EMPTY) {
     inline val yellow get() = ChatFormatting.YELLOW
     inline val white get() = ChatFormatting.WHITE
 
-    val OpenUrl: TextClickAction get() = ClickEventAction(ClickEvent.Action.OPEN_URL)
-    val OpenFile: TextClickAction get() = ClickEventAction(ClickEvent.Action.OPEN_FILE)
-    val RunCommand: TextClickAction get() = ClickEventAction(ClickEvent.Action.RUN_COMMAND)
-    val SuggestCommand: TextClickAction get() = ClickEventAction(ClickEvent.Action.SUGGEST_COMMAND)
-    val ChangePage: TextClickAction get() = ClickEventAction(ClickEvent.Action.CHANGE_PAGE)
-    val CopyToClipboard: TextClickAction get() = ClickEventAction(ClickEvent.Action.COPY_TO_CLIPBOARD)
-
-    object Insert : TextClickAction {
-        override fun applyTo(style: Style, string: String): Style = style.withInsertion(string)
-    }
+    val OpenUrl get() = ClickEvent.Action.OPEN_URL
+    val OpenFile get() = ClickEvent.Action.OPEN_FILE
+    val RunCommand get() = ClickEvent.Action.RUN_COMMAND
+    val SuggestCommand get() = ClickEvent.Action.SUGGEST_COMMAND
+    val ChangePage get() = ClickEvent.Action.CHANGE_PAGE
+    val CopyToClipboard get() = ClickEvent.Action.COPY_TO_CLIPBOARD
 
     val ShowText: HoverEvent.Action<Component> get() = HoverEvent.Action.SHOW_TEXT
     val ShowItem: HoverEvent.Action<ItemStackInfo> get() = HoverEvent.Action.SHOW_ITEM
@@ -78,22 +74,15 @@ class TextBuilder(val style: Style = Style.EMPTY) {
     inline fun obfuscated(scope: TextScope) =
         appendBlock(scope, style.withObfuscated(true))
 
-    inline fun onClick(action: TextClickAction, value: String, scope: TextScope) =
-        appendBlock(scope, action.applyTo(style, value))
+    inline fun onClick(action: ClickEvent.Action, value: String, scope: TextScope) =
+        appendBlock(scope, style.withClickEvent(ClickEvent(action, value)))
 
     inline fun <T> onHover(action: HoverEvent.Action<T>, value: T, scope: TextScope) =
         appendBlock(scope, style.withHoverEvent(HoverEvent(action, value)))
 
+    inline fun insert(string: String, scope: TextScope) =
+        appendBlock(scope, style.withInsertion(string))
+
     inline fun font(id: ResourceLocation, scope: TextScope) =
         appendBlock(scope, style.withFont(id))
-
-    sealed interface TextClickAction {
-        fun applyTo(style: Style, string: String): Style
-    }
-
-    @JvmInline
-    private value class ClickEventAction(val vanilla: ClickEvent.Action) : TextClickAction {
-        override fun applyTo(style: Style, string: String): Style =
-            style.withClickEvent(ClickEvent(vanilla, string))
-    }
 }

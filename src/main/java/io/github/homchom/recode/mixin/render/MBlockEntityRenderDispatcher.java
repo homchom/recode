@@ -17,14 +17,14 @@ public class MBlockEntityRenderDispatcher {
 	public void renderBlockEntities(
 			BlockEntity blockEntity, float f, PoseStack poseStack,
 			MultiBufferSource multiBufferSource, CallbackInfo ci) {
-		if (!EventValidation.validate(RecodeEvents.RENDER_BLOCK_ENTITY, blockEntity)) {
+		if (!EventValidation.validate(RecodeEvents.RenderBlockEntity, blockEntity)) {
 			ci.cancel();
 		}
 	}
 
 	@ModifyVariable(method = "render", at = @At("HEAD"), ordinal = 0, argsOnly = true)
 	public MultiBufferSource outlineBlockEntities(MultiBufferSource multiBufferSource, BlockEntity blockEntity) {
-		RGBAColor outlineColor = RecodeEvents.OUTLINE_BLOCK_ENTITY
+		RGBAColor outlineColor = RecodeEvents.OutlineBlockEntity
 				.invoke(blockEntity, new RecodeEvents.OutlineResult())
 				.getOutlineColor();
 		if (outlineColor != null) {

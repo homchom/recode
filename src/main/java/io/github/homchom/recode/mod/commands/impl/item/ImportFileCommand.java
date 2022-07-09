@@ -27,7 +27,7 @@ public class ImportFileCommand extends Command {
                     if (!isCreative(mc)) return -1;
 
                     ChatUtil.sendMessage("Opening File Picker", ChatType.INFO_BLUE);
-                    LegacyRecode.EXECUTOR.submit(() -> {
+                    LegacyRecode.executor.submit(() -> {
                         try {
                             FileDialog fd = new FileDialog((Dialog) null, "Choose a text file", FileDialog.LOAD);
                             fd.setMultipleMode(true);

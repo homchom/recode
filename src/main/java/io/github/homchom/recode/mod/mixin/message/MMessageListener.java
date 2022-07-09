@@ -31,7 +31,7 @@ public class MMessageListener {
         if (DFInfo.isOnDF() && RenderSystem.isOnRenderThread()) {
             if (packet.getType() != ChatType.GAME_INFO) {
                 boolean result = EventValidation.validate(
-                        RecodeEvents.RECEIVE_CHAT_MESSAGE, packet.getMessage());
+                        RecodeEvents.ReceiveChatMessage, packet.getMessage());
                 if (!result) ci.cancel();
                 try {
                     this.updateVersion(packet.getMessage());
