@@ -5,7 +5,7 @@ import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
 import io.github.homchom.recode.mod.commands.arguments.types.PathArgumentType;
 import io.github.homchom.recode.sys.file.ExternalFile;
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 
 import java.nio.file.Path;
 import java.util.function.Function;

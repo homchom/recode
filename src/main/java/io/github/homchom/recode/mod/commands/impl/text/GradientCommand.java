@@ -9,16 +9,17 @@ import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.ChatType;
 import io.github.homchom.recode.sys.player.chat.*;
 import io.github.homchom.recode.sys.player.chat.color.*;
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.*;
 
 import java.awt.*;
 
 public class GradientCommand extends Command {
     @Override
-    public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd) {
+    public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd, CommandBuildContext context) {
         cd.register(ArgBuilder.literal("gradient")
                 .then(ArgBuilder.argument("startColor", StringArgumentType.string())
                         .then(ArgBuilder.argument("endColor", StringArgumentType.string())
@@ -72,12 +73,12 @@ public class GradientCommand extends Command {
                                             String lastHex = "";
                                             int spaces = 0;
 
-                                            TextComponent base = new TextComponent("§a→ §r");
+                                            MutableComponent base = Component.literal("§a→ §r");
 
                                             for (char c : chars) {
                                                 if (c == ' ') {
                                                     spaces++;
-                                                    base.getSiblings().add(new TextComponent(" "));
+                                                    base.getSiblings().add(Component.literal(" "));
                                                     sb.append(c);
                                                     continue;
                                                 }
@@ -95,8 +96,8 @@ public class GradientCommand extends Command {
 
                                                 Style colorStyle = Style.EMPTY.withColor(TextColor.fromRgb(temp2.getRGB()));
                                                 String colorName = "#" + hex;
-                                                TextComponent extra = new TextComponent(String.valueOf(c));
-                                                TextComponent hover = new TextComponent(colorName);
+                                                MutableComponent extra = Component.literal(String.valueOf(c));
+                                                MutableComponent hover = Component.literal(colorName);
                                                 hover.append("\n§7Click to copy!");
                                                 extra.setStyle(colorStyle);
                                                 hover.setStyle(colorStyle);

@@ -143,11 +143,11 @@ public abstract class MSideChatHUD {
             matrices.translate(2.0F, 8.0F, 0.0F);
             matrices.scale(d, d, 1f);
             double opacity =
-                this.minecraft.options.chatOpacity * 0.8999999761581421D + 0.10000000149011612D;
-            double backgroundOpacity = this.minecraft.options.textBackgroundOpacity;
-            double lineSpacing = 9.0D * (this.minecraft.options.chatLineSpacing + 1.0D);
-            double lineSpacing2 = -8.0D * (this.minecraft.options.chatLineSpacing + 1.0D)
-                + 4.0D * this.minecraft.options.chatLineSpacing;
+                this.minecraft.options.chatOpacity().get() * 0.8999999761581421D + 0.10000000149011612D;
+            double backgroundOpacity = this.minecraft.options.textBackgroundOpacity().get();
+            double lineSpacing = 9.0D * (this.minecraft.options.chatLineSpacing().get() + 1.0D);
+            double lineSpacing2 = -8.0D * (this.minecraft.options.chatLineSpacing().get() + 1.0D)
+                + 4.0D * this.minecraft.options.chatLineSpacing().get();
 
             for (int i = 0; i + scrolledLines < visibleMessages.size() && i < visibleLineCount;
                 ++i) {
@@ -197,8 +197,8 @@ public abstract class MSideChatHUD {
         matrices.translate(2.0F, 8.0F, 0.0F);
         matrices.scale(chatScale, chatScale, 1.0f);
         double opacity =
-            this.minecraft.options.chatOpacity * 0.8999999761581421D + 0.10000000149011612D;
-        double backgroundOpacity = this.minecraft.options.textBackgroundOpacity;
+            this.minecraft.options.chatOpacity().get() * 0.8999999761581421D + 0.10000000149011612D;
+        double backgroundOpacity = this.minecraft.options.textBackgroundOpacity().get();
 
         if (!this.chatQueue.isEmpty()) {
             int m = (int) (128.0D * opacity);
@@ -209,7 +209,7 @@ public abstract class MSideChatHUD {
             RenderSystem.enableBlend();
             matrices.translate(0.0D, 0.0D, 50.0D);
             this.minecraft.font.drawShadow(matrices,
-                new TranslatableComponent("chat.queue", this.chatQueue.size()), 0.0F, 1.0F,
+                Component.translatable("chat.queue", this.chatQueue.size()), 0.0F, 1.0F,
                 16777215 + (m << 24));
             matrices.popPose();
             RenderSystem.disableDepthTest();
@@ -353,7 +353,7 @@ public abstract class MSideChatHUD {
             double adjustedY = (double) this.minecraft.getWindow().getGuiScaledHeight() - y - 40.0D;
             adjustedX = Mth.floor(adjustedX / scale);
             adjustedY = Mth.floor(
-                adjustedY / (scale * (this.minecraft.options.chatLineSpacing + 1.0D)));
+                adjustedY / (scale * (this.minecraft.options.chatLineSpacing().get() + 1.0D)));
             if (!(adjustedX < 0.0D) && !(adjustedY < 0.0D)) {
                 int size = Math.min(this.getLinesPerPage(), this.sideVisibleMessages.size());
                 if (adjustedX <= (double) Mth.floor(

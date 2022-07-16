@@ -1,5 +1,6 @@
 package io.github.homchom.recode.mod.commands;
 
+import com.mojang.brigadier.CommandDispatcher;
 import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.commands.impl.image.*;
 import io.github.homchom.recode.mod.commands.impl.item.*;
@@ -8,11 +9,13 @@ import io.github.homchom.recode.mod.commands.impl.other.*;
 import io.github.homchom.recode.mod.commands.impl.text.*;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.sys.file.ILoader;
-import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.commands.CommandBuildContext;
 
 import java.util.*;
 
-public class CommandHandler implements ILoader {
+public class CommandHandler {
 
     private static List<Command> cmds = new ArrayList<>();
 
@@ -20,9 +23,8 @@ public class CommandHandler implements ILoader {
         return cmds;
     }
 
-    @Override
-    public void load() {
-        register(
+    public static void load(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext context) {
+        register(dispatcher, context,
             new RecodeCommand(),
             new BreakableCommand(),
             new UnpackCommand(),
@@ -44,7 +46,7 @@ public class CommandHandler implements ILoader {
         );
 
         if (Config.getBoolean("dfCommands")) {
-            register(
+            register(dispatcher, context,
                 new GiveCommand(),
                 new NodeCommand(),
                 new TemplatesCommand(),
@@ -64,14 +66,14 @@ public class CommandHandler implements ILoader {
         }
     }
 
-    public void register(Command cmd) {
-        cmd.register(LegacyRecode.MC, ClientCommandManager.DISPATCHER);
+    public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext context, Command cmd) {
+        cmd.register(LegacyRecode.MC, dispatcher, context);
         cmds.add(cmd);
     }
 
-    public void register(Command... cmds) {
+    public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext context, Command... cmds) {
         for (Command cmd : cmds) {
-            this.register(cmd);
+            register(dispatcher, context, cmd);
         }
     }
 }

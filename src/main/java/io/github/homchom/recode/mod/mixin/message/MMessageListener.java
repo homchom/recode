@@ -26,25 +26,23 @@ public class MMessageListener {
     //private boolean motdShown = false;
 
     private final Pattern lsRegex = Pattern.compile("^CPU Usage: \\[▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮] \\(.*%\\)$");
-
-    @Inject(method = "handleChat", at = @At("HEAD"), cancellable = true)
-    private void handleChat(ClientboundChatPacket packet, CallbackInfo ci) {
+    
+    @Inject(method = "handleSystemChat", at = @At("HEAD"), cancellable = true)
+    private void handleChat(ClientboundSystemChatPacket packet, CallbackInfo ci) {
         if (DFInfo.isOnDF() && RenderSystem.isOnRenderThread()) {
-            if (packet.getType() != ChatType.GAME_INFO) {
-                // temporary, to preserve non-migrated side effects (like message grabbing)
-                // TODO: remove after new message listener is complete
-                new Message(packet, ci);
+            // temporary, to preserve non-migrated side effects (like message grabbing)
+            // TODO: remove after new message listener is complete
+            new Message(packet, ci);
 
-                boolean result = EventValidation.validate(
-                        RecodeEvents.ReceiveChatMessage, packet.getMessage());
-                if (!result) ci.cancel();
-                try {
-                    this.updateVersion(packet.getMessage());
-                    this.updateState(packet.getMessage());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    LegacyRecode.error("Error while trying to parse the chat text!");
-                }
+            boolean result = EventValidation.validate(
+                    RecodeEvents.ReceiveChatMessage, packet.content());
+            if (!result) ci.cancel();
+            try {
+                this.updateVersion(packet.content());
+                this.updateState(packet.content());
+            } catch (Exception e) {
+                e.printStackTrace();
+                LegacyRecode.error("Error while trying to parse the chat text!");
             }
         }
     }

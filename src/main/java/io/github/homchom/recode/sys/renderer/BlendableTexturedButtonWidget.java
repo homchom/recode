@@ -13,7 +13,7 @@ public class BlendableTexturedButtonWidget extends ImageButton {
     }
 
     public BlendableTexturedButtonWidget(int x, int y, int width, int height, int u, int v, int hoveredVOffset, ResourceLocation texture, int textureWidth, int textureHeight, OnPress pressAction) {
-        super(x, y, width, height, u, v, hoveredVOffset, texture, textureWidth, textureHeight, pressAction, TextComponent.EMPTY);
+        super(x, y, width, height, u, v, hoveredVOffset, texture, textureWidth, textureHeight, pressAction, Component.empty());
     }
 
     public BlendableTexturedButtonWidget(int i, int j, int k, int l, int m, int n, int o, ResourceLocation identifier, int p, int q, OnPress pressAction, Component text) {

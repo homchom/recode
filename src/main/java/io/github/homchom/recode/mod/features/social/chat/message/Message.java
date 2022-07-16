@@ -5,12 +5,12 @@ import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.events.impl.LegacyReceiveSoundEvent;
 import io.github.homchom.recode.sys.player.chat.MessageGrabber;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.game.ClientboundChatPacket;
+import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 public class Message {
 
-    private final ClientboundChatPacket packet;
+    private final ClientboundSystemChatPacket packet;
     private final Component text;
     private final CallbackInfo callback;
     private final MessageType type;
@@ -18,15 +18,15 @@ public class Message {
     private MessageCheck check;
     private boolean cancelled;
 
-    public Message(ClientboundChatPacket packet, CallbackInfo ci) {
+    public Message(ClientboundSystemChatPacket packet, CallbackInfo ci) {
         this.packet = packet;
-        this.text = packet.getMessage();
+        this.text = packet.content();
         this.callback = ci;
         this.type = MessageCheck.run(this);
         MessageFinalizer.run(this);
     }
 
-    public ClientboundChatPacket getPacket() {
+    public ClientboundSystemChatPacket getPacket() {
         return packet;
     }
 

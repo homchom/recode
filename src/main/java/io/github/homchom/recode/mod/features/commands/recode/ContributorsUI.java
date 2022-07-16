@@ -9,7 +9,7 @@ import io.github.homchom.recode.sys.networking.WebUtil;
 import io.github.homchom.recode.sys.renderer.IMenu;
 import io.github.homchom.recode.sys.renderer.widgets.CImage;
 import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import java.io.IOException;
@@ -34,7 +34,7 @@ public class ContributorsUI extends LightweightGuiDescription implements IMenu {
         root.setSize(300, 220);
 
         WPlainPanel panel = new WPlainPanel();
-        root.add(new WLabel(new TextComponent("Contributors")), 0, 0);
+        root.add(new WLabel(Component.literal("Contributors")), 0, 0);
 
         WScrollPanel scrollPanel = new WScrollPanel(panel);
         scrollPanel.setHost(this);
@@ -68,7 +68,7 @@ public class ContributorsUI extends LightweightGuiDescription implements IMenu {
             CImage image = new CImage(contributor.getAvatar());
             image.setSize(32, 32);
             panel.add(image, x, y);
-            panel.add(new WLabel(new TextComponent(contributor.getName())), x + 35, y + 12);
+            panel.add(new WLabel(Component.literal(contributor.getName())), x + 35, y + 12);
 
 
             if (x == 150) {

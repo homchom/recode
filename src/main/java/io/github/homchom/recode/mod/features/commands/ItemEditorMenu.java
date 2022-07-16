@@ -33,9 +33,9 @@ public class ItemEditorMenu extends LightweightGuiDescription implements IMenu {
         root.add(icon, 0, 0, 20, 20);
 
         //Item Name
-        WTextField name = new WTextField(new TextComponent(""));
+        WTextField name = new WTextField(Component.literal(""));
         name.setMaxLength(Integer.MAX_VALUE);
-        name.setSuggestion(new TranslatableComponent(item[0].getItem().getDescriptionId()));
+        name.setSuggestion(Component.translatable(item[0].getItem().getDescriptionId()));
         name.setText(TextUtil.textComponentToColorCodes(item[0].getHoverName()).replaceAll("§", "&"));
         name.setChangedListener(s -> {
             if (name.getText().isEmpty()) {
@@ -47,7 +47,7 @@ public class ItemEditorMenu extends LightweightGuiDescription implements IMenu {
         root.add(name, 30, 0, 226, 0);
 
         //Save & Quit
-        WButton save = new WButton(new TextComponent("Save & Quit"));
+        WButton save = new WButton(Component.literal("Save & Quit"));
 
         save.setOnClick(() -> {
             mc.gameMode.handleCreativeModeItemAdd(item[0], mc.player.getInventory().selected + 36);
@@ -57,7 +57,7 @@ public class ItemEditorMenu extends LightweightGuiDescription implements IMenu {
         root.add(save, 190, 220, 70, 20);
 
         //Item Material
-        WTextField material = new WTextField(new TextComponent(""));
+        WTextField material = new WTextField(Component.literal(""));
         material.setMaxLength(Integer.MAX_VALUE);
         material.setText(item[0].getItem().toString());
         material.setChangedListener(s -> {

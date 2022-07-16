@@ -11,8 +11,8 @@ public class ConfigSetting<Value> implements IRawTranslation<ConfigSetting<Value
     protected Value value;
     protected Value defaultValue;
 
-    private TextComponent rawKey = null;
-    private TextComponent rawTooltip = null;
+    private Component rawKey = null;
+    private Component rawTooltip = null;
     private String keyName = null;
     private String description = null;
 
@@ -52,23 +52,23 @@ public class ConfigSetting<Value> implements IRawTranslation<ConfigSetting<Value
 
     @Override
     public ConfigSetting<Value> setRawKey(String key) {
-        this.rawKey = new TextComponent(key);
+        this.rawKey = Component.literal(key);
         return this;
     }
 
     @Override
-    public Optional<TextComponent> getRawKey() {
+    public Optional<Component> getRawKey() {
         return Optional.ofNullable(rawKey);
     }
 
     @Override
     public ConfigSetting<Value> setRawTooltip(String key) {
-        this.rawTooltip = new TextComponent(key);
+        this.rawTooltip = Component.literal(key);
         return this;
     }
 
     @Override
-    public Optional<TextComponent> getRawTooltip() {
+    public Optional<Component> getRawTooltip() {
         return Optional.ofNullable(rawTooltip);
     }
 
