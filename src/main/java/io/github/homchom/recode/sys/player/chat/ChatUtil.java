@@ -29,12 +29,12 @@ public class ChatUtil {
         }
     }
 
-    public static void chat(String message) {
-        LegacyRecode.MC.player.chat(message);
+    public static void command(String message) {
+        LegacyRecode.MC.player.command(message);
     }
 
     public static void executeCommand(String command) {
-        chat("/" + command.replaceFirst("^/", ""));
+        command(command.replaceFirst("^/", ""));
     }
 
     public static void executeCommandSilently(String command, int messageAmount) {
