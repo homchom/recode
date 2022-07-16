@@ -24,6 +24,8 @@ public class CommandHandler {
     }
 
     public static void load(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext context) {
+        cmds.clear();
+
         register(dispatcher, context,
             new RecodeCommand(),
             new BreakableCommand(),
