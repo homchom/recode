@@ -48,7 +48,7 @@ public class PathArgumentType implements ArgumentType<Path> {
         try (Stream<Path> pathStream = Files.list(root)) {
             return SharedSuggestionProvider.suggest(
                     pathStream
-                            .map(path -> path.relativize(root))
+                            .map(root::relativize)
                             .map(Path::toString)
                             .map(s -> !greedy && s.contains(" ") ? "\"" + s + "\"" : s)
                             .toArray(String[]::new),
