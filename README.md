@@ -12,3 +12,10 @@ Currently supported Minecraft version: 1.18.2
 You can find the current beta version [here](https://github.com/homchom/recode/releases). Future plans include removing bloat/unnecessary features, improving existing code, adding new features, and migrating to Kotlin.
 
 Feel free to join the recode Discord server: https://discord.gg/GWxWtcwA2C
+
+## Contributing
+
+recode is open source, and the community is welcome to add their own contributions. We only ask that you follow these guidelines:
+
+1. When creating pull requests, merge into the `dev` branch, not `main`.
+2. When adding or editing Kotlin code, follow the style guide at https://kotlinlang.org/docs/coding-conventions.html unless you have a good reason not to.
