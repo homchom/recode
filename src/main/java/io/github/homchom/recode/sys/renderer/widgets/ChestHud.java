@@ -33,7 +33,6 @@ public class ChestHud {
 
 
     private static void afterContainerRender(Screen screen, PoseStack matrices, int mouseX, int mouseY, float tickDelta) {
-
         if (DFInfo.currentState.getMode() == LegacyState.Mode.DEV && Config.getBoolean("chestToolTip")) {
             if (Config.getBoolean("chestToolTipType")) {
                 ItemStack item = LegacyRecode.MC.player.getInventory().getItem(17);

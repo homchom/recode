@@ -24,7 +24,8 @@ public class StateOverlayHandler {
                     drawTextRight(new TextComponent(state.getPlot().getName() + " by " + state.getPlot().getOwner()).withStyle(style -> style.withColor(TextColor.fromLegacyFormat(ChatFormatting.GOLD))).getVisualOrderText(), 2, tr, stack);
                     drawTextRight(new TextComponent("on Node " + state.getNode().getIdentifier()).withStyle(style -> style.withColor(TextColor.fromLegacyFormat(ChatFormatting.YELLOW))).getVisualOrderText(), 12, tr, stack);
                     drawTextRight(new TextComponent("/join " + state.plot.getId()).withStyle(style -> style.withColor(TextColor.fromLegacyFormat(ChatFormatting.GRAY))).getVisualOrderText(), 22, tr, stack);
-
+                    drawTextRight(new TextComponent("You are currently " + state.mode.getContinuousVerb()).withStyle(style -> style.withColor(TextColor.fromLegacyFormat(ChatFormatting.DARK_AQUA))).getVisualOrderText(), 32, tr, stack);
+                    if (state.isInSession()) drawTextRight(new TextComponent("In a support session").withStyle(style -> style.withColor(TextColor.fromLegacyFormat(ChatFormatting.BLUE))).getVisualOrderText(), 42, tr, stack);
                 }else {
                     if (state.getNode() != null) drawTextRight(new TextComponent("At Node " + state.getNode().getIdentifier() + " Spawn").withStyle(style -> style.withColor(TextColor.fromLegacyFormat(ChatFormatting.YELLOW))).getVisualOrderText(), 2, tr, stack);
                 }

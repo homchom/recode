@@ -107,25 +107,25 @@ public class DisplayItem {
     public ItemStack toItemStack(){
         try {
             ItemStack itemStack = ItemUtil.fromID(this.material);
-            itemStack.setHoverName(TextUtil.colorCodesToTextComponent(this.name.replaceAll("&", "§")));
+            itemStack.setHoverName(TextUtil.colorCodesToTextComponent(this.name));
 
             ArrayList<String> lore = new ArrayList<>();
 
             if (this.deprecatedNote.length > 0) {
                 itemStack.enchant(Enchantment.byId(0), 1);
-                lore.add(TextUtil.toTextString("§4§l! §r§x§f§f§a§a§a§aMarked for Removal"));
+                lore.add(TextUtil.toUncoloredString("§4§l! §r§x§f§f§a§a§a§aMarked for Removal"));
                 for (String depnote : this.deprecatedNote) {
-                    lore.add(TextUtil.toTextString("§7" + depnote));
+                    lore.add(TextUtil.toUncoloredString("§7" + depnote));
                 }
-                lore.add(TextUtil.toTextString(""));
+                lore.add(TextUtil.toUncoloredString(""));
             }
 
             if (this.deprecatedNote.length == 0 && this.advanced) {
-                lore.add(TextUtil.toTextString("§x§F§F§7§F§5§5Advanced"));
+                lore.add(TextUtil.toUncoloredString("§x§F§F§7§F§5§5Advanced"));
             }
 
             for (String desc : this.description) {
-                lore.add(TextUtil.toTextString((this.deprecatedNote.length > 0 ? "§x§8§0§8§0§8§0§m" : "§7") + desc.replaceAll("&", "§")));
+                lore.add(TextUtil.toUncoloredString((this.deprecatedNote.length > 0 ? "§x§8§0§8§0§8§0§m" : "§7") + desc));
             }
 
             if (this.deprecatedNote.length == 0) {
@@ -133,21 +133,21 @@ public class DisplayItem {
                 boolean optional = false;
 
                 if (this.arguments != null || this.tags > 0) {
-                    lore.add(TextUtil.toTextString(""));
-                    lore.add(TextUtil.toTextString("§fChest Parameters:"));
+                    lore.add(TextUtil.toUncoloredString(""));
+                    lore.add(TextUtil.toUncoloredString("§fChest Parameters:"));
                     if (this.arguments != null) {
                         for (Argument arg : this.arguments) {
                             String[] desc = arg.getDescription();
-                            String firstdesc = arg.getText() == null ? (desc.length > 0 ? desc[0].replaceAll("&", "§") : "") : "";
+                            String firstdesc = arg.getText() == null ? (desc.length > 0 ? desc[0] : "") : "";
                             firstdesc = arg.getText() == null ? (desc.length > 0 ? (arg.getType().equals("NONE") ? (firstdesc.endsWith(")") ? " §7(" + firstdesc : " §7(" + firstdesc + "§7)") : (" §8- §7" + firstdesc)) : "") : "";
-                            String arglore = arg.getText() == null ? (ActionDump.valueOf(arg.getType()).getColor() + ActionDump.valueOf(arg.getType()).getName() + (arg.isPlural() ? "(s)" : "") + (arg.isOptional() ? "§f*" : "") + firstdesc) : (arg.getText().equals("") ? "" : arg.getText().replaceAll("&", "§"));
+                            String arglore = arg.getText() == null ? (ActionDump.valueOf(arg.getType()).getColor() + ActionDump.valueOf(arg.getType()).getName() + (arg.isPlural() ? "(s)" : "") + (arg.isOptional() ? "§f*" : "") + firstdesc) : (arg.getText().equals("") ? "" : arg.getText());
 
                             if (arg.isOptional()) optional = true;
 
-                            lore.add(TextUtil.toTextString(arglore));
+                            lore.add(TextUtil.toUncoloredString(arglore));
 
                             for (int i = 1; i < (desc == null ? 0 : desc.length); i++) {
-                                lore.add(TextUtil.toTextString("§7" + desc[i]));
+                                lore.add(TextUtil.toUncoloredString("§7" + desc[i]));
                             }
 
                             HashSet<String[]> allnotes = arg.getNotes();
@@ -155,69 +155,69 @@ public class DisplayItem {
                                 for (String[] notes : allnotes) {
                                     int i = 0;
                                     for (String note : notes) {
-                                        lore.add(TextUtil.toTextString((i == 0 ? "§9⏵ " : "") + "§7" + note));
+                                        lore.add(TextUtil.toUncoloredString((i == 0 ? "§9⏵ " : "") + "§7" + note));
                                         i++;
                                     }
                                 }
                             }
                         }
                         if (this.arguments.length == 0 && this.tags == 0) {
-                            lore.add(TextUtil.toTextString(ActionDump.valueOf("NONE").getColor() + "None"));
+                            lore.add(TextUtil.toUncoloredString(ActionDump.valueOf("NONE").getColor() + "None"));
                         }
                     }
                     if (this.tags > 0) {
-                        lore.add(TextUtil.toTextString("§3# §7" + tags + " Tag" + (tags > 1 ? "s" : "")));
+                        lore.add(TextUtil.toUncoloredString("§3# §7" + tags + " Tag" + (tags > 1 ? "s" : "")));
                     }
                 }
 
                 if (optional) {
-                    lore.add(TextUtil.toTextString(""));
-                    lore.add(TextUtil.toTextString("§7*Optional"));
+                    lore.add(TextUtil.toUncoloredString(""));
+                    lore.add(TextUtil.toUncoloredString("§7*Optional"));
                 }
 
                 if (this.worksWith.length > 0) {
-                    lore.add(TextUtil.toTextString(""));
-                    lore.add(TextUtil.toTextString("§x§A§A§7§F§F§FWorks With:"));
+                    lore.add(TextUtil.toUncoloredString(""));
+                    lore.add(TextUtil.toUncoloredString("§x§A§A§7§F§F§FWorks With:"));
                     for (String with : this.worksWith) {
-                        lore.add(TextUtil.toTextString("§b» §7" + with));
+                        lore.add(TextUtil.toUncoloredString("§b» §7" + with));
+                    }
+                }
+
+                if (this.example.length > 0) {
+                    lore.add(TextUtil.toUncoloredString(""));
+                    lore.add(TextUtil.toUncoloredString("§fExample:"));
+                    for (String ex : this.example) {
+                        lore.add(TextUtil.toUncoloredString(TextUtil.formatValues("§7" + ex)));
                     }
                 }
 
                 if (this.additionalInfo.size() > 0) {
-                    lore.add(TextUtil.toTextString(""));
-                    lore.add(TextUtil.toTextString("§9Additional Info:"));
+                    lore.add(TextUtil.toUncoloredString(""));
+                    lore.add(TextUtil.toUncoloredString("§9Additional Info:"));
                     for (String[] addInfo : this.additionalInfo) {
                         int i = 0;
                         for (String info : addInfo) {
-                            lore.add(TextUtil.toTextString((i == 0 ? "§b» " : "") + "§7" + info));
+                            lore.add(TextUtil.toUncoloredString(TextUtil.formatValues((i == 0 ? "§b» " : "") + "§7" + info)));
                             i++;
                         }
                     }
                 }
 
-                if (this.example.length > 0) {
-                    lore.add(TextUtil.toTextString(""));
-                    lore.add(TextUtil.toTextString("§fExamples:"));
-                    for (String ex : this.example) {
-                        lore.add(TextUtil.toTextString("§7" + ex));
-                    }
-                }
-
                 if (!this.requiredRank.equals("") || this.requireTokens) {
-                    lore.add(TextUtil.toTextString(""));
+                    lore.add(TextUtil.toUncoloredString(""));
                 }
 
                 if (this.requireTokens) {
-                    lore.add(TextUtil.toTextString("§x§f§f§d§4§2§aUnlock with Tokens"));
+                    lore.add(TextUtil.toUncoloredString("§x§f§f§d§4§2§aUnlock with Tokens"));
                 }
 
                 if (!this.requiredRank.equals("") && this.requireTokens) {
-                    lore.add(TextUtil.toTextString("§x§f§f§5§5§a§aOR"));
+                    lore.add(TextUtil.toUncoloredString("§x§f§f§5§5§a§aOR"));
                 }
 
                 if (!this.requiredRank.equals("")) {
                     Types rank = ActionDump.valueOf(this.requiredRank.toUpperCase());
-                    lore.add(TextUtil.toTextString(rank.getColor() + "Unlocked with " + rank.getName()));
+                    lore.add(TextUtil.toUncoloredString(rank.getColor() + rank.getName() + " Exclusive"));
                 }
 
             }

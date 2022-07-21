@@ -51,20 +51,6 @@ public class MItemSlotUpdate {
 
 				LagslayerHUD.lagSlayerEnabled = false;
 			}
-
-			if (DFInfo.isOnDF() && mc.player.isCreative() && stack.getHoverName().getString().contains("Player Event")
-					&& lore.toString().contains("\"Used to execute code when something\"")
-					&& lore.toString().contains("\"is done by (or happens to) a player.\"")
-					&& lore.toString().contains("\"Example:\"")) {
-
-				DFInfo.currentState.sendLocate();
-				DFInfo.plotCorner = mc.player.position().add(10, -50, -10);
-
-				// Auto LagSlayer
-				if (!LagslayerHUD.lagSlayerEnabled && Config.getBoolean("autolagslayer")) {
-					ChatUtil.executeCommandSilently("lagslayer");
-				}
-			}
 		}
 	}
 }

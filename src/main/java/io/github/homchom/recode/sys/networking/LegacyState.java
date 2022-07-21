@@ -3,21 +3,17 @@ package io.github.homchom.recode.sys.networking;
 import com.google.gson.*;
 import io.github.homchom.recode.event.RecodeEvents;
 import io.github.homchom.recode.mod.features.social.chat.message.*;
-import io.github.homchom.recode.sys.file.ILoader;
-import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
 import java.util.*;
-import java.util.concurrent.Executors;
 import java.util.regex.*;
 
 @Deprecated
 public class LegacyState {
     private static final String EMPTY = "                                       ";
     private static final Minecraft mc = Minecraft.getInstance();
-    private static Timer locateTimer = new Timer();
 
     public Plot plot;
     public Mode mode;
@@ -258,11 +254,11 @@ public class LegacyState {
         return new LegacyState(this);
     }
 
-    public static LegacyState fromLocate(Message message) {
+    public static LegacyState fromLocate(Message message, LegacyState stateSource) {
         Component msg = message.getText();
 
         String text = msg.getString().replaceAll("§.", "");
-        LegacyState finalstate = new LegacyState();
+        LegacyState finalstate = stateSource.copy();
 
         if (text.startsWith(EMPTY + "\nYou are currently at spawn\n")) {
             finalstate.setMode(Mode.SPAWN);
@@ -339,43 +335,14 @@ public class LegacyState {
     public void sendLocate() {
         if (mc.player != null){
             if (!mc.player.isDeadOrDying()){
-                locateTimer.cancel();
-                locateTimer = new Timer();
-                locateTimer.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        ChatUtil.executeCommand("locate");
-                        MessageGrabber.hide(1, MessageType.LOCATE);
-                    }
-                }, 1500L);
+                ChatUtil.executeCommand("locate");
+                MessageGrabber.hide(1, MessageType.LOCATE);
             }
         }
     }
 
     private static void notifyStateChange(LegacyState newState, LegacyState oldState) {
         RecodeEvents.CHANGE_DF_STATE.invoke(new RecodeEvents.StateChange(newState, oldState));
-    }
-
-    // TODO: remove this entirely
-    public static class Locater implements ILoader {
-        @Override
-        public void load() {
-            Thread thread = new Thread(() -> {
-                while (true) {
-                    if (DFInfo.isOnDF() && mc.player != null) {
-                        DFInfo.currentState.sendLocate();
-                    }
-                    try {
-                        Thread.sleep(10_000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-
-            Executors.newSingleThreadExecutor().submit(thread);
-
-        }
     }
 
     public static class CurrentState extends LegacyState {
