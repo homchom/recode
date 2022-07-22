@@ -28,6 +28,7 @@ public class CommandHandler implements ILoader {
             new UnpackCommand(),
             new ItemdataCommand(),
             new UuidCommand(),
+            new NameCommand(),
             // new HeadsCommand(),
             new ColorsCommand(),
             new ColorCommand(),

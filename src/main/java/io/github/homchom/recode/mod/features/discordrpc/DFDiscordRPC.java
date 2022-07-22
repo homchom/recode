@@ -7,7 +7,7 @@ import com.jagrosh.discordipc.exceptions.NoDiscordClientException;
 import io.github.homchom.recode.*;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.sys.file.ILoader;
-import io.github.homchom.recode.sys.networking.DFState;
+import io.github.homchom.recode.sys.networking.LegacyState;
 
 import java.time.OffsetDateTime;
 import java.util.HashMap;
@@ -16,7 +16,7 @@ public class DFDiscordRPC implements ILoader {
 
     public static RichPresence.Builder builder;
     private static DFDiscordRPC instance;
-    private static DFState oldState = new DFState();
+    private static LegacyState oldState = new LegacyState();
     private static IPCClient client;
 
     private static final HashMap<String, String> vars = new HashMap<>();
@@ -69,7 +69,7 @@ public class DFDiscordRPC implements ILoader {
         }
     }
 
-    public void update(DFState state) {
+    public void update(LegacyState state) {
         if (!isConnected() && Config.getBoolean("discordRPC")) {
             connect();
         } else if (isConnected() && !Config.getBoolean("discordRPC")) {
@@ -82,7 +82,7 @@ public class DFDiscordRPC implements ILoader {
         // Put vars
         vars.put("node.id", state.getNode() != null ? state.getNode().getIdentifier() : "?");
 
-        if (state.getMode() == DFState.Mode.SPAWN) {
+        if (state.getMode() == LegacyState.Mode.SPAWN) {
             presence.setDetails(dyn("discordRPCSpawnDetails"));
             presence.setState(dyn("discordRPCSpawnState"));
 
@@ -94,7 +94,7 @@ public class DFDiscordRPC implements ILoader {
 
             presence.setLargeImage("diamondfirelogo", getLargeImageText());
 
-        } else if (state.getMode() == DFState.Mode.PLAY || state.getMode() == DFState.Mode.DEV || state.getMode() == DFState.Mode.BUILD) {
+        } else if (state.getMode() == LegacyState.Mode.PLAY || state.getMode() == LegacyState.Mode.DEV || state.getMode() == LegacyState.Mode.BUILD) {
             // Put vars
             vars.put("plot.name", state.getPlot().getName());
             vars.put("plot.id", state.getPlot().getId());
@@ -103,7 +103,7 @@ public class DFDiscordRPC implements ILoader {
             presence.setDetails(dyn("discordRPCPlotDetails") + " ");
             presence.setState(dyn("discordRPCPlotState"));
 
-            if (state.getMode() != DFState.Mode.SPAWN) {
+            if (state.getMode() != LegacyState.Mode.SPAWN) {
                 if (Config.getBoolean("discordRPCShowPlotMode")) {
                     presence.setSmallImage("mode" + state.getMode().getIdentifier().toLowerCase(), state.getMode().getContinuousVerb());
                 }
@@ -118,17 +118,17 @@ public class DFDiscordRPC implements ILoader {
             return;
         }
 
-        DFState.Plot oldPlot = oldState.getPlot();
+        LegacyState.Plot oldPlot = oldState.getPlot();
         String oldId;
         if (oldPlot == null) oldId = "";
         else oldId = oldPlot.getId();
-        DFState.Plot newPlot = state.getPlot();
+        LegacyState.Plot newPlot = state.getPlot();
         String newId;
         if (newPlot == null) newId = "";
         else newId = newPlot.getId();
 
         if (!oldId.equals(newId) ||
-                (oldState.getMode() != state.getMode() && state.getMode().equals(DFState.Mode.SPAWN))) {
+                (oldState.getMode() != state.getMode() && state.getMode().equals(LegacyState.Mode.SPAWN))) {
             setTime(RPCElapsedOption.PLOT);
         }
         if (oldState.getMode() != state.getMode()) {

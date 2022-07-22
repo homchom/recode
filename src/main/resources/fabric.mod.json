@@ -20,7 +20,7 @@
       "io.github.homchom.recode.mod.config.ModMenuIntegration"
     ],
     "client": [
-      "io.github.homchom.recode.mod.features.keybinds.Keybinds"
+      "io.github.homchom.recode.mod.features.Keybinds"
     ],
     "server": []
   },
@@ -34,6 +34,9 @@
     "fabric": ">=0.50.0",
     "libgui": "~5.4.0",
     "cloth-config": "~6.2.62"
+  },
+  "conflicts": {
+    "codeutilities": "*"
   },
   "custom": {
     "modmenu:clientsideOnly": true

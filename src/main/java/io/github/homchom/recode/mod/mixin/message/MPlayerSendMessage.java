@@ -3,7 +3,7 @@ package io.github.homchom.recode.mod.mixin.message;
 import com.google.gson.*;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.social.chat.ConversationTimer;
-import io.github.homchom.recode.sys.networking.DFState;
+import io.github.homchom.recode.sys.networking.LegacyState;
 import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.*;
 import net.minecraft.client.Minecraft;
@@ -17,21 +17,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(LocalPlayer.class)
 public class MPlayerSendMessage {
     private final Minecraft minecraftClient = Minecraft.getInstance();
-//    private boolean stopTimer = false;
-//    private final Thread conversationTimer = new Thread(() -> {
-//        while (true) {
-//            if (stopTimer) {
-//                stopTimer = false;
-//                stopConversationTimer();
-//            }
-//            if (System.currentTimeMillis() - Config.getLong("automsg_timeoutNumber") >= Long.parseLong(DFInfo.conversationUpdateTime)) {
-//                ChatUtil.sendMessage("Your conversation with " + DFInfo.currentConversation + " was inactive and ended.", ChatType.INFO_BLUE);
-//                DFInfo.currentConversation = null;
-//                DFInfo.conversationUpdateTime = null;
-//                stopConversationTimer();
-//            }
-//        }
-//    });
 
     @Inject(method = "chat(Ljava/lang/String;)V", at = @At("HEAD"), cancellable = true)
     public void chat(String string, CallbackInfo ci) {
@@ -91,7 +76,7 @@ public class MPlayerSendMessage {
                             }
                         }
                     } else {
-                        if (DFInfo.currentState.getMode() != DFState.Mode.SPAWN || !mainHand.getHoverName().getString().equals("◇ Game Menu ◇"))
+                        if (DFInfo.currentState.getMode() != LegacyState.Mode.SPAWN || !mainHand.getHoverName().getString().equals("◇ Game Menu ◇"))
                             conversationMessage(string, ci);
                     }
                 } else conversationMessage(string, ci);
@@ -117,29 +102,10 @@ public class MPlayerSendMessage {
     }
 
     private void conversationMessage(String message, CallbackInfo ci) {
-        if (Config.getBoolean("automsg") && ConversationTimer.currentConversation != null && (DFInfo.currentState.getMode() != DFState.Mode.PLAY || !message.startsWith("@"))) {
+        if (Config.getBoolean("automsg") && ConversationTimer.currentConversation != null && (DFInfo.currentState.getMode() != LegacyState.Mode.PLAY || !message.startsWith("@"))) {
             ci.cancel();
             ConversationTimer.conversationUpdateTime = String.valueOf(System.currentTimeMillis());
             minecraftClient.player.chat("/msg " + ConversationTimer.currentConversation + " " + message);
         }
     }
-
-
-//    private void startConversationTimer() {
-//        synchronized (conversationTimer) {
-//            Thread.State timerState = conversationTimer.getState();
-//            if (timerState == Thread.State.NEW) conversationTimer.start();
-//            if (timerState == Thread.State.WAITING) conversationTimer.notify();
-//        }
-//    }
-
-//    private void stopConversationTimer() {
-//        synchronized (conversationTimer) {
-//            try {
-//                conversationTimer.wait();
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
 }

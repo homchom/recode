@@ -2,7 +2,7 @@ package io.github.homchom.recode.mod.features.streamer;
 
 import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.Config;
-import io.github.homchom.recode.sys.networking.DFState;
+import io.github.homchom.recode.sys.networking.LegacyState;
 import io.github.homchom.recode.sys.player.chat.MessageGrabber;
 
 public class StreamerModeHandler {
@@ -91,12 +91,12 @@ public class StreamerModeHandler {
         }
     }
 
-    public static void handleStateChange(DFState oldState, DFState newState) {
+    public static void handleStateChange(LegacyState oldState, LegacyState newState) {
         if (!enabled()) return;
 
         // If the state is changed to mode play, run "/chat local"
         // Note: May trigger simultaneously with StreamerHandler#handleServerJoin, but this is not a problem
-        if (autoChatLocal() && newState.mode.equals(DFState.Mode.PLAY)) {
+        if (autoChatLocal() && newState.mode.equals(LegacyState.Mode.PLAY)) {
             LegacyRecode.MC.player.chat("/c l");
             MessageGrabber.hide(1);
         }

@@ -21,7 +21,6 @@ import io.github.homchom.recode.mod.events.LegacyEventHandler
 import io.github.homchom.recode.mod.features.discordrpc.DFDiscordRPC
 import io.github.homchom.recode.sys.hypercube.codeaction.ActionDump
 import io.github.homchom.recode.sys.hypercube.templates.TemplateStorageHandler
-import io.github.homchom.recode.sys.networking.DFState.Locater
 import io.github.homchom.recode.sys.networking.websocket.SocketHandler
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
 import net.fabricmc.loader.api.FabricLoader
@@ -100,10 +99,6 @@ object LegacyRecode {
     @JvmField
     val EXECUTOR: ExecutorService = Executors.newCachedThreadPool()
 
-    // TODO: replace with Permission class
-    const val JEREMASTER_UUID = "6c669475-3026-4603-b3e7-52c97681ad3a"
-    const val RYANLAND_UUID = "3134fb4d-a345-4c5e-9513-97c2c951223e"
-
     // TODO: replace with something... better
     @JvmField
     var signText = arrayOf<String>() // stores the text of the code sign corresponding to the currently open chest
@@ -119,7 +114,6 @@ object LegacyRecode {
         initializer.add(DFDiscordRPC())
         initializer.add(ActionDump())
         initializer.add(LegacyEventHandler())
-        initializer.add(Locater())
         initializer.add(CommandHandler())
 
         // Initializes only if the given condition is met. (this case: config value)

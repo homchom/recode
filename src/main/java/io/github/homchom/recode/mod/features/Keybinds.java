@@ -1,11 +1,11 @@
-package io.github.homchom.recode.mod.features.keybinds;
+package io.github.homchom.recode.mod.features;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import io.github.homchom.recode.mod.commands.impl.other.PartnerBracketCommand;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.commands.CodeSearcher;
-import io.github.homchom.recode.sys.networking.DFState;
+import io.github.homchom.recode.sys.networking.LegacyState;
 import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.sidedchat.ChatShortcut;
 import net.fabricmc.api.ClientModInitializer;
@@ -30,13 +30,17 @@ public class Keybinds implements ClientModInitializer {
         // Initialize
         // =======================================================
 
-        // toggle play dev
-        KeyMapping toggle_play_dev = KeyBindingHelper.registerKeyBinding(new KeyMapping(
-                "key.recode.toggle_play_dev", InputConstants.Type.KEYSYM, -1, "key.category.recode"));
+        // play
+        KeyMapping play = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+                "key.recode.play", InputConstants.Type.KEYSYM, -1, "key.category.recode"));
 
-        // toggle play build
-        KeyMapping toggle_play_build = KeyBindingHelper.registerKeyBinding(new KeyMapping(
-                "key.recode.toggle_play_build", InputConstants.Type.KEYSYM, -1, "key.category.recode"));
+        // build
+        KeyMapping build = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+                "key.recode.build", InputConstants.Type.KEYSYM, -1, "key.category.recode"));
+
+        // dev
+        KeyMapping dev = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+                "key.recode.dev", InputConstants.Type.KEYSYM, -1, "key.category.recode"));
 
         // spawn
         KeyMapping spawn = KeyBindingHelper.registerKeyBinding(new KeyMapping(
@@ -44,11 +48,17 @@ public class Keybinds implements ClientModInitializer {
 
         // =======
 
-        // fs toggle
-        KeyMapping toggleFsMedium = KeyBindingHelper.registerKeyBinding(new KeyMapping(
-                "key.recode.toggle_fs_medium", InputConstants.Type.KEYSYM, -1, "key.category.recode"));
-        KeyMapping toggleFsFast = KeyBindingHelper.registerKeyBinding(new KeyMapping(
-                "key.recode.toggle_fs_fast", InputConstants.Type.KEYSYM, -1, "key.category.recode"));
+        // fs normal
+        KeyMapping fsNormal = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+                "key.recode.fs_normal", InputConstants.Type.KEYSYM, -1, "key.category.recode"));
+
+        // fs med
+        KeyMapping fsMedium = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+                "key.recode.fs_med", InputConstants.Type.KEYSYM, -1, "key.category.recode"));
+
+        // fs fast
+        KeyMapping fsFast = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+                "key.recode.fs_fast", InputConstants.Type.KEYSYM, -1, "key.category.recode"));
 
         // =======
 
@@ -90,6 +100,18 @@ public class Keybinds implements ClientModInitializer {
             "key.recode.partnerBracket", Type.KEYSYM, -1, "key.category.recode"
         ));
 
+        // chat global
+        KeyMapping chatGlobal = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+                "key.recode.chat_global", InputConstants.Type.KEYSYM, -1, "key.category.recode"));
+
+        // chat local
+        KeyMapping chatLocal = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+                "key.recode.chat_local", InputConstants.Type.KEYSYM, -1, "key.category.recode"));
+
+        // chat none
+        KeyMapping chatNone = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+                "key.recode.chat_none", InputConstants.Type.KEYSYM, -1, "key.category.recode"));
+
         // =======
 
         // Staff Keybinds
@@ -107,29 +129,26 @@ public class Keybinds implements ClientModInitializer {
             )), chatShortcut);
         }
 
-//        // Sided Chat
-//        Map<ChatType, KeyMapping> chatTypeKeyMappingMap = new HashMap<>();
-//        for (ChatRule.ChatRuleType chatType :
-//                ChatType.values()) {
-//            chatTypeKeyMappingMap.put(Chat)
-//        }
+        // Sided Chat
 
         // =======================================================
         // Events
         // =======================================================
 
-        // TODO: rework this with/after feature refactor
-        FlightSpeedToggle fsToggle = new FlightSpeedToggle();
-
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            // toggle play dev
-            while (toggle_play_dev.consumeClick()) {
-                sendChat(DFInfo.currentState.getMode() == DFState.Mode.PLAY ? "/dev" : "/play");
+            // play
+            while (play.consumeClick()) {
+                sendChat("/play");
             }
 
-            // toggle play build
-            while (toggle_play_build.consumeClick()) {
-                sendChat(DFInfo.currentState.getMode() == DFState.Mode.PLAY ? "/build" : "/play");
+            // build
+            while (build.consumeClick()) {
+                sendChat("/build");
+            }
+
+            // dev
+            while (dev.consumeClick()) {
+                sendChat("/dev");
             }
 
             // spawn
@@ -137,13 +156,19 @@ public class Keybinds implements ClientModInitializer {
                 sendChat("/s");
             }
 
-            // toggle fs
-            while (toggleFsMedium.consumeClick()) {
-                fsToggle.toggleFlightSpeed(Config.getInteger("fsMed"));
+            // fs normal
+            while (fsNormal.consumeClick()) {
+                sendChat("/fs " + Config.getInteger("fsNormal"));
             }
 
-            while (toggleFsFast.consumeClick()) {
-                fsToggle.toggleFlightSpeed(Config.getInteger("fsFast"));
+            // fs med
+            while (fsMedium.consumeClick()) {
+                sendChat("/fs " + Config.getInteger("fsMed"));
+            }
+
+            // fs fast
+            while (fsFast.consumeClick()) {
+                sendChat("/fs " + Config.getInteger("fsFast"));
             }
 
             // lagslayer
@@ -176,9 +201,24 @@ public class Keybinds implements ClientModInitializer {
                 sendChat("/fly");
             }
 
+            // chat global
+            while (chatGlobal.consumeClick()) {
+                sendChat("/chat global");
+            }
+
+            // chat local
+            while (chatLocal.consumeClick()) {
+                sendChat("/chat local");
+            }
+
+            // chat none
+            while (chatNone.consumeClick()) {
+                sendChat("/chat none");
+            }
+
             // search
             while (searchFunction.consumeClick()) {
-                if (DFInfo.isOnDF() && DFInfo.currentState.getMode() == DFState.Mode.DEV && mc.player.isCreative()) {
+                if (DFInfo.isOnDF() && DFInfo.currentState.getMode() == LegacyState.Mode.DEV && mc.player.isCreative()) {
                     BlockEntity blockEntity = mc.level.getBlockEntity(new BlockPos(mc.hitResult.getLocation()));
 
                     if (blockEntity != null) {

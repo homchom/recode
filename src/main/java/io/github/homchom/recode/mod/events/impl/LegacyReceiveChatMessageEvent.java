@@ -1,10 +1,10 @@
 package io.github.homchom.recode.mod.events.impl;
 
-import io.github.homchom.recode.LegacyRecode;
+import io.github.homchom.recode.*;
 import io.github.homchom.recode.event.*;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.social.chat.message.Message;
-import io.github.homchom.recode.sys.networking.DFState;
+import io.github.homchom.recode.sys.networking.LegacyState;
 import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.*;
 import io.github.homchom.recode.sys.util.TextUtil;
@@ -70,6 +70,48 @@ public class LegacyReceiveChatMessageEvent {
         String msgToString = message.toString();
 
         String msgWithColor = TextUtil.textComponentToColorCodes(text);
+        String msgWithoutColor = msgWithColor.replaceAll("§.", "");
+
+        // highlight name
+        if (Config.getBoolean("highlight")) {
+            String highlightMatcher = Config.getString("highlightMatcher").replaceAll("\\{name}", mc.player.getName().getString());
+            Recode.logInfo(highlightMatcher);
+
+            if (( DFInfo.currentState.getMode() != LegacyState.Mode.PLAY && msgWithoutColor.matches("^[^0-z]+.*[a-zA-Z]+: .*"))
+                    || (DFInfo.currentState.getMode() == LegacyState.Mode.PLAY && msgWithoutColor.matches("^.*[a-zA-Z]+: .*"))) {
+                if ((!msgWithoutColor.matches("^.*" + highlightMatcher + ": .*")) || Config.getBoolean("highlightIgnoreSender")) {
+                    if (msgWithoutColor.contains(highlightMatcher)) {
+                        Recode.logInfo("contains highlight matcher");
+                        String[] chars = msgWithColor.split("");
+                        int i = 0;
+                        int newMsgIter = 0;
+                        StringBuilder getColorCodes = new StringBuilder();
+                        String newMsg = msgWithColor;
+                        String textLeft;
+
+                        for (String currentChar : chars) {
+                            textLeft = msgWithColor.substring(i) + " ";
+                            i++;
+                            if (currentChar.equals("§")) getColorCodes.append(currentChar).append(chars[i]);
+                            if (textLeft.matches("^" + highlightMatcher + "[^a-zA-Z0-9].*")) {
+                                newMsg = newMsg.substring(0, newMsgIter) + Config.getString("highlightPrefix").replaceAll("&", "§")
+                                        + highlightMatcher + getColorCodes + newMsg.substring(newMsgIter).replaceFirst("^" + highlightMatcher, "");
+
+                                newMsgIter = newMsgIter + Config.getString("highlightPrefix").length() + getColorCodes.toString().length();
+                            }
+                            newMsgIter++;
+                        }
+                        mc.player.displayClientMessage(TextUtil.colorCodesToTextComponent(newMsg), false);
+                        if (Config.getBoolean("highlightOwnSenderSound") ||
+                                (!msgWithoutColor.matches("^.*" + highlightMatcher + ": .+"))) {
+                            ChatUtil.playSound(
+                                    Config.getSound("highlightSound"), 1, Config.getFloat("highlightSoundVolume"));
+                        }
+                        cancel = true;
+                    }
+                }
+            }
+        }
 
         // hide join/leave messages
         if (Config.getBoolean("hideJoinLeaveMessages")
@@ -101,7 +143,7 @@ public class LegacyReceiveChatMessageEvent {
             cancel = true;
         }
 
-        if (DFInfo.currentState.getMode() == DFState.Mode.DEV) {
+        if (DFInfo.currentState.getMode() == LegacyState.Mode.DEV) {
             // hide var scope messages
             if (Config.getBoolean("hideVarScopeMessages") && stripped.startsWith("Scope set to ")) {
                 cancel = true;

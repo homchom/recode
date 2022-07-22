@@ -107,72 +107,6 @@ public class TextUtil {
         return result;
     }
 
-//    public static Text colorCodesToTextComponent(String message) {
-//        if (message.equals("")) return Text.Serializer.fromJson("{\"text\": \"\"}");
-//        message = "§f" + message;
-//        String sibling, literalColorCodes, color = null, text;
-//        String bold, italic, underlined, strikethrough, obfuscated;
-//        List<String> sections = new java.util.ArrayList<>(Collections.emptyList());
-//        List<String> literalColorSections = new java.util.ArrayList<>(Collections.emptyList());
-//        MutableText result = Text.Serializer.fromJson("{\"text\": \"\"}");
-//        char literalColorCode;
-//        int lastColorOccurrence;
-//
-//        Pattern pattern = Pattern.compile("(§x(§[^§]){6}([^§]|§[lomnk])+)|(§([^§]|§[lomnk])+)");
-//        Matcher matcher = pattern.matcher(message);
-//        while (matcher.find()) sections.add(matcher.group());
-//
-//        for (String section : sections) {
-//            sibling = section;
-//
-//            // reset modifiers
-//            bold = "null";
-//            italic = "null";
-//            underlined = "null";
-//            strikethrough = "null";
-//            obfuscated = "null";
-//
-//            // text
-//            text = sibling.replaceAll("^(§.)+", "");
-//
-//            // color
-//            pattern = Pattern.compile("(§x(§([0-f]|r)){6})|(§([0-f]|r))");
-//            matcher = pattern.matcher(sibling);
-//            while (matcher.find()) literalColorSections.add(matcher.group());
-//            literalColorCodes = literalColorSections.get(literalColorSections.size() - 1);
-//            if (literalColorSections.size() - 1 != 0) {
-//                literalColorCode = literalColorCodes.charAt(1);
-//                if (literalColorCode == 'x') color = MinecraftColors.mcToHex(literalColorCodes);
-//                else
-//                    color = String.valueOf(Objects.requireNonNull(MinecraftColors.fromCode(literalColorCodes.charAt(1))).getFormatting());
-//            }
-//
-//            // modifiers
-//            lastColorOccurrence = sibling.lastIndexOf(literalColorCodes);
-//            if (sibling.indexOf("§l") > lastColorOccurrence) bold = "true";
-//            if (sibling.indexOf("§o") > lastColorOccurrence) italic = "true";
-//            if (sibling.indexOf("§n") > lastColorOccurrence) underlined = "true";
-//            if (sibling.indexOf("§m") > lastColorOccurrence) strikethrough = "true";
-//            if (sibling.indexOf("§k") > lastColorOccurrence) obfuscated = "true";
-//
-//            // serializer
-//            assert false;
-//            if (!text.equals("")) {
-//                result.append(Text.Serializer.fromJson("{" +
-//                        "\"text\": \"" + text +
-//                        "\", \"color\": \"" + color +
-//                        "\", \"bold\": \"" + bold +
-//                        "\", \"italic\": \"" + italic +
-//                        "\", \"underlined\": \"" + underlined +
-//                        "\", \"strikethrough\": \"" + strikethrough +
-//                        "\", \"obfuscated\": \"" + obfuscated +
-//                        "\"}"));
-//            }
-//        }
-//
-//        return result;
-//    }
-
     public static String toString(Component text) {
         if (text.getString().equals("")) {
             return "{\"text\": \"\"}";
@@ -196,9 +130,46 @@ public class TextUtil {
     }
 
     public static String toTextString(String text) {
-        return TextUtil.toString(
-                TextUtil.colorCodesToTextComponent(text.replaceAll("&", "§").replaceAll("\"", "''")))
-            .replaceAll("''", "\\\\\"");
+        return TextUtil.toString(TextUtil.colorCodesToTextComponent(text.replaceAll("&", "§").replaceAll("\"", "''").replaceAll("''", "\\\\\"")));
     }
 
+    public static String toUncoloredString(String text){
+        return TextUtil.toString(TextUtil.colorCodesToTextComponent(text.replaceAll("\"", "''").replaceAll("''", "\\\\\"")));
+    }
+
+    public static String formatValues(String text, String stringColor, String numberColor) {
+        String output = "";
+        String lastColor = "§f";
+        Boolean activeQuote = false;
+        char[] chars = text.toCharArray();
+        for (char ch : chars) {
+            String character = String.valueOf(ch);
+            if (character.equals("\"")) {
+                activeQuote = !activeQuote;
+                if (!activeQuote) {
+                    output += character;
+                    output += lastColor;
+                    continue;
+                }
+            }
+            if (lastColor == "§") {
+                lastColor = "§" + character;
+            }else if (!activeQuote) {
+                if (character.matches("\\d")) {
+                    output = output + numberColor + character + lastColor; // Color any number, marked by being outside of quotation marks
+                    continue;
+                }
+            }
+            if (character.matches("§")) { lastColor = "§"; }
+            if (activeQuote) {
+                output += stringColor; // Color any string, marked by 2 quotation marks
+            }
+            output += character;
+        }
+        return output;
+    }
+
+    public static String formatValues(String text) {
+        return TextUtil.formatValues(text, "§b", "§c");
+    }
 }

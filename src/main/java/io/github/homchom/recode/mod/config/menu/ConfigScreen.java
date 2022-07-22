@@ -12,7 +12,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.*;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 public class ConfigScreen implements ITranslatable {
     private static final ConfigManager CONFIG = ConfigManager.getInstance();
@@ -23,6 +25,15 @@ public class ConfigScreen implements ITranslatable {
     private static final String SUB_CATEGORY_TEXT = PREFIX + "subcategory.";
     private static final String KEY_TEXT = PREFIX + "option.";
     private static final String TOOLTIP_TEXT = ".tooltip";
+
+    // TODO: replace with Permission class
+    private static final List<UUID> STREAMER_MODE_ALLOWED = List.of(
+            new UUID(0x6c66947530264603L, 0xb3e752c97681ad3aL), // Jeremaster
+            new UUID(0x4a60515152604ea9L, 0x92244be2d600dddfL), // Maximization
+            new UUID(0x3134fb4da3454c5eL, 0x951397c2c951223eL), // RyanLand
+            new UUID(0x3415ab289def4df4L, 0xb92917e7c63a25aeL), // tk2217
+            new UUID(0x18c303d0aac74918L, 0x8fc3b3bc0c4fb4bcL)  // homchom
+    );
 
     public static Screen getScreen(Screen parent) {
 
@@ -36,19 +47,15 @@ public class ConfigScreen implements ITranslatable {
 
         List<ConfigGroup> groups = CONFIG.getRegistered();
 
-        String playerUUID = Minecraft.getInstance().getUser().getUuid();
+        UUID playerUUID = Minecraft.getInstance().getUser().getGameProfile().getId();
 
         // Optimized loop
         for (ConfigGroup group : groups) {
-            if (!((playerUUID.equals(LegacyRecode.JEREMASTER_UUID) ||
-                    playerUUID.equals(LegacyRecode.JEREMASTER_UUID.replaceAll("-", ""))) ||
-                    (playerUUID.equals(LegacyRecode.RYANLAND_UUID) ||
-                            playerUUID.equals(LegacyRecode.RYANLAND_UUID.replaceAll("-", ""))))
-            && group.getName().equals("streamer")) {
+            if (group.getName().equals("streamer") && !STREAMER_MODE_ALLOWED.contains(playerUUID)) {
                 continue;
             }
 
-                // Category
+            // Category
             String groupName = group.getName();
 
             // Group translation

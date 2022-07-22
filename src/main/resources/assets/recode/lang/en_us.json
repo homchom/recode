@@ -12,7 +12,7 @@
     "config.recode.category.misc": "Miscellaneous",
     "config.recode.category.screen": "Screen",
     "config.recode.category.social": "Social Features",
-
+    "config.recode.category.highlight": "Highlighting",
     "config.recode.category.streamer": "Streamer Mode",
     "config.recode.category.discordRPC": "Discord RPC",
     "config.recode.category.sidedchat": "Chat Splitting",
@@ -117,10 +117,33 @@
     "config.recode.option.fsFast": "Flight Speed Fast",
     "config.recode.option.fsFast.tooltip": "Flight speed used for the \"Flight Speed Fast\" keybind.",
 
+    "config.recode.option.highlight": "Highlight Text in Chat",
+    "config.recode.option.highlight.tooltip": "Highlights the text below in chat if it gets mentioned\nin a chat message sent by a player.",
+    "config.recode.option.highlightIgnoreSender": "Highlight Ignore Message Sender",
+    "config.recode.option.highlightIgnoreSender.tooltip": "Ignores the sender of the\nchat message for highlighting.",
+
+    "config.recode.subcategory.highlight_text": "Text",
+    "config.recode.subcategory.highlight_text.tooltip": "Settings for text highlighting.",
+    "config.recode.option.highlightMatcher": "Matcher",
+    "config.recode.option.highlightMatcher.tooltip": "Text to highlight.\n{name} is replaced with your username.",
+    "config.recode.option.highlightPrefix": "Prefix",
+    "config.recode.option.highlightPrefix.tooltip": "The text to put in front of the\nhighlighted text. Supports (hex) color codes.",
+
+    "config.recode.subcategory.highlight_sound": "Highlight Sound",
+    "config.recode.subcategory.highlight_sound.tooltip": "Sound settings for when a\ntext highlight is triggered.",
+    "config.recode.option.highlightSound": "Sound to Play",
+    "config.recode.option.highlightSound.tooltip": "Sound to play when a text highlight\nis triggered. Select \"None\" to disable.",
+    "config.recode.option.highlightSoundVolume": "Volume",
+    "config.recode.option.highlightSoundVolume.tooltip": "Volume of the sound above.",
+    "config.recode.option.highlightOwnSenderSound": "Play Sound if Sender",
+    "config.recode.option.highlightOwnSenderSound.tooltip": "Plays a sound if you are the message sender. Requires:\n- A sound to be selected\n- The message sender to be ignored",
+
     "config.recode.option.hideJoinLeaveMessages": "Hide Join/Leave Messages",
     "config.recode.option.hideJoinLeaveMessages.tooltip": "Hides messages of players joining\nor leaving the current node.",
     "config.recode.option.hideVarScopeMessages": "Hide Variable Scope Messages",
     "config.recode.option.hideVarScopeMessages.tooltip": "Hides messages about changing variable scopes.",
+    "config.recode.option.stackDuplicateMsgs": "Message Stacker",
+    "config.recode.option.stackDuplicateMsgs.tooltip": "Merges multiple messages into one\nif they're the same.",
 
     "config.recode.option.hideScoreboardOnF3": "Hide Scoreboard on F3",
     "config.recode.option.hideScoreboardOnF3.tooltip": "Hides the scoreboard when the F3 menu is active.",
@@ -281,19 +304,27 @@
 
     "key.category.recode": "Recode",
 
+    "key.recode.play": "Mode Play",
+    "key.recode.build": "Mode Build",
+    "key.recode.dev": "Mode Dev",
+
+    "key.recode.fs_normal": "Flight Speed Normal",
+    "key.recode.fs_med": "Flight Speed Medium",
+    "key.recode.fs_fast": "Flight Speed Fast",
+
     "key.recode.spawn": "Spawn",
     "key.recode.plot_spawn": "Plot Spawn",
 
     "key.recode.nightvis": "Toggle Night Vision",
     "key.recode.lagslayer": "Toggle CPU Usage",
     "key.recode.fly": "Toggle Flight",
-    "key.recode.toggle_play_dev": "Toggle Mode Play <-> Dev",
-    "key.recode.toggle_play_build": "Toggle Mode Play <-> Build",
-    "key.recode.toggle_fs_medium": "Toggle Flight Speed Normal <-> Medium",
-    "key.recode.toggle_fs_fast": "Toggle Flight Speed Normal <-> Fast",
 
     "key.recode.rs": "Inventory Reset",
     "key.recode.rc": "Inventory Compact",
+
+    "key.recode.chat_global": "Chat Global",
+    "key.recode.chat_local": "Chat Local",
+    "key.recode.chat_none": "Chat None",
 
     "key.recode.search": "Function/Process Search",
 

@@ -19,7 +19,6 @@ public class ChatPredicates {
 
             if (customWords.size() == 0 || getCustomWordsString().trim().length()==0) return false; // do no checks if the input is empty
 
-//            Main.log(new ChatPattern(iTextComponent).toString());
             for (String customWord : customWords) {
                 if (iTextComponent.getString().contains(customWord)) return true;
             }
