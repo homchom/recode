@@ -30,8 +30,6 @@ import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-// test 2
-
 private val logger = LoggerFactory.getLogger(MOD_ID)
 
 lateinit var modVersion: String
