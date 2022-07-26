@@ -31,7 +31,7 @@ public class NameCommand extends Command {
         cd.register(ArgBuilder.literal("name")
                 .then(ArgBuilder.argument("uuid", PlayerArgumentType.player())
                         .executes(ctx -> {
-                            LegacyRecode.EXECUTOR.submit(() -> {
+                            LegacyRecode.executor.submit(() -> {
                                 String uuid = ctx.getArgument("uuid", String.class);
                                 String url = "https://api.mojang.com/user/profiles/" + uuid + "/names";
                                 try {
