@@ -5,6 +5,7 @@ import io.github.homchom.recode.*;
 import io.github.homchom.recode.event.*;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.LagslayerHUD;
+import io.github.homchom.recode.mod.features.social.chat.message.Message;
 import io.github.homchom.recode.sys.networking.LegacyState;
 import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
@@ -30,6 +31,10 @@ public class MMessageListener {
     private void handleChat(ClientboundChatPacket packet, CallbackInfo ci) {
         if (DFInfo.isOnDF() && RenderSystem.isOnRenderThread()) {
             if (packet.getType() != ChatType.GAME_INFO) {
+                // temporary, to preserve non-migrated side effects (like message grabbing)
+                // TODO: remove after new message listener is complete
+                new Message(packet, ci);
+
                 boolean result = EventValidation.validate(
                         RecodeEvents.ReceiveChatMessage, packet.getMessage());
                 if (!result) ci.cancel();
