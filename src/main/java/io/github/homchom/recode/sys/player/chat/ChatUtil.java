@@ -30,7 +30,7 @@ public class ChatUtil {
     }
 
     public static void command(String message) {
-        LegacyRecode.MC.player.command(message);
+        LegacyRecode.MC.player.commandSigned(message, null);
     }
 
     public static void executeCommand(String command) {

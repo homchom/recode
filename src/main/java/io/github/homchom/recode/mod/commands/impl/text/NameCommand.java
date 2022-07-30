@@ -52,7 +52,7 @@ public class NameCommand extends Command {
                                     this.sendMessage(mc, text);
 
                                     if (this.isCreative(mc) && DFInfo.isOnDF() && DFInfo.currentState.getMode() == LegacyState.Mode.DEV) {
-                                        this.sendChatMessage(mc, "/txt " + fullName);
+                                        this.sendCommand(mc, "/txt " + fullName);
                                     }
                                 } catch (IOException e) {
                                     ChatUtil.sendMessage("§cUUID §6" + uuid + "§c was not found. Please check if you misspelled it and try again.");

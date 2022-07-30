@@ -29,10 +29,10 @@ public abstract class Command {
         this.sendMessage(player, message, false);
     }
 
-    protected void sendChatMessage(Minecraft mc, String message) {
+    protected void sendCommand(Minecraft mc, String message) {
         LocalPlayer player = mc.player;
         if (player != null) {
-            player.chat(message);
+            player.commandSigned(message, null);
         }
     }
 

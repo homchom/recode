@@ -31,7 +31,7 @@ public class NodeCommand extends Command {
 
         for (Map.Entry<String, String> node : NODE_MAP.entrySet()) {
             cmd.then(ArgBuilder.literal(node.getKey()).executes((ctx) -> {
-                this.sendChatMessage(mc, "/server " + node.getValue());
+                this.sendCommand(mc, "/server " + node.getValue());
                 return 1;
             }));
         }

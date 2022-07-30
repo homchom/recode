@@ -48,7 +48,7 @@ public class PJoinCommand extends Command {
             return -1;
         }
 
-        mc.player.chat("/locate " + player);
+        mc.player.commandSigned("/locate " + player, null);
 
         LegacyReceiveChatMessageEvent.pjoin = true;
         ChatUtil.sendMessage("Joining the plot §e" + player + "§b is currently playing...", ChatType.INFO_BLUE);

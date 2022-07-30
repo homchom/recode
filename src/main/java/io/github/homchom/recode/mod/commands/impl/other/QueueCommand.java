@@ -113,7 +113,7 @@ public class QueueCommand extends Command {
 
                                             QueueEntry.HIDDEN_ENTRIES.add(id);
 
-                                            mc.player.chat("/join " + id);
+                                            mc.player.commandSigned("/join " + id, null);
 
                                             mc.player.displayClientMessage(Component.literal("⏩ ")
                                                     .withStyle(style -> style.withColor(TextColor.fromRgb(0x34961d))
