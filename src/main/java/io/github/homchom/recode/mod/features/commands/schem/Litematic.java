@@ -6,7 +6,7 @@ import io.github.homchom.recode.mod.features.commands.schem.utils.*;
 import io.github.homchom.recode.sys.hypercube.templates.TemplateUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.*;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import org.apache.commons.io.FilenameUtils;
@@ -54,13 +54,13 @@ public class Litematic {
             ArrayList<Integer> intblocks = new ArrayList<>();
             int[] BlockIds = new int[volume];
 
-            Minecraft.getInstance().player.displayClientMessage(new TextComponent("§8§m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §r[§e§lSchem2DF§r]§8§m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m"), false);
-            Minecraft.getInstance().player.displayClientMessage(new TextComponent("§aLoader started asynchronously"), false);
-            Minecraft.getInstance().player.displayClientMessage(new TextComponent("§6" + name + " §e§oBy " + author), false);
-            Minecraft.getInstance().player.displayClientMessage(new TextComponent("§7Description: " + description), false);
-            Minecraft.getInstance().player.displayClientMessage(new TextComponent("§d" + width + "x" + height + "x" + length + " " + volume + " Blocks including air, " + blocks + " Blocks excluding air."), false);
-            Minecraft.getInstance().player.displayClientMessage(new TextComponent("§9Created §b" + new Date(created) + " §9Last Modified §b" + new Date(modified)), false);
-            Minecraft.getInstance().player.displayClientMessage(new TextComponent("§8§m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m"), false);
+            Minecraft.getInstance().player.displayClientMessage(Component.literal("§8§m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §r[§e§lSchem2DF§r]§8§m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m"), false);
+            Minecraft.getInstance().player.displayClientMessage(Component.literal("§aLoader started asynchronously"), false);
+            Minecraft.getInstance().player.displayClientMessage(Component.literal("§6" + name + " §e§oBy " + author), false);
+            Minecraft.getInstance().player.displayClientMessage(Component.literal("§7Description: " + description), false);
+            Minecraft.getInstance().player.displayClientMessage(Component.literal("§d" + width + "x" + height + "x" + length + " " + volume + " Blocks including air, " + blocks + " Blocks excluding air."), false);
+            Minecraft.getInstance().player.displayClientMessage(Component.literal("§9Created §b" + new Date(created) + " §9Last Modified §b" + new Date(modified)), false);
+            Minecraft.getInstance().player.displayClientMessage(Component.literal("§8§m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m"), false);
 
             for (Tag block : palette) {
                 JsonElement blockjson = JsonParser.parseString(block.toString());
@@ -121,7 +121,7 @@ public class Litematic {
                         nbt.append("]}");
                         ItemStack item = Blocks.TWISTING_VINES.asItem().getDefaultInstance();
                         TemplateUtil.compressTemplateNBT(item, file.getName(), "SchemaDF", nbt.toString());
-                        item.setHoverName(new TextComponent("§d" + file.getName() + functions));
+                        item.setHoverName(Component.literal("§d" + file.getName() + functions));
                         Minecraft.getInstance().gameMode.handleCreativeModeItemAdd(item, functions + 8);
                         codeblocks = 1;
                         functions++;
@@ -145,7 +145,7 @@ public class Litematic {
                 nbt.append("]}");
                 ItemStack item = Blocks.TWISTING_VINES.asItem().getDefaultInstance();
                 TemplateUtil.compressTemplateNBT(item, file.getName(), "SchemaDF", nbt.toString());
-                item.setHoverName(new TextComponent("§d" + file.getName() + functions));
+                item.setHoverName(Component.literal("§d" + file.getName() + functions));
                 Minecraft.getInstance().gameMode.handleCreativeModeItemAdd(item, functions + 8);
                 codeblocks = 1;
                 functions++;
@@ -173,7 +173,7 @@ public class Litematic {
                         nbt.append("]}");
                         ItemStack item = Blocks.TWISTING_VINES.asItem().getDefaultInstance();
                         TemplateUtil.compressTemplateNBT(item, file.getName(), "SchemaDF", nbt.toString());
-                        item.setHoverName(new TextComponent("§d" + file.getName() + functions));
+                        item.setHoverName(Component.literal("§d" + file.getName() + functions));
                         Minecraft.getInstance().gameMode.handleCreativeModeItemAdd(item, functions + 8);
                         codeblocks = 1;
                         functions++;
@@ -195,7 +195,7 @@ public class Litematic {
 
             ItemStack item = Blocks.TWISTING_VINES.asItem().getDefaultInstance();
             TemplateUtil.compressTemplateNBT(item, file.getName(), "Schem2DF", nbt.toString());
-            item.setHoverName(new TextComponent("§d" + file.getName() + functions));
+            item.setHoverName(Component.literal("§d" + file.getName() + functions));
             Minecraft.getInstance().gameMode.handleCreativeModeItemAdd(item, functions + 8);
 
             return nbt.toString();

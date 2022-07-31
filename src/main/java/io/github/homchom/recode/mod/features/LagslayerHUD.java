@@ -54,7 +54,7 @@ public class LagslayerHUD {
         }
 
         try {
-            renderComponent(stack, new TextComponent("CPU Usage:"), 3, ChatFormatting.GOLD.getColor());
+            renderComponent(stack, Component.literal("CPU Usage:"), 3, ChatFormatting.GOLD.getColor());
             renderComponent(stack, barsComponent, 2);
             renderComponent(stack, numberComponent, 1);
         } catch (Exception e) {

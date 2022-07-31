@@ -12,16 +12,18 @@ import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.ChatType;
 import io.github.homchom.recode.sys.player.chat.*;
 import io.github.homchom.recode.sys.util.*;
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 
 public class SearchCommand extends Command {
 	@Override
-	public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd) {
+	public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd, CommandBuildContext context) {
 		String[] codeBlocks = new String[CodeSearcher.SearchType.values().length];
 		int i = 0;
 		for (CodeSearcher.SearchType searchType : CodeSearcher.SearchType.values()) {
@@ -31,13 +33,13 @@ public class SearchCommand extends Command {
 
 		cd.register(ArgBuilder.literal("search")
 				.executes(ctx -> { // /search clear shortcut
-					ChatUtil.sendMessage(new TranslatableComponent("recode.template_search.cleared"), ChatType.SUCCESS);
+					ChatUtil.sendMessage(Component.translatable("recode.template_search.cleared"), ChatType.SUCCESS);
 					CodeSearcher.clearSearch();
 					return 1;
 				})
 				.then(ArgBuilder.literal("clear")
 						.executes(ctx -> { // /search clear
-							ChatUtil.sendMessage(new TranslatableComponent("recode.template_search.cleared"), ChatType.SUCCESS);
+							ChatUtil.sendMessage(Component.translatable("recode.template_search.cleared"), ChatType.SUCCESS);
 							CodeSearcher.clearSearch();
 							return 1;
 						}))
@@ -46,8 +48,8 @@ public class SearchCommand extends Command {
 							try {
 								String query = ctx.getArgument("action", String.class);
 								ArrayList<Action> actions = ActionDump.getActions(query);
-								mc.player.displayClientMessage(TextUtil.colorCodesToTextComponent("§x§0§0§b§5§f§c✎ §x§0§0§e§0§b§0" + new TranslatableComponent("recode.template_search.begin_search", "§x§0§0§f§8§f§c" + query + "§x§0§0§e§0§b§0").resolve(mc.player.createCommandSourceStack(), mc.player, 1).getString()).copy(), false);
-								mc.player.displayClientMessage(new TextComponent(""), false);
+								mc.player.displayClientMessage(TextUtil.colorCodesToTextComponent("§x§0§0§b§5§f§c✎ §x§0§0§e§0§b§0" + new TranslatableContents("recode.template_search.begin_search", "§x§0§0§f§8§f§c" + query + "§x§0§0§e§0§b§0").resolve(mc.player.createCommandSourceStack(), mc.player, 1).getString()).copy(), false);
+								mc.player.displayClientMessage(Component.literal(""), false);
 								for (Action action : actions) {
 									try {
 										mc.player.displayClientMessage(createMessage(action.getCodeBlock().getIdentifier(), action.getName(), action.getCodeBlock().getItem().toItemStack(), action.getIcon().toItemStack()), false);
@@ -60,7 +62,7 @@ public class SearchCommand extends Command {
 							} catch (Exception e) {
 								e.printStackTrace();
 
-								ChatUtil.sendMessage(new TranslatableComponent("recode.template_search.invalid", ctx.getArgument("action", String.class)).resolve(mc.player.createCommandSourceStack(), mc.player, 1), ChatType.FAIL);
+								ChatUtil.sendMessage(new TranslatableContents("recode.template_search.invalid", ctx.getArgument("action", String.class)).resolve(mc.player.createCommandSourceStack(), mc.player, 1), ChatType.FAIL);
 							}
 							return 1;
 						})));
@@ -76,13 +78,13 @@ public class SearchCommand extends Command {
 										if (DFInfo.isOnDF() && DFInfo.currentState.getMode() == LegacyState.Mode.DEV && mc.player.isCreative()) {
 											CodeSearcher.beginSearch(searchType, actionArgument);
 										} else {
-											ChatUtil.sendMessage(new TranslatableComponent("recode.command.require_dev_mode", ctx.getArgument("action", String.class)).resolve(mc.player.createCommandSourceStack(), mc.player, 1), ChatType.FAIL);
+											ChatUtil.sendMessage(new TranslatableContents("recode.command.require_dev_mode", ctx.getArgument("action", String.class)).resolve(mc.player.createCommandSourceStack(), mc.player, 1), ChatType.FAIL);
 										}
 
 									} catch (Exception e) {
 										e.printStackTrace();
 
-										ChatUtil.sendMessage(new TranslatableComponent("recode.template_search.invalid").resolve(mc.player.createCommandSourceStack(), mc.player, 1), ChatType.FAIL);
+										ChatUtil.sendMessage(new TranslatableContents("recode.template_search.invalid").resolve(mc.player.createCommandSourceStack(), mc.player, 1), ChatType.FAIL);
 									}
 									return 1;
 

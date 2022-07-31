@@ -138,82 +138,82 @@ public class Keybinds implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             // play
             while (play.consumeClick()) {
-                sendChat("/play");
+                sendCommand("play");
             }
 
             // build
             while (build.consumeClick()) {
-                sendChat("/build");
+                sendCommand("build");
             }
 
             // dev
             while (dev.consumeClick()) {
-                sendChat("/dev");
+                sendCommand("dev");
             }
 
             // spawn
             while (spawn.consumeClick()) {
-                sendChat("/s");
+                sendCommand("s");
             }
 
             // fs normal
             while (fsNormal.consumeClick()) {
-                sendChat("/fs " + Config.getInteger("fsNormal"));
+                sendCommand("fs " + Config.getInteger("fsNormal"));
             }
 
             // fs med
             while (fsMedium.consumeClick()) {
-                sendChat("/fs " + Config.getInteger("fsMed"));
+                sendCommand("fs " + Config.getInteger("fsMed"));
             }
 
             // fs fast
             while (fsFast.consumeClick()) {
-                sendChat("/fs " + Config.getInteger("fsFast"));
+                sendCommand("fs " + Config.getInteger("fsFast"));
             }
 
             // lagslayer
             while (lagslayer.consumeClick()) {
-                sendChat("/lagslayer");
+                sendCommand("lagslayer");
             }
 
             // rc
             while (rc.consumeClick()) {
-                sendChat("/rc");
+                sendCommand("rc");
             }
 
             // rs
             while (rs.consumeClick()) {
-                sendChat("/rs");
+                sendCommand("rs");
             }
 
             // plot spawn
             while (plotSpawn.consumeClick()) {
-                sendChat("/p s");
+                sendCommand("p s");
             }
 
             // nightvis
             while (nightvis.consumeClick()) {
-                sendChat("/nightvis");
+                sendCommand("nightvis");
             }
 
             // fly
             while (fly.consumeClick()) {
-                sendChat("/fly");
+                sendCommand("fly");
             }
 
             // chat global
             while (chatGlobal.consumeClick()) {
-                sendChat("/chat global");
+                sendCommand("chat global");
             }
 
             // chat local
             while (chatLocal.consumeClick()) {
-                sendChat("/chat local");
+                sendCommand("chat local");
             }
 
             // chat none
             while (chatNone.consumeClick()) {
-                sendChat("/chat none");
+                sendCommand("chat none");
             }
 
             // search
@@ -238,15 +238,15 @@ public class Keybinds implements ClientModInitializer {
             }
 
             while (modv.consumeClick()) {
-                sendChat("/mod v");
+                sendCommand("mod v");
             }
 
             while (supportAccept.consumeClick()) {
-                sendChat("/support accept");
+                sendCommand("support accept");
             }
 
             while (supportQueue.consumeClick()) {
-                sendChat("/support queue");
+                sendCommand("support queue");
             }
 
             // chat shortcuts
@@ -273,7 +273,7 @@ public class Keybinds implements ClientModInitializer {
         });
     }
 
-    private void sendChat(String message) {
-        Objects.requireNonNull(mc.player).chat(message);
+    private void sendCommand(String message) {
+        Objects.requireNonNull(mc.player).commandSigned(message, null);
     }
 }

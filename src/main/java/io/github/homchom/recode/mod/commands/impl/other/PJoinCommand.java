@@ -6,13 +6,14 @@ import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
 import io.github.homchom.recode.mod.commands.arguments.types.PlayerArgumentType;
 import io.github.homchom.recode.mod.events.impl.LegacyReceiveChatMessageEvent;
 import io.github.homchom.recode.sys.player.chat.*;
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
+import net.minecraft.commands.CommandBuildContext;
 
 public class PJoinCommand extends Command {
 
     @Override
-    public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd) {
+    public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd, CommandBuildContext context) {
         cd.register(ArgBuilder.literal("pjoin")
                 .then(ArgBuilder.argument("player", PlayerArgumentType.player())
                         .executes(ctx -> {
@@ -42,12 +43,12 @@ public class PJoinCommand extends Command {
 
     private int run(Minecraft mc, String player) {
 
-        if (player.equals(mc.player.getName().getContents())) {
+        if (player.equals(mc.player.getName().getString())) {
             ChatUtil.sendMessage("You cannot use this command on yourself!", ChatType.FAIL);
             return -1;
         }
 
-        mc.player.chat("/locate " + player);
+        mc.player.commandSigned("locate " + player, null);
 
         LegacyReceiveChatMessageEvent.pjoin = true;
         ChatUtil.sendMessage("Joining the plot §e" + player + "§b is currently playing...", ChatType.INFO_BLUE);

@@ -2,14 +2,15 @@ package io.github.homchom.recode.mod.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.homchom.recode.sys.player.chat.*;
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class Command {
-    public abstract void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd);
+    public abstract void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd, CommandBuildContext context);
 
     protected boolean isCreative(Minecraft mc) {
         LocalPlayer player = mc.player;
@@ -28,10 +29,10 @@ public abstract class Command {
         this.sendMessage(player, message, false);
     }
 
-    protected void sendChatMessage(Minecraft mc, String message) {
+    protected void sendCommand(Minecraft mc, String message) {
         LocalPlayer player = mc.player;
         if (player != null) {
-            player.chat(message);
+            player.commandSigned(message, null);
         }
     }
 

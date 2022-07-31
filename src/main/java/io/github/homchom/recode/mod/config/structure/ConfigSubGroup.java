@@ -1,7 +1,7 @@
 package io.github.homchom.recode.mod.config.structure;
 
 import io.github.homchom.recode.mod.commands.IManager;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 
 import java.util.*;
 
@@ -10,8 +10,8 @@ public class ConfigSubGroup implements IManager<ConfigSetting<?>>, IRawTranslati
     private boolean startExpanded = true;
     private final String name;
 
-    private TextComponent rawKey = null;
-    private TextComponent rawTooltip = null;
+    private Component rawKey = null;
+    private Component rawTooltip = null;
 
     public ConfigSubGroup(String name) {
         this.name = name;
@@ -19,23 +19,23 @@ public class ConfigSubGroup implements IManager<ConfigSetting<?>>, IRawTranslati
 
     @Override
     public ConfigSubGroup setRawKey(String key) {
-        this.rawKey = new TextComponent(key);
+        this.rawKey = Component.literal(key);
         return this;
     }
 
     @Override
-    public Optional<TextComponent> getRawKey() {
+    public Optional<Component> getRawKey() {
         return Optional.ofNullable(rawKey);
     }
 
     @Override
     public ConfigSubGroup setRawTooltip(String key) {
-        this.rawTooltip = new TextComponent(key);
+        this.rawTooltip = Component.literal(key);
         return this;
     }
 
     @Override
-    public Optional<TextComponent> getRawTooltip() {
+    public Optional<Component> getRawTooltip() {
         return Optional.ofNullable(rawTooltip);
     }
 

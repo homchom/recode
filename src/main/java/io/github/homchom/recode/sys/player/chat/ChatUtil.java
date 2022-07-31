@@ -6,7 +6,6 @@ import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.color.MinecraftColors;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.*;
 import net.minecraft.sounds.*;
 import org.jetbrains.annotations.Nullable;
@@ -30,12 +29,12 @@ public class ChatUtil {
         }
     }
 
-    public static void chat(String message) {
-        LegacyRecode.MC.player.chat(message);
+    public static void command(String message) {
+        LegacyRecode.MC.player.commandSigned(message, null);
     }
 
     public static void executeCommand(String command) {
-        chat("/" + command.replaceFirst("^/", ""));
+        command(command.replaceFirst("^/", ""));
     }
 
     public static void executeCommandSilently(String command, int messageAmount) {
@@ -48,19 +47,15 @@ public class ChatUtil {
     }
 
     public static void sendMessage(String text) {
-        sendMessage(new TextComponent(text), null);
+        sendMessage(Component.literal(text), null);
     }
 
     public static void sendMessage(String text, ChatType prefixType) {
-        sendMessage(new TextComponent(text), prefixType);
+        sendMessage(Component.literal(text), prefixType);
     }
 
     public static void sendTranslateMessage(String identifier, ChatType prefixType) {
-        sendMessage(new TranslatableComponent(identifier), prefixType);
-    }
-
-    public static void sendMessage(TranslatableComponent component, ChatType prefixType) {
-        sendMessage((BaseComponent) component, prefixType);
+        sendMessage(Component.translatable(identifier), prefixType);
     }
 
     public static void sendMessage(MutableComponent text, @Nullable ChatType chatType) {
@@ -78,7 +73,7 @@ public class ChatUtil {
             }
 
             ChatUtil.setColor(text, minecraftColors.getColor());
-            player.displayClientMessage(new TextComponent(chatType.getString() + " ").append(text), false);
+            player.displayClientMessage(Component.literal(chatType.getString() + " ").append(text), false);
             if (chatType == ChatType.FAIL) {
                 if (Config.getBoolean("errorSound")) {
                     player.playNotifySound(SoundEvents.NOTE_BLOCK_DIDGERIDOO, SoundSource.PLAYERS, 2, 0);

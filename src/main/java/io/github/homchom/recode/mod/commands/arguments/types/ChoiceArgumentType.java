@@ -6,13 +6,13 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.*;
 import com.mojang.brigadier.suggestion.*;
 import net.minecraft.commands.SharedSuggestionProvider;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 
 public class ChoiceArgumentType implements ArgumentType<String> {
-    public static final SimpleCommandExceptionType UNKNOWN_TYPE_EXCEPTION = new SimpleCommandExceptionType(new TextComponent("Unknown type"));
+    public static final SimpleCommandExceptionType UNKNOWN_TYPE_EXCEPTION = new SimpleCommandExceptionType(Component.literal("Unknown type"));
     private final String[] suggestions;
 
     private ChoiceArgumentType(String[] suggestions) {

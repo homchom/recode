@@ -1,13 +1,13 @@
 package io.github.homchom.recode.mod.config.internal;
 
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 
 public interface ITranslatable {
-    default TranslatableComponent getTranslation(String key) {
+    default Component getTranslation(String key) {
         return ITranslatable.get(key);
     }
 
-    static TranslatableComponent get(String key) {
-        return new TranslatableComponent(key);
+    static Component get(String key) {
+        return Component.translatable(key);
     }
 }

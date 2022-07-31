@@ -1,7 +1,7 @@
 package io.github.homchom.recode.mod.config.structure;
 
 import io.github.homchom.recode.mod.commands.IManager;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 
 import java.util.*;
 
@@ -10,7 +10,7 @@ public abstract class ConfigGroup implements IManager<ConfigSubGroup>, IRawTrans
     private final List<ConfigSubGroup> subGroups = new ArrayList<>();
     private final String name;
 
-    private TextComponent rawKey = null;
+    private Component rawKey = null;
 
     public ConfigGroup(String name) {
         this.name = name;
@@ -18,12 +18,12 @@ public abstract class ConfigGroup implements IManager<ConfigSubGroup>, IRawTrans
 
     @Override
     public ConfigGroup setRawKey(String key) {
-        this.rawKey = new TextComponent(key);
+        this.rawKey = Component.literal(key);
         return this;
     }
 
     @Override
-    public Optional<TextComponent> getRawKey() {
+    public Optional<Component> getRawKey() {
         return Optional.ofNullable(rawKey);
     }
 

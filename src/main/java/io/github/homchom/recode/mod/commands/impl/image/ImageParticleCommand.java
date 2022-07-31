@@ -6,9 +6,10 @@ import io.github.homchom.recode.mod.features.commands.image.*;
 import io.github.homchom.recode.sys.hypercube.templates.Templates;
 import io.github.homchom.recode.sys.renderer.ToasterUtil;
 import io.github.homchom.recode.sys.util.TemplateConstants;
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.SystemToast;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.world.item.Items;
 
 import java.io.IOException;
@@ -16,7 +17,7 @@ import java.nio.file.Path;
 
 public class ImageParticleCommand extends AbstractImageCommand {
     @Override
-    public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd) {
+    public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd, CommandBuildContext context) {
         cd.register(ArgBuilder.literal("imageparticle")
                 .then(ArgBuilder.literal("load").then(fileArgument(this::execute)))
                 .then(ArgBuilder.literal("printer")

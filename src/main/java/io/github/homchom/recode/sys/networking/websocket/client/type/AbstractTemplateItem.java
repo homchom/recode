@@ -25,9 +25,9 @@ public abstract class AbstractTemplateItem extends SocketItem {
             author = Minecraft.getInstance().player.getGameProfile().getName();
         }
         if (templateObject.has("name")) {
-            name = new TextComponent(templateObject.get("name").getAsString());
+            name = Component.literal(templateObject.get("name").getAsString());
         } else {
-            name = new TextComponent("Imported Code Template").withStyle((style) -> style.withColor(TextColor.fromRgb(11163135)));
+            name = Component.literal("Imported Code Template").withStyle((style) -> style.withColor(TextColor.fromRgb(11163135)));
         }
         int version;
         if (templateObject.has("version")) {

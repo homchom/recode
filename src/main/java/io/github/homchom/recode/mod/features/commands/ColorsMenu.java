@@ -7,8 +7,9 @@ import io.github.homchom.recode.sys.renderer.IMenu;
 import io.github.homchom.recode.sys.renderer.widgets.*;
 import io.github.homchom.recode.sys.util.StringUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.util.Mth;
 
 import java.awt.*;
@@ -38,7 +39,7 @@ public class ColorsMenu extends LightweightGuiDescription implements IMenu {
             colorPicker = new CColorPicker(1f, new HSBColor(0, 1, 1));
             root.add(colorPicker, 10, 90);
 
-            copyButton = new WButton(new TextComponent("Copy")).setOnClick(() -> {
+            copyButton = new WButton(Component.literal("Copy")).setOnClick(() -> {
                 Color color = colorPicker.getColor();
                 StringUtil.copyToClipboard(MinecraftColors.hexToMc(String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue())).replaceAll("§", "&"));
                 ColorUtil.recentColors.remove(color);
@@ -51,33 +52,33 @@ public class ColorsMenu extends LightweightGuiDescription implements IMenu {
             int textWidth = Minecraft.getInstance().font.width("Recode!");
             previewTextRect = new CColoredRectangle(new Color(0, 0, 0, 100), new Color(255, 255, 255, 100));
             root.add(previewTextRect, 120-(textWidth), 15, (textWidth*2)+12, 26);
-            previewText = new CText(new TextComponent("Recode!"), colorPicker.getColor().getRGB());
+            previewText = new CText(Component.literal("Recode!"), colorPicker.getColor().getRGB());
             root.add(previewText, 128-(textWidth), 20, textWidth, 8);
 
             updateRecentColors(root);
             if (ColorUtil.recentColors.size() > 0){
-                String recentTextString = new TranslatableComponent("key.recode.colors.recent_colors").resolve(mc.player.createCommandSourceStack(), mc.player, 1).getString();
+                String recentTextString = new TranslatableContents("key.recode.colors.recent_colors").resolve(mc.player.createCommandSourceStack(), mc.player, 1).getString();
                 int recentTextWidth = Minecraft.getInstance().font.width(recentTextString);
-                recentText = new WText(new TextComponent(recentTextString));
+                recentText = new WText(Component.literal(recentTextString));
                 recentText.setColor(Color.black.getRGB(), Color.white.getRGB());
                 root.add(recentText, 200-(recentTextWidth/2), 85, recentTextWidth, 8);
             }
 
             int hexTextWidth = Minecraft.getInstance().font.width("HEX");
-            WText hexText = new WText(new TextComponent("HEX"));
+            WText hexText = new WText(Component.literal("HEX"));
             hexText.setColor(Color.black.getRGB(), Color.white.getRGB());
             root.add(hexText, 60-(hexTextWidth/2), 200, hexTextWidth, 8);
-            hexInput = new WTextField(new TextComponent("HEX")).setMaxLength(7);
+            hexInput = new WTextField(Component.literal("HEX")).setMaxLength(7);
             hexInput.setText("#FF0000");
             root.add(hexInput, 32, 212, 56, 10);
 
             int rgbTextWidth = Minecraft.getInstance().font.width("RGB");
-            hexText = new WText(new TextComponent("RGB"));
+            hexText = new WText(Component.literal("RGB"));
             hexText.setColor(Color.black.getRGB(), Color.white.getRGB());
             root.add(hexText, 183-(rgbTextWidth/2), 200, rgbTextWidth, 8);
-            rInput = new WTextField(new TextComponent("Red")).setMaxLength(3);
-            gInput = new WTextField(new TextComponent("Green")).setMaxLength(3);
-            bInput = new WTextField(new TextComponent("Blue")).setMaxLength(3);
+            rInput = new WTextField(Component.literal("Red")).setMaxLength(3);
+            gInput = new WTextField(Component.literal("Green")).setMaxLength(3);
+            bInput = new WTextField(Component.literal("Blue")).setMaxLength(3);
             rInput.setText("255");
             gInput.setText("0");
             bInput.setText("0");

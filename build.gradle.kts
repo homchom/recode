@@ -54,10 +54,10 @@ dependencies {
     shadeApi(kotlin("stdlib-jdk8", "1.7.0"))
 
     // https://github.com/CottonMC/LibGui/releases
-    includeModImpl("io.github.cottonmc:LibGui:5.4.0+1.18.2")
+    includeModImpl("io.github.cottonmc:LibGui:6.0.0+1.19")
 
-    modCompileOnly("com.terraformersmc:modmenu:3.2.1")
-    includeModImpl("me.shedaniel.cloth:cloth-config-fabric:6.2.62")
+    modCompileOnly("com.terraformersmc:modmenu:4.0.3")
+    includeModImpl("me.shedaniel.cloth:cloth-config-fabric:7.0.60")
 
     // discord rpc
     shadeImpl("com.jagrosh:DiscordIPC:0.4")

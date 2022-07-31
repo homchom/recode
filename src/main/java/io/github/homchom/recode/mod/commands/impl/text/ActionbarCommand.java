@@ -4,8 +4,9 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.sys.util.TextUtil;
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.network.chat.Component;
 
 import static io.github.homchom.recode.mod.commands.arguments.ArgBuilder.argument;
@@ -14,7 +15,7 @@ import static io.github.homchom.recode.mod.commands.arguments.ArgBuilder.literal
 public class ActionbarCommand extends Command {
 
     @Override
-    public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd) {
+    public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd, CommandBuildContext context) {
         reg("previewactionbar",mc,cd);
         reg("actionbarpreview",mc,cd);
     }
