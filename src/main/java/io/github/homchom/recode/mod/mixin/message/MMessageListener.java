@@ -129,7 +129,7 @@ public class MMessageListener {
         String text = component.getString();
 
         // Enter Session
-        if (text.matches("^\\[SUPPORT\\] " + player.getName().getContents() + " entered a session with \\w+\\. ▶ \\S+ \\S+!?$")) {
+        if (text.matches("^\\[SUPPORT\\] " + player.getName().getString() + " entered a session with \\w+\\. ▶ \\S+ \\S+!?$")) {
             if (!DFInfo.currentState.isInSession()) {
                 new Thread(() -> {
                     try {
@@ -150,7 +150,7 @@ public class MMessageListener {
         }
 
         // End Session
-        if (text.matches("^\\[SUPPORT\\] " + player.getName().getContents() + " finished a session with \\w+\\. ▶ \\d+:\\d+:\\d+$") || text.matches("^\\[SUPPORT\\] " + player.getName().getContents() + " terminated a session with \\w+\\. ▶ \\d+:\\d+:\\d+$") || text.matches("\\[SUPPORT\\] \\w+ left a session with " + player.getName().getContents() + ".$")) {
+        if (text.matches("^\\[SUPPORT\\] " + player.getName().getString() + " finished a session with \\w+\\. ▶ \\d+:\\d+:\\d+$") || text.matches("^\\[SUPPORT\\] " + player.getName().getString() + " terminated a session with \\w+\\. ▶ \\d+:\\d+:\\d+$") || text.matches("\\[SUPPORT\\] \\w+ left a session with " + player.getName().getString() + ".$")) {
             if (DFInfo.currentState.isInSession()) {
                 DFInfo.currentState.setInSession(false);
                 new Thread(() -> {
