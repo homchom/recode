@@ -66,7 +66,7 @@ public class TextUtil {
     }
 
     public static Component colorCodesToTextComponent(String message) {
-        MutableComponent result = new TextComponent("");
+        MutableComponent result = Component.literal("");
 
         try {
             Pattern pattern = Pattern.compile("(§[a-f0-9lonmkrA-FLONMRK]|§x(§[a-f0-9A-F]){6})");
@@ -79,7 +79,7 @@ public class TextUtil {
                 int start = matcher.start();
                 String text = message.substring(lastIndex, start);
                 if (text.length() != 0) {
-                    MutableComponent t = new TextComponent(text);
+                    MutableComponent t = Component.literal(text);
                     t.setStyle(s);
                     result.append(t);
                 }
@@ -95,13 +95,13 @@ public class TextUtil {
             }
             String text = message.substring(lastIndex);
             if (text.length() != 0) {
-                MutableComponent t = new TextComponent(text);
+                MutableComponent t = Component.literal(text);
                 t.setStyle(s);
                 result.append(t);
             }
         } catch (Exception err) {
             err.printStackTrace();
-            return new TextComponent("Recode Text Error");
+            return Component.literal("Recode Text Error");
         }
 
         return result;

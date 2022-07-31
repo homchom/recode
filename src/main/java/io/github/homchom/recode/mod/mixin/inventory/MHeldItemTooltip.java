@@ -25,11 +25,11 @@ public class MHeldItemTooltip {
 
     static {
         scopes.put("unsaved",
-            new TextComponent("GAME").withStyle((style) -> style.withColor(ChatFormatting.GRAY)));
+                Component.literal("GAME").withStyle((style) -> style.withColor(ChatFormatting.GRAY)));
         scopes.put("saved",
-            new TextComponent("SAVE").withStyle((style) -> style.withColor(ChatFormatting.YELLOW)));
+                Component.literal("SAVE").withStyle((style) -> style.withColor(ChatFormatting.YELLOW)));
         scopes.put("local",
-            new TextComponent("LOCAL").withStyle((style) -> style.withColor(ChatFormatting.GREEN)));
+                Component.literal("LOCAL").withStyle((style) -> style.withColor(ChatFormatting.GREEN)));
     }
 
     private final Minecraft mc = Minecraft.getInstance();
@@ -71,14 +71,14 @@ public class MHeldItemTooltip {
                     MutableComponent scope = scopes.get(varItemNbt.get("scope").getAsString());
 
                     int x1 = (mc.getWindow().getGuiScaledWidth() - mc.font.width(
-                        new TextComponent(name))) / 2;
+                            Component.literal(name))) / 2;
                     int y1 = mc.getWindow().getGuiScaledHeight() - 45;
 
                     int x2 = (mc.getWindow().getGuiScaledWidth() - mc.font.width(
-                        scope.getContents())) / 2;
+                        scope.getVisualOrderText())) / 2;
                     int y2 = mc.getWindow().getGuiScaledHeight() - 35;
 
-                    mc.font.drawShadow(matrices, new TextComponent(name), (float) x1,
+                    mc.font.drawShadow(matrices, Component.literal(name), (float) x1,
                         (float) y1, 16777215);
                     mc.font.drawShadow(matrices, scope, (float) x2, (float) y2,
                         16777215);

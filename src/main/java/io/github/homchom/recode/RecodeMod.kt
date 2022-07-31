@@ -4,6 +4,7 @@ package io.github.homchom.recode
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.mojang.brigadier.CommandDispatcher
 import io.github.homchom.recode.feature.RenderingFeatureGroup
 import io.github.homchom.recode.init.EntrypointModule
 import io.github.homchom.recode.init.RModule
@@ -22,9 +23,12 @@ import io.github.homchom.recode.mod.features.discordrpc.DFDiscordRPC
 import io.github.homchom.recode.sys.hypercube.codeaction.ActionDump
 import io.github.homchom.recode.sys.hypercube.templates.TemplateStorageHandler
 import io.github.homchom.recode.sys.networking.websocket.SocketHandler
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.Minecraft
+import net.minecraft.commands.CommandBuildContext
 import org.slf4j.LoggerFactory
 import java.util.*
 import java.util.concurrent.ExecutorService
@@ -114,10 +118,13 @@ object LegacyRecode {
         initializer.add(DFDiscordRPC())
         initializer.add(ActionDump())
         initializer.add(LegacyEventHandler())
-        initializer.add(CommandHandler())
 
         // Initializes only if the given condition is met. (this case: config value)
         initializer.addIf(SocketHandler(), Config.getBoolean("itemApi"))
+
+        ClientCommandRegistrationCallback.EVENT.register(ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource?>?, registryAccess: CommandBuildContext? ->
+            CommandHandler.load(dispatcher, registryAccess)
+        })
     }
 
     @JvmStatic

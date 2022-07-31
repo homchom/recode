@@ -1,7 +1,6 @@
 package io.github.homchom.recode.mod.config.structure;
 
-
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 
 import java.util.Optional;
 
@@ -10,7 +9,7 @@ public interface IRawTranslation<T> extends IRawKey<T> {
         return null;
     }
 
-    default Optional<TextComponent> getRawKey() {
+    default Optional<Component> getRawKey() {
         return Optional.empty();
     }
 
@@ -18,7 +17,7 @@ public interface IRawTranslation<T> extends IRawKey<T> {
         return null;
     }
 
-    default Optional<TextComponent> getRawTooltip() {
+    default Optional<Component> getRawTooltip() {
         return Optional.empty();
     }
 }

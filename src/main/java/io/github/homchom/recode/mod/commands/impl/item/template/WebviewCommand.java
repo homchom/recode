@@ -61,7 +61,7 @@ public class WebviewCommand extends AbstractTemplateCommand {
                 String link = obj.get("link").getAsString();
 
 
-                TextComponent text = new TextComponent(
+                MutableComponent text = Component.literal(
                         "Click this message to view this code template in web!");
                 text.withStyle((style) -> style
                         .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL,
@@ -70,7 +70,7 @@ public class WebviewCommand extends AbstractTemplateCommand {
             } catch (Exception err) {
                 err.printStackTrace();
                 ChatUtil.sendMessage("Failed to shorten link.", ChatType.FAIL);
-                TextComponent text = new TextComponent(
+                MutableComponent text = Component.literal(
                         "Click this message to view this code template in web!");
                 text.withStyle((style) -> style
                         .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL,

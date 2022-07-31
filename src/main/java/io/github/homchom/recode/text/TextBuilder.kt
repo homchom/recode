@@ -13,7 +13,7 @@ inline fun text(builder: TextScope) = TextBuilder().apply(builder).text
 
 @Suppress("PropertyName", "unused")
 class TextBuilder(val style: Style = Style.EMPTY) {
-    var text = TextComponent("")
+    var text = Component.empty()
 
     inline val black get() = ChatFormatting.BLACK
     inline val darkBlue get() = ChatFormatting.DARK_BLUE
@@ -51,8 +51,8 @@ class TextBuilder(val style: Style = Style.EMPTY) {
         text += TextBuilder(style).apply(scope).text
     }
 
-    fun translate(key: String, vararg args: Any) = append(TranslatableComponent(key, args))
-    fun literal(string: String) = append(TextComponent(string))
+    fun translate(key: String, vararg args: Any) = append(Component.translatable(key, args))
+    fun literal(string: String) = append(Component.literal(string))
 
     inline fun ChatFormatting.invoke(scope: TextScope) = appendBlock(scope, style + this)
 

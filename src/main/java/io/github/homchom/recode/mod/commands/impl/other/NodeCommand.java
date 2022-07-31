@@ -4,8 +4,9 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
+import net.minecraft.commands.CommandBuildContext;
 
 import java.util.*;
 
@@ -25,11 +26,11 @@ public class NodeCommand extends Command {
     }
 
     @Override
-    public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd) {
+    public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd, CommandBuildContext context) {
         LiteralArgumentBuilder<FabricClientCommandSource> cmd = ArgBuilder.literal("node");
 
         for (Map.Entry<String, String> node : NODE_MAP.entrySet()) {
-            cmd.then(ArgBuilder.literal(node.getKey()).executes((context) -> {
+            cmd.then(ArgBuilder.literal(node.getKey()).executes((ctx) -> {
                 this.sendChatMessage(mc, "/server " + node.getValue());
                 return 1;
             }));

@@ -5,8 +5,9 @@ import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
 import io.github.homchom.recode.sys.player.chat.ChatType;
 import io.github.homchom.recode.sys.player.chat.*;
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.*;
@@ -16,25 +17,25 @@ import net.minecraft.world.item.ItemStack;
 public class ItemdataCommand extends Command {
 
     @Override
-    public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd) {
+    public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd, CommandBuildContext context) {
         cd.register(ArgBuilder.literal("itemdata")
                 .executes(ctx -> {
                     ItemStack item = mc.player.getMainHandItem();
                     CompoundTag nbt = item.getTag();
                     if (nbt != null) {
                         ChatUtil.sendMessage(String.format("§5----------§dItem Data for %s§5----------", item.getHoverName().getString()));
-                        mc.player.displayClientMessage(new TextComponent(nbt.toString()), false);
+                        mc.player.displayClientMessage(Component.literal(nbt.toString()), false);
 
 
                         //String formatted = nbt.toText("  ", 0).getString();
                         String unformatted = nbt.toString();
 
-                        TextComponent msg1 = new TextComponent("§5Click here to copy a ");
+                        MutableComponent msg1 = Component.literal("§5Click here to copy a ");
                         //TextComponent msg2 = new TextComponent("§d§lFormatted§5, ");
-                        TextComponent msg3 = new TextComponent("§d§lUnformatted");
-                        TextComponent msg4 = new TextComponent("§5 or ");
-                        TextComponent msg5 = new TextComponent("§d§l/dfgive");
-                        TextComponent msg6 = new TextComponent("§5 version!");
+                        MutableComponent msg3 = Component.literal("§d§lUnformatted");
+                        MutableComponent msg4 = Component.literal("§5 or ");
+                        MutableComponent msg5 = Component.literal("§d§l/dfgive");
+                        MutableComponent msg6 = Component.literal("§5 version!");
 
                         //msg2.withStyle((style) -> style.withClickEvent(new ClickEvent(Action.RUN_COMMAND, "/copytxt " + formatted)));
                         msg3.withStyle((style) -> style.withClickEvent(new ClickEvent(Action.RUN_COMMAND, "/copytxt " + unformatted)));

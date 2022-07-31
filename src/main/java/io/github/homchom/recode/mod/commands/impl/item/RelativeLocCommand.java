@@ -6,9 +6,10 @@ import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
 import io.github.homchom.recode.mod.commands.arguments.types.ChoiceArgumentType;
 import io.github.homchom.recode.sys.util.ItemUtil;
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.nbt.*;
 import net.minecraft.network.chat.*;
 import net.minecraft.world.item.*;
@@ -20,7 +21,7 @@ public class RelativeLocCommand extends Command {
     private static final String[] TARGET_TYPES = {"selection", "default", "damager", "killer", "victim", "shooter", "projectile"};
 
     @Override
-    public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd) {
+    public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd, CommandBuildContext context) {
         cd.register(ArgBuilder.literal("relativeloc")
                 .then(ArgBuilder.argument("target", ChoiceArgumentType.choice(TARGET_TYPES))
                         .then(ArgBuilder.argument("forwards", FloatArgumentType.floatArg())
@@ -93,29 +94,29 @@ public class RelativeLocCommand extends Command {
         CompoundTag display = new CompoundTag();
         ListTag lore = new ListTag();
 
-        TextComponent itemName = new TextComponent("Relative Location");
+        MutableComponent itemName = Component.literal("Relative Location");
         itemName.setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN).withItalic(false));
         display.put("Name", StringTag.valueOf(Component.Serializer.toJson(itemName)));
 
-        TextComponent lore1 = new TextComponent("Target: ");
-        TextComponent lore2 = new TextComponent(finalTarget);
+        MutableComponent lore1 = Component.literal("Target: ");
+        MutableComponent lore2 = Component.literal(finalTarget);
         lore1.setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY).withItalic(false));
         lore2.setStyle(Style.EMPTY.withColor(ChatFormatting.WHITE).withItalic(false));
         lore.addTag(0, StringTag.valueOf(Component.Serializer.toJson(lore1.append(lore2))));
 
-        lore1 = new TextComponent("Forwards: ");
+        lore1 = Component.literal("Forwards: ");
         craftLore(forwards, lore, lore1);
 
-        lore1 = new TextComponent("Upwards: ");
+        lore1 = Component.literal("Upwards: ");
         craftLore(upwards, lore, lore1);
 
-        lore1 = new TextComponent("Right: ");
+        lore1 = Component.literal("Right: ");
         craftLore(right, lore, lore1);
 
-        lore1 = new TextComponent("Rot Down: ");
+        lore1 = Component.literal("Rot Down: ");
         craftLore(rot_down, lore, lore1);
 
-        lore1 = new TextComponent("Rot Right: ");
+        lore1 = Component.literal("Rot Right: ");
         craftLore(rot_right, lore, lore1);
 
         display.put("Lore", lore);
@@ -125,9 +126,9 @@ public class RelativeLocCommand extends Command {
         return 1;
     }
 
-    private void craftLore(float upwards, ListTag lore, TextComponent lore1) {
-        TextComponent lore2;
-        lore2 = new TextComponent("" + upwards);
+    private void craftLore(float upwards, ListTag lore, MutableComponent lore1) {
+        MutableComponent lore2;
+        lore2 = Component.literal("" + upwards);
         lore1.setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY).withItalic(false));
         lore2.setStyle(Style.EMPTY.withColor(ChatFormatting.WHITE).withItalic(false));
         lore.addTag(lore.size(), StringTag.valueOf(Component.Serializer.toJson(lore1.append(lore2))));

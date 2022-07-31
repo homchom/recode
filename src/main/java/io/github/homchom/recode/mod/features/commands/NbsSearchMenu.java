@@ -13,7 +13,7 @@ import io.github.homchom.recode.sys.renderer.IMenu;
 import io.github.homchom.recode.sys.util.ItemUtil;
 import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.*;
 import net.minecraft.world.item.*;
 
@@ -53,12 +53,12 @@ public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
         WPlainPanel root = new WPlainPanel();
         root.setSize(300, 240);
 
-        WText queryField = new WText(new TextComponent("§l§nSearch Results for: " + query));
+        WText queryField = new WText(Component.literal("§l§nSearch Results for: " + query));
         root.add(queryField, 0, 0, 300, 0);
 
         WPlainPanel ppanel = new WPlainPanel();
 
-        WText loading = new WText(new TextComponent("§lLoading Results..."));
+        WText loading = new WText(Component.literal("§lLoading Results..."));
 
         ppanel.add(loading, 85, 50, 300, 0);
 
@@ -82,19 +82,19 @@ public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
 
                         int id = e.get("id").getAsInt();
                         String duration = e.get("duration").getAsString();
-                        WText title = new WText(new TextComponent(e.get("title").getAsString()));
+                        WText title = new WText(Component.literal(e.get("title").getAsString()));
                         WText description = new WText(
-                            new TextComponent(duration + " §8-§r " + e.get("composer").getAsString()));
+                                Component.literal(duration + " §8-§r " + e.get("composer").getAsString()));
 
                         ppanel.add(title, 0, y, 999, 10);
                         ppanel.add(description, 0, y + 10, 999, 10);
 
-                        WButton download = new WButton(new TextComponent("§l↓"));
+                        WButton download = new WButton(Component.literal("§l↓"));
 
                         ppanel.add(download, 270, y, 20, 20);
 
                         download.setOnClick(() -> {
-                            download.setLabel(new TextComponent("..."));
+                            download.setLabel(Component.literal("..."));
                             LegacyRecode.executor
                                 .submit(() -> {
                                     String notes = null;
@@ -118,21 +118,21 @@ public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
                                         .compressTemplateNBT(stack, d.getName(), d.getAuthor(), code);
 
                                     stack.setHoverName(
-                                        new TextComponent("§d" + e.get("title").getAsString()));
+                                            Component.literal("§d" + e.get("title").getAsString()));
 
                                     ItemUtil.giveCreativeItem(stack, true);
-                                    download.setLabel(new TextComponent("§l↓"));
+                                    download.setLabel(Component.literal("§l↓"));
                                 });
                         });
 
-                        WButton preview = new WButton(new TextComponent("▶"));
+                        WButton preview = new WButton(Component.literal("▶"));
 
                         ppanel.add(preview, 250, y, 20, 20);
 
                         preview.setOnClick(() -> {
                             if (previewId != id) {
                                 previewId = id;
-                                preview.setLabel(new TextComponent("..."));
+                                preview.setLabel(Component.literal("..."));
                                 LegacyRecode.executor
                                     .submit(() -> {
                                         String snotes = null;
@@ -146,7 +146,7 @@ public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
                                         List<String> notes = new ArrayList<>(
                                             Arrays.asList(snotes.split("=")));
 
-                                        preview.setLabel(new TextComponent("■"));
+                                        preview.setLabel(Component.literal("■"));
 
                                         int[] tick = {0};
                                         int[] index = {0};
@@ -156,7 +156,7 @@ public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
                                             if (previewId != id
                                                 || mc.screen == null) {
                                                 scheduler.shutdown();
-                                                preview.setLabel(new TextComponent("▶"));
+                                                preview.setLabel(Component.literal("▶"));
                                                 return;
                                             }
                                             if (notes.get(index[0])
@@ -197,7 +197,7 @@ public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
                 });
             } catch (UnsupportedEncodingException err) {
                 err.printStackTrace();
-                loading.setText(new TextComponent("Error"));
+                loading.setText(Component.literal("Error"));
                 ChatUtil.sendMessage("Error");
             } catch (IOException e) {
                 throw new RuntimeException(e);

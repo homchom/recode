@@ -10,6 +10,7 @@ import net.minecraft.client.gui.screens.*;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.resolver.ServerAddress;
 import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
@@ -53,7 +54,7 @@ public class LegacyAfterScreenInitEvent {
 	}
 
 	private boolean buttonHasText(AbstractWidget button, String translationKey) {
-		Component text = button.getMessage();
-		return text instanceof TranslatableComponent tr && tr.getKey().equals(translationKey);
+		ComponentContents content = button.getMessage().getContents();
+		return content instanceof TranslatableContents tr && tr.getKey().equals(translationKey);
 	}
 }

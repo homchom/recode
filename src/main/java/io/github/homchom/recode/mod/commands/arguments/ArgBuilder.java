@@ -2,7 +2,7 @@ package io.github.homchom.recode.mod.commands.arguments;
 
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.builder.*;
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 
 // These argument classes will eventually become our own command dispatcher, removing the dependency for Cotton Clients Commands.
 public final class ArgBuilder {

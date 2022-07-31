@@ -13,10 +13,10 @@ public class Templates {
     public static void giveInternalTemplate(Item item, String name, String author, String codeData) {
         ItemStack stack = new ItemStack(item)
                 .setHoverName(
-                        new TextComponent("")
-                                .append(new TranslatableComponent("recode.title").setStyle(Style.EMPTY.withColor(0xaa7fff).withBold(true)))
-                                .append(new TextComponent(" » ").setStyle(Style.EMPTY.withColor(0x7f2ad4)))
-                                .append(new TextComponent(name).setStyle(Style.EMPTY.withColor(0xaa7fff)))
+                        Component.literal("")
+                                .append(Component.translatable("recode.title").setStyle(Style.EMPTY.withColor(0xaa7fff).withBold(true)))
+                                .append(Component.literal(" » ").setStyle(Style.EMPTY.withColor(0x7f2ad4)))
+                                .append(Component.literal(name).setStyle(Style.EMPTY.withColor(0xaa7fff)))
                 );
         stack.enchant(Enchantments.FISHING_SPEED, 1);
         stack.hideTooltipPart(ItemStack.TooltipPart.ENCHANTMENTS);
@@ -36,10 +36,10 @@ public class Templates {
     public static void giveUserTemplate(Item item, String name, String codeData) {
         ItemStack stack = new ItemStack(item)
                 .setHoverName(
-                        new TextComponent("")
-                                .append(new TranslatableComponent("recode.title").setStyle(Style.EMPTY.withColor(0xaa7fff).withBold(true)))
-                                .append(new TextComponent(" » ").setStyle(Style.EMPTY.withColor(0x7f2ad4)))
-                                .append(new TextComponent(name).setStyle(Style.EMPTY.withColor(0xaa7fff)))
+                        Component.literal("")
+                                .append(Component.translatable("recode.title").setStyle(Style.EMPTY.withColor(0xaa7fff).withBold(true)))
+                                .append(Component.literal(" » ").setStyle(Style.EMPTY.withColor(0x7f2ad4)))
+                                .append(Component.literal(name).setStyle(Style.EMPTY.withColor(0xaa7fff)))
                 );
         stack.enchant(Enchantments.FISHING_SPEED, 1);
         stack.hideTooltipPart(ItemStack.TooltipPart.ENCHANTMENTS);
@@ -48,7 +48,7 @@ public class Templates {
     }
 
     public static void giveUserTemplate(ItemStack stack, String name, String codeData) {
-        giveRawTemplate(stack, name, LegacyRecode.MC.player.getName().getContents(), codeData);
+        giveRawTemplate(stack, name, LegacyRecode.MC.player.getName().getString(), codeData);
     }
 
     public static void giveRawTemplate(ItemStack stack, String name, String author, String codeData) {
@@ -61,7 +61,7 @@ public class Templates {
     }
 
     public static void giveTemplate(ItemStack stack, String name, String author, String codeData, int version) {
-        TemplateUtil.applyRawTemplateNBT(stack, new TextComponent(name), author, codeData, version);
+        TemplateUtil.applyRawTemplateNBT(stack, Component.literal(name), author, codeData, version);
         ItemUtil.giveCreativeItem(stack, true);
     }
 }

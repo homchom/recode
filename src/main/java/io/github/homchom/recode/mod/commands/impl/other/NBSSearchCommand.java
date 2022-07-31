@@ -6,8 +6,9 @@ import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.features.commands.NbsSearchMenu;
 import io.github.homchom.recode.sys.player.chat.*;
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
+import net.minecraft.commands.CommandBuildContext;
 
 import static io.github.homchom.recode.mod.commands.arguments.ArgBuilder.argument;
 import static io.github.homchom.recode.mod.commands.arguments.ArgBuilder.literal;
@@ -15,7 +16,7 @@ import static io.github.homchom.recode.mod.commands.arguments.ArgBuilder.literal
 public class NBSSearchCommand extends Command {
 
     @Override
-    public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd) {
+    public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd, CommandBuildContext context) {
         cd.register(literal("nbssearch")
             .then(argument("query", StringArgumentType.greedyString())
                 .executes(ctx -> {

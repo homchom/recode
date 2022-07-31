@@ -26,25 +26,23 @@ public class MMessageListener {
     //private boolean motdShown = false;
 
     private final Pattern lsRegex = Pattern.compile("^CPU Usage: \\[▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮] \\(.*%\\)$");
-
-    @Inject(method = "handleChat", at = @At("HEAD"), cancellable = true)
-    private void handleChat(ClientboundChatPacket packet, CallbackInfo ci) {
+    
+    @Inject(method = "handleSystemChat", at = @At("HEAD"), cancellable = true)
+    private void handleChat(ClientboundSystemChatPacket packet, CallbackInfo ci) {
         if (DFInfo.isOnDF() && RenderSystem.isOnRenderThread()) {
-            if (packet.getType() != ChatType.GAME_INFO) {
-                // temporary, to preserve non-migrated side effects (like message grabbing)
-                // TODO: remove after new message listener is complete
-                new Message(packet, ci);
+            // temporary, to preserve non-migrated side effects (like message grabbing)
+            // TODO: remove after new message listener is complete
+            new Message(packet, ci);
 
-                boolean result = EventValidation.validate(
-                        RecodeEvents.ReceiveChatMessage, packet.getMessage());
-                if (!result) ci.cancel();
-                try {
-                    this.updateVersion(packet.getMessage());
-                    this.updateState(packet.getMessage());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    LegacyRecode.error("Error while trying to parse the chat text!");
-                }
+            boolean result = EventValidation.validate(
+                    RecodeEvents.ReceiveChatMessage, packet.content());
+            if (!result) ci.cancel();
+            try {
+                this.updateVersion(packet.content());
+                this.updateState(packet.content());
+            } catch (Exception e) {
+                e.printStackTrace();
+                LegacyRecode.error("Error while trying to parse the chat text!");
             }
         }
     }
@@ -131,7 +129,7 @@ public class MMessageListener {
         String text = component.getString();
 
         // Enter Session
-        if (text.matches("^\\[SUPPORT\\] " + player.getName().getContents() + " entered a session with \\w+\\. ▶ \\S+ \\S+!?$")) {
+        if (text.matches("^\\[SUPPORT\\] " + player.getName().getString() + " entered a session with \\w+\\. ▶ \\S+ \\S+!?$")) {
             if (!DFInfo.currentState.isInSession()) {
                 new Thread(() -> {
                     try {
@@ -152,7 +150,7 @@ public class MMessageListener {
         }
 
         // End Session
-        if (text.matches("^\\[SUPPORT\\] " + player.getName().getContents() + " finished a session with \\w+\\. ▶ \\d+:\\d+:\\d+$") || text.matches("^\\[SUPPORT\\] " + player.getName().getContents() + " terminated a session with \\w+\\. ▶ \\d+:\\d+:\\d+$") || text.matches("\\[SUPPORT\\] \\w+ left a session with " + player.getName().getContents() + ".$")) {
+        if (text.matches("^\\[SUPPORT\\] " + player.getName().getString() + " finished a session with \\w+\\. ▶ \\d+:\\d+:\\d+$") || text.matches("^\\[SUPPORT\\] " + player.getName().getString() + " terminated a session with \\w+\\. ▶ \\d+:\\d+:\\d+$") || text.matches("\\[SUPPORT\\] \\w+ left a session with " + player.getName().getString() + ".$")) {
             if (DFInfo.currentState.isInSession()) {
                 DFInfo.currentState.setInSession(false);
                 new Thread(() -> {
