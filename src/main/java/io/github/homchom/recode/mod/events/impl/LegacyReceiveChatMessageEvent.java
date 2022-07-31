@@ -166,7 +166,7 @@ public class LegacyReceiveChatMessageEvent {
                     try {
                         Thread.sleep(3000);
                     } catch (Exception ignored) {}
-                    mc.player.commandSigned("/tip " + tipPlayer, null);
+                    mc.player.commandSigned("tip " + tipPlayer, null);
                 });
             }
         }

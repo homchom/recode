@@ -164,7 +164,7 @@ public class MMessageListener {
                 }).start();
             }
         }
-
+        
         // Play Mode
         if (text.matches("^» Joined game: .* by .*$")) {
             new Thread(() -> {

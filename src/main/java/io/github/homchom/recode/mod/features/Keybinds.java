@@ -138,82 +138,82 @@ public class Keybinds implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             // play
             while (play.consumeClick()) {
-                sendCommand("/play");
+                sendCommand("play");
             }
 
             // build
             while (build.consumeClick()) {
-                sendCommand("/build");
+                sendCommand("build");
             }
 
             // dev
             while (dev.consumeClick()) {
-                sendCommand("/dev");
+                sendCommand("dev");
             }
 
             // spawn
             while (spawn.consumeClick()) {
-                sendCommand("/s");
+                sendCommand("s");
             }
 
             // fs normal
             while (fsNormal.consumeClick()) {
-                sendCommand("/fs " + Config.getInteger("fsNormal"));
+                sendCommand("fs " + Config.getInteger("fsNormal"));
             }
 
             // fs med
             while (fsMedium.consumeClick()) {
-                sendCommand("/fs " + Config.getInteger("fsMed"));
+                sendCommand("fs " + Config.getInteger("fsMed"));
             }
 
             // fs fast
             while (fsFast.consumeClick()) {
-                sendCommand("/fs " + Config.getInteger("fsFast"));
+                sendCommand("fs " + Config.getInteger("fsFast"));
             }
 
             // lagslayer
             while (lagslayer.consumeClick()) {
-                sendCommand("/lagslayer");
+                sendCommand("lagslayer");
             }
 
             // rc
             while (rc.consumeClick()) {
-                sendCommand("/rc");
+                sendCommand("rc");
             }
 
             // rs
             while (rs.consumeClick()) {
-                sendCommand("/rs");
+                sendCommand("rs");
             }
 
             // plot spawn
             while (plotSpawn.consumeClick()) {
-                sendCommand("/p s");
+                sendCommand("p s");
             }
 
             // nightvis
             while (nightvis.consumeClick()) {
-                sendCommand("/nightvis");
+                sendCommand("nightvis");
             }
 
             // fly
             while (fly.consumeClick()) {
-                sendCommand("/fly");
+                sendCommand("fly");
             }
 
             // chat global
             while (chatGlobal.consumeClick()) {
-                sendCommand("/chat global");
+                sendCommand("chat global");
             }
 
             // chat local
             while (chatLocal.consumeClick()) {
-                sendCommand("/chat local");
+                sendCommand("chat local");
             }
 
             // chat none
             while (chatNone.consumeClick()) {
-                sendCommand("/chat none");
+                sendCommand("chat none");
             }
 
             // search
@@ -238,15 +238,15 @@ public class Keybinds implements ClientModInitializer {
             }
 
             while (modv.consumeClick()) {
-                sendCommand("/mod v");
+                sendCommand("mod v");
             }
 
             while (supportAccept.consumeClick()) {
-                sendCommand("/support accept");
+                sendCommand("support accept");
             }
 
             while (supportQueue.consumeClick()) {
-                sendCommand("/support queue");
+                sendCommand("support queue");
             }
 
             // chat shortcuts

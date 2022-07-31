@@ -16,7 +16,6 @@ import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static net.minecraft.client.gui.GuiComponent.fill;
 
@@ -134,27 +133,26 @@ public abstract class MSideChatHUD {
             float d = (float) this.getScale();
             int k = Mth.ceil((double) width / d);
             matrices.pushPose();
-            matrices.translate(2.0F, 8.0F, 0.0F);
+            matrices.translate(4.0F, 8.0F, 0.0F);
             matrices.scale(d, d, 1f);
             double opacity = this.minecraft.options.chatOpacity().get();
             double backgroundOpacity = this.minecraft.options.textBackgroundOpacity().get();
-            double lineSpacing = 9.0D * (this.minecraft.options.chatLineSpacing().get() + 1.0D);
+            double lineSpacing = this.minecraft.options.chatLineSpacing().get();
             double lineSpacing2 = -8.0D * (lineSpacing + 1.0D) + 4.0D * lineSpacing;
             int lineHeight = this.getLineHeight();
 
-            for (int i = 0; i + scrolledLines < visibleMessages.size() && i < visibleLineCount;
-                 ++i) {
+            for (int i = 0; i + scrolledLines < visibleMessages.size() && i < visibleLineCount; ++i) {
                 GuiMessage.Line chatHudLine = visibleMessages.get(i + scrolledLines);
                 if (chatHudLine != null) {
                     int ticksSinceCreation = tickDelta - chatHudLine.addedTime();
                     if (ticksSinceCreation < 200 || chatFocused) {
-                        double o =
-                                chatFocused ? 1.0D : getTimeFactor(ticksSinceCreation);
+                        double o = chatFocused ? 1.0D : getTimeFactor(ticksSinceCreation);
                         int aa = (int) (255.0D * o * opacity);
                         int ab = (int) (255.0D * o * backgroundOpacity);
                         ++renderedLines;
                         if (aa > 3) {
                             int s = -i * lineHeight;
+                            int t = (int)(s + lineSpacing2);
                             matrices.pushPose();
                             matrices.translate(displayX, 0, 50.0D);
                             fill(matrices, -2, s - lineHeight, k + 4, s, ab << 24);
@@ -165,14 +163,13 @@ public abstract class MSideChatHUD {
                                 if (chatFocused && chatHudLine.endOfEntry() && guiMessageTag.icon() != null) {
                                     int x = this.getTagIconLeft(chatHudLine);
                                     Objects.requireNonNull(this.minecraft.font);
-                                    int y = (int)((double)s + lineSpacing2) + 9;
+                                    int y = t + 9;
                                     this.drawTagIcon(matrices, x, y, guiMessageTag.icon());
                                 }
                             }
                             RenderSystem.enableBlend();
                             matrices.translate(0.0D, 0.0D, 50.0D);
-                            this.minecraft.font.drawShadow(matrices, chatHudLine.content(),
-                                    0.0F, (float) ((int) (s + lineSpacing2)), 16777215 + (aa << 24));
+                            this.minecraft.font.drawShadow(matrices, chatHudLine.content(), 0.0F, t, 16777215 + (aa << 24));
                             RenderSystem.disableDepthTest();
                             RenderSystem.disableBlend();
                             matrices.popPose();
@@ -198,7 +195,7 @@ public abstract class MSideChatHUD {
         float chatScale = (float) this.getScale();
         int k = Mth.ceil((double) this.getWidth() / chatScale);
         matrices.pushPose();
-        matrices.translate(2.0F, 8.0F, 0.0F);
+        matrices.translate(4.0F, 8.0F, 0.0F);
         matrices.scale(chatScale, chatScale, 1.0f);
         double opacity = this.minecraft.options.chatOpacity().get();
         double backgroundOpacity = this.minecraft.options.textBackgroundOpacity().get();
@@ -222,7 +219,6 @@ public abstract class MSideChatHUD {
 
         if (chatFocused) {
             int v = 9;
-            matrices.translate(-3.0F, 0.0F, 0.0F);
             int w = visibleMessagesSize * v + visibleMessagesSize;
             int x = renderedLines * v + renderedLines;
             int y = chatScrollbarPos * x / visibleMessagesSize;
@@ -230,8 +226,9 @@ public abstract class MSideChatHUD {
             if (w != x) {
                 int aa = y > 0 ? 170 : 96;
                 int ab = this.newMessageSinceScroll ? 13382451 : 3355562;
-                fill(matrices, 0, -y, 2, -y - z, ab + (aa << 24));
-                fill(matrices, 2, -y, 1, -y - z, 13421772 + (aa << 24));
+                int ac = k + 4;
+                fill(matrices, ac, -y, ac + 2, -y - z, ab + (aa << 24));
+                fill(matrices, ac, -y, ac + 1, -y - z, 13421772 + (aa << 24));
             }
         }
 
@@ -240,7 +237,7 @@ public abstract class MSideChatHUD {
 
     private int getSideChatStartX() {
         return (int) ((this.minecraft.getWindow().getGuiScaledWidth() - getSideChatWidth())
-            / getSideChatScale()) - 6;
+            / getSideChatScale()) - 2;
     }
 
     private int getSideChatWidth() {
