@@ -14,7 +14,7 @@ public abstract class AbstractImageCommand extends Command {
     protected ArgumentCommandNode<FabricClientCommandSource, Path> fileArgument(Function<Path, Integer> executor) {
         return ArgBuilder.argument("file", PathArgumentType.folder(ExternalFile.IMAGE_FILES.getPath(), true))
                 .executes(ctx -> {
-                    Path path = PathArgumentType.getPath(ctx, "location");
+                    Path path = PathArgumentType.getPath(ctx, "file");
 
                     return executor.apply(path);
                 })
