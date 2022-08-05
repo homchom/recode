@@ -8,17 +8,17 @@ public class JoinFailCheck extends MessageCheck implements StreamerModeMessageCh
     private static final String JOIN_FAIL_REGEX = "^([^ ]{3,}) tried to join, but is banned \\(.*\\)!$";
 
     @Override
-    public MessageType getType() {
-        return MessageType.JOIN_FAIL;
+    public LegacyMessageType getType() {
+        return LegacyMessageType.JOIN_FAIL;
     }
 
     @Override
-    public boolean check(Message message, String stripped) {
+    public boolean check(LegacyMessage message, String stripped) {
         return stripped.matches(JOIN_FAIL_REGEX);
     }
 
     @Override
-    public void onReceive(Message message) {
+    public void onReceive(LegacyMessage message) {
 
     }
 

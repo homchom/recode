@@ -8,17 +8,17 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundChatPacket;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-public class Message {
+public class LegacyMessage {
 
     private final ClientboundChatPacket packet;
     private final Component text;
     private final CallbackInfo callback;
-    private final MessageType type;
+    private final LegacyMessageType type;
 
     private MessageCheck check;
     private boolean cancelled;
 
-    public Message(ClientboundChatPacket packet, CallbackInfo ci) {
+    public LegacyMessage(ClientboundChatPacket packet, CallbackInfo ci) {
         this.packet = packet;
         this.text = packet.getMessage();
         this.callback = ci;
@@ -38,7 +38,7 @@ public class Message {
         return callback;
     }
 
-    public MessageType getType() {
+    public LegacyMessageType getType() {
         return type;
     }
 
@@ -58,7 +58,7 @@ public class Message {
         this.check = check;
     }
 
-    public boolean typeIs(MessageType toCompare) {
+    public boolean typeIs(LegacyMessageType toCompare) {
         return type == toCompare;
     }
 
