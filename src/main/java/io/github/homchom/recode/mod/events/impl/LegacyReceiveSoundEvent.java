@@ -10,11 +10,12 @@ public class LegacyReceiveSoundEvent {
         RecodeEvents.PlaySound.listen(this::run);
     }
 
-    private void run(EventValidator result, ClientboundSoundPacket packet) {
+    private boolean run(ClientboundSoundPacket packet, boolean playSound) {
         if (cancelNextSounds > 0) {
             cancelNextSounds--;
-            result.setValid(false);
+            return false;
         }
+        return playSound;
     }
 
     public static void cancelNextSounds(int amount) {

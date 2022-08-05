@@ -2,13 +2,6 @@ package io.github.homchom.recode.server
 
 import net.minecraft.world.entity.player.Player
 
-data class DFPlayer(
-    val entity: Player,
-    val state: DFState?
-) {
-    val isOnDF get() = state != null
-}
-
 sealed interface DFState {
     val node: Node
     val inSession: Boolean

@@ -1,6 +1,6 @@
 package io.github.homchom.recode.mod.mixin.message;
 
-import io.github.homchom.recode.event.*;
+import io.github.homchom.recode.event.RecodeEvents;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.protocol.game.ClientboundSoundPacket;
 import org.spongepowered.asm.mixin.Mixin;
@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MReceivedSound {
     @Inject(method = "handleSoundEvent", at = @At("HEAD"), cancellable = true)
     private void handleSoundEvent(ClientboundSoundPacket packet, CallbackInfo ci) {
-        boolean playSound = EventValidation.validate(RecodeEvents.PlaySound, packet);
+        boolean playSound = RecodeEvents.PlaySound.invoke(packet);
         if (!playSound) ci.cancel();
     }
 }

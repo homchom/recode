@@ -21,17 +21,18 @@ class FCodeSearch : Feature("Code Search") {
     )
 
     override fun RModule.onLoad() {
-        listenTo(RecodeEvents.OutlineBlockEntity) { blockEntity ->
+        listenTo(RecodeEvents.OutlineBlockEntity) { blockEntity, result ->
             if (blockEntity is SignBlockEntity) {
                 if (DFInfo.currentState.getMode() == LegacyState.Mode.DEV && mc.player!!.isCreative) {
                     if (CodeSearcher.isSignMatch(blockEntity)) {
                         val distance = sqrt(blockEntity.getBlockPos()
                             .distSqr(mc.cameraEntity!!.blockPosition()))
                         val alpha = (distance.coerceIn(1.0, 15.0) * 17).toInt()
-                        outlineColor = rgba(255, 255, 255, alpha)
+                        result.outlineColor = rgba(255, 255, 255, alpha)
                     }
                 }
             }
+            result
         }
     }
 

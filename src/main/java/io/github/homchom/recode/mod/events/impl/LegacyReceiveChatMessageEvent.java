@@ -23,13 +23,10 @@ public class LegacyReceiveChatMessageEvent {
 
     public static String tipPlayer = "";
 
-    private void run(EventValidator result, Component message) {
+    private boolean run(Component message, boolean send) {
         Minecraft mc = Minecraft.getInstance();
 
-        if (mc.player == null) {
-            result.setValid(false);
-            return;
-        }
+        if (mc.player == null) return false;
 
         String stripped = message.getString();
 
@@ -171,6 +168,6 @@ public class LegacyReceiveChatMessageEvent {
             }
         }
 
-        result.setValid(!cancel);
+        return !cancel;
     }
 }

@@ -1,7 +1,7 @@
 package io.github.homchom.recode.init
 
-import io.github.homchom.recode.event.REvent
-import io.github.homchom.recode.event.RHook
+import io.github.homchom.recode.event.CustomEvent
+import io.github.homchom.recode.event.Listener
 
 sealed interface RModule {
     val definition: ModuleDefinition
@@ -39,14 +39,10 @@ sealed interface ModuleDependency : RModule {
 
 /**
  * Listens to [event], running [listener] if the module is enabled.
- * For non-recode events, listen manually instead.
  */
-inline fun <T, R> RModule.listenTo(event: REvent<T, R>, crossinline listener: R.(T) -> Unit) =
-    event.listen { context -> if (isEnabled) listener(context) }
-
-/**
- * Listens to [hook], running [listener] if the module is enabled.
- * For non-recode hooks, listen manually instead.
- */
-inline fun <T> RModule.listenTo(hook: RHook<T>, crossinline listener: (T) -> Unit) =
-    hook.listen { context -> if (isEnabled) listener(context) }
+inline fun <C, R : Any> RModule.listenTo(
+    event: CustomEvent<C, R>,
+    crossinline listener: Listener<C, R>
+) {
+    event.listen { context, result -> if (isEnabled) listener(context, result) else result }
+}

@@ -1,7 +1,7 @@
 package io.github.homchom.recode.mixin.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import io.github.homchom.recode.event.*;
+import io.github.homchom.recode.event.RecodeEvents;
 import io.github.homchom.recode.render.Blaze3DExtensions;
 import io.github.homchom.recode.ui.RGBAColor;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -17,7 +17,7 @@ public class MBlockEntityRenderDispatcher {
 	public void renderBlockEntities(
 			BlockEntity blockEntity, float f, PoseStack poseStack,
 			MultiBufferSource multiBufferSource, CallbackInfo ci) {
-		if (!EventValidation.validate(RecodeEvents.RenderBlockEntity, blockEntity)) {
+		if (!RecodeEvents.RenderBlockEntity.invoke(blockEntity)) {
 			ci.cancel();
 		}
 	}

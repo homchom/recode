@@ -34,6 +34,7 @@ interface OutlineProcessor {
     fun processOutlines(partialTick: Float)
 }
 
+// TODO: look into replacing with implicit dependencies with config update
 @RequiresOptIn("CustomOutlineProcessor must be enabled wherever this is used. Other " +
         "modules using this should add it as a dependency and opt in")
 annotation class GlobalUsesCustomOutlines

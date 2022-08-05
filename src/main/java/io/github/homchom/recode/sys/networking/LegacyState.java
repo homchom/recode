@@ -1,13 +1,13 @@
 package io.github.homchom.recode.sys.networking;
 
 import com.google.gson.*;
-import io.github.homchom.recode.event.RecodeEvents;
+import io.github.homchom.recode.event.*;
 import io.github.homchom.recode.mod.features.social.chat.message.*;
 import io.github.homchom.recode.sys.player.chat.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
-import java.util.*;
+import java.util.Objects;
 import java.util.regex.*;
 
 @Deprecated
@@ -254,7 +254,7 @@ public class LegacyState {
         return new LegacyState(this);
     }
 
-    public static LegacyState fromLocate(Message message, LegacyState stateSource) {
+    public static LegacyState fromLocate(LegacyMessage message, LegacyState stateSource) {
         Component msg = message.getText();
 
         String text = msg.getString().replaceAll("§.", "");
@@ -336,13 +336,13 @@ public class LegacyState {
         if (mc.player != null){
             if (!mc.player.isDeadOrDying()){
                 ChatUtil.executeCommand("locate");
-                MessageGrabber.hide(1, MessageType.LOCATE);
+                MessageGrabber.hide(1, LegacyMessageType.LOCATE);
             }
         }
     }
 
     private static void notifyStateChange(LegacyState newState, LegacyState oldState) {
-        RecodeEvents.ChangeDFState.invoke(new RecodeEvents.StateChange(newState, oldState));
+        Hook.invoke(RecodeEvents.ChangeDFState, new RecodeEvents.StateChange(newState, oldState));
     }
 
     public static class CurrentState extends LegacyState {
