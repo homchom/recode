@@ -5,8 +5,7 @@ package io.github.homchom.recode
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import io.github.homchom.recode.feature.RenderingFeatureGroup
-import io.github.homchom.recode.init.EntrypointModule
-import io.github.homchom.recode.init.RModule
+import io.github.homchom.recode.init.strongModule
 import io.github.homchom.recode.mod.commands.CommandHandler
 import io.github.homchom.recode.mod.config.Config
 import io.github.homchom.recode.mod.config.internal.ConfigFile
@@ -35,13 +34,12 @@ private val Logger = LoggerFactory.getLogger(MOD_ID)
 lateinit var modVersion: String
     private set
 
-class RecodeMod : EntrypointModule {
+val RecodeMod = strongModule {
     // TODO: move feature groups to a config module
-    override val dependencies = listOf(
-        RenderingFeatureGroup()
-    )
+    depend(RenderingFeatureGroup)
 
-    override fun RModule.onInit() {
+    // On mod initialize
+    onLoad {
         logInfo("Initializing...")
 
         modVersion = FabricLoader.getInstance().getModContainer(MOD_ID).get()
@@ -49,14 +47,15 @@ class RecodeMod : EntrypointModule {
 
         System.setProperty("java.awt.headless", "false")
 
-        ClientLifecycleEvents.CLIENT_STOPPING.register { onDisable() }
+        ClientLifecycleEvents.CLIENT_STOPPING.register { disable() }
 
         LegacyRecode.onInitialize()
 
         logInfo("Initialized successfully!")
     }
 
-    override fun RModule.onClose() {
+    // On Minecraft close
+    onDisable {
         logInfo("Closing...")
 
         // TODO: clean up

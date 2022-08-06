@@ -1,6 +1,6 @@
 package io.github.homchom.recode.event
 
-import io.github.homchom.recode.render.GlobalUsesCustomOutlines
+import io.github.homchom.recode.render.UsesCustomOutlines
 import io.github.homchom.recode.sys.networking.LegacyState
 import io.github.homchom.recode.ui.RGBAColor
 import net.minecraft.network.chat.Component
@@ -14,7 +14,7 @@ object RecodeEvents {
     // Rendering
     @JvmField val RenderBlockEntity = createValidatedEvent<BlockEntity>()
 
-    @GlobalUsesCustomOutlines
+    @UsesCustomOutlines
     @JvmField val OutlineBlockEntity = createEvent<BlockEntity, OutlineResult>()
 
     class OutlineResult {
