@@ -2,20 +2,31 @@ package io.github.homchom.recode.feature
 
 import io.github.homchom.recode.init.*
 
+/**
+ * Builds a feature.
+ *
+ * @see module
+ */
 // TODO: update feature and featureGroup when config is integrated
-inline fun feature(name: String, builder: StrongModuleBuilderScope) =
+inline fun feature(name: String, builder: ModuleBuilderScope) =
     module({
-        Feature(BasicStrongModule(dependencies, onLoad.action, onEnable.action, onDisable.action))
+        Feature(strongModule(dependencies, onLoad.action, onEnable.action, onDisable.action))
     }, builder)
 
 @JvmInline
-value class Feature(val module: StrongModule) : StrongModule by module
+value class Feature(private val module: BaseModule) : BaseModule by module
 
+/**
+ * Builds a feature group.
+ *
+ * @see module
+ */
+@OptIn(ModuleMutableState::class)
 inline fun featureGroup(
     name: String,
     features: Array<out Feature>,
-    builder: StrongModuleBuilderScope = {}
-): RModule {
+    builder: ModuleBuilderScope = {}
+): ModuleHandle {
     return strongModule {
         onLoad {
             for (feature in features) feature.addDependency(this)

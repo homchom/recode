@@ -3,24 +3,14 @@ package io.github.homchom.recode.init
 import io.github.homchom.recode.event.Listener
 import io.github.homchom.recode.event.REvent
 
-typealias ModuleAction<T> = T.() -> Unit
-
-interface RModule {
-    val dependencies: List<RModule>
+/**
+ * A view of a module, used by [RModule] to restrict its access to read-only.
+ */
+interface ModuleView {
+    val dependencies: List<ModuleView>
 
     val isLoaded: Boolean
     val isEnabled: Boolean
-
-    fun load()
-
-    fun tryLoad() {
-        if (!isLoaded) load()
-    }
-
-    fun addDependency(module: RModule)
-
-    fun addReference(module: RModule)
-    fun removeReference(module: RModule)
 
     fun <C, R> listenTo(event: REvent<C, R, *>, listener: Listener<C, R>) =
         event.listen { context, result ->
@@ -28,100 +18,53 @@ interface RModule {
         }
 }
 
-interface StrongModule : RModule {
+/**
+ * A group of code with dependencies and that can be loaded, enabled, and disabled.
+ *
+ * All modules are either **weak**, meaning they load and unloaded as needed based on its dependent
+ * modules, or **strong**, meaning they remain active even if no dependents are enabled.
+ *
+ * @see module
+ * @see weakModule
+ * @see strongModule
+ */
+interface RModule : ModuleView {
+    @ModuleMutableState
+    fun load()
+
+    @ModuleMutableState
+    fun tryLoad() {
+        if (!isLoaded) load()
+    }
+
+    @ModuleMutableState
     fun enable()
+
+    @ModuleMutableState
     fun disable()
+
+    @ModuleMutableState
+    fun addDependency(module: RModule)
+
+    @ModuleMutableState
+    fun addUsage(module: RModule)
+
+    @ModuleMutableState
+    fun removeUsage(module: RModule)
 }
 
-sealed class BasicModule(dependencyList: List<RModule>) : RModule {
-    final override var isLoaded = false
-        private set
-    final override var isEnabled = false
-        private set
-
-    override val dependencies: List<RModule> get() = _dependencies
-    private val _dependencies = dependencyList.toMutableList()
-
-    protected val references = mutableSetOf<RModule>()
-
-    override fun load() {
-        check(!isLoaded) { "Module is already loaded" }
-        isLoaded = true
-    }
-
-    protected fun enableImpl() {
-        check(!isEnabled) { "Module is already enabled" }
-        tryLoad()
-        for (module in dependencies) module.addReference(this)
-        isEnabled = true
-    }
-
-    protected fun disableImpl() {
-        check(isEnabled) { "Module is already disabled" }
-        for (module in dependencies) module.removeReference(this)
-        isEnabled = false
-    }
-
-    protected abstract fun onLoad()
-    protected abstract fun onEnable()
-    protected abstract fun onDisable()
-
-    override fun addDependency(module: RModule) {
-        _dependencies += module
-    }
-
-    override fun addReference(module: RModule) {
-        if (!isEnabled) enableImpl()
-        references += module
-    }
-
-    override fun removeReference(module: RModule) {
-        references -= module
-    }
+/**
+ * A global handle of an [RModule], used for adding it as dependencies to other modules.
+ */
+interface ModuleHandle {
+    @ModuleMutableState
+    fun addAsDependency(to: RModule)
 }
 
-class WeakModule(
-    dependencyList: List<RModule>,
-    private val onLoad: ModuleAction<RModule>?,
-    private val onEnable: ModuleAction<RModule>?,
-    private val onDisable: ModuleAction<RModule>?
-) : BasicModule(dependencyList) {
-    override fun onLoad() {
-        onLoad?.invoke(this)
-    }
-
-    override fun onEnable() {
-        onEnable?.invoke(this)
-    }
-
-    override fun onDisable() {
-        onDisable?.invoke(this)
-    }
-
-    override fun removeReference(module: RModule) {
-        super.removeReference(module)
-        if (references.isEmpty()) disableImpl()
-    }
-}
-
-class BasicStrongModule(
-    dependencyList: List<RModule>,
-    private val onLoad: ModuleAction<StrongModule>?,
-    private val onEnable: ModuleAction<StrongModule>?,
-    private val onDisable: ModuleAction<StrongModule>?
-) : BasicModule(dependencyList), StrongModule {
-    override fun enable() = enableImpl()
-    override fun disable() = disableImpl()
-
-    override fun onLoad() {
-        onLoad?.invoke(this)
-    }
-
-    override fun onEnable() {
-        onEnable?.invoke(this)
-    }
-
-    override fun onDisable() {
-        onDisable?.invoke(this)
-    }
-}
+/**
+ * An opt-in annotation denoting that a function or type mutates global state of an [RModule].
+ */
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
+@RequiresOptIn("This function or type mutates global state of a module and should only" +
+        "be used by RModule implementations, with caution")
+annotation class ModuleMutableState

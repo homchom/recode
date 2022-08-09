@@ -5,7 +5,7 @@ package io.github.homchom.recode
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import io.github.homchom.recode.feature.RenderingFeatureGroup
-import io.github.homchom.recode.init.strongModule
+import io.github.homchom.recode.init.entrypointModule
 import io.github.homchom.recode.mod.commands.CommandHandler
 import io.github.homchom.recode.mod.config.Config
 import io.github.homchom.recode.mod.config.internal.ConfigFile
@@ -21,7 +21,6 @@ import io.github.homchom.recode.mod.features.discordrpc.DFDiscordRPC
 import io.github.homchom.recode.sys.hypercube.codeaction.ActionDump
 import io.github.homchom.recode.sys.hypercube.templates.TemplateStorageHandler
 import io.github.homchom.recode.sys.networking.websocket.SocketHandler
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.Minecraft
 import org.slf4j.LoggerFactory
@@ -34,7 +33,7 @@ private val Logger = LoggerFactory.getLogger(MOD_ID)
 lateinit var modVersion: String
     private set
 
-val RecodeMod = strongModule {
+val RecodeMod = entrypointModule {
     // TODO: move feature groups to a config module
     depend(RenderingFeatureGroup)
 
@@ -46,8 +45,6 @@ val RecodeMod = strongModule {
             .metadata.version.friendlyString
 
         System.setProperty("java.awt.headless", "false")
-
-        ClientLifecycleEvents.CLIENT_STOPPING.register { disable() }
 
         LegacyRecode.onInitialize()
 

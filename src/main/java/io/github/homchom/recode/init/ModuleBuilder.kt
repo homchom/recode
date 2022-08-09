@@ -1,39 +1,83 @@
 package io.github.homchom.recode.init
 
-typealias WeakModuleBuilderScope = ModuleBuilder<RModule>.() -> Unit
-typealias StrongModuleBuilderScope = ModuleBuilder<StrongModule>.() -> Unit
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
 
-inline fun <T : RModule, R : RModule> module(
+typealias ReadOnlyModuleBuilderScope = ModuleBuilder<ModuleView>.() -> Unit
+typealias ModuleBuilderScope = ModuleBuilder<RModule>.() -> Unit
+
+/**
+ * Builds an [RModule] with [builder], returning the output given by [buildTo].
+ */
+inline fun <T : ModuleView, R : ModuleHandle> module(
     buildTo: ModuleBuilder<T>.() -> R,
     builder: ModuleBuilder<T>.() -> Unit
 ): R {
     return ModuleBuilder<T>().apply(builder).buildTo()
 }
 
-inline fun weakModule(builder: WeakModuleBuilderScope) =
+/**
+ * Builds a basic weak [RModule].
+ */
+inline fun weakModule(builder: ReadOnlyModuleBuilderScope) =
     module({
-        WeakModule(dependencies, onLoad.action, onEnable.action, onDisable.action)
+        weakModule(dependencies, onLoad.action, onEnable.action, onDisable.action)
     }, builder)
 
-inline fun strongModule(builder: StrongModuleBuilderScope) =
+/**
+ * Builds a basic strong [RModule].
+ */
+inline fun strongModule(builder: ModuleBuilderScope) =
     module({
-        BasicStrongModule(dependencies, onLoad.action, onEnable.action, onDisable.action)
+        strongModule(dependencies, onLoad.action, onEnable.action, onDisable.action)
     }, builder)
 
-class ModuleBuilder<T : RModule> {
-    val dependencies: List<RModule> get() = _dependencies
-    private val _dependencies = mutableListOf<RModule>()
+/**
+ * Builds a strong [RModule] to be enabled by entrypoints.
+ */
+@OptIn(ModuleMutableState::class)
+inline fun entrypointModule(builder: ModuleBuilderScope) =
+    strongModule {
+        onLoad {
+            ClientLifecycleEvents.CLIENT_STOPPING.register { disable() }
+        }
 
+        builder()
+    }
+
+/**
+ * @see module
+ */
+class ModuleBuilder<T : ModuleView> {
+    val dependencies: List<ModuleHandle> get() = _dependencies
+    private val _dependencies = mutableListOf<ModuleHandle>()
+
+    /**
+     * A [ModuleActionBuilder] invoked once, when the module is loaded. Listen to events here.
+     */
     val onLoad = ModuleActionBuilder<T>()
+
+    /**
+     * A [ModuleActionBuilder] invoked when the module is enabled. Listen to events with [onLoad],
+     * not here.
+     */
     val onEnable = ModuleActionBuilder<T>()
+
+    /**
+     * A [ModuleActionBuilder] invoked when the module is disabled.
+     */
     val onDisable = ModuleActionBuilder<T>()
 
-    fun depend(vararg modules: RModule) {
+    fun depend(vararg modules: ModuleHandle) {
         _dependencies.addAll(modules)
     }
 }
 
-class ModuleActionBuilder<T : RModule> {
+/**
+ * Builds an action to be invoked by an [RModule].
+ *
+ * @see ModuleBuilder
+ */
+class ModuleActionBuilder<T : ModuleView> {
     var action: ModuleAction<T>? = null
         private set
 
