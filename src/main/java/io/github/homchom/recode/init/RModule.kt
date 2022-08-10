@@ -1,10 +1,10 @@
 package io.github.homchom.recode.init
 
 import io.github.homchom.recode.event.Listener
-import io.github.homchom.recode.event.REvent
+import io.github.homchom.recode.event.ModuleListenable
 
 /**
- * A view of a module, used by [RModule] to restrict its access to read-only.
+ * A view of a module without mutable active state, used by [RModule] to restrict its access.
  */
 interface ModuleView {
     val dependencies: List<ModuleView>
@@ -12,10 +12,10 @@ interface ModuleView {
     val isLoaded: Boolean
     val isEnabled: Boolean
 
-    fun <C, R> listenTo(event: REvent<C, R, *>, listener: Listener<C, R>) =
-        event.listen { context, result ->
-            if (isEnabled) listener(context, result) else result
-        }
+    fun addDependency(module: RModule)
+
+    fun <C, R> listenTo(event: ModuleListenable<C, R>, listener: Listener<C, R>) =
+        event.listenFrom(this, listener)
 }
 
 /**
@@ -29,27 +29,24 @@ interface ModuleView {
  * @see strongModule
  */
 interface RModule : ModuleView {
-    @ModuleMutableState
+    @ModuleActiveState
     fun load()
 
-    @ModuleMutableState
+    @ModuleActiveState
     fun tryLoad() {
         if (!isLoaded) load()
     }
 
-    @ModuleMutableState
+    @ModuleActiveState
     fun enable()
 
-    @ModuleMutableState
+    @ModuleActiveState
     fun disable()
 
-    @ModuleMutableState
-    fun addDependency(module: RModule)
-
-    @ModuleMutableState
+    @ModuleActiveState
     fun addUsage(module: RModule)
 
-    @ModuleMutableState
+    @ModuleActiveState
     fun removeUsage(module: RModule)
 }
 
@@ -57,14 +54,13 @@ interface RModule : ModuleView {
  * A global handle of an [RModule], used for adding it as dependencies to other modules.
  */
 interface ModuleHandle {
-    @ModuleMutableState
-    fun addAsDependency(to: RModule)
+    fun addAsDependency(to: ModuleView)
 }
 
 /**
  * An opt-in annotation denoting that a function or type mutates global state of an [RModule].
  */
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
-@RequiresOptIn("This function or type mutates global state of a module and should only" +
-        "be used by RModule implementations, with caution")
-annotation class ModuleMutableState
+@RequiresOptIn("This function or type mutates global active state of a module and should" +
+        "only be used by RModule implementations, with caution")
+annotation class ModuleActiveState

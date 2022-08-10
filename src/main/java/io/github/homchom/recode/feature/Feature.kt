@@ -21,7 +21,7 @@ value class Feature(private val module: BaseModule) : BaseModule by module
  *
  * @see module
  */
-@OptIn(ModuleMutableState::class)
+@OptIn(ModuleActiveState::class)
 inline fun featureGroup(
     name: String,
     features: Array<out Feature>,

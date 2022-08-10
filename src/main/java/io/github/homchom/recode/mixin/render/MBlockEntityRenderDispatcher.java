@@ -1,8 +1,7 @@
 package io.github.homchom.recode.mixin.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import io.github.homchom.recode.event.RecodeEvents;
-import io.github.homchom.recode.render.Blaze3DExtensions;
+import io.github.homchom.recode.render.*;
 import io.github.homchom.recode.ui.RGBAColor;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
@@ -17,15 +16,15 @@ public class MBlockEntityRenderDispatcher {
 	public void renderBlockEntities(
 			BlockEntity blockEntity, float f, PoseStack poseStack,
 			MultiBufferSource multiBufferSource, CallbackInfo ci) {
-		if (!RecodeEvents.RenderBlockEntity.invoke(blockEntity)) {
+		if (!RenderBlockEntityEvent.INSTANCE.invoke(blockEntity)) {
 			ci.cancel();
 		}
 	}
 
 	@ModifyVariable(method = "render", at = @At("HEAD"), ordinal = 0, argsOnly = true)
 	public MultiBufferSource outlineBlockEntities(MultiBufferSource multiBufferSource, BlockEntity blockEntity) {
-		RGBAColor outlineColor = RecodeEvents.OutlineBlockEntity
-				.invoke(blockEntity, new RecodeEvents.OutlineResult())
+		RGBAColor outlineColor = OutlineBlockEntityEvent.INSTANCE
+				.invoke(blockEntity, new OutlineResult())
 				.getOutlineColor();
 		if (outlineColor != null) {
 			return Blaze3DExtensions.withOutline(multiBufferSource, outlineColor);

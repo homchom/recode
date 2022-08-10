@@ -34,7 +34,7 @@ inline fun strongModule(builder: ModuleBuilderScope) =
 /**
  * Builds a strong [RModule] to be enabled by entrypoints.
  */
-@OptIn(ModuleMutableState::class)
+@OptIn(ModuleActiveState::class)
 inline fun entrypointModule(builder: ModuleBuilderScope) =
     strongModule {
         onLoad {

@@ -1,13 +1,13 @@
 package io.github.homchom.recode.mod.events.impl;
 
-import io.github.homchom.recode.event.*;
+import io.github.homchom.recode.game.PlaySoundEvent;
 import net.minecraft.network.protocol.game.ClientboundSoundPacket;
 
 public class LegacyReceiveSoundEvent {
     private static int cancelNextSounds;
 
     public LegacyReceiveSoundEvent() {
-        RecodeEvents.PlaySound.listen(this::run);
+        PlaySoundEvent.INSTANCE.listen(this::run);
     }
 
     private boolean run(ClientboundSoundPacket packet, boolean playSound) {

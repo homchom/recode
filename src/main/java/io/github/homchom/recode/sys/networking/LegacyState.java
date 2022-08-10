@@ -1,8 +1,8 @@
 package io.github.homchom.recode.sys.networking;
 
 import com.google.gson.*;
-import io.github.homchom.recode.event.*;
 import io.github.homchom.recode.mod.features.social.chat.message.*;
+import io.github.homchom.recode.server.*;
 import io.github.homchom.recode.sys.player.chat.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -342,7 +342,7 @@ public class LegacyState {
     }
 
     private static void notifyStateChange(LegacyState newState, LegacyState oldState) {
-        Hook.invoke(RecodeEvents.ChangeDFState, new RecodeEvents.StateChange(newState, oldState));
+        ChangeDFStateEvent.INSTANCE.invoke(new StateChange(newState, oldState));
     }
 
     public static class CurrentState extends LegacyState {

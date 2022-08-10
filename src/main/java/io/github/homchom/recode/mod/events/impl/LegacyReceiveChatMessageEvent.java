@@ -1,8 +1,8 @@
 package io.github.homchom.recode.mod.events.impl;
 
-import io.github.homchom.recode.*;
-import io.github.homchom.recode.event.*;
+import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.Config;
+import io.github.homchom.recode.server.ReceiveChatMessageEvent;
 import io.github.homchom.recode.sys.networking.LegacyState;
 import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.*;
@@ -16,7 +16,7 @@ import java.util.regex.*;
 
 public class LegacyReceiveChatMessageEvent {
     public LegacyReceiveChatMessageEvent() {
-        RecodeEvents.ReceiveChatMessage.listen(this::run);
+        ReceiveChatMessageEvent.INSTANCE.listen(this::run);
     }
 
     public static boolean pjoin = false;

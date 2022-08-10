@@ -30,13 +30,11 @@ fun strongModule(
  * A basic [RModule] that also acts as a [ModuleHandle].
  */
 interface BaseModule : RModule, ModuleHandle {
-    @OptIn(ModuleMutableState::class)
-    override fun addAsDependency(to: RModule) {
+    override fun addAsDependency(to: ModuleView) {
         to.addDependency(this)
     }
 }
 
-@OptIn(ModuleMutableState::class)
 private fun <T : RModule> T.withDependencies(dependencies: List<ModuleHandle>) = apply {
     for (handle in dependencies) handle.addAsDependency(this)
 }
@@ -57,14 +55,14 @@ private class WeakModule(
     val usages: Set<RModule> get() = _usages
     private val _usages = mutableSetOf<RModule>()
 
-    @ModuleMutableState
+    @ModuleActiveState
     override fun load() {
         check(!isLoaded) { "Module is already loaded" }
         isLoaded = true
         onLoad?.invoke(this)
     }
 
-    @ModuleMutableState
+    @ModuleActiveState
     override fun enable() {
         check(!isEnabled) { "Module is already enabled" }
         tryLoad()
@@ -73,7 +71,7 @@ private class WeakModule(
         onEnable?.invoke(this)
     }
 
-    @ModuleMutableState
+    @ModuleActiveState
     override fun disable() {
         check(isEnabled) { "Module is already disabled" }
         for (module in dependencies) module.removeUsage(this)
@@ -81,18 +79,17 @@ private class WeakModule(
         onDisable?.invoke(this)
     }
 
-    @ModuleMutableState
     override fun addDependency(module: RModule) {
         _dependencies += module
     }
 
-    @ModuleMutableState
+    @ModuleActiveState
     override fun addUsage(module: RModule) {
         if (!isEnabled) enable()
         _usages += module
     }
 
-    @ModuleMutableState
+    @ModuleActiveState
     override fun removeUsage(module: RModule) {
         _usages -= module
     }
@@ -102,7 +99,7 @@ private class WeakModule(
 private value class StrongModule(
     private val impl: WeakModule
 ) : BaseModule by impl {
-    @ModuleMutableState
+    @ModuleActiveState
     override fun removeUsage(module: RModule) {
         impl.removeUsage(module)
         if (impl.usages.isEmpty()) disable()
