@@ -18,6 +18,7 @@ public class AutomationGroup extends ConfigGroup {
         this.register(time);
 
         // Other non sub-grouped
+        this.register(new BooleanSetting("autowand", false));
         this.register(new BooleanSetting("autoRC", false));
         this.register(new BooleanSetting("autonightvis", false));
         this.register(new BooleanSetting("autofly", false));
