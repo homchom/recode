@@ -32,6 +32,9 @@ private open class EventWrapper<C, R, L>(
     override val fabricEvent: Event<L>,
     private val transform: (Listener<C, R>) -> L
 ) : REvent<C, R, L> {
+    @Suppress("OVERRIDE_DEPRECATION")
+    override fun listen(listener: Listener<C, R>) = fabricEvent.register(transform(listener))
+
     override fun listenFrom(module: ModuleHandle, listener: Listener<C, R>) =
         fabricEvent.register(transform { context, result ->
             if (module.isEnabled) listener(context, result) else result

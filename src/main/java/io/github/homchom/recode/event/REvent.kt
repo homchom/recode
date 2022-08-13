@@ -37,6 +37,9 @@ inline fun <reified T, reified P : Enum<P>> createFabricEventWithPhases(
  * if the module is enabled.
  */
 sealed interface Listenable<C, R> {
+    @Deprecated("Create and/or listen from a module instead")
+    fun listen(listener: Listener<C, R>)
+
     fun listenFrom(module: ModuleHandle, listener: Listener<C, R>)
 }
 
