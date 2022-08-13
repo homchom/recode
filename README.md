@@ -9,7 +9,7 @@ Currently supported Minecraft version: 1.18.2
 - Fabric Loader v0.13.3 or newer
 - Fabric API v0.50.0 or newer
 
-You can find the current beta version [here](https://github.com/homchom/recode/releases). Future plans include removing bloat/unnecessary features, improving existing code, adding new features, and migrating to Kotlin.
+You can find the mod jar [here](https://github.com/homchom/recode/releases). See the Future plans include removing bloat/unnecessary features, improving existing code, adding new features, and migrating to Kotlin.
 
 Feel free to join the recode Discord server: https://discord.gg/GWxWtcwA2C
 
