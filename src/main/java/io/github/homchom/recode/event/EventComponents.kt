@@ -2,7 +2,6 @@ package io.github.homchom.recode.event
 
 import io.github.homchom.recode.init.ModuleActiveState
 import io.github.homchom.recode.init.ModuleHandle
-import io.github.homchom.recode.init.ModuleView
 
 /**
  * A [CustomEvent] without a result.
@@ -28,7 +27,7 @@ class DependentEvent<C, R : Any>(
     private vararg val dependencies: ModuleHandle
 ) : CustomEvent<C, R> by event {
     @ModuleActiveState
-    override fun listenFrom(module: ModuleView, listener: Listener<C, R>) {
+    override fun listenFrom(module: ModuleHandle, listener: Listener<C, R>) {
         for (handle in dependencies) handle.addAsDependency(module)
         event.listenFrom(module, listener)
     }

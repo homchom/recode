@@ -1,49 +1,41 @@
 package io.github.homchom.recode.init
 
-typealias ModuleAction<T> = T.() -> Unit
-
 /**
- * Constructs a basic weak [RModule].
+ * Constructs a basic weak [RModule] with dependencies and actions [onLoad], [onEnable], and
+ * [onDisable].
  */
-fun weakModule(
-    dependencies: List<ModuleHandle>,
-    onLoad: ModuleAction<RModule>?,
-    onEnable: ModuleAction<RModule>?,
-    onDisable: ModuleAction<RModule>?
-): BaseModule {
-    return WeakModule(onLoad, onEnable, onDisable).withDependencies(dependencies)
+fun basicWeakModule(
+    dependencies: List<ModuleHandle> = emptyList(),
+    onLoad: ModuleAction? = null,
+    onEnable: ModuleAction? = null,
+    onDisable: ModuleAction? = null
+): ModuleHandle {
+    return BuiltModule(onLoad, onEnable, onDisable).withDependencies(dependencies)
 }
 
 /**
- * Constructs a basic strong [RModule].
+ * Constructs a basic strong [RModule] with dependencies and actions [onLoad], [onEnable], and
+ * [onDisable].
  */
-fun strongModule(
-    dependencies: List<ModuleHandle>,
-    onLoad: ModuleAction<RModule>?,
-    onEnable: ModuleAction<RModule>?,
-    onDisable: ModuleAction<RModule>?
-): BaseModule {
-    return StrongModule(WeakModule(onLoad, onEnable, onDisable).withDependencies(dependencies))
-}
-
-/**
- * A basic [RModule] that also acts as a [ModuleHandle].
- */
-interface BaseModule : RModule, ModuleHandle {
-    override fun addAsDependency(to: ModuleView) {
-        to.addDependency(this)
-    }
+fun basicStrongModule(
+    dependencies: List<ModuleHandle> = emptyList(),
+    onLoad: StrongModuleAction? = null,
+    onEnable: StrongModuleAction? = null,
+    onDisable: StrongModuleAction? = null
+): RModule {
+    return StrongBuiltModule(BuiltModule(onLoad, onEnable, onDisable)
+        .withDependencies(dependencies))
 }
 
 private fun <T : RModule> T.withDependencies(dependencies: List<ModuleHandle>) = apply {
     for (handle in dependencies) handle.addAsDependency(this)
 }
 
-private class WeakModule(
-    private val onLoad: ModuleAction<RModule>?,
-    private val onEnable: ModuleAction<RModule>?,
-    private val onDisable: ModuleAction<RModule>?
-) : BaseModule {
+private class BuiltModule(
+    private val onLoad: StrongModuleAction?,
+    private val onEnable: StrongModuleAction?,
+    private val onDisable: StrongModuleAction?
+) : RModule {
     override var isLoaded = false
         private set
     override var isEnabled = false
@@ -83,6 +75,10 @@ private class WeakModule(
         _dependencies += module
     }
 
+    override fun addAsDependency(to: ModuleHandle) {
+        to.addDependency(this)
+    }
+
     @ModuleActiveState
     override fun addUsage(module: RModule) {
         if (!isEnabled) enable()
@@ -96,9 +92,7 @@ private class WeakModule(
 }
 
 @JvmInline
-private value class StrongModule(
-    private val impl: WeakModule
-) : BaseModule by impl {
+private value class StrongBuiltModule(private val impl: BuiltModule) : RModule by impl {
     @ModuleActiveState
     override fun removeUsage(module: RModule) {
         impl.removeUsage(module)

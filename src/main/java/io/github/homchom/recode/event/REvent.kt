@@ -1,7 +1,7 @@
 package io.github.homchom.recode.event
 
 import io.github.homchom.recode.id
-import io.github.homchom.recode.init.ModuleView
+import io.github.homchom.recode.init.ModuleHandle
 import net.fabricmc.fabric.api.event.Event
 import net.fabricmc.fabric.api.event.EventFactory
 import net.minecraft.resources.ResourceLocation
@@ -33,18 +33,11 @@ inline fun <reified T, reified P : Enum<P>> createFabricEventWithPhases(
 }
 
 /**
- * Wraps an existing event into an [REvent], using [transform] to map recode listeners to its
- * specification.
- */
-fun <C, R, L> wrapEvent(event: Event<L>, transform: (Listener<C, R>) -> L): WrappedEvent<C, R, L> =
-    WrappedEventImpl(event, transform)
-
-/**
  * An event type that can be listened to from within a module. Listeners will only be invoked
  * if the module is enabled.
  */
-sealed interface ModuleListenable<C, R> {
-    fun listenFrom(module: ModuleView, listener: Listener<C, R>)
+sealed interface Listenable<C, R> {
+    fun listenFrom(module: ModuleHandle, listener: Listener<C, R>)
 }
 
 /**
@@ -57,35 +50,11 @@ sealed interface ModuleListenable<C, R> {
  *
  * @see Event
  */
-sealed interface REvent<C, R, L> : ModuleListenable<C, R> {
+sealed interface REvent<C, R, L> : Listenable<C, R> {
     val fabricEvent: Event<L>
 
     val invoker: L get() = fabricEvent.invoker()
 
     fun addPhaseOrdering(first: ResourceLocation, second: ResourceLocation) =
         fabricEvent.addPhaseOrdering(first, second)
-}
-
-/**
- * An [ModuleListenable] that can also be listened to standalone.
- */
-sealed interface Listenable<C, R> : ModuleListenable<C, R> {
-    fun listen(listener: Listener<C, R>)
-
-    override fun listenFrom(module: ModuleView, listener: Listener<C, R>) =
-        listen { context, result ->
-            if (module.isEnabled) listener(context, result) else result
-        }
-}
-
-/**
- * @see wrapEvent
- */
-interface WrappedEvent<C, R, L> : REvent<C, R, L>, Listenable<C, R>
-
-private class WrappedEventImpl<C, R, L>(
-    override val fabricEvent: Event<L>,
-    private val transform: (Listener<C, R>) -> L
-) : WrappedEvent<C, R, L> {
-    override fun listen(listener: Listener<C, R>) = fabricEvent.register(transform(listener))
 }

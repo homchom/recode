@@ -1,12 +1,13 @@
 package io.github.homchom.recode.feature.rendering
 
+import io.github.homchom.recode.feature.Feature
 import io.github.homchom.recode.feature.feature
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.mod.config.Config
 import io.github.homchom.recode.render.RenderBlockEntityEvent
 import net.minecraft.world.level.block.entity.SignBlockEntity
 
-val FSignRenderDistance = feature("Sign Render Distance") {
+object FSignRenderDistance : Feature by feature("Sign Render Distance", {
     onLoad {
         listenTo(RenderBlockEntityEvent) { blockEntity, render ->
             if (blockEntity is SignBlockEntity) {
@@ -19,4 +20,4 @@ val FSignRenderDistance = feature("Sign Render Distance") {
             render
         }
     }
-}
+})

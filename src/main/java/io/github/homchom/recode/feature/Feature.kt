@@ -2,44 +2,45 @@ package io.github.homchom.recode.feature
 
 import io.github.homchom.recode.init.*
 
-/**
- * Builds a feature.
- *
- * @see module
- */
-// TODO: update feature and featureGroup when config is integrated
-inline fun feature(name: String, builder: ModuleBuilderScope) =
-    module({
-        Feature(strongModule(dependencies, onLoad.action, onEnable.action, onDisable.action))
-    }, builder)
+sealed interface Configurable : RModule {
+    val name: String
+}
 
-@JvmInline
-value class Feature(private val module: BaseModule) : BaseModule by module
+fun feature(name: String, builder: StrongModuleBuilderScope): Feature =
+    FeatureBuilder(name, builder)
 
-/**
- * Builds a feature group.
- *
- * @see module
- */
-@OptIn(ModuleActiveState::class)
-inline fun featureGroup(
-    name: String,
-    features: Array<out Feature>,
-    builder: ModuleBuilderScope = {}
-): ModuleHandle {
-    return strongModule {
-        onLoad {
-            for (feature in features) feature.addDependency(this)
-        }
+interface Feature : Configurable
 
-        onEnable {
-            for (feature in features) feature.enable()
-        }
+private class FeatureBuilder(
+    override val name: String,
+    moduleBuilder: StrongModuleBuilderScope
+) : Feature, RModule by strongModule(moduleBuilder)
 
-        onDisable {
-            for (feature in features) feature.disable()
-        }
+sealed class FeatureGroup private constructor(
+    override val name: String,
+    private val module: RModule
+) : Configurable, RModule by module {
+    abstract val features: List<RModule>
 
-        builder()
+    // this is used; warning is IntelliJ bug KTIJ-22439
+    @Suppress("unused")
+    constructor(name: String) : this(name, basicStrongModule())
+
+    @ModuleActiveState
+    override fun load() {
+        module.load()
+        for (feature in features) addAsDependency(feature)
+    }
+
+    @ModuleActiveState
+    override fun enable() {
+        module.enable()
+        for (feature in features) feature.enable()
+    }
+
+    @ModuleActiveState
+    override fun disable() {
+        module.disable()
+        for (feature in features) feature.disable()
     }
 }

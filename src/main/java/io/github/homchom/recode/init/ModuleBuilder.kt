@@ -2,40 +2,28 @@ package io.github.homchom.recode.init
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
 
-typealias ReadOnlyModuleBuilderScope = ModuleBuilder<ModuleView>.() -> Unit
-typealias ModuleBuilderScope = ModuleBuilder<RModule>.() -> Unit
+typealias ModuleBuilderScope = ModuleBuilder<ModuleHandle>.() -> Unit
+typealias StrongModuleBuilderScope = ModuleBuilder<RModule>.() -> Unit
 
 /**
- * Builds an [RModule] with [builder], returning the output given by [buildTo].
+ * Builds a weak [RModule].
  */
-inline fun <T : ModuleView, R : ModuleHandle> module(
-    buildTo: ModuleBuilder<T>.() -> R,
-    builder: ModuleBuilder<T>.() -> Unit
-): R {
-    return ModuleBuilder<T>().apply(builder).buildTo()
-}
+inline fun weakModule(builder: ModuleBuilderScope) = ModuleBuilder<ModuleHandle>()
+    .apply(builder)
+    .run { basicWeakModule(dependencies, onLoad.action, onEnable.action, onDisable.action) }
 
 /**
- * Builds a basic weak [RModule].
+ * Builds a strong [RModule].
  */
-inline fun weakModule(builder: ReadOnlyModuleBuilderScope) =
-    module({
-        weakModule(dependencies, onLoad.action, onEnable.action, onDisable.action)
-    }, builder)
-
-/**
- * Builds a basic strong [RModule].
- */
-inline fun strongModule(builder: ModuleBuilderScope) =
-    module({
-        strongModule(dependencies, onLoad.action, onEnable.action, onDisable.action)
-    }, builder)
+inline fun strongModule(builder: StrongModuleBuilderScope) = ModuleBuilder<RModule>()
+    .apply(builder)
+    .run { basicStrongModule(dependencies, onLoad.action, onEnable.action, onDisable.action) }
 
 /**
  * Builds a strong [RModule] to be enabled by entrypoints.
  */
 @OptIn(ModuleActiveState::class)
-inline fun entrypointModule(builder: ModuleBuilderScope) =
+inline fun entrypointModule(builder: StrongModuleBuilderScope) =
     strongModule {
         onLoad {
             ClientLifecycleEvents.CLIENT_STOPPING.register { disable() }
@@ -45,9 +33,10 @@ inline fun entrypointModule(builder: ModuleBuilderScope) =
     }
 
 /**
- * @see module
+ * @see weakModule
+ * @see strongModule
  */
-class ModuleBuilder<T : ModuleView> {
+class ModuleBuilder<T : ModuleHandle> {
     val dependencies: List<ModuleHandle> get() = _dependencies
     private val _dependencies = mutableListOf<ModuleHandle>()
 
@@ -77,11 +66,11 @@ class ModuleBuilder<T : ModuleView> {
  *
  * @see ModuleBuilder
  */
-class ModuleActionBuilder<T : ModuleView> {
-    var action: ModuleAction<T>? = null
+class ModuleActionBuilder<T : ModuleHandle> {
+    var action: (T.() -> Unit)? = null
         private set
 
-    operator fun invoke(block: ModuleAction<T>) {
+    operator fun invoke(block: T.() -> Unit) {
         action = action?.let { prev ->
             {
                 prev()
