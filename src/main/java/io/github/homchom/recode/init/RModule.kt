@@ -18,8 +18,11 @@ interface ModuleHandle {
     fun addDependency(module: RModule)
     fun addAsDependency(to: ModuleHandle)
 
-    fun <C, R> listenTo(event: Listenable<C, R>, listener: Listener<C, R>) =
-        event.listenFrom(this, listener)
+    /**
+     * @see Listenable.listenFrom
+     */
+    fun <C, R> listenTo(event: Listenable<C, R>, explicit: Boolean = true, listener: Listener<C, R>) =
+        event.listenFrom(this, explicit, listener)
 }
 
 /**

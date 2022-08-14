@@ -10,6 +10,14 @@ interface Hook<C> : CustomEvent<C, Unit> {
     operator fun invoke(context: C) = invoke(context, Unit)
 }
 
+inline fun <C> Hook<C>.listenFrom(
+    module: ModuleHandle,
+    explicit: Boolean = true,
+    crossinline listener: (C) -> Unit
+) {
+    listenFrom(module, explicit) { context, _ -> listener(context) }
+}
+
 /**
  * A [CustomEvent] with a boolean result; this should be used for events whose listeners "validate"
  * it and determine whether the action that caused it should proceed.
@@ -27,8 +35,8 @@ class DependentEvent<C, R : Any>(
     private vararg val dependencies: ModuleHandle
 ) : CustomEvent<C, R> by event {
     @ModuleActiveState
-    override fun listenFrom(module: ModuleHandle, listener: Listener<C, R>) {
+    override fun listenFrom(module: ModuleHandle, explicit: Boolean, listener: Listener<C, R>) {
         for (handle in dependencies) handle.addAsDependency(module)
-        event.listenFrom(module, listener)
+        event.listenFrom(module, explicit, listener)
     }
 }
