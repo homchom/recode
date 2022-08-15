@@ -5,11 +5,11 @@ package io.github.homchom.recode.init
  * [onDisable].
  */
 fun basicWeakModule(
-    dependencies: List<ModuleHandle> = emptyList(),
+    dependencies: List<RModule> = emptyList(),
     onLoad: ModuleAction? = null,
     onEnable: ModuleAction? = null,
     onDisable: ModuleAction? = null
-): ModuleHandle {
+): RModule {
     return BuiltModule(onLoad, onEnable, onDisable).withDependencies(dependencies)
 }
 
@@ -18,16 +18,16 @@ fun basicWeakModule(
  * [onDisable].
  */
 fun basicStrongModule(
-    dependencies: List<ModuleHandle> = emptyList(),
+    dependencies: List<RModule> = emptyList(),
     onLoad: StrongModuleAction? = null,
     onEnable: StrongModuleAction? = null,
     onDisable: StrongModuleAction? = null
-): RModule {
+): ActiveStateModule {
     return StrongBuiltModule(BuiltModule(onLoad, onEnable, onDisable)
         .withDependencies(dependencies))
 }
 
-private fun <T : RModule> T.withDependencies(dependencies: List<ModuleHandle>) = apply {
+private fun <T : RModule> T.withDependencies(dependencies: List<RModule>) = apply {
     for (handle in dependencies) handle.addAsDependency(this)
 }
 
@@ -35,66 +35,69 @@ private class BuiltModule(
     private val onLoad: StrongModuleAction?,
     private val onEnable: StrongModuleAction?,
     private val onDisable: StrongModuleAction?
-) : RModule {
+) : ActiveStateModule {
     override var isLoaded = false
         private set
     override var isEnabled = false
         private set
 
-    override val dependencies: List<RModule> get() = _dependencies
-    private val _dependencies = mutableListOf<RModule>()
+    override val dependencies: List<ActiveStateModule> get() = _dependencies
+    private val _dependencies = mutableListOf<ActiveStateModule>()
 
-    val usages: Set<RModule> get() = _usages
-    private val _usages = mutableSetOf<RModule>()
+    val usages: Set<ActiveStateModule> get() = _usages
+    private val _usages = mutableSetOf<ActiveStateModule>()
 
-    @ModuleActiveState
+    @MutatesModuleState
     override fun load() {
-        check(!isLoaded) { "Module is already loaded" }
+        errorIf(isLoaded) { "loaded" }
         isLoaded = true
         onLoad?.invoke(this)
     }
 
-    @ModuleActiveState
+    @MutatesModuleState
     override fun enable() {
-        check(!isEnabled) { "Module is already enabled" }
+        errorIf(isEnabled) { "enabled" }
         tryLoad()
         for (module in dependencies) module.addUsage(this)
         isEnabled = true
         onEnable?.invoke(this)
     }
 
-    @ModuleActiveState
+    @MutatesModuleState
     override fun disable() {
-        check(isEnabled) { "Module is already disabled" }
+        errorIf(!isEnabled) { "disabled" }
         for (module in dependencies) module.removeUsage(this)
         isEnabled = false
         onDisable?.invoke(this)
     }
 
-    override fun addDependency(module: RModule) {
+    private inline fun errorIf(value: Boolean, errorWord: () -> String) =
+        check(!value) { "This module is already ${errorWord()}" }
+
+    override fun addDependency(module: ActiveStateModule) {
         _dependencies += module
     }
 
-    override fun addAsDependency(to: ModuleHandle) {
+    override fun addAsDependency(to: RModule) {
         to.addDependency(this)
     }
 
-    @ModuleActiveState
-    override fun addUsage(module: RModule) {
+    @MutatesModuleState
+    override fun addUsage(module: ActiveStateModule) {
         if (!isEnabled) enable()
         _usages += module
     }
 
-    @ModuleActiveState
-    override fun removeUsage(module: RModule) {
+    @MutatesModuleState
+    override fun removeUsage(module: ActiveStateModule) {
         _usages -= module
     }
 }
 
 @JvmInline
-private value class StrongBuiltModule(private val impl: BuiltModule) : RModule by impl {
-    @ModuleActiveState
-    override fun removeUsage(module: RModule) {
+private value class StrongBuiltModule(private val impl: BuiltModule) : ActiveStateModule by impl {
+    @MutatesModuleState
+    override fun removeUsage(module: ActiveStateModule) {
         impl.removeUsage(module)
         if (impl.usages.isEmpty()) disable()
     }

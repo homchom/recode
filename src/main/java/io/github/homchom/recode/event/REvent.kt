@@ -1,7 +1,7 @@
 package io.github.homchom.recode.event
 
 import io.github.homchom.recode.id
-import io.github.homchom.recode.init.ModuleHandle
+import io.github.homchom.recode.init.RModule
 import net.fabricmc.fabric.api.event.Event
 import net.fabricmc.fabric.api.event.EventFactory
 import net.minecraft.resources.ResourceLocation
@@ -59,15 +59,7 @@ sealed interface Listenable<C, R> {
     @Deprecated("Create and/or listen from a module instead")
     fun listen(listener: Listener<C, R>)
 
-    /**
-     * Listens to [listener] from [module].
-     *
-     * @param explicit If true, the module will be recorded as containing a listener of this type.
-     *
-     * @throws IllegalStateException if [explicit] and an explicit listener has already been added
-     * from [module].
-     */
-    fun listenFrom(module: ModuleHandle, explicit: Boolean = true, listener: Listener<C, R>)
+    fun listenFrom(module: RModule, listener: Listener<C, R>)
 }
 
 /**

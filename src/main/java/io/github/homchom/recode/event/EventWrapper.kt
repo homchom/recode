@@ -1,8 +1,7 @@
 package io.github.homchom.recode.event
 
-import io.github.homchom.recode.init.ModuleHandle
+import io.github.homchom.recode.init.RModule
 import net.fabricmc.fabric.api.event.Event
-import kotlin.reflect.KClass
 
 /**
  * Wraps an existing event into an [REvent], using [transform] to map recode listeners to its
@@ -15,24 +14,13 @@ private open class EventWrapper<C, R, L>(
     override val fabricEvent: Event<L>,
     private val transform: (Listener<C, R>) -> L
 ) : REvent<C, R, L> {
-    private val explicitListeners = mutableSetOf<KClass<out ModuleHandle>>()
-
     @Suppress("OVERRIDE_DEPRECATION")
     override fun listen(listener: Listener<C, R>) = fabricEvent.register(transform(listener))
 
-    override fun listenFrom(module: ModuleHandle, explicit: Boolean, listener: Listener<C, R>) {
-        val moduleClass = if (explicit) {
-            module::class.also {
-                check(it !in explicitListeners) {
-                    "Explicit listeners can only be added to a module once"
-                }
-            }
-        } else null
+    override fun listenFrom(module: RModule, listener: Listener<C, R>) =
         fabricEvent.register(transform { context, result ->
             if (module.isEnabled) listener(context, result) else result
         })
-        moduleClass?.let { explicitListeners += it }
-    }
 }
 
 /**

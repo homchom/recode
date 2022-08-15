@@ -2,27 +2,27 @@ package io.github.homchom.recode.init
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
 
-typealias ModuleBuilderScope = ModuleBuilder<ModuleHandle>.() -> Unit
-typealias StrongModuleBuilderScope = ModuleBuilder<RModule>.() -> Unit
+typealias ModuleBuilderScope = ModuleBuilder<RModule>.() -> Unit
+typealias StrongModuleBuilderScope = ModuleBuilder<ActiveStateModule>.() -> Unit
 
 /**
  * Builds a weak [RModule].
  */
-inline fun weakModule(builder: ModuleBuilderScope) = ModuleBuilder<ModuleHandle>()
+inline fun weakModule(builder: ModuleBuilderScope) = ModuleBuilder<RModule>()
     .apply(builder)
     .run { basicWeakModule(dependencies, onLoad.action, onEnable.action, onDisable.action) }
 
 /**
  * Builds a strong [RModule].
  */
-inline fun strongModule(builder: StrongModuleBuilderScope) = ModuleBuilder<RModule>()
+inline fun strongModule(builder: StrongModuleBuilderScope) = ModuleBuilder<ActiveStateModule>()
     .apply(builder)
     .run { basicStrongModule(dependencies, onLoad.action, onEnable.action, onDisable.action) }
 
 /**
  * Builds a strong [RModule] to be enabled by entrypoints.
  */
-@OptIn(ModuleActiveState::class)
+@OptIn(MutatesModuleState::class)
 inline fun entrypointModule(builder: StrongModuleBuilderScope) =
     strongModule {
         onLoad {
@@ -36,9 +36,9 @@ inline fun entrypointModule(builder: StrongModuleBuilderScope) =
  * @see weakModule
  * @see strongModule
  */
-class ModuleBuilder<T : ModuleHandle> {
-    val dependencies: List<ModuleHandle> get() = _dependencies
-    private val _dependencies = mutableListOf<ModuleHandle>()
+class ModuleBuilder<T : RModule> {
+    val dependencies: List<RModule> get() = _dependencies
+    private val _dependencies = mutableListOf<RModule>()
 
     /**
      * A [ModuleActionBuilder] invoked once, when the module is loaded. Listen to events here.
@@ -56,7 +56,7 @@ class ModuleBuilder<T : ModuleHandle> {
      */
     val onDisable = ModuleActionBuilder<T>()
 
-    fun depend(vararg modules: ModuleHandle) {
+    fun depend(vararg modules: RModule) {
         _dependencies.addAll(modules)
     }
 }
@@ -66,7 +66,7 @@ class ModuleBuilder<T : ModuleHandle> {
  *
  * @see ModuleBuilder
  */
-class ModuleActionBuilder<T : ModuleHandle> {
+class ModuleActionBuilder<T : RModule> {
     var action: (T.() -> Unit)? = null
         private set
 
