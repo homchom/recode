@@ -14,7 +14,8 @@ public class DiscordRPCGroup extends ConfigGroup {
 
         this.register(new TextDescription("discordRPCDescription"));
 
-        this.register(new BooleanSetting("discordRPC", true));
+        // TODO: re-enable this by default once this is fixed and doesn't crash people
+        this.register(new BooleanSetting("discordRPC", false));
         this.register(new BooleanSetting("discordRPCShowSession", true));
 
         // Spawn RPC
