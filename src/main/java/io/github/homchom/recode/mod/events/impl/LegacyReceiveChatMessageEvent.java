@@ -1,8 +1,8 @@
 package io.github.homchom.recode.mod.events.impl;
 
-import io.github.homchom.recode.*;
-import io.github.homchom.recode.event.*;
+import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.Config;
+import io.github.homchom.recode.server.ReceiveChatMessageEvent;
 import io.github.homchom.recode.sys.networking.LegacyState;
 import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.*;
@@ -16,20 +16,17 @@ import java.util.regex.*;
 
 public class LegacyReceiveChatMessageEvent {
     public LegacyReceiveChatMessageEvent() {
-        RecodeEvents.ReceiveChatMessage.listen(this::run);
+        ReceiveChatMessageEvent.INSTANCE.listen(this::run);
     }
 
     public static boolean pjoin = false;
 
     public static String tipPlayer = "";
 
-    private void run(EventValidator result, Component message) {
+    private boolean run(Component message, boolean send) {
         Minecraft mc = Minecraft.getInstance();
 
-        if (mc.player == null) {
-            result.setValid(false);
-            return;
-        }
+        if (mc.player == null) return false;
 
         String stripped = message.getString();
         String msg = stripped.replaceAll("§.", "");
@@ -178,6 +175,6 @@ public class LegacyReceiveChatMessageEvent {
             }
         }
 
-        result.setValid(!cancel);
+        return !cancel;
     }
 }

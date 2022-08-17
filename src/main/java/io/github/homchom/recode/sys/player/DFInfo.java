@@ -1,7 +1,7 @@
 package io.github.homchom.recode.sys.player;
 
 import io.github.homchom.recode.LegacyRecode;
-import io.github.homchom.recode.event.RecodeEvents;
+import io.github.homchom.recode.server.*;
 import io.github.homchom.recode.sys.networking.LegacyState;
 import net.minecraft.world.phys.Vec3;
 
@@ -48,7 +48,7 @@ public class DFInfo {
     public static void setCurrentState(LegacyState state) {
         LegacyState.CurrentState newState = new LegacyState.CurrentState(state);
         if (!currentState.equals(newState)) {
-            RecodeEvents.ChangeDFState.invoke(new RecodeEvents.StateChange(newState, currentState));
+            ChangeDFStateEvent.INSTANCE.invoke(new StateChange(newState, currentState));
         }
         currentState = newState;
     }

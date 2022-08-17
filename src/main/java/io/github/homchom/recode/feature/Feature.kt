@@ -1,22 +1,46 @@
 package io.github.homchom.recode.feature
 
-import io.github.homchom.recode.init.RModule
+import io.github.homchom.recode.init.*
 
-abstract class Feature(name: String) : Configurable(name) {
-    override val isPersistent = true
+sealed interface Configurable : RModule {
+    val name: String
 }
 
-// TODO: update when config is integrated
-abstract class FeatureGroup(name: String) : Configurable(name) {
-    abstract val features: List<Feature>
+fun feature(name: String, builder: StrongModuleBuilderScope): Feature =
+    FeatureBuilder(name, builder)
 
-    override fun RModule.onLoad() = forEachFeature { it.addDependency(definition) }
+interface Feature : Configurable
 
-    override fun RModule.onEnable() = forEachFeature { it.enable() }
+private class FeatureBuilder(
+    override val name: String,
+    moduleBuilder: StrongModuleBuilderScope
+) : Feature, RModule by strongModule(moduleBuilder)
 
-    override fun RModule.onDisable() = forEachFeature { it.disable() }
+sealed class FeatureGroup private constructor(
+    override val name: String,
+    private val module: RModule
+) : Configurable, RModule by module {
+    abstract val features: List<RModule>
 
-    private inline fun RModule.forEachFeature(action: (RModule) -> Unit) {
-        for (feature in features) action(feature())
+    // this is used; warning is IntelliJ bug KTIJ-22439
+    @Suppress("unused")
+    constructor(name: String) : this(name, basicStrongModule())
+
+    @ModuleActiveState
+    override fun load() {
+        module.load()
+        for (feature in features) addAsDependency(feature)
+    }
+
+    @ModuleActiveState
+    override fun enable() {
+        module.enable()
+        for (feature in features) feature.enable()
+    }
+
+    @ModuleActiveState
+    override fun disable() {
+        module.disable()
+        for (feature in features) feature.disable()
     }
 }

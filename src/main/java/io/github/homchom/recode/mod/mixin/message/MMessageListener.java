@@ -1,11 +1,11 @@
 package io.github.homchom.recode.mod.mixin.message;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import io.github.homchom.recode.*;
-import io.github.homchom.recode.event.*;
+import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.LagslayerHUD;
-import io.github.homchom.recode.mod.features.social.chat.message.Message;
+import io.github.homchom.recode.mod.features.social.chat.message.LegacyMessage;
+import io.github.homchom.recode.server.ReceiveChatMessageEvent;
 import io.github.homchom.recode.sys.networking.LegacyState;
 import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
@@ -33,10 +33,9 @@ public class MMessageListener {
             if (packet.getType() != ChatType.GAME_INFO) {
                 // temporary, to preserve non-migrated side effects (like message grabbing)
                 // TODO: remove after new message listener is complete
-                new Message(packet, ci);
+                new LegacyMessage(packet, ci);
 
-                boolean result = EventValidation.validate(
-                        RecodeEvents.ReceiveChatMessage, packet.getMessage());
+                boolean result = ReceiveChatMessageEvent.INSTANCE.invoke(packet.getMessage());
                 if (!result) ci.cancel();
                 try {
                     this.updateVersion(packet.getMessage());
@@ -131,7 +130,7 @@ public class MMessageListener {
         String text = component.getString();
 
         // Enter Session
-        if (text.matches("^\\[SUPPORT\\] " + player.getName().getContents() + " entered a session with \\w+\\. ▶ \\S+ \\S+!?$")) {
+        if (text.matches("^\\[SUPPORT] " + player.getName().getContents() + " entered a session with \\w+\\. ▶ \\S+ \\S+!?$")) {
             if (!DFInfo.currentState.isInSession()) {
                 new Thread(() -> {
                     try {

@@ -8,17 +8,17 @@ import io.github.homchom.recode.sys.player.chat.ChatUtil;
 public class IncomingReportCheck extends MessageCheck implements StreamerModeMessageCheck {
 
     @Override
-    public MessageType getType() {
-        return MessageType.INCOMING_REPORT;
+    public LegacyMessageType getType() {
+        return LegacyMessageType.INCOMING_REPORT;
     }
 
     @Override
-    public boolean check(Message message, String stripped) {
+    public boolean check(LegacyMessage message, String stripped) {
         return stripped.startsWith("! Incoming Report ");
     }
 
     @Override
-    public void onReceive(Message message) {
+    public void onReceive(LegacyMessage message) {
         ChatUtil.playSound(Config.getSound("incomingReportSound"));
     }
 

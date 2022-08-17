@@ -10,17 +10,17 @@ import java.util.Collection;
 public class JoinDiamondFireCheck extends MessageCheck {
 
     @Override
-    public MessageType getType() {
-        return MessageType.JOIN_DF;
+    public LegacyMessageType getType() {
+        return LegacyMessageType.JOIN_DF;
     }
 
     @Override
-    public boolean check(Message message, String stripped) {
+    public boolean check(LegacyMessage message, String stripped) {
         return DFInfo.currentState.getMode() == LegacyState.Mode.SPAWN && stripped.equals("◆ Welcome back to DiamondFire! ◆");
     }
 
     @Override
-    public void onReceive(Message message) {
+    public void onReceive(LegacyMessage message) {
         // Check if the player joined Beta
         DFInfo.isInBeta = false;
         Collection<String> lines = LegacyRecode.MC.level.getScoreboard().getTrackedPlayers();
