@@ -63,27 +63,8 @@ interface ActiveStateModule : RModule {
 }
 
 /**
- * A unique key to be passed to an [RModule]. Useful if the module type has a public constructor,
- * since keys can only be [use]d once.
+ * An opt-in annotation denoting that something mutates global active state of an [RModule].
  */
-class ModuleKey {
-    private var wasUsed = false
-
-    /**
-     * Uses this key.
-     *
-     * @throws IllegalStateException if the key has already been used.
-     */
-    fun use() {
-        check (!wasUsed) { "Modules can only be initialized once" }
-        wasUsed = true
-    }
-}
-
-/**
- * An opt-in annotation denoting that a function or type mutates global active state of an [RModule].
- */
-@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
-@RequiresOptIn("This function mutates global active state of a module and should only be " +
+@RequiresOptIn("This mutates global active state of a module and should only be " +
         "used by RModule implementations, with caution")
 annotation class MutatesModuleState

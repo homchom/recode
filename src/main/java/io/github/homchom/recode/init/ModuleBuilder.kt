@@ -8,16 +8,18 @@ typealias StrongModuleBuilderScope = ModuleBuilder<ActiveStateModule>.() -> Unit
 /**
  * Builds a weak [RModule].
  */
-inline fun weakModule(builder: ModuleBuilderScope) = ModuleBuilder<RModule>()
-    .apply(builder)
-    .run { basicWeakModule(dependencies, onLoad.action, onEnable.action, onDisable.action) }
+inline fun weakModule(key: SingletonKey? = null, builder: ModuleBuilderScope) =
+    ModuleBuilder<RModule>(key)
+        .apply(builder)
+        .run { basicWeakModule(dependencies, onLoad.action, onEnable.action, onDisable.action) }
 
 /**
  * Builds a strong [RModule].
  */
-inline fun strongModule(builder: StrongModuleBuilderScope) = ModuleBuilder<ActiveStateModule>()
-    .apply(builder)
-    .run { basicStrongModule(dependencies, onLoad.action, onEnable.action, onDisable.action) }
+inline fun strongModule(key: SingletonKey? = null, builder: StrongModuleBuilderScope) =
+    ModuleBuilder<ActiveStateModule>(key)
+        .apply(builder)
+        .run { basicStrongModule(dependencies, onLoad.action, onEnable.action, onDisable.action) }
 
 /**
  * Builds a strong [RModule] to be enabled by entrypoints.
@@ -36,7 +38,11 @@ inline fun entrypointModule(builder: StrongModuleBuilderScope) =
  * @see weakModule
  * @see strongModule
  */
-class ModuleBuilder<T : RModule> {
+class ModuleBuilder<T : RModule>(key: SingletonKey?) {
+    init {
+        key?.use()
+    }
+
     val dependencies: List<RModule> get() = _dependencies
     private val _dependencies = mutableListOf<RModule>()
 
