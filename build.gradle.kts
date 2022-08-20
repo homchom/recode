@@ -49,9 +49,8 @@ dependencies {
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
 
     val kotlinVersion: String by project
-    shadeApi(kotlin("stdlib", "1.7.0"))
-    shadeApi(kotlin("stdlib-jdk7", "1.7.0"))
-    shadeApi(kotlin("stdlib-jdk8", "1.7.0"))
+    shadeApi(kotlin("stdlib", kotlinVersion))
+    shadeApi("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
 
     // https://github.com/CottonMC/LibGui/releases
     includeModImpl("io.github.cottonmc:LibGui:5.4.0+1.18.2")
