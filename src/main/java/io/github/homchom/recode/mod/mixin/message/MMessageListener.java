@@ -35,7 +35,7 @@ public class MMessageListener {
                 // TODO: remove after new message listener is complete
                 new LegacyMessage(packet, ci);
 
-                boolean result = ReceiveChatMessageEvent.INSTANCE.invoke(packet.getMessage());
+                boolean result = ReceiveChatMessageEvent.INSTANCE.invoke(packet.getMessage(), true);
                 if (!result) ci.cancel();
                 try {
                     this.updateVersion(packet.getMessage());

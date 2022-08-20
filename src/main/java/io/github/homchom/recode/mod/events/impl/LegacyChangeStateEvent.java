@@ -10,7 +10,7 @@ import kotlin.Unit;
 
 public class LegacyChangeStateEvent {
     public LegacyChangeStateEvent() {
-        ChangeDFStateEvent.INSTANCE.listen((context, __) -> {
+        ChangeDFStateEvent.INSTANCE.register((context, __) -> {
             run(context.getNew(), context.getOld());
             return Unit.INSTANCE;
         });

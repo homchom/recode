@@ -19,7 +19,7 @@ interface Feature : Configurable
 private class FeatureBuilder(
     override val name: String,
     moduleBuilder: StrongModuleBuilderScope
-) : Feature, ActiveStateModule by strongModule(moduleBuilder)
+) : Feature, ActiveStateModule by strongModule(builder = moduleBuilder)
 
 sealed class FeatureGroup(
     override val name: String,

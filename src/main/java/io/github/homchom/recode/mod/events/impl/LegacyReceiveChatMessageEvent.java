@@ -16,7 +16,7 @@ import java.util.regex.*;
 
 public class LegacyReceiveChatMessageEvent {
     public LegacyReceiveChatMessageEvent() {
-        ReceiveChatMessageEvent.INSTANCE.listen(this::run);
+        ReceiveChatMessageEvent.INSTANCE.register(this::run);
     }
 
     public static boolean pjoin = false;

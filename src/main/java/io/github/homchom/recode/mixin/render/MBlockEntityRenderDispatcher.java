@@ -16,7 +16,7 @@ public class MBlockEntityRenderDispatcher {
 	public void renderBlockEntities(
 			BlockEntity blockEntity, float f, PoseStack poseStack,
 			MultiBufferSource multiBufferSource, CallbackInfo ci) {
-		if (!RenderBlockEntityEvent.INSTANCE.invoke(blockEntity)) {
+		if (!RenderBlockEntityEvent.INSTANCE.invoke(blockEntity, true)) {
 			ci.cancel();
 		}
 	}

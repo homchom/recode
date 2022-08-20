@@ -7,7 +7,7 @@ public class LegacyReceiveSoundEvent {
     private static int cancelNextSounds;
 
     public LegacyReceiveSoundEvent() {
-        PlaySoundEvent.INSTANCE.listen(this::run);
+        PlaySoundEvent.INSTANCE.register(this::run);
     }
 
     private boolean run(ClientboundSoundPacket packet, boolean playSound) {
