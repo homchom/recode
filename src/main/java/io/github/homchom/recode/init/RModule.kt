@@ -1,10 +1,17 @@
 package io.github.homchom.recode.init
 
-import io.github.homchom.recode.event.Listenable
 import io.github.homchom.recode.event.Listener
+import io.github.homchom.recode.event.REvent
+import io.github.homchom.recode.event.hookFrom
 
 typealias ModuleAction = RModule.() -> Unit
 typealias StrongModuleAction = ActiveStateModule.() -> Unit
+
+/**
+ * A module that is always enabled. Useful for listening to events globally. Don't use inside
+ * another module, and prefer listening to more localized modules when applicable.
+ */
+val GlobalModule = strongModule {}
 
 /**
  * A group of code with dependencies and that can be loaded, enabled, and disabled.
@@ -25,10 +32,15 @@ interface RModule {
     fun addAsDependency(to: RModule)
 
     /**
-     * @see Listenable.listenFrom
+     * @see REvent.listenFrom
      */
-    fun <C, R> listenTo(event: Listenable<C, R>, listener: Listener<C, R>) =
-        event.listenFrom(this, listener)
+    fun <C, R> REvent<C, R>.listen(listener: Listener<C, R>) =
+        listenFrom(this@RModule, listener)
+
+    /**
+     * @see hookFrom
+     */
+    fun <C, R> REvent<C, R>.hook(hook: (C) -> Unit) = hookFrom(this@RModule, hook)
 }
 
 /**

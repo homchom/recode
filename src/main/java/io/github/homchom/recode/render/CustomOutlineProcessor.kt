@@ -2,11 +2,10 @@ package io.github.homchom.recode.render
 
 import io.github.homchom.recode.init.weakModule
 import io.github.homchom.recode.mc
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 
 val CustomOutlineProcessor = weakModule {
     onLoad {
-        WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register { _, _ ->
+        BeforeOutlineBlockEvent.hook {
             if (isEnabled) {
                 val processor = mc.levelRenderer as OutlineProcessor
                 if (processor.canProcessOutlines()) {
@@ -16,7 +15,6 @@ val CustomOutlineProcessor = weakModule {
                     }
                 }
             }
-            true
         }
     }
 }

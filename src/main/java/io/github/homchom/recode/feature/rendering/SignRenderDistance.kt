@@ -9,12 +9,12 @@ import net.minecraft.world.level.block.entity.SignBlockEntity
 
 object FSignRenderDistance : Feature by feature("Sign Render Distance", {
     onLoad {
-        listenTo(RenderBlockEntityEvent) { blockEntity, render ->
+        RenderBlockEntityEvent.listen { blockEntity, render ->
             if (blockEntity is SignBlockEntity) {
                 val cameraPos = mc.cameraEntity!!.blockPosition()
                 val distance = Config.getInteger("signRenderDistance").toDouble()
                 if (!blockEntity.getBlockPos().closerThan(cameraPos, distance)) {
-                    return@listenTo false
+                    return@listen false
                 }
             }
             render

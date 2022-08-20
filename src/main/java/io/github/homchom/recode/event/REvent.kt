@@ -1,7 +1,7 @@
 package io.github.homchom.recode.event
 
-import io.github.homchom.recode.id
 import io.github.homchom.recode.init.RModule
+import kotlinx.coroutines.flow.Flow
 import net.fabricmc.fabric.api.event.Event
 import net.fabricmc.fabric.api.event.EventFactory
 import net.minecraft.resources.ResourceLocation
@@ -9,22 +9,22 @@ import net.minecraft.resources.ResourceLocation
 typealias Listener<C, R> = (C, R) -> R
 
 /**
- * Creates a custom [REvent].
+ * Creates a custom [InvokableEvent].
  *
- * @see CustomEvent
+ * @see CustomPhasedEvent
  * @see createFabricEvent
  */
-fun <C, R : Any> createEvent() = CustomEvent<C, R>(createFabricEvent(::customListenerOf))
+fun <C, R : Any> createEvent(): CustomEvent<C, R> =
+    CustomPhasedEvent<_, _, EventPhase>(createFabricEvent(::customListenerOf))
 
 /**
- * Creates a custom [REvent] with phases, using the order of the provided enum type as the
- * phase order.
+ * Creates a custom [InvokableEvent] with [phases].
  *
- * @see CustomEvent
+ * @see CustomPhasedEvent
  * @see createFabricEventWithPhases
  */
-inline fun <C, R : Any, reified P : Enum<P>> createEventWithPhases() =
-    CustomEvent(createFabricEventWithPhases<Listener<C, R>, P>(::customListenerOf))
+fun <C, R : Any, P : EventPhase> createEventWithPhases(vararg phases: P) =
+    CustomPhasedEvent<C, R, P>(createFabricEventWithPhases(phases, ::customListenerOf))
 
 /**
  * Creates a raw array-backed Fabric event of listener type [T] with [factory].
@@ -35,57 +35,79 @@ inline fun <reified T> createFabricEvent(noinline factory: (Array<T>) -> T): Eve
     EventFactory.createArrayBacked(T::class.java, factory)
 
 /**
- * Creates a raw Fabric event of listener type [T] with [factory] and phases by the ordinals of
- * enum type [P], in order.
+ * Creates a raw Fabric event of listener type [T] with [factory] and with [phases].
  *
  * @see EventFactory.createWithPhases
  */
-inline fun <reified T, reified P : Enum<P>> createFabricEventWithPhases(
+inline fun <reified T> createFabricEventWithPhases(
+    phases: Array<out EventPhase>,
     noinline factory: (Array<T>) -> T
 ): Event<T> {
-    val phases = enumValues<P>()
-        .mapTo(mutableListOf()) { id(it.name.lowercase()) }
+    val phaseIDs = phases
+        .mapTo(mutableListOf()) { it.id }
         .apply { add(Event.DEFAULT_PHASE) }
         .toTypedArray()
-    return EventFactory.createWithPhases(T::class.java, factory, *phases)
+    return EventFactory.createWithPhases(T::class.java, factory, *phaseIDs)
 }
 
 /**
- * An event type that can be listened to from within a module.
+ * An event that can be added to via listeners in modules, which are invoked in order when the
+ * event is run and if the module is enabled.
  *
- * @see REvent
+ * @param C The event context type (for parameters).
+ * @param R The event result type.
+ *
+ * @see InvokableEvent
+ * @see Event
  */
-sealed interface Listenable<C, R> {
+interface REvent<C, R> {
+    /**
+     * A [Flow] that emits the context of each event invocation. Useful for receiving future
+     * invocations as an asynchronous stream.
+     */
+    val contextFlow: Flow<C>
+
     @Deprecated("Create and/or listen from a module instead")
-    fun listen(listener: Listener<C, R>)
+    fun register(listener: Listener<C, R>)
 
     fun listenFrom(module: RModule, listener: Listener<C, R>)
 }
 
 /**
- * A wrapper for a Fabric event. Events can be run (invoked) with context and return results, and
- * are added to via listeners in modules, which are invoked in order when the event is run and if
- * the module is enabled.
- *
- * @param C The event context type (for parameters).
- * @param R The event result type.
- * @param L The event listener type.
- *
- * @see Event
+ * Listens to this [REvent] without affecting its result.
  */
-sealed interface REvent<C, R, L> : Listenable<C, R> {
+inline fun <C, R> REvent<C, R>.hookFrom(module: RModule, crossinline hook: (C) -> Unit) =
+    listenFrom(module) { context, result ->
+        hook(context)
+        result
+    }
+
+/**
+ * An invokable [REvent] that is run when invoked.
+ *
+ * @param L The raw listener type.
+ */
+interface InvokableEvent<C, R, L> : REvent<C, R> {
     val fabricEvent: Event<L>
 
     val invoker: L get() = fabricEvent.invoker()
-
-    fun addPhaseOrdering(first: ResourceLocation, second: ResourceLocation) =
-        fabricEvent.addPhaseOrdering(first, second)
 }
 
 /**
- * A custom [REvent] that stores its previous result.
+ * An [InvokableEvent] with phases of type [P].
+ *
+ * @see EventFactory.createWithPhases
  */
-interface CustomEvent<C, R : Any> : REvent<C, R, Listener<C, R>> {
+interface PhasedEvent<C, R, L, P : EventPhase> : InvokableEvent<C, R, L> {
+    fun listenFrom(module: RModule, phase: P, listener: Listener<C, R>)
+
+    fun addPhaseOrdering(first: P, second: P) = fabricEvent.addPhaseOrdering(first.id, second.id)
+}
+
+/**
+ * A custom [InvokableEvent] that stores its previous result.
+ */
+interface CustomEvent<C, R : Any> : InvokableEvent<C, R, Listener<C, R>> {
     /**
      * The result of the previous event invocation, or null if the event has not been run.
      */
@@ -99,7 +121,23 @@ interface CustomEvent<C, R : Any> : REvent<C, R, Listener<C, R>> {
 }
 
 /**
- * Creates a listener for a [CustomEvent] by folding on [listeners].
+ * @see CustomPhasedEvent
+ * @see PhasedEvent
+ */
+interface CustomPhasedEvent<C, R : Any, P : EventPhase> :
+    CustomEvent<C, R>, PhasedEvent<C, R, Listener<C, R>, P>
+
+/**
+ * A wrapper for a Fabric [Event] phase.
+ *
+ * @see EventFactory.createWithPhases
+ */
+interface EventPhase {
+    val id: ResourceLocation
+}
+
+/**
+ * Creates a listener for a [CustomPhasedEvent] by folding on [listeners].
  */
 fun <C, R> customListenerOf(listeners: Array<Listener<C, R>>): Listener<C, R> =
     { context, initialValue ->

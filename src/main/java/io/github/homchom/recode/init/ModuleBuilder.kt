@@ -1,7 +1,5 @@
 package io.github.homchom.recode.init
 
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
-
 typealias ModuleBuilderScope = ModuleBuilder<RModule>.() -> Unit
 typealias StrongModuleBuilderScope = ModuleBuilder<ActiveStateModule>.() -> Unit
 
@@ -28,7 +26,7 @@ inline fun strongModule(key: SingletonKey? = null, builder: StrongModuleBuilderS
 inline fun entrypointModule(builder: StrongModuleBuilderScope) =
     strongModule {
         onLoad {
-            ClientLifecycleEvents.CLIENT_STOPPING.register { disable() }
+            ClientStopEvent.hook { disable() }
         }
 
         builder()

@@ -13,7 +13,7 @@ import kotlin.math.sqrt
 
 object FCodeSearch : Feature by feature("Code Search", {
     onLoad {
-        listenTo(OutlineBlockEntityEvent) { blockEntity, result ->
+        OutlineBlockEntityEvent.listen { blockEntity, result ->
             if (blockEntity is SignBlockEntity) {
                 if (DFInfo.currentState.getMode() == LegacyState.Mode.DEV && mc.player!!.isCreative) {
                     if (CodeSearcher.isSignMatch(blockEntity)) {

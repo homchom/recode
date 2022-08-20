@@ -1,39 +1,73 @@
 package io.github.homchom.recode.event
 
 import io.github.homchom.recode.init.RModule
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import net.fabricmc.fabric.api.event.Event
 
 /**
- * Wraps an existing event into an [REvent], using [transform] to map recode listeners to its
+ * Wraps an existing event into an [InvokableEvent], using [transform] to map recode listeners to its
  * specification.
  */
-fun <C, R, L> wrapEvent(event: Event<L>, transform: (Listener<C, R>) -> L): REvent<C, R, L> =
-    EventWrapper(event, transform)
+fun <C, R, L> wrapEvent(event: Event<L>, transform: (Listener<C, R>) -> L): InvokableEvent<C, R, L> =
+    wrapEventWithPhases<_, _, _, EventPhase>(event, transform)
 
-private open class EventWrapper<C, R, L>(
+/**
+ * @see wrapEvent
+ * @see createEventWithPhases
+ */
+fun <C, R, L, P : EventPhase> wrapEventWithPhases(
+    event: Event<L>,
+    transform: (Listener<C, R>) -> L
+): PhasedEvent<C, R, L, P> {
+    return EventWrapper(event, transform)
+}
+
+private open class EventWrapper<C, R, L, P : EventPhase>(
     override val fabricEvent: Event<L>,
     private val transform: (Listener<C, R>) -> L
-) : REvent<C, R, L> {
-    @Suppress("OVERRIDE_DEPRECATION")
-    override fun listen(listener: Listener<C, R>) = fabricEvent.register(transform(listener))
+) : PhasedEvent<C, R, L, P> {
+    override val contextFlow: Flow<C> by lazy {
+        MutableSharedFlow<C>().also { flow ->
+            transformAndRegister { context, result ->
+                runBlocking { flow.emit(context) }
+                result
+            }
+        }
+    }
+
+    @Deprecated("Use listenFrom")
+    override fun register(listener: Listener<C, R>) = transformAndRegister(listener)
+
+    private fun transformAndRegister(listener: Listener<C, R>) =
+        fabricEvent.register(transform(listener))
 
     override fun listenFrom(module: RModule, listener: Listener<C, R>) =
-        fabricEvent.register(transform { context, result ->
+        fabricEvent.register(transformFrom(module, listener))
+
+    override fun listenFrom(module: RModule, phase: P, listener: Listener<C, R>) =
+        fabricEvent.register(phase.id, transformFrom(module, listener))
+
+    private inline fun transformFrom(module: RModule, crossinline listener: Listener<C, R>) =
+        transform { context, result ->
             if (module.isEnabled) listener(context, result) else result
-        })
+        }
 }
 
 /**
- * Constructs a [CustomEvent].
+ * Constructs a [CustomPhasedEvent].
  */
 @Suppress("FunctionName")
-fun <C, R : Any> CustomEvent(fabricEvent: Event<Listener<C, R>>): CustomEvent<C, R> {
+fun <C, R : Any, P : EventPhase> CustomPhasedEvent(
+    fabricEvent: Event<Listener<C, R>>
+): CustomPhasedEvent<C, R, P> {
     return CustomEventWrapper(fabricEvent)
 }
 
-private class CustomEventWrapper<C, R : Any>(
+private class CustomEventWrapper<C, R : Any, P : EventPhase>(
     fabricEvent: Event<Listener<C, R>>
-) : CustomEvent<C, R>, EventWrapper<C, R, Listener<C, R>>(fabricEvent, { it }) {
+) : CustomPhasedEvent<C, R, P>, EventWrapper<C, R, Listener<C, R>, P>(fabricEvent, { it }) {
     override val prevResult get() = _prevResult
     private var _prevResult: R? = null
 

@@ -5,21 +5,18 @@ import io.github.homchom.recode.init.RModule
 
 /**
  * A [CustomEvent] without a result.
+ *
+ * @see hookFrom
  */
-interface Hook<C> : CustomEvent<C, Unit> {
+interface HookEvent<C> : CustomEvent<C, Unit> {
     operator fun invoke(context: C) = invoke(context, Unit)
 }
 
-inline fun <C> Hook<C>.listenFrom(module: RModule, crossinline listener: (C) -> Unit) =
-    listenFrom(module) { context, _ -> listener(context) }
-
 /**
- * A [CustomEvent] with a boolean result; this should be used for events whose listeners "validate"
+ * An [REvent] with a boolean result; this should be used for events whose listeners "validate"
  * it and determine whether the action that caused it should proceed.
  */
-interface ValidatedEvent<C> : CustomEvent<C, Boolean> {
-    operator fun invoke(context: C) = invoke(context, true)
-}
+interface ValidatedEvent<C> : REvent<C, Boolean>
 
 /**
  * A [CustomEvent] with dependencies. When listened to by a module, the dependencies will be
