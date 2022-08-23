@@ -6,7 +6,7 @@ typealias StrongModuleBuilderScope = ModuleBuilder<ActiveStateModule>.() -> Unit
 /**
  * Builds a weak [RModule].
  */
-inline fun weakModule(key: SingletonKey? = null, builder: ModuleBuilderScope = {}) =
+inline fun module(key: SingletonKey? = null, builder: ModuleBuilderScope = {}) =
     ModuleBuilder<RModule>(key)
         .apply(builder)
         .run { basicWeakModule(dependencies, onLoad.action, onEnable.action, onDisable.action) }
@@ -33,7 +33,7 @@ inline fun entrypointModule(builder: StrongModuleBuilderScope) =
     }
 
 /**
- * @see weakModule
+ * @see module
  * @see strongModule
  */
 class ModuleBuilder<T : RModule>(key: SingletonKey?) {

@@ -1,6 +1,5 @@
 package io.github.homchom.recode.feature.rendering
 
-import io.github.homchom.recode.feature.Feature
 import io.github.homchom.recode.feature.feature
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.mod.features.commands.CodeSearcher
@@ -11,7 +10,7 @@ import io.github.homchom.recode.ui.rgba
 import net.minecraft.world.level.block.entity.SignBlockEntity
 import kotlin.math.sqrt
 
-object FCodeSearch : Feature by feature("Code Search", {
+val FCodeSearch = feature("Code Search") {
     onLoad {
         OutlineBlockEntityEvent.listen { blockEntity, result ->
             if (blockEntity is SignBlockEntity) {
@@ -30,4 +29,4 @@ object FCodeSearch : Feature by feature("Code Search", {
             result
         }
     }
-})
+}
