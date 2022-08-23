@@ -6,7 +6,7 @@ typealias StrongModuleBuilderScope = ModuleBuilder<ActiveStateModule>.() -> Unit
 /**
  * Builds a weak [RModule].
  */
-inline fun weakModule(key: SingletonKey? = null, builder: ModuleBuilderScope) =
+inline fun weakModule(key: SingletonKey? = null, builder: ModuleBuilderScope = {}) =
     ModuleBuilder<RModule>(key)
         .apply(builder)
         .run { basicWeakModule(dependencies, onLoad.action, onEnable.action, onDisable.action) }
@@ -14,7 +14,7 @@ inline fun weakModule(key: SingletonKey? = null, builder: ModuleBuilderScope) =
 /**
  * Builds a strong [RModule].
  */
-inline fun strongModule(key: SingletonKey? = null, builder: StrongModuleBuilderScope) =
+inline fun strongModule(key: SingletonKey? = null, builder: StrongModuleBuilderScope = {}) =
     ModuleBuilder<ActiveStateModule>(key)
         .apply(builder)
         .run { basicStrongModule(dependencies, onLoad.action, onEnable.action, onDisable.action) }
@@ -41,8 +41,7 @@ class ModuleBuilder<T : RModule>(key: SingletonKey?) {
         key?.use()
     }
 
-    val dependencies: List<RModule> get() = _dependencies
-    private val _dependencies = mutableListOf<RModule>()
+    val dependencies = mutableListOf<RModule>()
 
     /**
      * A [ModuleActionBuilder] invoked once, when the module is loaded. Listen to events here.
@@ -61,7 +60,7 @@ class ModuleBuilder<T : RModule>(key: SingletonKey?) {
     val onDisable = ModuleActionBuilder<T>()
 
     fun depend(vararg modules: RModule) {
-        _dependencies.addAll(modules)
+        dependencies.addAll(modules)
     }
 }
 

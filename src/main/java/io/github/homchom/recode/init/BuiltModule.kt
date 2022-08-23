@@ -1,5 +1,7 @@
 package io.github.homchom.recode.init
 
+import io.github.homchom.recode.util.unmodifiable
+
 /**
  * Constructs a basic weak [RModule] with dependencies and actions [onLoad], [onEnable], and
  * [onDisable].
@@ -41,7 +43,7 @@ private class BuiltModule(
     override var isEnabled = false
         private set
 
-    override val dependencies: List<ActiveStateModule> get() = _dependencies
+    override val dependencies get() = _dependencies.unmodifiable()
     private val _dependencies = mutableListOf<ActiveStateModule>()
 
     val usages: Set<ActiveStateModule> get() = _usages

@@ -13,7 +13,8 @@ inline fun text(style: Style = Style.EMPTY, builder: TextScope) =
 
 @Suppress("PropertyName", "unused")
 class TextBuilder(style: Style = Style.EMPTY) {
-    var text: MutableComponent = TextComponent("").setStyle(style)
+    val text: Component get() = _text
+    private val _text = TextComponent("").setStyle(style)
 
     inline val black get() = ChatFormatting.BLACK
     inline val darkBlue get() = ChatFormatting.DARK_BLUE
@@ -43,8 +44,8 @@ class TextBuilder(style: Style = Style.EMPTY) {
     val showItem: HoverEvent.Action<ItemStackInfo> get() = HoverEvent.Action.SHOW_ITEM
     val showEntity: HoverEvent.Action<EntityTooltipInfo> get() = HoverEvent.Action.SHOW_ENTITY
 
-    fun append(component: MutableComponent) {
-        text += component
+    fun append(component: Component) {
+        _text += component
     }
 
     inline fun appendBlock(style: Style, scope: TextScope) = append(text(style, scope))
