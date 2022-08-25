@@ -29,12 +29,19 @@ public class LegacyReceiveChatMessageEvent {
         if (mc.player == null) return false;
 
         String stripped = message.getString();
+        String msg = stripped.replaceAll("§.", "");
 
         boolean cancel = false;
 
+        //Auto //wand
+        if (Config.getBoolean("autowand")) {
+            if (msg.contains("You are now in build mode.")) {
+                mc.player.chat("//wand");
+            }
+        }
+
         //PJoin command
         if (pjoin) {
-            String msg = stripped.replaceAll("§.", "");
             if (msg.startsWith("                                       \n")) {
                 if (msg.contains(" is currently at spawn\n")) {
                     ChatUtil.sendMessage("This player is not in a plot.", ChatType.FAIL);

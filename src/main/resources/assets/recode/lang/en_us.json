@@ -72,6 +72,8 @@
     "config.recode.option.autotimeval": "Auto /time value",
     "config.recode.option.autotimeval.tooltip": "Value to use in auto /time.",
 
+    "config.recode.option.autowand": "Auto //wand",
+    "config.recode.option.autowand.tooltip": "Automatically runs //wand upon\nentering build mode.",
     "config.recode.option.autoRC": "Auto /rc",
     "config.recode.option.autoRC.tooltip": "Automatically runs /rc upon\nentering dev mode.",
     "config.recode.option.autonightvis": "Auto /nightvis",
