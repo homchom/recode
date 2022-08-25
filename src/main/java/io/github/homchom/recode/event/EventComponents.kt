@@ -1,5 +1,6 @@
 package io.github.homchom.recode.event
 
+import io.github.homchom.recode.init.ListenableModule
 import io.github.homchom.recode.init.MutatesModuleState
 import io.github.homchom.recode.init.RModule
 
@@ -27,7 +28,7 @@ class DependentEvent<C, R : Any>(
     private vararg val dependencies: RModule
 ) : CustomEvent<C, R> by event {
     @MutatesModuleState
-    override fun listenFrom(module: RModule, listener: Listener<C, R>) {
+    override fun listenFrom(module: ListenableModule, listener: Listener<C, R>) {
         for (handle in dependencies) handle.addAsDependency(module)
         event.listenFrom(module, listener)
     }

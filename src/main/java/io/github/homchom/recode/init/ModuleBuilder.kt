@@ -1,21 +1,21 @@
 package io.github.homchom.recode.init
 
-typealias ModuleBuilderScope = ModuleBuilder<RModule>.() -> Unit
-typealias StrongModuleBuilderScope = ModuleBuilder<ActiveStateModule>.() -> Unit
+typealias ModuleBuilderScope = ModuleBuilder.() -> Unit
+typealias BuiltModuleAction = BuiltModule.() -> Unit
 
 /**
  * Builds a weak [RModule].
  */
 inline fun module(key: SingletonKey? = null, builder: ModuleBuilderScope = {}) =
-    ModuleBuilder<RModule>(key)
+    ModuleBuilder(key)
         .apply(builder)
         .run { basicWeakModule(dependencies, onLoad.action, onEnable.action, onDisable.action) }
 
 /**
  * Builds a strong [RModule].
  */
-inline fun strongModule(key: SingletonKey? = null, builder: StrongModuleBuilderScope = {}) =
-    ModuleBuilder<ActiveStateModule>(key)
+inline fun strongModule(key: SingletonKey? = null, builder: ModuleBuilderScope = {}) =
+    ModuleBuilder(key)
         .apply(builder)
         .run { basicStrongModule(dependencies, onLoad.action, onEnable.action, onDisable.action) }
 
@@ -23,7 +23,7 @@ inline fun strongModule(key: SingletonKey? = null, builder: StrongModuleBuilderS
  * Builds a strong [RModule] to be enabled by entrypoints.
  */
 @OptIn(MutatesModuleState::class)
-inline fun entrypointModule(builder: StrongModuleBuilderScope) =
+inline fun entrypointModule(builder: ModuleBuilderScope): RModule =
     strongModule {
         onLoad {
             ClientStopEvent.hook { disable() }
@@ -36,7 +36,7 @@ inline fun entrypointModule(builder: StrongModuleBuilderScope) =
  * @see module
  * @see strongModule
  */
-class ModuleBuilder<T : RModule>(key: SingletonKey?) {
+class ModuleBuilder(key: SingletonKey?) {
     init {
         key?.use()
     }
@@ -46,18 +46,18 @@ class ModuleBuilder<T : RModule>(key: SingletonKey?) {
     /**
      * A [ModuleActionBuilder] invoked once, when the module is loaded. Listen to events here.
      */
-    val onLoad = ModuleActionBuilder<T>()
+    val onLoad = ModuleActionBuilder()
 
     /**
      * A [ModuleActionBuilder] invoked when the module is enabled. Listen to events with [onLoad],
      * not here.
      */
-    val onEnable = ModuleActionBuilder<T>()
+    val onEnable = ModuleActionBuilder()
 
     /**
      * A [ModuleActionBuilder] invoked when the module is disabled.
      */
-    val onDisable = ModuleActionBuilder<T>()
+    val onDisable = ModuleActionBuilder()
 
     fun depend(vararg modules: RModule) {
         dependencies.addAll(modules)
@@ -65,15 +65,15 @@ class ModuleBuilder<T : RModule>(key: SingletonKey?) {
 }
 
 /**
- * Builds an action to be invoked by an [RModule].
+ * Builds an action to be invoked by a [BuiltModule].
  *
  * @see ModuleBuilder
  */
-class ModuleActionBuilder<T : RModule> {
-    var action: (T.() -> Unit)? = null
+class ModuleActionBuilder {
+    var action: BuiltModuleAction? = null
         private set
 
-    operator fun invoke(block: T.() -> Unit) {
+    operator fun invoke(block: BuiltModuleAction) {
         action = action?.let { prev ->
             {
                 prev()

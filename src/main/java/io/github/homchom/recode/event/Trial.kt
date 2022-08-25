@@ -1,13 +1,15 @@
 package io.github.homchom.recode.event
 
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import kotlin.time.Duration.Companion.seconds
 
-inline fun <R : Any> runTrial(tests: Trial.() -> R) = try {
-    Trial().tests()
+suspend inline fun <R : Any> runTrial(crossinline tests: Trial.() -> R) = try {
+    withContext(Dispatchers.IO) { Trial().tests() }
 } catch (failure: TrialFailException) {
     null
 }

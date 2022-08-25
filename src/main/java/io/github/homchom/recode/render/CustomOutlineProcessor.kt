@@ -1,9 +1,10 @@
 package io.github.homchom.recode.render
 
+import io.github.homchom.recode.init.RModule
 import io.github.homchom.recode.init.module
 import io.github.homchom.recode.mc
 
-val CustomOutlineProcessor = module {
+val CustomOutlineProcessor: RModule = module {
     onLoad {
         BeforeOutlineBlockEvent.hook {
             if (isEnabled) {

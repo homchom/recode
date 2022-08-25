@@ -1,21 +1,18 @@
 package io.github.homchom.recode.feature
 
-import io.github.homchom.recode.init.ActiveStateModule
-import io.github.homchom.recode.init.MutatesModuleState
-import io.github.homchom.recode.init.StrongModuleBuilderScope
-import io.github.homchom.recode.init.strongModule
+import io.github.homchom.recode.init.*
 import io.github.homchom.recode.util.unmodifiable
 
 // TODO: finish and document these
 
-sealed interface Configurable : ActiveStateModule {
+sealed interface Configurable : RModule {
     val name: String
 }
 
 /**
  * Builds a [Feature].
  */
-fun feature(name: String, builder: StrongModuleBuilderScope): Feature =
+fun feature(name: String, builder: ModuleBuilderScope): Feature =
     FeatureBuilder(name, builder)
 
 /**
@@ -24,16 +21,16 @@ fun feature(name: String, builder: StrongModuleBuilderScope): Feature =
 fun featureGroup(
     name: String,
     vararg features: Feature,
-    builder: StrongModuleBuilderScope? = null
+    builder: ModuleBuilderScope? = null
 ): FeatureGroup {
     return FeatureGroupBuilder(name, features.toList().unmodifiable(), builder)
 }
 
-interface Feature : Configurable
+interface Feature : Configurable, ActiveStateModule
 
 private class FeatureBuilder(
     override val name: String,
-    moduleBuilder: StrongModuleBuilderScope
+    moduleBuilder: ModuleBuilderScope
 ) : Feature, ActiveStateModule by strongModule(builder = moduleBuilder)
 
 sealed interface FeatureGroup : Configurable {
@@ -44,8 +41,8 @@ sealed interface FeatureGroup : Configurable {
 private class FeatureGroupBuilder(
     override val name: String,
     override val features: List<Feature>,
-    moduleBuilder: StrongModuleBuilderScope? = null
-) : FeatureGroup, ActiveStateModule by strongModule(builder = {
+    moduleBuilder: ModuleBuilderScope? = null
+) : FeatureGroup, RModule by module(builder = {
     onLoad {
         for (feature in features) addAsDependency(feature)
     }

@@ -1,6 +1,9 @@
 package io.github.homchom.recode.init
 
 import io.github.homchom.recode.util.unmodifiable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 
 /**
  * Constructs a basic weak [RModule] with dependencies and actions [onLoad], [onEnable], and
@@ -8,11 +11,11 @@ import io.github.homchom.recode.util.unmodifiable
  */
 fun basicWeakModule(
     dependencies: List<RModule> = emptyList(),
-    onLoad: ModuleAction? = null,
-    onEnable: ModuleAction? = null,
-    onDisable: ModuleAction? = null
-): RModule {
-    return BuiltModule(onLoad, onEnable, onDisable).withDependencies(dependencies)
+    onLoad: BuiltModuleAction? = null,
+    onEnable: BuiltModuleAction? = null,
+    onDisable: BuiltModuleAction? = null
+): BuiltModule {
+    return WeakBuiltModule(onLoad, onEnable, onDisable).withDependencies(dependencies)
 }
 
 /**
@@ -21,11 +24,11 @@ fun basicWeakModule(
  */
 fun basicStrongModule(
     dependencies: List<RModule> = emptyList(),
-    onLoad: StrongModuleAction? = null,
-    onEnable: StrongModuleAction? = null,
-    onDisable: StrongModuleAction? = null
-): ActiveStateModule {
-    return StrongBuiltModule(BuiltModule(onLoad, onEnable, onDisable)
+    onLoad: BuiltModuleAction? = null,
+    onEnable: BuiltModuleAction? = null,
+    onDisable: BuiltModuleAction? = null
+): BuiltModule {
+    return StrongBuiltModule(WeakBuiltModule(onLoad, onEnable, onDisable)
         .withDependencies(dependencies))
 }
 
@@ -33,11 +36,13 @@ private fun <T : RModule> T.withDependencies(dependencies: List<RModule>) = appl
     for (handle in dependencies) handle.addAsDependency(this)
 }
 
-private class BuiltModule(
-    private val onLoad: StrongModuleAction?,
-    private val onEnable: StrongModuleAction?,
-    private val onDisable: StrongModuleAction?
-) : ActiveStateModule {
+interface BuiltModule : ListenableModule, CoroutineModule, ActiveStateModule
+
+private class WeakBuiltModule(
+    private val onLoad: BuiltModuleAction?,
+    private val onEnable: BuiltModuleAction?,
+    private val onDisable: BuiltModuleAction?
+) : BuiltModule {
     override var isLoaded = false
         private set
     override var isEnabled = false
@@ -48,6 +53,9 @@ private class BuiltModule(
 
     val usages: Set<ActiveStateModule> get() = _usages
     private val _usages = mutableSetOf<ActiveStateModule>()
+
+    override val coroutineScope get() = scope
+    private lateinit var scope: CoroutineScope
 
     @MutatesModuleState
     override fun load() {
@@ -61,6 +69,7 @@ private class BuiltModule(
         errorIf(isEnabled) { "enabled" }
         tryLoad()
         for (module in dependencies) module.addUsage(this)
+        scope = CoroutineScope(Dispatchers.Default)
         isEnabled = true
         onEnable?.invoke(this)
     }
@@ -69,6 +78,7 @@ private class BuiltModule(
     override fun disable() {
         errorIf(!isEnabled) { "disabled" }
         for (module in dependencies) module.removeUsage(this)
+        scope.cancel()
         isEnabled = false
         onDisable?.invoke(this)
     }
@@ -97,7 +107,7 @@ private class BuiltModule(
 }
 
 @JvmInline
-private value class StrongBuiltModule(private val impl: BuiltModule) : ActiveStateModule by impl {
+private value class StrongBuiltModule(private val impl: WeakBuiltModule) : BuiltModule by impl {
     @MutatesModuleState
     override fun removeUsage(module: ActiveStateModule) {
         impl.removeUsage(module)

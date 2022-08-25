@@ -1,12 +1,12 @@
 package io.github.homchom.recode.server
 
-import io.github.homchom.recode.util.TrialMatcherList
+import io.github.homchom.recode.util.Matcher
+import io.github.homchom.recode.util.MatcherList
 import net.minecraft.network.chat.Component
 
 sealed interface Message {
     object Chat : Message
 }
 
-object MessageMatcher : TrialMatcherList<Component, Message>() {
-    override fun default(input: Component) = Message.Chat
-}
+private val matchers = MatcherList<Component, Message> { Message.Chat }
+object MessageMatcher : Matcher<Component, Message> by matchers

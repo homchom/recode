@@ -1,5 +1,6 @@
 package io.github.homchom.recode.event
 
+import io.github.homchom.recode.init.ListenableModule
 import io.github.homchom.recode.init.RModule
 import kotlinx.coroutines.flow.Flow
 import net.fabricmc.fabric.api.event.Event
@@ -70,13 +71,13 @@ interface REvent<C, R> {
     @Deprecated("Create and/or listen from a module instead")
     fun register(listener: Listener<C, R>)
 
-    fun listenFrom(module: RModule, listener: Listener<C, R>)
+    fun listenFrom(module: ListenableModule, listener: Listener<C, R>)
 }
 
 /**
  * Listens to this [REvent] without affecting its result.
  */
-inline fun <C, R> REvent<C, R>.hookFrom(module: RModule, crossinline hook: (C) -> Unit) =
+inline fun <C, R> REvent<C, R>.hookFrom(module: ListenableModule, crossinline hook: (C) -> Unit) =
     listenFrom(module) { context, result ->
         hook(context)
         result
