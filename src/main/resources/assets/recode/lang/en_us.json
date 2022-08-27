@@ -85,7 +85,7 @@
     "config.recode.option.autoChatLocal": "Auto /chat local",
     "config.recode.option.autoChatLocal.tooltip": "Automatically runs /chat local.",
     "config.recode.option.autoClickEditMsgs": "Auto click edit msgs",
-    "config.recode.option.autoClickEditMsgs.tooltip": "Automatically clisk messages like\nthe ones that appear when you\nshift l-click a text",
+    "config.recode.option.autoClickEditMsgs.tooltip": "Automatically click messages like\nthe ones that appear when you\nshift l-click a text",
     "config.recode.option.autoTip": "Auto Tip",
     "config.recode.option.autoTip.tooltip": "Automatically runs /tip <player>",
 
