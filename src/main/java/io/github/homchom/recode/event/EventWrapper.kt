@@ -1,5 +1,6 @@
 package io.github.homchom.recode.event
 
+import io.github.homchom.recode.init.ListenableModule
 import io.github.homchom.recode.init.RModule
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
@@ -43,7 +44,7 @@ private open class EventWrapper<C, R, L, P : EventPhase>(
     private fun transformAndRegister(listener: Listener<C, R>) =
         fabricEvent.register(transform(listener))
 
-    override fun listenFrom(module: RModule, listener: Listener<C, R>) =
+    override fun listenFrom(module: ListenableModule, listener: Listener<C, R>) =
         fabricEvent.register(transformFrom(module, listener))
 
     override fun listenFrom(module: RModule, phase: P, listener: Listener<C, R>) =

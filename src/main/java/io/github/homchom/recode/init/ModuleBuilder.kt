@@ -23,7 +23,7 @@ inline fun strongModule(key: SingletonKey? = null, builder: ModuleBuilderScope =
  * Builds a strong [RModule] to be enabled by entrypoints.
  */
 @OptIn(MutatesModuleState::class)
-inline fun entrypointModule(builder: ModuleBuilderScope): RModule =
+inline fun entrypointModule(builder: ModuleBuilderScope): ActiveStateModule =
     strongModule {
         onLoad {
             ClientStopEvent.hook { disable() }
