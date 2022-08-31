@@ -6,7 +6,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
-import kotlin.time.Duration.Companion.seconds
 
 suspend inline fun <R : Any> runTrial(crossinline tests: Trial.() -> R) = try {
     withContext(Dispatchers.IO) { Trial().tests() }
@@ -19,15 +18,21 @@ class Trial {
 
     inline fun <T : Any> test(test: () -> T?) = test() ?: fail()
 
-    suspend inline fun <C, T : Any> testOn(event: REvent<C, *>, crossinline test: (C) -> T?) =
-        try {
-            // TODO: make timeout duration configurable
-            withTimeout(90.seconds) {
-                event.contextFlow.mapNotNull { test(it) }.first()
-            }.also { testEnforced() }
-        } catch (e: CancellationException) {
-            fail()
-        }
+    suspend inline fun <C, T : Any> testOn(
+        event: REvent<C, *>,
+        duration: Long = 0,
+        crossinline test: (C) -> T?
+    ): T {
+        return event.contextFlow.let { flow ->
+            if (duration == 0L) {
+                test { test(flow.first()) }
+            } else try {
+                withTimeout(duration) { flow.mapNotNull { test(it) }.first() }
+            } catch (e: CancellationException) {
+                fail()
+            }
+        }.also { testEnforced() }
+    }
 
     suspend fun enforce(block: suspend () -> Unit) {
         block()

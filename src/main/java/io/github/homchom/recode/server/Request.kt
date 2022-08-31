@@ -6,26 +6,12 @@ import io.github.homchom.recode.init.SingletonKey
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.runBlocking
 
-sealed interface Request<T : Any> {
-    suspend fun send(): T
-}
-
-@Suppress("FunctionName")
-fun <T : Any, C> Request(
-    key: SingletonKey,
-    event: ValidatedEvent<C>,
-    executor: () -> Unit,
-    test: (C) -> T?
-): Request<T> {
-    return RequestImpl(key, event, executor, test)
-}
-
-private class RequestImpl<T : Any, C>(
+class Request<T : Any, C>(
     key: SingletonKey,
     event: ValidatedEvent<C>,
     private val executor: () -> Unit,
     test: (C) -> T?
-) : Request<T> {
+) {
     private val channel: Channel<T>
 
     init {
@@ -39,7 +25,7 @@ private class RequestImpl<T : Any, C>(
         }
     }
 
-    override suspend fun send(): T {
+    suspend fun send(): T {
         executor()
         return channel.receive()
     }
