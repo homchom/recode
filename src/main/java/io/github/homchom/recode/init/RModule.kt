@@ -4,30 +4,26 @@ import io.github.homchom.recode.event.Listener
 import io.github.homchom.recode.event.REvent
 import io.github.homchom.recode.event.hookFrom
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 
 /**
- * A module that is always enabled. Useful for listening to events globally. Don't use inside
- * another module, and prefer listening to more localized modules when applicable.
- */
-val GlobalModule: ListenableModule = strongModule {}
-
-/**
- * A group of code with dependencies and that can be loaded, enabled, and disabled.
+ * A group of code with dependencies ("children") and that can be loaded, enabled, and disabled.
  *
- * All modules are either **weak**, meaning they load and unload as needed based on its dependent
- * modules, or **strong**, meaning they remain active even if no dependents are enabled.
+ * All modules are either **weak**, meaning they load and unload as needed based on its parents,
+ * or **strong**, meaning they remain active even if no parents are enabled.
  *
  * @see module
  * @see strongModule
  */
 interface RModule {
-    val dependencies: List<RModule>
+    val children: List<RModule>
 
     val isLoaded: Boolean
     val isEnabled: Boolean
 
-    fun addDependency(module: ActiveStateModule)
-    fun addAsDependency(to: RModule)
+    fun addParent(module: RModule)
+    fun addChild(module: ActiveStateModule)
 }
 
 interface ListenableModule : RModule {
@@ -76,6 +72,26 @@ interface ActiveStateModule : RModule {
      */
     @MutatesModuleState
     fun removeUsage(module: ActiveStateModule)
+}
+
+/**
+ * A [ListenableModule] that is always enabled. Useful for listening to events globally. Don't use
+ * inside another module, and prefer listening to more localized modules when applicable.
+ */
+val GlobalModule: ListenableModule get() = GlobalBuiltModule
+
+/**
+ * A [CoroutineModule] that is always enabled. Don't use inside another module, and prefer using
+ * modules with properly confined coroutine scopes.
+ *
+ * @see kotlinx.coroutines.CoroutineScope
+ */
+@DelicateCoroutinesApi
+val GlobalCoroutineModule: CoroutineModule get() = GlobalBuiltModule
+
+private object GlobalBuiltModule : BuiltModule by strongModule(builder = {}) {
+    @DelicateCoroutinesApi
+    override val coroutineScope get() = GlobalScope
 }
 
 /**

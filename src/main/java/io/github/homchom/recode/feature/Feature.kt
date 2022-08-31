@@ -44,7 +44,7 @@ private class FeatureGroupBuilder(
     moduleBuilder: ModuleBuilderScope? = null
 ) : FeatureGroup, RModule by module(builder = {
     onLoad {
-        for (feature in features) addAsDependency(feature)
+        for (feature in features) addParent(feature)
     }
 
     onEnable {

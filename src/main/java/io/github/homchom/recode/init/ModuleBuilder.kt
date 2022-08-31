@@ -9,7 +9,7 @@ typealias BuiltModuleAction = BuiltModule.() -> Unit
 inline fun module(key: SingletonKey? = null, builder: ModuleBuilderScope = {}) =
     ModuleBuilder(key)
         .apply(builder)
-        .run { basicWeakModule(dependencies, onLoad.action, onEnable.action, onDisable.action) }
+        .run { basicWeakModule(children, onLoad.action, onEnable.action, onDisable.action) }
 
 /**
  * Builds a strong [RModule].
@@ -17,7 +17,7 @@ inline fun module(key: SingletonKey? = null, builder: ModuleBuilderScope = {}) =
 inline fun strongModule(key: SingletonKey? = null, builder: ModuleBuilderScope = {}) =
     ModuleBuilder(key)
         .apply(builder)
-        .run { basicStrongModule(dependencies, onLoad.action, onEnable.action, onDisable.action) }
+        .run { basicStrongModule(children, onLoad.action, onEnable.action, onDisable.action) }
 
 /**
  * Builds a strong [RModule] to be enabled by entrypoints.
@@ -41,7 +41,7 @@ class ModuleBuilder(key: SingletonKey?) {
         key?.use()
     }
 
-    val dependencies = mutableListOf<RModule>()
+    val children = mutableListOf<RModule>()
 
     /**
      * A [ModuleActionBuilder] invoked once, when the module is loaded. Listen to events here.
@@ -60,7 +60,7 @@ class ModuleBuilder(key: SingletonKey?) {
     val onDisable = ModuleActionBuilder()
 
     fun depend(vararg modules: RModule) {
-        dependencies.addAll(modules)
+        children.addAll(modules)
     }
 }
 

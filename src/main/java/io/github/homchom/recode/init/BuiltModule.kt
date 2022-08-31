@@ -6,34 +6,34 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 
 /**
- * Constructs a basic weak [RModule] with dependencies and actions [onLoad], [onEnable], and
+ * Constructs a basic weak [RModule] with children and actions [onLoad], [onEnable], and
  * [onDisable].
  */
 fun basicWeakModule(
-    dependencies: List<RModule> = emptyList(),
+    children: List<RModule> = emptyList(),
     onLoad: BuiltModuleAction? = null,
     onEnable: BuiltModuleAction? = null,
     onDisable: BuiltModuleAction? = null
 ): BuiltModule {
-    return WeakBuiltModule(onLoad, onEnable, onDisable).withDependencies(dependencies)
+    return WeakBuiltModule(onLoad, onEnable, onDisable).withChildren(children)
 }
 
 /**
- * Constructs a basic strong [RModule] with dependencies and actions [onLoad], [onEnable], and
+ * Constructs a basic strong [RModule] with children and actions [onLoad], [onEnable], and
  * [onDisable].
  */
 fun basicStrongModule(
-    dependencies: List<RModule> = emptyList(),
+    children: List<RModule> = emptyList(),
     onLoad: BuiltModuleAction? = null,
     onEnable: BuiltModuleAction? = null,
     onDisable: BuiltModuleAction? = null
 ): BuiltModule {
     return StrongBuiltModule(WeakBuiltModule(onLoad, onEnable, onDisable)
-        .withDependencies(dependencies))
+        .withChildren(children))
 }
 
-private fun <T : RModule> T.withDependencies(dependencies: List<RModule>) = apply {
-    for (handle in dependencies) handle.addAsDependency(this)
+private fun <T : RModule> T.withChildren(children: List<RModule>) = apply {
+    for (child in children) child.addParent(this)
 }
 
 interface BuiltModule : ListenableModule, CoroutineModule, ActiveStateModule
@@ -48,8 +48,8 @@ private class WeakBuiltModule(
     override var isEnabled = false
         private set
 
-    override val dependencies get() = _dependencies.unmodifiable()
-    private val _dependencies = mutableListOf<ActiveStateModule>()
+    override val children get() = _children.unmodifiable()
+    private val _children = mutableListOf<ActiveStateModule>()
 
     val usages: Set<ActiveStateModule> get() = _usages
     private val _usages = mutableSetOf<ActiveStateModule>()
@@ -68,7 +68,7 @@ private class WeakBuiltModule(
     override fun enable() {
         errorIf(isEnabled) { "enabled" }
         tryLoad()
-        for (module in dependencies) module.addUsage(this)
+        for (child in children) child.addUsage(this)
         scope = CoroutineScope(Dispatchers.Default)
         isEnabled = true
         onEnable?.invoke(this)
@@ -77,7 +77,7 @@ private class WeakBuiltModule(
     @MutatesModuleState
     override fun disable() {
         errorIf(!isEnabled) { "disabled" }
-        for (module in dependencies) module.removeUsage(this)
+        for (child in children) child.removeUsage(this)
         scope.cancel()
         isEnabled = false
         onDisable?.invoke(this)
@@ -86,13 +86,11 @@ private class WeakBuiltModule(
     private inline fun errorIf(value: Boolean, errorWord: () -> String) =
         check(!value) { "This module is already ${errorWord()}" }
 
-    override fun addDependency(module: ActiveStateModule) {
-        _dependencies += module
+    override fun addChild(module: ActiveStateModule) {
+        _children += module
     }
 
-    override fun addAsDependency(to: RModule) {
-        to.addDependency(this)
-    }
+    override fun addParent(module: RModule) = module.addChild(this)
 
     @MutatesModuleState
     override fun addUsage(module: ActiveStateModule) {
