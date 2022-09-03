@@ -48,7 +48,7 @@ public class DFInfo {
     public static void setCurrentState(LegacyState state) {
         LegacyState.CurrentState newState = new LegacyState.CurrentState(state);
         if (!currentState.equals(newState)) {
-            ChangeDFStateEvent.INSTANCE.invoke(new StateChange(newState, currentState));
+            ChangeDFStateEvent.INSTANCE.run(new StateChange(newState, currentState));
         }
         currentState = newState;
     }

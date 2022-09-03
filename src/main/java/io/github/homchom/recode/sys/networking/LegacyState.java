@@ -342,7 +342,7 @@ public class LegacyState {
     }
 
     private static void notifyStateChange(LegacyState newState, LegacyState oldState) {
-        ChangeDFStateEvent.INSTANCE.invoke(new StateChange(newState, oldState));
+        ChangeDFStateEvent.INSTANCE.run(new StateChange(newState, oldState));
     }
 
     public static class CurrentState extends LegacyState {

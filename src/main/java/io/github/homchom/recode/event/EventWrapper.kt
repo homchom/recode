@@ -72,6 +72,6 @@ private class CustomEventWrapper<C, R : Any, P : EventPhase>(
     override val prevResult get() = _prevResult
     private var _prevResult: R? = null
 
-    override fun invoke(context: C, initialValue: R) = invoker(context, initialValue)
+    override fun run(context: C, initialValue: R) = invoker(context, initialValue)
         .also { _prevResult = it }
 }

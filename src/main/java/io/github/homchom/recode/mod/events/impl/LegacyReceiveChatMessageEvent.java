@@ -2,7 +2,7 @@ package io.github.homchom.recode.mod.events.impl;
 
 import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.Config;
-import io.github.homchom.recode.server.ReceiveChatMessageEvent;
+import io.github.homchom.recode.server.*;
 import io.github.homchom.recode.sys.networking.LegacyState;
 import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.*;
@@ -23,13 +23,13 @@ public class LegacyReceiveChatMessageEvent {
 
     public static String tipPlayer = "";
 
-    private boolean run(Component message, boolean send) {
+    private boolean run(Message message, boolean send) {
         Minecraft mc = Minecraft.getInstance();
 
         if (mc.player == null) return false;
 
-        String stripped = message.getString();
-        String msg = stripped.replaceAll("§.", "");
+        //String stripped = message.getString();
+        //String msg = stripped.replaceAll("§.", "");
 
         boolean cancel = false;
 

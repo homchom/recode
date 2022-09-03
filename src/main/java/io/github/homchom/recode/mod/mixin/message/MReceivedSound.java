@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MReceivedSound {
     @Inject(method = "handleSoundEvent", at = @At("HEAD"), cancellable = true)
     private void handleSoundEvent(ClientboundSoundPacket packet, CallbackInfo ci) {
-        boolean playSound = PlaySoundEvent.INSTANCE.invoke(packet, true);
+        boolean playSound = PlaySoundEvent.INSTANCE.run(packet, true);
         if (!playSound) ci.cancel();
     }
 }

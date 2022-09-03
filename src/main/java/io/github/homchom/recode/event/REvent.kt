@@ -118,7 +118,7 @@ interface CustomEvent<C, R : Any> : InvokableEvent<C, R, Listener<C, R>> {
      * Runs this event, transforming [initialValue] into the event result. [initialValue] may
      * be mutated.
      */
-    operator fun invoke(context: C, initialValue: R): R
+    fun run(context: C, initialValue: R): R
 }
 
 /**

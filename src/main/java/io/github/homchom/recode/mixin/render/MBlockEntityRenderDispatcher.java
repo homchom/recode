@@ -16,7 +16,7 @@ public class MBlockEntityRenderDispatcher {
 	public void renderBlockEntities(
 			BlockEntity blockEntity, float f, PoseStack poseStack,
 			MultiBufferSource multiBufferSource, CallbackInfo ci) {
-		if (!RenderBlockEntityEvent.INSTANCE.invoke(blockEntity, true)) {
+		if (!RenderBlockEntityEvent.INSTANCE.run(blockEntity, true)) {
 			ci.cancel();
 		}
 	}
@@ -24,7 +24,7 @@ public class MBlockEntityRenderDispatcher {
 	@ModifyVariable(method = "render", at = @At("HEAD"), ordinal = 0, argsOnly = true)
 	public MultiBufferSource outlineBlockEntities(MultiBufferSource multiBufferSource, BlockEntity blockEntity) {
 		RGBAColor outlineColor = OutlineBlockEntityEvent.INSTANCE
-				.invoke(blockEntity, new OutlineResult())
+				.run(blockEntity, new OutlineResult())
 				.getOutlineColor();
 		if (outlineColor != null) {
 			return Blaze3DExtensions.withOutline(multiBufferSource, outlineColor);
