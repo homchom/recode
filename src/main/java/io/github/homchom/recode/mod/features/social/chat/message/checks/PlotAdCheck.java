@@ -5,7 +5,7 @@ import io.github.homchom.recode.mod.features.streamer.*;
 
 public class PlotAdCheck extends MessageCheck implements StreamerModeMessageCheck {
 
-    private static final String PLOT_AD_REGEX = "^.*\\[ Plot Ad ].*\\n.+\\n.*$";
+    private static final String PLOT_AD_REGEX = " {32}\\[ Plot Ad ] {32}\\n(.+)\\n {78}";
 
     @Override
     public LegacyMessageType getType() {

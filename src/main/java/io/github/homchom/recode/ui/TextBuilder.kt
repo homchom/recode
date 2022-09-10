@@ -11,6 +11,8 @@ typealias TextScope = TextBuilder.() -> Unit
 inline fun text(style: Style = Style.EMPTY, builder: TextScope) =
     TextBuilder(style).apply(builder).text
 
+fun literalText(literal: String): Component = TextComponent(literal)
+
 @Suppress("PropertyName", "unused")
 class TextBuilder(style: Style = Style.EMPTY) {
     val text: Component get() = _text

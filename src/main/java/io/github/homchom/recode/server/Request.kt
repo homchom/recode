@@ -30,3 +30,10 @@ class Request<T : Any, C>(
         return channel.receive()
     }
 }
+
+sealed interface Response<T, E> {
+    // TODO: make these value classes in kotlin 1.8
+    class Pass<T>(val result: T) : Response<T, Nothing>
+
+    class Fail<E>(val error: E) : Response<Nothing, E>
+}

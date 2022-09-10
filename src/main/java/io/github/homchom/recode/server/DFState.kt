@@ -1,43 +1,67 @@
 package io.github.homchom.recode.server
 
-import net.minecraft.world.entity.player.Player
+import io.github.homchom.recode.util.capitalize
+import io.github.homchom.recode.util.uncapitalize
+
+sealed interface PlayState {
+    val node: Node
+    val plot: Plot
+    val mode: PlotMode
+    val status: String?
+}
+
+sealed interface LocateState {
+    val username: String
+
+    data class AtSpawn(override val username: String, val node: Node) : LocateState
+
+    data class OnPlot(
+        override val username: String,
+        override val node: Node,
+        override val plot: Plot,
+        override val mode: PlotMode,
+        override val status: String?
+    ) : LocateState, PlayState
+}
 
 sealed interface DFState {
-    val node: Node
-    val inSession: Boolean
+    val isInSession: Boolean
 
-    data class AtSpawn(override val node: Node, override val inSession: Boolean) : DFState
+    data class AtSpawn(val node: String, override val isInSession: Boolean) : DFState
+
     data class OnPlot(
         override val node: Node,
-        val plot: Plot,
-        val mode: PlotMode,
-        override val inSession: Boolean
-    ) : DFState
+        override val plot: Plot,
+        override val mode: PlotMode,
+        override val status: String?,
+        override val isInSession: Boolean
+    ) : DFState, PlayState {
+        constructor(state: PlayState, isInSession: Boolean) :
+                this(state.node, state.plot, state.mode, state.status, isInSession)
+    }
 }
 
-enum class Node(val id: String) {
-    ONE("1"),
-    TWO("2"),
-    THREE("3"),
-    FOUR("4"),
-    FIVE("5"),
-    SIX("6"),
-    SEVEN("7"),
-    EIGHT("8"),
-    NINE("9"),
-    BETA("beta"),
-    DEV("dev"),
-    DEV2("dev2"),
-    UNKNOWN("?")
+@JvmInline
+value class Node(private val id: String) {
+    override fun toString() = when {
+        id.startsWith("node") -> "Node ${id.drop(4)}"
+        id == "beta" -> "Node Beta"
+        else -> id.capitalize()
+    }
 }
 
-fun nodeOf(id: String) = Node.values().singleOrNull { it.id == id } ?: Node.UNKNOWN
+fun nodeByName(name: String): Node {
+    val node = name.removePrefix("Node ")
+    val id = node.toIntOrNull()?.let { "node${node}" } ?: node.uncapitalize()
+    return Node(id)
+}
+
+//fun nodeOf(id: String) = Node.values().singleOrNull { it.id == id } ?: Node.UNKNOWN
 
 data class Plot(
     val name: String,
     val owner: String,
-    val id: UInt,
-    val status: String
+    val id: UInt
 )
 
 enum class PlotMode(val descriptor: String) {
@@ -48,4 +72,7 @@ enum class PlotMode(val descriptor: String) {
     val id get() = name.lowercase()
 }
 
-fun plotModeOf(id: String) = PlotMode.values().single { it.id == id }
+fun plotModeByDescriptor(descriptor: String) =
+    PlotMode.values().single { it.descriptor == descriptor }
+fun plotModeByDescriptorOrNull(descriptor: String) =
+    PlotMode.values().singleOrNull { it.descriptor == descriptor }

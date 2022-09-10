@@ -5,7 +5,7 @@ import io.github.homchom.recode.sys.networking.LegacyState
 import net.minecraft.network.chat.Component
 
 object ReceiveChatMessageEvent :
-    MatchedEvent<Component, Message, Boolean> by MatcherCallbackEvent(MessageMatcher),
+    CallbackEvent<Component, Message, Boolean> by MatcherCallbackEvent(MessageMatcher),
     ValidatedEvent<Message>
 
 object ChangeDFStateEvent :

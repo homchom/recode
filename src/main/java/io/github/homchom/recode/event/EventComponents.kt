@@ -35,7 +35,7 @@ class DependentEvent<C, R : Any>(
     }
 }
 
-interface MatchedEvent<T, C, R : Any> : CustomEvent<C, R> {
+interface CallbackEvent<T, C, R : Any> : CustomEvent<C, R> {
     fun matchAndRun(input: T, initialValue: R, withResult: (R) -> Unit)
 }
 
@@ -43,13 +43,13 @@ class MatcherCallbackEvent<T, C, R : Any> private constructor(
     private val matcher: Matcher<T, C>,
     private val module: CoroutineModule,
     eventDelegate: CustomEvent<C, R>
-) : MatchedEvent<T, C, R>, CustomEvent<C, R> by eventDelegate, RModule by module {
+) : CallbackEvent<T, C, R>, CustomEvent<C, R> by eventDelegate, RModule by module {
     constructor(matcher: Matcher<T, C>, eventDelegate: CustomEvent<C, R> = createEvent()) :
             this(matcher, module(), eventDelegate)
 
     override fun matchAndRun(input: T, initialValue: R, withResult: (R) -> Unit) {
         module.coroutineScope.launch {
-            run(matcher.match(input), initialValue).let(withResult)
+            withResult(run(matcher.match(input), initialValue))
         }
     }
 }

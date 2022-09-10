@@ -18,6 +18,10 @@ class Trial {
 
     inline fun <T : Any> test(test: () -> T?) = test() ?: fail()
 
+    inline fun testBoolean(test: () -> Boolean) {
+        test { if (test()) Unit else null }
+    }
+
     suspend inline fun <C, T : Any> testOn(
         event: REvent<C, *>,
         duration: Long = 0,
@@ -34,6 +38,14 @@ class Trial {
         }.also { testEnforced() }
     }
 
+    suspend inline fun <C> testBooleanOn(
+        event: REvent<C, *>,
+        duration: Long = 0,
+        crossinline test: (C) -> Boolean
+    ) {
+        testOn(event, duration) { if (test(it)) Unit else null }
+    }
+
     suspend fun enforce(block: suspend () -> Unit) {
         block()
         enforced += block
@@ -45,7 +57,5 @@ class Trial {
 
     fun fail(): Nothing = throw TrialFailException()
 }
-
-inline fun testBoolean(test: () -> Boolean) = if (test()) Unit else null
 
 private class TrialFailException : Exception()

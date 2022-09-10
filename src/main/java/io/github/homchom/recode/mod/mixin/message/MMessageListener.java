@@ -9,6 +9,7 @@ import io.github.homchom.recode.server.ReceiveChatMessageEvent;
 import io.github.homchom.recode.sys.networking.LegacyState;
 import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
+import kotlin.Unit;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.chat.*;
@@ -35,15 +36,21 @@ public class MMessageListener {
                 // TODO: remove after new message listener is complete
                 new LegacyMessage(packet, ci);
 
-                boolean result = ReceiveChatMessageEvent.INSTANCE.run(packet.getMessage(), true);
-                if (!result) ci.cancel();
-                try {
-                    this.updateVersion(packet.getMessage());
-                    this.updateState(packet.getMessage());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    LegacyRecode.error("Error while trying to parse the chat text!");
-                }
+                ReceiveChatMessageEvent.INSTANCE.matchAndRun(
+                        packet.getMessage(),
+                        true,
+                        r -> {
+                            if (r) {
+                                Minecraft.getInstance().gui.handleChat(
+                                        packet.getType(),
+                                        packet.getMessage(),
+                                        packet.getSender()
+                                );
+                            }
+                            return Unit.INSTANCE;
+                        }
+                );
+                ci.cancel();
             }
         }
     }
