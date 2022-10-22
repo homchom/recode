@@ -5,11 +5,11 @@ import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.LagslayerHUD;
 import io.github.homchom.recode.mod.features.social.chat.message.LegacyMessage;
-import io.github.homchom.recode.server.ReceiveChatMessageEvent;
+import io.github.homchom.recode.server.*;
 import io.github.homchom.recode.sys.networking.LegacyState;
 import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
-import kotlin.Unit;
+import kotlin.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.chat.*;
@@ -36,21 +36,8 @@ public class MMessageListener {
                 // TODO: remove after new message listener is complete
                 new LegacyMessage(packet, ci);
 
-                ReceiveChatMessageEvent.INSTANCE.matchAndRun(
-                        packet.getMessage(),
-                        true,
-                        r -> {
-                            if (r) {
-                                Minecraft.getInstance().gui.handleChat(
-                                        packet.getType(),
-                                        packet.getMessage(),
-                                        packet.getSender()
-                                );
-                            }
-                            return Unit.INSTANCE;
-                        }
-                );
-                ci.cancel();
+                Lazy<Message> msg = LazyKt.lazy(() -> MessageMatcher.INSTANCE.match(packet.getMessage()));
+                if (!ReceiveChatMessageEvent.INSTANCE.run(new Pair<>(msg, packet.getMessage()), true)) ci.cancel();
             }
         }
     }

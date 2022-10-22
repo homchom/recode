@@ -1,17 +1,12 @@
 package io.github.homchom.recode.server
 
 import io.github.homchom.recode.mc
-import io.github.homchom.recode.sys.networking.LegacyState
 import io.github.homchom.recode.ui.literalText
 import io.github.homchom.recode.ui.stringWithoutColor
-import io.github.homchom.recode.ui.text
 import io.github.homchom.recode.util.Matcher
 import io.github.homchom.recode.util.MatcherList
 import net.minecraft.network.chat.Component
 import org.intellij.lang.annotations.Language
-import org.intellij.lang.annotations.RegExp
-import java.util.regex.Pattern
-import javax.annotation.RegEx
 
 sealed interface Message {
     class Locate(val username: String, val state: LocateState) : Message
@@ -41,23 +36,25 @@ object MessageMatcher : Matcher<Component, Message> by matchers {
     }
 
     val LOCATE = matchers.add { text ->
-        test {
-            LOCATE_REGEX.matchEntire(text.stringWithoutColor)?.groupValues?.let { values ->
-                val username = values[1]
-                    .let { if (it == "You") mc.player!!.scoreboardName else it }
-                val node = nodeByName(values[8]) // the last capturing group
-                val state = if (values[2] == "at spawn") {
-                    LocateState.AtSpawn(username, node)
-                } else {
-                    val mode = plotModeByDescriptorOrNull(values[3]) ?: fail()
-                    val plotName = values[4]
-                    val plotID = values[5].toUIntOrNull() ?: fail()
-                    val owner = values[6]
-                    val status = values[7].takeUnless { it == "" }
-                    LocateState.OnPlot(username, node, Plot(plotName, owner, plotID), mode, status)
-                }
-                Message.Locate(username, state)
-            }
+        val values = LOCATE_REGEX.matchEntire(text.stringWithoutColor)?.groupValues ?: fail()
+        val username = values[1].let { if (it == "You") mc.player!!.scoreboardName else it }
+        val node = nodeByName(values[8]) // the last capturing group
+        val state = if (values[2] == "at spawn") {
+            LocateState.AtSpawn(username, node)
+        } else {
+            val mode = plotModeByDescriptorOrNull(values[3]) ?: fail()
+            val plotName = values[4]
+            val plotID = values[5].toUIntOrNull() ?: fail()
+            val owner = values[6]
+            val status = values[7].takeUnless { it == "" }
+            LocateState.OnPlot(
+                username,
+                node,
+                Plot(plotName, owner, plotID),
+                mode,
+                status
+            )
         }
+        Message.Locate(username, state)
     }
 }

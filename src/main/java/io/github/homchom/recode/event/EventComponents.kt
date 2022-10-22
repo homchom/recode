@@ -1,8 +1,8 @@
 package io.github.homchom.recode.event
 
-import io.github.homchom.recode.init.*
-import io.github.homchom.recode.util.Matcher
-import kotlinx.coroutines.launch
+import io.github.homchom.recode.init.ListenableModule
+import io.github.homchom.recode.init.MutatesModuleState
+import io.github.homchom.recode.init.RModule
 
 /**
  * A [CustomEvent] without a result.
@@ -32,24 +32,5 @@ class DependentEvent<C, R : Any>(
     override fun listenFrom(module: ListenableModule, listener: Listener<C, R>) {
         for (child in children) child.addParent(module)
         delegate.listenFrom(module, listener)
-    }
-}
-
-interface CallbackEvent<T, C, R : Any> : CustomEvent<C, R> {
-    fun matchAndRun(input: T, initialValue: R, withResult: (R) -> Unit)
-}
-
-class MatcherCallbackEvent<T, C, R : Any> private constructor(
-    private val matcher: Matcher<T, C>,
-    private val module: CoroutineModule,
-    eventDelegate: CustomEvent<C, R>
-) : CallbackEvent<T, C, R>, CustomEvent<C, R> by eventDelegate, RModule by module {
-    constructor(matcher: Matcher<T, C>, eventDelegate: CustomEvent<C, R> = createEvent()) :
-            this(matcher, module(), eventDelegate)
-
-    override fun matchAndRun(input: T, initialValue: R, withResult: (R) -> Unit) {
-        module.coroutineScope.launch {
-            withResult(run(matcher.match(input), initialValue))
-        }
     }
 }
