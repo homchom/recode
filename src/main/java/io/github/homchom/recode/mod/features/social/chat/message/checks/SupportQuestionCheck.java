@@ -8,17 +8,17 @@ public class SupportQuestionCheck extends MessageCheck implements StreamerModeMe
     private static final String SUPPORT_QUESTION_REGEX = "^.*» Support Question: \\(Click to answer\\)\\nAsked by \\w+ \\[[a-zA-Z]+]\\n.+$";
 
     @Override
-    public LegacyMessageType getType() {
-        return LegacyMessageType.SUPPORT_QUESTION;
+    public MessageType getType() {
+        return MessageType.SUPPORT_QUESTION;
     }
 
     @Override
-    public boolean check(LegacyMessage message, String stripped) {
+    public boolean check(Message message, String stripped) {
         return stripped.matches(SUPPORT_QUESTION_REGEX);
     }
 
     @Override
-    public void onReceive(LegacyMessage message) {
+    public void onReceive(Message message) {
 
     }
 

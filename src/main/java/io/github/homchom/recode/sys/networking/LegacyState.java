@@ -254,7 +254,7 @@ public class LegacyState {
         return new LegacyState(this);
     }
 
-    public static LegacyState fromLocate(LegacyMessage message, LegacyState stateSource) {
+    public static LegacyState fromLocate(Message message, LegacyState stateSource) {
         Component msg = message.getText();
 
         String text = msg.getString().replaceAll("§.", "");
@@ -336,7 +336,7 @@ public class LegacyState {
         if (mc.player != null){
             if (!mc.player.isDeadOrDying()){
                 ChatUtil.executeCommand("locate");
-                MessageGrabber.hide(1, LegacyMessageType.LOCATE);
+                MessageGrabber.hide(1, MessageType.LOCATE);
             }
         }
     }

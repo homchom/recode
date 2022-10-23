@@ -4,13 +4,14 @@ import com.mojang.brigadier.CommandDispatcher;
 import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
 import io.github.homchom.recode.mod.features.commands.TemplatesMenu;
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
+import net.minecraft.commands.CommandBuildContext;
 
 public class TemplatesCommand extends Command {
 
     @Override
-    public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd) {
+    public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd, CommandBuildContext context) {
         cd.register(ArgBuilder.literal("templates")
                 .executes(ctx -> {
                     if (this.isCreative(mc)) {

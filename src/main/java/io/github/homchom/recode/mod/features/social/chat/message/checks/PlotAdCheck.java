@@ -8,17 +8,17 @@ public class PlotAdCheck extends MessageCheck implements StreamerModeMessageChec
     private static final String PLOT_AD_REGEX = "^.*\\[ Plot Ad ].*\\n.+\\n.*$";
 
     @Override
-    public LegacyMessageType getType() {
-        return LegacyMessageType.PLOT_AD;
+    public MessageType getType() {
+        return MessageType.PLOT_AD;
     }
 
     @Override
-    public boolean check(LegacyMessage message, String stripped) {
+    public boolean check(Message message, String stripped) {
         return stripped.matches(PLOT_AD_REGEX);
     }
 
     @Override
-    public void onReceive(LegacyMessage message) {
+    public void onReceive(Message message) {
 
     }
 

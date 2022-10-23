@@ -4,14 +4,14 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.LagslayerHUD;
-import io.github.homchom.recode.mod.features.social.chat.message.LegacyMessage;
+import io.github.homchom.recode.mod.features.social.chat.message.Message;
 import io.github.homchom.recode.server.ReceiveChatMessageEvent;
 import io.github.homchom.recode.sys.networking.LegacyState;
 import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
@@ -27,23 +27,21 @@ public class MMessageListener {
 
     private final Pattern lsRegex = Pattern.compile("^CPU Usage: \\[▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮] \\(.*%\\)$");
 
-    @Inject(method = "handleChat", at = @At("HEAD"), cancellable = true)
-    private void handleChat(ClientboundChatPacket packet, CallbackInfo ci) {
+    @Inject(method = "handleSystemChat", at = @At("HEAD"), cancellable = true)
+    private void handleChat(ClientboundSystemChatPacket packet, CallbackInfo ci) {
         if (DFInfo.isOnDF() && RenderSystem.isOnRenderThread()) {
-            if (packet.getType() != ChatType.GAME_INFO) {
-                // temporary, to preserve non-migrated side effects (like message grabbing)
-                // TODO: remove after new message listener is complete
-                new LegacyMessage(packet, ci);
+            // temporary, to preserve non-migrated side effects (like message grabbing)
+            // TODO: remove after new message listener is complete
+            new Message(packet, ci);
 
-                boolean result = ReceiveChatMessageEvent.INSTANCE.invoke(packet.getMessage(), true);
-                if (!result) ci.cancel();
-                try {
-                    this.updateVersion(packet.getMessage());
-                    this.updateState(packet.getMessage());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    LegacyRecode.error("Error while trying to parse the chat text!");
-                }
+            boolean result = ReceiveChatMessageEvent.INSTANCE.invoke(packet.content(), true);
+            if (!result) ci.cancel();
+            try {
+                this.updateVersion(packet.content());
+                this.updateState(packet.content());
+            } catch (Exception e) {
+                e.printStackTrace();
+                LegacyRecode.error("Error while trying to parse the chat text!");
             }
         }
     }
@@ -130,7 +128,7 @@ public class MMessageListener {
         String text = component.getString();
 
         // Enter Session
-        if (text.matches("^\\[SUPPORT] " + player.getName().getContents() + " entered a session with \\w+\\. ▶ \\S+ \\S+!?$")) {
+        if (text.matches("^\\[SUPPORT] " + player.getName().getString() + " entered a session with \\w+\\. ▶ \\S+ \\S+!?$")) {
             if (!DFInfo.currentState.isInSession()) {
                 new Thread(() -> {
                     try {
@@ -151,7 +149,7 @@ public class MMessageListener {
         }
 
         // End Session
-        if (text.matches("^\\[SUPPORT\\] " + player.getName().getContents() + " finished a session with \\w+\\. ▶ \\d+:\\d+:\\d+$") || text.matches("^\\[SUPPORT\\] " + player.getName().getContents() + " terminated a session with \\w+\\. ▶ \\d+:\\d+:\\d+$") || text.matches("\\[SUPPORT\\] \\w+ left a session with " + player.getName().getContents() + ".$")) {
+        if (text.matches("^\\[SUPPORT] " + player.getName().getString() + " finished a session with \\w+\\. ▶ \\d+:\\d+:\\d+$") || text.matches("^\\[SUPPORT\\] " + player.getName().getContents() + " terminated a session with \\w+\\. ▶ \\d+:\\d+:\\d+$") || text.matches("\\[SUPPORT\\] \\w+ left a session with " + player.getName().getContents() + ".$")) {
             if (DFInfo.currentState.isInSession()) {
                 DFInfo.currentState.setInSession(false);
                 new Thread(() -> {

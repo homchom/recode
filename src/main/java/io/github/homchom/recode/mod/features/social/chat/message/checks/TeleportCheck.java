@@ -8,17 +8,17 @@ public class TeleportCheck extends MessageCheck implements StreamerModeMessageCh
     private static final String TELEPORTING_REGEX = "^\\[([^ ]{3,}): Teleported ([^ ]{3,}) to ([^ ]{3,})]$";
 
     @Override
-    public LegacyMessageType getType() {
-        return LegacyMessageType.TELEPORTING;
+    public MessageType getType() {
+        return MessageType.TELEPORTING;
     }
 
     @Override
-    public boolean check(LegacyMessage message, String stripped) {
+    public boolean check(Message message, String stripped) {
         return stripped.matches(TELEPORTING_REGEX);
     }
 
     @Override
-    public void onReceive(LegacyMessage message) {
+    public void onReceive(Message message) {
 
     }
 

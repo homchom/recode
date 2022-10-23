@@ -8,17 +8,17 @@ public class ScanningCheck extends MessageCheck implements StreamerModeMessageCh
     private static final String SCANNING_REGEX = "^Scanning \\w+(.|\n)*\\[Online] \\[Offline] \\[(IP|)Banned]\1*$";
 
     @Override
-    public LegacyMessageType getType() {
-        return LegacyMessageType.SCANNING;
+    public MessageType getType() {
+        return MessageType.SCANNING;
     }
 
     @Override
-    public boolean check(LegacyMessage message, String stripped) {
+    public boolean check(Message message, String stripped) {
         return stripped.matches(SCANNING_REGEX);
     }
 
     @Override
-    public void onReceive(LegacyMessage message) {
+    public void onReceive(Message message) {
 
     }
 

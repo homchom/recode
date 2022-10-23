@@ -48,14 +48,14 @@ public abstract class MItemStack {
                 if (tags != null) {
                     Set<String> keys = tags.getAllKeys();
                     if (keys.size() != 0) {
-                        t.add(new TextComponent(""));
+                        t.add(Component.literal(""));
 
                         for (String key : keys) {
                             String value = tags.get(key).getAsString();
                             if (value.length()>20) value = value.substring(0,30)+"...";
                             key = key.replaceFirst("hypercube:","");
 
-                            t.add(new TextComponent("§a" + key + " §7= §f" + value));
+                            t.add(Component.literal("§a" + key + " §7= §f" + value));
                         }
                     }
                 }

@@ -25,13 +25,13 @@ public class MCreativeInventoryScreen {
             String cmd = "";
             switch (resetType) {
                 case STANDARD:
-                    cmd = "/rs";
+                    cmd = "rs";
                     break;
                 case COMPACT:
-                    cmd = "/rc";
+                    cmd = "rc";
                     break;
             }
-            LegacyRecode.MC.player.chat(cmd);
+            LegacyRecode.MC.player.commandSigned(cmd, null);
             ci.cancel();
         }
     }

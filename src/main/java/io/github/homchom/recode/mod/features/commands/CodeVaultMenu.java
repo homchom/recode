@@ -47,7 +47,7 @@ public class CodeVaultMenu extends LightweightGuiDescription implements IMenu {
         WPlainPanel root = new WPlainPanel();
         root.setSize(300, 100);
 
-        searchBox = new WTextField(new TextComponent("Search..."));
+        searchBox = new WTextField(Component.literal("Search..."));
         searchBox.setMaxLength(100);
         searchBox.setChangedListener(t -> update());
         root.add(searchBox, 110, 0, 250, 0);
@@ -59,7 +59,7 @@ public class CodeVaultMenu extends LightweightGuiDescription implements IMenu {
 
         int y = 0;
         for (String category : categories) {
-            WButton btn = new WButton(new TextComponent(category));
+            WButton btn = new WButton(Component.literal(category));
             root.add(btn, 0, y, 100, 22);
             if (Objects.equals(category, "All")) {
                 btn.setEnabled(false);
@@ -134,14 +134,14 @@ public class CodeVaultMenu extends LightweightGuiDescription implements IMenu {
                 String material = arr.get(7).getAsString();
 
                 ItemStack item = new ItemStack(Registry.ITEM.get(new ResourceLocation(material)));
-                item.setHoverName(new TextComponent(name));
+                item.setHoverName(Component.literal(name));
 
                 ListTag loreTag = new ListTag();
 
-                loreTag.add(StringTag.valueOf(Component.Serializer.toJson(new TextComponent(
+                loreTag.add(StringTag.valueOf(Component.Serializer.toJson(Component.literal(
                     "§7Created by §a" + author
                 ))));
-                loreTag.add(StringTag.valueOf(Component.Serializer.toJson(new TextComponent(
+                loreTag.add(StringTag.valueOf(Component.Serializer.toJson(Component.literal(
                     "§2⚐ Category " + category.replaceFirst("&", "§")
                 ))));
 
@@ -152,17 +152,17 @@ public class CodeVaultMenu extends LightweightGuiDescription implements IMenu {
                     plotsize = 1;
                 }
 
-                loreTag.add(StringTag.valueOf(Component.Serializer.toJson(new TextComponent(
+                loreTag.add(StringTag.valueOf(Component.Serializer.toJson(Component.literal(
                     "§5☐ §7" + ranks[rank - 1] +
                         " §5§l! §7" + plots[plotsize - 1]
                 ))));
 
                 if (!Objects.equals(lore, "")) {
                     loreTag.add(StringTag.valueOf(
-                        Component.Serializer.toJson(new TextComponent("§fDescription:"))));
+                        Component.Serializer.toJson(Component.literal("§fDescription:"))));
                     for (String line : lore.split("\n")) {
                         loreTag.add(
-                            StringTag.valueOf(Component.Serializer.toJson(new TextComponent(line))));
+                            StringTag.valueOf(Component.Serializer.toJson(Component.literal(line))));
                     }
                 }
 

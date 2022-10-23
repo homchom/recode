@@ -5,28 +5,28 @@ import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.events.impl.LegacyReceiveSoundEvent;
 import io.github.homchom.recode.sys.player.chat.MessageGrabber;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.game.ClientboundChatPacket;
+import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-public class LegacyMessage {
+public class Message {
 
-    private final ClientboundChatPacket packet;
+    private final ClientboundSystemChatPacket packet;
     private final Component text;
     private final CallbackInfo callback;
-    private final LegacyMessageType type;
+    private final MessageType type;
 
     private MessageCheck check;
     private boolean cancelled;
 
-    public LegacyMessage(ClientboundChatPacket packet, CallbackInfo ci) {
+    public Message(ClientboundSystemChatPacket packet, CallbackInfo ci) {
         this.packet = packet;
-        this.text = packet.getMessage();
+        this.text = packet.content();
         this.callback = ci;
         this.type = MessageCheck.run(this);
         MessageFinalizer.run(this);
     }
 
-    public ClientboundChatPacket getPacket() {
+    public ClientboundSystemChatPacket getPacket() {
         return packet;
     }
 
@@ -38,7 +38,7 @@ public class LegacyMessage {
         return callback;
     }
 
-    public LegacyMessageType getType() {
+    public MessageType getType() {
         return type;
     }
 
@@ -58,7 +58,7 @@ public class LegacyMessage {
         this.check = check;
     }
 
-    public boolean typeIs(LegacyMessageType toCompare) {
+    public boolean typeIs(MessageType toCompare) {
         return type == toCompare;
     }
 

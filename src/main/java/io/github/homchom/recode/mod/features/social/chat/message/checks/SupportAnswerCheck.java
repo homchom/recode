@@ -8,17 +8,17 @@ public class SupportAnswerCheck extends MessageCheck implements StreamerModeMess
     private static final String SUPPORT_ANSWER_REGEX = "^.*\\n» \\w+ has answered \\w+'s question:\\n\\n.+\\n.*$";
 
     @Override
-    public LegacyMessageType getType() {
-        return LegacyMessageType.SUPPORT_ANSWER;
+    public MessageType getType() {
+        return MessageType.SUPPORT_ANSWER;
     }
 
     @Override
-    public boolean check(LegacyMessage message, String stripped) {
+    public boolean check(Message message, String stripped) {
         return stripped.matches(SUPPORT_ANSWER_REGEX);
     }
 
     @Override
-    public void onReceive(LegacyMessage message) {
+    public void onReceive(Message message) {
 
     }
 

@@ -6,17 +6,17 @@ import io.github.homchom.recode.mod.features.streamer.*;
 public class SilentPunishmentCheck extends MessageCheck implements StreamerModeMessageCheck {
 
     @Override
-    public LegacyMessageType getType() {
-        return LegacyMessageType.SILENT_PUNISHMENT;
+    public MessageType getType() {
+        return MessageType.SILENT_PUNISHMENT;
     }
 
     @Override
-    public boolean check(LegacyMessage message, String stripped) {
+    public boolean check(Message message, String stripped) {
         return stripped.startsWith("[Silent]");
     }
 
     @Override
-    public void onReceive(LegacyMessage message) {
+    public void onReceive(Message message) {
 
     }
 
