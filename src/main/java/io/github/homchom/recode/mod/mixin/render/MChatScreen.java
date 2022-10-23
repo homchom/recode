@@ -71,7 +71,7 @@ public class MChatScreen {
         else return defaultColour;
     }
 
-    @ModifyArg(method = "keyPressed", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/ChatScreen;sendMessage(Ljava/lang/String;)V"), index = 0)
+    @ModifyArg(method = "keyPressed", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/ChatScreen;handleChatInput(Ljava/lang/String;Z)Z"), index = 0)
     private String insertPrefix(String interceptedMessage) {
         ChatShortcut currentChatShortcut = ChatShortcut.getCurrentChatShortcut();
 

@@ -6,7 +6,7 @@ import io.github.homchom.recode.sys.player.chat.MessageGrabber;
 public class MessageGrabberFinalizer extends MessageFinalizer {
 
     @Override
-    protected void receive(LegacyMessage message) {
+    protected void receive(Message message) {
         if (MessageGrabber.isActive()) {
             MessageGrabber.supply(message);
         }

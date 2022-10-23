@@ -6,9 +6,10 @@ import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
 import io.github.homchom.recode.sys.player.chat.ChatType;
 import io.github.homchom.recode.sys.player.chat.*;
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.*;
 
 import java.awt.*;
@@ -16,16 +17,16 @@ import java.awt.*;
 public class ColorCommand extends Command {
 
     @Override
-    public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd) {
+    public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd, CommandBuildContext context) {
         cd.register(ArgBuilder.literal("color")
                 .then(ArgBuilder.literal("rgb")
                         .then(ArgBuilder.argument("r", IntegerArgumentType.integer(0, 255))
                                 .then(ArgBuilder.argument("g", IntegerArgumentType.integer(0, 255)).
-                                        then(ArgBuilder.argument("b", IntegerArgumentType.integer(0, 255)).executes((context) -> {
+                                        then(ArgBuilder.argument("b", IntegerArgumentType.integer(0, 255)).executes((ctx) -> {
 
-                                            int r = context.getArgument("r", Integer.class);
-                                            int g = context.getArgument("g", Integer.class);
-                                            int b = context.getArgument("b", Integer.class);
+                                            int r = ctx.getArgument("r", Integer.class);
+                                            int g = ctx.getArgument("g", Integer.class);
+                                            int b = ctx.getArgument("b", Integer.class);
 
                                             copyColor(new Color(r, g, b));
                                             return 1;
@@ -33,8 +34,8 @@ public class ColorCommand extends Command {
                                         })))
                         ))
                 .then(ArgBuilder.literal("hex")
-                        .then(ArgBuilder.argument("color", StringArgumentType.greedyString()).executes((context) -> {
-                            String color = context.getArgument("color", String.class);
+                        .then(ArgBuilder.argument("color", StringArgumentType.greedyString()).executes((ctx) -> {
+                            String color = ctx.getArgument("color", String.class);
                             Color hex;
                             try {
                                 hex = Color.decode(color);
@@ -48,11 +49,11 @@ public class ColorCommand extends Command {
                 .then(ArgBuilder.literal("hsb")
                         .then(ArgBuilder.argument("h", IntegerArgumentType.integer(0, 360))
                                 .then(ArgBuilder.argument("s", IntegerArgumentType.integer(0, 360)).
-                                        then(ArgBuilder.argument("b", IntegerArgumentType.integer(0, 360)).executes((context) -> {
+                                        then(ArgBuilder.argument("b", IntegerArgumentType.integer(0, 360)).executes((ctx) -> {
 
-                                            float h = context.getArgument("h", Integer.class) / 360.0f;
-                                            float s = context.getArgument("s", Integer.class) / 360.0f;
-                                            float b = context.getArgument("b", Integer.class) / 360.0f;
+                                            float h = ctx.getArgument("h", Integer.class) / 360.0f;
+                                            float s = ctx.getArgument("s", Integer.class) / 360.0f;
+                                            float b = ctx.getArgument("b", Integer.class) / 360.0f;
 
                                             copyColor(Color.getHSBColor(h, s, b));
                                             return 1;
@@ -83,9 +84,9 @@ public class ColorCommand extends Command {
         String colorNameReal = "#" + Integer.toHexString(color.getRGB()).substring(2);
         Style colorStyle = Style.EMPTY.withColor(TextColor.fromRgb(color.getRGB()));
 
-        TextComponent text = new TextComponent("Copied Color! ");
-        TextComponent preview = new TextComponent("█");
-        TextComponent hover = new TextComponent(colorNameReal);
+        MutableComponent text = Component.literal("Copied Color! ");
+        MutableComponent preview = Component.literal("█");
+        MutableComponent hover = Component.literal(colorNameReal);
         hover.append("\n§7Click to copy!");
         hover.setStyle(colorStyle);
         preview.withStyle((style) -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/color hex " + colorNameReal)));

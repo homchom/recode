@@ -40,16 +40,16 @@ public abstract class MessageCheck {
             new StreamerModeRegexCheck()
     };
 
-    public abstract LegacyMessageType getType();
+    public abstract MessageType getType();
 
-    public abstract boolean check(LegacyMessage message, String stripped);
+    public abstract boolean check(Message message, String stripped);
 
     /**
-     * Use {@link LegacyMessage#cancel()} to cancel the message
+     * Use {@link Message#cancel()} to cancel the message
     */
-    public abstract void onReceive(LegacyMessage message);
+    public abstract void onReceive(Message message);
 
-    public static LegacyMessageType run(LegacyMessage message) {
+    public static MessageType run(Message message) {
         for (MessageCheck check : checks) {
             if (check.check(message, message.getStripped())) {
                 check.onReceive(message);
@@ -57,6 +57,6 @@ public abstract class MessageCheck {
                 return check.getType();
             }
         }
-        return LegacyMessageType.OTHER;
+        return MessageType.OTHER;
     }
 }

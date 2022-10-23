@@ -6,8 +6,9 @@ import com.mojang.brigadier.context.CommandContext;
 import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
 import io.github.homchom.recode.sys.player.chat.*;
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
+import net.minecraft.commands.CommandBuildContext;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -110,7 +111,7 @@ public class CalcCommand extends Command {
     }
 
     @Override
-    public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd) {
+    public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd, CommandBuildContext context) {
         cd.register(ArgBuilder.literal("calc")
             .then(ArgBuilder.argument("exp", StringArgumentType.greedyString())
                 .executes(CalcCommand::exec)
