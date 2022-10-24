@@ -4,6 +4,7 @@ import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.color.MinecraftColors;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.*;
@@ -30,7 +31,7 @@ public class ChatUtil {
     }
 
     public static void command(String message) {
-        LegacyRecode.MC.player.commandSigned(message, null);
+        Minecraft.getInstance().player.commandUnsigned(message);
     }
 
     public static void executeCommand(String command) {

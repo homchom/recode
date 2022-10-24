@@ -58,7 +58,7 @@ public class LegacyReceiveChatMessageEvent {
                     String cmd = "/join " + id;
 
                     if (cmd.matches("/join \\d+")) {
-                        mc.player.commandSigned(cmd, null);
+                        mc.player.commandUnsigned(cmd);
                     } else {
                         ChatUtil.sendMessage("Error while trying to join the plot.", ChatType.FAIL);
                     }
@@ -170,7 +170,7 @@ public class LegacyReceiveChatMessageEvent {
                     try {
                         Thread.sleep(3000);
                     } catch (Exception ignored) {}
-                    mc.player.commandSigned("tip " + tipPlayer, null);
+                    mc.player.commandUnsigned("tip " + tipPlayer);
                 });
             }
         }

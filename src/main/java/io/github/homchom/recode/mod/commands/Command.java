@@ -32,7 +32,7 @@ public abstract class Command {
     protected void sendCommand(Minecraft mc, String message) {
         LocalPlayer player = mc.player;
         if (player != null) {
-            player.commandSigned(message, null);
+            player.commandUnsigned(message);
         }
     }
 

@@ -113,7 +113,7 @@ public class GradientCommand extends Command {
                                             mc.player.displayClientMessage(base, false);
 
                                             if (DFInfo.currentState.getMode() == LegacyState.Mode.DEV) {
-                                                mc.player.commandSigned("txt " + sb, null);
+                                                mc.player.commandUnsigned("txt " + sb);
                                             }
 
                                             return 1;

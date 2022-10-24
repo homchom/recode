@@ -31,7 +31,7 @@ public class MCreativeInventoryScreen {
                     cmd = "rc";
                     break;
             }
-            LegacyRecode.MC.player.commandSigned(cmd, null);
+            LegacyRecode.MC.player.commandUnsigned(cmd);
             ci.cancel();
         }
     }

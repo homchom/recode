@@ -274,6 +274,6 @@ public class Keybinds implements ClientModInitializer {
     }
 
     private void sendCommand(String message) {
-        Objects.requireNonNull(mc.player).commandSigned(message, null);
+        Objects.requireNonNull(mc.player).commandUnsigned(message);
     }
 }

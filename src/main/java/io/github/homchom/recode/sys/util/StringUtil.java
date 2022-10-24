@@ -93,7 +93,7 @@ public class StringUtil {
             out.append("§k");
         }
 
-        out.append(txt.getContents());
+        out.append(txt.getString());
 
         for (Component sibling : txt.getSiblings()) {
             out.append(textToString(sibling));

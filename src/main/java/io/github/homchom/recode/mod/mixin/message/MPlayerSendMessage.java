@@ -106,7 +106,7 @@ public class MPlayerSendMessage {
         if (Config.getBoolean("automsg") && ConversationTimer.currentConversation != null && (DFInfo.currentState.getMode() != LegacyState.Mode.PLAY || !message.startsWith("@"))) {
             ci.cancel();
             ConversationTimer.conversationUpdateTime = String.valueOf(System.currentTimeMillis());
-            minecraftClient.player.commandSigned("msg " + ConversationTimer.currentConversation + " " + message, null);
+            minecraftClient.player.commandUnsigned("msg " + ConversationTimer.currentConversation + " " + message);
         }
     }
 }

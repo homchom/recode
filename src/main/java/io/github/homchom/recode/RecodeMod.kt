@@ -119,9 +119,9 @@ object LegacyRecode {
         // Initializes only if the given condition is met. (this case: config value)
         initializer.addIf(SocketHandler(), Config.getBoolean("itemApi"))
 
-        ClientCommandRegistrationCallback.EVENT.register(ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource?>?, registryAccess: CommandBuildContext? ->
+        ClientCommandRegistrationCallback.EVENT.register { dispatcher, registryAccess ->
             CommandHandler.load(dispatcher, registryAccess)
-        })
+        }
     }
 
     @JvmStatic
