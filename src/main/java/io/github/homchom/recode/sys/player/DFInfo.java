@@ -40,6 +40,8 @@ public class DFInfo {
         return !oldNumberFound;
     }
 
+    @Deprecated
+    // use isOnDF in DFState (DF.isOnDF()) instead
     public static boolean isOnDF() {
         if (LegacyRecode.MC.getCurrentServer() == null) return false;
         return LegacyRecode.MC.getCurrentServer().ip.contains("mcdiamondfire.com");

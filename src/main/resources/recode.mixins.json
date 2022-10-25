@@ -4,7 +4,8 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "render.MBlockEntityRenderDispatcher",
-    "render.MLevelRenderer"
+    "render.MLevelRenderer",
+    "server.MClientPacketListener"
   ],
   "client": [],
   "server": [],
