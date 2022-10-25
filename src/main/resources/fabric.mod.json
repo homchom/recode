@@ -3,7 +3,7 @@
   "id": "recode",
   "version": "${version}",
   "name": "recode",
-  "description": "a utility-focused fabric mod for DiamondFire to make development more fun",
+  "description": "a utility-focused mod for DiamondFire to make development more fun",
   "contributors": ["homchom", "tk2217", "The CodeUtilities Team"],
   "contact": {
     "sources": "https://github.com/homchom/recode",
