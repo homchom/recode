@@ -121,6 +121,7 @@ public class MMessageListener {
         }
     }
 
+    // TODO: remove duplicate code and thread abominations
     private void updateState(Component component) {
         Player player = Minecraft.getInstance().player;
         if (player == null) return;

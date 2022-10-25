@@ -58,7 +58,9 @@ public class DFDiscordRPC implements ILoader {
             try {
                 client.connect();
             } catch (NoDiscordClientException e) {
-                e.printStackTrace();
+                Recode.logInfo("No Discord Client found, so Discord RPC will not be used");
+            } catch (UnsatisfiedLinkError e) {
+                Recode.logError("Discord RPC is not supported with your JVM. This will be fixed soon");
             }
         }
     }
