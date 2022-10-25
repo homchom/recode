@@ -306,6 +306,10 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
                 }
                 break;
             case "BLOCK":
+                if (item.getItem() != Items.AIR && varitemtype.matches("") || Objects.equals(varitemtype, "txt")) {
+                    return true;
+                }
+                break;
             case "PROJECTILE":
             case "VEHICLE":
             case "SPAWN_EGG":
