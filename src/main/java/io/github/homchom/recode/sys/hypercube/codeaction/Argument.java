@@ -114,10 +114,10 @@ public class Argument {
         static {
             BLOCK_TAG.addCompatibleValueTypes(TEXT);
             BLOCK.addCompatibleValueTypes(ITEM, TEXT);
-            PROJECTILE.addCompatibleValueTypes(ITEM, TEXT);
-            VEHICLE.addCompatibleValueTypes(ITEM, TEXT);
-            SPAWN_EGG.addCompatibleValueTypes(ITEM, TEXT);
-            ENTITY_TYPE.addCompatibleValueTypes(ITEM, PROJECTILE, VEHICLE, SPAWN_EGG, TEXT);
+            PROJECTILE.addCompatibleValueTypes(ITEM);
+            VEHICLE.addCompatibleValueTypes(ITEM);
+            SPAWN_EGG.addCompatibleValueTypes(ITEM);
+            ENTITY_TYPE.addCompatibleValueTypes(ITEM, PROJECTILE, VEHICLE, SPAWN_EGG);
             ITEM.addCompatibleValueTypes(BLOCK, PROJECTILE, VEHICLE, SPAWN_EGG, ENTITY_TYPE);
         }
 
