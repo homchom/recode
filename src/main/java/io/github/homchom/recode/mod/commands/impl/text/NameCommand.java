@@ -1,3 +1,4 @@
+/*
 package io.github.homchom.recode.mod.commands.impl.text;
 
 import com.google.gson.*;
@@ -77,3 +78,4 @@ public class NameCommand extends Command {
         return "/name";
     }
 }
+*/
