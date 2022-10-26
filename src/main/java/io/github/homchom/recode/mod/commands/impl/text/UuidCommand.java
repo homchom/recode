@@ -38,7 +38,7 @@ public class UuidCommand extends Command {
                                         ChatUtil.sendMessage("Player was not found!", ChatType.FAIL);
                                         return;
                                     }
-                                    JsonObject json = new JsonParser().parse(UUIDJson).getAsJsonObject();
+                                    JsonObject json = JsonParser.parseString(UUIDJson).getAsJsonObject();
                                     String uuid = json.get("id").getAsString();
                                     String fullUUID = StringUtil.fromTrimmed(uuid);
 
@@ -48,7 +48,7 @@ public class UuidCommand extends Command {
                                             ).withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, fullUUID)));
                                     this.sendMessage(mc, text);
 
-                                    if (this.isCreative(mc) && DFInfo.isOnDF() && DFInfo.currentState.getMode() == LegacyState.Mode.DEV) {
+                                    if (mc.player != null && mc.player.isCreative() && DFInfo.isOnDF() && DFInfo.currentState.getMode() == LegacyState.Mode.DEV) {
                                         this.sendCommand(mc, "/txt " + fullUUID);
                                     }
                                 } catch (IOException e) {
