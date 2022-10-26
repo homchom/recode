@@ -69,9 +69,6 @@ public class ActionDump implements ILoader {
         ArrayList<String> results = new ArrayList<>();
         for(String s : actions.keySet()){
             if (!actions.get(s).getIcon().getName().equals("")){
-                if (s.equalsIgnoreCase(query) || actions.get(s).getIcon().getName().equalsIgnoreCase(query)){
-                    results.add(0, s);
-                }
                 if (s.toLowerCase().contains(query.toLowerCase()) || actions.get(s).getIcon().getName().toLowerCase().contains(query.toLowerCase())){
                     results.add(s);
                 }else{
