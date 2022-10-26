@@ -138,9 +138,9 @@ public class DisplayItem {
                     if (this.arguments != null) {
                         for (Argument arg : this.arguments) {
                             String[] desc = arg.getDescription();
-                            String firstdesc = arg.getText() == null ? (desc.length > 0 ? desc[0] : "") : "";
-                            firstdesc = arg.getText() == null ? (desc.length > 0 ? (arg.getType().equals("NONE") ? (firstdesc.endsWith(")") ? " §7(" + firstdesc : " §7(" + firstdesc + "§7)") : (" §8- §7" + firstdesc)) : "") : "";
-                            String arglore = arg.getText() == null ? (ActionDump.valueOf(arg.getType()).getColor() + ActionDump.valueOf(arg.getType()).getName() + (arg.isPlural() ? "(s)" : "") + (arg.isOptional() ? "§f*" : "") + firstdesc) : (arg.getText().equals("") ? "" : arg.getText());
+                            String firstdesc = arg.isValueArgument() ? (desc.length > 0 ? desc[0] : "") : "";
+                            firstdesc = arg.isValueArgument() ? (desc.length > 0 ? (arg.getType() == Argument.ValueType.NONE ? (firstdesc.endsWith(")") ? " §7(" + firstdesc : " §7(" + firstdesc + "§7)") : (" §8- §7" + firstdesc)) : "") : "";
+                            String arglore = arg.isValueArgument() ? (ActionDump.valueOf(arg.getType().getID()).getColor() + ActionDump.valueOf(arg.getType().getID()).getName() + (arg.isPlural() ? "(s)" : "") + (arg.isOptional() ? "§f*" : "") + firstdesc) : arg.getText();
 
                             if (arg.isOptional()) optional = true;
 
