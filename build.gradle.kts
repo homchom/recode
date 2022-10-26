@@ -1,6 +1,7 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.gradle.kotlin.dsl.DependencyHandlerScope
+
+// TODO: document this file
 
 plugins {
     kotlin("jvm") version "1.7.0"
@@ -8,14 +9,23 @@ plugins {
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
+val modName: String by project
+
 val modVersion: String by project
-version = modVersion
+val minecraftVersion: String by project
+version = "$modVersion+$minecraftVersion"
+
 val mavenGroup: String by project
 group = mavenGroup
 
+val loaderVersion: String by project
+val fabricVersion: String by project
+
+val requiredDependencyMods = dependencyModsOfType("required")
+val optionalDependencyMods = dependencyModsOfType("optional")
+
 base {
-    val archivesBaseName: String by project
-    archivesName.set(archivesBaseName)
+    archivesName.set(modName)
 }
 
 repositories {
@@ -39,24 +49,17 @@ val shade: Configuration by configurations.creating {
 }
 
 dependencies {
-    val minecraftVersion: String by project
     minecraft("com.mojang:minecraft:$minecraftVersion")
     mappings(loom.officialMojangMappings())
 
-    val loaderVersion: String by project
     modImplementation("net.fabricmc:fabric-loader:$loaderVersion")
-    val fabricVersion: String by project
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
 
-    val kotlinVersion: String by project
-    shadeApi(kotlin("stdlib", kotlinVersion))
+    shadeApi(kotlin("stdlib", "1.7.0"))
     shadeApi("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
 
-    // https://github.com/CottonMC/LibGui/releases
-    includeModImpl("io.github.cottonmc:LibGui:6.0.0+1.19")
-
-    modCompileOnly("com.terraformersmc:modmenu:4.0.3")
-    includeModImpl("me.shedaniel.cloth:cloth-config-fabric:7.0.60")
+    for (mod in requiredDependencyMods) includeModImpl("${mod.artifact}:${mod.version}")
+    for (mod in optionalDependencyMods) modCompileOnly("${mod.artifact}:${mod.version}")
 
     // discord rpc
     shadeImpl("com.jagrosh:DiscordIPC:0.4")
@@ -88,11 +91,29 @@ tasks {
     }
 
     processResources {
-        inputs.property("version", project.version)
+        val exposedProperties = arrayOf(
+            "modName" to modName,
+            "version" to version,
+            "minecraftVersion" to minecraftVersion,
+            "loaderVersion" to loaderVersion,
+            "fabricVersion" to fabricVersion
+        )
 
-        filesMatching("fabric.mod.json") {
-            expand("version" to project.version)
+        inputs.properties(*exposedProperties)
+        inputs.properties(project.properties.filterKeys { it.startsWith("required.") })
+
+        filesMatching("fabric_mod_json_template.txt") {
+            val metadataRegex = Regex("""\+[\d\.]+$""")
+            expand(
+                *exposedProperties,
+                "metadataRegex" to metadataRegex.toPattern(),
+                "dependencyMods" to requiredDependencyMods.joinToString(", ") { mod ->
+                    val version = mod.version.replace(metadataRegex, "")
+                    "\"${mod.id}\": \"${mod.versionSpec}$version\""
+                }
+            )
         }
+        rename("fabric_mod_json_template.txt", "fabric.mod.json")
     }
 
     jar {
@@ -148,4 +169,28 @@ fun DependencyHandlerScope.includeModImpl(notation: Any) {
 fun DependencyHandlerScope.includeModApi(notation: Any) {
     modApi(notation)
     include(notation)
+}
+
+data class DependencyMod(
+    val id: String,
+    val artifact: String,
+    val version: String,
+    val versionSpec: String
+) {
+    constructor(id: String, artifact: Any?, version: Any?, versionSpec: Any?) :
+            this(id, artifact.toString(), version.toString(), versionSpec.toString())
+
+    val versionKey get() = ""
+}
+
+fun dependencyModsOfType(type: String) = properties.mapNotNull { (key, value) ->
+    Regex("""$type\.([a-z][a-z0-9-_]{1,63})\.artifact""").matchEntire(key)?.let { match ->
+        val id = match.groupValues[1]
+        DependencyMod(
+            id,
+            value,
+            project.properties["$type.$id.version"],
+            project.properties["$type.$id.versionSpec"]
+        )
+    }
 }
