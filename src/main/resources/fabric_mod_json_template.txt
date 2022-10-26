@@ -25,9 +25,9 @@
     "server": []
   },
   "mixins": [
-      "recode.mixins.json",
-      "recodeLegacy.mixins.json"
-    ],
+    "recode.mixins.json",
+    "recodeLegacy.mixins.json"
+  ],
   "depends": {
     "minecraft": "$minecraftVersion",
     "fabricloader": "^$loaderVersion",

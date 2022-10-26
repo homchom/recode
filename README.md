@@ -1,7 +1,7 @@
 # recode
 ![logo](logo.png)
 
-recode is a utility-focused fabric mod to make DiamondFire development more fun. It is the official successor to [CodeUtilities](https://github.com/CodeUtilities/CodeUtilities-2.0), from which it was cloned.
+recode is a utility-focused fabric mod for [DiamondFire](https://mcdiamondfire.com/home/) to make development more fun. It is the official successor to [CodeUtilities](https://github.com/CodeUtilities/CodeUtilities-2.0), from which it was cloned.
 
 Currently supported Minecraft version: 1.19.2
 
