@@ -33,7 +33,7 @@ public class NameCommand extends Command {
                         .executes(ctx -> {
                             LegacyRecode.executor.submit(() -> {
                                 String uuid = ctx.getArgument("uuid", String.class);
-                                String url = "https://api.mojang.com/user/profiles/" + uuid + "/names";
+                                String url = "https://sessionserver.mojang.com/session/minecraft/profile/" + uuid;
                                 try {
                                     String NameJson = IOUtils
                                             .toString(new URL(url), StandardCharsets.UTF_8);
@@ -41,9 +41,9 @@ public class NameCommand extends Command {
                                         ChatUtil.sendMessage("Player with that UUID was not found! Please check if you misspelled it and try again.", ChatType.FAIL);
                                         return;
                                     }
-                                    List<Map> json = new Gson().fromJson(NameJson, List.class);
-                                    String nameData = json.get(json.size()-1).get("name").toString();
-                                    String fullName = nameData;
+
+                                    JsonObject json = JsonParser.parseString(NameJson).getAsJsonObject();
+                                    String fullName = json.get("name").getAsString();
 
                                     Component text = Component.literal("§eName of §6" + uuid + " §eis §b" + fullName + "§e!")
                                             .withStyle(s -> s.withHoverEvent(
