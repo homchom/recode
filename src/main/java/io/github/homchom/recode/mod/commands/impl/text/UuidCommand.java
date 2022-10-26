@@ -49,7 +49,7 @@ public class UuidCommand extends Command {
                                     this.sendMessage(mc, text);
 
                                     if (mc.player != null && mc.player.isCreative() && DFInfo.isOnDF() && DFInfo.currentState.getMode() == LegacyState.Mode.DEV) {
-                                        this.sendCommand(mc, "/txt " + fullUUID);
+                                        this.sendCommand(mc, "txt " + fullUUID);
                                     }
                                 } catch (IOException e) {
                                     ChatUtil.sendMessage("§cUser §6" + username + "§c was not found.");
