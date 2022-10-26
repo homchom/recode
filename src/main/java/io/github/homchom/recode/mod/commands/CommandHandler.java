@@ -32,7 +32,7 @@ public class CommandHandler {
             new UnpackCommand(),
             new ItemdataCommand(),
             new UuidCommand(),
-            // new NameCommand(),
+            new NameCommand(),
             // new HeadsCommand(),
             new ColorsCommand(),
             new ColorCommand(),
