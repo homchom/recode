@@ -3,7 +3,7 @@
   "id": "recode",
   "version": "${version}",
   "name": "${modName}",
-  "description": "a utility-focused mod for DiamondFire to make development more fun",
+  "description": "a utility mod for DiamondFire to make development more fun",
   "contributors": ["homchom", "tk2217", "The CodeUtilities Team"],
   "contact": {
     "sources": "https://github.com/homchom/recode",
@@ -30,8 +30,8 @@
     ],
   "depends": {
     "minecraft": "$minecraftVersion",
-    "fabricloader": ">=$loaderVersion",
-    "fabric-api": "~${fabricVersion - metadataRegex}",
+    "fabricloader": "^$loaderVersion",
+    "fabric-api": "^${fabricVersion - metadataRegex}",
     $dependencyMods
   },
   "breaks": {

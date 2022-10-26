@@ -190,7 +190,7 @@ fun dependencyModsOfType(type: String) = properties.mapNotNull { (key, value) ->
             id,
             value,
             project.properties["$type.$id.version"],
-            project.properties["$type.$id.versionSpec"]
+            project.properties.getOrDefault("$type.$id.versionSpec", "^")
         )
     }
 }
