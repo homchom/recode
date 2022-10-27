@@ -4,6 +4,7 @@ import com.google.gson.*;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.*;
+import io.github.cottonmc.cotton.gui.widget.data.Insets;
 import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.features.commands.nbs.*;
 import io.github.homchom.recode.sys.hypercube.templates.TemplateUtil;
@@ -51,6 +52,7 @@ public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
     public void open(String... args) throws CommandSyntaxException {
         Minecraft mc = LegacyRecode.MC;
         WPlainPanel root = new WPlainPanel();
+        root.setInsets(Insets.ROOT_PANEL);
         root.setSize(300, 240);
 
         WText queryField = new WText(Component.literal("§l§nSearch Results for: " + query));
@@ -108,7 +110,7 @@ public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
                                     String[] notearr = notes.split("=");
                                     int length = Integer
                                         .parseInt(notearr[notearr.length - 1].split(":")[0]);
-                                    SongData d = new SongData("Song " + id, "CodeUtilities", 20f,
+                                    SongData d = new SongData("Song " + id, "Recode", 20f,
                                         length, notes, "", "", 1, 0, 0);
 
                                     String code = new NBSToTemplate(d).convert();
@@ -144,7 +146,7 @@ public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
                                             throw new RuntimeException(ex);
                                         }
                                         List<String> notes = new ArrayList<>(
-                                            Arrays.asList(snotes.split("=")));
+                                            Arrays.asList(snotes.trim().split("=")));
 
                                         preview.setLabel(Component.literal("■"));
 
