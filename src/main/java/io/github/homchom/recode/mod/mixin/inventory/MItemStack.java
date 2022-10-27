@@ -3,7 +3,7 @@ package io.github.homchom.recode.mod.mixin.inventory;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Key;
 import io.github.homchom.recode.LegacyRecode;
-import io.github.homchom.recode.mod.features.Keybinds;
+import io.github.homchom.recode.mod.features.keybinds.Keybinds;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.nbt.CompoundTag;

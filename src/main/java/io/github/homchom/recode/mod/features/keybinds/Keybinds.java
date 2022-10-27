@@ -1,4 +1,4 @@
-package io.github.homchom.recode.mod.features;
+package io.github.homchom.recode.mod.features.keybinds;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
@@ -30,17 +30,13 @@ public class Keybinds implements ClientModInitializer {
         // Initialize
         // =======================================================
 
-        // play
-        KeyMapping play = KeyBindingHelper.registerKeyBinding(new KeyMapping(
-                "key.recode.play", InputConstants.Type.KEYSYM, -1, "key.category.recode"));
+        // toggle play dev
+        KeyMapping toggle_play_dev = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+                "key.recode.toggle_play_dev", InputConstants.Type.KEYSYM, -1, "key.category.recode"));
 
-        // build
-        KeyMapping build = KeyBindingHelper.registerKeyBinding(new KeyMapping(
-                "key.recode.build", InputConstants.Type.KEYSYM, -1, "key.category.recode"));
-
-        // dev
-        KeyMapping dev = KeyBindingHelper.registerKeyBinding(new KeyMapping(
-                "key.recode.dev", InputConstants.Type.KEYSYM, -1, "key.category.recode"));
+        // toggle play build
+        KeyMapping toggle_play_build = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+                "key.recode.toggle_play_build", InputConstants.Type.KEYSYM, -1, "key.category.recode"));
 
         // spawn
         KeyMapping spawn = KeyBindingHelper.registerKeyBinding(new KeyMapping(
@@ -48,17 +44,11 @@ public class Keybinds implements ClientModInitializer {
 
         // =======
 
-        // fs normal
-        KeyMapping fsNormal = KeyBindingHelper.registerKeyBinding(new KeyMapping(
-                "key.recode.fs_normal", InputConstants.Type.KEYSYM, -1, "key.category.recode"));
-
-        // fs med
-        KeyMapping fsMedium = KeyBindingHelper.registerKeyBinding(new KeyMapping(
-                "key.recode.fs_med", InputConstants.Type.KEYSYM, -1, "key.category.recode"));
-
-        // fs fast
-        KeyMapping fsFast = KeyBindingHelper.registerKeyBinding(new KeyMapping(
-                "key.recode.fs_fast", InputConstants.Type.KEYSYM, -1, "key.category.recode"));
+        // fs toggle
+        KeyMapping toggleFsMedium = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+                "key.recode.toggle_fs_medium", InputConstants.Type.KEYSYM, -1, "key.category.recode"));
+        KeyMapping toggleFsFast = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+                "key.recode.toggle_fs_fast", InputConstants.Type.KEYSYM, -1, "key.category.recode"));
 
         // =======
 
@@ -129,26 +119,22 @@ public class Keybinds implements ClientModInitializer {
             )), chatShortcut);
         }
 
-        // Sided Chat
-
         // =======================================================
         // Events
         // =======================================================
 
+        // TODO: rework this with/after feature refactor
+        FlightSpeedToggle fsToggle = new FlightSpeedToggle();
+
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            // play
-            while (play.consumeClick()) {
-                sendCommand("play");
+            // toggle play dev
+            while (toggle_play_dev.consumeClick()) {
+                sendCommand(DFInfo.currentState.getMode() == LegacyState.Mode.PLAY ? "dev" : "play");
             }
 
-            // build
-            while (build.consumeClick()) {
-                sendCommand("build");
-            }
-
-            // dev
-            while (dev.consumeClick()) {
-                sendCommand("dev");
+            // toggle play build
+            while (toggle_play_build.consumeClick()) {
+                sendCommand(DFInfo.currentState.getMode() == LegacyState.Mode.PLAY ? "build" : "play");
             }
 
             // spawn
@@ -156,19 +142,13 @@ public class Keybinds implements ClientModInitializer {
                 sendCommand("s");
             }
 
-            // fs normal
-            while (fsNormal.consumeClick()) {
-                sendCommand("fs " + Config.getInteger("fsNormal"));
+            // toggle fs
+            while (toggleFsMedium.consumeClick()) {
+                fsToggle.toggleFlightSpeed(Config.getInteger("fsMed"));
             }
 
-            // fs med
-            while (fsMedium.consumeClick()) {
-                sendCommand("fs " + Config.getInteger("fsMed"));
-            }
-
-            // fs fast
-            while (fsFast.consumeClick()) {
-                sendCommand("fs " + Config.getInteger("fsFast"));
+            while (toggleFsFast.consumeClick()) {
+                fsToggle.toggleFlightSpeed(Config.getInteger("fsFast"));
             }
 
             // lagslayer
