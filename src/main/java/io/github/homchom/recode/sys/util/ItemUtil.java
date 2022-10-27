@@ -4,6 +4,7 @@ import com.google.gson.JsonParser;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.homchom.recode.LegacyRecode;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.core.*;
 import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
@@ -59,18 +60,29 @@ public class ItemUtil {
         if (!mc.player.isCreative()) {
             throw new IllegalStateException("Player is not in creative mode.");
         }
+        int slotCount = mc.player.containerMenu.slots.size();
 
-        // replace the 8th slot with the item we want to set.
-        ItemStack replacedItem = mc.player.getInventory().getItem(7);
-        LegacyRecode.MC.gameMode.handleCreativeModeItemAdd(itemStack, 43);
-        mc.player.getInventory().setItem(7, itemStack);
+        // Check if you're trying to replace an item in your own inventory or in a container.
+        if (slot < slotCount - 36) { // Container case.
+            // replace the 8th slot with the item we want to set.
+            ItemStack replacedItem = mc.player.getInventory().getItem(7);
+            LegacyRecode.MC.gameMode.handleCreativeModeItemAdd(itemStack, 43);
+            mc.player.getInventory().setItem(7, itemStack);
 
-        // simulates pressing the 8 key on the slot we want to change.
-        LegacyRecode.MC.gameMode.handleInventoryMouseClick(mc.player.containerMenu.containerId, slot, 7, ClickType.SWAP, LegacyRecode.MC.player);
+            // simulates pressing the 8 key on the slot we want to change.
+            LegacyRecode.MC.gameMode.handleInventoryMouseClick(mc.player.containerMenu.containerId, slot, 7, ClickType.SWAP, LegacyRecode.MC.player);
 
-        // change the 8th slot back to what it was before.
-        LegacyRecode.MC.gameMode.handleCreativeModeItemAdd(replacedItem, 43);
-        mc.player.getInventory().setItem(7, replacedItem);
+            // change the 8th slot back to what it was before.
+            LegacyRecode.MC.gameMode.handleCreativeModeItemAdd(replacedItem, 43);
+            mc.player.getInventory().setItem(7, replacedItem);
+        } else { // Own inventory case.
+            // Transform index to in between 0 and 35.
+            int normalizedSlot = slot - slotCount + 36;
+
+            // Replace the slot with the item we want to set.
+            LegacyRecode.MC.gameMode.handleCreativeModeItemAdd(itemStack, normalizedSlot + 9);
+            mc.player.getInventory().setItem((normalizedSlot + 9) % 36, itemStack);
+        }
     }
 
     public static List<ItemStack> fromItemContainer(ItemStack container) {
