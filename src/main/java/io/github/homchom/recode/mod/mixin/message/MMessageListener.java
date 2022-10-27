@@ -193,7 +193,7 @@ public class MMessageListener {
         if (text.matches("^» You are now in dev mode\\.$")) {
             LegacyCoroutineFunctions.checkTwiceForMode(LegacyState.Mode.DEV, () -> {
                 if (Config.getBoolean("autoRC")) {
-                    ChatUtil.executeCommandSilently("resetcompact");
+                    ChatUtil.executeCommand("resetcompact");
                 }
                 if (Config.getBoolean("autotime")) {
                     ChatUtil.executeCommandSilently("time " + Config.getLong("autotimeval"));
