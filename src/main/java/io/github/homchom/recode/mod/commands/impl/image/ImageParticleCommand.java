@@ -24,8 +24,8 @@ public class ImageParticleCommand extends AbstractImageCommand {
                         .executes(ctx -> {
                             Templates.giveInternalTemplate(
                                     Items.GOLD_BLOCK,
-                                    "Particle Image Printer",
-                                    "CodeUtilities",
+                                    "§b§lFunction §3» §bRecode §6Particle Image Printer",
+                                    "Recode",
                                     TemplateConstants.IMAGE_PARTICLE_PRINTER
                             );
                             return 1;
