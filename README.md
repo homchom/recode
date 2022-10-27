@@ -3,11 +3,9 @@
 
 recode is a utility-focused fabric mod for [DiamondFire](https://mcdiamondfire.com/home/) to make development more fun. It is the official successor to [CodeUtilities](https://github.com/CodeUtilities/CodeUtilities-2.0), from which it was cloned.
 
-Currently supported Minecraft version: 1.19.2
+**Currently supported Minecraft version:** 1.19.2
 
-### Mod Dependencies:
-- Fabric API v0.60.0 or newer
-- Fabric Loader v0.13.3 or newer
+**Mod dependencies:** Fabric API v0.60.0 or newer
 
 You can find the mod jar [here](https://github.com/homchom/recode/releases). See the Future plans include removing bloat/unnecessary features, improving existing code, adding new features, and migrating to Kotlin.
 
