@@ -58,12 +58,12 @@ public class ImageParticleCommand extends AbstractImageCommand {
     @Override
     public String getDescription() {
         return "[blue]/imageparticle load <file>[reset]\n"
-                + "[blue]/imageparticle printer[reset]\n"
-                + "\n"
-                + "Generates a code template that displays images using colored particles.\n"
-                + "Put the image file you want to convert in [green].minecraft/recode/Images[reset] folder.\n"
-                + "Maximum image size is [yellow]40x40[reset].\n"
-                + "Use [yellow]/imageparticle printer[reset] to grab the Image Printer which displays the image.";
+            + "[blue]/imageparticle printer[reset]\n"
+            + "\n"
+            + "Generates a code template that displays images using colored particles.\n"
+            + "Put the image file you want to convert in [green].minecraft/recode/Images[reset] folder.\n"
+            + "Maximum image size is [yellow]40x40[reset].\n"
+            + "Use [yellow]/imageparticle printer[reset] to grab the Image Printer which displays the image.";
     }
 
     @Override
