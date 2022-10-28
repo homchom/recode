@@ -33,6 +33,7 @@ public class VarSyntaxHighlighter {
     public static final List<String> txtPreviews = Arrays.asList(
         "/lore add ",
         "/addlore ",
+        "/relore",
         "/rename ",
         "/lore set N",
         "/i lore set N",
