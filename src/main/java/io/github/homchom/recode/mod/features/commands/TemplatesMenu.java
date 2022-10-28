@@ -2,6 +2,7 @@ package io.github.homchom.recode.mod.features.commands;
 
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
+import io.github.cottonmc.cotton.gui.widget.data.Insets;
 import io.github.homchom.recode.sys.hypercube.templates.*;
 import io.github.homchom.recode.sys.renderer.IMenu;
 import io.github.homchom.recode.sys.renderer.widgets.ItemScrollablePanel;
@@ -29,5 +30,6 @@ public class TemplatesMenu extends LightweightGuiDescription implements IMenu {
 
         setRootPanel(root);
         root.validate(this);
+        root.setInsets(Insets.ROOT_PANEL);
     }
 }
