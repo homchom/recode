@@ -5,8 +5,8 @@
   "mixins": [
     "render.MBlockEntityRenderDispatcher",
     "render.MLevelRenderer",
-    "server.MClientPacketListener",
-    "server.MProfilePublicKey"
+    "render.MToastComponent",
+    "render.ASystemToast"
   ],
   "client": [],
   "server": [],
