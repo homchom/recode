@@ -26,7 +26,6 @@ base {
 }
 
 repositories {
-    jcenter()
     maven {
         name = "CottonMC"
         url = uri("https://server.bbkr.space/artifactory/libs-release")
@@ -38,6 +37,7 @@ repositories {
         url = uri("https://maven.terraformersmc.com/")
     }
     mavenCentral()
+    jcenter() // TODO: remove after Discord RPC dependency is removed
 }
 
 val shade: Configuration by configurations.creating {
