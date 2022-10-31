@@ -3,9 +3,34 @@
 
 recode is a utility-focused fabric mod for [DiamondFire](https://mcdiamondfire.com/home/) to make development more fun. It is the official successor to [CodeUtilities](https://github.com/CodeUtilities/CodeUtilities-2.0), from which it was cloned.
 
-You can find the mod jar [here](https://github.com/homchom/recode/releases). See the Future plans include removing bloat/unnecessary features, improving existing code, adding new features, and migrating to Kotlin.
+See the Future plans include removing bloat/unnecessary features, improving existing code, adding new features, and migrating to Kotlin.
 
 Feel free to join the recode Discord server: https://discord.gg/GWxWtcwA2C
+
+## Installation
+
+### GitHub releases (recommended)
+
+Click [here](https://github.com/homchom/recode/releases) to get to the latest release of the mod, then navigate to Assets, and there you can find the mod's .jar file.
+
+### Building manually
+
+If you want to have the most cutting edge recode experience, with some possibility of bugs, or if you want to contribute, you should run the following commands:
+
+- `git clone https://github.com/homchom/recode/`
+- If you're on Windows, run `gradlew.bat build`, else run `./gradlew build` (This may take a long time.)
+
+If you encounter any errors during this process, feel free to ask for help in the Discord server.
+
+After you're done you should find the mod's .jar file in `build/libs/` as `recode-[version number].jar`
+
+### GitHub actions
+
+If you don't feel like building the mod, yet still want to have all the benefits (and drawbacks), of having built the mod yourself, you should see the GitHub actions page [here](https://github.com/homchom/recode/actions).
+
+From here you should click on the latest passing workflow, scroll to the bottom of the page and click `Artifacts`.
+
+This should start a download for `Artifacts.zip`, which contains the mod's .jar file as `recode-[version number].jar`
 
 ## Features
 
