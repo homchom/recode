@@ -52,8 +52,12 @@ val FCodeSearch = feature("Code Search") {
                     if (Config.getBoolean("codeSearchPulse")) {
                         var pulseProgress = (((mc.level!!.gameTime % 40).toFloat() + mc.deltaFrameTime) % 40) / 20
 
-                        if (pulseProgress > 1) {
-                            pulseProgress = 2 - pulseProgress
+                        if (Config.getBoolean("codeSearchTwoWayPulse")) {
+                            if (pulseProgress > 1) {
+                                pulseProgress = 2 - pulseProgress
+                            }
+                        } else {
+                            pulseProgress = 1 - (pulseProgress % 1)
                         }
 
                         pulseStart = pulseProgress * 0.8f

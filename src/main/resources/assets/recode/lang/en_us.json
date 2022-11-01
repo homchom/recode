@@ -62,6 +62,8 @@
     "config.recode.option.codeSearchTracers.tooltip": "Show Tracers (Lines) towards the /search results.",
     "config.recode.option.codeSearchPulse": "Code Search Pulse",
     "config.recode.option.codeSearchPulse.tooltip": "Animate the Tracers for the code search.",
+    "config.recode.option.codeSearchTwoWayPulse": "Code Search Two Way Pulse",
+    "config.recode.option.codeSearchTwoWayPulse.tooltip": "Animate the Pulse in a towards/away pattern\ninstead of always towards.",
 
     "config.recode.subcategory.commands_automsg": "Auto /msg",
     "config.recode.subcategory.commands_automsg.tooltip": "Will set a conversation with someone when\ndoing /msg <player>, any message sent in chat\nwill automatically be sent to that person only.",
