@@ -107,7 +107,7 @@ tasks {
 
         // Evaluate fabric_mod_json_template.txt as a Groovy template
         filesMatching("fabric_mod_json_template.txt") {
-            val metadataRegex = Regex("""\+[\d\.]+$""")
+            val metadataRegex = Regex("""\+[\d.]+$""")
             expand(
                 *exposedProperties,
                 "metadataRegex" to metadataRegex.toPattern(),

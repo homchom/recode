@@ -38,6 +38,10 @@ private val Logger = LoggerFactory.getLogger(MOD_ID)
 lateinit var modVersion: String
     private set
 
+val trimmedModVersion by lazy {
+    modVersion.replace(Regex("""\+[\d.]+$"""), "")
+}
+
 val RecodeMod = entrypointModule {
     // TODO: move feature groups to a config module
     depend(RenderingFeatureGroup)

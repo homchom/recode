@@ -151,7 +151,7 @@ public class DFDiscordRPC implements ILoader {
     }
 
     private String getLargeImageText() {
-        return "mcdiamondfire.com | recode " + Recode.getModVersion();
+        return "mcdiamondfire.com | recode " + Recode.getTrimmedModVersion();
     }
 
     private static String dyn(String key) {
