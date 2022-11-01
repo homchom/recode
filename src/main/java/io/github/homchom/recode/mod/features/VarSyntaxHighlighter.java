@@ -33,6 +33,7 @@ public class VarSyntaxHighlighter {
     public static final List<String> txtPreviews = Arrays.asList(
         "/lore add ",
         "/addlore ",
+        "/relore ",
         "/rename ",
         "/lore set N",
         "/i lore set N",
@@ -42,7 +43,9 @@ public class VarSyntaxHighlighter {
         "/ils N",
         "/sll N",
         "/p name ",
-        "/plot name "
+        "/plot name ",
+        "/i name ",
+        "/item name "
     );
 
     public static Component highlight(String msg) {

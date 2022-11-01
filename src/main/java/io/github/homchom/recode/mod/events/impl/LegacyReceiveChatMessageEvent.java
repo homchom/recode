@@ -77,37 +77,38 @@ public class LegacyReceiveChatMessageEvent {
         // highlight name
         if (Config.getBoolean("highlight")) {
             String highlightMatcher = Config.getString("highlightMatcher").replaceAll("\\{name}", mc.player.getName().getString());
-
-            if (( DFInfo.currentState.getMode() != LegacyState.Mode.PLAY && msgWithoutColor.matches("^[^0-z]+.*[a-zA-Z]+: .*"))
+            if ((DFInfo.currentState.getMode() != LegacyState.Mode.PLAY && msgWithoutColor.matches("^[^0-z]+.*[a-zA-Z]+: .*"))
                     || (DFInfo.currentState.getMode() == LegacyState.Mode.PLAY && msgWithoutColor.matches("^.*[a-zA-Z]+: .*"))) {
                 if ((!msgWithoutColor.matches("^.*" + highlightMatcher + ": .*")) || Config.getBoolean("highlightIgnoreSender")) {
                     if (msgWithoutColor.contains(highlightMatcher)) {
-                        String[] chars = msgWithColor.split("");
-                        int i = 0;
-                        int newMsgIter = 0;
-                        StringBuilder getColorCodes = new StringBuilder();
-                        String newMsg = msgWithColor;
-                        String textLeft;
+                        if (!msg.contains("» Joined game: ") && !msg.contains(" by " + highlightMatcher + ".")) {
+                            String[] chars = msgWithColor.split("");
+                            int i = 0;
+                            int newMsgIter = 0;
+                            StringBuilder getColorCodes = new StringBuilder();
+                            String newMsg = msgWithColor;
+                            String textLeft;
 
-                        for (String currentChar : chars) {
-                            textLeft = msgWithColor.substring(i) + " ";
-                            i++;
-                            if (currentChar.equals("§")) getColorCodes.append(currentChar).append(chars[i]);
-                            if (textLeft.matches("^" + highlightMatcher + "[^a-zA-Z0-9].*")) {
-                                newMsg = newMsg.substring(0, newMsgIter) + Config.getString("highlightPrefix").replaceAll("&", "§")
-                                        + highlightMatcher + getColorCodes + newMsg.substring(newMsgIter).replaceFirst("^" + highlightMatcher, "");
+                            for (String currentChar : chars) {
+                                textLeft = msgWithColor.substring(i) + " ";
+                                i++;
+                                if (currentChar.equals("§")) getColorCodes.append(currentChar).append(chars[i]);
+                                if (textLeft.matches("^" + highlightMatcher + "[^a-zA-Z0-9].*")) {
+                                    newMsg = newMsg.substring(0, newMsgIter) + Config.getString("highlightPrefix").replaceAll("&", "§")
+                                            + highlightMatcher + getColorCodes + newMsg.substring(newMsgIter).replaceFirst("^" + highlightMatcher, "");
 
-                                newMsgIter = newMsgIter + Config.getString("highlightPrefix").length() + getColorCodes.toString().length();
+                                    newMsgIter = newMsgIter + Config.getString("highlightPrefix").length() + getColorCodes.toString().length();
+                                }
+                                newMsgIter++;
                             }
-                            newMsgIter++;
+                            mc.player.displayClientMessage(TextUtil.colorCodesToTextComponent(newMsg), false);
+                            if (Config.getBoolean("highlightOwnSenderSound") ||
+                                    (!msgWithoutColor.matches("^.*" + highlightMatcher + ": .+"))) {
+                                ChatUtil.playSound(
+                                        Config.getSound("highlightSound"), 1, Config.getFloat("highlightSoundVolume"));
+                            }
+                            cancel = true;
                         }
-                        mc.player.displayClientMessage(TextUtil.colorCodesToTextComponent(newMsg), false);
-                        if (Config.getBoolean("highlightOwnSenderSound") ||
-                                (!msgWithoutColor.matches("^.*" + highlightMatcher + ": .+"))) {
-                            ChatUtil.playSound(
-                                    Config.getSound("highlightSound"), 1, Config.getFloat("highlightSoundVolume"));
-                        }
-                        cancel = true;
                     }
                 }
             }

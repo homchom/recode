@@ -26,7 +26,6 @@ base {
 }
 
 repositories {
-    jcenter()
     maven {
         name = "CottonMC"
         url = uri("https://server.bbkr.space/artifactory/libs-release")
@@ -38,6 +37,7 @@ repositories {
         url = uri("https://maven.terraformersmc.com/")
     }
     mavenCentral()
+    jcenter() // TODO: remove after Discord RPC dependency is removed
 }
 
 val shade: Configuration by configurations.creating {
@@ -107,7 +107,7 @@ tasks {
 
         // Evaluate fabric_mod_json_template.txt as a Groovy template
         filesMatching("fabric_mod_json_template.txt") {
-            val metadataRegex = Regex("""\+[\d\.]+$""")
+            val metadataRegex = Regex("""\+[\d.]+$""")
             expand(
                 *exposedProperties,
                 "metadataRegex" to metadataRegex.toPattern(),
