@@ -34,7 +34,7 @@ public abstract class MItemStack {
         if (player == null) return;
 
         try {
-            String cname = FabricLoader.getInstance().isDevelopmentEnvironment() ? "boundKey" : "field_1655";
+            String cname = FabricLoader.getInstance().isDevelopmentEnvironment() ? "key" : "field_1655";
 
             int keycode = ((Key) FieldUtils.getField(KeyMapping.class,cname,true).get(Keybinds.showTags)).getValue();
 
