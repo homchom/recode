@@ -176,10 +176,7 @@ modrinth {
     }
 
     // TODO: use something other than readText?
-    syncBodyFrom.set(file("README.md").readText()
-        .replace("https://github.com/homchom/recode/releases",
-            "https://modrinth.com/mod/recode/versions")
-    )
+    syncBodyFrom.set(file("README.md").readText())
     changelog.set(file("CHANGELOG.md").readText())
 }
 

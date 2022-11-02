@@ -5,9 +5,11 @@
 
 recode is a utility-focused fabric mod for [DiamondFire](https://mcdiamondfire.com/home/) to make development more fun. It is the official successor to [CodeUtilities](https://github.com/CodeUtilities/CodeUtilities-2.0), from which it was cloned.
 
-You can find the mod jar [here](https://github.com/homchom/recode/releases). See the Future plans include removing bloat/unnecessary features, improving existing code, adding new features, and migrating to Kotlin.
+You can find the mod jar [here](https://modrinth.com/mod/recode/versions). Future plans include removing bloat/unnecessary features, improving existing code, adding new features, and migrating to Kotlin.
 
 Feel free to join the recode Discord server: https://discord.gg/GWxWtcwA2C
+
+Or check the Modrinth page: https://modrinth.com/mod/recode
 
 ## Features
 
