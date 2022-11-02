@@ -9,9 +9,11 @@ Feel free to join the recode Discord server: https://discord.gg/GWxWtcwA2C
 
 ## Installation
 
-### GitHub releases (recommended)
+### GitHub releases or Modrinth (recommended)
 
 Click [here](https://github.com/homchom/recode/releases) to get to the latest release of the mod, then navigate to Assets, and there you can find the mod's .jar file.
+
+Alternatively, click [here](https://modrinth.com/mod/recode) to get to the Modrinth page for the mod. Here you can click on the latest featured version to the left, and then just press the Download button.
 
 ### Building manually
 
