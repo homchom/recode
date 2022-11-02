@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("jvm") version "1.7.0"
     id("fabric-loom") version "0.12-SNAPSHOT"
+    id("com.modrinth.minotaur") version "2.+"
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
@@ -11,7 +12,8 @@ val modName: String by project
 
 val modVersion: String by project
 val minecraftVersion: String by project
-version = "$modVersion+$minecraftVersion"
+val modVersionWithMeta = "$modVersion+$minecraftVersion"
+version = modVersionWithMeta
 
 val mavenGroup: String by project
 group = mavenGroup
@@ -144,6 +146,41 @@ tasks {
         // Use the shaded jar with remapJar, since jar is disabled
         inputFile.value(shadowJar.get().archiveFile)
     }
+}
+
+tasks.modrinth.get().dependsOn(tasks.modrinthSyncBody.get())
+
+modrinth {
+    // DO NOT PUT THIS IN GRADLE.PROPERTIES. Your modrinth token should remain private to everyone.
+    token.set(property("privateModrinthToken").toString())
+
+    projectId.set("recode")
+    versionNumber.set(modVersionWithMeta)
+
+    val match = Regex("""-(beta|alpha)(\.)?""").find(modVersion)
+    if (match == null) {
+        versionName.set(modVersion)
+        versionType.set("release")
+    } else {
+        val type = match.groupValues[1]
+        val replacement = if (match.groups.size == 3) " $type " else " $type"
+        versionName.set(modVersion.replaceRange(match.range, replacement))
+        versionType.set(type)
+    }
+
+    uploadFile.set(tasks.remapJar.get())
+    gameVersions.addAll(minecraftVersion)
+    dependencies {
+        val fabricModrinthVersion: String by project
+        required.version(fabricModrinthVersion)
+    }
+
+    // TODO: use something other than readText?
+    syncBodyFrom.set(file("README.md").readText()
+        .replace("https://github.com/homchom/recode/releases",
+            "https://modrinth.com/mod/recode/versions")
+    )
+    changelog.set(file("CHANGELOG.md").readText())
 }
 
 typealias DependencyConfig = Action<ExternalModuleDependency>

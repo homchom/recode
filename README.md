@@ -1,5 +1,7 @@
+<!-- modrinth_exclude.start -->
 # recode
 ![logo](logo.png)
+<!-- modrinth_exclude.end -->
 
 recode is a utility-focused fabric mod for [DiamondFire](https://mcdiamondfire.com/home/) to make development more fun. It is the official successor to [CodeUtilities](https://github.com/CodeUtilities/CodeUtilities-2.0), from which it was cloned.
 
