@@ -27,6 +27,7 @@ public class CommandHandler {
         cmds.clear();
 
         register(dispatcher, context,
+            new PingCommand(),
             new RecodeCommand(),
             new BreakableCommand(),
             new UnpackCommand(),

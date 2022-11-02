@@ -1,12 +1,15 @@
+<!-- modrinth_exclude.start -->
 # recode
 ![logo](logo.png)
+<!-- modrinth_exclude.end -->
 
 recode is a utility-focused fabric mod for [DiamondFire](https://mcdiamondfire.com/home/) to make development more fun. It is the official successor to [CodeUtilities](https://github.com/CodeUtilities/CodeUtilities-2.0), from which it was cloned.
 
-See the Future plans include removing bloat/unnecessary features, improving existing code, adding new features, and migrating to Kotlin.
+Future plans include removing bloat/unnecessary features, improving existing code, adding new features, and migrating to Kotlin.
 
 Feel free to join the recode Discord server: https://discord.gg/GWxWtcwA2C
 
+<!-- modrinth_exclude.start -->
 ## Installation
 
 ### Modrinth or GitHub releases (recommended)
@@ -33,6 +36,7 @@ If you don't feel like building the mod, yet still want to have all the benefits
 From here you should click on the latest passing workflow, scroll to the bottom of the page and click `Artifacts`.
 
 This should start a download for `Artifacts.zip`, which contains the mod's .jar file as `recode-[version number].jar`
+<!-- modrinth_exclude.end -->
 
 ## Features
 
