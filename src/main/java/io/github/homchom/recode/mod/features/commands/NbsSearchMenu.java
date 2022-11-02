@@ -104,6 +104,7 @@ public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
                                         notes = WebUtil.getString(
                                             "https://untitled-57qvszfgg28u.runkit.sh/download?format=mcnbs&id="
                                                 + id);
+                                        ChatUtil.playSound(SoundEvents.ITEM_PICKUP);
                                     } catch (IOException ex) {
                                         throw new RuntimeException(ex);
                                     }
