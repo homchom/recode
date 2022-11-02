@@ -9,7 +9,9 @@ You can find the mod jar [here](https://modrinth.com/mod/recode/versions). Futur
 
 Feel free to join the recode Discord server: https://discord.gg/GWxWtcwA2C
 
+<!-- modrinth_exclude.start -->
 Or check the Modrinth page: https://modrinth.com/mod/recode
+<!-- modrinth_exclude.end -->
 
 ## Features
 
