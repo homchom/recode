@@ -152,7 +152,7 @@ tasks.modrinth.get().dependsOn(tasks.modrinthSyncBody.get())
 
 modrinth {
     // DO NOT PUT THIS IN RECODE'S GRADLE.PROPERTIES. Your modrinth token should remain private to everyone.
-    token.set(property("privateModrinthToken").toString())
+    token.set(findProperty("privateModrinthToken")?.toString() ?: "")
 
     projectId.set("recode")
     versionNumber.set(modVersionWithMeta)
