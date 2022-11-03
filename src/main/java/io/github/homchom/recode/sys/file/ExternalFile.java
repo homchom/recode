@@ -1,5 +1,7 @@
 package io.github.homchom.recode.sys.file;
 
+import com.google.gson.JsonObject;
+
 import java.nio.file.Path;
 
 public enum ExternalFile {
@@ -11,7 +13,9 @@ public enum ExternalFile {
             .isDirectory(true)
             .setName("Images")
             .build()),
-    TEMPLATE_DB(ExternalFileBuilder.nbt("Templates.nbt"));
+    TEMPLATE_DB(ExternalFileBuilder.nbt("Templates.nbt")),
+
+    QUICK_VARS(ExternalFileBuilder.json("QuickVars.json", new JsonObject()));
 
     private final Path path;
 

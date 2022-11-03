@@ -26,6 +26,7 @@ public class ScreenGroup extends ConfigGroup {
         // Code
         ConfigSubGroup code = new ConfigSubGroup("code");
         code.register(new BooleanSetting("chestToolTip", true));
+        code.register(new BooleanSetting("quickChestVars", true));
         code.register(new BooleanSetting("templatePeeking", false));
         code.register(new BooleanSetting("cpuOnScreen", true));
         code.register(new BooleanSetting("variableScopeView", true));

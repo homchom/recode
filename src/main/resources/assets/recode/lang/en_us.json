@@ -188,6 +188,8 @@
 
     "config.recode.option.chestToolTip": "Chest Tooltip",
     "config.recode.option.chestToolTip.tooltip": "Display chest params when you are in dev",
+    "config.recode.option.quickChestVars": "Quick Chest Vars",
+    "config.recode.option.quickChestVars.tooltip": "Quickly get recent variables and similar while inside a chest.",
     "config.recode.option.chestToolTipType": "Chest Tooltip Style",
     "config.recode.option.chestToolTipType.tooltip": "Choose between regular Minecraft tooltip style \nor raw text in the top left corner.",
 
