@@ -137,9 +137,9 @@ public class TextUtil {
         return TextUtil.toString(TextUtil.colorCodesToTextComponent(text.replaceAll("\"", "''").replaceAll("''", "\\\\\"")));
     }
 
-    public static String formatValues(String text, String stringColor, String numberColor) {
+    public static String formatValues(String text, String lastColor,String stringColor, String numberColor) {
         String output = "";
-        String lastColor = "§f";
+        String lastChar = "";
         Boolean activeQuote = false;
         char[] chars = text.toCharArray();
         for (char ch : chars) {
@@ -149,14 +149,19 @@ public class TextUtil {
                 if (!activeQuote) {
                     output += character;
                     output += lastColor;
+                    lastChar = character;
                     continue;
                 }
             }
-            if (lastColor == "§") {
+            if (Objects.equals(lastColor, "§")) {
                 lastColor = "§" + character;
             }else if (!activeQuote) {
                 if (character.matches("\\d")) {
+                    if (lastChar.equals(".")) {
+                        output = output.substring(0, output.length() - 1) + numberColor + ".";
+                    }
                     output = output + numberColor + character + lastColor; // Color any number, marked by being outside of quotation marks
+                    lastChar = character;
                     continue;
                 }
             }
@@ -165,11 +170,12 @@ public class TextUtil {
                 output += stringColor; // Color any string, marked by 2 quotation marks
             }
             output += character;
+            lastChar = character;
         }
         return output;
     }
 
     public static String formatValues(String text) {
-        return TextUtil.formatValues(text, "§b", "§c");
+        return TextUtil.formatValues(text, "§7", "§b", "§c");
     }
 }
