@@ -28,7 +28,7 @@ public class QueueCommand extends Command {
                     try {
                         String content = WebUtil.getString("https://twitch.center/customapi/quote/list?token=18a3878c");
 
-                        String[] splitQueue = content.split("\\n");
+                        String[] splitQueue = content.replace('§', '&').split("\\n");
                         LinkedHashSet<QueueEntry> queue = new LinkedHashSet<>();
 
                         int i = 0;
