@@ -1,7 +1,7 @@
 package io.github.homchom.recode.event
 
-import io.github.homchom.recode.init.ListenableModule
-import io.github.homchom.recode.init.RModule
+import io.github.homchom.recode.lifecycle.ListenableModule
+import io.github.homchom.recode.lifecycle.RModule
 import kotlinx.coroutines.flow.Flow
 import net.fabricmc.fabric.api.event.Event
 import net.fabricmc.fabric.api.event.EventFactory

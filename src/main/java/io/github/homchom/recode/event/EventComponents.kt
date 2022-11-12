@@ -1,8 +1,8 @@
 package io.github.homchom.recode.event
 
-import io.github.homchom.recode.init.ListenableModule
-import io.github.homchom.recode.init.MutatesModuleState
-import io.github.homchom.recode.init.RModule
+import io.github.homchom.recode.lifecycle.ListenableModule
+import io.github.homchom.recode.lifecycle.MutatesModuleState
+import io.github.homchom.recode.lifecycle.RModule
 
 /**
  * A [CustomEvent] without a result.
@@ -20,7 +20,8 @@ interface HookEvent<C> : CustomEvent<C, Unit> {
 interface ValidatedEvent<C> : REvent<C, Boolean>
 
 /**
- * A [CustomEvent] with children. When listened to by a module, the children will be implicitly added.
+ * A [CustomEvent] with children. When listened to by a [ListenableModule], the children will
+ * be implicitly added.
  */
 class DependentEvent<C, R : Any>(
     private val delegate: CustomEvent<C, R>,

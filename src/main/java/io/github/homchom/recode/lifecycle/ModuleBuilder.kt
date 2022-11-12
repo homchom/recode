@@ -1,40 +1,35 @@
-package io.github.homchom.recode.init
+package io.github.homchom.recode.lifecycle
 
 typealias ModuleBuilderScope = ModuleBuilder.() -> Unit
-typealias BuiltModuleAction = BuiltModule.() -> Unit
+typealias ModuleAction = ExposedModule.() -> Unit
 
 /**
  * Builds a weak [RModule].
  */
-inline fun module(key: SingletonKey? = null, builder: ModuleBuilderScope = {}) =
-    ModuleBuilder(key)
-        .apply(builder)
-        .run { basicWeakModule(children, onLoad.action, onEnable.action, onDisable.action) }
+inline fun module(key: SingletonKey? = null, builder: ModuleBuilderScope): RModule =
+    buildExposedModule(key, builder)
 
 /**
  * Builds a strong [RModule].
  */
-inline fun strongModule(key: SingletonKey? = null, builder: ModuleBuilderScope = {}) =
-    ModuleBuilder(key)
-        .apply(builder)
-        .run { basicStrongModule(children, onLoad.action, onEnable.action, onDisable.action) }
+inline fun strongModule(key: SingletonKey? = null, builder: ModuleBuilderScope): RModule =
+    buildStrongExposedModule(key, builder)
 
 /**
  * Builds a strong [RModule] to be enabled by entrypoints.
  */
 @OptIn(MutatesModuleState::class)
-inline fun entrypointModule(builder: ModuleBuilderScope): ActiveStateModule =
-    strongModule {
-        onLoad {
-            ClientStopEvent.hook { disable() }
-        }
-
-        builder()
+inline fun entrypointModule(builder: ModuleBuilderScope) = buildStrongExposedModule {
+    onLoad {
+        ClientStopEvent.hook { disable() }
     }
 
+    builder()
+}
+
 /**
- * @see module
- * @see strongModule
+ * @see buildExposedModule
+ * @see buildStrongExposedModule
  */
 class ModuleBuilder(key: SingletonKey?) {
     init {
@@ -65,15 +60,15 @@ class ModuleBuilder(key: SingletonKey?) {
 }
 
 /**
- * Builds an action to be invoked by a [BuiltModule].
+ * Builds an action to be invoked by a [ExposedModule].
  *
  * @see ModuleBuilder
  */
 class ModuleActionBuilder {
-    var action: BuiltModuleAction? = null
+    var action: ModuleAction? = null
         private set
 
-    operator fun invoke(block: BuiltModuleAction) {
+    operator fun invoke(block: ModuleAction) {
         action = action?.let { prev ->
             {
                 prev()

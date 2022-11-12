@@ -1,4 +1,4 @@
-package io.github.homchom.recode.init
+package io.github.homchom.recode.lifecycle
 
 /**
  * A **static** key to be passed to a singleton with a constructor, or to be otherwise used in

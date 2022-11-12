@@ -1,4 +1,4 @@
-package io.github.homchom.recode.init
+package io.github.homchom.recode.lifecycle
 
 import io.github.homchom.recode.event.Listener
 import io.github.homchom.recode.event.REvent
@@ -23,9 +23,12 @@ interface RModule {
     val isEnabled: Boolean
 
     fun addParent(module: RModule)
-    fun addChild(module: ActiveStateModule)
+    fun addChild(module: ExposedModule)
 }
 
+/**
+ * A [RModule] that can listen to an [REvent].
+ */
 interface ListenableModule : RModule {
     /**
      * @see REvent.listenFrom
@@ -39,14 +42,18 @@ interface ListenableModule : RModule {
     fun <C, R> REvent<C, R>.hook(hook: (C) -> Unit) = hookFrom(this@ListenableModule, hook)
 }
 
+/**
+ * A [RModule] with a [CoroutineScope].
+ */
 interface CoroutineModule : RModule {
     val coroutineScope: CoroutineScope
 }
 
 /**
- * An [RModule] with exposed functions for managing active state.
+ * A [ListenableModule] and [CoroutineModule] with exposed functions for mutating active state. This
+ * should be used when creating module subtypes, not when creating top-level modules directly.
  */
-interface ActiveStateModule : RModule {
+interface ExposedModule : ListenableModule, CoroutineModule {
     @MutatesModuleState
     fun load()
 
@@ -65,20 +72,20 @@ interface ActiveStateModule : RModule {
      * Tells this module that [module] is currently using it.
      */
     @MutatesModuleState
-    fun addUsage(module: ActiveStateModule)
+    fun addUsage(module: ExposedModule)
 
     /**
      * Tells this module that [module] is not currently using it.
      */
     @MutatesModuleState
-    fun removeUsage(module: ActiveStateModule)
+    fun removeUsage(module: ExposedModule)
 }
 
 /**
  * A [ListenableModule] that is always enabled. Useful for listening to events globally. Don't use
  * inside another module, and prefer listening to more localized modules when applicable.
  */
-val GlobalModule: ListenableModule get() = GlobalBuiltModule
+val GlobalModule: ListenableModule get() = GlobalExposedModule
 
 /**
  * A [CoroutineModule] that is always enabled. Don't use inside another module, and prefer using
@@ -87,15 +94,15 @@ val GlobalModule: ListenableModule get() = GlobalBuiltModule
  * @see kotlinx.coroutines.CoroutineScope
  */
 @DelicateCoroutinesApi
-val GlobalCoroutineModule: CoroutineModule get() = GlobalBuiltModule
+val GlobalCoroutineModule: CoroutineModule get() = GlobalExposedModule
 
-private object GlobalBuiltModule : BuiltModule by strongModule(builder = {}) {
+private object GlobalExposedModule : ExposedModule by buildStrongExposedModule() {
     @DelicateCoroutinesApi
     override val coroutineScope get() = GlobalScope
 }
 
 /**
- * An opt-in annotation denoting that something mutates global active state of an [RModule].
+ * An opt-in annotation denoting that something mutates global active state of an [ExposedModule].
  */
 @RequiresOptIn("This mutates global active state of a module and should only be " +
         "used by RModule implementations, with caution")
