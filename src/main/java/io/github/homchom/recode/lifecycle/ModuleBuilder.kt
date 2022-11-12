@@ -28,8 +28,8 @@ inline fun entrypointModule(builder: ModuleBuilderScope) = buildStrongExposedMod
 }
 
 /**
- * @see buildExposedModule
- * @see buildStrongExposedModule
+ * @see module
+ * @see strongModule
  */
 class ModuleBuilder(key: SingletonKey?) {
     init {
