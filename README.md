@@ -28,9 +28,4 @@ DiamondFire is a Minecraft server where you can create your own minigames with c
 
 ## Contributing
 
-recode is open source, and the community is welcome to add their own contributions. We only ask that you follow these guidelines:
-
-1. Keep unrelated code additions/changes/fixes to separate pull requests, so they can be separately worked on and merged without merging unfinished code into the main branch.
-2. When adding or editing Kotlin code, follow the style guide at https://kotlinlang.org/docs/coding-conventions.html unless you have a good reason not to.
-
-recode currently uses Kotlin version 1.7.0, so you will need to use an IDE that supports it (recommended: IntelliJ with Kotlin plugin v1.7.0).
+recode is open source, and the community is welcome to add their own contributions. We only ask that you follow these guidelines: https://github.com/homchom/recode/wiki/Contributing-to-recode
