@@ -2,6 +2,7 @@
 
 package io.github.homchom.recode.server
 
+import io.github.homchom.recode.mc
 import io.github.homchom.recode.util.capitalize
 import io.github.homchom.recode.util.uncapitalize
 
@@ -63,7 +64,6 @@ fun nodeByName(name: String): Node {
 }
 
 //fun nodeOf(id: String) = Node.values().singleOrNull { it.id == id } ?: Node.UNKNOWN
-import io.github.homchom.recode.mc
 
 data class Plot(
     val name: String,

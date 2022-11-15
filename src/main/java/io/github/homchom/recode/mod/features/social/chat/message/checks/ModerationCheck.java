@@ -11,13 +11,13 @@ public class ModerationCheck extends MessageCheck implements StreamerModeMessage
     }
 
     @Override
-    public boolean check(Message message, String stripped) {
+    public boolean check(LegacyMessage message, String stripped) {
         // General moderation messages (Broadcast, AntiX, etc.)
         return stripped.startsWith("[MOD]");
     }
 
     @Override
-    public void onReceive(Message message) {
+    public void onReceive(LegacyMessage message) {
 
     }
 

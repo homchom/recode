@@ -13,12 +13,12 @@ public class SupportAnswerCheck extends MessageCheck implements StreamerModeMess
     }
 
     @Override
-    public boolean check(Message message, String stripped) {
+    public boolean check(LegacyMessage message, String stripped) {
         return stripped.matches(SUPPORT_ANSWER_REGEX);
     }
 
     @Override
-    public void onReceive(Message message) {
+    public void onReceive(LegacyMessage message) {
 
     }
 

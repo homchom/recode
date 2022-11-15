@@ -14,12 +14,12 @@ public class DirectMessageCheck extends MessageCheck implements StreamerModeMess
     }
 
     @Override
-    public boolean check(Message message, String stripped) {
+    public boolean check(LegacyMessage message, String stripped) {
         return stripped.matches(DIRECT_MESSAGE_REGEX);
     }
 
     @Override
-    public void onReceive(Message message) {
+    public void onReceive(LegacyMessage message) {
         // update conversation end timer
         if (ConversationTimer.currentConversation != null && usernameMatches(message, ConversationTimer.currentConversation)) {
             ConversationTimer.conversationUpdateTime = String.valueOf(System.currentTimeMillis());
@@ -31,7 +31,7 @@ public class DirectMessageCheck extends MessageCheck implements StreamerModeMess
         return StreamerModeHandler.hideDMs();
     }
 
-    public static boolean usernameMatches(Message message, String username) {
+    public static boolean usernameMatches(LegacyMessage message, String username) {
         return message.getStripped().matches("^\\["+ username +" → You] .+$");
     }
 }

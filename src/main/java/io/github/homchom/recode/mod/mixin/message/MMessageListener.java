@@ -5,19 +5,25 @@ import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.LagslayerHUD;
 import io.github.homchom.recode.mod.features.social.chat.message.LegacyMessage;
-import io.github.homchom.recode.server.*;
+import io.github.homchom.recode.server.Message;
+import io.github.homchom.recode.server.MessageMatcher;
+import io.github.homchom.recode.server.ReceiveChatMessageEvent;
 import io.github.homchom.recode.sys.networking.LegacyState;
 import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
 import io.github.homchom.recode.util.LegacyCoroutineFunctions;
-import kotlin.*;
+import kotlin.Lazy;
+import kotlin.LazyKt;
+import kotlin.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.network.chat.*;
-import net.minecraft.network.protocol.game.*;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
+import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.regex.Pattern;
@@ -32,20 +38,18 @@ public class MMessageListener {
     @Inject(method = "handleSystemChat", at = @At("HEAD"), cancellable = true)
     private void handleChat(ClientboundSystemChatPacket packet, CallbackInfo ci) {
         if (DFInfo.isOnDF() && RenderSystem.isOnRenderThread()) {
-            if (packet.getType() != ChatType.GAME_INFO) {
-                // temporary, to preserve non-migrated side effects (like message grabbing)
-                // TODO: remove after new message listener is complete
-                new LegacyMessage(packet, ci);
+            // temporary, to preserve non-migrated side effects (like message grabbing)
+            // TODO: remove after new message listener is complete
+            new LegacyMessage(packet, ci);
 
-                Lazy<Message> msg = LazyKt.lazy(() -> MessageMatcher.INSTANCE.match(packet.getMessage()));
-                if (!ReceiveChatMessageEvent.INSTANCE.run(new Pair<>(msg, packet.getMessage()), true)) ci.cancel();
-                try {
-                    this.updateVersion(packet.content());
-                    this.updateState(packet.content());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    LegacyRecode.error("Error while trying to parse the chat text!");
-                }
+            Lazy<Message> msg = LazyKt.lazy(() -> MessageMatcher.INSTANCE.match(packet.content()));
+            if (!ReceiveChatMessageEvent.INSTANCE.run(new Pair<>(msg, packet.content()), true)) ci.cancel();
+            try {
+                this.updateVersion(packet.content());
+                this.updateState(packet.content());
+            } catch (Exception e) {
+                e.printStackTrace();
+                LegacyRecode.error("Error while trying to parse the chat text!");
             }
         }
     }

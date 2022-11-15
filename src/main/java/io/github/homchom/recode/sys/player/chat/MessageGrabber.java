@@ -59,7 +59,7 @@ public class MessageGrabber {
         if (messages > 0) grabSilently(messages, ignored -> {}, filter);
     }
 
-    public static void supply(Message msg) {
+    public static void supply(LegacyMessage msg) {
         if (filter != null && !msg.typeIs(filter)) return;
 
         Component message = msg.getText();

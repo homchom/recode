@@ -13,13 +13,13 @@ public class LocateCheck extends MessageCheck {
     }
 
     @Override
-    public boolean check(Message message, String stripped) {
+    public boolean check(LegacyMessage message, String stripped) {
         return stripped.contains("\nYou are currently") &&
             message.getText().getStyle().getClickEvent().getAction() == Action.RUN_COMMAND;
     }
 
     @Override
-    public void onReceive(Message message) {
+    public void onReceive(LegacyMessage message) {
         DFInfo.setCurrentState(LegacyState.fromLocate(message, DFInfo.currentState));
     }
 }

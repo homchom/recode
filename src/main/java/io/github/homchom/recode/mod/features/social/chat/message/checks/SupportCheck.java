@@ -11,13 +11,13 @@ public class SupportCheck extends MessageCheck implements StreamerModeMessageChe
     }
 
     @Override
-    public boolean check(Message message, String stripped) {
+    public boolean check(LegacyMessage message, String stripped) {
         // General support messages (Broadcast, session requests and completion, etc.)
         return stripped.startsWith("[SUPPORT]");
     }
 
     @Override
-    public void onReceive(Message message) {
+    public void onReceive(LegacyMessage message) {
 
     }
 

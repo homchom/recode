@@ -1,9 +1,12 @@
 package io.github.homchom.recode.ui
 
 import net.minecraft.ChatFormatting
-import net.minecraft.network.chat.*
+import net.minecraft.network.chat.ClickEvent
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.HoverEvent
 import net.minecraft.network.chat.HoverEvent.EntityTooltipInfo
 import net.minecraft.network.chat.HoverEvent.ItemStackInfo
+import net.minecraft.network.chat.Style
 import net.minecraft.resources.ResourceLocation
 
 typealias TextScope = TextBuilder.() -> Unit
@@ -11,7 +14,7 @@ typealias TextScope = TextBuilder.() -> Unit
 inline fun text(style: Style = Style.EMPTY, builder: TextScope) =
     TextBuilder(style).apply(builder).text
 
-fun literalText(literal: String): Component = TextComponent(literal)
+fun literalText(literal: String): Component = Component.literal(literal)
 
 @Suppress("PropertyName", "unused")
 class TextBuilder(style: Style = Style.EMPTY) {

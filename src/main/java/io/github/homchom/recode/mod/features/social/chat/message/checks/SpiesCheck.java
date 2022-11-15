@@ -11,13 +11,13 @@ public class SpiesCheck extends MessageCheck implements StreamerModeMessageCheck
     }
 
     @Override
-    public boolean check(Message message, String stripped) {
+    public boolean check(LegacyMessage message, String stripped) {
         // Hide spies (Session spy, Muted spy, DM spy)
         return stripped.startsWith("*");
     }
 
     @Override
-    public void onReceive(Message message) {
+    public void onReceive(LegacyMessage message) {
 
     }
 

@@ -11,12 +11,12 @@ public class AdminCheck extends MessageCheck implements StreamerModeMessageCheck
     }
 
     @Override
-    public boolean check(Message message, String stripped) {
+    public boolean check(LegacyMessage message, String stripped) {
         return stripped.startsWith("[ADMIN]");
     }
 
     @Override
-    public void onReceive(Message message) {
+    public void onReceive(LegacyMessage message) {
 
     }
 

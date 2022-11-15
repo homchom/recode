@@ -13,12 +13,12 @@ public class ScanningCheck extends MessageCheck implements StreamerModeMessageCh
     }
 
     @Override
-    public boolean check(Message message, String stripped) {
+    public boolean check(LegacyMessage message, String stripped) {
         return stripped.matches(SCANNING_REGEX);
     }
 
     @Override
-    public void onReceive(Message message) {
+    public void onReceive(LegacyMessage message) {
 
     }
 

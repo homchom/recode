@@ -13,12 +13,12 @@ public class IncomingReportCheck extends MessageCheck implements StreamerModeMes
     }
 
     @Override
-    public boolean check(Message message, String stripped) {
+    public boolean check(LegacyMessage message, String stripped) {
         return stripped.startsWith("! Incoming Report ");
     }
 
     @Override
-    public void onReceive(Message message) {
+    public void onReceive(LegacyMessage message) {
         ChatUtil.playSound(Config.getSound("incomingReportSound"));
     }
 

@@ -16,12 +16,12 @@ public class LagslayerStopCheck extends MessageCheck {
     }
 
     @Override
-    public boolean check(Message message, String stripped) {
+    public boolean check(LegacyMessage message, String stripped) {
         return stripped.matches(LAGSLAYER_STOP_REGEX);
     }
 
     @Override
-    public void onReceive(Message message) {
+    public void onReceive(LegacyMessage message) {
         LagslayerHUD.lagSlayerEnabled = false;
     }
 }

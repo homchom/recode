@@ -1,14 +1,19 @@
 package io.github.homchom.recode.sys.networking;
 
-import com.google.gson.*;
-import io.github.homchom.recode.mod.features.social.chat.message.*;
-import io.github.homchom.recode.server.*;
-import io.github.homchom.recode.sys.player.chat.*;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import io.github.homchom.recode.mod.features.social.chat.message.LegacyMessage;
+import io.github.homchom.recode.mod.features.social.chat.message.MessageType;
+import io.github.homchom.recode.server.ChangeDFStateEvent;
+import io.github.homchom.recode.server.StateChange;
+import io.github.homchom.recode.sys.player.chat.ChatUtil;
+import io.github.homchom.recode.sys.player.chat.MessageGrabber;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
 import java.util.Objects;
-import java.util.regex.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Deprecated
 public class LegacyState {
@@ -254,7 +259,7 @@ public class LegacyState {
         return new LegacyState(this);
     }
 
-    public static LegacyState fromLocate(Message message, LegacyState stateSource) {
+    public static LegacyState fromLocate(LegacyMessage message, LegacyState stateSource) {
         Component msg = message.getText();
 
         String text = msg.getString().replaceAll("§.", "");

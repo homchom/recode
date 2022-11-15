@@ -13,12 +13,12 @@ public class BuycraftXUpdateCheck extends MessageCheck implements StreamerModeMe
     }
 
     @Override
-    public boolean check(Message message, String stripped) {
+    public boolean check(LegacyMessage message, String stripped) {
         return stripped.matches(BUYCRAFT_UPDATE_REGEX);
     }
 
     @Override
-    public void onReceive(Message message) {
+    public void onReceive(LegacyMessage message) {
 
     }
 

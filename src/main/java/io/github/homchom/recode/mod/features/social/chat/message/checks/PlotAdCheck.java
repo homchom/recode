@@ -13,12 +13,12 @@ public class PlotAdCheck extends MessageCheck implements StreamerModeMessageChec
     }
 
     @Override
-    public boolean check(Message message, String stripped) {
+    public boolean check(LegacyMessage message, String stripped) {
         return stripped.matches(PLOT_AD_REGEX);
     }
 
     @Override
-    public void onReceive(Message message) {
+    public void onReceive(LegacyMessage message) {
 
     }
 

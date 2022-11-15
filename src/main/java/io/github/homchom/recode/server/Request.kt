@@ -1,8 +1,8 @@
 package io.github.homchom.recode.server
 
 import io.github.homchom.recode.event.ValidatedEvent
-import io.github.homchom.recode.init.GlobalModule
-import io.github.homchom.recode.init.SingletonKey
+import io.github.homchom.recode.lifecycle.GlobalModule
+import io.github.homchom.recode.lifecycle.SingletonKey
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.runBlocking
 
