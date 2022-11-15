@@ -8,7 +8,7 @@ import net.minecraft.network.chat.Component;
 public class DebugFinalizer extends MessageFinalizer {
 
     @Override
-    protected void receive(LegacyMessage message) {
+    protected void receive(Message message) {
         if (Config.getBoolean("debugMode")) {
             LegacyRecode.info(Component.Serializer.toJson(message.getText()));
         }

@@ -9,6 +9,7 @@ import io.github.homchom.recode.server.*;
 import io.github.homchom.recode.sys.networking.LegacyState;
 import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
+import io.github.homchom.recode.util.LegacyCoroutineFunctions;
 import kotlin.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -28,8 +29,8 @@ public class MMessageListener {
 
     private final Pattern lsRegex = Pattern.compile("^CPU Usage: \\[▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮] \\(.*%\\)$");
 
-    @Inject(method = "handleChat", at = @At("HEAD"), cancellable = true)
-    private void handleChat(ClientboundChatPacket packet, CallbackInfo ci) {
+    @Inject(method = "handleSystemChat", at = @At("HEAD"), cancellable = true)
+    private void handleChat(ClientboundSystemChatPacket packet, CallbackInfo ci) {
         if (DFInfo.isOnDF() && RenderSystem.isOnRenderThread()) {
             if (packet.getType() != ChatType.GAME_INFO) {
                 // temporary, to preserve non-migrated side effects (like message grabbing)
@@ -38,6 +39,13 @@ public class MMessageListener {
 
                 Lazy<Message> msg = LazyKt.lazy(() -> MessageMatcher.INSTANCE.match(packet.getMessage()));
                 if (!ReceiveChatMessageEvent.INSTANCE.run(new Pair<>(msg, packet.getMessage()), true)) ci.cancel();
+                try {
+                    this.updateVersion(packet.content());
+                    this.updateState(packet.content());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    LegacyRecode.error("Error while trying to parse the chat text!");
+                }
             }
         }
     }
@@ -124,7 +132,7 @@ public class MMessageListener {
         String text = component.getString();
 
         // Enter Session
-        if (text.matches("^\\[SUPPORT] " + player.getName().getContents() + " entered a session with \\w+\\. ▶ \\S+ \\S+!?$")) {
+        if (text.matches("^\\[SUPPORT] " + player.getName().getString() + " entered a session with \\w+\\. ▶ \\S+ \\S+!?$")) {
             if (!DFInfo.currentState.isInSession()) {
                 new Thread(() -> {
                     try {
@@ -145,7 +153,7 @@ public class MMessageListener {
         }
 
         // End Session
-        if (text.matches("^\\[SUPPORT\\] " + player.getName().getContents() + " finished a session with \\w+\\. ▶ \\d+:\\d+:\\d+$") || text.matches("^\\[SUPPORT\\] " + player.getName().getContents() + " terminated a session with \\w+\\. ▶ \\d+:\\d+:\\d+$") || text.matches("\\[SUPPORT\\] \\w+ left a session with " + player.getName().getContents() + ".$")) {
+        if (text.matches("^\\[SUPPORT] " + player.getName().getString() + " finished a session with \\w+\\. ▶ \\d+:\\d+:\\d+$") || text.matches("^\\[SUPPORT] " + player.getName().getString() + " terminated a session with \\w+\\. ▶ \\d+:\\d+:\\d+$") || text.matches("\\[SUPPORT\\] \\w+ left a session with " + player.getName().getString() + ".$")) {
             if (DFInfo.currentState.isInSession()) {
                 DFInfo.currentState.setInSession(false);
                 new Thread(() -> {
@@ -162,133 +170,46 @@ public class MMessageListener {
 
         // Play Mode
         if (text.matches("^» Joined game: .* by .*$")) {
-            new Thread(() -> {
-                try {
-                    Thread.sleep(100);
-                    if (DFInfo.currentState.getMode() != LegacyState.Mode.PLAY) {
-                        DFInfo.currentState.sendLocate();
-                    }
-                    Thread.sleep(100);
-                    if (DFInfo.currentState.getMode() == LegacyState.Mode.PLAY) {
-                        if (Config.getBoolean("autoChatLocal") && !DFInfo.currentState.isInSession()) {
-                            ChatUtil.executeCommandSilently("chat local");
-                        }
-                    }else {
-                        Thread.sleep(1000);
-                        if (DFInfo.currentState.getMode() != LegacyState.Mode.PLAY) {
-                            DFInfo.currentState.sendLocate();
-                        }
-                        Thread.sleep(500);
-                        if (DFInfo.currentState.getMode() == LegacyState.Mode.PLAY) {
-                            if (Config.getBoolean("autoChatLocal") && !DFInfo.currentState.isInSession()) {
-                                ChatUtil.executeCommandSilently("chat local");
-                            }
-                        }
-                    }
-                } catch(Exception e){
-                    LegacyRecode.error("Error while executing the task!");
-                    e.printStackTrace();
+            LegacyCoroutineFunctions.checkTwiceForMode(LegacyState.Mode.PLAY, () -> {
+                if (Config.getBoolean("autoChatLocal") && !DFInfo.currentState.isInSession()) {
+                    ChatUtil.executeCommandSilently("chat local");
                 }
-            }).start();
+            });
         }
 
         // Build Mode
         if (text.matches("^» You are now in build mode\\.$")) {
-            new Thread(() -> {
-                try {
-                    Thread.sleep(100);
-                    if (DFInfo.currentState.getMode() != LegacyState.Mode.BUILD) {
-                        DFInfo.currentState.sendLocate();
-                    }
-                    Thread.sleep(100);
-                    if (DFInfo.currentState.getMode() == LegacyState.Mode.BUILD) {
-                        if (Config.getBoolean("autotime")) {
-                            ChatUtil.executeCommandSilently("time " + Config.getLong("autotimeval"));
-                        }
-                        if (Config.getBoolean("autonightvis")) {
-                            ChatUtil.executeCommandSilently("nightvis");
-                        }
-                        if (Config.getBoolean("autoChatLocal") && !DFInfo.currentState.isInSession()) {
-                            ChatUtil.executeCommandSilently("chat local");
-                        }
-                    }else {
-                        Thread.sleep(1000);
-                        if (DFInfo.currentState.getMode() != LegacyState.Mode.BUILD) {
-                            DFInfo.currentState.sendLocate();
-                        }
-                        Thread.sleep(500);
-                        if (DFInfo.currentState.getMode() == LegacyState.Mode.BUILD) {
-                            if (Config.getBoolean("autotime")) {
-                                ChatUtil.executeCommandSilently("time " + Config.getLong("autotimeval"));
-                            }
-                            if (Config.getBoolean("autonightvis")) {
-                                ChatUtil.executeCommandSilently("nightvis");
-                            }
-                            if (Config.getBoolean("autoChatLocal") && !DFInfo.currentState.isInSession()) {
-                                ChatUtil.executeCommandSilently("chat local");
-                            }
-                        }
-                    }
-                } catch(Exception e){
-                    LegacyRecode.error("Error while executing the task!");
-                    e.printStackTrace();
+            LegacyCoroutineFunctions.checkTwiceForMode(LegacyState.Mode.BUILD, () -> {
+                if (Config.getBoolean("autotime")) {
+                    ChatUtil.executeCommandSilently("time " + Config.getLong("autotimeval"));
                 }
-            }).start();
+                if (Config.getBoolean("autonightvis")) {
+                    ChatUtil.executeCommandSilently("nightvis");
+                }
+                if (Config.getBoolean("autoChatLocal") && !DFInfo.currentState.isInSession()) {
+                    ChatUtil.executeCommandSilently("chat local");
+                }
+            });
         }
 
         if (text.matches("^» You are now in dev mode\\.$")) {
-            new Thread(() -> {
-                try {
-                    Thread.sleep(100);
-                    if (DFInfo.currentState.getMode() != LegacyState.Mode.DEV) {
-                        DFInfo.currentState.sendLocate();
-                    }
-                    Thread.sleep(100);
-                    if (DFInfo.currentState.getMode() == LegacyState.Mode.DEV) {
-                        if (Config.getBoolean("autoRC")) {
-                            ChatUtil.executeCommandSilently("resetcompact");
-                        }
-                        if (Config.getBoolean("autotime")) {
-                            ChatUtil.executeCommandSilently("time " + Config.getLong("autotimeval"));
-                        }
-                        if (Config.getBoolean("autonightvis")) {
-                            ChatUtil.executeCommandSilently("nightvis");
-                        }
-                        if (Config.getBoolean("autoChatLocal") && !DFInfo.currentState.isInSession()) {
-                            ChatUtil.executeCommandSilently("chat local");
-                        }
-                        if (!LagslayerHUD.lagSlayerEnabled && Config.getBoolean("autolagslayer")) {
-                            ChatUtil.executeCommandSilently("lagslayer");
-                        }
-                    }else {
-                        Thread.sleep(1000);
-                        if (DFInfo.currentState.getMode() != LegacyState.Mode.DEV) {
-                            DFInfo.currentState.sendLocate();
-                        }
-                        Thread.sleep(500);
-                        if (DFInfo.currentState.getMode() == LegacyState.Mode.DEV) {
-                            if (Config.getBoolean("autoRC")) {
-                                ChatUtil.executeCommandSilently("resetcompact");
-                            }
-                            if (Config.getBoolean("autotime")) {
-                                ChatUtil.executeCommandSilently("time " + Config.getLong("autotimeval"));
-                            }
-                            if (Config.getBoolean("autonightvis")) {
-                                ChatUtil.executeCommandSilently("nightvis");
-                            }
-                            if (Config.getBoolean("autoChatLocal") && !DFInfo.currentState.isInSession()) {
-                                ChatUtil.executeCommandSilently("chat local");
-                            }
-                            if (!LagslayerHUD.lagSlayerEnabled && Config.getBoolean("autolagslayer")) {
-                                ChatUtil.executeCommandSilently("lagslayer");
-                            }
-                        }
-                    }
-                } catch(Exception e){
-                    LegacyRecode.error("Error while executing the task!");
-                    e.printStackTrace();
+            LegacyCoroutineFunctions.checkTwiceForMode(LegacyState.Mode.DEV, () -> {
+                if (Config.getBoolean("autoRC")) {
+                    ChatUtil.executeCommand("resetcompact");
                 }
-            }).start();
+                if (Config.getBoolean("autotime")) {
+                    ChatUtil.executeCommandSilently("time " + Config.getLong("autotimeval"));
+                }
+                if (Config.getBoolean("autonightvis")) {
+                    ChatUtil.executeCommandSilently("nightvis");
+                }
+                if (Config.getBoolean("autoChatLocal") && !DFInfo.currentState.isInSession()) {
+                    ChatUtil.executeCommandSilently("chat local");
+                }
+                if (!LagslayerHUD.lagSlayerEnabled && Config.getBoolean("autolagslayer")) {
+                    ChatUtil.executeCommandSilently("lagslayer");
+                }
+            });
         }
     }
 }

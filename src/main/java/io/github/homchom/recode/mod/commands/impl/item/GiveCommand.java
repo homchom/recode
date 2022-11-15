@@ -6,18 +6,20 @@ import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
 import io.github.homchom.recode.sys.player.chat.*;
 import io.github.homchom.recode.sys.util.ItemUtil;
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.arguments.item.*;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 
 public class GiveCommand extends Command {
 
     @Override
-    public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd) {
+    public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd, CommandBuildContext context) {
         cd.register(ArgBuilder.literal("dfgive")
-                .then(ArgBuilder.argument("item", ItemArgument.item())
+                .then(ArgBuilder.argument("item", ItemArgument.item(context))
                         .then(ArgBuilder.argument("count", IntegerArgumentType.integer())
                                 .executes(ctx -> {
                                     giveItem(mc, ctx.getArgument("item", ItemInput.class)
@@ -57,7 +59,7 @@ public class GiveCommand extends Command {
                                 clipboard = clipboard.substring(3);
                             }
 
-                            this.sendChatMessage(mc, "/dfgive " + clipboard);
+                            this.sendCommand(mc, "dfgive " + clipboard);
                             return 1;
                         })
                 )
@@ -84,8 +86,8 @@ public class GiveCommand extends Command {
                 if (count <= item.getMaxStackSize()) {
                     ItemUtil.giveCreativeItem(item, true);
                 } else {
-                    TextComponent text1 = new TextComponent("Maximum item count for ");
-                    TextComponent text2 = new TextComponent(" is " + item.getMaxStackSize() + "!");
+                    MutableComponent text1 = Component.literal("Maximum item count for ");
+                    MutableComponent text2 = Component.literal(" is " + item.getMaxStackSize() + "!");
                     ChatUtil.sendMessage(text1.append(item.getHoverName()).append(text2), ChatType.FAIL);
                 }
             } else {

@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "id": "recode",
   "version": "${version}",
-  "name": "recode",
-  "description": "A 1.18 clone of CodeUtilities 2",
+  "name": "${modName}",
+  "description": "a utility mod for DiamondFire to make development more fun",
   "contributors": ["homchom", "tk2217", "The CodeUtilities Team"],
   "contact": {
     "sources": "https://github.com/homchom/recode",
@@ -14,13 +14,13 @@
   "icon": "assets/recode/icon.png",
   "entrypoints": {
     "main": [
-      "io.github.homchom.recode.init.Main"
+      "io.github.homchom.recode.Main"
     ],
     "modmenu": [
       "io.github.homchom.recode.mod.config.ModMenuIntegration"
     ],
     "client": [
-      "io.github.homchom.recode.mod.features.Keybinds"
+      "io.github.homchom.recode.mod.features.keybinds.Keybinds"
     ],
     "server": []
   },
@@ -29,13 +29,12 @@
     "recodeLegacy.mixins.json"
   ],
   "depends": {
-    "minecraft": "~1.18.2",
-    "fabricloader": ">=0.13.3",
-    "fabric": ">=0.50.0",
-    "libgui": "^5.4.0",
-    "cloth-config": "^6.2.62"
+    "minecraft": "$minecraftVersion",
+    "fabricloader": "^$loaderVersion",
+    "fabric-api": "^${fabricVersion - metadataRegex}",
+    $dependencyMods
   },
-  "conflicts": {
+  "breaks": {
     "codeutilities": "*"
   },
   "custom": {

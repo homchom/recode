@@ -9,7 +9,7 @@ import io.github.homchom.recode.sys.networking.LegacyState;
 import io.github.homchom.recode.sys.player.DFInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -22,9 +22,9 @@ public class MInGameHUD {
 
         Minecraft mc = LegacyRecode.MC;
         Font tr = mc.font;
-
+        
         if (CodeSearcher.searchType != null && CodeSearcher.searchValue != null && DFInfo.isOnDF() && DFInfo.currentState.getMode() == LegacyState.Mode.DEV) {
-            tr.draw(stack, new TextComponent("Searching for usages of " +
+            tr.draw(stack, Component.literal("Searching for usages of " +
                     CodeSearcher.searchType.getSignText().get(0) + ": " + CodeSearcher.searchValue
             ), 4, 4, 0xffffff);
         }

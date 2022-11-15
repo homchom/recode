@@ -1,7 +1,13 @@
+@file:JvmName("DF")
+
 package io.github.homchom.recode.server
 
 import io.github.homchom.recode.util.capitalize
 import io.github.homchom.recode.util.uncapitalize
+
+val isOnDF get() = mc.currentServer?.ip?.matches(dfIPRegex) ?: false
+
+private val dfIPRegex = Regex("""(?:\w+\.)?mcdiamondfire\.com(?::\d+)?""")
 
 sealed interface PlayState {
     val node: Node
@@ -57,6 +63,7 @@ fun nodeByName(name: String): Node {
 }
 
 //fun nodeOf(id: String) = Node.values().singleOrNull { it.id == id } ?: Node.UNKNOWN
+import io.github.homchom.recode.mc
 
 data class Plot(
     val name: String,

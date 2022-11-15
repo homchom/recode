@@ -3,10 +3,13 @@
   "package": "io.github.homchom.recode.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "render.MBlockEntityRenderDispatcher",
-    "render.MLevelRenderer"
+    "server.MProfilePublicKey"
   ],
-  "client": [],
+  "client": [
+    "render.MBlockEntityRenderDispatcher",
+    "render.MLevelRenderer",
+    "server.MClientPacketListener"
+  ],
   "server": [],
   "injectors": {
     "defaultRequire": 1

@@ -8,7 +8,7 @@ import io.github.homchom.recode.sys.renderer.widgets.*;
 import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -43,7 +43,7 @@ public class TemplateSearchMenu extends LightweightGuiDescription {
                 TemplateUtil.applyRawTemplateNBT(templateItem, name, uploader, template.get("data").getAsString());
             } catch (Exception err) {
                 err.printStackTrace();
-                templateItem.setHoverName(new TextComponent("§cFailed to load item."));
+                templateItem.setHoverName(Component.literal("§cFailed to load item."));
             }
 
             ClickableGiveItem item = new ClickableGiveItem(templateItem);
@@ -64,18 +64,18 @@ public class TemplateSearchMenu extends LightweightGuiDescription {
 
 
             List<Component> texts = new ArrayList<>();
-            texts.add(new TextComponent(name));
-            texts.add(new TextComponent("Created By: ").setStyle(createdByColorText).append(new TextComponent(uploader).setStyle(createdByColor)));
-            texts.add(new TextComponent("§r" + (listed == 1 ? "§aPublic" : "§cPrivate")));
-            texts.add(new TextComponent(""));
-            texts.add(new TextComponent("§r⚐ Category: ").setStyle(categoryIcon).append(new TextComponent(template.get("category").getAsString().replace('&', '§')).setStyle(categoryColor)));
-            texts.add(new TextComponent("☐ ").setStyle(reqIcon)
+            texts.add(Component.literal(name));
+            texts.add(Component.literal("Created By: ").setStyle(createdByColorText).append(Component.literal(uploader).setStyle(createdByColor)));
+            texts.add(Component.literal("§r" + (listed == 1 ? "§aPublic" : "§cPrivate")));
+            texts.add(Component.literal(""));
+            texts.add(Component.literal("§r⚐ Category: ").setStyle(categoryIcon).append(Component.literal(template.get("category").getAsString().replace('&', '§')).setStyle(categoryColor)));
+            texts.add(Component.literal("☐ ").setStyle(reqIcon)
                     .append(getOrUnknown(PLOTS, template.get("plot").getAsInt())).setStyle(reqText)
-                    .append(new TextComponent(" ! ").setStyle(reqIcon.withBold(true)))
-                    .append(new TextComponent(getOrUnknown(RANKS, template.get("rank").getAsInt())).setStyle(reqText))
+                    .append(Component.literal(" ! ").setStyle(reqIcon.withBold(true)))
+                    .append(Component.literal(getOrUnknown(RANKS, template.get("rank").getAsInt())).setStyle(reqText))
             );
-            texts.add(new TextComponent(""));
-            texts.add(new TextComponent("§rℹ ID: ").setStyle(idIcon).append(new TextComponent(String.valueOf(i)).setStyle(idColor)));
+            texts.add(Component.literal(""));
+            texts.add(Component.literal("§rℹ ID: ").setStyle(idIcon).append(Component.literal(String.valueOf(i)).setStyle(idColor)));
 
             item.setTooltip(texts.toArray(new Component[0]));
 

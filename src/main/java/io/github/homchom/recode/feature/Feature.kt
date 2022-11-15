@@ -1,6 +1,6 @@
 package io.github.homchom.recode.feature
 
-import io.github.homchom.recode.init.*
+import io.github.homchom.recode.lifecycle.*
 import io.github.homchom.recode.util.unmodifiable
 
 // TODO: finish and document these
@@ -13,7 +13,7 @@ sealed interface Configurable : RModule {
  * Builds a [Feature].
  */
 fun feature(name: String, builder: ModuleBuilderScope): Feature =
-    FeatureBuilder(name, builder)
+    BuiltFeature(name, builder)
 
 /**
  * Builds a [FeatureGroup].
@@ -23,22 +23,22 @@ fun featureGroup(
     vararg features: Feature,
     builder: ModuleBuilderScope? = null
 ): FeatureGroup {
-    return FeatureGroupBuilder(name, features.toList().unmodifiable(), builder)
+    return BuiltFeatureGroup(name, features.toList().unmodifiable(), builder)
 }
 
-interface Feature : Configurable, ActiveStateModule
+interface Feature : Configurable, ExposedModule
 
-private class FeatureBuilder(
+private class BuiltFeature(
     override val name: String,
     moduleBuilder: ModuleBuilderScope
-) : Feature, ActiveStateModule by strongModule(builder = moduleBuilder)
+) : Feature, ExposedModule by buildStrongExposedModule(builder = moduleBuilder)
 
 sealed interface FeatureGroup : Configurable {
     val features: List<Feature>
 }
 
 @OptIn(MutatesModuleState::class)
-private class FeatureGroupBuilder(
+private class BuiltFeatureGroup(
     override val name: String,
     override val features: List<Feature>,
     moduleBuilder: ModuleBuilderScope? = null

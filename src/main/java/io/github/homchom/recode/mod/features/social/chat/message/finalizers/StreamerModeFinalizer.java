@@ -13,7 +13,7 @@ public class StreamerModeFinalizer extends MessageFinalizer {
     };
 
     @Override
-    protected void receive(LegacyMessage message) {
+    protected void receive(Message message) {
         MessageCheck check = message.getCheck();
 
         if (
@@ -25,8 +25,8 @@ public class StreamerModeFinalizer extends MessageFinalizer {
         }
     }
 
-    private static boolean matchesDirectMessageExemptions(LegacyMessage message) {
-        if (message.typeIs(LegacyMessageType.DIRECT_MESSAGE)) {
+    private static boolean matchesDirectMessageExemptions(Message message) {
+        if (message.typeIs(MessageType.DIRECT_MESSAGE)) {
             String stripped = message.getStripped();
 
             for (String username : HIDE_DMS_EXEMPTIONS) {

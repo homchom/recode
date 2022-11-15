@@ -11,8 +11,9 @@ import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.ChatType;
 import io.github.homchom.recode.sys.player.chat.*;
 import io.github.homchom.recode.sys.util.StringUtil;
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.network.chat.*;
 import org.apache.commons.io.IOUtils;
 
@@ -23,7 +24,7 @@ import java.nio.charset.StandardCharsets;
 public class UuidCommand extends Command {
 
     @Override
-    public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd) {
+    public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd, CommandBuildContext context) {
         cd.register(ArgBuilder.literal("uuid")
                 .then(ArgBuilder.argument("username", PlayerArgumentType.player())
                         .executes(ctx -> {
@@ -37,18 +38,18 @@ public class UuidCommand extends Command {
                                         ChatUtil.sendMessage("Player was not found!", ChatType.FAIL);
                                         return;
                                     }
-                                    JsonObject json = new JsonParser().parse(UUIDJson).getAsJsonObject();
+                                    JsonObject json = JsonParser.parseString(UUIDJson).getAsJsonObject();
                                     String uuid = json.get("id").getAsString();
                                     String fullUUID = StringUtil.fromTrimmed(uuid);
 
-                                    Component text = new TextComponent("§eUUID of §6" + username + " §eis §b" + fullUUID + "§e!")
+                                    Component text = Component.literal("§eUUID of §6" + username + " §eis §b" + fullUUID + "§e!")
                                             .withStyle(s -> s.withHoverEvent(
-                                                    new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent("§eClick to copy to clipboard."))
+                                                    new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal("§eClick to copy to clipboard."))
                                             ).withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, fullUUID)));
                                     this.sendMessage(mc, text);
 
-                                    if (this.isCreative(mc) && DFInfo.isOnDF() && DFInfo.currentState.getMode() == LegacyState.Mode.DEV) {
-                                        this.sendChatMessage(mc, "/txt " + fullUUID);
+                                    if (mc.player != null && mc.player.isCreative() && DFInfo.isOnDF() && DFInfo.currentState.getMode() == LegacyState.Mode.DEV) {
+                                        this.sendCommand(mc, "txt " + fullUUID);
                                     }
                                 } catch (IOException e) {
                                     ChatUtil.sendMessage("§cUser §6" + username + "§c was not found.");

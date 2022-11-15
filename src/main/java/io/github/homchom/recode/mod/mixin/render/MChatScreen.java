@@ -6,11 +6,16 @@ import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.VarSyntaxHighlighter;
 import io.github.homchom.recode.sys.sidedchat.ChatShortcut;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.CommandSuggestions;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.network.chat.Component;
-import org.spongepowered.asm.mixin.*;
-import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ChatScreen.class)
@@ -21,6 +26,8 @@ public class MChatScreen {
     @Shadow
     @Final
     private String initial;
+
+    @Shadow private CommandSuggestions commandSuggestions;
 
     @Inject(method = "render", at = @At("TAIL"))
     private void render(PoseStack poseStack, int mouseX, int mouseY, float delta,
@@ -39,7 +46,7 @@ public class MChatScreen {
                     text.startsWith("/text")
             )) {
                 boolean r = true;
-                for (String o : VarSyntaxHighlighter.txtPreviews) {
+                for (String o : VarSyntaxHighlighter.getTextPreviews()) {
                     if (o.endsWith(" N")) o = o.replace(" N","");
                     if (text.startsWith(o)) {
                         r = false;
@@ -71,7 +78,7 @@ public class MChatScreen {
         else return defaultColour;
     }
 
-    @ModifyArg(method = "keyPressed", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/ChatScreen;sendMessage(Ljava/lang/String;)V"), index = 0)
+    @ModifyArg(method = "keyPressed", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/ChatScreen;handleChatInput(Ljava/lang/String;Z)Z"), index = 0)
     private String insertPrefix(String interceptedMessage) {
         ChatShortcut currentChatShortcut = ChatShortcut.getCurrentChatShortcut();
 

@@ -15,10 +15,10 @@ public class MessageGrabber {
     private static Consumer<List<Component>> messageConsumer;
     private static int messagesToGrab = 0;
     private static boolean silent = false;
-    private static LegacyMessageType filter = null;
+    private static MessageType filter = null;
     private static final List<MessageGrabberTask> tasks = new ArrayList<>();
 
-    public static void grab(int messages, Consumer<List<Component>> consumer, LegacyMessageType filter) {
+    public static void grab(int messages, Consumer<List<Component>> consumer, MessageType filter) {
         if (isActive()) {
             tasks.add(new MessageGrabberTask(messages,consumer,false, filter));
             return;
@@ -33,7 +33,7 @@ public class MessageGrabber {
         grab(messages,consumer,null);
     }
 
-    public static void grabSilently(int messages, Consumer<List<Component>> consumer, LegacyMessageType filter) {
+    public static void grabSilently(int messages, Consumer<List<Component>> consumer, MessageType filter) {
         if (isActive()) {
             tasks.add(new MessageGrabberTask(messages,consumer,true, filter));
             return;
@@ -55,11 +55,11 @@ public class MessageGrabber {
     public static void hide(int messages) {
         if (messages > 0) grabSilently(messages, ignored -> {}, null);
     }
-    public static void hide(int messages, LegacyMessageType filter) {
+    public static void hide(int messages, MessageType filter) {
         if (messages > 0) grabSilently(messages, ignored -> {}, filter);
     }
 
-    public static void supply(LegacyMessage msg) {
+    public static void supply(Message msg) {
         if (filter != null && !msg.typeIs(filter)) return;
 
         Component message = msg.getText();

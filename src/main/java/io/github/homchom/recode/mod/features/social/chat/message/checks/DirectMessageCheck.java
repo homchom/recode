@@ -9,17 +9,17 @@ public class DirectMessageCheck extends MessageCheck implements StreamerModeMess
     private static final String DIRECT_MESSAGE_REGEX = "^\\[(\\w{3,16}) → You] .+$";
 
     @Override
-    public LegacyMessageType getType() {
-        return LegacyMessageType.DIRECT_MESSAGE;
+    public MessageType getType() {
+        return MessageType.DIRECT_MESSAGE;
     }
 
     @Override
-    public boolean check(LegacyMessage message, String stripped) {
+    public boolean check(Message message, String stripped) {
         return stripped.matches(DIRECT_MESSAGE_REGEX);
     }
 
     @Override
-    public void onReceive(LegacyMessage message) {
+    public void onReceive(Message message) {
         // update conversation end timer
         if (ConversationTimer.currentConversation != null && usernameMatches(message, ConversationTimer.currentConversation)) {
             ConversationTimer.conversationUpdateTime = String.valueOf(System.currentTimeMillis());
@@ -31,7 +31,7 @@ public class DirectMessageCheck extends MessageCheck implements StreamerModeMess
         return StreamerModeHandler.hideDMs();
     }
 
-    public static boolean usernameMatches(LegacyMessage message, String username) {
+    public static boolean usernameMatches(Message message, String username) {
         return message.getStripped().matches("^\\["+ username +" → You] .+$");
     }
 }

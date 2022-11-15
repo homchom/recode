@@ -4,7 +4,6 @@ import com.google.gson.JsonArray;
 import io.github.homchom.recode.LegacyRecode;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.*;
 
 import java.awt.*;
@@ -16,9 +15,9 @@ import java.util.regex.Pattern;
 public class StringUtil {
     public static final Pattern STRIP_CHARS_PATTERN = Pattern.compile("(^\\s+|\\s+$)");
 
-    public static TextComponent of(String... literalTexts) {
+    public static MutableComponent of(String... literalTexts) {
         int length = literalTexts.length;
-        TextComponent text = new TextComponent(literalTexts[0]);
+        MutableComponent text = Component.literal(literalTexts[0]);
 
         if (length == 1) {
             return text;
@@ -94,7 +93,7 @@ public class StringUtil {
             out.append("§k");
         }
 
-        out.append(txt.getContents());
+        out.append(txt.getString());
 
         for (Component sibling : txt.getSiblings()) {
             out.append(textToString(sibling));

@@ -114,7 +114,7 @@ public class MMouseHandler {
                                         tag.put("PublicBukkitValues", publicBukkitValues);
 
                                         itemStack.setTag(tag);
-                                        itemStack.setHoverName(new TextComponent(name)
+                                        itemStack.setHoverName(Component.literal(name)
                                                 .withStyle(style -> style.withColor(TextColor.fromLegacyFormat(ChatFormatting.RED)).withItalic(false)));
 
                                         ItemUtil.setContainerItem(slot.index, itemStack);

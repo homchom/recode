@@ -3,7 +3,7 @@ package io.github.homchom.recode.mod.mixin.inventory;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Key;
 import io.github.homchom.recode.LegacyRecode;
-import io.github.homchom.recode.mod.features.Keybinds;
+import io.github.homchom.recode.mod.features.keybinds.Keybinds;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.nbt.CompoundTag;
@@ -34,7 +34,7 @@ public abstract class MItemStack {
         if (player == null) return;
 
         try {
-            String cname = FabricLoader.getInstance().isDevelopmentEnvironment() ? "boundKey" : "field_1655";
+            String cname = FabricLoader.getInstance().isDevelopmentEnvironment() ? "key" : "field_1655";
 
             int keycode = ((Key) FieldUtils.getField(KeyMapping.class,cname,true).get(Keybinds.showTags)).getValue();
 
@@ -48,14 +48,14 @@ public abstract class MItemStack {
                 if (tags != null) {
                     Set<String> keys = tags.getAllKeys();
                     if (keys.size() != 0) {
-                        t.add(new TextComponent(""));
+                        t.add(Component.literal(""));
 
                         for (String key : keys) {
                             String value = tags.get(key).getAsString();
                             if (value.length()>20) value = value.substring(0,30)+"...";
                             key = key.replaceFirst("hypercube:","");
 
-                            t.add(new TextComponent("§a" + key + " §7= §f" + value));
+                            t.add(Component.literal("§a" + key + " §7= §f" + value));
                         }
                     }
                 }

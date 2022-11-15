@@ -6,17 +6,17 @@ import io.github.homchom.recode.mod.features.streamer.*;
 public class AdminCheck extends MessageCheck implements StreamerModeMessageCheck {
 
     @Override
-    public LegacyMessageType getType() {
-        return LegacyMessageType.ADMIN;
+    public MessageType getType() {
+        return MessageType.ADMIN;
     }
 
     @Override
-    public boolean check(LegacyMessage message, String stripped) {
+    public boolean check(Message message, String stripped) {
         return stripped.startsWith("[ADMIN]");
     }
 
     @Override
-    public void onReceive(LegacyMessage message) {
+    public void onReceive(Message message) {
 
     }
 

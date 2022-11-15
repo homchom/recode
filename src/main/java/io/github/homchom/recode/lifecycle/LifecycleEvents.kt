@@ -1,4 +1,4 @@
-package io.github.homchom.recode.init
+package io.github.homchom.recode.lifecycle
 
 import io.github.homchom.recode.event.InvokableEvent
 import io.github.homchom.recode.event.wrapEvent

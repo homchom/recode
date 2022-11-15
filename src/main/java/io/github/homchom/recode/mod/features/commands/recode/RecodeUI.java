@@ -9,7 +9,7 @@ import io.github.homchom.recode.sys.renderer.widgets.CImage;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class RecodeUI extends LightweightGuiDescription implements IMenu {
@@ -21,11 +21,11 @@ public class RecodeUI extends LightweightGuiDescription implements IMenu {
         root.setSize(220, 220);
 
         CImage cImage = new CImage(CODEUTILS_LOGO);
-        cImage.setSize(128, 128);
-        root.add(cImage, 46, -10);
+        cImage.setSize(120, 120);
+        root.add(cImage, 46, 0);
 
-        root.add(new WLabel(new TextComponent("recode")), (220 - Minecraft.getInstance().font.width("recode")) / 2, 110);
-        root.add(new WLabel(new TextComponent("v" + Recode.getModVersion())), (220 - Minecraft.getInstance().font.width("v" + Recode.getModVersion())) / 2, 120);
+        root.add(new WLabel(Component.literal("recode")), (220 - Minecraft.getInstance().font.width("recode")) / 2, 110);
+        root.add(new WLabel(Component.literal("v" + Recode.getModVersion())), (220 - Minecraft.getInstance().font.width("v" + Recode.getModVersion())) / 2, 120);
 
         addButtons(root);
         setRootPanel(root);
@@ -33,7 +33,7 @@ public class RecodeUI extends LightweightGuiDescription implements IMenu {
 
     private void addButtons(WPlainPanel panel) {
         // ------------------------ Features Button ------------------------
-        WButton featuresButton = new WButton(new TextComponent("Help / Features"));
+        WButton featuresButton = new WButton(Component.literal("Help / Features"));
         featuresButton.setOnClick(() -> {
             FeaturesUI gui_1 = new FeaturesUI();
             gui_1.scheduleOpenGui(gui_1);
@@ -42,7 +42,7 @@ public class RecodeUI extends LightweightGuiDescription implements IMenu {
 
 
         // ------------------------ Bug Report Button ------------------------
-        WButton bugReport = new WButton(new TextComponent("Report Issues"));
+        WButton bugReport = new WButton(Component.literal("Report Issues"));
         bugReport.setOnClick(() -> {
             String link = "https://github.com/homchom/recode/issues";
 
@@ -58,7 +58,7 @@ public class RecodeUI extends LightweightGuiDescription implements IMenu {
         panel.add(bugReport, 60, 170, 100, 20);
 
         // ------------------------ Options Button ------------------------
-        WButton options = new WButton(new TextComponent("Options"));
+        WButton options = new WButton(Component.literal("Options"));
         options.setOnClick(() -> {
             Minecraft mc = Minecraft.getInstance();
             mc.setScreen(ConfigScreen.getScreen(Minecraft.getInstance().screen));

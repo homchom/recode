@@ -75,12 +75,12 @@ public class StreamerModeHandler {
 
         // Run "/adminv off" and hide the message
         if (autoAdminV()) {
-            LegacyRecode.MC.player.chat("/adminv off");
+            LegacyRecode.MC.player.commandUnsigned("adminv off");
         }
 
         // Run "/chat local" and hide the message
         if (autoChatLocal()) {
-            LegacyRecode.MC.player.chat("/c l");
+            LegacyRecode.MC.player.commandUnsigned("c l");
         }
 
         // Hide messages
@@ -97,7 +97,7 @@ public class StreamerModeHandler {
         // If the state is changed to mode play, run "/chat local"
         // Note: May trigger simultaneously with StreamerHandler#handleServerJoin, but this is not a problem
         if (autoChatLocal() && newState.mode.equals(LegacyState.Mode.PLAY)) {
-            LegacyRecode.MC.player.chat("/c l");
+            LegacyRecode.MC.player.commandUnsigned("c l");
             MessageGrabber.hide(1);
         }
     }

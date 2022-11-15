@@ -4,6 +4,7 @@ import com.google.gson.*;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.*;
+import io.github.cottonmc.cotton.gui.widget.data.Insets;
 import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.features.commands.nbs.*;
 import io.github.homchom.recode.sys.hypercube.templates.TemplateUtil;
@@ -13,7 +14,7 @@ import io.github.homchom.recode.sys.renderer.IMenu;
 import io.github.homchom.recode.sys.util.ItemUtil;
 import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.*;
 import net.minecraft.world.item.*;
 
@@ -51,14 +52,15 @@ public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
     public void open(String... args) throws CommandSyntaxException {
         Minecraft mc = LegacyRecode.MC;
         WPlainPanel root = new WPlainPanel();
+        root.setInsets(Insets.ROOT_PANEL);
         root.setSize(300, 240);
 
-        WText queryField = new WText(new TextComponent("§l§nSearch Results for: " + query));
+        WText queryField = new WText(Component.literal("§l§nSearch Results for: " + query));
         root.add(queryField, 0, 0, 300, 0);
 
         WPlainPanel ppanel = new WPlainPanel();
 
-        WText loading = new WText(new TextComponent("§lLoading Results..."));
+        WText loading = new WText(Component.literal("§lLoading Results..."));
 
         ppanel.add(loading, 85, 50, 300, 0);
 
@@ -82,19 +84,19 @@ public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
 
                         int id = e.get("id").getAsInt();
                         String duration = e.get("duration").getAsString();
-                        WText title = new WText(new TextComponent(e.get("title").getAsString()));
+                        WText title = new WText(Component.literal(e.get("title").getAsString()));
                         WText description = new WText(
-                            new TextComponent(duration + " §8-§r " + e.get("composer").getAsString()));
+                                Component.literal(duration + " §8-§r " + e.get("composer").getAsString()));
 
                         ppanel.add(title, 0, y, 999, 10);
                         ppanel.add(description, 0, y + 10, 999, 10);
 
-                        WButton download = new WButton(new TextComponent("§l↓"));
+                        WButton download = new WButton(Component.literal("§l↓"));
 
                         ppanel.add(download, 270, y, 20, 20);
 
                         download.setOnClick(() -> {
-                            download.setLabel(new TextComponent("..."));
+                            download.setLabel(Component.literal("..."));
                             LegacyRecode.executor
                                 .submit(() -> {
                                     String notes = null;
@@ -102,13 +104,14 @@ public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
                                         notes = WebUtil.getString(
                                             "https://untitled-57qvszfgg28u.runkit.sh/download?format=mcnbs&id="
                                                 + id);
+                                        ChatUtil.playSound(SoundEvents.ITEM_PICKUP);
                                     } catch (IOException ex) {
                                         throw new RuntimeException(ex);
                                     }
                                     String[] notearr = notes.split("=");
                                     int length = Integer
                                         .parseInt(notearr[notearr.length - 1].split(":")[0]);
-                                    SongData d = new SongData("Song " + id, "CodeUtilities", 20f,
+                                    SongData d = new SongData("Song " + id, "Recode", 20f,
                                         length, notes, "", "", 1, 0, 0);
 
                                     String code = new NBSToTemplate(d).convert();
@@ -118,21 +121,21 @@ public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
                                         .compressTemplateNBT(stack, d.getName(), d.getAuthor(), code);
 
                                     stack.setHoverName(
-                                        new TextComponent("§d" + e.get("title").getAsString()));
+                                            Component.literal("§d" + e.get("title").getAsString()));
 
                                     ItemUtil.giveCreativeItem(stack, true);
-                                    download.setLabel(new TextComponent("§l↓"));
+                                    download.setLabel(Component.literal("§l↓"));
                                 });
                         });
 
-                        WButton preview = new WButton(new TextComponent("▶"));
+                        WButton preview = new WButton(Component.literal("▶"));
 
                         ppanel.add(preview, 250, y, 20, 20);
 
                         preview.setOnClick(() -> {
                             if (previewId != id) {
                                 previewId = id;
-                                preview.setLabel(new TextComponent("..."));
+                                preview.setLabel(Component.literal("..."));
                                 LegacyRecode.executor
                                     .submit(() -> {
                                         String snotes = null;
@@ -144,9 +147,9 @@ public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
                                             throw new RuntimeException(ex);
                                         }
                                         List<String> notes = new ArrayList<>(
-                                            Arrays.asList(snotes.split("=")));
+                                            Arrays.asList(snotes.trim().split("=")));
 
-                                        preview.setLabel(new TextComponent("■"));
+                                        preview.setLabel(Component.literal("■"));
 
                                         int[] tick = {0};
                                         int[] index = {0};
@@ -156,7 +159,7 @@ public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
                                             if (previewId != id
                                                 || mc.screen == null) {
                                                 scheduler.shutdown();
-                                                preview.setLabel(new TextComponent("▶"));
+                                                preview.setLabel(Component.literal("▶"));
                                                 return;
                                             }
                                             if (notes.get(index[0])
@@ -197,7 +200,7 @@ public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
                 });
             } catch (UnsupportedEncodingException err) {
                 err.printStackTrace();
-                loading.setText(new TextComponent("Error"));
+                loading.setText(Component.literal("Error"));
                 ChatUtil.sendMessage("Error");
             } catch (IOException e) {
                 throw new RuntimeException(e);

@@ -6,6 +6,6 @@ import net.minecraft.network.chat.*;
 public class TextDescription extends ConfigSetting<Component> {
 
     public TextDescription(String key) {
-        super(key, new TextComponent(""));
+        super(key, Component.literal(""));
     }
 }

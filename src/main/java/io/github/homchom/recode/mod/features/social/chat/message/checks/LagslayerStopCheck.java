@@ -11,17 +11,17 @@ public class LagslayerStopCheck extends MessageCheck {
             "(^Error: You can't monitor this plot!$)";
 
     @Override
-    public LegacyMessageType getType() {
-        return LegacyMessageType.LAGSLAYER_STOP;
+    public MessageType getType() {
+        return MessageType.LAGSLAYER_STOP;
     }
 
     @Override
-    public boolean check(LegacyMessage message, String stripped) {
+    public boolean check(Message message, String stripped) {
         return stripped.matches(LAGSLAYER_STOP_REGEX);
     }
 
     @Override
-    public void onReceive(LegacyMessage message) {
+    public void onReceive(Message message) {
         LagslayerHUD.lagSlayerEnabled = false;
     }
 }
