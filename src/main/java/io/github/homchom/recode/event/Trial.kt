@@ -2,8 +2,10 @@ package io.github.homchom.recode.event
 
 import io.github.homchom.recode.util.NullableScope
 import io.github.homchom.recode.util.nullable
+import io.github.homchom.recode.util.unitOrNull
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.withContext
@@ -15,22 +17,30 @@ suspend inline fun <R : Any> runTrial(crossinline tests: Trial.() -> R) =
 class Trial {
     private val enforced = mutableListOf<suspend () -> Unit>()
 
-    inline fun <T : Any> NullableScope.test(test: () -> T?) = test() ?: fail()
-
-    inline fun NullableScope.testBoolean(test: () -> Boolean) {
-        test { if (test()) Unit else null }
-    }
-
     suspend inline fun <C, T : Any> NullableScope.testOn(
         event: REvent<C, *>,
-        duration: Long = 0,
+        waitDuration: Long,
         crossinline test: (C) -> T?
     ): T {
+        return collectOn(event, waitDuration) { test(it.first()) ?: fail() }
+    }
+
+    suspend inline fun <C, T : Any> NullableScope.awaitOn(
+        event: REvent<C, *>,
+        waitDuration: Long,
+        crossinline test: (C) -> T?
+    ): T {
+        return collectOn(event, waitDuration) { it.mapNotNull(test).first() }
+    }
+
+    suspend inline fun <C, T : Any> NullableScope.collectOn(
+        event: REvent<C, *>,
+        duration: Long,
+        crossinline collector: suspend (Flow<C>) -> T
+    ): T {
         return event.contextFlow.let { flow ->
-            if (duration == 0L) {
-                test { test(flow.first()) }
-            } else try {
-                withTimeout(duration) { flow.mapNotNull { test(it) }.first() }
+            try {
+                withTimeout(duration) { collector(flow) }
             } catch (e: TimeoutCancellationException) {
                 fail()
             }
@@ -39,10 +49,18 @@ class Trial {
 
     suspend inline fun <C> NullableScope.testBooleanOn(
         event: REvent<C, *>,
-        duration: Long = 0,
+        waitDuration: Long,
         crossinline test: (C) -> Boolean
     ) {
-        testOn(event, duration) { if (test(it)) Unit else null }
+        testOn(event, waitDuration) { test(it).unitOrNull() }
+    }
+
+    suspend inline fun <C> NullableScope.awaitBooleanOn(
+        event: REvent<C, *>,
+        waitDuration: Long,
+        crossinline test: (C) -> Boolean
+    ) {
+        awaitOn(event, waitDuration) { test(it).unitOrNull() }
     }
 
     suspend fun enforce(block: suspend () -> Unit) {
