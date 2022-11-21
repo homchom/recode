@@ -12,7 +12,6 @@ import io.github.homchom.recode.util.invoke
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlin.properties.Delegates
 
 var currentDFState: DFState? = null
     private set(value) {
