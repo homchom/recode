@@ -1,8 +1,10 @@
 package io.github.homchom.recode.sys.renderer.widgets;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import io.github.cottonmc.cotton.gui.widget.*;
-import net.fabricmc.api.*;
+import io.github.cottonmc.cotton.gui.widget.TooltipBuilder;
+import io.github.cottonmc.cotton.gui.widget.WItem;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;

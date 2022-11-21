@@ -1,9 +1,11 @@
 package io.github.homchom.recode.sys.player.chat;
 
-import io.github.homchom.recode.mod.features.social.chat.message.*;
+import io.github.homchom.recode.mod.features.social.chat.message.LegacyMessage;
+import io.github.homchom.recode.mod.features.social.chat.message.MessageType;
 import net.minecraft.network.chat.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**

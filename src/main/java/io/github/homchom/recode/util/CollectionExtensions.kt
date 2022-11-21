@@ -1,6 +1,6 @@
 package io.github.homchom.recode.util
 
-import java.util.Collections
+import java.util.*
 
 fun <T> List<T>.unmodifiable(): List<T> = Collections.unmodifiableList(this)
 fun <K, V> Map<out K, V>.unmodifiable(): Map<K, V> = Collections.unmodifiableMap(this)

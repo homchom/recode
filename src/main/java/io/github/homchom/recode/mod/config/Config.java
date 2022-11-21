@@ -1,10 +1,13 @@
 package io.github.homchom.recode.mod.config;
 
-import io.github.homchom.recode.mod.config.structure.*;
+import io.github.homchom.recode.mod.config.structure.ConfigManager;
+import io.github.homchom.recode.mod.config.structure.ConfigSetting;
 import io.github.homchom.recode.mod.config.types.list.ListSetting;
 import net.minecraft.sounds.SoundEvent;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 
 public class Config {
     private static ConfigManager config = ConfigManager.getInstance();

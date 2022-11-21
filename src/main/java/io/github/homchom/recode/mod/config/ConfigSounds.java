@@ -1,8 +1,10 @@
 package io.github.homchom.recode.mod.config;
 
 import io.github.homchom.recode.mod.config.types.IConfigDropdownEnum;
-import io.github.homchom.recode.sys.player.chat.*;
-import net.minecraft.sounds.*;
+import io.github.homchom.recode.sys.player.chat.ChatType;
+import io.github.homchom.recode.sys.player.chat.ChatUtil;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 
 public enum ConfigSounds implements IConfigDropdownEnum<ConfigSounds> {
 

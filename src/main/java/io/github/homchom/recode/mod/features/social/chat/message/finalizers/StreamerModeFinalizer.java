@@ -1,6 +1,9 @@
 package io.github.homchom.recode.mod.features.social.chat.message.finalizers;
 
-import io.github.homchom.recode.mod.features.social.chat.message.*;
+import io.github.homchom.recode.mod.features.social.chat.message.LegacyMessage;
+import io.github.homchom.recode.mod.features.social.chat.message.MessageCheck;
+import io.github.homchom.recode.mod.features.social.chat.message.MessageFinalizer;
+import io.github.homchom.recode.mod.features.social.chat.message.MessageType;
 import io.github.homchom.recode.mod.features.social.chat.message.checks.DirectMessageCheck;
 import io.github.homchom.recode.mod.features.streamer.StreamerModeMessageCheck;
 

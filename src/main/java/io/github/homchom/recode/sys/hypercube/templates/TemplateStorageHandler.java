@@ -1,16 +1,21 @@
 package io.github.homchom.recode.sys.hypercube.templates;
 
 import io.github.homchom.recode.mod.commands.IManager;
-import io.github.homchom.recode.sys.file.*;
+import io.github.homchom.recode.sys.file.ExternalFile;
+import io.github.homchom.recode.sys.file.ISave;
 import io.github.homchom.recode.sys.util.ItemUtil;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtIo;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.item.ItemStack;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class TemplateStorageHandler implements IManager<TemplateItem>, ISave {

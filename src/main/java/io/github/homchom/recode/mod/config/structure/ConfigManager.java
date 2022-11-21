@@ -2,12 +2,15 @@ package io.github.homchom.recode.mod.config.structure;
 
 import io.github.homchom.recode.mod.commands.IManager;
 import io.github.homchom.recode.mod.config.impl.*;
-import io.github.homchom.recode.mod.config.internal.*;
+import io.github.homchom.recode.mod.config.internal.ConfigFile;
+import io.github.homchom.recode.mod.config.internal.ConfigInstruction;
 import io.github.homchom.recode.mod.config.types.*;
 import io.github.homchom.recode.mod.config.types.hud.PositionSetting;
 import io.github.homchom.recode.mod.config.types.list.StringListSetting;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class ConfigManager implements IManager<ConfigGroup> {
     private final List<ConfigGroup> groups = new ArrayList<>();

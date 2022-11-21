@@ -1,7 +1,8 @@
 package io.github.homchom.recode.sys.renderer;
 
 import com.mojang.blaze3d.platform.NativeImage;
-import net.minecraft.client.renderer.texture.*;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
 public class PublicSprite extends TextureAtlasSprite {
 

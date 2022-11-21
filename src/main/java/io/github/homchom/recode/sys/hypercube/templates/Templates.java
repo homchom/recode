@@ -2,10 +2,12 @@ package io.github.homchom.recode.sys.hypercube.templates;
 
 import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.sys.player.chat.ChatType;
-import io.github.homchom.recode.sys.player.chat.*;
+import io.github.homchom.recode.sys.player.chat.ChatUtil;
 import io.github.homchom.recode.sys.util.ItemUtil;
-import net.minecraft.network.chat.*;
-import net.minecraft.world.item.*;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
 
 public class Templates {

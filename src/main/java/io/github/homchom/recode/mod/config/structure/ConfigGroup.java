@@ -3,7 +3,9 @@ package io.github.homchom.recode.mod.config.structure;
 import io.github.homchom.recode.mod.commands.IManager;
 import net.minecraft.network.chat.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public abstract class ConfigGroup implements IManager<ConfigSubGroup>, IRawTranslation<ConfigGroup> {
     private final List<ConfigSetting<?>> settings = new ArrayList<>();

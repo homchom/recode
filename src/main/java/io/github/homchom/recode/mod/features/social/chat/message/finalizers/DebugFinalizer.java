@@ -2,7 +2,8 @@ package io.github.homchom.recode.mod.features.social.chat.message.finalizers;
 
 import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.Config;
-import io.github.homchom.recode.mod.features.social.chat.message.*;
+import io.github.homchom.recode.mod.features.social.chat.message.LegacyMessage;
+import io.github.homchom.recode.mod.features.social.chat.message.MessageFinalizer;
 import net.minecraft.network.chat.Component;
 
 public class DebugFinalizer extends MessageFinalizer {

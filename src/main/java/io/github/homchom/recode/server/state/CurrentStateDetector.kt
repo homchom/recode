@@ -12,12 +12,10 @@ import io.github.homchom.recode.util.invoke
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlin.properties.Delegates
 
 var currentDFState: DFState? = null
     private set(value) {
-        // TODO: is this unnecessary defensive programming?
-        check(isOnDF == (value != null)) { "DFState desync error" }
-
         if (value != field) ChangeDFStateEvent.run(StateChange(value, field))
         field = value
     }

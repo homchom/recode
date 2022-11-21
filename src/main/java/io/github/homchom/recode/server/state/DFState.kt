@@ -3,21 +3,18 @@
 
 package io.github.homchom.recode.server.state
 
-import io.github.homchom.recode.mc
 import io.github.homchom.recode.sys.networking.LegacyState
 import io.github.homchom.recode.util.capitalize
 import io.github.homchom.recode.util.uncapitalize
 
-val isOnDF get() = mc.currentServer?.ip?.matches(dfIPRegex) ?: false
-
-private val dfIPRegex = Regex("""(?:\w+\.)?mcdiamondfire\.com(?::\d+)?""")
+val isOnDF get() = currentDFState != null
 
 sealed interface DFState : LocateState {
     val isInSession: Boolean
 
     fun withState(state: LocateState) = when (state) {
-        is LocateState.AtSpawn, is AtSpawn -> AtSpawn(state.node, isInSession)
-        is LocateState.OnPlot, is OnPlot -> OnPlot(state as PlayState, isInSession)
+        is SpawnState -> AtSpawn(state.node, isInSession)
+        is PlayState -> OnPlot(state, isInSession)
     }
 
     class AtSpawn(override val node: Node, override val isInSession: Boolean) : DFState, SpawnState

@@ -1,6 +1,8 @@
 package io.github.homchom.recode.mod.features.social.chat.message;
 
-import io.github.homchom.recode.mod.features.social.chat.message.finalizers.*;
+import io.github.homchom.recode.mod.features.social.chat.message.finalizers.DebugFinalizer;
+import io.github.homchom.recode.mod.features.social.chat.message.finalizers.MessageGrabberFinalizer;
+import io.github.homchom.recode.mod.features.social.chat.message.finalizers.StreamerModeFinalizer;
 
 /**
  * Before a message is sent to the client, and after the message checks have been evaluated,

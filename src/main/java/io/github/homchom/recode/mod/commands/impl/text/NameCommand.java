@@ -1,6 +1,7 @@
 package io.github.homchom.recode.mod.commands.impl.text;
 
-import com.google.gson.*;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.commands.Command;
@@ -21,8 +22,6 @@ import org.apache.commons.io.IOUtils;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Map;
 
 public class NameCommand extends Command {
 

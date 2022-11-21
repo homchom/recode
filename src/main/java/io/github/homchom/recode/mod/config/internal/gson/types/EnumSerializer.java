@@ -1,6 +1,9 @@
 package io.github.homchom.recode.mod.config.internal.gson.types;
 
-import com.google.gson.*;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import io.github.homchom.recode.mod.config.types.EnumSetting;
 
 import java.lang.reflect.Type;

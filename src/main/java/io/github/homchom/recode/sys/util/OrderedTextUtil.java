@@ -1,8 +1,10 @@
 package io.github.homchom.recode.sys.util;
 
 import io.github.homchom.recode.sys.player.chat.color.MinecraftColors;
-import net.minecraft.network.chat.*;
-import net.minecraft.util.*;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.FormattedCharSink;
 
 public class OrderedTextUtil implements FormattedCharSink {
 

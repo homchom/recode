@@ -122,7 +122,7 @@ public class DFDiscordRPC implements ILoader {
 
             presence.setLargeImage("diamondfirelogo", Objects.equals(playState.getStatus(), "") ? getLargeImageText() : playState.getStatus());
 
-            if (oldState instanceof DFState.OnPlot oldPlayState) {
+            if (oldState instanceof PlayState oldPlayState) {
                 if (oldPlayState.getPlot().getId() != playState.getPlot().getId()) {
                     setTime(RPCElapsedOption.PLOT);
                 }

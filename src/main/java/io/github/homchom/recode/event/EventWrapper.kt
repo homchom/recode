@@ -3,6 +3,7 @@ package io.github.homchom.recode.event
 import io.github.homchom.recode.lifecycle.ListenableModule
 import io.github.homchom.recode.lifecycle.RModule
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import net.fabricmc.fabric.api.event.Event
 
@@ -28,7 +29,7 @@ private open class EventWrapper<C, R, L, P : EventPhase>(
     override val fabricEvent: Event<L>,
     private val transform: (Listener<C, R>) -> L
 ) : PhasedEvent<C, R, L, P> {
-    override val contextFlow by lazy {
+    override val contextFlow: Flow<C> by lazy {
         MutableSharedFlow<C>().also { flow ->
             transformAndRegister { context, result ->
                 runBlocking { flow.emit(context) }

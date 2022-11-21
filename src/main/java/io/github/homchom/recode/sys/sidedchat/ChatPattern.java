@@ -1,7 +1,8 @@
 package io.github.homchom.recode.sys.sidedchat;
 
 import com.google.common.collect.Lists;
-import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 
 import java.util.List;
 
