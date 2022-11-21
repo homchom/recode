@@ -1,14 +1,15 @@
 package io.github.homchom.recode.util
 
 @OptIn(BreaksControlFlow::class)
-inline fun <T : Any> nullable(block: NullableScope.() -> T): T? {
+inline fun <T : Any> nullable(block: NullableScope.() -> T?): T? {
     val comp = computeIn(NullaryFailScope(null), block)
-    return (comp as? Computation.Success<T>)?.value
+    return (comp as? Computation.Success<T?>)?.value
 }
 
 typealias NullableScope = NullaryFailScope<Nothing?>
 
-@OptIn(BreaksControlFlow::class)
+// TODO: is this necessary? arguably not beneficial on the JVM with null safety
+/*@OptIn(BreaksControlFlow::class)
 inline fun <T> maybe(block: MaybeScope.() -> T): Maybe<T> {
     val comp = computeIn(NullaryFailScope(Maybe.No), block)
     return if (comp is Computation.Success<T>) Maybe.Yes(comp.value) else Maybe.No
@@ -19,7 +20,7 @@ typealias MaybeScope = NullaryFailScope<Maybe.No>
 sealed interface Maybe<out T> {
     class Yes<T>(val value: T) : Maybe<T>
     object No : Maybe<Nothing>
-}
+}*/
 
 @OptIn(BreaksControlFlow::class)
 inline fun <S, F> compute(block: ComputeScope<F>.() -> S) = computeIn(ComputeScope(), block)
@@ -29,25 +30,17 @@ class ComputeScope<T> @BreaksControlFlow constructor() : FailScope<T>
 @OptIn(BreaksControlFlow::class)
 inline fun <S, F, R : FailScope<F>> computeIn(scope: R, block: R.() -> S): Computation<S, F> {
     return try {
-        EitherRight(scope.block())
+        Computation.Success(scope.block())
     } catch (e: FailureException) {
         @Suppress("UNCHECKED_CAST")
-        EitherLeft(e.value as F)
+        Computation.Failure(e.value as F)
     }
 }
 
 interface Computation<out S, out F> {
-    interface Success<out T> : Computation<T, Nothing> {
-        val value: T
-    }
-
-    interface Failure<out T> : Computation<Nothing, T> {
-        val value: T
-    }
+    class Success<T>(val value: T) : Computation<T, Nothing>
+    class Failure<T>(val value: T) : Computation<Nothing, T>
 }
-
-class EitherRight<T>(override val value: T) : Computation.Success<T>
-class EitherLeft<T>(override val value: T) : Computation.Failure<T>
 
 sealed interface FailScope<T> {
     @OptIn(BreaksControlFlow::class)

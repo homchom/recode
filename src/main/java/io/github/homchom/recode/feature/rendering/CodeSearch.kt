@@ -22,7 +22,7 @@ val FCodeSearch = feature("Code Search") {
                         )
                         // TODO: test if alpha actually makes a difference
                         val alpha = (distance.coerceIn(1.0, 15.0) * 17).toInt()
-                        result.outlineColor = rgba(255, 255, 255, alpha)
+                        result.content = rgba(255, 255, 255, alpha)
                     }
                 }
             }

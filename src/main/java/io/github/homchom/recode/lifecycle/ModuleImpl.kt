@@ -8,18 +8,16 @@ import kotlinx.coroutines.cancel
 /**
  * Builds a weak [ExposedModule].
  */
-inline fun buildExposedModule(key: SingletonKey? = null, builder: ModuleBuilderScope = {}) =
-    ModuleBuilder(key)
-        .apply(builder)
-        .run { exposedModule(children, onLoad.action, onEnable.action, onDisable.action) }
+inline fun buildExposedModule(builder: ModuleBuilderScope = {}) = ModuleBuilder()
+    .apply(builder)
+    .run { exposedModule(children, onLoad.action, onEnable.action, onDisable.action) }
 
 /**
  * Builds a strong [ExposedModule].
  */
-inline fun buildStrongExposedModule(key: SingletonKey? = null, builder: ModuleBuilderScope = {}) =
-    ModuleBuilder(key)
-        .apply(builder)
-        .run { strongExposedModule(children, onLoad.action, onEnable.action, onDisable.action) }
+inline fun buildStrongExposedModule(builder: ModuleBuilderScope = {}) = ModuleBuilder()
+    .apply(builder)
+    .run { strongExposedModule(children, onLoad.action, onEnable.action, onDisable.action) }
 
 /**
  * Constructs a weak [ExposedModule] with children and actions [onLoad], [onEnable], and

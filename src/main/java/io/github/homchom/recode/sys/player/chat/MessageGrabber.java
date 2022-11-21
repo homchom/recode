@@ -9,6 +9,7 @@ import java.util.function.Consumer;
 /**
  * A utility class to grab the next X chat messages.
  */
+@Deprecated
 public class MessageGrabber {
 
     private static final List<Component> currentMessages = new ArrayList<>();

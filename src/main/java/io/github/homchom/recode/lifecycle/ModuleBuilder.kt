@@ -6,14 +6,12 @@ typealias ModuleAction = ExposedModule.() -> Unit
 /**
  * Builds a weak [RModule].
  */
-inline fun module(key: SingletonKey? = null, builder: ModuleBuilderScope): RModule =
-    buildExposedModule(key, builder)
+inline fun module(builder: ModuleBuilderScope): RModule = buildExposedModule(builder)
 
 /**
  * Builds a strong [RModule].
  */
-inline fun strongModule(key: SingletonKey? = null, builder: ModuleBuilderScope): RModule =
-    buildStrongExposedModule(key, builder)
+inline fun strongModule(builder: ModuleBuilderScope): RModule = buildStrongExposedModule(builder)
 
 /**
  * Builds a strong [RModule] to be enabled by entrypoints.
@@ -31,11 +29,7 @@ inline fun entrypointModule(builder: ModuleBuilderScope) = buildStrongExposedMod
  * @see module
  * @see strongModule
  */
-class ModuleBuilder(key: SingletonKey?) {
-    init {
-        key?.use()
-    }
-
+class ModuleBuilder {
     val children = mutableListOf<RModule>()
 
     /**

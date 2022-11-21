@@ -2,20 +2,21 @@ package io.github.homchom.recode.mod.events.impl;
 
 import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.Config;
-import io.github.homchom.recode.server.*;
+import io.github.homchom.recode.server.Message;
+import io.github.homchom.recode.server.MessageContext;
+import io.github.homchom.recode.server.ReceiveChatMessageEvent;
 import io.github.homchom.recode.sys.networking.LegacyState;
 import io.github.homchom.recode.sys.player.DFInfo;
-import io.github.homchom.recode.sys.player.chat.*;
+import io.github.homchom.recode.sys.player.chat.ChatType;
+import io.github.homchom.recode.sys.player.chat.ChatUtil;
 import io.github.homchom.recode.sys.util.TextUtil;
-import kotlin.*;
-import kotlin.jvm.functions.Function2;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraft.network.chat.Component;
 
-import java.util.List;
-import java.util.regex.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class LegacyReceiveChatMessageEvent {
     public LegacyReceiveChatMessageEvent() {
@@ -26,35 +27,31 @@ public class LegacyReceiveChatMessageEvent {
 
     public static String tipPlayer = "";
 
-    public boolean run(Pair<? extends Lazy<? extends Message>, ? extends Component> messagePair, boolean send) {
-        Lazy<? extends Message> message = messagePair.getFirst();
-        Component component = messagePair.getSecond();
-
+    public boolean run(MessageContext context, boolean send) {
         Minecraft mc = Minecraft.getInstance();
 
         if (mc.player == null) return false;
 
-        String stripped = component.getString();
-        String msg = stripped.replaceAll("§.", "");
-
         boolean cancel = false;
 
-        //Auto //wand
-        if (Config.getBoolean("autowand")) {
-            if (msg.contains("You are now in build mode.")) {
-                mc.player.commandUnsigned("/wand");
-            }
-        }
+        Message message = context.getMessage().getValue();
+
+        // TODO: temporary, migrate all code here
+        Component component = context.getRaw();
+        String msgToString = component.getString();
+
+        String msgWithColor = TextUtil.textComponentToColorCodes(component);
+        String msgWithoutColor = msgWithColor.replaceAll("§.", "");
 
         //PJoin command
         if (pjoin) {
-            if (msg.startsWith("                                       \n")) {
-                if (msg.contains(" is currently at spawn\n")) {
+            if (msgWithoutColor.startsWith("                                       \n")) {
+                if (msgWithoutColor.contains(" is currently at spawn\n")) {
                     ChatUtil.sendMessage("This player is not in a plot.", ChatType.FAIL);
                 } else {
                     // PLOT ID
                     Pattern pattern = Pattern.compile("\\[\\d+]\n");
-                    Matcher matcher = pattern.matcher(msg);
+                    Matcher matcher = pattern.matcher(msgWithoutColor);
                     String id = "";
                     while (matcher.find()) {
                         id = matcher.group();
@@ -75,11 +72,6 @@ public class LegacyReceiveChatMessageEvent {
             }
         }
 
-        String msgToString = component.toString();
-
-        String msgWithColor = TextUtil.textComponentToColorCodes(component);
-        String msgWithoutColor = msgWithColor.replaceAll("§.", "");
-
         // highlight name
         if (Config.getBoolean("highlight")) {
             String highlightMatcher = Config.getString("highlightMatcher").replaceAll("\\{name}", mc.player.getName().getString());
@@ -87,7 +79,7 @@ public class LegacyReceiveChatMessageEvent {
                     || (DFInfo.currentState.getMode() == LegacyState.Mode.PLAY && msgWithoutColor.matches("^.*[a-zA-Z]+: .*"))) {
                 if ((!msgWithoutColor.matches("^.*" + highlightMatcher + ": .*")) || Config.getBoolean("highlightIgnoreSender")) {
                     if (msgWithoutColor.contains(highlightMatcher)) {
-                        if (!msg.contains("» Joined game: ") && !msg.contains(" by " + highlightMatcher + ".")) {
+                        if (!msgWithoutColor.contains("» Joined game: ") && !msgWithoutColor.contains(" by " + highlightMatcher + ".")) {
                             String[] chars = msgWithColor.split("");
                             int i = 0;
                             int newMsgIter = 0;
@@ -134,29 +126,29 @@ public class LegacyReceiveChatMessageEvent {
                 && (msgToString.contains("hoverEvent=false") || msgToString.contains("hoverEvent=null"))
                 && (msgToString.contains("insertion=false") || msgToString.contains("insertion=null"))
 
-                && (stripped.endsWith(" joined.") || stripped.endsWith(" joined!") || stripped.endsWith(" left."))) {
+                && (msgToString.endsWith(" joined.") || msgToString.endsWith(" joined!") || msgToString.endsWith(" left."))) {
 
             // cancel message
             cancel = true;
         }
 
         // hide session spy
-        if (Config.getBoolean("hideSessionSpy") && stripped.startsWith("*") && msgToString.contains("text='*'") && msgToString.contains("color=green")) {
+        if (Config.getBoolean("hideSessionSpy") && msgToString.startsWith("*") && msgToString.contains("text='*'") && msgToString.contains("color=green")) {
             cancel = true;
         }
 
         // hide muted chat
-        if (Config.getBoolean("hideMutedChat") && stripped.startsWith("*") && msgToString.contains("text='*'") && msgToString.contains("color=red")) {
+        if (Config.getBoolean("hideMutedChat") && msgToString.startsWith("*") && msgToString.contains("text='*'") && msgToString.contains("color=red")) {
             cancel = true;
         }
 
         if (DFInfo.currentState.getMode() == LegacyState.Mode.DEV) {
             // hide var scope messages
-            if (Config.getBoolean("hideVarScopeMessages") && stripped.startsWith("Scope set to ")) {
+            if (Config.getBoolean("hideVarScopeMessages") && msgToString.startsWith("Scope set to ")) {
                 cancel = true;
             }
 
-            if (Config.getBoolean("autoClickEditMsgs") && stripped.startsWith("⏵ Click to edit variable: ")) {
+            if (Config.getBoolean("autoClickEditMsgs") && msgToString.startsWith("⏵ Click to edit variable: ")) {
                 if (component.getStyle().getClickEvent().getAction() == Action.SUGGEST_COMMAND) {
                     String toOpen = component.getStyle().getClickEvent().getValue();
                     Minecraft.getInstance().tell(() -> Minecraft.getInstance().setScreen(new ChatScreen(toOpen)));
@@ -165,13 +157,13 @@ public class LegacyReceiveChatMessageEvent {
         }
 
         // hide msg matching regex
-        if (Config.getBoolean("hideMsgMatchingRegex") && stripped.replaceAll("§.", "").matches(Config.getString("hideMsgRegex"))) {
+        if (Config.getBoolean("hideMsgMatchingRegex") && msgToString.replaceAll("§.", "").matches(Config.getString("hideMsgRegex"))) {
             cancel = true;
         }
 
-        if (Config.getBoolean("autoTip") && stripped.startsWith("⏵⏵ ")) {
+        if (Config.getBoolean("autoTip") && msgToString.startsWith("⏵⏵ ")) {
             if (msgWithColor.matches("§x§a§a§5§5§f§f⏵⏵ §f§l\\w+§7 is using a §x§f§f§f§f§a§a§l2§x§f§f§f§f§a§a§lx§7 booster.")) {
-                tipPlayer = stripped.split("§f§l")[1].split("§7")[0];
+                tipPlayer = msgToString.split("§f§l")[1].split("§7")[0];
             } else if (msgWithColor.matches("§x§a§a§5§5§f§f⏵⏵ §7Use §x§f§f§f§f§a§a/tip§7 to show your appreciation and receive a §x§f§f§d§4§2§a□ token notch§7!")) {
                 LegacyRecode.executor.submit(() -> {
                     try {

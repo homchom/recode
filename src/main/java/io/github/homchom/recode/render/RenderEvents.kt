@@ -2,6 +2,7 @@ package io.github.homchom.recode.render
 
 import io.github.homchom.recode.event.*
 import io.github.homchom.recode.ui.RGBAColor
+import io.github.homchom.recode.util.Case
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents.BeforeBlockOutline
@@ -24,8 +25,4 @@ object RenderBlockEntityEvent :
     ValidatedEvent<BlockEntity>
 
 object OutlineBlockEntityEvent :
-    CustomEvent<BlockEntity, OutlineResult> by DependentEvent(createEvent(), CustomOutlineProcessor)
-
-class OutlineResult {
-    var outlineColor: RGBAColor? = null
-}
+    CustomEvent<BlockEntity, Case<RGBAColor>> by DependentEvent(createEvent(), CustomOutlineProcessor)

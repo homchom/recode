@@ -6,6 +6,7 @@ import io.github.homchom.recode.mod.features.social.chat.message.LegacyMessage;
 import io.github.homchom.recode.mod.features.social.chat.message.MessageType;
 import io.github.homchom.recode.server.ChangeDFStateEvent;
 import io.github.homchom.recode.server.StateChange;
+import io.github.homchom.recode.server.state.DF;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
 import io.github.homchom.recode.sys.player.chat.MessageGrabber;
 import net.minecraft.client.Minecraft;
@@ -97,29 +98,35 @@ public class LegacyState {
     }
 
     public enum Node {
-        ONE("1"),
-        TWO("2"),
-        THREE("3"),
-        FOUR("4"),
-        FIVE("5"),
-        SIX("6"),
-        SEVEN("7"),
-        EIGHT("8"),
-        NINE("9"),
-        BETA("Beta"),
-        DEV("Dev"),
-        DEV2("Dev2"),
+        ONE("1", "node1"),
+        TWO("2", "node2"),
+        THREE("3", "node3"),
+        FOUR("4", "node4"),
+        FIVE("5", "node5"),
+        SIX("6", "node6"),
+        SEVEN("7", "node7"),
+        EIGHT("8", "node8"),
+        NINE("9", "node9"),
+        BETA("Beta", "beta"),
+        DEV("Dev", "dev"),
+        DEV2("Dev2", "dev2"),
 
-        UNKNOWN("?");
+        UNKNOWN("?", null);
 
         private final String identifier;
+        private final String raw;
 
-        Node(String identifier) {
+        Node(String identifier, String raw) {
             this.identifier = identifier;
+            this.raw = raw;
         }
 
         public String getIdentifier() {
             return identifier;
+        }
+
+        public String getRaw() {
+            return raw;
         }
 
         public static Node getByIdentifier(String identifier) {
@@ -347,7 +354,7 @@ public class LegacyState {
     }
 
     private static void notifyStateChange(LegacyState newState, LegacyState oldState) {
-        ChangeDFStateEvent.INSTANCE.run(new StateChange(newState, oldState));
+        ChangeDFStateEvent.INSTANCE.run(new StateChange(DF.toDFState(newState), DF.toDFState(oldState)));
     }
 
     public static class CurrentState extends LegacyState {

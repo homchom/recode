@@ -4,7 +4,7 @@ import io.github.homchom.recode.mod.features.StateOverlayHandler;
 import io.github.homchom.recode.mod.features.discordrpc.DFDiscordRPC;
 import io.github.homchom.recode.mod.features.streamer.StreamerModeHandler;
 import io.github.homchom.recode.server.ChangeDFStateEvent;
-import io.github.homchom.recode.sys.networking.LegacyState;
+import io.github.homchom.recode.server.state.DFState;
 import io.github.homchom.recode.sys.player.chat.MessageGrabber;
 import kotlin.Unit;
 
@@ -16,12 +16,10 @@ public class LegacyChangeStateEvent {
         });
     }
 
-    private void run(LegacyState newState, LegacyState oldState) {
+    private void run(DFState newState, DFState oldState) {
         StreamerModeHandler.handleStateChange(oldState, newState);
 
-        if (newState.mode == LegacyState.Mode.OFFLINE) {
-            MessageGrabber.reset();
-        }
+        if (newState == null) MessageGrabber.reset();
 
         try {
             DFDiscordRPC.getInstance().update(newState);
