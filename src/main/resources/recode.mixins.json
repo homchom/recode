@@ -8,7 +8,8 @@
   "client": [
     "render.MBlockEntityRenderDispatcher",
     "render.MLevelRenderer",
-    "server.MClientPacketListener"
+    "server.MClientPacketListener",
+    "game.MKeyboardHandler"
   ],
   "server": [],
   "injectors": {
