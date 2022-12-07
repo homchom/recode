@@ -4,33 +4,19 @@ import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.sys.networking.LegacyState;
 import io.github.homchom.recode.sys.player.DFInfo;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public class StateSwitcherScreen extends GenericSwitcherScreen {
     private static final SelectorOption[] SelectorOptions = {
-            new SelectorOption(Component.literal("Play Mode"), new ItemStack(Items.EMERALD)) {
-                @Override
-                void activate() {
-                    runCommand("mode play");
-                }
-            },
-            new SelectorOption(Component.literal("Build Mode"), new ItemStack(Items.GRASS_BLOCK)) {
-                @Override
-                void activate() {
-                    runCommand("mode build");
-                }
-            },
-            new SelectorOption(Component.literal("Dev Mode"), new ItemStack(Items.COMMAND_BLOCK)) {
-                @Override
-                void activate() {
-                    runCommand("mode code");
-                }
-            }
+            createOption("Play", Items.EMERALD),
+            createOption("Build", Items.GRASS_BLOCK),
+            createOption("Code", Items.COMMAND_BLOCK)
     };
 
     public StateSwitcherScreen(int nextKey) {
-        super(nextKey, SelectorOptions);
+        super(nextKey, SelectorOptions, Component.literal("Press F5 to select"));
     }
 
     @Override
@@ -39,7 +25,12 @@ public class StateSwitcherScreen extends GenericSwitcherScreen {
         return 0;
     }
 
-    private static void runCommand(String command) {
-        LegacyRecode.MC.player.commandUnsigned(command);
+    private static SelectorOption createOption(String mode, Item item) {
+        return new SelectorOption(Component.literal(mode + " Mode"), new ItemStack(item)) {
+            @Override
+            void activate() {
+                LegacyRecode.MC.player.commandUnsigned(mode);
+            }
+        };
     }
 }

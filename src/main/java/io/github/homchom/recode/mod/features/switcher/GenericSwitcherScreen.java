@@ -3,7 +3,6 @@ package io.github.homchom.recode.mod.features.switcher;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import io.github.homchom.recode.LegacyRecode;
 import net.minecraft.client.GameNarrator;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -20,7 +19,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public abstract class GenericSwitcherScreen extends Screen {
-    private List<SelectorOptionWidget> slots = Lists.newArrayList();
+    private final List<SelectorOptionWidget> slots = Lists.newArrayList();
+    private final Component subText;
     private final int nextKey;
     private static final int DEBUG_KEY = InputConstants.KEY_F3;
     private static final int LEFT_SHIFT = InputConstants.KEY_LSHIFT;
@@ -32,26 +32,31 @@ public abstract class GenericSwitcherScreen extends Screen {
     private static int previousSelected;
     private boolean goBackwards = false;
 
-    protected GenericSwitcherScreen(int nextKey, SelectorOption[] selectorOptions) {
+    private int lastMouseX;
+    private int lastMouseY;
+
+    protected GenericSwitcherScreen(int nextKey, SelectorOption[] selectorOptions, Component subText) {
         super(GameNarrator.NO_TITLE);
         this.nextKey = nextKey;
+        this.subText = subText;
         SelectorOptions = selectorOptions;
     }
 
+    // General
     @Override
     protected void init() {
         super.init();
-        int i = -1;
+        int i = 0;
         int ALL_SLOTS_WIDTH = SelectorOptions.length * 31 - 5;
         for (SelectorOption option : SelectorOptions) {
+            this.slots.add(new SelectorOptionWidget(option, (this.width / 2) - (ALL_SLOTS_WIDTH / 2) + i * 31, this.height / 2 - 31, i));
             i += 1;
-            this.slots.add(new SelectorOptionWidget(option, (this.width / 2) - (ALL_SLOTS_WIDTH / 2) + i * 31, this.height / 2 - 31));
         }
         this.currentlySelected = selectedOnOpen(previousSelected);
     }
 
     @Override
-    public void render(@NotNull PoseStack poseStack, int i, int j, float f) {
+    public void render(@NotNull PoseStack poseStack, int mouseX, int mouseY, float f) {
         if(checkClose()) return;
 
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -64,15 +69,16 @@ public abstract class GenericSwitcherScreen extends Screen {
         GameModeSwitcherScreen.blit(poseStack, i1, j2, 0.0f, 0.0f, 125, 75, 128, 128);
         poseStack.popPose();
 
-        super.render(poseStack, i, j, f);
+        super.render(poseStack, mouseX, mouseY, f);
 
         GameModeSwitcherScreen.drawCenteredString(poseStack, this.font, SelectorOptions[currentlySelected].name, this.width / 2, this.height / 2 - 31 - 20, -1);
-        GameModeSwitcherScreen.drawCenteredString(poseStack, this.font, "Press F5 to select", this.width / 2, this.height / 2 + 5, 0xFFFFFF);
+        GameModeSwitcherScreen.drawCenteredString(poseStack, this.font, subText, this.width / 2, this.height / 2 + 4, 0xFFFFFF);
 
         for(SelectorOptionWidget widget : slots) {
-            widget.setSelected(widget.icon == SelectorOptions[currentlySelected]);
-            widget.render(poseStack,i,j,f);
+            widget.render(poseStack,mouseX,mouseY,f);
         }
+        lastMouseX = mouseX;
+        lastMouseY = mouseY;
     }
 
     // Keys
@@ -117,7 +123,7 @@ public abstract class GenericSwitcherScreen extends Screen {
         previousSelected = currentlySelected;
     }
     private void doSelected() {
-        this.previousSelected = currentlySelected;
+        previousSelected = currentlySelected;
         this.minecraft.setScreen(null);
         SelectorOptions[currentlySelected].activate();
     }
@@ -143,24 +149,34 @@ public abstract class GenericSwitcherScreen extends Screen {
         }
     }
     private class SelectorOptionWidget extends AbstractWidget {
-        private boolean isSelected;
-        final SelectorOption icon;
+        protected final SelectorOption icon;
+        final int index;
 
-        public SelectorOptionWidget(SelectorOption selectorOption, int i, int j) {
+        public SelectorOptionWidget(SelectorOption selectorOption, int i, int j, int index) {
             super(i, j, 26, 26, selectorOption.name);
             this.icon = selectorOption;
-            this.isSelected = true;
-        }
-
-        public void setSelected(boolean selected) {
-            isSelected = selected;
+            this.index = index;
         }
 
         @Override
-        public void renderButton(PoseStack poseStack, int i, int j, float f) {
+        public void renderButton(@NotNull PoseStack poseStack, int mouseX, int mouseY, float f) {
             this.drawSlot(poseStack);
             this.icon.render(GenericSwitcherScreen.this.itemRenderer, this.x + 5, this.y + 5);
-            if (this.isSelected) {
+
+            if((lastMouseX != mouseX) || (lastMouseY != mouseY)) {
+                int relativeX = (mouseX - this.x);
+                int relativeY = (mouseY - this.y);
+
+                boolean XinRange = relativeX >= 0 && relativeX <= 26;
+                boolean YinRange = relativeY >= 0 && relativeY <= 26;
+
+                if(XinRange && YinRange) {
+                    currentlySelected = this.index;
+                    previousSelected = currentlySelected;
+                }
+            }
+
+            if (currentlySelected == this.index) {
                 this.drawSelection(poseStack);
             }
         }
@@ -184,7 +200,7 @@ public abstract class GenericSwitcherScreen extends Screen {
         }
 
         @Override
-        public void updateNarration(NarrationElementOutput narrationElementOutput) {
+        public void updateNarration(@NotNull NarrationElementOutput narrationElementOutput) {
             this.defaultButtonNarrationText(narrationElementOutput);
         }
     }
