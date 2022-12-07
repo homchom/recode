@@ -15,8 +15,8 @@ public class StateSwitcherScreen extends GenericSwitcherScreen {
             createOption("Code", Items.COMMAND_BLOCK)
     };
 
-    public StateSwitcherScreen(int nextKey) {
-        super(nextKey, SelectorOptions, Component.literal("Press F5 to select"));
+    public StateSwitcherScreen(int nextKey, int holdKey) {
+        super(nextKey, holdKey, SelectorOptions, Component.literal("Press F5 to select"));
     }
 
     @Override

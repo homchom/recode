@@ -21,8 +21,10 @@ import java.util.List;
 public abstract class GenericSwitcherScreen extends Screen {
     private final List<SelectorOptionWidget> slots = Lists.newArrayList();
     private final Component subText;
+
     private final int nextKey;
-    private static final int DEBUG_KEY = InputConstants.KEY_F3;
+    private final int holdKey;
+
     private static final int LEFT_SHIFT = InputConstants.KEY_LSHIFT;
     private static final int RIGHT_SHIFT = InputConstants.KEY_RSHIFT;
 
@@ -35,9 +37,10 @@ public abstract class GenericSwitcherScreen extends Screen {
     private int lastMouseX;
     private int lastMouseY;
 
-    protected GenericSwitcherScreen(int nextKey, SelectorOption[] selectorOptions, Component subText) {
+    protected GenericSwitcherScreen(int nextKey, int holdKey, SelectorOption[] selectorOptions, Component subText) {
         super(GameNarrator.NO_TITLE);
         this.nextKey = nextKey;
+        this.holdKey = holdKey;
         this.subText = subText;
         SelectorOptions = selectorOptions;
     }
@@ -100,7 +103,7 @@ public abstract class GenericSwitcherScreen extends Screen {
             goBackwards = false;
             return true;
         }
-        if(key == DEBUG_KEY) {
+        if(key == holdKey) {
             checkClose();
             return true;
         }
@@ -109,7 +112,7 @@ public abstract class GenericSwitcherScreen extends Screen {
 
     // Logic
     private boolean checkClose() {
-        if(InputConstants.isKeyDown(this.minecraft.getWindow().getWindow(), DEBUG_KEY)) return false;
+        if(InputConstants.isKeyDown(this.minecraft.getWindow().getWindow(), holdKey)) return false;
         this.doSelected();
         this.minecraft.setScreen(null);
         return true;

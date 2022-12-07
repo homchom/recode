@@ -14,8 +14,8 @@ public class FlySpeedSwitcherScreen extends GenericSwitcherScreen {
         createOption("Fastest", Items.GOLDEN_BOOTS, 1000),
     };
 
-    public FlySpeedSwitcherScreen(int nextKey) {
-        super(nextKey, options, Component.literal("Press F6 to select"));
+    public FlySpeedSwitcherScreen(int nextKey, int holdKey) {
+        super(nextKey, holdKey, options, Component.literal("Press F6 to select"));
     }
 
 

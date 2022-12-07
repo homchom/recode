@@ -14,6 +14,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(KeyboardHandler.class)
 public class MKeyboardHandler {
+    private static final int DEBUG_KEY = InputConstants.KEY_F3;
+
     private static final int stateSwitcherKey = InputConstants.KEY_F5;
     private static final int speedSwitcherKey = InputConstants.KEY_F6;
 
@@ -21,12 +23,12 @@ public class MKeyboardHandler {
     private void handleDebugKeys(int i, CallbackInfoReturnable<Boolean> cir) {
         if(i == stateSwitcherKey && DFInfo.isOnDF() && DFInfo.currentState.getMode() != LegacyState.Mode.SPAWN) {
             cir.cancel();
-            LegacyRecode.MC.setScreen(new StateSwitcherScreen(stateSwitcherKey));
+            LegacyRecode.MC.setScreen(new StateSwitcherScreen(stateSwitcherKey,DEBUG_KEY));
             cir.setReturnValue(true);
         }
         if(i == speedSwitcherKey && ((DFInfo.currentState.getMode() == LegacyState.Mode.DEV) || (DFInfo.currentState.getMode() == LegacyState.Mode.BUILD))) {
             cir.cancel();
-            LegacyRecode.MC.setScreen(new FlySpeedSwitcherScreen(speedSwitcherKey));
+            LegacyRecode.MC.setScreen(new FlySpeedSwitcherScreen(speedSwitcherKey,DEBUG_KEY));
             cir.setReturnValue(true);
         }
     }
