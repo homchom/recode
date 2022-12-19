@@ -5,7 +5,6 @@ import io.github.homchom.recode.event.REvent
 import io.github.homchom.recode.event.hookFrom
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
 
 /**
  * A group of code with dependencies ("children") and that can be loaded, enabled, and disabled.
@@ -96,9 +95,11 @@ val GlobalModule: ListenableModule get() = GlobalExposedModule
 @DelicateCoroutinesApi
 val GlobalCoroutineModule: CoroutineModule get() = GlobalExposedModule
 
+@OptIn(MutatesModuleState::class)
 private object GlobalExposedModule : ExposedModule by buildStrongExposedModule() {
-    @DelicateCoroutinesApi
-    override val coroutineScope get() = GlobalScope
+    init {
+        enable()
+    }
 }
 
 /**
