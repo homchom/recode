@@ -10,4 +10,4 @@ class RegexNamedGroupValueCollection(private val match: MatchResult) : List<Stri
     operator fun get(name: String) = match.groups[name]?.value ?: ""
 }
 
-fun <T : Any> defaultedRegex(builder: (T?) -> Regex) = NullDefaulted(builder)
+fun <T : Any> cachedRegexBuilder(builder: (T?) -> Regex) = cachePreviousAndNull(builder)

@@ -93,15 +93,12 @@ fun LegacyState.toDFState(): DFState? {
 }
 
 data class LocateMessage(val username: String, val state: LocateState) {
-    companion object : RequestHolder<Matchable<Component>, Case<String>, LocateMessage> {
-        private val regex = defaultedRegex<Case<String>> { username ->
+    companion object : RequestHolder<Matchable<Component>, String, LocateMessage> {
+        private val regex = cachedRegexBuilder<String> { username ->
             @RegExp fun bullet(name: String, @RegExp pattern: String) = """\n$RIGHT_ARROW_CHAR $name: $pattern"""
 
-            @Language("regexp") val player = when {
-                username == null -> "(?:You are|(?<player>$USERNAME_PATTERN) is) currently"
-                username.content == null -> "(?<player>You) are currently"
-                else -> "(?<player>${Regex.escape(username.content)}) is currently"
-            }
+            val player = (if (username == null) USERNAME_PATTERN else Regex.escape(username))
+                .let { """(?:You are|(?<player>$it) is) currently""" }
             @Language("regexp") val mode = """(?<mode>playing|building|coding) on:\n"""
             @Language("regexp") val plot =
                 """\n$RIGHT_ARROW_CHAR (?<plotName>$PLOT_NAME_PATTERN) \[(?<plotID>\d+)]"""
@@ -115,9 +112,7 @@ data class LocateMessage(val username: String, val state: LocateState) {
 
         override val request by defineRequest(
             ReceiveChatMessageEvent,
-            executor = { username: Case<String> ->
-                sendCommand(if (username() == null) "locate" else "locate ${username()}")
-            },
+            executor = { username: String -> sendCommand("locate $username") },
             matcher = { text, username ->
                 nullable {
                     val values = regex(username).matchEntireUnstyled(text)?.namedGroupValues ?: fail()

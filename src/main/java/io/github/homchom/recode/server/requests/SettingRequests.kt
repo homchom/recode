@@ -4,7 +4,7 @@ import io.github.homchom.recode.mc
 import io.github.homchom.recode.server.*
 import io.github.homchom.recode.ui.equalsUnstyled
 import io.github.homchom.recode.ui.matchesUnstyled
-import io.github.homchom.recode.util.defaultedRegex
+import io.github.homchom.recode.util.cachedRegexBuilder
 import io.github.homchom.recode.util.unitOrNull
 import net.minecraft.world.effect.MobEffects
 
@@ -14,7 +14,7 @@ val ChatLocal by defineNullaryRequest(
     matcher = { text -> text.equalsUnstyled("Your chat is now set to LOCAL").unitOrNull() }
 )
 
-private val timeRegex = defaultedRegex<Long> { time ->
+private val timeRegex = cachedRegexBuilder<Long> { time ->
     Regex("""$GREEN_ARROW_CHAR Set your player time to ${time ?: "[0-9+]"}.""")
 }
 

@@ -4,8 +4,8 @@
 package io.github.homchom.recode.server.state
 
 import io.github.homchom.recode.lifecycle.module
+import io.github.homchom.recode.mc
 import io.github.homchom.recode.server.*
-import io.github.homchom.recode.util.Case
 import io.github.homchom.recode.util.matchAgainst
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -24,8 +24,8 @@ val DFStateUpdater = module {
         JoinServerEvent.hook { (_, _, client) ->
             if (dfIPRegex matches client.currentServer!!.ip) {
                 coroutineScope.launch {
-                    delay(100L) // TODO: remove (ViaVersion bug)
-                    val node = LocateMessage.request(Case(null)).state.node
+                    delay(200L) // TODO: remove (ViaVersion bug)
+                    val node = requestLocate().node
                     CurrentState.set(DFState.AtSpawn(node, false))
                 }
             }
@@ -60,11 +60,10 @@ private object CurrentState : ReadOnlyProperty<Any?, DFState?> {
     }
 
     inline fun locateAndSet(scope: CoroutineScope, crossinline setter: (LocateState) -> DFState) {
-        scope.launch {
-            val locateState = LocateMessage.request(Case(null)).state
-            set(setter(locateState))
-        }
+        scope.launch { set(setter(requestLocate())) }
     }
 
     override fun getValue(thisRef: Any?, property: KProperty<*>) = dfState
 }
+
+private suspend fun requestLocate() = LocateMessage.request(mc.player!!.username).state
