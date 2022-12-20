@@ -99,7 +99,7 @@ public class StreamerModeHandler {
         // If the state is changed to mode play, run "/chat local"
         // Note: May trigger simultaneously with StreamerHandler#handleServerJoin, but this is not a problem
         if (autoChatLocal() && newState instanceof PlayState playState &&
-                playState.getMode().equals(PlotMode.PLAY)) {
+                playState.getMode().equals(PlotMode.Play)) {
             LegacyRecode.MC.player.commandUnsigned("c l");
             MessageGrabber.hide(1);
         }

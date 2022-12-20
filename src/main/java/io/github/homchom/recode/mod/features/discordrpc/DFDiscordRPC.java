@@ -89,7 +89,7 @@ public class DFDiscordRPC implements ILoader {
         RichPresence.Builder presence = new RichPresence.Builder();
 
         // Put vars
-        vars.put("node.id", DF.getNodeDisplayName(state));
+        if (state != null) vars.put("node.id", DF.getNodeDisplayName(state));
 
         if (state instanceof SpawnState) {
             presence.setDetails(dyn("discordRPCSpawnDetails"));

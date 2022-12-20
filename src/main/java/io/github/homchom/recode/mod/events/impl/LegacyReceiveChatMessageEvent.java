@@ -2,14 +2,13 @@ package io.github.homchom.recode.mod.events.impl;
 
 import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.Config;
-import io.github.homchom.recode.server.Message;
-import io.github.homchom.recode.server.MessageContext;
 import io.github.homchom.recode.server.ReceiveChatMessageEvent;
 import io.github.homchom.recode.sys.networking.LegacyState;
 import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.ChatType;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
 import io.github.homchom.recode.sys.util.TextUtil;
+import io.github.homchom.recode.util.Matchable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.network.chat.ClickEvent.Action;
@@ -27,17 +26,15 @@ public class LegacyReceiveChatMessageEvent {
 
     public static String tipPlayer = "";
 
-    public boolean run(MessageContext context, boolean send) {
+    public boolean run(Matchable<Component> message, boolean send) {
         Minecraft mc = Minecraft.getInstance();
 
         if (mc.player == null) return false;
 
         boolean cancel = false;
 
-        Message message = context.getMessage().getValue();
-
         // TODO: temporary, migrate all code here
-        Component component = context.getRaw();
+        Component component = message.getValue();
         String msgToString = component.getString();
 
         String msgWithColor = TextUtil.textComponentToColorCodes(component);

@@ -9,7 +9,5 @@ import net.minecraft.client.Minecraft
 object ClientStopEvent :
     InvokableEvent<Minecraft, Unit, ClientStopping> by
         wrapEvent(ClientLifecycleEvents.CLIENT_STOPPING, { listener ->
-            ClientStopping {
-                listener(it, Unit)
-            }
+            ClientStopping { listener(it, Unit) }
         })

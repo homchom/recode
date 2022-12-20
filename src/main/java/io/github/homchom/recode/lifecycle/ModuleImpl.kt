@@ -3,6 +3,7 @@ package io.github.homchom.recode.lifecycle
 import io.github.homchom.recode.util.unmodifiable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 
 /**
@@ -81,7 +82,7 @@ private class WeakModule(
         errorIf(isEnabled) { "enabled" }
         tryLoad()
         for (child in children) child.addUsage(this)
-        scope = CoroutineScope(Dispatchers.Default)
+        scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
         isEnabled = true
         onEnable?.invoke(this)
     }

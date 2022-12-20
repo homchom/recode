@@ -1,95 +1,81 @@
 package io.github.homchom.recode.server
 
 import io.github.homchom.recode.DEFAULT_TIMEOUT_DURATION
-import io.github.homchom.recode.event.ValidatedEvent
-import io.github.homchom.recode.lifecycle.GlobalModule
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withTimeout
+import io.github.homchom.recode.util.Matcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.minutes
-
-private val requestPropertyNames = mutableSetOf<String>()
 
 /**
- * Defines and returns a delegate to a [Request].
- *
- * @param I The Request input type.
- * @param R The Request result type.
- * @param C The Event context type.
+ * A [Matcher] for [Request] objects, optionally given input context of type [I].
  */
-fun <I, R : Any, C> defineRequest(
-    event: ValidatedEvent<C>,
-    executor: (I) -> Unit,
-    test: (C) -> R?
-): ReadOnlyProperty<Any?, Request<I, R>> {
-    return RequestDelegate(event, executor, test)
+fun interface RequestMatcher<T, I : Any, R : Any> : Matcher<T, R> {
+    fun match(raw: T, requestInput: I?): R?
+    override fun match(input: T) = match(input, null)
 }
 
 /**
- * Defines and returns a delegate to a [Request] with no input.
- *
- * @see defineRequest
+ * A [RequestMatcher] with no input.
  */
-fun <R : Any, C> defineNullaryRequest(event: ValidatedEvent<C>, executor: () -> Unit, test: (C) -> R?) =
-    defineRequest<Nothing?, _, _>(event, { executor() }, test)
+fun interface NullaryRequestMatcher<T, R : Any> : RequestMatcher<T, Unit, R> {
+    override fun match(input: T): R?
+    override fun match(raw: T, requestInput: Unit?) = match(raw)
+}
 
 /**
- * An action executed to prompt an event invocation. Requests are sent with [send].
+ * An action executed to prompt an event invocation. Scans raw event context for a match and invalidates the event.
  *
+ * @param T The raw data type processed by the request.
  * @param I The input type sent by the request.
- * @param R The request result type.
+ * @param R The request response type.
+ *
+ * @property matcher The [RequestMatcher] associated with this request.
  *
  * @see defineRequest
  */
-sealed interface Request<I, R : Any> {
-    suspend fun send(context: I, timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION): R
+sealed interface Request<T, I : Any, R : Any> {
+    val matcher: RequestMatcher<T, I, R>
+
+    suspend fun request(input: I, timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION): R
+    suspend operator fun invoke(input: I, timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION) =
+        request(input, timeoutDuration)
 }
 
-suspend fun <R : Any> Request<Nothing?, R>.send(timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION) =
-    send(null, timeoutDuration)
+suspend fun <R : Any> Request<*, Unit, R>.request(timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION) =
+    request(Unit, timeoutDuration)
 
-private class RequestDelegate<I, R : Any, C>(
-    event: ValidatedEvent<C>,
-    private val executor: (I) -> Unit,
-    test: (C) -> R?
-) : Request<I, R>, ReadOnlyProperty<Any?, Request<I, R>> {
-    private val channel = Channel<R>(Channel.CONFLATED)
+suspend operator fun <R : Any> Request<*, Unit, R>.invoke(timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION) =
+    request(timeoutDuration)
 
-    init {
-        event.listenFrom(GlobalModule) { context, result ->
-            test(context)?.let {
-                runBlocking { channel.send(it) }
-                false
-            } ?: result
-        }
-    }
-
-    override suspend fun send(context: I, timeoutDuration: Duration): R {
-        executor(context)
-        return withTimeout(2.minutes) { channel.receive() }
-    }
-
-    override fun getValue(thisRef: Any?, property: KProperty<*>) = this
-
-    operator fun provideDelegate(thisRef: Any?, property: KProperty<*>) = also {
-        val name = property.name
-        check (name !in requestPropertyNames) {
-            "Two Request properties with name $name were instantiated, but only one is allowed globally"
-        }
-        requestPropertyNames += name
-    }
+fun <I : Any> Request<*, I, *>.requestIn(
+    scope: CoroutineScope,
+    input: I,
+    timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION
+): Job {
+    return scope.launch { requestIn(scope, input, timeoutDuration) }
 }
 
+fun Request<*, Unit, *>.requestIn(scope: CoroutineScope, timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION) =
+        requestIn(scope, Unit, timeoutDuration)
 
-
-/*
-sealed interface Response<T, E> {
-    // TODO: make these value classes in kotlin 1.8
-    class Pass<T>(val result: T) : Response<T, Nothing>
-
-    class Fail<E>(val error: E) : Response<Nothing, E>
+/**
+ * An object that provides a delegate to a [Request].
+ */
+sealed interface RequestProvider<T, I : Any, R : Any> {
+    operator fun provideDelegate(thisRef: Any?, property: KProperty<*>): ReadOnlyProperty<Any?, Request<T, I, R>>
 }
-*/
+
+/**
+ * A [RequestMatcher] object that holds a [request].
+ *
+ * @see Request
+ */
+interface RequestHolder<T, I : Any, R : Any> : RequestMatcher<T, I, R> {
+    val request: Request<T, I, R>
+
+    override fun match(input: T) = request.matcher.match(input)
+    override fun match(raw: T, requestInput: I?) = request.matcher.match(raw, requestInput)
+}

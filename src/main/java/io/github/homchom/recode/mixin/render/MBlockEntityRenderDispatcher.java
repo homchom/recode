@@ -5,7 +5,7 @@ import io.github.homchom.recode.render.Blaze3DExtensions;
 import io.github.homchom.recode.render.OutlineBlockEntityEvent;
 import io.github.homchom.recode.render.RenderBlockEntityEvent;
 import io.github.homchom.recode.ui.RGBAColor;
-import io.github.homchom.recode.util.Case;
+import io.github.homchom.recode.util.MutableCase;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -28,7 +28,7 @@ public class MBlockEntityRenderDispatcher {
 
 	@ModifyVariable(method = "render", at = @At("HEAD"), ordinal = 0, argsOnly = true)
 	public MultiBufferSource outlineBlockEntities(MultiBufferSource multiBufferSource, BlockEntity blockEntity) {
-		RGBAColor outlineColor = OutlineBlockEntityEvent.INSTANCE.run(blockEntity, new Case<>()).getContent();
+		RGBAColor outlineColor = OutlineBlockEntityEvent.INSTANCE.run(blockEntity, new MutableCase<>()).getContent();
 		if (outlineColor != null) {
 			return Blaze3DExtensions.withOutline(multiBufferSource, outlineColor);
 		}

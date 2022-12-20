@@ -47,7 +47,7 @@ private open class EventWrapper<C, R, L, P : EventPhase>(
     override fun listenFrom(module: ListenableModule, listener: Listener<C, R>) =
         fabricEvent.register(transformFrom(module, listener))
 
-    override fun listenFrom(module: RModule, phase: P, listener: Listener<C, R>) =
+    override fun listenFrom(module: ListenableModule, phase: P, listener: Listener<C, R>) =
         fabricEvent.register(phase.id, transformFrom(module, listener))
 
     private inline fun transformFrom(module: RModule, crossinline listener: Listener<C, R>) =

@@ -3,17 +3,7 @@
 
 package io.github.homchom.recode.server.state
 
-import io.github.homchom.recode.server.Message
-import io.github.homchom.recode.server.ReceiveChatMessageEvent
-import io.github.homchom.recode.server.defineRequest
-import io.github.homchom.recode.server.sendCommand
-import io.github.homchom.recode.util.invoke
-
-val LocateRequest by defineRequest(
-    ReceiveChatMessageEvent,
-    executor = { username: String? -> sendCommand(if (username == null) "locate" else "locate $username") },
-    test = { it.message() as? Message.Locate }
-)
+import io.github.homchom.recode.server.*
 
 sealed interface LocateState {
     val node: Node

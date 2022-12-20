@@ -3,12 +3,9 @@ package io.github.homchom.recode.sys.networking;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import io.github.homchom.recode.mod.features.social.chat.message.LegacyMessage;
-import io.github.homchom.recode.mod.features.social.chat.message.MessageType;
 import io.github.homchom.recode.server.ChangeDFStateEvent;
 import io.github.homchom.recode.server.StateChange;
 import io.github.homchom.recode.server.state.DF;
-import io.github.homchom.recode.sys.player.chat.ChatUtil;
-import io.github.homchom.recode.sys.player.chat.MessageGrabber;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
@@ -347,8 +344,8 @@ public class LegacyState {
     public void sendLocate() {
         if (mc.player != null){
             if (!mc.player.isDeadOrDying()){
-                ChatUtil.executeCommand("locate");
-                MessageGrabber.hide(1, MessageType.LOCATE);
+                //ChatUtil.executeCommand("locate");
+                //MessageGrabber.hide(1, MessageType.LOCATE);
             }
         }
     }

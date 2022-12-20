@@ -1,7 +1,6 @@
 package io.github.homchom.recode.event
 
 import io.github.homchom.recode.lifecycle.ListenableModule
-import io.github.homchom.recode.lifecycle.RModule
 import kotlinx.coroutines.flow.Flow
 import net.fabricmc.fabric.api.event.Event
 import net.fabricmc.fabric.api.event.EventFactory
@@ -100,7 +99,7 @@ interface InvokableEvent<C, R, L> : REvent<C, R> {
  * @see EventFactory.createWithPhases
  */
 interface PhasedEvent<C, R, L, P : EventPhase> : InvokableEvent<C, R, L> {
-    fun listenFrom(module: RModule, phase: P, listener: Listener<C, R>)
+    fun listenFrom(module: ListenableModule, phase: P, listener: Listener<C, R>)
 
     fun addPhaseOrdering(first: P, second: P) = fabricEvent.addPhaseOrdering(first.id, second.id)
 }

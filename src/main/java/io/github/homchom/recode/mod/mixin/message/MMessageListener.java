@@ -5,16 +5,10 @@ import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.LagslayerHUD;
 import io.github.homchom.recode.mod.features.social.chat.message.LegacyMessage;
-import io.github.homchom.recode.server.Message;
-import io.github.homchom.recode.server.MessageContext;
-import io.github.homchom.recode.server.MessageMatcher;
 import io.github.homchom.recode.server.ReceiveChatMessageEvent;
 import io.github.homchom.recode.sys.networking.LegacyState;
 import io.github.homchom.recode.sys.player.DFInfo;
-import io.github.homchom.recode.sys.player.chat.ChatUtil;
-import io.github.homchom.recode.util.LegacyCoroutineFunctions;
-import kotlin.Lazy;
-import kotlin.LazyKt;
+import io.github.homchom.recode.util.MatchCache;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.chat.Component;
@@ -42,9 +36,8 @@ public class MMessageListener {
             // TODO: remove after new message listener is complete
             new LegacyMessage(packet, ci);
 
-            Lazy<Message> message = LazyKt.lazy(() -> MessageMatcher.INSTANCE.match(packet.content()));
-            MessageContext context = new MessageContext(message, packet.content());
-            if (!ReceiveChatMessageEvent.INSTANCE.run(context, true)) ci.cancel();
+            var message = new MatchCache<>(packet.content());
+            if (!ReceiveChatMessageEvent.INSTANCE.run(message, true)) ci.cancel();
             try {
                 this.updateVersion(packet.content());
                 this.updateState(packet.content());
@@ -171,50 +164,6 @@ public class MMessageListener {
                     }
                 }).start();
             }
-        }
-
-        // Play Mode
-        if (text.matches("^» Joined game: .* by .*$")) {
-            LegacyCoroutineFunctions.checkTwiceForMode(LegacyState.Mode.PLAY, () -> {
-                if (Config.getBoolean("autoChatLocal") && !DFInfo.currentState.isInSession()) {
-                    ChatUtil.executeCommandSilently("chat local");
-                }
-            });
-        }
-
-        // Build Mode
-        if (text.matches("^» You are now in build mode\\.$")) {
-            LegacyCoroutineFunctions.checkTwiceForMode(LegacyState.Mode.BUILD, () -> {
-                if (Config.getBoolean("autotime")) {
-                    ChatUtil.executeCommandSilently("time " + Config.getLong("autotimeval"));
-                }
-                if (Config.getBoolean("autonightvis")) {
-                    ChatUtil.executeCommandSilently("nightvis");
-                }
-                if (Config.getBoolean("autoChatLocal") && !DFInfo.currentState.isInSession()) {
-                    ChatUtil.executeCommandSilently("chat local");
-                }
-            });
-        }
-
-        if (text.matches("^» You are now in dev mode\\.$")) {
-            LegacyCoroutineFunctions.checkTwiceForMode(LegacyState.Mode.DEV, () -> {
-                if (Config.getBoolean("autoRC")) {
-                    ChatUtil.executeCommand("resetcompact");
-                }
-                if (Config.getBoolean("autotime")) {
-                    ChatUtil.executeCommandSilently("time " + Config.getLong("autotimeval"));
-                }
-                if (Config.getBoolean("autonightvis")) {
-                    ChatUtil.executeCommandSilently("nightvis");
-                }
-                if (Config.getBoolean("autoChatLocal") && !DFInfo.currentState.isInSession()) {
-                    ChatUtil.executeCommandSilently("chat local");
-                }
-                if (!LagslayerHUD.lagSlayerEnabled && Config.getBoolean("autolagslayer")) {
-                    ChatUtil.executeCommandSilently("lagslayer");
-                }
-            });
         }
     }
 }

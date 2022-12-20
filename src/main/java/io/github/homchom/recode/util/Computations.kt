@@ -2,25 +2,14 @@ package io.github.homchom.recode.util
 
 @OptIn(BreaksControlFlow::class)
 inline fun <T : Any> nullable(block: NullableScope.() -> T?): T? {
-    val comp = computeIn(NullaryFailScope(null), block)
+    val comp = computeIn(NullableScopeInstance, block)
     return (comp as? Computation.Success<T?>)?.value
 }
 
-typealias NullableScope = NullaryFailScope<Nothing?>
-
-// TODO: is this necessary? arguably not beneficial on the JVM with null safety
-/*@OptIn(BreaksControlFlow::class)
-inline fun <T> maybe(block: MaybeScope.() -> T): Maybe<T> {
-    val comp = computeIn(NullaryFailScope(Maybe.No), block)
-    return if (comp is Computation.Success<T>) Maybe.Yes(comp.value) else Maybe.No
+sealed interface NullableScope : FailScope<Nothing?> {
+    fun fail(): Nothing = fail(null)
 }
-
-typealias MaybeScope = NullaryFailScope<Maybe.No>
-
-sealed interface Maybe<out T> {
-    class Yes<T>(val value: T) : Maybe<T>
-    object No : Maybe<Nothing>
-}*/
+@BreaksControlFlow object NullableScopeInstance : NullableScope
 
 @OptIn(BreaksControlFlow::class)
 inline fun <S, F> compute(block: ComputeScope<F>.() -> S) = computeIn(ComputeScope(), block)
@@ -45,10 +34,6 @@ interface Computation<out S, out F> {
 sealed interface FailScope<T> {
     @OptIn(BreaksControlFlow::class)
     fun fail(value: T): Nothing = throw FailureException(value)
-}
-
-class NullaryFailScope<T> @BreaksControlFlow constructor(private val failValue: T) : FailScope<T> {
-    fun fail(): Nothing = fail(failValue)
 }
 
 @BreaksControlFlow
