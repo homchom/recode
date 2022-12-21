@@ -14,7 +14,9 @@ import net.minecraft.network.chat.Component
 import org.intellij.lang.annotations.Language
 import org.intellij.lang.annotations.RegExp
 
-val isOnDF get() = currentDFState != null
+private val dfIPRegex = Regex("""(?:\w+\.)?mcdiamondfire\.com(?::\d+)?""")
+
+val isOnDF get() = mc.currentServer?.ip?.matches(dfIPRegex) ?: false
 
 sealed interface DFState : LocateState {
     val isInSession: Boolean

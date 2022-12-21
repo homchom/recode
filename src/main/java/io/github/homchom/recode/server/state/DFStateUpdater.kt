@@ -17,12 +17,10 @@ import kotlin.reflect.KProperty
 
 val currentDFState by CurrentState
 
-private val dfIPRegex = Regex("""(?:\w+\.)?mcdiamondfire\.com(?::\d+)?""")
-
 val DFStateUpdater = module {
     onLoad {
-        JoinServerEvent.hook { (_, _, client) ->
-            if (dfIPRegex matches client.currentServer!!.ip) {
+        JoinServerEvent.hook {
+            if (isOnDF) {
                 coroutineScope.launch {
                     delay(200L) // TODO: remove (ViaVersion bug)
                     val node = requestLocate().node
