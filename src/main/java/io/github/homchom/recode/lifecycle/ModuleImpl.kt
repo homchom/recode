@@ -7,21 +7,21 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 
 /**
- * Builds a weak [ExposedModule].
+ * Builds a *weak* [ExposedModule].
  */
 inline fun buildExposedModule(builder: ModuleBuilderScope = {}) = ModuleBuilder()
     .apply(builder)
     .run { exposedModule(children, onLoad.action, onEnable.action, onDisable.action) }
 
 /**
- * Builds a strong [ExposedModule].
+ * Builds a *strong* [ExposedModule].
  */
 inline fun buildStrongExposedModule(builder: ModuleBuilderScope = {}) = ModuleBuilder()
     .apply(builder)
     .run { strongExposedModule(children, onLoad.action, onEnable.action, onDisable.action) }
 
 /**
- * Constructs a weak [ExposedModule] with children and actions [onLoad], [onEnable], and
+ * Constructs a *weak* [ExposedModule] with children and actions [onLoad], [onEnable], and
  * [onDisable].
  */
 fun exposedModule(
@@ -34,7 +34,7 @@ fun exposedModule(
 }
 
 /**
- * Constructs a strong [ExposedModule] with children and actions [onLoad], [onEnable], and
+ * Constructs a *strong* [ExposedModule] with children and actions [onLoad], [onEnable], and
  * [onDisable].
  */
 fun strongExposedModule(
