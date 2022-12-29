@@ -1,6 +1,6 @@
 package io.github.homchom.recode.feature.automation
 
-import io.github.homchom.recode.event.REvent
+import io.github.homchom.recode.event.Hook
 import io.github.homchom.recode.feature.feature
 import io.github.homchom.recode.lifecycle.ExposedModule
 import io.github.homchom.recode.mod.config.Config
@@ -62,9 +62,9 @@ val FAutoLagSlayer = autoCommand("lagslayer", ChangeDFStateEvent) { (new) ->
     }
 }
 
-private fun <C> autoCommand(name: String, event: REvent<C, *>, body: ExposedModule.(C) -> Unit) =
+private fun <C> autoCommand(name: String, event: Hook<C, *>, body: ExposedModule.(C) -> Unit) =
     feature("Auto /$name") {
         onLoad {
-            event.hook { body(it) }
+            event.listen { body(it) }
         }
     }

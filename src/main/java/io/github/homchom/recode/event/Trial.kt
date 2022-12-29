@@ -18,7 +18,7 @@ class Trial {
     private val enforced = mutableListOf<suspend () -> Unit>()
 
     suspend inline fun <C, T : Any> NullableScope.testOn(
-        event: REvent<C, *>,
+        event: Hook<C, *>,
         waitDuration: Long,
         crossinline test: (C) -> T?
     ): T {
@@ -26,7 +26,7 @@ class Trial {
     }
 
     suspend inline fun <C, T : Any> NullableScope.awaitOn(
-        event: REvent<C, *>,
+        event: Hook<C, *>,
         waitDuration: Long,
         crossinline test: (C) -> T?
     ): T {
@@ -34,7 +34,7 @@ class Trial {
     }
 
     suspend inline fun <C, T : Any> NullableScope.collectOn(
-        event: REvent<C, *>,
+        event: Hook<C, *>,
         duration: Long,
         crossinline collector: suspend (Flow<C>) -> T
     ): T {
@@ -48,7 +48,7 @@ class Trial {
     }
 
     suspend inline fun <C> NullableScope.testBooleanOn(
-        event: REvent<C, *>,
+        event: Hook<C, *>,
         waitDuration: Long,
         crossinline test: (C) -> Boolean
     ) {
@@ -56,7 +56,7 @@ class Trial {
     }
 
     suspend inline fun <C> NullableScope.awaitBooleanOn(
-        event: REvent<C, *>,
+        event: Hook<C, *>,
         waitDuration: Long,
         crossinline test: (C) -> Boolean
     ) {

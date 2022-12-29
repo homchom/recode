@@ -1,6 +1,6 @@
 package io.github.homchom.recode.event
 
-import io.github.homchom.recode.lifecycle.ListenableModule
+import io.github.homchom.recode.lifecycle.HookableModule
 import io.github.homchom.recode.lifecycle.RModule
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
@@ -8,27 +8,27 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import net.fabricmc.fabric.api.event.Event
 
 /**
- * Wraps an existing event into an [InvokableEvent], using [transform] to map recode listeners to its
+ * Wraps an existing Fabric [Event] into a [Hook], using [transform] to map recode listeners to its
  * specification.
  */
-fun <C, R, L> wrapEvent(event: Event<L>, transform: (Listener<C, R>) -> L): InvokableEvent<C, R, L> =
-    wrapEventWithPhases<_, _, _, EventPhase>(event, transform)
+fun <C, R, H> wrapFabricEvent(event: Event<H>, transform: (HookListener<C, R>) -> H): WrappedHook<C, R, H> =
+    wrapFabricEventWithPhases<_, _, _, EventPhase>(event, transform)
 
 /**
- * @see wrapEvent
- * @see createEventWithPhases
+ * @see wrapFabricEvent
+ * @see createHookableWithPhases
  */
-fun <C, R, L, P : EventPhase> wrapEventWithPhases(
-    event: Event<L>,
-    transform: (Listener<C, R>) -> L
-): PhasedEvent<C, R, L, P> {
+fun <C, R, H, P : EventPhase> wrapFabricEventWithPhases(
+    event: Event<H>,
+    transform: (HookListener<C, R>) -> H
+): WrappedPhasedHook<C, R, H, P> {
     return EventWrapper(event, transform)
 }
 
-private open class EventWrapper<C, R, L, P : EventPhase>(
-    override val fabricEvent: Event<L>,
-    private val transform: (Listener<C, R>) -> L
-) : PhasedEvent<C, R, L, P> {
+private open class EventWrapper<C, R, H, P : EventPhase>(
+    override val fabricEvent: Event<H>,
+    private val transform: (HookListener<C, R>) -> H
+) : WrappedPhasedHook<C, R, H, P> {
     override val contextFlow: Flow<C> by lazy {
         MutableSharedFlow<C>().also { flow ->
             transformAndRegister { context, result ->
@@ -38,30 +38,30 @@ private open class EventWrapper<C, R, L, P : EventPhase>(
         }
     }
 
-    @Deprecated("Use listenFrom")
-    override fun register(listener: Listener<C, R>) = transformAndRegister(listener)
+    @Deprecated("Use hookFrom")
+    override fun register(listener: HookListener<C, R>) = transformAndRegister(listener)
 
-    private fun transformAndRegister(listener: Listener<C, R>) =
+    private fun transformAndRegister(listener: HookListener<C, R>) =
         fabricEvent.register(transform(listener))
 
-    override fun listenFrom(module: ListenableModule, listener: Listener<C, R>) =
+    override fun listenFrom(module: HookableModule, listener: HookListener<C, R>) =
         fabricEvent.register(transformFrom(module, listener))
 
-    override fun listenFrom(module: ListenableModule, phase: P, listener: Listener<C, R>) =
+    override fun listenFrom(module: HookableModule, phase: P, listener: HookListener<C, R>) =
         fabricEvent.register(phase.id, transformFrom(module, listener))
 
-    private inline fun transformFrom(module: RModule, crossinline listener: Listener<C, R>) =
+    private inline fun transformFrom(module: RModule, crossinline listener: HookListener<C, R>) =
         transform { context, result ->
             if (module.isEnabled) listener(context, result) else result
         }
 }
 
 /**
- * Constructs a [CustomPhasedEvent].
+ * Constructs a [CustomPhasedHook].
  */
 @Suppress("FunctionName")
-fun <C, R : Any, P : EventPhase> CustomPhasedEvent(fabricEvent: Event<Listener<C, R>>): CustomPhasedEvent<C, R, P> =
-    object : CustomPhasedEvent<C, R, P>, EventWrapper<C, R, Listener<C, R>, P>(fabricEvent, { it }) {
+fun <C, R : Any, P : EventPhase> CustomPhasedHookable(fabricEvent: Event<HookListener<C, R>>): CustomPhasedHook<C, R, P> =
+    object : CustomPhasedHook<C, R, P>, EventWrapper<C, R, HookListener<C, R>, P>(fabricEvent, { it }) {
         override val prevResult get() = _prevResult
 
         @Suppress("ObjectPropertyName")

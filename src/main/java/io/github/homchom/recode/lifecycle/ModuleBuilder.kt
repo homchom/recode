@@ -19,7 +19,7 @@ inline fun strongModule(builder: ModuleBuilderScope): RModule = buildStrongExpos
 @OptIn(MutatesModuleState::class)
 inline fun entrypointModule(builder: ModuleBuilderScope) = buildStrongExposedModule {
     onLoad {
-        ClientStopEvent.hook { disable() }
+        ClientStopEvent.listen { disable() }
     }
 
     builder()

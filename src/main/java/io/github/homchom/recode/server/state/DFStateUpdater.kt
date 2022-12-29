@@ -19,7 +19,7 @@ val currentDFState by CurrentState
 
 val DFStateUpdater = module {
     onLoad {
-        JoinServerEvent.hook {
+        JoinServerEvent.listen {
             if (isOnDF) {
                 coroutineScope.launch {
                     delay(200L) // TODO: remove (ViaVersion bug)
@@ -29,14 +29,14 @@ val DFStateUpdater = module {
             }
         }
 
-        ReceiveChatMessageEvent.hook { message ->
+        ReceiveChatMessageEvent.listen { message ->
             // Play, Build, and Dev Mode
             message.matchAgainst(PlotMode)?.let {
                 CurrentState.locateAndSet(coroutineScope) { currentDFState!!.withState(it) }
             }
         }
 
-        DisconnectFromServerEvent.hook {
+        DisconnectFromServerEvent.listen {
             CurrentState.setWithoutLock(null)
         }
     }

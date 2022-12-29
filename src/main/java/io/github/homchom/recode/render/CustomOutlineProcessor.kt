@@ -5,7 +5,7 @@ import io.github.homchom.recode.mc
 
 val CustomOutlineProcessor = module {
     onLoad {
-        BeforeOutlineBlockEvent.hook {
+        BeforeOutlineBlockEvent.listen {
             if (isEnabled) {
                 val processor = mc.levelRenderer as OutlineProcessor
                 if (processor.canProcessOutlines()) {

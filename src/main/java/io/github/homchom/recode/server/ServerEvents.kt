@@ -13,14 +13,14 @@ import net.minecraft.client.multiplayer.ClientPacketListener
 import net.minecraft.network.chat.Component
 
 object JoinServerEvent :
-    InvokableEvent<ServerJoinContext, Unit, Join> by
-        wrapEvent(ClientPlayConnectionEvents.JOIN, { listener ->
+    WrappedHook<ServerJoinContext, Unit, Join> by
+        wrapFabricEvent(ClientPlayConnectionEvents.JOIN, { listener ->
             Join { handler, sender, client -> listener(ServerJoinContext(handler, sender, client), Unit) }
         })
 
 object DisconnectFromServerEvent :
-    InvokableEvent<ServerDisconnectContext, Unit, Disconnect> by
-    wrapEvent(ClientPlayConnectionEvents.DISCONNECT, { listener ->
+    WrappedHook<ServerDisconnectContext, Unit, Disconnect> by
+    wrapFabricEvent(ClientPlayConnectionEvents.DISCONNECT, { listener ->
         Disconnect { handler, client -> listener(ServerDisconnectContext(handler, client), Unit) }
     })
 
@@ -29,11 +29,11 @@ data class ServerDisconnectContext(val handler: ClientPacketListener, val client
 
 // TODO: replace Pair<..., Component> with ...
 object ReceiveChatMessageEvent :
-    CustomEvent<Matchable<Component>, Boolean> by createEvent(),
-    ValidatedEvent<Matchable<Component>>
+    CustomHook<Matchable<Component>, Boolean> by createHookable(),
+    ValidatedHook<Matchable<Component>>
 
 object ChangeDFStateEvent :
-    CustomEvent<StateChange, Unit> by DependentEvent(createEvent(), DFStateUpdater),
-    HookEvent<StateChange>
+    CustomHook<StateChange, Unit> by DependentHook(createHookable(), DFStateUpdater),
+    UnitHook<StateChange>
 
 data class StateChange(val new: DFState?, val old: DFState?)

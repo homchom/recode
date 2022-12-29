@@ -1,6 +1,6 @@
 package io.github.homchom.recode.server
 
-import io.github.homchom.recode.event.ValidatedEvent
+import io.github.homchom.recode.event.ValidatedHook
 import io.github.homchom.recode.lifecycle.GlobalModule
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.withTimeout
@@ -17,7 +17,7 @@ private val requestPropertyNames = mutableSetOf<String>()
  * @see RequestProvider
  */
 inline fun <T, I : Any, R : Any> defineRequest(
-    event: ValidatedEvent<T>,
+    event: ValidatedHook<T>,
     crossinline executor: suspend (I) -> Unit,
     matcher: RequestMatcher<T, I, R>
 ): RequestProvider<T, I, R> {
@@ -30,7 +30,7 @@ inline fun <T, I : Any, R : Any> defineRequest(
  * @see defineRequest
  */
 inline fun <T, R : Any> defineNullaryRequest(
-    event: ValidatedEvent<T>,
+    event: ValidatedHook<T>,
     crossinline executor: suspend () -> Unit,
     matcher: NullaryRequestMatcher<T, R>
 ): RequestProvider<T, Unit, R> {
@@ -46,7 +46,7 @@ inline fun <T, R : Any> defineNullaryRequest(
  * @see defineRequest
  */
 fun <T, I : Any, R : Any> defineShortCircuitRequest(
-    event: ValidatedEvent<T>,
+    event: ValidatedHook<T>,
     executor: suspend (I) -> R?,
     matcher: RequestMatcher<T, I, R>
 ): RequestProvider<T, I, R> {
@@ -54,7 +54,7 @@ fun <T, I : Any, R : Any> defineShortCircuitRequest(
 }
 
 private class RequestDelegate<T, I : Any, R : Any>(
-    event: ValidatedEvent<T>,
+    event: ValidatedHook<T>,
     private val executor: suspend (I) -> R?,
     override val matcher: RequestMatcher<T, I, R>
 ) : Request<T, I, R>,

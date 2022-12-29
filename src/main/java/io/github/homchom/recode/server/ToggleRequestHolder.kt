@@ -1,6 +1,6 @@
 package io.github.homchom.recode.server
 
-import io.github.homchom.recode.event.ValidatedEvent
+import io.github.homchom.recode.event.ValidatedHook
 
 /**
  * Constructs a [ToggleRequestHolder].
@@ -8,7 +8,7 @@ import io.github.homchom.recode.event.ValidatedEvent
  * @param enabledPredicate Whether the toggle should be considered enabled.
  */
 fun <T, I : Any> toggleRequestHolder(
-    event: ValidatedEvent<T>,
+    event: ValidatedHook<T>,
     executor: suspend (I) -> Unit,
     enabledPredicate: () -> Boolean,
     enabledMatcher: RequestMatcher<T, I, Unit>,

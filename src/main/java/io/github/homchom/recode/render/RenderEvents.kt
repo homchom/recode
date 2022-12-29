@@ -10,19 +10,19 @@ import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.phys.HitResult
 
 object BeforeOutlineBlockEvent :
-    InvokableEvent<BlockOutlineContext, Boolean, BeforeBlockOutline> by
-        wrapEvent(WorldRenderEvents.BEFORE_BLOCK_OUTLINE, { listener ->
+    WrappedHook<BlockOutlineContext, Boolean, BeforeBlockOutline> by
+        wrapFabricEvent(WorldRenderEvents.BEFORE_BLOCK_OUTLINE, { listener ->
             BeforeBlockOutline { worldRenderContext, hitResult ->
                 listener(BlockOutlineContext(worldRenderContext, hitResult), true)
             }
         }),
-    ValidatedEvent<BlockOutlineContext>
+    ValidatedHook<BlockOutlineContext>
 
 data class BlockOutlineContext(val worldRenderContext: WorldRenderContext, val hitResult: HitResult?)
 
 object RenderBlockEntityEvent :
-    CustomEvent<BlockEntity, Boolean> by createEvent(),
-    ValidatedEvent<BlockEntity>
+    CustomHook<BlockEntity, Boolean> by createHookable(),
+    ValidatedHook<BlockEntity>
 
 object OutlineBlockEntityEvent :
-    CustomEvent<BlockEntity, MutableCase<RGBAColor>> by DependentEvent(createEvent(), CustomOutlineProcessor)
+    CustomHook<BlockEntity, MutableCase<RGBAColor>> by DependentHook(createHookable(), CustomOutlineProcessor)

@@ -1,8 +1,6 @@
 package io.github.homchom.recode.lifecycle
 
-import io.github.homchom.recode.event.Listener
-import io.github.homchom.recode.event.REvent
-import io.github.homchom.recode.event.hookFrom
+import io.github.homchom.recode.event.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 
@@ -26,33 +24,30 @@ interface RModule {
 }
 
 /**
- * A [RModule] that can listen to an [REvent].
+ * A [RModule] that can hook onto [Hook] invocations.
  */
-interface ListenableModule : RModule {
+interface HookableModule : RModule {
     /**
-     * @see REvent.listenFrom
+     * @see Hook.listenFrom
      */
-    fun <C, R> REvent<C, R>.listen(listener: Listener<C, R>) =
-        listenFrom(this@ListenableModule, listener)
+    fun <C, R> Hook<C, R>.hook(listener: HookListener<C, R>) =
+        listenFrom(this@HookableModule, listener)
 
     /**
-     * @see hookFrom
+     * @see unitListenFrom
      */
-    fun <C, R> REvent<C, R>.hook(hook: (C) -> Unit) = hookFrom(this@ListenableModule, hook)
+    fun <C, R> Hook<C, R>.listen(hook: (C) -> Unit) = unitListenFrom(this@HookableModule, hook)
 }
 
 /**
- * A [RModule] with a [CoroutineScope].
- */
-interface CoroutineModule : RModule {
-    val coroutineScope: CoroutineScope
-}
-
-/**
- * A [ListenableModule] and [CoroutineModule] with exposed functions for mutating active state. This
+ * An [HookableModule] with a [CoroutineScope] and exposed functions for mutating active state. This
  * should be used when creating module subtypes, not when creating top-level modules directly.
  */
-interface ExposedModule : ListenableModule, CoroutineModule {
+interface ExposedModule : HookableModule {
+    val coroutineScope: CoroutineScope
+
+    //fun NotificationFlow.listen() = listenFrom(this@ExposedModule)
+
     @MutatesModuleState
     fun load()
 
@@ -81,22 +76,21 @@ interface ExposedModule : ListenableModule, CoroutineModule {
 }
 
 /**
- * A [ListenableModule] that is always enabled. Useful for listening to events globally. Don't use
+ * A [HookableModule] that is always enabled. Useful for listening to events globally. Don't use
  * inside another module, and prefer listening to more localized modules when applicable.
  */
-val GlobalModule: ListenableModule get() = GlobalExposedModule
+@OptIn(DelicateCoroutinesApi::class)
+val GlobalModule: HookableModule get() = GlobalExposedModule
 
 /**
- * A [CoroutineModule] that is always enabled. Don't use inside another module, and prefer using
+ * An [ExposedModule] that is always enabled. Don't use inside another module, and prefer using
  * modules with properly confined coroutine scopes.
  *
  * @see kotlinx.coroutines.CoroutineScope
  */
-@DelicateCoroutinesApi
-val GlobalCoroutineModule: CoroutineModule get() = GlobalExposedModule
-
 @OptIn(MutatesModuleState::class)
-private object GlobalExposedModule : ExposedModule by buildStrongExposedModule() {
+@DelicateCoroutinesApi
+object GlobalExposedModule : ExposedModule by buildStrongExposedModule() {
     init {
         enable()
     }
