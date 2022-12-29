@@ -117,8 +117,7 @@ private class WeakModule(
     }
 }
 
-@JvmInline
-private value class StrongModule(private val impl: WeakModule) : ExposedModule by impl {
+private class StrongModule(private val impl: WeakModule) : ExposedModule by impl {
     @MutatesModuleState
     override fun removeUsage(module: ExposedModule) {
         impl.removeUsage(module)
