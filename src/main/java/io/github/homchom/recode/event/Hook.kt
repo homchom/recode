@@ -1,7 +1,8 @@
 package io.github.homchom.recode.event
 
 import io.github.homchom.recode.lifecycle.HookableModule
-import kotlinx.coroutines.flow.Flow
+import io.github.homchom.recode.lifecycle.MutatesModuleState
+import io.github.homchom.recode.lifecycle.RModule
 import net.fabricmc.fabric.api.event.Event
 import net.fabricmc.fabric.api.event.EventFactory
 import net.minecraft.resources.ResourceLocation
@@ -9,26 +10,22 @@ import net.minecraft.resources.ResourceLocation
 typealias HookListener<T, R> = (T, R) -> R
 
 /**
- * A synchronous, *opaque* [REvent] that can be added to via listeners in modules, which are invoked in order when
- * the event is run and if the module is enabled.
+ * An *opaque* event that can also be "hooked onto" synchronously via listeners in modules, which are invoked in
+ * order when the event is run and if the module is enabled.
+ *
+ * Hook invocations have an initial value, which can be transformed by all hooked listeners before being
+ * returned as the invocation's result. If you do not need a return type, use [REvent] instead.
  *
  * @param T The event context type (for parameters).
  * @param R The event result type.
  *
- * @see AsyncEvent
- * @see Detector
+ * @see Listenable
  */
-interface Hook<T, R> {
-    /**
-     * A [Flow] that emits the context of each hook invocation. Useful for receiving future invocations
-     * as an asynchronous stream.
-     */
-    val contextFlow: Flow<T>
-
+interface Hook<T, R> : Listenable<T> {
     @Deprecated("Create and/or hook from a module instead")
     fun register(listener: HookListener<T, R>)
 
-    fun listenFrom(module: HookableModule, listener: HookListener<T, R>)
+    fun hookFrom(module: HookableModule, listener: HookListener<T, R>)
 }
 
 /**
@@ -37,30 +34,7 @@ interface Hook<T, R> {
  * @see EventFactory.createWithPhases
  */
 interface PhasedHook<T, R, P : EventPhase> : Hook<T, R> {
-    fun listenFrom(module: HookableModule, phase: P, listener: HookListener<T, R>)
-}
-
-/**
- * Listens to this [Hook] without affecting its result.
- */
-inline fun <T, R> Hook<T, R>.unitListenFrom(module: HookableModule, crossinline hook: (T) -> Unit) =
-    listenFrom(module) { context, result ->
-        hook(context)
-        result
-    }
-
-/**
- * Listens to this [PhasedHook] without affecting its result.
- */
-inline fun <T, R, P : EventPhase> PhasedHook<T, R, P>.unitListenFrom(
-    module: HookableModule,
-    phase: P,
-    crossinline hook: (T) -> Unit
-) {
-    listenFrom(module, phase) { context, result ->
-        hook(context)
-        result
-    }
+    fun hookFrom(module: HookableModule, phase: P, listener: HookListener<T, R>)
 }
 
 /**
@@ -79,6 +53,30 @@ interface WrappedHook<T, R, L> : Hook<T, R> {
  * @see PhasedHook
  */
 interface WrappedPhasedHook<T, R, H, P : EventPhase> : WrappedHook<T, R, H>, PhasedHook<T, R, P>
+
+/**
+ * A [Hook] with a boolean result; this should be used for events whose listeners "validate" it and
+ * determine whether the action that caused it should proceed.
+ */
+interface ValidatedHook<T> : Hook<T, Boolean>
+
+/**
+ * A [CustomHook] with children. When listened to by a [HookableModule], the children will be implicitly added.
+ */
+class DependentHook<T, R : Any>(
+    private val delegate: CustomHook<T, R>,
+    vararg children: RModule
+) : CustomHook<T, R> by delegate {
+    private val children = children.clone()
+
+    val abc = 5
+
+    @MutatesModuleState
+    override fun hookFrom(module: HookableModule, listener: HookListener<T, R>) {
+        for (child in children) child.addParent(module)
+        delegate.hookFrom(module, listener)
+    }
+}
 
 /**
  * A wrapper for a Fabric [Event] phase.

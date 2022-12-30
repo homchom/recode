@@ -1,5 +1,9 @@
 package io.github.homchom.recode.lifecycle
 
+import io.github.homchom.recode.event.Hook
+import io.github.homchom.recode.event.Listenable
+import kotlinx.coroutines.flow.onEach
+
 typealias ModuleBuilderScope = ModuleBuilder.() -> Unit
 typealias ModuleAction = ExposedModule.() -> Unit
 
@@ -18,8 +22,10 @@ inline fun strongModule(builder: ModuleBuilderScope): RModule = buildStrongExpos
  */
 @OptIn(MutatesModuleState::class)
 inline fun entrypointModule(builder: ModuleBuilderScope) = buildStrongExposedModule {
-    onLoad {
-        ClientStopEvent.listen { disable() }
+    onEnable {
+        ClientStopEvent.listen {
+            onEach { disable() }
+        }
     }
 
     builder()
@@ -33,13 +39,16 @@ class ModuleBuilder {
     val children = mutableListOf<RModule>()
 
     /**
-     * A [ModuleActionBuilder] invoked once, when the module is loaded. Listen to events here.
+     * A [ModuleActionBuilder] invoked once, when the module is loaded.
+     *
+     * Hook onto [Hook] events here, but listen for [Listenable] notifications via [onEnable] instead.
      */
     val onLoad = ModuleActionBuilder()
 
     /**
-     * A [ModuleActionBuilder] invoked when the module is enabled. Listen to events with [onLoad],
-     * not here.
+     * A [ModuleActionBuilder] invoked when the module is enabled.
+     *
+     * Listen for [Listenable] notifications here, hook onto [Hook] events via [onLoad] instead.
      */
     val onEnable = ModuleActionBuilder()
 

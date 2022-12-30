@@ -7,9 +7,8 @@ import io.github.homchom.recode.lifecycle.module
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.server.*
 import io.github.homchom.recode.util.matchAgainst
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlin.properties.ReadOnlyProperty
@@ -18,10 +17,10 @@ import kotlin.reflect.KProperty
 val currentDFState by CurrentState
 
 val DFStateUpdater = module {
-    onLoad {
+    onEnable {
         JoinServerEvent.listen {
-            if (isOnDF) {
-                coroutineScope.launch {
+            onEach {
+                if (isOnDF) {
                     delay(200L) // TODO: remove (ViaVersion bug)
                     val node = requestLocate().node
                     CurrentState.set(DFState.AtSpawn(node, false))
@@ -29,15 +28,17 @@ val DFStateUpdater = module {
             }
         }
 
-        ReceiveChatMessageEvent.listen { message ->
-            // Play, Build, and Dev Mode
-            message.matchAgainst(PlotMode)?.let {
-                CurrentState.locateAndSet(coroutineScope) { currentDFState!!.withState(it) }
+        ReceiveChatMessageEvent.listen {
+            onEach { message ->
+                // Play, Build, and Dev Mode
+                message.matchAgainst(PlotMode)?.let {
+                    CurrentState.locateAndSet { currentDFState!!.withState(it) }
+                }
             }
         }
 
         DisconnectFromServerEvent.listen {
-            CurrentState.setWithoutLock(null)
+            onEach { CurrentState.setWithoutLock(null) }
         }
     }
 }
@@ -57,9 +58,7 @@ private object CurrentState : ReadOnlyProperty<Any?, DFState?> {
         dfState = state
     }
 
-    inline fun locateAndSet(scope: CoroutineScope, crossinline setter: (LocateState) -> DFState) {
-        scope.launch { set(setter(requestLocate())) }
-    }
+    suspend inline fun locateAndSet(crossinline setter: (LocateState) -> DFState) = set(setter(requestLocate()))
 
     override fun getValue(thisRef: Any?, property: KProperty<*>) = dfState
 }

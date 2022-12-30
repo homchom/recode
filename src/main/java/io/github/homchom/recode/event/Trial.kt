@@ -38,7 +38,7 @@ class Trial {
         duration: Long,
         crossinline collector: suspend (Flow<C>) -> T
     ): T {
-        return event.contextFlow.let { flow ->
+        return event.notifications.let { flow ->
             try {
                 withTimeout(duration) { collector(flow) }
             } catch (e: TimeoutCancellationException) {

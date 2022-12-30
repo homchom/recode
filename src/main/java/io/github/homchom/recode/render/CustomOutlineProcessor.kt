@@ -2,11 +2,12 @@ package io.github.homchom.recode.render
 
 import io.github.homchom.recode.lifecycle.module
 import io.github.homchom.recode.mc
+import kotlinx.coroutines.flow.onEach
 
 val CustomOutlineProcessor = module {
-    onLoad {
+    onEnable {
         BeforeOutlineBlockEvent.listen {
-            if (isEnabled) {
+            onEach {
                 val processor = mc.levelRenderer as OutlineProcessor
                 if (processor.canProcessOutlines()) {
                     if (OutlineBlockEntityEvent.prevResult != null) {

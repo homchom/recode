@@ -21,8 +21,8 @@ object BeforeOutlineBlockEvent :
 data class BlockOutlineContext(val worldRenderContext: WorldRenderContext, val hitResult: HitResult?)
 
 object RenderBlockEntityEvent :
-    CustomHook<BlockEntity, Boolean> by createHookable(),
+    CustomHook<BlockEntity, Boolean> by createHook(),
     ValidatedHook<BlockEntity>
 
 object OutlineBlockEntityEvent :
-    CustomHook<BlockEntity, MutableCase<RGBAColor>> by DependentHook(createHookable(), CustomOutlineProcessor)
+    CustomHook<BlockEntity, MutableCase<RGBAColor>> by DependentHook(createHook(), CustomOutlineProcessor)

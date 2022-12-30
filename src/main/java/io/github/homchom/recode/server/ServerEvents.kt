@@ -2,7 +2,6 @@ package io.github.homchom.recode.server
 
 import io.github.homchom.recode.event.*
 import io.github.homchom.recode.server.state.DFState
-import io.github.homchom.recode.server.state.DFStateUpdater
 import io.github.homchom.recode.util.Matchable
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.Disconnect
@@ -20,20 +19,18 @@ object JoinServerEvent :
 
 object DisconnectFromServerEvent :
     WrappedHook<ServerDisconnectContext, Unit, Disconnect> by
-    wrapFabricEvent(ClientPlayConnectionEvents.DISCONNECT, { listener ->
-        Disconnect { handler, client -> listener(ServerDisconnectContext(handler, client), Unit) }
-    })
+        wrapFabricEvent(ClientPlayConnectionEvents.DISCONNECT, { listener ->
+            Disconnect { handler, client -> listener(ServerDisconnectContext(handler, client), Unit) }
+        })
 
 data class ServerJoinContext(val handler: ClientPacketListener, val sender: PacketSender, val client: Minecraft)
 data class ServerDisconnectContext(val handler: ClientPacketListener, val client: Minecraft)
 
-// TODO: replace Pair<..., Component> with ...
 object ReceiveChatMessageEvent :
-    CustomHook<Matchable<Component>, Boolean> by createHookable(),
+    CustomHook<Matchable<Component>, Boolean> by createHook(),
     ValidatedHook<Matchable<Component>>
 
-object ChangeDFStateEvent :
-    CustomHook<StateChange, Unit> by DependentHook(createHookable(), DFStateUpdater),
-    UnitHook<StateChange>
+// TODO: change to Detector (DFStateUpdater)
+object ChangeDFStateEvent : REvent<StateChange> by createEvent()
 
 data class StateChange(val new: DFState?, val old: DFState?)

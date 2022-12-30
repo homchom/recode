@@ -65,7 +65,7 @@ private class RequestDelegate<T, I : Any, R : Any>(
     private val queue = ConcurrentLinkedQueue<Entry<I, R>>()
 
     init {
-        event.listenFrom(GlobalModule) { context, result ->
+        event.hookFrom(GlobalModule) { context, result ->
             queue.peek()?.let { entry ->
                 match(context, entry.input)?.let { response ->
                     entry.response.complete(response)

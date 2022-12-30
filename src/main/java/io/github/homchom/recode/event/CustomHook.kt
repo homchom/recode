@@ -9,7 +9,7 @@ import net.fabricmc.fabric.api.event.EventFactory
  * @see CustomHook
  * @see EventFactory.createArrayBacked
  */
-fun <T, R : Any> createHookable(): CustomHook<T, R> =
+fun <T, R : Any> createHook(): CustomHook<T, R> =
     CustomPhasedHookable<_, _, EventPhase>(createFabricEvent(::customHookOf))
 
 /**
@@ -18,7 +18,7 @@ fun <T, R : Any> createHookable(): CustomHook<T, R> =
  * @see CustomPhasedHook
  * @see EventFactory.createWithPhases
  */
-fun <T, R : Any, P : EventPhase> createHookableWithPhases(vararg phases: P) =
+fun <T, R : Any, P : EventPhase> createHookWithPhases(vararg phases: P) =
     CustomPhasedHookable<T, R, P>(createFabricEventWithPhases(phases, ::customHookOf))
 
 /**
@@ -35,6 +35,10 @@ interface CustomHook<T, R : Any> : WrappedHook<T, R, HookListener<T, R>> {
      * be mutated.
      */
     fun run(context: T, initialValue: R): R
+
+    fun test() {
+        if (this is DependentHook) println(abc)
+    }
 }
 
 /**
