@@ -79,7 +79,7 @@ interface ExposedModule : HookableModule {
  */
 @OptIn(MutatesModuleState::class)
 @DelicateCoroutinesApi
-object GlobalModule : ExposedModule by buildStrongExposedModule() {
+object GlobalModule : ExposedModule by strongExposedModule() {
     init {
         enable()
     }

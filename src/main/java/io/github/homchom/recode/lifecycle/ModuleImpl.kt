@@ -9,22 +9,22 @@ import kotlinx.coroutines.cancel
 /**
  * Builds a *weak* [ExposedModule].
  */
-inline fun buildExposedModule(builder: ModuleBuilderScope = {}) = ModuleBuilder()
+inline fun exposedModule(builder: ModuleBuilderScope = {}) = ModuleBuilder()
     .apply(builder)
-    .run { exposedModule(children, onLoad.action, onEnable.action, onDisable.action) }
+    .run { constructExposedModule(children, onLoad.action, onEnable.action, onDisable.action) }
 
 /**
  * Builds a *strong* [ExposedModule].
  */
-inline fun buildStrongExposedModule(builder: ModuleBuilderScope = {}) = ModuleBuilder()
+inline fun strongExposedModule(builder: ModuleBuilderScope = {}) = ModuleBuilder()
     .apply(builder)
-    .run { strongExposedModule(children, onLoad.action, onEnable.action, onDisable.action) }
+    .run { constructStrongExposedModule(children, onLoad.action, onEnable.action, onDisable.action) }
 
 /**
  * Constructs a *weak* [ExposedModule] with children and actions [onLoad], [onEnable], and
  * [onDisable].
  */
-fun exposedModule(
+fun constructExposedModule(
     children: List<RModule> = emptyList(),
     onLoad: ModuleAction? = null,
     onEnable: ModuleAction? = null,
@@ -37,7 +37,7 @@ fun exposedModule(
  * Constructs a *strong* [ExposedModule] with children and actions [onLoad], [onEnable], and
  * [onDisable].
  */
-fun strongExposedModule(
+fun constructStrongExposedModule(
     children: List<RModule> = emptyList(),
     onLoad: ModuleAction? = null,
     onEnable: ModuleAction? = null,

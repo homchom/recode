@@ -12,48 +12,51 @@ sealed interface Configurable : RModule {
 /**
  * Builds a [Feature].
  */
-fun feature(name: String, builder: ModuleBuilderScope): Feature =
-    BuiltFeature(name, builder)
+inline fun feature(name: String, builder: ModuleBuilderScope): Feature =
+    ExposedFeature(name, strongExposedModule(builder))
 
 /**
  * Builds a [FeatureGroup].
  */
-fun featureGroup(
+@OptIn(MutatesModuleState::class)
+inline fun featureGroup(
     name: String,
     vararg features: Feature,
-    builder: ModuleBuilderScope? = null
+    builder: ModuleBuilderScope = {}
 ): FeatureGroup {
-    return BuiltFeatureGroup(name, features.toList().unmodifiable(), builder)
+    return ExposedFeatureGroup(name, features.toList().unmodifiable(), module {
+        onLoad {
+            for (feature in features) addParent(feature)
+        }
+
+        onEnable {
+            for (feature in features) feature.enable()
+        }
+
+        onDisable {
+            for (feature in features) feature.disable()
+        }
+
+        builder()
+    })
 }
 
 interface Feature : Configurable, ExposedModule
-
-private class BuiltFeature(
-    override val name: String,
-    moduleBuilder: ModuleBuilderScope
-) : Feature, ExposedModule by buildStrongExposedModule(builder = moduleBuilder)
 
 sealed interface FeatureGroup : Configurable {
     val features: List<Feature>
 }
 
-@OptIn(MutatesModuleState::class)
-private class BuiltFeatureGroup(
+/**
+ * A [Feature] that delegates to an [ExposedModule].
+ */
+class ExposedFeature(override val name: String, module: ExposedModule) : Feature, ExposedModule by module
+
+/**
+ * A [FeatureGroup] that delegates to an [ExposedModule].
+ */
+class ExposedFeatureGroup(
     override val name: String,
     override val features: List<Feature>,
-    moduleBuilder: ModuleBuilderScope? = null
-) : FeatureGroup, RModule by module(builder = {
-    onLoad {
-        for (feature in features) addParent(feature)
-    }
-
-    onEnable {
-        for (feature in features) feature.enable()
-    }
-
-    onDisable {
-        for (feature in features) feature.disable()
-    }
-
-    moduleBuilder?.invoke(this)
-})
+    module: RModule
+) : FeatureGroup, RModule by module

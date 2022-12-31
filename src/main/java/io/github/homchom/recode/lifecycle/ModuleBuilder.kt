@@ -10,18 +10,18 @@ typealias ModuleAction = ExposedModule.() -> Unit
 /**
  * Builds a *weak* [RModule].
  */
-inline fun module(builder: ModuleBuilderScope): RModule = buildExposedModule(builder)
+inline fun module(builder: ModuleBuilderScope): RModule = exposedModule(builder)
 
 /**
  * Builds a *strong* [RModule].
  */
-inline fun strongModule(builder: ModuleBuilderScope): RModule = buildStrongExposedModule(builder)
+inline fun strongModule(builder: ModuleBuilderScope): RModule = strongExposedModule(builder)
 
 /**
  * Builds a *strong* [RModule] to be enabled by entrypoints.
  */
 @OptIn(MutatesModuleState::class)
-inline fun entrypointModule(builder: ModuleBuilderScope) = buildStrongExposedModule {
+inline fun entrypointModule(builder: ModuleBuilderScope) = strongExposedModule {
     onEnable {
         ClientStopEvent.listen {
             onEach { disable() }
