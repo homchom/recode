@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourceLocation
 typealias HookListener<T, R> = (T, R) -> R
 
 /**
- * An *opaque* event that can also be "hooked onto" synchronously via listeners in modules, which are invoked in
+ * A *transparent* event that can also be "hooked onto" synchronously via listeners in modules, which are invoked in
  * order when the event is run and if the module is enabled.
  *
  * Hook invocations have an initial value, which can be transformed by all hooked listeners before being

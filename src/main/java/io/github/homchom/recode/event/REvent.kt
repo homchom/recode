@@ -39,7 +39,7 @@ private class SharedFlowEvent<T> private constructor(private val flow: MutableSh
 fun <T> Listenable<out T>.and(vararg events: Listenable<out T>): Listenable<T> {
     val flows = buildList {
         add(notifications)
-        for (event in events) add (event.notifications)
+        for (event in events) add(event.notifications)
     }
     return EventCollector(flows.merge())
 }
