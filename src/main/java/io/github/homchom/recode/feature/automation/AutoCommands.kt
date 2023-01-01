@@ -20,19 +20,19 @@ import kotlinx.coroutines.launch
 
 // TODO: combine into one module per event after config is figured out
 
-val FAutoWand = autoCommand("/wand", ChangeDFStateEvent) { (new) ->
+val FAutoWand = autoCommand("/wand", ChangeDFStateEvent) { new ->
     if (Config.getBoolean("autowand")) {
         if (new is PlayState && new.mode == PlotMode.Build) sendCommand("/wand")
     }
 }
 
-val FAutoChatLocal = autoCommand("chat local", ChangeDFStateEvent) { (new) ->
+val FAutoChatLocal = autoCommand("chat local", ChangeDFStateEvent) { new ->
     if (Config.getBoolean("autoChatLocal") && !DFInfo.currentState.isInSession) {
         if (new is PlayState) ChatLocal.requestIn(coroutineScope)
     }
 }
 
-val FAutoTime = autoCommand("time", ChangeDFStateEvent) { (new) ->
+val FAutoTime = autoCommand("time", ChangeDFStateEvent) { new ->
     if (Config.getBoolean("autotime") && !DFInfo.currentState.isInSession) {
         if (new is PlayState && new.mode != PlotMode.Play) {
             ClientTime.requestIn(coroutineScope, Config.getLong("autotimeval"))
@@ -40,7 +40,7 @@ val FAutoTime = autoCommand("time", ChangeDFStateEvent) { (new) ->
     }
 }
 
-val FAutoNightVision = autoCommand("nightvis", ChangeDFStateEvent) { (new) ->
+val FAutoNightVision = autoCommand("nightvis", ChangeDFStateEvent) { new ->
     if (Config.getBoolean("autonightvis") && !DFInfo.currentState.isInSession) {
         if (new is PlayState && new.mode != PlotMode.Play) {
             coroutineScope.launch { NightVision.enable() }
@@ -48,13 +48,13 @@ val FAutoNightVision = autoCommand("nightvis", ChangeDFStateEvent) { (new) ->
     }
 }
 
-val FAutoResetCompact = autoCommand("reset compact", ChangeDFStateEvent) { (new) ->
+val FAutoResetCompact = autoCommand("reset compact", ChangeDFStateEvent) { new ->
     if (Config.getBoolean("autoRC") && !DFInfo.currentState.isInSession) {
         if (new is PlayState && new.mode == PlotMode.Dev) sendCommand("reset compact")
     }
 }
 
-val FAutoLagSlayer = autoCommand("lagslayer", ChangeDFStateEvent) { (new) ->
+val FAutoLagSlayer = autoCommand("lagslayer", ChangeDFStateEvent) { new ->
     if (Config.getBoolean("autolagslayer") && !DFInfo.currentState.isInSession) {
         if (!LagslayerHUD.lagSlayerEnabled) {
             // TODO: execute silently without ChatUtil

@@ -5,7 +5,6 @@ import io.github.homchom.recode.lifecycle.GlobalModule
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.runBlocking
 import java.util.function.Consumer
 
 sealed interface Listenable<T> {
@@ -22,18 +21,35 @@ sealed interface Listenable<T> {
     fun register(action: Consumer<T>) = listenEachFrom(GlobalModule) { action.accept(it) }
 }
 
-fun <T> createEvent(): REvent<T> = SharedFlowEvent()
+fun <T> createEvent(): SharedEvent<T> = SharedFlowEvent()
 
-interface REvent<T> : Listenable<T> {
+fun <T> createStateEvent(initialValue: T): StateEvent<T> = StateFlowEvent(initialValue)
+
+interface SharedEvent<T> : Listenable<T> {
     fun run(context: T)
 }
 
-private class SharedFlowEvent<T> private constructor(private val flow: MutableSharedFlow<T>) : REvent<T> {
-    override val notifications: Flow<T> get() = flow
+interface StateEvent<T> : SharedEvent<T> {
+    val currentState: T
+}
+
+private class SharedFlowEvent<T> private constructor(private val flow: MutableSharedFlow<T>) : SharedEvent<T> {
+    override val notifications: SharedFlow<T> get() = flow
 
     constructor() : this(MutableSharedFlow(onBufferOverflow = BufferOverflow.DROP_OLDEST))
 
-    override fun run(context: T) = runBlocking { flow.emit(context) }
+    // TODO: remove check()?
+    override fun run(context: T) = check(flow.tryEmit(context))
+}
+
+private class StateFlowEvent<T> private constructor(private val flow: MutableStateFlow<T>) : StateEvent<T> {
+    override val notifications: StateFlow<T> get() = flow
+
+    override val currentState get() = flow.value
+
+    constructor(initialValue: T) : this(MutableStateFlow(initialValue))
+
+    override fun run(context: T) = flow.update { context }
 }
 
 fun <T> Listenable<out T>.and(vararg events: Listenable<out T>): Listenable<T> {

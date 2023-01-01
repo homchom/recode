@@ -14,7 +14,7 @@ typealias HookListener<T, R> = (T, R) -> R
  * order when the event is run and if the module is enabled.
  *
  * Hook invocations have an initial value, which can be transformed by all hooked listeners before being
- * returned as the invocation's result. If you do not need a return type, use [REvent] instead.
+ * returned as the invocation's result. If you do not need a return type, use [SharedEvent] instead.
  *
  * @param T The event context type (for parameters).
  * @param R The event result type.

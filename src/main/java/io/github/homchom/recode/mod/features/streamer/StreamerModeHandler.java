@@ -93,7 +93,7 @@ public class StreamerModeHandler {
         }
     }
 
-    public static void handleStateChange(DFState oldState, DFState newState) {
+    public static void handleStateChange(DFState newState) {
         if (!enabled()) return;
 
         // If the state is changed to mode play, run "/chat local"

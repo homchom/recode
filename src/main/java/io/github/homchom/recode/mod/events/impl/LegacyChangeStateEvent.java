@@ -9,11 +9,11 @@ import io.github.homchom.recode.sys.player.chat.MessageGrabber;
 
 public class LegacyChangeStateEvent {
     public LegacyChangeStateEvent() {
-        ChangeDFStateEvent.INSTANCE.register(context -> run(context.getNew(), context.getOld()));
+        ChangeDFStateEvent.INSTANCE.register(this::run);
     }
 
-    private void run(DFState newState, DFState oldState) {
-        StreamerModeHandler.handleStateChange(oldState, newState);
+    private void run(DFState newState) {
+        StreamerModeHandler.handleStateChange(newState);
 
         if (newState == null) MessageGrabber.reset();
 

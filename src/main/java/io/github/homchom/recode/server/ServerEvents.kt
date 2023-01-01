@@ -31,6 +31,4 @@ object ReceiveChatMessageEvent :
     ValidatedHook<Matchable<Component>>
 
 // TODO: change to Detector (DFStateUpdater)
-object ChangeDFStateEvent : REvent<StateChange> by createEvent()
-
-data class StateChange(val new: DFState?, val old: DFState?)
+object ChangeDFStateEvent : StateEvent<DFState?> by createStateEvent(null)
