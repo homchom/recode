@@ -10,16 +10,14 @@ import net.minecraft.resources.ResourceLocation
 typealias HookListener<T, R> = (T, R) -> R
 
 /**
- * A *transparent* event that can also be "hooked onto" synchronously via listeners in modules, which are invoked in
- * order when the event is run and if the module is enabled.
+ * A *transparent* [Listenable] that can also be "hooked onto" synchronously via listeners in modules, which are
+ * invoked in order when the event is run and if the module is enabled.
  *
  * Hook invocations have an initial value, which can be transformed by all hooked listeners before being
  * returned as the invocation's result. If you do not need a return type, use [SharedEvent] instead.
  *
  * @param T The event context type (for parameters).
  * @param R The event result type.
- *
- * @see Listenable
  */
 interface Hook<T, R> : Listenable<T> {
     @Deprecated("Create and/or hook from a module instead")

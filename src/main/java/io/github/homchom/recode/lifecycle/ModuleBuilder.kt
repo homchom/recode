@@ -2,7 +2,6 @@ package io.github.homchom.recode.lifecycle
 
 import io.github.homchom.recode.event.Hook
 import io.github.homchom.recode.event.Listenable
-import kotlinx.coroutines.flow.onEach
 
 typealias ModuleBuilderScope = ModuleBuilder.() -> Unit
 typealias ModuleAction = ExposedModule.() -> Unit
@@ -23,9 +22,7 @@ inline fun strongModule(builder: ModuleBuilderScope): RModule = strongExposedMod
 @OptIn(MutatesModuleState::class)
 inline fun entrypointModule(builder: ModuleBuilderScope) = strongExposedModule {
     onEnable {
-        ClientStopEvent.listen {
-            onEach { disable() }
-        }
+        ClientStopEvent.listenEach { disable() }
     }
 
     builder()

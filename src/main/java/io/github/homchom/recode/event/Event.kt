@@ -21,6 +21,10 @@ sealed interface Listenable<T> {
     fun register(action: Consumer<T>) = listenEachFrom(GlobalModule) { action.accept(it) }
 }
 
+sealed interface StateListenable<T> : Listenable<T> {
+    val currentState: T
+}
+
 fun <T> createEvent(): SharedEvent<T> = SharedFlowEvent()
 
 fun <T> createStateEvent(initialValue: T): StateEvent<T> = StateFlowEvent(initialValue)
@@ -29,9 +33,7 @@ interface SharedEvent<T> : Listenable<T> {
     fun run(context: T)
 }
 
-interface StateEvent<T> : SharedEvent<T> {
-    val currentState: T
-}
+interface StateEvent<T> : SharedEvent<T>, StateListenable<T>
 
 private class SharedFlowEvent<T> private constructor(private val flow: MutableSharedFlow<T>) : SharedEvent<T> {
     override val notifications: SharedFlow<T> get() = flow

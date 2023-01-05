@@ -20,6 +20,7 @@ inline fun strongExposedModule(builder: ModuleBuilderScope = {}) = ModuleBuilder
     .apply(builder)
     .run { constructStrongExposedModule(children, onLoad.action, onEnable.action, onDisable.action) }
 
+// TODO: should these factory functions use something like PolymorphicModule?
 /**
  * Constructs a *weak* [ExposedModule] with children and actions [onLoad], [onEnable], and
  * [onDisable].

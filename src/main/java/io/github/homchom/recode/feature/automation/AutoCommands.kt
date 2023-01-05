@@ -15,7 +15,6 @@ import io.github.homchom.recode.server.sendCommand
 import io.github.homchom.recode.server.state.PlayState
 import io.github.homchom.recode.server.state.PlotMode
 import io.github.homchom.recode.sys.player.DFInfo
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 // TODO: combine into one module per event after config is figured out
@@ -66,8 +65,6 @@ val FAutoLagSlayer = autoCommand("lagslayer", ChangeDFStateEvent) { new ->
 private fun <T> autoCommand(name: String, event: Listenable<T>, body: ExposedModule.(T) -> Unit) =
     feature("Auto /$name") {
         onEnable {
-            event.listen {
-                onEach { body(it) }
-            }
+            event.listenEach { body(it) }
         }
     }

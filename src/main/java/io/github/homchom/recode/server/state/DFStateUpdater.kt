@@ -8,7 +8,6 @@ import io.github.homchom.recode.mc
 import io.github.homchom.recode.server.*
 import io.github.homchom.recode.util.matchAgainst
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlin.properties.ReadOnlyProperty
@@ -18,27 +17,23 @@ val currentDFState by CurrentState
 
 val DFStateUpdater = module {
     onEnable {
-        JoinServerEvent.listen {
-            onEach {
-                if (isOnDF) {
-                    delay(200L) // TODO: remove (ViaVersion bug)
-                    val node = requestLocate().node
-                    CurrentState.set(DFState.AtSpawn(node, false))
-                }
+        JoinServerEvent.listenEach {
+            if (isOnDF) {
+                delay(200L) // TODO: remove (ViaVersion bug)
+                val node = requestLocate().node
+                CurrentState.set(DFState.AtSpawn(node, false))
             }
         }
 
-        ReceiveChatMessageEvent.listen {
-            onEach { message ->
-                // Play, Build, and Dev Mode
-                message.matchAgainst(PlotMode)?.let {
-                    CurrentState.locateAndSet { currentDFState!!.withState(it) }
-                }
+        ReceiveChatMessageEvent.listenEach { message ->
+            // Play, Build, and Dev Mode
+            message.matchAgainst(PlotMode)?.let {
+                CurrentState.locateAndSet { currentDFState!!.withState(it) }
             }
         }
 
-        DisconnectFromServerEvent.listen {
-            onEach { CurrentState.setWithoutLock(null) }
+        DisconnectFromServerEvent.listenEach {
+            CurrentState.setWithoutLock(null)
         }
     }
 }
@@ -46,7 +41,7 @@ val DFStateUpdater = module {
 private object CurrentState : ReadOnlyProperty<Any?, DFState?> {
     private var dfState: DFState? = null
         set(value) {
-            if (value != field) ChangeDFStateEvent.run(StateChange(value, field))
+            if (value != field) ChangeDFStateEvent.run(value)
             field = value
         }
 

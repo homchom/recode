@@ -2,19 +2,22 @@ package io.github.homchom.recode.util
 
 @OptIn(BreaksControlFlow::class)
 inline fun <T : Any> nullable(block: NullableScope.() -> T?): T? {
-    val comp = computeIn(NullableScopeInstance, block)
+    val comp = computeIn(NullableScope, block)
     return (comp as? Computation.Success<T?>)?.value
 }
 
-sealed interface NullableScope : FailScope<Nothing?> {
+@BreaksControlFlow
+interface NullableScope : FailScope<Nothing?> {
     fun fail(): Nothing = fail(null)
+
+    companion object Instance : NullableScope
 }
-@BreaksControlFlow object NullableScopeInstance : NullableScope
 
 @OptIn(BreaksControlFlow::class)
 inline fun <S, F> compute(block: ComputeScope<F>.() -> S) = computeIn(ComputeScope(), block)
 
-class ComputeScope<T> @BreaksControlFlow constructor() : FailScope<T>
+@BreaksControlFlow
+class ComputeScope<T> : FailScope<T>
 
 @OptIn(BreaksControlFlow::class)
 inline fun <S, F, R : FailScope<F>> computeIn(scope: R, block: R.() -> S): Computation<S, F> {
@@ -31,8 +34,8 @@ interface Computation<out S, out F> {
     class Failure<T>(val value: T) : Computation<Nothing, T>
 }
 
-sealed interface FailScope<T> {
-    @OptIn(BreaksControlFlow::class)
+@BreaksControlFlow
+interface FailScope<T> {
     fun fail(value: T): Nothing = throw FailureException(value)
 }
 
@@ -40,6 +43,5 @@ sealed interface FailScope<T> {
 class FailureException(val value: Any?) : Exception()
 
 @RequiresOptIn("The following type uses unstructured control flow (via exceptions). " +
-        "It is public for inline function use, but is essentially private and should not be " +
-        "used directly")
+        "Be careful not to leak it so it is always wrapped inside a nullable {} call or try/catch")
 annotation class BreaksControlFlow

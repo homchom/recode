@@ -43,6 +43,7 @@ interface ExposedModule : HookableModule {
     val coroutineScope: CoroutineScope
 
     fun <T> Listenable<T>.listen(block: Flow<T>.() -> Flow<T>) = listenFrom(this@ExposedModule, block)
+    fun <T> Listenable<T>.listenEach(block: suspend (T) -> Unit) = listenEachFrom(this@ExposedModule, block)
 
     @MutatesModuleState
     fun load()
@@ -69,6 +70,30 @@ interface ExposedModule : HookableModule {
      */
     @MutatesModuleState
     fun removeUsage(module: ExposedModule)
+}
+
+abstract class PolymorphicModule(private val delegate: ExposedModule) : ExposedModule by delegate {
+    protected abstract fun onLoad()
+    protected abstract fun onEnable()
+    protected abstract fun onDisable()
+
+    @MutatesModuleState
+    final override fun load() {
+        delegate.load()
+        onLoad()
+    }
+
+    @MutatesModuleState
+    final override fun enable() {
+        delegate.enable()
+        onEnable()
+    }
+
+    @MutatesModuleState
+    final override fun disable() {
+        delegate.disable()
+        onDisable()
+    }
 }
 
 /**
