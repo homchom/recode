@@ -1,7 +1,6 @@
 package io.github.homchom.recode.event
 
 import io.github.homchom.recode.DEFAULT_TIMEOUT_DURATION
-import io.github.homchom.recode.util.BreaksControlFlow
 import io.github.homchom.recode.util.NullableScope
 import io.github.homchom.recode.util.unitOrNull
 import kotlinx.coroutines.TimeoutCancellationException
@@ -11,8 +10,7 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.withTimeout
 import kotlin.time.Duration
 
-@BreaksControlFlow
-class TrialScope(nullableScope: NullableScope, val isRequest: Boolean) : NullableScope by nullableScope {
+class TrialScope(private val nullableScope: NullableScope, val isRequest: Boolean) {
     private val enforced = mutableListOf<suspend () -> Unit>()
 
     suspend inline fun <C, T : Any> testOn(
@@ -75,4 +73,6 @@ class TrialScope(nullableScope: NullableScope, val isRequest: Boolean) : Nullabl
     suspend fun runEnforced() {
         for (rule in enforced) rule()
     }
+
+    fun fail(): Nothing = nullableScope.fail()
 }

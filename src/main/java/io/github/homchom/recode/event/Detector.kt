@@ -3,12 +3,10 @@ package io.github.homchom.recode.event
 import io.github.homchom.recode.lifecycle.PolymorphicModule
 import io.github.homchom.recode.lifecycle.RModule
 import io.github.homchom.recode.lifecycle.exposedModule
-import io.github.homchom.recode.util.BreaksControlFlow
 import io.github.homchom.recode.util.nullable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-@OptIn(BreaksControlFlow::class)
 fun interface Trial<T> {
     fun TrialScope.run(): T
 }
@@ -61,7 +59,6 @@ private open class TrialDetector<T : Any>(
 
     override suspend fun detect() = runTrial(false)
 
-    @OptIn(BreaksControlFlow::class)
     protected suspend fun runTrial(isRequest: Boolean) = nullable {
         withContext(Dispatchers.IO) {
             with(trial) { TrialScope(this@nullable, isRequest).run() }
