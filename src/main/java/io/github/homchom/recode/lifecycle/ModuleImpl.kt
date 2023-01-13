@@ -1,68 +1,51 @@
 package io.github.homchom.recode.lifecycle
 
-import io.github.homchom.recode.util.unmodifiable
+import io.github.homchom.recode.util.collections.ImmutableList
+import io.github.homchom.recode.util.collections.immutable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 
+// TODO: should these factory functions use something like PolymorphicModule?
+
+fun exposedModule(vararg details: ModuleDetail): ExposedModule =
+    createModule(details) { WeakModule(UsageModule(it)) }
+
+fun strongExposedModule(vararg details: ModuleDetail): ExposedModule =
+    createModule(details) { UsageModule(it) }
+
 /**
  * Builds a *weak* [ExposedModule].
  */
-inline fun exposedModule(builder: ModuleBuilderScope = {}) = ModuleBuilder()
-    .apply(builder)
-    .run { constructExposedModule(children, onLoad.action, onEnable.action, onDisable.action) }
+inline fun exposedModule(vararg details: ModuleDetail, builder: ModuleBuilderScope) =
+    exposedModule(*details, ModuleBuilder(builder))
 
 /**
  * Builds a *strong* [ExposedModule].
  */
-inline fun strongExposedModule(builder: ModuleBuilderScope = {}) = ModuleBuilder()
-    .apply(builder)
-    .run { constructStrongExposedModule(children, onLoad.action, onEnable.action, onDisable.action) }
+inline fun strongExposedModule(vararg details: ModuleDetail, builder: ModuleBuilderScope) =
+    strongExposedModule(*details, ModuleBuilder(builder))
 
-// TODO: should these factory functions use something like PolymorphicModule?
-/**
- * Constructs a *weak* [ExposedModule] with children and actions [onLoad], [onEnable], and
- * [onDisable].
- */
-fun constructExposedModule(
-    children: List<RModule> = emptyList(),
-    onLoad: ModuleAction? = null,
-    onEnable: ModuleAction? = null,
-    onDisable: ModuleAction? = null
+private inline fun createModule(
+    details: Array<out ModuleDetail>,
+    constructor: (ImmutableList<ModuleDetail>) -> ExposedModule
 ): ExposedModule {
-    return WeakModule(onLoad, onEnable, onDisable).withChildren(children)
+    val detailList = details.toList().immutable()
+    return constructor(detailList).apply {
+        for (detail in detailList) {
+            for (child in detail.children()) child.addParent(this)
+        }
+    }
 }
 
-/**
- * Constructs a *strong* [ExposedModule] with children and actions [onLoad], [onEnable], and
- * [onDisable].
- */
-fun constructStrongExposedModule(
-    children: List<RModule> = emptyList(),
-    onLoad: ModuleAction? = null,
-    onEnable: ModuleAction? = null,
-    onDisable: ModuleAction? = null
-): ExposedModule {
-    return StrongModule(WeakModule(onLoad, onEnable, onDisable)
-        .withChildren(children))
-}
-
-private fun <T : RModule> T.withChildren(children: List<RModule>) = apply {
-    for (child in children) child.addParent(this)
-}
-
-private class WeakModule(
-    private val onLoad: ModuleAction?,
-    private val onEnable: ModuleAction?,
-    private val onDisable: ModuleAction?
-) : ExposedModule {
+private class UsageModule(private val details: ImmutableList<ModuleDetail>) : ExposedModule {
     override var isLoaded = false
         private set
     override var isEnabled = false
         private set
 
-    override val children get() = _children.unmodifiable()
+    override val children get() = _children.immutable()
     private val _children = mutableListOf<ExposedModule>()
 
     val usages: Set<RModule> get() = _usages
@@ -75,7 +58,7 @@ private class WeakModule(
     override fun load() {
         errorIf(isLoaded) { "loaded" }
         isLoaded = true
-        onLoad?.invoke(this)
+        forEachDetail { onLoad() }
     }
 
     @MutatesModuleState
@@ -85,7 +68,7 @@ private class WeakModule(
         for (child in children) child.addUsage(this)
         scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
         isEnabled = true
-        onEnable?.invoke(this)
+        forEachDetail { onEnable() }
     }
 
     @MutatesModuleState
@@ -94,7 +77,7 @@ private class WeakModule(
         for (child in children) child.removeUsage(this)
         scope.cancel()
         isEnabled = false
-        onDisable?.invoke(this)
+        forEachDetail { onDisable() }
     }
 
     private inline fun errorIf(value: Boolean, errorWord: () -> String) =
@@ -116,9 +99,13 @@ private class WeakModule(
     override fun removeUsage(module: ExposedModule) {
         _usages -= module
     }
+
+    private inline fun forEachDetail(block: (ModuleDetail).() -> Unit) {
+        for (detail in details) with(detail) { block() }
+    }
 }
 
-private class StrongModule(private val impl: WeakModule) : ExposedModule by impl {
+private class WeakModule(private val impl: UsageModule) : ExposedModule by impl {
     @MutatesModuleState
     override fun removeUsage(module: ExposedModule) {
         impl.removeUsage(module)

@@ -1,74 +1,50 @@
 package io.github.homchom.recode.event
 
-import io.github.homchom.recode.lifecycle.PolymorphicModule
+import io.github.homchom.recode.DEFAULT_TIMEOUT_DURATION
 import io.github.homchom.recode.lifecycle.RModule
-import io.github.homchom.recode.lifecycle.exposedModule
-import io.github.homchom.recode.util.nullable
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import kotlin.time.Duration
 
-fun interface Trial<T> {
-    fun TrialScope.run(): T
+typealias Trial<T, B, R> = suspend TrialScope.(input: T?, baseContext: B) -> R?
+typealias RequesterTrial<T, B, R> = suspend TrialScope.(input: T?, baseContext: B, isRequest: Boolean) -> R?
+typealias NullaryTrial<B, R> = suspend TrialScope.(baseContext: B) -> R?
+typealias NullaryRequesterTrial<B, R> = suspend TrialScope.(baseContext: B, isRequest: Boolean) -> R?
+
+typealias TrialStart<T> = suspend (input: T) -> Unit
+typealias ShortCircuitTrialStart<T, R> = suspend (input: T) -> R?
+
+interface Detector<T : Any, R : Any> : Listenable<R>, RModule {
+    suspend fun detect(input: T?): R?
 }
 
-fun <T : Any> detector(basis: Listenable<T>, trial: Trial<T>): Detector<T> = TrialDetector(basis, trial)
+interface Requester<T : Any, R : Any> : Detector<T, R> {
+    suspend fun request(input: T): R
 
-fun <T : Any> requester(basis: Listenable<T>, trial: Trial<T>): Requester<T> = TrialRequester(basis, trial)
-
-fun <T : Any> stateDetector(initialValue: T, basis: Listenable<T>, trial: Trial<T>): StateDetector<T> =
-    object : TrialDetector<T>(basis, trial), StateDetectorEvent<T> {
-        override val event = createStateEvent(initialValue)
-    }
-
-fun <T : Any> stateRequester(initialValue: T, basis: Listenable<T>, trial: Trial<T>): StateRequester<T> =
-    object : TrialRequester<T>(basis, trial), StateRequester<T>, StateDetectorEvent<T> {
-        override val event = createStateEvent(initialValue)
-    }
-
-interface Detector<T : Any> : Listenable<T>, RModule {
-    suspend fun detect(): T?
+    fun requestIn(scope: CoroutineScope, input: T) = scope.launch { request(input) }
 }
 
-interface StateDetector<T : Any> : Detector<T>, StateListenable<T>
+suspend fun <R : Any> Requester<Unit, R>.request() = request(Unit)
 
-private interface StateDetectorEvent<T : Any> : StateDetector<T> {
-    val event: StateEvent<T>
-    override val currentState get() = event.currentState
-}
+fun <R : Any> Requester<Unit, R>.requestIn(scope: CoroutineScope) = requestIn(scope, Unit)
 
-interface Requester<T : Any> : Detector<T> {
-    suspend fun request(): T
-}
-
-interface StateRequester<T : Any> : Requester<T>, StateListenable<T>
-
-private open class TrialDetector<T : Any>(
-    private val basis: Listenable<T>,
-    private val trial: Trial<T>
-) : Detector<T>, PolymorphicModule(exposedModule()) {
-    open val event = createEvent<T>()
-
-    override val notifications get() = event.notifications
-
-    override fun onEnable() {
-        basis.listenEach { detect()?.let(event::run) }
-    }
-
-    override fun onLoad() {}
-    override fun onDisable() {}
-
-    override suspend fun detect() = runTrial(false)
-
-    protected suspend fun runTrial(isRequest: Boolean) = nullable {
-        withContext(Dispatchers.IO) {
-            with(trial) { TrialScope(this@nullable, isRequest).run() }
-        }
+inline fun <B, R : Any> nullaryDetector(
+    basis: Listenable<B>,
+    timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION,
+    crossinline trial: NullaryTrial<B, R>
+): Detector<Unit, R> {
+    return detector(basis, timeoutDuration) { _, baseContext ->
+        trial(baseContext)
     }
 }
 
-private open class TrialRequester<T : Any>(
-    basis: Listenable<T>,
-    trial: Trial<T>
-) : TrialDetector<T>(basis, trial), Requester<T> {
-    override suspend fun request() = runTrial(true) ?: error("Trial failed for request")
+inline fun <B, R : Any> nullaryRequester(
+    basis: Listenable<B>,
+    crossinline start: suspend () -> Unit,
+    timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION,
+    crossinline trial: NullaryRequesterTrial<B, R>
+): Requester<Unit, R> {
+    return requester(basis, { start() }, timeoutDuration) { _, baseContext, isRequest ->
+        trial(baseContext, isRequest)
+    }
 }

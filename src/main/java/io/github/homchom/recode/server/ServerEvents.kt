@@ -1,8 +1,6 @@
 package io.github.homchom.recode.server
 
 import io.github.homchom.recode.event.*
-import io.github.homchom.recode.server.state.DFState
-import io.github.homchom.recode.util.Matchable
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.Disconnect
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.Join
@@ -27,8 +25,5 @@ data class ServerJoinContext(val handler: ClientPacketListener, val sender: Pack
 data class ServerDisconnectContext(val handler: ClientPacketListener, val client: Minecraft)
 
 object ReceiveChatMessageEvent :
-    CustomHook<Matchable<Component>, Boolean> by createHook(),
-    ValidatedHook<Matchable<Component>>
-
-// TODO: change to Detector (DFStateUpdater)
-object ChangeDFStateEvent : StateEvent<DFState?> by createStateEvent(null)
+    CustomHook<Component, Boolean> by createHook(),
+    ValidatedHook<Component>

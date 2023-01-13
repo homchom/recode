@@ -3,15 +3,18 @@ package io.github.homchom.recode.event
 import io.github.homchom.recode.DEFAULT_TIMEOUT_DURATION
 import io.github.homchom.recode.util.NullableScope
 import io.github.homchom.recode.util.unitOrNull
-import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.time.Duration
 
-class TrialScope(private val nullableScope: NullableScope, val isRequest: Boolean) {
+class TrialScope(private val nullableScope: NullableScope) {
     private val enforced = mutableListOf<suspend () -> Unit>()
+
+    fun <T : Any> test(value: T?) = testBoolean(value != null)
+
+    fun testBoolean(value: Boolean) = value.also { if (!it) fail() }
 
     suspend inline fun <C, T : Any> testOn(
         event: Listenable<C>,
@@ -35,11 +38,7 @@ class TrialScope(private val nullableScope: NullableScope, val isRequest: Boolea
         crossinline collector: suspend (Flow<C>) -> T
     ): T {
         return event.notifications.let { flow ->
-            try {
-                withTimeout(timeoutDuration) { collector(flow) }
-            } catch (e: TimeoutCancellationException) {
-                fail()
-            }
+            withTimeoutOrNull(timeoutDuration) { collector(flow) } ?: fail()
         }.also { runEnforced() }
     }
 
@@ -59,11 +58,11 @@ class TrialScope(private val nullableScope: NullableScope, val isRequest: Boolea
         awaitOn(event, timeoutDuration) { test(it).unitOrNull() }
     }
 
-    suspend fun <T : Any> subTrial(detector: Detector<T>) = detector.detect() ?: fail()
+    suspend fun <T : Any, R : Any> subTrial(detector: Detector<T, R>, input: T?) =
+        detector.detect(input) ?: fail()
 
-    suspend fun <T : Any> subTrial(requester: Requester<T>) = with(requester) {
-        if (isRequest) request() else subTrial(this as Detector<T>)
-    }
+    suspend fun <T : Any, R : Any> subTrial(requester: Requester<T, R>, input: T, isRequest: Boolean) =
+        with(requester) { if (isRequest) request(input) else subTrial(this, input) }
 
     suspend fun enforce(block: suspend () -> Unit) {
         block()

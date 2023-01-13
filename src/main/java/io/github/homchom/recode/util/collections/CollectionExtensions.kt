@@ -1,11 +1,4 @@
-package io.github.homchom.recode.util
-
-import java.util.*
-
-fun <T> List<T>.unmodifiable(): List<T> = Collections.unmodifiableList(this)
-fun <K, V> Map<out K, V>.unmodifiable(): Map<K, V> = Collections.unmodifiableMap(this)
-fun <T> Set<T>.unmodifiable(): Set<T> = Collections.unmodifiableSet(this)
-fun <T> Collection<T>.unmodifiable(): Collection<T> = Collections.unmodifiableCollection(this)
+package io.github.homchom.recode.util.collections
 
 /**
  * Flattens an [Iterable] of [Iterable]s vertically. For each index n starting at 0, the nth element of each

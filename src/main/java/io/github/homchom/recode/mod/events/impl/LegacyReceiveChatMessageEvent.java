@@ -8,7 +8,6 @@ import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.ChatType;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
 import io.github.homchom.recode.sys.util.TextUtil;
-import io.github.homchom.recode.util.Matchable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.network.chat.ClickEvent.Action;
@@ -26,7 +25,7 @@ public class LegacyReceiveChatMessageEvent {
 
     public static String tipPlayer = "";
 
-    public boolean run(Matchable<Component> message, boolean send) {
+    public boolean run(Component message, boolean send) {
         Minecraft mc = Minecraft.getInstance();
 
         if (mc.player == null) return false;
@@ -34,10 +33,9 @@ public class LegacyReceiveChatMessageEvent {
         boolean cancel = false;
 
         // TODO: temporary, migrate all code here
-        Component component = message.getValue();
-        String msgToString = component.getString();
+        String msgToString = message.getString();
 
-        String msgWithColor = TextUtil.textComponentToColorCodes(component);
+        String msgWithColor = TextUtil.textComponentToColorCodes(message);
         String msgWithoutColor = msgWithColor.replaceAll("§.", "");
 
         //PJoin command
@@ -146,8 +144,8 @@ public class LegacyReceiveChatMessageEvent {
             }
 
             if (Config.getBoolean("autoClickEditMsgs") && msgToString.startsWith("⏵ Click to edit variable: ")) {
-                if (component.getStyle().getClickEvent().getAction() == Action.SUGGEST_COMMAND) {
-                    String toOpen = component.getStyle().getClickEvent().getValue();
+                if (message.getStyle().getClickEvent().getAction() == Action.SUGGEST_COMMAND) {
+                    String toOpen = message.getStyle().getClickEvent().getValue();
                     Minecraft.getInstance().tell(() -> Minecraft.getInstance().setScreen(new ChatScreen(toOpen)));
                 }
             }

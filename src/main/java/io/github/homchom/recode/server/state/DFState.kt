@@ -3,8 +3,12 @@
 
 package io.github.homchom.recode.server.state
 
+import io.github.homchom.recode.event.Requester
+import io.github.homchom.recode.event.nullaryRequester
+import io.github.homchom.recode.event.requester
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.server.*
+import io.github.homchom.recode.server.state.LocateMessage.Companion.regex
 import io.github.homchom.recode.sys.networking.LegacyState
 import io.github.homchom.recode.ui.equalsUnstyled
 import io.github.homchom.recode.ui.matchEntireUnstyled
@@ -43,7 +47,7 @@ value class Node(private val id: String) {
 
 fun nodeByName(name: String): Node {
     val node = name.removePrefix("Node ")
-    val id = node.toIntOrNull()?.let { "node${node}" } ?: node.uncapitalize()
+    val id = node.toIntOrNull()?.run { "node$node" } ?: node.uncapitalize()
     return Node(id)
 }
 
@@ -95,7 +99,26 @@ fun LegacyState.toDFState(): DFState? {
 }
 
 data class LocateMessage(val username: String, val state: LocateState) {
-    companion object : RequestHolder<Matchable<Component>, String, LocateMessage> {
+    companion object : Requester<String, LocateMessage> by requester(
+        ReceiveChatMessageEvent,
+        start = { username -> sendCommand("locate $username") },
+        trial = { username, text: Component, _ ->
+            val values = regex(username).matchEntireUnstyled(text)?.namedGroupValues ?: fail()
+            val player = values["player"].let { if (it == "You") mc.player!!.username else it }
+            val node = nodeByName(values["node"])
+            val state = if (values["mode"].isEmpty()) {
+                LocateState.AtSpawn(node)
+            } else {
+                val mode = plotModeByDescriptorOrNull(values["mode"]) ?: fail()
+                val plotName = values["plotName"]
+                val plotID = values["plotID"].toUIntOrNull() ?: fail()
+                val owner = values["owner"]
+                val status = values["status"].takeUnless(String::isEmpty)
+                LocateState.OnPlot(node, Plot(plotName, owner, plotID), mode, status)
+            }
+            LocateMessage(player, state)
+        }
+    ) {
         private val regex = cachedRegexBuilder<String> { username ->
             @RegExp fun bullet(name: String, @RegExp pattern: String) = """\n$RIGHT_ARROW_CHAR $name: $pattern"""
 
@@ -111,49 +134,26 @@ data class LocateMessage(val username: String, val state: LocateState) {
 
             Regex(""" {39}\n$player (?:at spawn|$mode$plot$owner$status)$server\n {39}""")
         }
-
-        override val request by defineRequest(
-            ReceiveChatMessageEvent,
-            executor = { username: String -> sendCommand("locate $username") },
-            matcher = { text, username ->
-                nullable {
-                    val values = regex(username).matchEntireUnstyled(text)?.namedGroupValues ?: fail()
-                    val player = values["player"].let { if (it == "You") mc.player!!.username else it }
-                    val node = nodeByName(values["node"])
-                    val state = if (values["mode"].isEmpty()) {
-                        LocateState.AtSpawn(node)
-                    } else {
-                        val mode = plotModeByDescriptorOrNull(values["mode"]) ?: fail()
-                        val plotName = values["plotName"]
-                        val plotID = values["plotID"].toUIntOrNull() ?: fail()
-                        val owner = values["owner"]
-                        val status = values["status"].takeUnless(String::isEmpty)
-                        LocateState.OnPlot(node, Plot(plotName, owner, plotID), mode, status)
-                    }
-                    LocateMessage(player, state)
-                }
-            }
-        )
     }
 }
 
 // TODO: more comprehensive executors for plot modes
 // TODO: combine in some way?
 
-val PlayMode by defineNullaryRequest(
+val PlayModeRequester = nullaryRequester(
     ReceiveChatMessageEvent,
-    executor = { sendCommand("play") },
-    matcher = { playModeRegex.matchesUnstyled(it).unitOrNull() }
+    start = { sendCommand("play") },
+    trial = { text, _ -> playModeRegex.matchesUnstyled(text).unitOrNull() }
 )
 
-val BuildMode by defineNullaryRequest(
+val BuildModeRequester = nullaryRequester(
     ReceiveChatMessageEvent,
-    executor = { sendCommand("build") },
-    matcher = { it.equalsUnstyled("$GREEN_ARROW_CHAR You are now in build mode.") }
+    start = { sendCommand("build") },
+    trial = { text, _ -> text.equalsUnstyled("$GREEN_ARROW_CHAR You are now in build mode.") }
 )
 
-val DevMode by defineNullaryRequest(
+val DevModeRequester = nullaryRequester(
     ReceiveChatMessageEvent,
-    executor = { sendCommand("dev") },
-    matcher = { it.equalsUnstyled("$GREEN_ARROW_CHAR You are now in dev mode.") }
+    start = { sendCommand("dev") },
+    trial = { text, _ -> text.equalsUnstyled("$GREEN_ARROW_CHAR You are now in dev mode.") }
 )

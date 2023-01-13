@@ -3,9 +3,9 @@ package io.github.homchom.recode.sys.networking;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import io.github.homchom.recode.mod.features.social.chat.message.LegacyMessage;
-import io.github.homchom.recode.server.ChangeDFStateEvent;
-import io.github.homchom.recode.server.StateChange;
 import io.github.homchom.recode.server.state.DF;
+import io.github.homchom.recode.server.state.DFStateDetector;
+import io.github.homchom.recode.util.Case;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
@@ -42,7 +42,7 @@ public class LegacyState {
         this.node = node;
         this.plot = plot;
         this.session = session;
-        notifyStateChange(this, this);
+        notifyStateChange(this);
     }
 
     public LegacyState(String modeid, String nodeid, Plot plot, boolean session) {
@@ -50,7 +50,7 @@ public class LegacyState {
         this.node = Node.getByIdentifier(nodeid);
         this.plot = plot;
         this.session = session;
-        notifyStateChange(this, this);
+        notifyStateChange(this);
     }
 
     public enum Mode {
@@ -217,7 +217,7 @@ public class LegacyState {
         LegacyState old = this.copy();
         boolean update = this.session != session;
         this.session = session;
-        if (update) notifyStateChange(this, old);
+        if (update) notifyStateChange(this);
     }
 
     public void setMode(Mode mode) {
@@ -350,8 +350,8 @@ public class LegacyState {
         }
     }
 
-    private static void notifyStateChange(LegacyState newState, LegacyState oldState) {
-        ChangeDFStateEvent.INSTANCE.run(new StateChange(DF.toDFState(newState), DF.toDFState(oldState)));
+    private static void notifyStateChange(LegacyState newState) {
+        DFStateDetector.INSTANCE.getLegacy().run(new Case<>(DF.toDFState(newState)));
     }
 
     public static class CurrentState extends LegacyState {
@@ -373,36 +373,32 @@ public class LegacyState {
 
         @Override
         public void setInSession(boolean session) {
-            LegacyState old = this.copy();
             boolean update = this.session != session;
             this.session = session;
-            if (update) notifyStateChange(this, old);
+            if (update) notifyStateChange(this);
         }
 
         @Override
         public void setMode(Mode mode) {
-            LegacyState old = this.copy();
             boolean update = this.mode != mode;
             if (mode == Mode.SPAWN || mode == Mode.OFFLINE) this.plot = null;
             if (mode == Mode.OFFLINE) this.node = null;
             this.mode = mode;
-            if (update) notifyStateChange(this, old);
+            if (update) notifyStateChange(this);
         }
 
         @Override
         public void setNode(Node node) {
-            LegacyState old = this.copy();
             boolean update = this.node != node;
             this.node = node;
-            if (update) notifyStateChange(this, old);
+            if (update) notifyStateChange(this);
         }
 
         @Override
         public void setPlot(Plot plot) {
-            LegacyState old = this.copy();
             boolean update = this.plot != plot;
             this.plot = plot;
-            if (update) notifyStateChange(this, old);
+            if (update) notifyStateChange(this);
         }
     }
 }

@@ -1,7 +1,7 @@
 package io.github.homchom.recode.feature
 
 import io.github.homchom.recode.lifecycle.*
-import io.github.homchom.recode.util.unmodifiable
+import io.github.homchom.recode.util.collections.immutable
 
 // TODO: finish and document these
 
@@ -13,38 +13,37 @@ sealed interface Configurable : RModule {
  * Builds a [Feature].
  */
 inline fun feature(name: String, builder: ModuleBuilderScope): Feature =
-    ExposedFeature(name, strongExposedModule(builder))
+    ExposedFeature(name, strongExposedModule(ModuleBuilder(builder)))
 
 /**
  * Builds a [FeatureGroup].
  */
-@OptIn(MutatesModuleState::class)
-inline fun featureGroup(
-    name: String,
-    vararg features: Feature,
-    builder: ModuleBuilderScope = {}
-): FeatureGroup {
-    return ExposedFeatureGroup(name, features.toList().unmodifiable(), module {
-        onLoad {
-            for (feature in features) addParent(feature)
-        }
-
-        onEnable {
-            for (feature in features) feature.enable()
-        }
-
-        onDisable {
-            for (feature in features) feature.disable()
-        }
-
-        builder()
-    })
-}
+fun featureGroup(name: String, vararg features: Feature): FeatureGroup =
+    FeatureGroupDetail(*features).let { ExposedFeatureGroup(name, it, module(it)) }
 
 interface Feature : Configurable, ExposedModule
 
 sealed interface FeatureGroup : Configurable {
     val features: List<Feature>
+}
+
+@OptIn(MutatesModuleState::class)
+class FeatureGroupDetail(vararg features: Feature) : ModuleDetail {
+    val features = features.immutable()
+
+    override fun children() = emptyModuleList()
+
+    override fun ExposedModule.onLoad() {
+        for (feature in features) addParent(feature)
+    }
+
+    override fun ExposedModule.onEnable() {
+        for (feature in features) feature.enable()
+    }
+
+    override fun ExposedModule.onDisable() {
+        for (feature in features) feature.disable()
+    }
 }
 
 /**
@@ -57,6 +56,8 @@ class ExposedFeature(override val name: String, module: ExposedModule) : Feature
  */
 class ExposedFeatureGroup(
     override val name: String,
-    override val features: List<Feature>,
+    detail: FeatureGroupDetail,
     module: RModule
-) : FeatureGroup, RModule by module
+) : FeatureGroup, RModule by module {
+    override val features by detail::features
+}

@@ -8,7 +8,6 @@ import io.github.homchom.recode.mod.features.social.chat.message.LegacyMessage;
 import io.github.homchom.recode.server.ReceiveChatMessageEvent;
 import io.github.homchom.recode.sys.networking.LegacyState;
 import io.github.homchom.recode.sys.player.DFInfo;
-import io.github.homchom.recode.util.MatchCache;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.chat.Component;
@@ -36,8 +35,7 @@ public class MMessageListener {
             // TODO: remove after new message listener is complete
             new LegacyMessage(packet, ci);
 
-            var message = new MatchCache<>(packet.content());
-            if (!ReceiveChatMessageEvent.INSTANCE.run(message, true)) ci.cancel();
+            if (!ReceiveChatMessageEvent.INSTANCE.run(packet.content(), true)) ci.cancel();
             try {
                 this.updateVersion(packet.content());
                 this.updateState(packet.content());

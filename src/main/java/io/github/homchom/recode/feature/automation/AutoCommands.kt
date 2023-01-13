@@ -1,59 +1,57 @@
 package io.github.homchom.recode.feature.automation
 
 import io.github.homchom.recode.event.Listenable
+import io.github.homchom.recode.event.requestIn
 import io.github.homchom.recode.feature.feature
 import io.github.homchom.recode.lifecycle.ExposedModule
 import io.github.homchom.recode.mod.config.Config
 import io.github.homchom.recode.mod.features.LagslayerHUD
-import io.github.homchom.recode.server.ChangeDFStateEvent
-import io.github.homchom.recode.server.invoke
-import io.github.homchom.recode.server.requestIn
-import io.github.homchom.recode.server.requests.ChatLocal
-import io.github.homchom.recode.server.requests.ClientTime
-import io.github.homchom.recode.server.requests.NightVision
+import io.github.homchom.recode.server.requests.ChatLocalRequester
+import io.github.homchom.recode.server.requests.ClientTimeRequester
+import io.github.homchom.recode.server.requests.NightVisionRequesters
 import io.github.homchom.recode.server.sendCommand
+import io.github.homchom.recode.server.state.DFStateDetector
 import io.github.homchom.recode.server.state.PlayState
 import io.github.homchom.recode.server.state.PlotMode
 import io.github.homchom.recode.sys.player.DFInfo
-import kotlinx.coroutines.launch
 
 // TODO: combine into one module per event after config is figured out
 
-val FAutoWand = autoCommand("/wand", ChangeDFStateEvent) { new ->
+val FAutoWand = autoCommand("/wand", DFStateDetector) { new ->
     if (Config.getBoolean("autowand")) {
         if (new is PlayState && new.mode == PlotMode.Build) sendCommand("/wand")
     }
 }
 
-val FAutoChatLocal = autoCommand("chat local", ChangeDFStateEvent) { new ->
+val FAutoChatLocal = autoCommand("chat local", DFStateDetector) { new ->
     if (Config.getBoolean("autoChatLocal") && !DFInfo.currentState.isInSession) {
-        if (new is PlayState) ChatLocal.requestIn(coroutineScope)
+        if (new is PlayState) ChatLocalRequester.requestIn(coroutineScope)
     }
 }
 
-val FAutoTime = autoCommand("time", ChangeDFStateEvent) { new ->
+val FAutoTime = autoCommand("time", DFStateDetector) { new ->
     if (Config.getBoolean("autotime") && !DFInfo.currentState.isInSession) {
         if (new is PlayState && new.mode != PlotMode.Play) {
-            ClientTime.requestIn(coroutineScope, Config.getLong("autotimeval"))
+            ClientTimeRequester.requestIn(coroutineScope, Config.getLong("autotimeval"))
         }
     }
 }
 
-val FAutoNightVision = autoCommand("nightvis", ChangeDFStateEvent) { new ->
+val FAutoNightVision = autoCommand("nightvis", DFStateDetector) { new ->
     if (Config.getBoolean("autonightvis") && !DFInfo.currentState.isInSession) {
         if (new is PlayState && new.mode != PlotMode.Play) {
-            coroutineScope.launch { NightVision.enable() }
+            NightVisionRequesters.enable.requestIn(coroutineScope)
         }
     }
 }
 
-val FAutoResetCompact = autoCommand("reset compact", ChangeDFStateEvent) { new ->
+val FAutoResetCompact = autoCommand("reset compact", DFStateDetector) { new ->
     if (Config.getBoolean("autoRC") && !DFInfo.currentState.isInSession) {
         if (new is PlayState && new.mode == PlotMode.Dev) sendCommand("reset compact")
     }
 }
 
-val FAutoLagSlayer = autoCommand("lagslayer", ChangeDFStateEvent) { new ->
+val FAutoLagSlayer = autoCommand("lagslayer", DFStateDetector) { new ->
     if (Config.getBoolean("autolagslayer") && !DFInfo.currentState.isInSession) {
         if (!LagslayerHUD.lagSlayerEnabled) {
             // TODO: execute silently without ChatUtil
