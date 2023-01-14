@@ -35,10 +35,6 @@ interface CustomHook<T, R : Any> : WrappedHook<T, R, HookListener<T, R>> {
      * be mutated.
      */
     fun run(context: T, initialValue: R): R
-
-    fun test() {
-        if (this is DependentHook) println(abc)
-    }
 }
 
 /**

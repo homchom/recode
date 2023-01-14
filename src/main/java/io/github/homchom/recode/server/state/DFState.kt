@@ -3,7 +3,7 @@
 
 package io.github.homchom.recode.server.state
 
-import io.github.homchom.recode.event.Requester
+import io.github.homchom.recode.event.RequesterModule
 import io.github.homchom.recode.event.nullaryRequester
 import io.github.homchom.recode.event.requester
 import io.github.homchom.recode.mc
@@ -99,7 +99,7 @@ fun LegacyState.toDFState(): DFState? {
 }
 
 data class LocateMessage(val username: String, val state: LocateState) {
-    companion object : Requester<String, LocateMessage> by requester(
+    companion object : RequesterModule<String, LocateMessage> by requester(
         ReceiveChatMessageEvent,
         start = { username -> sendCommand("locate $username") },
         trial = { username, text: Component, _ ->

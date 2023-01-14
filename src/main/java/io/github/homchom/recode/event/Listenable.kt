@@ -6,11 +6,11 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.*
 import java.util.function.Consumer
 
-interface Listenable<T> {
-    val notifications: Flow<T>
+sealed interface Listenable<T> {
+    fun getNotificationsFrom(module: ExposedModule): Flow<T>
 
     fun listenFrom(module: ExposedModule, block: Flow<T>.() -> Flow<T>) =
-        notifications.block().launchIn(module.coroutineScope)
+        getNotificationsFrom(module).block().launchIn(module.coroutineScope)
 
     fun listenEachFrom(module: ExposedModule, action: suspend (T) -> Unit) =
         listenFrom(module) { onEach(action) }
@@ -25,24 +25,30 @@ interface StateListenable<T> : Listenable<T> {
 }
 
 @JvmInline
-value class FlowListenable<T>(override val notifications: Flow<T>) : Listenable<T>
+value class FlowListenable<T>(private val notifications: Flow<T>) : Listenable<T> {
+    override fun getNotificationsFrom(module: ExposedModule) = notifications
+}
 
 @JvmInline
-value class StateFlowListenable<T>(override val notifications: StateFlow<T>) : StateListenable<T> {
+value class StateFlowListenable<T>(private val notifications: StateFlow<T>) : StateListenable<T> {
     override val currentState get() = notifications.value
+
+    override fun getNotificationsFrom(module: ExposedModule) = notifications
 }
 
 // TODO: asList or toList?
-fun <T> merge(vararg events: Listenable<out T>) = events.asList().merge()
+fun <T> merge(vararg events: Listenable<out T>, module: ExposedModule) = events.asList().merge(module)
 
-fun <T> List<Listenable<out T>>.merge() = FlowListenable(map { it.notifications }.merge())
+fun <T> List<Listenable<out T>>.merge(module: ExposedModule) =
+    FlowListenable(map { it.getNotificationsFrom(module) }.merge())
 
-fun <T> Listenable<out T>.mergeWith(vararg events: Listenable<out T>) = merge(this, *events)
+fun <T> Listenable<out T>.mergeWith(vararg events: Listenable<out T>, module: ExposedModule) =
+    merge(this, *events, module = module)
 
 class GroupListenable<T>(
     private val flattenMethod: (List<Flow<T>>) -> Flow<T> = { it.merge() }
 ) : Listenable<T> {
-    override var notifications = emptyFlow<T>()
+    private var notifications = emptyFlow<T>()
         get() {
             if (update) {
                 update = false
@@ -50,10 +56,11 @@ class GroupListenable<T>(
             }
             return field
         }
-        private set
 
     private val flows = mutableListOf<Flow<T>>()
     private var update = false
+
+    override fun getNotificationsFrom(module: ExposedModule) = notifications
 
     fun <S : Listenable<out T>> add(event: S) = event.apply {
         flows.add(notifications)

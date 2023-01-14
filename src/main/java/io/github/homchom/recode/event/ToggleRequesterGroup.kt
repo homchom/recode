@@ -29,9 +29,9 @@ inline fun <B> nullaryToggleRequesterGroup(
 }
 
 sealed interface ToggleRequesterGroup<T : Any> {
-    val toggle: Requester<T, Unit>
-    val enable: Requester<T, Unit>
-    val disable: Requester<T, Unit>
+    val toggle: RequesterModule<T, Unit>
+    val enable: RequesterModule<T, Unit>
+    val disable: RequesterModule<T, Unit>
 }
 
 private class ShortCircuitToggle<T : Any, B>(

@@ -14,10 +14,10 @@ import io.github.homchom.recode.util.unitOrNull
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 
-val currentDFState get() = DFStateDetector.currentState
+val currentDFState get() = DFStateDetectors.currentState
 
-object DFStateDetector : StateListenable<DFState?>, ExposedModule by exposedModule() {
-    private val group = GroupListenable<Case<DFState>>()
+object DFStateDetectors : StateListenable<Case<DFState?>>, ExposedModule by exposedModule() {
+    private val group = GroupListenable<Case<DFState?>>()
 
     val Join = group.add(nullaryDetector(JoinServerEvent) {
         isOnDF.unitOrNull()?.encase {
@@ -27,7 +27,9 @@ object DFStateDetector : StateListenable<DFState?>, ExposedModule by exposedModu
     })
 
     val ChangeMode = group.add(nullaryDetector(ReceiveChatMessageEvent) { message ->
-        PlotMode.match(message)?.encase { currentDFState!!.withState(requestLocate()) }
+        PlotMode.match(message)?.encase {
+            currentDFState()!!.withState(requestLocate()) as? DFState.OnPlot ?: fail()
+        }
     })
 
     val Leave = group.add(nullaryDetector(DisconnectFromServerEvent) { Case(null) })
@@ -35,13 +37,14 @@ object DFStateDetector : StateListenable<DFState?>, ExposedModule by exposedModu
     @Deprecated("Only for Java use")
     val Legacy = group.add(createEvent())
 
-    override val notifications: Flow<DFState?> get() = stateFlow
     override val currentState get() = stateFlow.value
 
     private val stateFlow by lazy {
-        group.notifications.map { it.content }
-            .stateIn(coroutineScope, SharingStarted.WhileSubscribed(), null)
+        group.getNotificationsFrom(this)
+            .stateIn(coroutineScope, SharingStarted.WhileSubscribed(), Case(null))
     }
+
+    override fun getNotificationsFrom(module: ExposedModule): Flow<Case<DFState?>> = stateFlow
 }
 
 private suspend fun requestLocate() = LocateMessage.request(mc.player!!.username).state

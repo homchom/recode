@@ -4,7 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import io.github.homchom.recode.mod.features.social.chat.message.LegacyMessage;
 import io.github.homchom.recode.server.state.DF;
-import io.github.homchom.recode.server.state.DFStateDetector;
+import io.github.homchom.recode.server.state.DFStateDetectors;
 import io.github.homchom.recode.util.Case;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -351,7 +351,7 @@ public class LegacyState {
     }
 
     private static void notifyStateChange(LegacyState newState) {
-        DFStateDetector.INSTANCE.getLegacy().run(new Case<>(DF.toDFState(newState)));
+        DFStateDetectors.INSTANCE.getLegacy().run(new Case<>(DF.toDFState(newState)));
     }
 
     public static class CurrentState extends LegacyState {

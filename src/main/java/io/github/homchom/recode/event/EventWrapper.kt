@@ -1,5 +1,6 @@
 package io.github.homchom.recode.event
 
+import io.github.homchom.recode.lifecycle.ExposedModule
 import io.github.homchom.recode.lifecycle.HookableModule
 import io.github.homchom.recode.lifecycle.RModule
 import kotlinx.coroutines.*
@@ -16,20 +17,22 @@ fun <T, R, H> wrapFabricEvent(event: Event<H>, transform: (HookListener<T, R>) -
  * @see wrapFabricEvent
  * @see createHookWithPhases
  */
-fun <T, R, H, P : EventPhase> wrapFabricEventWithPhases(
-    event: Event<H>,
-    transform: (HookListener<T, R>) -> H
-): WrappedPhasedHook<T, R, H, P> {
+fun <T, R, L, P : EventPhase> wrapFabricEventWithPhases(
+    event: Event<L>,
+    transform: (HookListener<T, R>) -> L
+): WrappedPhasedHook<T, R, L, P> {
     return EventWrapper(event, transform)
 }
 
-private open class EventWrapper<T, R, H, P : EventPhase>(
-    override val fabricEvent: Event<H>,
-    private val transform: (HookListener<T, R>) -> H
-) : WrappedPhasedHook<T, R, H, P> {
+private open class EventWrapper<T, R, L, P : EventPhase>(
+    private val fabricEvent: Event<L>,
+    private val transform: (HookListener<T, R>) -> L
+) : WrappedPhasedHook<T, R, L, P> {
     private val async = createEvent<T>()
 
-    override val notifications get() = async.notifications
+    override val invoker: L get() = fabricEvent.invoker()
+
+    override fun getNotificationsFrom(module: ExposedModule) = async.getNotificationsFrom(module)
 
     @Deprecated("Use hookFrom")
     override fun register(listener: HookListener<T, R>) = transformAndRegister(listener)

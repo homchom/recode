@@ -23,7 +23,7 @@ public class DFDiscordRPC implements ILoader {
 
     public static RichPresence.Builder builder;
     private static DFDiscordRPC instance;
-    private static DFState oldState = DF.getCurrentDFState();
+    private static DFState oldState = DF.getCurrentDFState().getContent();
     private static IPCClient client;
 
     private static final HashMap<String, String> vars = new HashMap<>();

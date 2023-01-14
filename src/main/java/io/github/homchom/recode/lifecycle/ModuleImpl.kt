@@ -52,7 +52,9 @@ private class UsageModule(private val details: ImmutableList<ModuleDetail>) : Ex
     private val _usages = mutableSetOf<RModule>()
 
     override val coroutineScope get() = scope
-    private lateinit var scope: CoroutineScope
+    private var scope = newCoroutineScope()
+
+    private fun newCoroutineScope() = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
     @MutatesModuleState
     override fun load() {
@@ -66,7 +68,6 @@ private class UsageModule(private val details: ImmutableList<ModuleDetail>) : Ex
         errorIf(isEnabled) { "enabled" }
         tryLoad()
         for (child in children) child.addUsage(this)
-        scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
         isEnabled = true
         forEachDetail { onEnable() }
     }
@@ -76,6 +77,7 @@ private class UsageModule(private val details: ImmutableList<ModuleDetail>) : Ex
         errorIf(!isEnabled) { "disabled" }
         for (child in children) child.removeUsage(this)
         scope.cancel()
+        scope = newCoroutineScope()
         isEnabled = false
         forEachDetail { onDisable() }
     }

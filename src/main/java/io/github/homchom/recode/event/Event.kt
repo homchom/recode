@@ -18,7 +18,10 @@ interface StateEvent<T> : SharedEvent<T>, StateListenable<T>
 private class SharedFlowEvent<T> private constructor(
     private val flow: MutableSharedFlow<T>
 ) : SharedEvent<T>, Listenable<T> by FlowListenable(flow) {
-    constructor() : this(MutableSharedFlow(onBufferOverflow = BufferOverflow.DROP_OLDEST))
+    constructor() : this(MutableSharedFlow(
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    ))
 
     // TODO: remove check()?
     override fun run(context: T) = check(flow.tryEmit(context))

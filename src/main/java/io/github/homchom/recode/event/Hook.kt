@@ -1,7 +1,6 @@
 package io.github.homchom.recode.event
 
 import io.github.homchom.recode.lifecycle.HookableModule
-import io.github.homchom.recode.lifecycle.MutatesModuleState
 import io.github.homchom.recode.lifecycle.RModule
 import net.fabricmc.fabric.api.event.Event
 import net.fabricmc.fabric.api.event.EventFactory
@@ -41,16 +40,14 @@ interface PhasedHook<T, R, P : EventPhase> : Hook<T, R> {
  * @param L The raw listener type.
  */
 interface WrappedHook<T, R, L> : Hook<T, R> {
-    val fabricEvent: Event<L>
-
-    val invoker: L get() = fabricEvent.invoker()
+    val invoker: L
 }
 
 /**
  * @see WrappedHook
  * @see PhasedHook
  */
-interface WrappedPhasedHook<T, R, H, P : EventPhase> : WrappedHook<T, R, H>, PhasedHook<T, R, P>
+interface WrappedPhasedHook<T, R, L, P : EventPhase> : WrappedHook<T, R, L>, PhasedHook<T, R, P>
 
 /**
  * A [Hook] with a boolean result; this should be used for events whose listeners "validate" it and
@@ -67,9 +64,6 @@ class DependentHook<T, R : Any>(
 ) : CustomHook<T, R> by delegate {
     private val children = children.clone()
 
-    val abc = 5
-
-    @MutatesModuleState
     override fun hookFrom(module: HookableModule, listener: HookListener<T, R>) {
         for (child in children) child.addParent(module)
         delegate.hookFrom(module, listener)

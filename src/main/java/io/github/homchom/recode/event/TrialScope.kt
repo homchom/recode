@@ -1,6 +1,7 @@
 package io.github.homchom.recode.event
 
 import io.github.homchom.recode.DEFAULT_TIMEOUT_DURATION
+import io.github.homchom.recode.lifecycle.ExposedModule
 import io.github.homchom.recode.util.NullableScope
 import io.github.homchom.recode.util.unitOrNull
 import kotlinx.coroutines.flow.Flow
@@ -9,7 +10,7 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.time.Duration
 
-class TrialScope(private val nullableScope: NullableScope) {
+class TrialScope(val module: ExposedModule, private val nullableScope: NullableScope) {
     private val enforced = mutableListOf<suspend () -> Unit>()
 
     fun <T : Any> test(value: T?) = testBoolean(value != null)
@@ -37,7 +38,7 @@ class TrialScope(private val nullableScope: NullableScope) {
         timeoutDuration: Duration,
         crossinline collector: suspend (Flow<C>) -> T
     ): T {
-        return event.notifications.let { flow ->
+        return event.getNotificationsFrom(module).let { flow ->
             withTimeoutOrNull(timeoutDuration) { collector(flow) } ?: fail()
         }.also { runEnforced() }
     }

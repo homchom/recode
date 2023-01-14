@@ -28,7 +28,8 @@ public class MBlockEntityRenderDispatcher {
 
 	@ModifyVariable(method = "render", at = @At("HEAD"), ordinal = 0, argsOnly = true)
 	public MultiBufferSource outlineBlockEntities(MultiBufferSource multiBufferSource, BlockEntity blockEntity) {
-		RGBAColor outlineColor = OutlineBlockEntityEvent.INSTANCE.run(blockEntity, new MutableCase<>()).getContent();
+		RGBAColor outlineColor = OutlineBlockEntityEvent.INSTANCE.run(blockEntity, new MutableCase<>(null))
+				.getContent();
 		if (outlineColor != null) {
 			return Blaze3DExtensions.withOutline(multiBufferSource, outlineColor);
 		}
