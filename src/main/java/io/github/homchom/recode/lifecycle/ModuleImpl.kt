@@ -51,8 +51,8 @@ private class UsageModule(private val details: ImmutableList<ModuleDetail>) : Ex
     val usages: Set<RModule> get() = _usages
     private val _usages = mutableSetOf<RModule>()
 
-    override val coroutineScope get() = scope
-    private var scope = newCoroutineScope()
+    override var coroutineScope = newCoroutineScope()
+        private set
 
     private fun newCoroutineScope() = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
@@ -76,8 +76,8 @@ private class UsageModule(private val details: ImmutableList<ModuleDetail>) : Ex
     override fun disable() {
         errorIf(!isEnabled) { "disabled" }
         for (child in children) child.removeUsage(this)
-        scope.cancel()
-        scope = newCoroutineScope()
+        coroutineScope.cancel()
+        coroutineScope = newCoroutineScope()
         isEnabled = false
         forEachDetail { onDisable() }
     }
@@ -89,7 +89,7 @@ private class UsageModule(private val details: ImmutableList<ModuleDetail>) : Ex
         _children += module
     }
 
-    override fun addParent(module: RModule) = module.addChild(this)
+    override fun addParent(module: RModule) = run { println("add parent"); module.addChild(this) }
 
     @MutatesModuleState
     override fun addUsage(module: ExposedModule) {

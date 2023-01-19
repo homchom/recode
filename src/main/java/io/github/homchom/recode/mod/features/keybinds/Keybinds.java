@@ -32,7 +32,6 @@ public class Keybinds implements ClientModInitializer {
         // =======================================================
         // Initialize
         // =======================================================
-
         // toggle play dev
         KeyMapping toggle_play_dev = KeyBindingHelper.registerKeyBinding(new KeyMapping(
                 "key.recode.toggle_play_dev", InputConstants.Type.KEYSYM, -1, "key.category.recode"));

@@ -44,6 +44,7 @@ interface ExposedModule : HookableModule {
 
     fun <T> Listenable<T>.listen(block: Flow<T>.() -> Flow<T>) = listenFrom(this@ExposedModule, block)
     fun <T> Listenable<T>.listenEach(block: suspend (T) -> Unit) = listenEachFrom(this@ExposedModule, block)
+    fun <T, S : Listenable<out T>> GroupListenable<T>.add(event: S) = addFrom(this@ExposedModule, event)
 
     @MutatesModuleState
     fun load()

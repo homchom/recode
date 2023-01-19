@@ -6,7 +6,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.*
 import java.util.function.Consumer
 
-sealed interface Listenable<T> {
+interface Listenable<T> {
     fun getNotificationsFrom(module: ExposedModule): Flow<T>
 
     fun listenFrom(module: ExposedModule, block: Flow<T>.() -> Flow<T>) =
@@ -62,8 +62,8 @@ class GroupListenable<T>(
 
     override fun getNotificationsFrom(module: ExposedModule) = notifications
 
-    fun <S : Listenable<out T>> add(event: S) = event.apply {
-        flows.add(notifications)
+    fun <S : Listenable<out T>> addFrom(module: ExposedModule, event: S) = event.also {
+        flows.add(it.getNotificationsFrom(module))
         update = true
     }
 }

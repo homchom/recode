@@ -5,15 +5,11 @@ package io.github.homchom.recode.util
 /**
  * A wrapper for [T]. Useful in generic contexts of a non-nullable upper bound.
  */
-class Case<out T>(val content: T) {
-    operator fun invoke() = content
-}
+data class Case<out T>(val content: T)
 
 /**
  * @see Case
  */
-class MutableCase<T>(var content: T) {
-    operator fun invoke() = content
-}
+data class MutableCase<T>(var content: T)
 
 inline fun <T, R> T.encase(block: (T) -> R) = Case(block(this))

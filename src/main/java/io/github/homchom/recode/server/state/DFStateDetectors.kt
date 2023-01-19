@@ -14,7 +14,7 @@ import io.github.homchom.recode.util.unitOrNull
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 
-val currentDFState get() = DFStateDetectors.currentState
+val currentDFState get() = DFStateDetectors.currentState.content
 
 object DFStateDetectors : StateListenable<Case<DFState?>>, ExposedModule by exposedModule() {
     private val group = GroupListenable<Case<DFState?>>()
@@ -28,7 +28,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>>, ExposedModule by expo
 
     val ChangeMode = group.add(nullaryDetector(ReceiveChatMessageEvent) { message ->
         PlotMode.match(message)?.encase {
-            currentDFState()!!.withState(requestLocate()) as? DFState.OnPlot ?: fail()
+            currentDFState!!.withState(requestLocate()) as? DFState.OnPlot ?: fail()
         }
     })
 

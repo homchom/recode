@@ -17,13 +17,7 @@ fun <T : Any, B, R : Any> detector(
     trial: Trial<T, B, R>
 ): DetectorModule<T, R> {
     val detail = TrialDetector(basis, timeoutDuration, trial)
-    val detectorModule = module(detail)
-    return object : DetectorModule<T, R>, Detector<T, R> by detail, RModule by detectorModule {
-        override fun getNotificationsFrom(module: ExposedModule): Flow<R> {
-            detectorModule.addParent(module)
-            return detail.getNotificationsFrom(module)
-        }
-    }
+    return SimpleDetectorModule(detail, module(detail))
 }
 
 inline fun <T : Any, B, R : Any> requester(
@@ -42,20 +36,14 @@ fun <T : Any, B, R : Any> shortCircuitRequester(
     trial: RequesterTrial<T, B, R>
 ): RequesterModule<T, R> {
     val detail = TrialRequester(basis, start, timeoutDuration, trial)
-    val requesterModule = module(detail)
-    return object : RequesterModule<T, R>, Requester<T, R> by detail, RModule by requesterModule {
-        override fun getNotificationsFrom(module: ExposedModule): Flow<R> {
-            requesterModule.addParent(module)
-            return detail.getNotificationsFrom(module)
-        }
-    }
+    return SimpleRequesterModule(detail, module(detail))
 }
 
 private sealed class DetectorDetail<T : Any, B, R : Any> : Detector<T, R>, ModuleDetail {
     protected abstract val basis: Listenable<B>
     abstract val timeoutDuration: Duration
 
-    protected open val event = createEvent<R>()
+    private val event = createEvent<R>()
 
     private val queue = ConcurrentLinkedQueue<Entry<T, R>>()
 
@@ -65,10 +53,8 @@ private sealed class DetectorDetail<T : Any, B, R : Any> : Detector<T, R>, Modul
         basis.listenEach { context ->
             for (entry in queue) {
                 val response = nullable {
-                    withContext(Dispatchers.IO) {
-                        TrialScope(this@onEnable, this@nullable).runTrial(entry, context)
-                            ?: fail()
-                    }
+                    val scope = TrialScope(this@onEnable, this@nullable)
+                    withContext(Dispatchers.IO) { scope.runTrial(entry, context) ?: fail() }
                 }
                 if (response != null) {
                     entry.response.complete(response)
@@ -131,4 +117,26 @@ private class TrialRequester<T : Any, B, R : Any>(
         override val input: T?,
         override val response: CompletableDeferred<R>
     ) : Entry<T, R>
+}
+
+private open class SimpleDetectorModule<T : Any, R : Any>(
+    private val detail: Detector<T, R>,
+    private val module: RModule
+) : DetectorModule<T, R>, Detector<T, R> by detail, RModule by module {
+    private var added = false
+
+    override fun getNotificationsFrom(module: ExposedModule): Flow<R> {
+        if (!added) {
+            added = true
+            this.module.addParent(module)
+        }
+        return detail.getNotificationsFrom(module)
+    }
+}
+
+private class SimpleRequesterModule<T : Any, R : Any>(
+    private val detail: Requester<T, R>,
+    module: RModule
+) : SimpleDetectorModule<T, R>(detail, module), RequesterModule<T, R> {
+    override suspend fun request(input: T) = detail.request(input)
 }

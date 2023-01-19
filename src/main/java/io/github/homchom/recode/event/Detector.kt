@@ -1,10 +1,8 @@
 package io.github.homchom.recode.event
 
 import io.github.homchom.recode.DEFAULT_TIMEOUT_DURATION
-import io.github.homchom.recode.lifecycle.ExposedModule
 import io.github.homchom.recode.lifecycle.RModule
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlin.time.Duration
 
@@ -52,20 +50,5 @@ inline fun <B, R : Any> nullaryRequester(
 ): RequesterModule<Unit, R> {
     return requester(basis, { start() }, timeoutDuration) { _, baseContext, isRequest ->
         trial(baseContext, isRequest)
-    }
-}
-
-/**
- * A [Detector] with children. When listened to by an [ExposedModule], the children will be implicitly added.
- */
-class DependentDetector<T : Any, R : Any>(
-    private val delegate: Detector<T, R>,
-    vararg children: RModule
-) : Detector<T, R> by delegate {
-    private val children = children.clone()
-
-    override fun getNotificationsFrom(module: ExposedModule): Flow<R> {
-        for (child in children) child.addParent(module)
-        return delegate.getNotificationsFrom(module)
     }
 }
