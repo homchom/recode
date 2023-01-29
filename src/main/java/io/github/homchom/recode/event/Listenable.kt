@@ -2,6 +2,7 @@ package io.github.homchom.recode.event
 
 import io.github.homchom.recode.lifecycle.ExposedModule
 import io.github.homchom.recode.lifecycle.GlobalModule
+import io.github.homchom.recode.lifecycle.RModule
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.*
 import java.util.function.Consumer

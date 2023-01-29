@@ -46,7 +46,10 @@ private class UsageModule(private val details: ImmutableList<ModuleDetail>) : Ex
         private set
 
     override val children get() = _children.immutable()
-    private val _children = mutableListOf<ExposedModule>()
+    private val _children = mutableSetOf<ExposedModule>()
+
+    override val parents get() = _parents.immutable()
+    private val _parents = mutableSetOf<RModule>()
 
     val usages: Set<RModule> get() = _usages
     private val _usages = mutableSetOf<RModule>()
@@ -85,11 +88,16 @@ private class UsageModule(private val details: ImmutableList<ModuleDetail>) : Ex
     private inline fun errorIf(value: Boolean, errorWord: () -> String) =
         check(!value) { "This module is already ${errorWord()}" }
 
+    @OptIn(MutatesModuleState::class)
     override fun addChild(module: ExposedModule) {
         _children += module
+        if (isEnabled) module.addUsage(this)
     }
 
-    override fun addParent(module: RModule) = run { println("add parent"); module.addChild(this) }
+    override fun addParent(module: RModule) {
+        _parents += module
+        module.addChild(this)
+    }
 
     @MutatesModuleState
     override fun addUsage(module: ExposedModule) {
@@ -103,7 +111,7 @@ private class UsageModule(private val details: ImmutableList<ModuleDetail>) : Ex
     }
 
     private inline fun forEachDetail(block: (ModuleDetail).() -> Unit) {
-        for (detail in details) with(detail) { block() }
+        for (detail in details) detail.block()
     }
 }
 

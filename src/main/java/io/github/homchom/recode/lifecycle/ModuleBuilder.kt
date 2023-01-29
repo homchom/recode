@@ -77,14 +77,17 @@ class ModuleBuilder : ModuleDetail {
 
     private fun action(): ModuleAction? = null
 
+    @BuildsRecursiveModule
     override fun ExposedModule.onLoad() {
         loadAction?.invoke(this)
     }
 
+    @BuildsRecursiveModule
     override fun ExposedModule.onEnable() {
         enableAction?.invoke(this)
     }
 
+    @BuildsRecursiveModule
     override fun ExposedModule.onDisable() {
         disableAction?.invoke(this)
     }
@@ -105,3 +108,7 @@ class ModuleBuilder : ModuleDetail {
         children.addAll(modules)
     }
 }
+
+@RequiresOptIn("This function of ModuleBuilder invokes from the builder itself. If called from module {}" +
+        "or a similar function, this is likely not intended", RequiresOptIn.Level.WARNING)
+annotation class BuildsRecursiveModule

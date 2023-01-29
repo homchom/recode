@@ -13,13 +13,13 @@ sealed interface Configurable : RModule {
  * Builds a [FeatureModule].
  */
 inline fun feature(name: String, builder: ModuleBuilderScope): FeatureModule =
-    SimpleFeatureModule(name, strongExposedModule(ModuleBuilder(builder)))
+    SimpleFeatureModule(name, strongExposedModule(builder = builder))
 
 /**
  * Builds a [FeatureGroupModule].
  */
 fun featureGroup(name: String, vararg features: FeatureModule): FeatureGroupModule =
-    FeatureGroup(*features).let { SimpleFeatureGroupModule(name, it, module(it)) }
+    FeatureGroup(*features, name = name).let { SimpleFeatureGroupModule(name, it, module(it)) }
 
 interface FeatureModule : Configurable, ExposedModule
 
@@ -28,28 +28,35 @@ sealed interface FeatureGroupModule : Configurable {
 }
 
 @OptIn(MutatesModuleState::class)
-class FeatureGroup(vararg features: FeatureModule) : ModuleDetail {
+class FeatureGroup(vararg features: FeatureModule, private val name: String) : ModuleDetail {
     val features = features.immutable()
 
     override fun children() = emptyModuleList()
 
     override fun ExposedModule.onLoad() {
-        for (feature in features) addParent(feature)
+        forEachFeature { addParent(it) }
     }
 
     override fun ExposedModule.onEnable() {
-        for (feature in features) feature.enable()
+        forEachFeature { it.enable() }
     }
 
     override fun ExposedModule.onDisable() {
-        for (feature in features) feature.disable()
+        forEachFeature { it.disable() }
+    }
+
+    private inline fun forEachFeature(block: (FeatureModule) -> Unit) {
+        for (feature in features) block(feature)
     }
 }
 
 /**
  * A simple [FeatureModule] that delegates to an [ExposedModule].
  */
-class SimpleFeatureModule(override val name: String, module: ExposedModule) : FeatureModule, ExposedModule by module
+class SimpleFeatureModule(
+    override val name: String,
+    moduleDelegate: ExposedModule
+) : FeatureModule, ExposedModule by moduleDelegate
 
 /**
  * A simple [FeatureGroupModule] that delegates to an [ExposedModule].
@@ -57,7 +64,7 @@ class SimpleFeatureModule(override val name: String, module: ExposedModule) : Fe
 class SimpleFeatureGroupModule(
     override val name: String,
     detail: FeatureGroup,
-    module: RModule
-) : FeatureGroupModule, RModule by module {
+    moduleDelegate: RModule
+) : FeatureGroupModule, RModule by moduleDelegate {
     override val features by detail::features
 }

@@ -5,7 +5,6 @@ import io.github.homchom.recode.lifecycle.*
 import io.github.homchom.recode.util.nullable
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -51,17 +50,18 @@ private sealed class DetectorDetail<T : Any, B, R : Any> : Detector<T, R>, Modul
 
     override fun ExposedModule.onEnable() {
         basis.listenEach { context ->
-            for (entry in queue) {
+            do {
+                val entry: Entry<T, R>? = queue.poll()
                 val response = nullable {
                     val scope = TrialScope(this@onEnable, this@nullable)
                     withContext(Dispatchers.IO) { scope.runTrial(entry, context) ?: fail() }
                 }
                 if (response != null) {
-                    entry.response.complete(response)
+                    entry?.response?.complete(response)
                     event.run(response)
                     break
                 }
-            }
+            } while (queue.isNotEmpty())
         }
     }
 
@@ -71,22 +71,22 @@ private sealed class DetectorDetail<T : Any, B, R : Any> : Detector<T, R>, Modul
 
     override suspend fun detect(input: T?) = addAndAwait { DetectEntry(input, it) }
 
-    protected suspend inline fun addAndAwait(entry: (CompletableDeferred<R>) -> Entry<T, R>): R? {
-        val response = CompletableDeferred<R>()
+    protected suspend inline fun addAndAwait(entry: (CompletableDeferred<R?>) -> Entry<T, R>): R? {
+        val response = CompletableDeferred<R?>()
         queue += entry(response)
         return withTimeoutOrNull(timeoutDuration) { response.await() }
     }
 
-    protected abstract suspend fun TrialScope.runTrial(entry: Entry<T, *>, baseContext: B): R?
+    protected abstract suspend fun TrialScope.runTrial(entry: Entry<T, *>?, baseContext: B): R?
 
     protected sealed interface Entry<T : Any, R : Any> {
         val input: T?
-        val response: CompletableDeferred<R>
+        val response: CompletableDeferred<R?>
     }
 
     private data class DetectEntry<T : Any, R : Any>(
         override val input: T?,
-        override val response: CompletableDeferred<R>
+        override val response: CompletableDeferred<R?>
     ) : Entry<T, R>
 }
 
@@ -95,8 +95,8 @@ private class TrialDetector<T : Any, B, R : Any>(
     override val timeoutDuration: Duration,
     private val trial: Trial<T, B, R>
 ) : DetectorDetail<T, B, R>() {
-    override suspend fun TrialScope.runTrial(entry: Entry<T, *>, baseContext: B) =
-        trial(entry.input, baseContext)
+    override suspend fun TrialScope.runTrial(entry: Entry<T, *>?, baseContext: B) =
+        trial(entry?.input, baseContext)
 }
 
 private class TrialRequester<T : Any, B, R : Any>(
@@ -105,8 +105,8 @@ private class TrialRequester<T : Any, B, R : Any>(
     override val timeoutDuration: Duration,
     private val trial: RequesterTrial<T, B, R>
 ) : DetectorDetail<T, B, R>(), Requester<T, R> {
-    override suspend fun TrialScope.runTrial(entry: Entry<T, *>, baseContext: B) =
-        trial(entry.input, baseContext, entry is RequestEntry)
+    override suspend fun TrialScope.runTrial(entry: Entry<T, *>?, baseContext: B) =
+        trial(entry?.input, baseContext, entry is RequestEntry)
 
     override suspend fun request(input: T): R {
         start(input)?.let { return it }
@@ -115,27 +115,18 @@ private class TrialRequester<T : Any, B, R : Any>(
 
     private data class RequestEntry<T : Any, R : Any>(
         override val input: T?,
-        override val response: CompletableDeferred<R>
+        override val response: CompletableDeferred<R?>
     ) : Entry<T, R>
 }
-
 private open class SimpleDetectorModule<T : Any, R : Any>(
-    private val detail: Detector<T, R>,
-    private val module: RModule
-) : DetectorModule<T, R>, Detector<T, R> by detail, RModule by module {
-    private var added = false
-
-    override fun getNotificationsFrom(module: ExposedModule): Flow<R> {
-        if (!added) {
-            added = true
-            this.module.addParent(module)
-        }
-        return detail.getNotificationsFrom(module)
-    }
+    private val detail: DetectorDetail<T, *, R>,
+    module: RModule
+) : DetectorModule<T, R>, Listenable<R> by DependentListenable(detail, module), RModule by module {
+    override suspend fun detect(input: T?) = detail.detect(input)
 }
 
 private class SimpleRequesterModule<T : Any, R : Any>(
-    private val detail: Requester<T, R>,
+    private val detail: TrialRequester<T, *, R>,
     module: RModule
 ) : SimpleDetectorModule<T, R>(detail, module), RequesterModule<T, R> {
     override suspend fun request(input: T) = detail.request(input)

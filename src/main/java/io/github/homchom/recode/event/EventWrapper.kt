@@ -32,6 +32,13 @@ private open class EventWrapper<T, R, L, P : EventPhase>(
 
     override val invoker: L get() = fabricEvent.invoker()
 
+    init {
+        transformAndRegister { context, result ->
+            async.run(context)
+            result
+        }
+    }
+
     override fun getNotificationsFrom(module: ExposedModule) = async.getNotificationsFrom(module)
 
     @Deprecated("Use hookFrom")

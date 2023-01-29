@@ -1,7 +1,6 @@
 package io.github.homchom.recode.event
 
 import io.github.homchom.recode.lifecycle.HookableModule
-import io.github.homchom.recode.lifecycle.RModule
 import net.fabricmc.fabric.api.event.Event
 import net.fabricmc.fabric.api.event.EventFactory
 import net.minecraft.resources.ResourceLocation
@@ -54,21 +53,6 @@ interface WrappedPhasedHook<T, R, L, P : EventPhase> : WrappedHook<T, R, L>, Pha
  * determine whether the action that caused it should proceed.
  */
 interface ValidatedHook<T> : Hook<T, Boolean>
-
-/**
- * A [CustomHook] with children. When listened to by a [HookableModule], the children will be implicitly added.
- */
-class DependentHook<T, R : Any>(
-    private val delegate: CustomHook<T, R>,
-    vararg children: RModule
-) : CustomHook<T, R> by delegate {
-    private val children = children.clone()
-
-    override fun hookFrom(module: HookableModule, listener: HookListener<T, R>) {
-        for (child in children) child.addParent(module)
-        delegate.hookFrom(module, listener)
-    }
-}
 
 /**
  * A wrapper for a Fabric [Event] phase.

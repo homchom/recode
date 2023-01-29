@@ -15,7 +15,8 @@ import kotlinx.coroutines.flow.Flow
  * @see strongModule
  */
 interface RModule {
-    val children: List<RModule>
+    val children: Set<RModule>
+    val parents: Set<RModule>
 
     val isLoaded: Boolean
     val isEnabled: Boolean

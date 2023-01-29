@@ -20,6 +20,7 @@ public class LegacyChangeStateEvent {
         if (state == null) MessageGrabber.reset();
 
         try {
+            System.out.println("setting state to " + state);
             DFDiscordRPC.getInstance().update(state);
             StateOverlayHandler.setState(state);
         } catch(Exception e) {

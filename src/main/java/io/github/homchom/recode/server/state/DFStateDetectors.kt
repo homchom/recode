@@ -16,8 +16,16 @@ import kotlinx.coroutines.flow.*
 
 val currentDFState get() = DFStateDetectors.currentState.content
 
-object DFStateDetectors : StateListenable<Case<DFState?>>, ExposedModule by exposedModule() {
+private val module = exposedModule()
+
+object DFStateDetectors : StateListenable<Case<DFState?>>, ExposedModule by module {
     private val group = GroupListenable<Case<DFState?>>()
+
+    private val event by lazy {
+        group.getNotificationsFrom(this)
+            .stateIn(coroutineScope, SharingStarted.WhileSubscribed(), Case(null))
+            .let { DependentStateListenable(StateFlowListenable(it), module) }
+    }
 
     val Join = group.add(nullaryDetector(JoinServerEvent) {
         isOnDF.unitOrNull()?.encase {
@@ -37,14 +45,9 @@ object DFStateDetectors : StateListenable<Case<DFState?>>, ExposedModule by expo
     @Deprecated("Only for Java use")
     val Legacy = group.add(createEvent())
 
-    override val currentState get() = stateFlow.value
+    override val currentState get() = event.currentState
 
-    private val stateFlow by lazy {
-        group.getNotificationsFrom(this)
-            .stateIn(coroutineScope, SharingStarted.WhileSubscribed(), Case(null))
-    }
-
-    override fun getNotificationsFrom(module: ExposedModule): Flow<Case<DFState?>> = stateFlow
+    override fun getNotificationsFrom(module: ExposedModule) = event.getNotificationsFrom(module)
 }
 
 private suspend fun requestLocate() = LocateMessage.request(mc.player!!.username).state

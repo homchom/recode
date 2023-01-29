@@ -14,7 +14,6 @@ import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.FormattedCharSequence;
 
 public class StateOverlayHandler {
-
     private static DFState state;
 
     public static void setState(DFState state) {
