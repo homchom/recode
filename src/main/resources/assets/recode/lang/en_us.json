@@ -183,8 +183,10 @@
     "config.recode.option.quicknumPrimaryAmount.tooltip": "Change how much a scroll changes the number.",
     "config.recode.option.quicknumSecondaryAmount": "Secondary Amount",
     "config.recode.option.quicknumSecondaryAmount.tooltip": "Change how much a scroll changes the number. (When holding CTRL)",
-    "config.recode.option.quicknumTertiaryAmount": "Secondary Amount",
+    "config.recode.option.quicknumTertiaryAmount": "Tertiary Amount",
     "config.recode.option.quicknumTertiaryAmount.tooltip": "Change how much a scroll changes the number. (When holding SHIFT)",
+    "config.recode.option.quicknumDelay": "Delay",
+    "config.recode.option.quicknumDelay.tooltip": "Minimum delay between each number change.\nToo low values might cause issues.",
 
     "config.recode.option.chestToolTip": "Chest Tooltip",
     "config.recode.option.chestToolTip.tooltip": "Display chest params when you are in dev",

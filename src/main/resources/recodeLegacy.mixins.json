@@ -24,6 +24,7 @@
     "render.MStitcher",
     "render.MWindow",
     "render.TextureMapAccessor",
+    "render.MAbstractContainerScreen",
     "render.screen.MCreativeInventoryScreen",
     "render.screen.MOptionsScreen"
   ],
