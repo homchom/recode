@@ -2,7 +2,6 @@ package io.github.homchom.recode.event
 
 import io.github.homchom.recode.lifecycle.ExposedModule
 import io.github.homchom.recode.lifecycle.GlobalModule
-import io.github.homchom.recode.lifecycle.RModule
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.*
 import java.util.function.Consumer
@@ -11,7 +10,7 @@ interface Listenable<T> {
     fun getNotificationsFrom(module: ExposedModule): Flow<T>
 
     fun listenFrom(module: ExposedModule, block: Flow<T>.() -> Flow<T>) =
-        getNotificationsFrom(module).block().launchIn(module.coroutineScope)
+        getNotificationsFrom(module).block().launchIn(module)
 
     fun listenEachFrom(module: ExposedModule, action: suspend (T) -> Unit) =
         listenFrom(module) { onEach(action) }
@@ -37,11 +36,15 @@ value class StateFlowListenable<T>(private val notifications: StateFlow<T>) : St
     override fun getNotificationsFrom(module: ExposedModule) = notifications
 }
 
+fun <T> Flow<T>.asListenable() = FlowListenable(this)
+
+fun <T> StateFlow<T>.asStateListenable() = StateFlowListenable(this)
+
 // TODO: asList or toList?
 fun <T> merge(vararg events: Listenable<out T>, module: ExposedModule) = events.asList().merge(module)
 
 fun <T> List<Listenable<out T>>.merge(module: ExposedModule) =
-    FlowListenable(map { it.getNotificationsFrom(module) }.merge())
+    map { it.getNotificationsFrom(module) }.merge().asListenable()
 
 fun <T> Listenable<out T>.mergeWith(vararg events: Listenable<out T>, module: ExposedModule) =
     merge(this, *events, module = module)

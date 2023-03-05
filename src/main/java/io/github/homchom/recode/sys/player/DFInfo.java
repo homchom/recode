@@ -1,8 +1,8 @@
 package io.github.homchom.recode.sys.player;
 
 import io.github.homchom.recode.LegacyRecode;
-import io.github.homchom.recode.server.state.DF;
-import io.github.homchom.recode.server.state.DFStateDetectors;
+import io.github.homchom.recode.server.DF;
+import io.github.homchom.recode.server.DFStateDetectors;
 import io.github.homchom.recode.sys.networking.LegacyState;
 import io.github.homchom.recode.util.Case;
 import net.minecraft.world.phys.Vec3;

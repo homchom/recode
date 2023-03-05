@@ -1,20 +1,14 @@
 package io.github.homchom.recode.feature.automation
 
 import io.github.homchom.recode.event.Listenable
-import io.github.homchom.recode.event.requestIn
 import io.github.homchom.recode.feature.FeatureModule
 import io.github.homchom.recode.feature.feature
 import io.github.homchom.recode.lifecycle.ExposedModule
 import io.github.homchom.recode.mod.config.Config
 import io.github.homchom.recode.mod.features.LagslayerHUD
-import io.github.homchom.recode.server.requests.ChatLocalRequester
-import io.github.homchom.recode.server.requests.ClientTimeRequester
-import io.github.homchom.recode.server.requests.NightVisionRequesters
-import io.github.homchom.recode.server.sendCommand
-import io.github.homchom.recode.server.state.DFStateDetectors
-import io.github.homchom.recode.server.state.PlayState
-import io.github.homchom.recode.server.state.PlotMode
+import io.github.homchom.recode.server.*
 import io.github.homchom.recode.sys.player.DFInfo
+import kotlinx.coroutines.launch
 
 // TODO: combine into one module per event after config is figured out
 
@@ -26,14 +20,14 @@ val FAutoWand = autoCommand("/wand", DFStateDetectors.ChangeMode) { (new) ->
 
 val FAutoChatLocal = autoCommand("chat local", DFStateDetectors) { (new) ->
     if (Config.getBoolean("autoChatLocal") && !DFInfo.currentState.isInSession) {
-        if (new is PlayState) ChatLocalRequester.requestIn(coroutineScope)
+        if (new is PlayState) launch { ChatLocalRequester.requestNext() }
     }
 }
 
 val FAutoTime = autoCommand("time", DFStateDetectors.ChangeMode) { (new) ->
     if (Config.getBoolean("autotime") && !DFInfo.currentState.isInSession) {
         if (new.mode != PlotMode.Play) {
-            ClientTimeRequester.requestIn(coroutineScope, Config.getLong("autotimeval"))
+            launch { ClientTimeRequester.requestNext(Config.getLong("autotimeval")) }
         }
     }
 }
@@ -41,7 +35,7 @@ val FAutoTime = autoCommand("time", DFStateDetectors.ChangeMode) { (new) ->
 val FAutoNightVision = autoCommand("nightvis", DFStateDetectors.ChangeMode) { (new) ->
     if (Config.getBoolean("autonightvis") && !DFInfo.currentState.isInSession) {
         if (new.mode != PlotMode.Play) {
-            NightVisionRequesters.enable.requestIn(coroutineScope)
+            launch { NightVisionRequesters.enable.requestNext() }
         }
     }
 }

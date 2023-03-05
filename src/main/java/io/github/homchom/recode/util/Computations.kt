@@ -31,7 +31,9 @@ interface Computation<out S, out F> {
 }
 
 sealed interface FailScope<T> {
-    fun fail(value: T): Nothing = throw FailureException(value)
+    fun fail(value: T): Nothing = throw ConcreteFailureException(value)
 }
 
-class FailureException(val value: Any?) : Exception()
+sealed class FailureException(val value: Any?) : Exception()
+
+private class ConcreteFailureException(value: Any?) : FailureException(value)

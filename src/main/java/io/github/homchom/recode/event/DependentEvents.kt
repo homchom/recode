@@ -3,19 +3,25 @@ package io.github.homchom.recode.event
 import io.github.homchom.recode.lifecycle.*
 import kotlinx.coroutines.flow.Flow
 
-@Suppress("FunctionName")
-inline fun <T> DependentListenable(
-    delegate: Listenable<T> = createEvent(),
-    dependencyBuilder: ModuleBuilderScope
-): DependentListenable<T> {
-    return DependentListenable(delegate, module(builder = dependencyBuilder))
-}
+inline fun <T> DependentListenable(delegate: Listenable<T>, dependencyBuilder: ModuleBuilderScope) =
+    DependentListenable(delegate, module(builder = dependencyBuilder))
 
 inline fun <T> DependentStateListenable(delegate: StateListenable<T>, dependencyBuilder: ModuleBuilderScope) =
     DependentStateListenable(delegate, module(builder = dependencyBuilder))
 
-inline fun <T> DependentStateListenable(initialValue: T, dependencyBuilder: ModuleBuilderScope) =
-    DependentStateListenable(createStateEvent(initialValue), module(builder = dependencyBuilder))
+@Suppress("FunctionName")
+inline fun <T> DependentEvent(
+    delegate: SharedEvent<T> = createEvent(),
+    dependencyBuilder: ModuleBuilderScope
+): DependentEvent<T> {
+    return DependentEvent(delegate, module(builder = dependencyBuilder))
+}
+
+inline fun <T> DependentStateEvent(delegate: StateEvent<T>, dependencyBuilder: ModuleBuilderScope) =
+    DependentStateEvent(delegate, module(builder = dependencyBuilder))
+
+inline fun <T> DependentStateEvent(initialValue: T, dependencyBuilder: ModuleBuilderScope) =
+    DependentStateEvent(createStateEvent(initialValue), dependencyBuilder)
 
 @Suppress("FunctionName")
 inline fun <T, R : Any> DependentHook(
@@ -36,9 +42,23 @@ class DependentListenable<T>(
 class DependentStateListenable<T>(
     private val delegate: StateListenable<T>,
     private val dependency: RModule
-) : StateListenable<T> {
-    override val currentState get() = delegate.currentState
+) : StateListenable<T> by delegate {
+    override fun getNotificationsFrom(module: ExposedModule) =
+        delegate.getNotificationsDependent(module, dependency)
+}
 
+class DependentEvent<T>(
+    private val delegate: SharedEvent<T>,
+    private val dependency: RModule
+) : SharedEvent<T> by delegate {
+    override fun getNotificationsFrom(module: ExposedModule) =
+        delegate.getNotificationsDependent(module, dependency)
+}
+
+class DependentStateEvent<T>(
+    private val delegate: StateEvent<T>,
+    private val dependency: RModule
+) : StateEvent<T> by delegate {
     override fun getNotificationsFrom(module: ExposedModule) =
         delegate.getNotificationsDependent(module, dependency)
 }
@@ -60,6 +80,6 @@ class DependentHook<T, R : Any>(
 }
 
 private fun <T> Listenable<T>.getNotificationsDependent(module: ExposedModule, dependency: RModule): Flow<T> {
-    if (module !in dependency.parents) dependency.addParent(module)
+    module.depend(dependency)
     return getNotificationsFrom(module)
 }

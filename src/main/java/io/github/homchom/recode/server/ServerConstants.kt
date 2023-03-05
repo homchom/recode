@@ -1,3 +1,5 @@
+@file:JvmName("ServerConstants")
+
 package io.github.homchom.recode.server
 
 import org.intellij.lang.annotations.RegExp
@@ -7,3 +9,6 @@ import org.intellij.lang.annotations.RegExp
 
 const val GREEN_ARROW_CHAR = '»'
 const val RIGHT_ARROW_CHAR = '→'
+const val BOOSTER_ARROW_SYMBOL = "⏵⏵"
+
+const val TOKEN_NOTCH_CHAR = '□'

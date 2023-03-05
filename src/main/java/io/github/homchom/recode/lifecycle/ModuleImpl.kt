@@ -34,7 +34,7 @@ private inline fun createModule(
     val detailList = details.toList().immutable()
     return constructor(detailList).apply {
         for (detail in detailList) {
-            for (child in detail.children()) child.addParent(this)
+            for (child in detail.children()) depend(child)
         }
     }
 }
@@ -48,27 +48,25 @@ private class UsageModule(private val details: ImmutableList<ModuleDetail>) : Ex
     override val children get() = _children.immutable()
     private val _children = mutableSetOf<ExposedModule>()
 
-    override val parents get() = _parents.immutable()
-    private val _parents = mutableSetOf<RModule>()
-
     val usages: Set<RModule> get() = _usages
     private val _usages = mutableSetOf<RModule>()
 
-    override var coroutineScope = newCoroutineScope()
-        private set
+    private var coroutineScope = newCoroutineScope()
+
+    override val coroutineContext get() = coroutineScope.coroutineContext
 
     private fun newCoroutineScope() = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
     @MutatesModuleState
     override fun load() {
-        errorIf(isLoaded) { "loaded" }
+        errorIf(isLoaded) { "is loaded" }
         isLoaded = true
         forEachDetail { onLoad() }
     }
 
     @MutatesModuleState
     override fun enable() {
-        errorIf(isEnabled) { "enabled" }
+        errorIf(isEnabled) { "is enabled" }
         tryLoad()
         for (child in children) child.addUsage(this)
         isEnabled = true
@@ -77,7 +75,7 @@ private class UsageModule(private val details: ImmutableList<ModuleDetail>) : Ex
 
     @MutatesModuleState
     override fun disable() {
-        errorIf(!isEnabled) { "disabled" }
+        errorIf(!isEnabled) { "is disabled" }
         for (child in children) child.removeUsage(this)
         coroutineScope.cancel()
         coroutineScope = newCoroutineScope()
@@ -86,16 +84,22 @@ private class UsageModule(private val details: ImmutableList<ModuleDetail>) : Ex
     }
 
     private inline fun errorIf(value: Boolean, errorWord: () -> String) =
-        check(!value) { "This module is already ${errorWord()}" }
+        check(!value) { "This module already ${errorWord()}" }
 
     @OptIn(MutatesModuleState::class)
     override fun addChild(module: ExposedModule) {
+        errorIf(module in children) { "has this child" }
         _children += module
         if (isEnabled) module.addUsage(this)
     }
 
+    @Suppress("RedundantOverride")
+    override fun equals(other: Any?) = super.equals(other)
+
+    @Suppress("RedundantOverride")
+    override fun hashCode() = super.hashCode()
+
     override fun addParent(module: RModule) {
-        _parents += module
         module.addChild(this)
     }
 

@@ -2,9 +2,9 @@ package io.github.homchom.recode.mod.features.streamer;
 
 import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.Config;
-import io.github.homchom.recode.server.state.DFState;
-import io.github.homchom.recode.server.state.PlayState;
-import io.github.homchom.recode.server.state.PlotMode;
+import io.github.homchom.recode.server.DFState;
+import io.github.homchom.recode.server.PlayState;
+import io.github.homchom.recode.server.PlotMode;
 import io.github.homchom.recode.sys.player.chat.MessageGrabber;
 
 public class StreamerModeHandler {

@@ -5,13 +5,13 @@ import kotlin.time.Duration
 
 fun <T : Any, B> toggleRequesterGroup(
     basis: Listenable<B>,
-    start: TrialStart<T>,
+    start: suspend (input: T?) -> Unit,
     timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION,
     enabledPredicate: () -> Boolean,
-    enabledTrial: RequesterTrial<T, B, Unit>,
-    disabledTrial: RequesterTrial<T, B, Unit>
+    enabledTests: RequesterTrial.Tester<T, B, Unit>,
+    disabledTests: RequesterTrial.Tester<T, B, Unit>
 ) : ToggleRequesterGroup<T> {
-    return ShortCircuitToggle(basis, start, timeoutDuration, enabledPredicate, enabledTrial, disabledTrial)
+    return ShortCircuitToggle(basis, start, timeoutDuration, enabledPredicate, enabledTests, disabledTests)
 }
 
 inline fun <B> nullaryToggleRequesterGroup(
@@ -19,12 +19,12 @@ inline fun <B> nullaryToggleRequesterGroup(
     crossinline start: suspend () -> Unit,
     timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION,
     noinline enabledPredicate: () -> Boolean,
-    crossinline enabledTrial: NullaryRequesterTrial<B, Unit>,
-    crossinline disabledTrial: NullaryRequesterTrial<B, Unit>
+    enabledTests: RequesterTrial.NullaryTester<B, Unit>,
+    disabledTests: RequesterTrial.NullaryTester<B, Unit>
 ) : ToggleRequesterGroup<Unit> {
     return toggleRequesterGroup(basis, { start() }, timeoutDuration, enabledPredicate,
-        enabledTrial = { _, baseContext, isRequest -> enabledTrial(baseContext, isRequest) },
-        disabledTrial = { _, baseContext, isRequest -> disabledTrial(baseContext, isRequest) }
+        enabledTests = enabledTests.toUnary(),
+        disabledTests = disabledTests.toUnary()
     )
 }
 
@@ -36,37 +36,30 @@ sealed interface ToggleRequesterGroup<T : Any> {
 
 private class ShortCircuitToggle<T : Any, B>(
     basis: Listenable<B>,
-    start: TrialStart<T>,
+    start: suspend (input: T?) -> Unit,
     timeoutDuration: Duration,
     enabledPredicate: () -> Boolean,
-    enabledTrial: RequesterTrial<T, B, Unit>,
-    disabledTrial: RequesterTrial<T, B, Unit>
+    enabledTests: RequesterTrial.Tester<T, B, Unit>,
+    disabledTests: RequesterTrial.Tester<T, B, Unit>
 ) : ToggleRequesterGroup<T> {
-    override val toggle = requester(basis, start, timeoutDuration) { input, baseContext, isRequest ->
-        if (enabledPredicate()) {
-            enabledTrial(input, baseContext, isRequest)
-        } else {
-            disabledTrial(input, baseContext, isRequest)
-        }
-    }
-
-    override val enable = shortCircuitRequester(
-        basis, startIf(enabledPredicate, start), timeoutDuration, enabledTrial
-    )
-
-    override val disable = shortCircuitRequester(
-        basis, startIf({ !enabledPredicate() }, start), timeoutDuration, enabledTrial
-    )
-
-    private inline fun startIf(
-        crossinline predicate: () -> Boolean,
-        crossinline start: TrialStart<T>
-    ): ShortCircuitTrialStart<T, Unit?> {
-        return { input: T ->
-            if (predicate()) Unit else {
-                start(input)
-                null
+    override val toggle = requester(
+        trial(basis, start) { input, baseContext, isRequest ->
+            if (enabledPredicate()) {
+                enabledTests.runTestsIn(this, input, baseContext, isRequest)
+            } else {
+                disabledTests.runTestsIn(this, input, baseContext, isRequest)
             }
-        }
-    }
+        },
+        timeoutDuration = timeoutDuration
+    )
+
+    override val enable = requester(
+        shortCircuitTrial(basis, { if (!enabledPredicate()) start(it) else null }, enabledTests),
+        timeoutDuration = timeoutDuration
+    )
+
+    override val disable = requester(
+        shortCircuitTrial(basis, { if (enabledPredicate()) start(it) else null }, enabledTests),
+        timeoutDuration = timeoutDuration
+    )
 }

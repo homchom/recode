@@ -3,8 +3,8 @@ package io.github.homchom.recode.mod.events.impl;
 import io.github.homchom.recode.mod.features.StateOverlayHandler;
 import io.github.homchom.recode.mod.features.discordrpc.DFDiscordRPC;
 import io.github.homchom.recode.mod.features.streamer.StreamerModeHandler;
-import io.github.homchom.recode.server.state.DFState;
-import io.github.homchom.recode.server.state.DFStateDetectors;
+import io.github.homchom.recode.server.DFState;
+import io.github.homchom.recode.server.DFStateDetectors;
 import io.github.homchom.recode.sys.player.chat.MessageGrabber;
 import io.github.homchom.recode.util.Case;
 
@@ -20,7 +20,6 @@ public class LegacyChangeStateEvent {
         if (state == null) MessageGrabber.reset();
 
         try {
-            System.out.println("setting state to " + state);
             DFDiscordRPC.getInstance().update(state);
             StateOverlayHandler.setState(state);
         } catch(Exception e) {

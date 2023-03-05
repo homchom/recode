@@ -1,6 +1,13 @@
 package io.github.homchom.recode.server
 
 import io.github.homchom.recode.event.*
+import io.github.homchom.recode.mc
+import io.github.homchom.recode.server.message.LocateMessage
+import io.github.homchom.recode.server.message.TipMessage
+import io.github.homchom.recode.ui.equalsUnstyled
+import io.github.homchom.recode.ui.matchEntireUnstyled
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.Disconnect
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.Join
@@ -24,6 +31,30 @@ object DisconnectFromServerEvent :
 data class ServerJoinContext(val handler: ClientPacketListener, val sender: PacketSender, val client: Minecraft)
 data class ServerDisconnectContext(val handler: ClientPacketListener, val client: Minecraft)
 
+private val patchRegex = Regex("""Current patch: (.+). See the patch notes with /patch!""")
+
+object JoinDFDetector :
+    Detector<Unit, JoinDFInfo> by detector(nullaryTrial(JoinServerEvent) {
+        if (!ipMatchesDF) fail()
+        enforceOn(DisconnectFromServerEvent) { null }
+        +testBooleanOn(ReceiveChatMessageEvent, 3u) {
+            it.equalsUnstyled("◆ Welcome back to DiamondFire! ◆")
+        }
+        val patch = +testOn(ReceiveChatMessageEvent) { patchRegex.matchEntireUnstyled(it)?.groupValues?.get(1) }
+
+        coroutineScope {
+            val tipPlayer = async { testBy(TipMessage, null).value?.player }
+            val state = mc.player?.run { (+testBy(LocateMessage, username, attempts = 5u)).state } ?: fail()
+            JoinDFInfo(state.node, patch, tipPlayer.await())
+        }
+    })
+
+data class JoinDFInfo(val node: Node, val patch: String, val tipPlayer: String?)
+
 object ReceiveChatMessageEvent :
     CustomHook<Component, Boolean> by createHook(),
     ValidatedHook<Component>
+
+object SendCommandEvent :
+    CustomHook<String, Boolean> by createHook(),
+    ValidatedHook<String>

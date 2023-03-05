@@ -3,6 +3,7 @@ package io.github.homchom.recode.mod.events.impl;
 import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.server.ReceiveChatMessageEvent;
+import io.github.homchom.recode.server.ServerConstants;
 import io.github.homchom.recode.sys.networking.LegacyState;
 import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.ChatType;
@@ -18,14 +19,20 @@ import java.util.regex.Pattern;
 
 public class LegacyReceiveChatMessageEvent {
     public LegacyReceiveChatMessageEvent() {
+        var pattern = "§x§a§a§5§5§f§f⏵⏵ §f§l(" + ServerConstants.USERNAME_PATTERN + ")§7 is using a §x§f§f§f§f§a§a§l2§x§f§f§f§f§a§a§lx§7 booster.";
+        tipPlayerRegex = Pattern.compile(pattern);
         ReceiveChatMessageEvent.INSTANCE.register(this::run);
     }
 
     public static boolean pjoin = false;
 
+    // TODO: improve
     public static String tipPlayer = "";
 
+    private final Pattern tipPlayerRegex;
+
     public boolean run(Component message, boolean send) {
+        System.out.println("receiving message: " + message.getString());
         Minecraft mc = Minecraft.getInstance();
 
         if (mc.player == null) return false;
@@ -157,8 +164,13 @@ public class LegacyReceiveChatMessageEvent {
         }
 
         if (Config.getBoolean("autoTip") && msgToString.startsWith("⏵⏵ ")) {
-            if (msgWithColor.matches("§x§a§a§5§5§f§f⏵⏵ §f§l\\w+§7 is using a §x§f§f§f§f§a§a§l2§x§f§f§f§f§a§a§lx§7 booster.")) {
-                tipPlayer = msgToString.split("§f§l")[1].split("§7")[0];
+            var matcher = tipPlayerRegex.matcher(msgToString);
+            if (matcher.matches()) {
+                System.out.println("");
+                for (int i = 0; i < matcher.groupCount(); i++) {
+                    System.out.println("Group " + i + ": " + matcher.group(i));
+                }
+                tipPlayer = matcher.group(1);
             } else if (msgWithColor.matches("§x§a§a§5§5§f§f⏵⏵ §7Use §x§f§f§f§f§a§a/tip§7 to show your appreciation and receive a §x§f§f§d§4§2§a□ token notch§7!")) {
                 LegacyRecode.executor.submit(() -> {
                     try {

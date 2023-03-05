@@ -8,10 +8,10 @@ import com.jagrosh.discordipc.exceptions.NoDiscordClientException;
 import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.Recode;
 import io.github.homchom.recode.mod.config.Config;
-import io.github.homchom.recode.server.state.DF;
-import io.github.homchom.recode.server.state.DFState;
-import io.github.homchom.recode.server.state.PlayState;
-import io.github.homchom.recode.server.state.SpawnState;
+import io.github.homchom.recode.server.DF;
+import io.github.homchom.recode.server.DFState;
+import io.github.homchom.recode.server.PlayState;
+import io.github.homchom.recode.server.SpawnState;
 import io.github.homchom.recode.sys.file.ILoader;
 import io.github.homchom.recode.util.BasicTypeExtensions;
 

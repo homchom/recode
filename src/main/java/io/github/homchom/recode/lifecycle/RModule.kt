@@ -16,13 +16,19 @@ import kotlinx.coroutines.flow.Flow
  */
 interface RModule {
     val children: Set<RModule>
-    val parents: Set<RModule>
 
     val isLoaded: Boolean
     val isEnabled: Boolean
 
     fun addParent(module: RModule)
     fun addChild(module: ExposedModule)
+
+    fun depend(module: RModule) {
+        if (module !in children) module.addParent(this)
+    }
+
+    override operator fun equals(other: Any?): Boolean
+    override fun hashCode(): Int
 }
 
 /**
@@ -40,12 +46,36 @@ interface HookableModule : RModule {
  * functions for mutating active state. This should be used when creating module 2subtypes, not when creating
  * top-level modules directly.
  */
-interface ExposedModule : HookableModule {
-    val coroutineScope: CoroutineScope
+interface ExposedModule : HookableModule, CoroutineScope {
+    fun <T> Listenable<T>.listen(block: Flow<T>.() -> Flow<T>) =
+        listenFrom(this@ExposedModule, block)
 
-    fun <T> Listenable<T>.listen(block: Flow<T>.() -> Flow<T>) = listenFrom(this@ExposedModule, block)
-    fun <T> Listenable<T>.listenEach(block: suspend (T) -> Unit) = listenEachFrom(this@ExposedModule, block)
-    fun <T, S : Listenable<out T>> GroupListenable<T>.add(event: S) = addFrom(this@ExposedModule, event)
+    fun <T> Listenable<T>.listenEach(block: suspend (T) -> Unit) =
+        listenEachFrom(this@ExposedModule, block)
+
+    suspend fun <T : Any, R : Any> Detector<T, R>.detect(input: T?, basis: Listenable<*>? = null) =
+        detectFrom(this@ExposedModule, input, basis)
+
+    suspend fun <T : Any, R : Any> Detector<T, R>.checkNext(
+        input: T?,
+        basis: Listenable<*>? = null,
+        attempts: UInt = 1u
+    ): R? {
+        return checkNextFrom(this@ExposedModule, input, basis, attempts)
+    }
+
+    suspend fun <T : Any, R : Any> Requester<T, R>.request(input: T) =
+        requestFrom(this@ExposedModule, input)
+
+    suspend fun <T : Any, R : Any> Requester<T, R>.requestNext(input: T, attempts: UInt = 1u) =
+        requestNextFrom(this@ExposedModule, input, attempts)
+
+    fun <T, S : Listenable<out T>> GroupListenable<T>.add(event: S) =
+        addFrom(this@ExposedModule, event)
+
+    suspend fun <R : Any> Requester<Unit, R>.request() = request(Unit)
+
+    suspend fun <R : Any> Requester<Unit, R>.requestNext(attempts: UInt = 1u) = requestNext(Unit, attempts)
 
     @MutatesModuleState
     fun load()

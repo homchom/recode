@@ -7,6 +7,7 @@
     "render.MBlockEntityRenderDispatcher",
     "render.MLevelRenderer",
     "server.MClientPacketListener",
+    "server.MLocalPlayer",
     "server.MPlayerInfo"
   ],
   "server": [],
