@@ -8,6 +8,11 @@ import kotlinx.coroutines.flow.Flow
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.time.Duration
 
+/**
+ * Creates a [DetectorModule] that runs via one or more [trials].
+ *
+ * @see DetectorTrial
+ */
 fun <T : Any, R : Any> detector(
     vararg trials: DetectorTrial<T, R>,
     timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION
@@ -16,6 +21,11 @@ fun <T : Any, R : Any> detector(
     return SimpleDetectorModule(detail, module(detail))
 }
 
+/**
+ * Creates a [RequesterModule] that runs via one or more [trials].
+ *
+ * @see RequesterTrial
+ */
 fun <T : Any, R : Any> requester(
     vararg trials: RequesterTrial<T, R>,
     timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION
@@ -26,7 +36,6 @@ fun <T : Any, R : Any> requester(
 
 private sealed class DetectorDetail<T : Any, R : Any, S> : Detector<T, R>, ModuleDetail {
     protected abstract val trials: List<Trial<S>>
-    abstract val timeoutDuration: Duration
 
     private val event = createEvent<R>()
 
@@ -164,6 +173,8 @@ private open class SimpleDetectorModule<T : Any, R : Any>(
     private val detail: DetectorDetail<T, R, *>,
     module: RModule
 ) : DetectorModule<T, R>, RModule by module {
+    override val timeoutDuration get() = detail.timeoutDuration
+
     override fun getNotificationsFrom(module: ExposedModule): Flow<R> {
         module.depend(this)
         return detail.getNotificationsFrom(module)

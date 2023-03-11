@@ -9,7 +9,6 @@ inline fun <T> DependentListenable(delegate: Listenable<T>, dependencyBuilder: M
 inline fun <T> DependentStateListenable(delegate: StateListenable<T>, dependencyBuilder: ModuleBuilderScope) =
     DependentStateListenable(delegate, module(builder = dependencyBuilder))
 
-@Suppress("FunctionName")
 inline fun <T> DependentEvent(
     delegate: SharedEvent<T> = createEvent(),
     dependencyBuilder: ModuleBuilderScope
@@ -23,7 +22,6 @@ inline fun <T> DependentStateEvent(delegate: StateEvent<T>, dependencyBuilder: M
 inline fun <T> DependentStateEvent(initialValue: T, dependencyBuilder: ModuleBuilderScope) =
     DependentStateEvent(createStateEvent(initialValue), dependencyBuilder)
 
-@Suppress("FunctionName")
 inline fun <T, R : Any> DependentHook(
     delegate: CustomHook<T, R> = createHook(),
     dependencyBuilder: ModuleBuilderScope
@@ -31,6 +29,9 @@ inline fun <T, R : Any> DependentHook(
     return DependentHook(delegate, module(builder = dependencyBuilder))
 }
 
+/**
+ * A [Listenable] with a [dependency] that is respected by listening modules.
+ */
 class DependentListenable<T>(
     private val delegate: Listenable<T>,
     private val dependency: RModule
@@ -39,6 +40,10 @@ class DependentListenable<T>(
         delegate.getNotificationsDependent(module, dependency)
 }
 
+/**
+ * @see DependentListenable
+ * @see StateListenable
+ */
 class DependentStateListenable<T>(
     private val delegate: StateListenable<T>,
     private val dependency: RModule
@@ -47,6 +52,10 @@ class DependentStateListenable<T>(
         delegate.getNotificationsDependent(module, dependency)
 }
 
+/**
+ * @see DependentListenable
+ * @see SharedEvent
+ */
 class DependentEvent<T>(
     private val delegate: SharedEvent<T>,
     private val dependency: RModule
@@ -55,6 +64,10 @@ class DependentEvent<T>(
         delegate.getNotificationsDependent(module, dependency)
 }
 
+/**
+ * @see DependentListenable
+ * @see StateEvent
+ */
 class DependentStateEvent<T>(
     private val delegate: StateEvent<T>,
     private val dependency: RModule
@@ -64,7 +77,8 @@ class DependentStateEvent<T>(
 }
 
 /**
- * A [CustomHook] with children. When listened to by a [HookableModule], the children will be implicitly added.
+ * @see DependentListenable
+ * @see CustomHook
  */
 class DependentHook<T, R : Any>(
     private val delegate: CustomHook<T, R>,

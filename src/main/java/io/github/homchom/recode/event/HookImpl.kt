@@ -5,6 +5,7 @@ import io.github.homchom.recode.lifecycle.HookableModule
 import io.github.homchom.recode.lifecycle.RModule
 import kotlinx.coroutines.*
 import net.fabricmc.fabric.api.event.Event
+import net.fabricmc.fabric.api.event.EventFactory
 
 /**
  * Wraps an existing Fabric [Event] into a [Hook], using [transform] to map recode listeners to its
@@ -23,6 +24,24 @@ fun <T, R, L, P : EventPhase> wrapFabricEventWithPhases(
 ): WrappedPhasedHook<T, R, L, P> {
     return EventWrapper(event, transform)
 }
+
+/**
+ * Creates a custom [Hook].
+ *
+ * @see CustomHook
+ * @see EventFactory.createArrayBacked
+ */
+fun <T, R : Any> createHook(): CustomHook<T, R> =
+    CustomPhasedHookable<_, _, EventPhase>(createFabricEvent(::customHookOf))
+
+/**
+ * Creates a custom [Hook] with [phases].
+ *
+ * @see CustomPhasedHook
+ * @see EventFactory.createWithPhases
+ */
+fun <T, R : Any, P : EventPhase> createHookWithPhases(vararg phases: P) =
+    CustomPhasedHookable<T, R, P>(createFabricEventWithPhases(phases, ::customHookOf))
 
 private open class EventWrapper<T, R, L, P : EventPhase>(
     private val fabricEvent: Event<L>,
@@ -69,10 +88,28 @@ fun <T, R : Any, P : EventPhase> CustomPhasedHookable(
     return object : CustomPhasedHook<T, R, P>, EventWrapper<T, R, HookListener<T, R>, P>(fabricEvent, { it }) {
         override val prevResult get() = _prevResult
 
-        @Suppress("ObjectPropertyName")
         private var _prevResult: R? = null
 
         override fun run(context: T, initialValue: R) = invoker(context, initialValue)
             .also { _prevResult = it }
     }
 }
+
+private inline fun <reified L> createFabricEvent(noinline factory: (Array<L>) -> L): Event<L> =
+    EventFactory.createArrayBacked(L::class.java, factory)
+
+private inline fun <reified L> createFabricEventWithPhases(
+    phases: Array<out EventPhase>,
+    noinline factory: (Array<L>) -> L
+): Event<L> {
+    val phaseIDs = phases
+        .mapTo(mutableListOf()) { it.id }
+        .apply { add(Event.DEFAULT_PHASE) }
+        .toTypedArray()
+    return EventFactory.createWithPhases(L::class.java, factory, *phaseIDs)
+}
+
+private fun <T, R> customHookOf(hooks: Array<HookListener<T, R>>): HookListener<T, R> =
+    { context, initialValue ->
+        hooks.fold(initialValue) { result, hook -> hook(context, result) }
+    }

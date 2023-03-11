@@ -7,24 +7,40 @@ import io.github.homchom.recode.util.collections.immutable
 typealias ModuleBuilderScope = ModuleBuilder.() -> Unit
 typealias ModuleAction = ExposedModule.() -> Unit
 
+/**
+ * Builds a *weak* [RModule].
+ *
+ * @param details [ModuleDetail] components that provide preset implementation to the module.
+ */
 fun module(vararg details: ModuleDetail): RModule = exposedModule(*details)
 
+/**
+ * Builds a *strong* [RModule].
+ *
+ * @param details [ModuleDetail] objects that provide preset implementation to the module.
+ */
 fun strongModule(vararg details: ModuleDetail): RModule = strongExposedModule(*details)
 
 /**
- * Builds a *weak* [RModule].
+ * Builds a *weak* [RModule] with [builder].
+ *
+ * @param details [ModuleDetail] objects that provide preset implementation to the module.
  */
 inline fun module(vararg details: ModuleDetail, builder: ModuleBuilderScope) =
     exposedModule(*details, ModuleBuilder(builder))
 
 /**
- * Builds a *strong* [RModule].
+ * Builds a *strong* [RModule] with [builder].
+ *
+ * @param details [ModuleDetail] objects that provide preset implementation to the module.
  */
 inline fun strongModule(vararg details: ModuleDetail, builder: ModuleBuilderScope) =
     strongExposedModule(*details, ModuleBuilder(builder))
 
 /**
  * Builds a *strong* [RModule] to be enabled by entrypoints.
+ *
+ * @see strongModule
  */
 @OptIn(MutatesModuleState::class)
 inline fun entrypointModule(builder: ModuleBuilderScope) = strongExposedModule {
@@ -37,6 +53,9 @@ inline fun entrypointModule(builder: ModuleBuilderScope) = strongExposedModule {
 
 fun emptyModuleList() = emptyList<RModule>()
 
+/**
+ * A component of an [RModule] that provides preset implementation.
+ */
 interface ModuleDetail {
     fun children(): List<RModule>
 

@@ -11,6 +11,9 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.first
 import kotlin.time.Duration
 
+/**
+ * Runs [block] in a [TrialScope].
+ */
 suspend fun <R : Any> ExposedModule.trialScope(block: suspend TrialScope.() -> R) =
     nullable {
         withContext(Dispatchers.IO) {
@@ -25,18 +28,36 @@ suspend fun <R : Any> ExposedModule.trialScope(block: suspend TrialScope.() -> R
         }
     }
 
+/**
+ * A scope that a trial executes in, providing several DSL functions.
+ */
 sealed class TrialScope(
     private val module: ExposedModule,
     private val nullableScope: NullableScope,
     val ruleScope: CoroutineScope
 ) {
+    /**
+     * A list of blocking rules that are tested after most trial suspensions, failing the trial on a failed test.
+     *
+     * @see testOn
+     */
     val rules get() = _rules.immutable()
+
     private val _rules = mutableListOf<() -> Any?>()
 
+    /**
+     * Enforces [block] by adding it to [rules].
+     */
     fun <T : Any> enforce(block: () -> T?) {
         _rules += block
     }
 
+    /**
+     * Tests [test] on the next invocation of [event], where a null result is a failed test and a non-null result
+     * is a passed test.
+     *
+     * @see TestResult
+     */
     suspend inline fun <C, T : Any> testOn(
         event: Listenable<C>,
         attempts: UInt = 1u,
@@ -50,6 +71,11 @@ sealed class TrialScope(
         return TestResult(result)
     }
 
+    /**
+     * Tests [test] on the invocations of [event] until a non-null result is returned.
+     *
+     * @see TestResult
+     */
     suspend inline fun <C, T : Any> awaitOn(
         event: Listenable<C>,
         timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION,
@@ -60,6 +86,11 @@ sealed class TrialScope(
         return TestResult(result)
     }
 
+    /**
+     * Enforces [test] on each invocation of [event], failing the trial on a failed test (a null result).
+     *
+     * @see enforce
+     */
     suspend inline fun <C, T : Any> enforceOn(
         event: Listenable<C>,
         timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION,
@@ -70,6 +101,10 @@ sealed class TrialScope(
         }
     }
 
+    /**
+     * @see testOn
+     * @see enforceOn
+     */
     suspend inline fun <C, T : Any> testAndEnforceOn(
         event: Listenable<C>,
         attempts: UInt = 1u,
@@ -80,8 +115,17 @@ sealed class TrialScope(
             .also { enforceOn(event, timeoutDuration, test) }
     }
 
+    /**
+     * Gets this Listenable object's notifications from the module passed to the TrialScope.
+     */
     val <C> Listenable<C>.notifications get() = getNotificationsFrom(module)
 
+    /**
+     * Tests [detector] by checking the next invocation of [basis].
+     *
+     * @see Detector.checkNextFrom
+     * @see TestResult
+     */
     suspend fun <T : Any, R : Any> testBy(
         detector: Detector<T, R>,
         input: T?,
@@ -91,6 +135,12 @@ sealed class TrialScope(
         return TestResult(detector.checkNextFrom(module, input, basis, attempts))
     }
 
+    /**
+     * Awaits a detected result from [detector] on the invocation of [basis].
+     *
+     * @see Detector.detectFrom
+     * @see TestResult
+     */
     suspend fun <T : Any, R : Any> awaitBy(
         detector: Detector<T, R>,
         input: T?,
@@ -99,6 +149,13 @@ sealed class TrialScope(
         return TestResult(detector.detectFrom(module, input, basis))
     }
 
+    /**
+     * Requests and tests [requester] by checking the next invocation of its primary basis, returning the
+     * request result.
+     *
+     * @see Requester.requestNextFrom
+     * @see TestResult
+     */
     suspend fun <T : Any, R : Any> testBy(
         requester: Requester<T, R>,
         input: T,
@@ -112,6 +169,12 @@ sealed class TrialScope(
         }
     }
 
+    /**
+     * Awaits a requested result from [requester].
+     *
+     * @see Requester.requestFrom
+     * @see TestResult
+     */
     suspend fun <T : Any, R : Any> awaitBy(
         requester: Requester<T, R>,
         input: T,
@@ -124,10 +187,18 @@ sealed class TrialScope(
         }
     }
 
-    
-
+    /**
+     * Fails this trial.
+     *
+     * @see NullableScope.fail
+     */
     fun fail(): Nothing = nullableScope.fail()
 
+    /**
+     * Tests [test] on the next invocation of [event], where the test returns whether the test passed.
+     *
+     * @see testOn
+     */
     suspend inline fun <C> testBooleanOn(
         event: Listenable<C>,
         attempts: UInt = 1u,
@@ -137,6 +208,11 @@ sealed class TrialScope(
         return testOn(event, attempts, timeoutDuration) { test(it).unitOrNull() }
     }
 
+    /**
+     * Enforces [test] on each invocation of [event], failing the trial on a failed test (one that returned false).
+     *
+     * @see enforce
+     */
     suspend inline fun <C> enforceBooleanOn(
         event: Listenable<C>,
         timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION,
@@ -145,6 +221,10 @@ sealed class TrialScope(
         enforceOn(event, timeoutDuration) { test(it).unitOrNull() }
     }
 
+    /**
+     * @see testBooleanOn
+     * @see enforceBooleanOn
+     */
     suspend inline fun <C> testAndEnforceBooleanOn(
         event: Listenable<C>,
         attempts: UInt = 1u,
@@ -154,11 +234,20 @@ sealed class TrialScope(
         return testAndEnforceOn(event, attempts, timeoutDuration) { test(it).unitOrNull() }
     }
 
+    /**
+     * A result from a suspending test. To require a passing result or fail the trial, prepend it with [unaryPlus].
+     */
     @JvmInline
     value class TestResult<T : Any>(val value: T?) {
+        /**
+         * Unboxes the result, returning [value].
+         */
         operator fun invoke() = value
     }
 
+    /**
+     * Returns a non-null [TestResult.value] or fails the trial.
+     */
     operator fun <T : Any> TestResult<T>.unaryPlus() = value ?: fail()
 }
 

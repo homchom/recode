@@ -3,6 +3,15 @@ package io.github.homchom.recode.event
 import io.github.homchom.recode.DEFAULT_TIMEOUT_DURATION
 import kotlin.time.Duration
 
+/**
+ * Creates a [ToggleRequesterGroup] with the given [start] and conditional tests for current state.
+ *
+ * @param enabledPredicate Should return true if the state is enabled.
+ * @param enabledTests Tests to run when enabled.
+ * @param disabledTests Tests to run when disabled.
+ *
+ * @see RequesterTrial
+ */
 fun <T : Any, B> toggleRequesterGroup(
     basis: Listenable<B>,
     start: suspend (input: T?) -> Unit,
@@ -14,6 +23,10 @@ fun <T : Any, B> toggleRequesterGroup(
     return ShortCircuitToggle(basis, start, timeoutDuration, enabledPredicate, enabledTests, disabledTests)
 }
 
+/**
+ * @see toggleRequesterGroup
+ * @see RequesterTrial.NullaryTester
+ */
 inline fun <B> nullaryToggleRequesterGroup(
     basis: Listenable<B>,
     crossinline start: suspend () -> Unit,
@@ -28,6 +41,9 @@ inline fun <B> nullaryToggleRequesterGroup(
     )
 }
 
+/**
+ * A group of [Requester] objects for a toggleable state.
+ */
 sealed interface ToggleRequesterGroup<T : Any> {
     val toggle: RequesterModule<T, Unit>
     val enable: RequesterModule<T, Unit>
