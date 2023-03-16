@@ -36,7 +36,7 @@ public class LegacyReceiveChatMessageEvent {
         //Auto //wand
         if (Config.getBoolean("autowand")) {
             if (msg.contains("You are now in build mode.")) {
-                mc.player.commandUnsigned("/wand");
+                mc.player.connection.sendUnsignedCommand("/wand");
             }
         }
 
@@ -58,7 +58,7 @@ public class LegacyReceiveChatMessageEvent {
                     String cmd = "/join " + id;
 
                     if (cmd.matches("/join \\d+")) {
-                        mc.player.commandUnsigned(cmd);
+                        mc.player.connection.sendUnsignedCommand(cmd);
                     } else {
                         ChatUtil.sendMessage("Error while trying to join the plot.", ChatType.FAIL);
                     }
@@ -171,7 +171,7 @@ public class LegacyReceiveChatMessageEvent {
                     try {
                         Thread.sleep(3000);
                     } catch (Exception ignored) {}
-                    mc.player.commandUnsigned("tip " + tipPlayer);
+                    mc.player.connection.sendUnsignedCommand("tip " + tipPlayer);
                 });
             }
         }

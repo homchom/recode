@@ -1,21 +1,24 @@
 package io.github.homchom.recode.mod.features.commands;
 
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WGridPanel;
 import io.github.homchom.recode.sys.hypercube.templates.TemplateUtil;
-import io.github.homchom.recode.sys.renderer.widgets.*;
+import io.github.homchom.recode.sys.renderer.widgets.ClickableGiveItem;
+import io.github.homchom.recode.sys.renderer.widgets.ItemScrollablePanel;
 import net.fabricmc.fabric.api.util.TriState;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.*;
 
 public class TemplateSearchMenu extends LightweightGuiDescription {
 
@@ -37,7 +40,7 @@ public class TemplateSearchMenu extends LightweightGuiDescription {
             String name = template.get("name").getAsString();
             int listed = template.get("public").getAsInt();
             String uploader = template.get("uploadername").getAsString();
-            ItemStack templateItem = new ItemStack(Registry.ITEM.get(new ResourceLocation(template.get("material").getAsString())));
+            ItemStack templateItem = new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(template.get("material").getAsString())));
 
             try {
                 TemplateUtil.applyRawTemplateNBT(templateItem, name, uploader, template.get("data").getAsString());

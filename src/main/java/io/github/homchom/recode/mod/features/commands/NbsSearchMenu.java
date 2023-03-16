@@ -1,12 +1,19 @@
 package io.github.homchom.recode.mod.features.commands;
 
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
-import io.github.cottonmc.cotton.gui.widget.*;
+import io.github.cottonmc.cotton.gui.widget.WButton;
+import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
+import io.github.cottonmc.cotton.gui.widget.WScrollPanel;
+import io.github.cottonmc.cotton.gui.widget.WText;
 import io.github.cottonmc.cotton.gui.widget.data.Insets;
 import io.github.homchom.recode.LegacyRecode;
-import io.github.homchom.recode.mod.features.commands.nbs.*;
+import io.github.homchom.recode.mod.features.commands.nbs.NBSToTemplate;
+import io.github.homchom.recode.mod.features.commands.nbs.SongData;
 import io.github.homchom.recode.sys.hypercube.templates.TemplateUtil;
 import io.github.homchom.recode.sys.networking.WebUtil;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
@@ -15,32 +22,39 @@ import io.github.homchom.recode.sys.util.ItemUtil;
 import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.*;
-import net.minecraft.world.item.*;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
 
     public final String query;
     private final SoundEvent[] instrumentids = {
-        SoundEvents.NOTE_BLOCK_HARP,
-        SoundEvents.NOTE_BLOCK_BASS,
-        SoundEvents.NOTE_BLOCK_BASEDRUM,
-        SoundEvents.NOTE_BLOCK_SNARE,
-        SoundEvents.NOTE_BLOCK_HAT,
-        SoundEvents.NOTE_BLOCK_GUITAR,
-        SoundEvents.NOTE_BLOCK_FLUTE,
-        SoundEvents.NOTE_BLOCK_BELL,
-        SoundEvents.NOTE_BLOCK_CHIME,
-        SoundEvents.NOTE_BLOCK_XYLOPHONE,
-        SoundEvents.NOTE_BLOCK_IRON_XYLOPHONE,
-        SoundEvents.NOTE_BLOCK_COW_BELL,
-        SoundEvents.NOTE_BLOCK_DIDGERIDOO,
-        SoundEvents.NOTE_BLOCK_BIT
+        SoundEvents.NOTE_BLOCK_HARP.value(),
+        SoundEvents.NOTE_BLOCK_BASS.value(),
+        SoundEvents.NOTE_BLOCK_BASEDRUM.value(),
+        SoundEvents.NOTE_BLOCK_SNARE.value(),
+        SoundEvents.NOTE_BLOCK_HAT.value(),
+        SoundEvents.NOTE_BLOCK_GUITAR.value(),
+        SoundEvents.NOTE_BLOCK_FLUTE.value(),
+        SoundEvents.NOTE_BLOCK_BELL.value(),
+        SoundEvents.NOTE_BLOCK_CHIME.value(),
+        SoundEvents.NOTE_BLOCK_XYLOPHONE.value(),
+        SoundEvents.NOTE_BLOCK_IRON_XYLOPHONE.value(),
+        SoundEvents.NOTE_BLOCK_COW_BELL.value(),
+        SoundEvents.NOTE_BLOCK_DIDGERIDOO.value(),
+        SoundEvents.NOTE_BLOCK_BIT.value()
     };
     int previewId = -1;
 

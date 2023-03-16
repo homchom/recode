@@ -7,8 +7,12 @@ import io.github.homchom.recode.sys.player.chat.color.MinecraftColors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.*;
-import net.minecraft.sounds.*;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
@@ -31,7 +35,7 @@ public class ChatUtil {
     }
 
     public static void command(String message) {
-        Minecraft.getInstance().player.commandUnsigned(message);
+        Minecraft.getInstance().player.connection.sendUnsignedCommand(message);
     }
 
     public static void executeCommand(String command) {
@@ -77,7 +81,7 @@ public class ChatUtil {
             player.displayClientMessage(Component.literal(chatType.getString() + " ").append(text), false);
             if (chatType == ChatType.FAIL) {
                 if (Config.getBoolean("errorSound")) {
-                    player.playNotifySound(SoundEvents.NOTE_BLOCK_DIDGERIDOO, SoundSource.PLAYERS, 2, 0);
+                    player.playNotifySound(SoundEvents.NOTE_BLOCK_DIDGERIDOO.value(), SoundSource.PLAYERS, 2, 0);
                 }
             }
         }

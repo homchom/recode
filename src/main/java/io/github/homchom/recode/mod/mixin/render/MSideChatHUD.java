@@ -5,17 +5,31 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.sys.sidedchat.ChatRule;
-import io.github.homchom.recode.sys.util.*;
-import net.minecraft.client.*;
-import net.minecraft.client.gui.components.*;
-import net.minecraft.network.chat.*;
-import net.minecraft.util.*;
+import io.github.homchom.recode.sys.util.OrderedTextUtil;
+import io.github.homchom.recode.sys.util.SoundUtil;
+import io.github.homchom.recode.sys.util.TextUtil;
+import net.minecraft.client.GuiMessage;
+import net.minecraft.client.GuiMessageTag;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.ChatComponent;
+import net.minecraft.client.gui.components.ComponentRenderUtils;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MessageSignature;
+import net.minecraft.network.chat.Style;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.Mth;
 import org.slf4j.Logger;
-import org.spongepowered.asm.mixin.*;
-import org.spongepowered.asm.mixin.injection.*;
-import org.spongepowered.asm.mixin.injection.callback.*;
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 import static net.minecraft.client.gui.GuiComponent.fill;
 
@@ -77,8 +91,9 @@ public abstract class MSideChatHUD {
     public abstract void drawTagIcon(PoseStack poseStack, int x, int y, GuiMessageTag.Icon icon);
 
     @Inject(method = "render", at = @At("HEAD"), cancellable = true)
-    private void render(PoseStack poseStack, int tickDelta, CallbackInfo ci) {
-        List<GuiMessage.Line> tempMain = new ArrayList<>();
+    private void render(PoseStack poseStack, int tickDelta, int mouseX, int mouseY, CallbackInfo ci) {
+        // TODO: re-enable
+        /*List<GuiMessage.Line> tempMain = new ArrayList<>();
         List<GuiMessage.Line> tempSide = new ArrayList<>();
         if (Config.getBoolean("stackDuplicateMsgs")) {
             tempMain.addAll(trimmedMessages);
@@ -101,7 +116,7 @@ public abstract class MSideChatHUD {
             trimmedMessages.addAll(tempMain);
             sideVisibleMessages.clear();
             sideVisibleMessages.addAll(tempSide);
-        }
+        }*/
     }
 
     /**

@@ -3,13 +3,16 @@ package io.github.homchom.recode.mod.events.impl;
 import io.github.homchom.recode.Constants;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.sys.renderer.BlendableTexturedButtonWidget;
-import net.fabricmc.fabric.api.client.screen.v1.*;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.screens.*;
+import net.minecraft.client.gui.screens.ConnectScreen;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.resolver.ServerAddress;
-import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.ResourceLocation;
 
@@ -39,7 +42,7 @@ public class LegacyAfterScreenInitEvent {
 			AbstractWidget button = buttons.get(i);
 			if (buttonHasText(button, "menu.multiplayer") && button.visible) {
 				index = i + 1;
-				y = button.y;
+				y = button.getY();
 			}
 		}
 

@@ -43,7 +43,7 @@ public class MItemSlotUpdate {
 				// Auto fly
 				if (Config.getBoolean("autofly")) {
 					if (System.currentTimeMillis() > lobbyTime) { // theres a bug with /fly running twice this is a temp fix.
-						mc.player.commandUnsigned("fly");
+						mc.player.connection.sendUnsignedCommand("fly");
 						MessageGrabber.hide(1);
 						lobbyTime = System.currentTimeMillis() + 1000;
 					}
