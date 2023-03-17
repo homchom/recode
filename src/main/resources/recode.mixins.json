@@ -2,9 +2,7 @@
   "required": true,
   "package": "io.github.homchom.recode.mixin",
   "compatibilityLevel": "JAVA_17",
-  "mixins": [
-    "server.MProfilePublicKey"
-  ],
+  "mixins": [],
   "client": [
     "render.MBlockEntityRenderDispatcher",
     "render.MLevelRenderer",
