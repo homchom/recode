@@ -5,6 +5,7 @@
   "mixins": [],
   "client": [
     "render.MBlockEntityRenderDispatcher",
+    "render.MGui",
     "render.MLevelRenderer",
     "server.MClientPacketListener"
   ],
