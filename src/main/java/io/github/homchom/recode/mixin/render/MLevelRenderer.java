@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.Objects;
 
 @Mixin(LevelRenderer.class)
-public class MLevelRenderer implements OutlineProcessor {
+public abstract class MLevelRenderer implements OutlineProcessor {
 	private static final String popPushMethod =
 			"Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V";
 

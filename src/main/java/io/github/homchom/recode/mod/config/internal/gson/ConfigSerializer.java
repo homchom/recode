@@ -32,6 +32,7 @@ public class ConfigSerializer implements JsonSerializer<ConfigInstruction>, Json
                     } else if (primitive.isBoolean()) {
                         setting = LegacyRecode.GSON.fromJson(primitive, BooleanSetting.class);
                     } else if (primitive.isNumber()) {
+                        // TODO: change this to fix number deserialization (before config rework?)
                         Number number = primitive.getAsNumber();
                         if (number instanceof Integer) {
                             setting = LegacyRecode.GSON.fromJson(primitive, IntegerSetting.class);
