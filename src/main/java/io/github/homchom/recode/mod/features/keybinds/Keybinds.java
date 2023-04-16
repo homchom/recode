@@ -2,7 +2,6 @@ package io.github.homchom.recode.mod.features.keybinds;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
-import io.github.homchom.recode.mod.commands.impl.other.PartnerBracketCommand;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.commands.CodeSearcher;
 import io.github.homchom.recode.sys.networking.LegacyState;
@@ -11,12 +10,15 @@ import io.github.homchom.recode.sys.sidedchat.ChatShortcut;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.minecraft.client.*;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.entity.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.SignBlockEntity;
 
-import java.util.*;
+import java.util.Objects;
+import java.util.Optional;
 
 public class Keybinds implements ClientModInitializer {
 
@@ -84,10 +86,6 @@ public class Keybinds implements ClientModInitializer {
 
         showTags = KeyBindingHelper.registerKeyBinding(new KeyMapping(
             "key.recode.showTags", Type.KEYSYM, -1, "key.category.recode"
-        ));
-
-        KeyMapping partnerBracket = KeyBindingHelper.registerKeyBinding(new KeyMapping(
-            "key.recode.partnerBracket", Type.KEYSYM, -1, "key.category.recode"
         ));
 
         // chat global
@@ -199,7 +197,9 @@ public class Keybinds implements ClientModInitializer {
             // search
             while (searchFunction.consumeClick()) {
                 if (DFInfo.isOnDF() && DFInfo.currentState.getMode() == LegacyState.Mode.DEV && mc.player.isCreative()) {
-                    BlockEntity blockEntity = mc.level.getBlockEntity(new BlockPos(mc.hitResult.getLocation()));
+                    var hitLocation = mc.hitResult.getLocation().toVector3f();
+                    var blockPos = new BlockPos((int) hitLocation.x, (int) hitLocation.y, (int) hitLocation.z);
+                    BlockEntity blockEntity = mc.level.getBlockEntity(blockPos);
 
                     if (blockEntity != null) {
                         if (blockEntity instanceof SignBlockEntity signBlockEntity) {
@@ -211,10 +211,6 @@ public class Keybinds implements ClientModInitializer {
                         CodeSearcher.clearSearch();
                     }
                 }
-            }
-
-            while (partnerBracket.consumeClick()) {
-                PartnerBracketCommand.exec();
             }
 
             while (modv.consumeClick()) {

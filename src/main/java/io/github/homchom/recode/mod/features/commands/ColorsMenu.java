@@ -1,14 +1,22 @@
 package io.github.homchom.recode.mod.features.commands;
 
-import io.github.cottonmc.cotton.gui.client.*;
-import io.github.cottonmc.cotton.gui.widget.*;
-import io.github.homchom.recode.sys.player.chat.color.*;
+import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
+import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
+import io.github.cottonmc.cotton.gui.widget.WButton;
+import io.github.cottonmc.cotton.gui.widget.WGridPanel;
+import io.github.cottonmc.cotton.gui.widget.WText;
+import io.github.cottonmc.cotton.gui.widget.WTextField;
+import io.github.homchom.recode.sys.player.chat.color.ColorUtil;
+import io.github.homchom.recode.sys.player.chat.color.HSBColor;
+import io.github.homchom.recode.sys.player.chat.color.MinecraftColors;
 import io.github.homchom.recode.sys.renderer.IMenu;
-import io.github.homchom.recode.sys.renderer.widgets.*;
+import io.github.homchom.recode.sys.renderer.widgets.CColorPicker;
+import io.github.homchom.recode.sys.renderer.widgets.CColorPreset;
+import io.github.homchom.recode.sys.renderer.widgets.CColoredRectangle;
+import io.github.homchom.recode.sys.renderer.widgets.CText;
 import io.github.homchom.recode.sys.util.StringUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.*;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.util.Mth;
 
@@ -57,7 +65,8 @@ public class ColorsMenu extends LightweightGuiDescription implements IMenu {
 
             updateRecentColors(root);
             if (ColorUtil.recentColors.size() > 0){
-                String recentTextString = new TranslatableContents("key.recode.colors.recent_colors").resolve(mc.player.createCommandSourceStack(), mc.player, 1).getString();
+                String recentTextString = new TranslatableContents("key.recode.colors.recent_colors", null, TranslatableContents.NO_ARGS)
+                        .resolve(mc.player.createCommandSourceStack(), mc.player, 1).getString();
                 int recentTextWidth = Minecraft.getInstance().font.width(recentTextString);
                 recentText = new WText(Component.literal(recentTextString));
                 recentText.setColor(Color.black.getRGB(), Color.white.getRGB());

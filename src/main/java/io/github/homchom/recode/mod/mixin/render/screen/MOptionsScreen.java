@@ -2,10 +2,10 @@ package io.github.homchom.recode.mod.mixin.render.screen;
 
 import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.menu.ConfigScreen;
-import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.GridWidget;
-import net.minecraft.client.gui.components.LayoutSettings;
+import net.minecraft.client.gui.layouts.GridLayout;
+import net.minecraft.client.gui.layouts.LayoutElement;
+import net.minecraft.client.gui.layouts.LayoutSettings;
 import net.minecraft.client.gui.screens.OptionsScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -21,12 +21,12 @@ public class MOptionsScreen extends Screen {
     }
 
     @Redirect(method = "init()V", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/client/gui/components/GridWidget$RowHelper;addChild(Lnet/minecraft/client/gui/components/AbstractWidget;ILnet/minecraft/client/gui/components/LayoutSettings;)Lnet/minecraft/client/gui/components/AbstractWidget;",
+            target = "Lnet/minecraft/client/gui/layouts/GridLayout$RowHelper;addChild(Lnet/minecraft/client/gui/layouts/LayoutElement;ILnet/minecraft/client/gui/layouts/LayoutSettings;)Lnet/minecraft/client/gui/layouts/LayoutElement;",
             ordinal = 0
     ))
-    protected <T extends AbstractWidget> T init(
-            GridWidget.RowHelper instance,
-            T abstractWidget,
+    protected <T extends LayoutElement> T init(
+            GridLayout.RowHelper instance,
+            T layoutElement,
             int i,
             LayoutSettings layoutSettings
     ) {
@@ -35,6 +35,6 @@ public class MOptionsScreen extends Screen {
                 buttonWidget -> LegacyRecode.MC.setScreen(ConfigScreen.getScreen(LegacyRecode.MC.screen))
         );
         instance.addChild(button.build());
-        return instance.addChild(abstractWidget, i, layoutSettings);
+        return instance.addChild(layoutElement, i, layoutSettings);
     }
 }

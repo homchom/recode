@@ -6,16 +6,22 @@ import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
 import io.github.homchom.recode.mod.commands.arguments.types.ChoiceArgumentType;
 import io.github.homchom.recode.mod.features.commands.CodeSearcher;
-import io.github.homchom.recode.sys.hypercube.codeaction.*;
+import io.github.homchom.recode.sys.hypercube.codeaction.Action;
+import io.github.homchom.recode.sys.hypercube.codeaction.ActionDump;
+import io.github.homchom.recode.sys.hypercube.codeaction.Types;
 import io.github.homchom.recode.sys.networking.LegacyState;
 import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.ChatType;
-import io.github.homchom.recode.sys.player.chat.*;
-import io.github.homchom.recode.sys.util.*;
+import io.github.homchom.recode.sys.player.chat.ChatUtil;
+import io.github.homchom.recode.sys.util.ItemUtil;
+import io.github.homchom.recode.sys.util.TextUtil;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandBuildContext;
-import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.item.ItemStack;
 
@@ -48,7 +54,8 @@ public class SearchCommand extends Command {
 							try {
 								String query = ctx.getArgument("action", String.class);
 								ArrayList<Action> actions = ActionDump.getActions(query);
-								mc.player.displayClientMessage(TextUtil.colorCodesToTextComponent("§x§0§0§b§5§f§c✎ §x§0§0§e§0§b§0" + new TranslatableContents("recode.template_search.begin_search", "§x§0§0§f§8§f§c" + query + "§x§0§0§e§0§b§0").resolve(mc.player.createCommandSourceStack(), mc.player, 1).getString()).copy(), false);
+								mc.player.displayClientMessage(TextUtil.colorCodesToTextComponent("§x§0§0§b§5§f§c✎ §x§0§0§e§0§b§0" + new TranslatableContents("recode.template_search.begin_search", null, new String[]{"§x§0§0§f§8§f§c" + query + "§x§0§0§e§0§b§0"})
+										.resolve(mc.player.createCommandSourceStack(), mc.player, 1).getString()).copy(), false);
 								mc.player.displayClientMessage(Component.literal(""), false);
 								for (Action action : actions) {
 									try {
@@ -62,7 +69,8 @@ public class SearchCommand extends Command {
 							} catch (Exception e) {
 								e.printStackTrace();
 
-								ChatUtil.sendMessage(new TranslatableContents("recode.template_search.invalid", ctx.getArgument("action", String.class)).resolve(mc.player.createCommandSourceStack(), mc.player, 1), ChatType.FAIL);
+								ChatUtil.sendMessage(new TranslatableContents("recode.template_search.invalid", null, new String[]{ctx.getArgument("action", String.class)})
+										.resolve(mc.player.createCommandSourceStack(), mc.player, 1), ChatType.FAIL);
 							}
 							return 1;
 						})));
@@ -78,13 +86,15 @@ public class SearchCommand extends Command {
 										if (DFInfo.isOnDF() && DFInfo.currentState.getMode() == LegacyState.Mode.DEV && mc.player.isCreative()) {
 											CodeSearcher.beginSearch(searchType, actionArgument);
 										} else {
-											ChatUtil.sendMessage(new TranslatableContents("recode.command.require_dev_mode", ctx.getArgument("action", String.class)).resolve(mc.player.createCommandSourceStack(), mc.player, 1), ChatType.FAIL);
+											ChatUtil.sendMessage(new TranslatableContents("recode.command.require_dev_mode", null, new String[]{ctx.getArgument("action", String.class)})
+													.resolve(mc.player.createCommandSourceStack(), mc.player, 1), ChatType.FAIL);
 										}
 
 									} catch (Exception e) {
 										e.printStackTrace();
 
-										ChatUtil.sendMessage(new TranslatableContents("recode.template_search.invalid").resolve(mc.player.createCommandSourceStack(), mc.player, 1), ChatType.FAIL);
+										ChatUtil.sendMessage(new TranslatableContents("recode.template_search.invalid", null, TranslatableContents.NO_ARGS)
+												.resolve(mc.player.createCommandSourceStack(), mc.player, 1), ChatType.FAIL);
 									}
 									return 1;
 
