@@ -50,6 +50,7 @@ public class CommandHandler {
 
         if (Config.getBoolean("dfCommands")) {
             register(dispatcher, context,
+                new BaseLocCommand(),
                 new GiveCommand(),
                 new NodeCommand(),
                 new TemplatesCommand(),
