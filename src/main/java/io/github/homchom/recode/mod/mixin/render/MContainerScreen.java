@@ -1,13 +1,11 @@
 package io.github.homchom.recode.mod.mixin.render;
 
-import com.google.gson.*;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.sys.hypercube.codeaction.*;
 import io.github.homchom.recode.sys.util.TextUtil;
 import net.minecraft.client.gui.screens.inventory.*;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ChestMenu;
@@ -75,22 +73,22 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
         List<List<Integer>> currentOptions = new ArrayList<>();
         List<Integer> optionList = new ArrayList<>();
         Argument lastChecked = null;
-        Boolean checkingOR = false;
-        Boolean valid = false;
-        Boolean passedAll = true;
-        Boolean startsOR = false;
-        Integer current = 0;
-        Integer slot = 0;
-        Integer checkSlot = 0;
+        boolean checkingOR = false;
+        boolean valid = false;
+        boolean passedAll = true;
+        boolean startsOR = false;
+        int current = 0;
+        int slot = 0;
+        int checkSlot = 0;
 
         // Check if the first argument is an OR
         while (current < rawArgs.size()) {
             Argument rarg = rawArgs.get(current);
-            if (rarg.getType() == null && rarg.getText().matches("OR")) {
+            if (!rarg.isValueArgument() && rarg.getText().equals("OR")) {
                 checkingOR = true;
                 startsOR = true;
             }
-            if (rarg.getType() == null) {
+            if (!rarg.isValueArgument()) {
                 break;
             }
             current ++;
@@ -100,17 +98,17 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
         // Check for any errors
         while (current < rawArgs.size()) {
             Argument rarg = rawArgs.get(current);
-            if (rarg.getType() != null) { optionList.add(current); }
+            if (rarg.isValueArgument()) optionList.add(current);
             if (!checkingOR) {
                 if (optionList.size() != 0) {
                     currentOptions.add(optionList);
                 }
                 List<String> expected = new ArrayList<>();
-                for (List options : currentOptions) {
+                for (List<Integer> options : currentOptions) {
                     checkSlot = slot;
                     valid = true;
-                    for (Object checkOption : options) {
-                        Argument checkArgument = rawArgs.get((Integer) checkOption);
+                    for (int checkOption : options) {
+                        Argument checkArgument = rawArgs.get(checkOption);
                         if (lastChecked != null && lastChecked.isPlural() && typeCheck(lastChecked.getType(), items.get(checkSlot))) {
                             checkSlot ++;
                             continue;
@@ -128,14 +126,14 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
                         checkSlot ++;
                     }
                     if (!valid) {
-                        expected.add(lastChecked.getType());
+                        expected.add(lastChecked.getType().getName());
                     } else {
                         expected = new ArrayList<>();
                         break;
                     }
                 }
                 if (expected.size() == 1) {
-                    errors.add("§cExpected §6" + expected.get(0) + " §cin slot " + (checkSlot + 1) + " but got §6" + getType(items.get(checkSlot)));
+                    errors.add("§cExpected §6" + expected.get(0) + " §cin slot " + (checkSlot + 1) + " but got §6" + Argument.ValueType.fromItemStack(items.get(checkSlot)).getName());
                     slot = checkSlot;
                     passedAll = false;
                     break;
@@ -143,7 +141,7 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
                 currentOptions = new ArrayList<>();
                 optionList = new ArrayList<>();
             }
-            if (rarg.getType() == null) {
+            if (!rarg.isValueArgument()) {
                 if (rarg.getText().equals("OR")) {
                     currentOptions.add(optionList);
                     optionList = new ArrayList<>();
@@ -153,11 +151,11 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
                             currentOptions.add(optionList);
                         }
                         List<String> expected = new ArrayList<>();
-                        for (List options : currentOptions) {
+                        for (List<Integer> options : currentOptions) {
                             checkSlot = slot;
                             valid = true;
-                            for (Object checkOption : options) {
-                                Argument checkArgument = rawArgs.get((Integer) checkOption);
+                            for (int checkOption : options) {
+                                Argument checkArgument = rawArgs.get(checkOption);
                                 if (lastChecked != null && lastChecked.isPlural() && typeCheck(lastChecked.getType(), items.get(checkSlot))) {
                                     checkSlot ++;
                                     continue;
@@ -175,14 +173,14 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
                                 checkSlot ++;
                             }
                             if (!valid) {
-                                expected.add(lastChecked.getType());
+                                expected.add(lastChecked.getType().getName());
                             } else {
                                 expected = new ArrayList<>();
                                 break;
                             }
                         }
                         if (expected.size() != 0) {
-                            errors.add("§cExpected one of §6" + expected + " §cin slot " + (checkSlot + 1) + " but got §6" + getType(items.get(checkSlot)));
+                            errors.add("§cExpected one of §6" + expected + " §cin slot " + (checkSlot + 1) + " but got §6" + Argument.ValueType.fromItemStack(items.get(checkSlot)).getName());
                             slot = checkSlot;
                             passedAll = false;
                             break;
@@ -202,11 +200,11 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
                 currentOptions.add(optionList);
             }
             List<String> expected = new ArrayList<>();
-            for (List options : currentOptions) {
+            for (List<Integer> options : currentOptions) {
                 checkSlot = slot;
                 valid = true;
-                for (Object checkOption : options) {
-                    Argument checkArgument = rawArgs.get((Integer) checkOption);
+                for (int checkOption : options) {
+                    Argument checkArgument = rawArgs.get(checkOption);
                     if (lastChecked != null && lastChecked.isPlural() && typeCheck(lastChecked.getType(), items.get(checkSlot))) {
                         checkSlot ++;
                         continue;
@@ -224,21 +222,21 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
                     checkSlot ++;
                 }
                 if (!valid) {
-                    expected.add(lastChecked.getType());
+                    expected.add(lastChecked.getType().getName());
                 } else {
                     expected = new ArrayList<>();
                     break;
                 }
             }
             if (expected.size() != 0) {
-                errors.add("§cExpected one of §6" + expected + " §cin slot " + (checkSlot + 1) + " but got §6" + getType(items.get(checkSlot)));
+                errors.add("§cExpected one of §6" + expected + " §cin slot " + (checkSlot + 1) + " but got §6" + Argument.ValueType.fromItemStack(items.get(checkSlot)).getName());
                 slot = checkSlot;
                 passedAll = false;
             }else { slot = checkSlot; }
         }
 
         // Check for extra data not requested by arguments.
-        Integer slotCheckIndex = 0;
+        int slotCheckIndex = 0;
         if (passedAll && startsOR) { slot --; }
         for (ItemStack slotCheck : items) {
             if (slotCheckIndex >= 25-ditem.getTags()) { break; }
@@ -247,7 +245,7 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
                 continue;
             }
             if (slotCheckIndex >= slot + 1 && !slotCheck.isEmpty()) {
-                errors.add("§cExpected §6NONE §cin slot " + (slotCheckIndex + 1) + " but got §6" + getType(slotCheck));
+                errors.add("§cExpected §6None §cin slot " + (slotCheckIndex + 1) + " but got §6" + Argument.ValueType.fromItemStack(slotCheck).getName());
             }
             slotCheckIndex ++;
         }
@@ -275,116 +273,8 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
         return p;
     }
 
-    private boolean typeCheck(String type, ItemStack item) {
-        CompoundTag pbv = item.getTagElement("PublicBukkitValues");
-        String varitemtype = "";
-        if (pbv != null) {
-            String t = pbv.getString("hypercube:varitem");
-            if (t != null) {
-                try {
-                    JsonObject o = JsonParser.parseString(t).getAsJsonObject();
-                    varitemtype = o.get("id").getAsString();
-                    if (Objects.equals(varitemtype, "var") || Objects.equals(varitemtype, "g_val")) {
-                        return true;
-                    }
-                } catch (Exception ignored) {
-                }
-            }
-        }
-
-        switch (varitemtype) {
-            case "var":
-                return true;
-            case "g_val":
-                return true;
-        }
-
-        switch (type) {
-            case "NONE":
-                if (item.getItem() == Items.AIR) {
-                    return true;
-                }
-                break;
-            case "BLOCK":
-            case "PROJECTILE":
-            case "VEHICLE":
-            case "SPAWN_EGG":
-            case "ENTITY_TYPE":
-            case "ITEM":
-                if (item.getItem() != Items.AIR && varitemtype.matches("")) {
-                    return true;
-                }
-                break;
-            case "NUMBER":
-                if (Objects.equals(varitemtype, "num")) {
-                    return true;
-                }
-                break;
-            case "TEXT":
-            case "BLOCK_TAG":
-                if (Objects.equals(varitemtype, "txt")) {
-                    return true;
-                }
-                break;
-            case "PARTICLE":
-                if (Objects.equals(varitemtype, "part")) {
-                    return true;
-                }
-                break;
-            case "LOCATION":
-                if (Objects.equals(varitemtype, "loc")) {
-                    return true;
-                }
-                break;
-            case "VECTOR":
-                if (Objects.equals(varitemtype, "vec")) {
-                    return true;
-                }
-                break;
-            case "SOUND":
-                if (Objects.equals(varitemtype, "snd")) {
-                    return true;
-                }
-                break;
-            case "POTION":
-                if (Objects.equals(varitemtype, "pot")) {
-                    return true;
-                }
-                break;
-            case "LIST":
-            case "ANY_TYPE":
-                return true;
-        }
-        return false;
-    }
-
-    private String getType (ItemStack item) {
-        CompoundTag pbv = item.getTagElement("PublicBukkitValues");
-        String varitemtype = "";
-        Map<String, String> convert = new HashMap<String,String>();
-        convert.put("num", "Number");
-        convert.put("txt", "Text");
-        convert.put("loc", "Location");
-        convert.put("vec", "Vector");
-        convert.put("snd", "Sound");
-        convert.put("part", "Particle");
-        convert.put("pot", "Potion");
-        convert.put("var", "Variable");
-        convert.put("g_val", "Game Value");
-        if (pbv != null) {
-            String t = pbv.getString("hypercube:varitem");
-            if (t != null) {
-                try {
-                    JsonObject o = JsonParser.parseString(t).getAsJsonObject();
-                    varitemtype = o.get("id").getAsString();
-                    return convert.get(varitemtype);
-                } catch (Exception ignored) {}
-            }
-        }else {
-            if (item.getItem() != Items.AIR) { return "Item"; }
-            return "None";
-        }
-        return "UNKNOWN";
+    private boolean typeCheck(Argument.ValueType type, ItemStack item) {
+        return type.isCompatibleWith(Argument.ValueType.fromItemStack(item));
     }
 
     private void showDesc(Action a, PoseStack matrices) {
