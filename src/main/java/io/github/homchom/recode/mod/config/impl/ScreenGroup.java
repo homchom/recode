@@ -34,5 +34,11 @@ public class ScreenGroup extends ConfigGroup {
         code.register(new BooleanSetting("showParameterErrors", true));
         code.register(new BooleanSetting("previewHeadSkins", true));
         this.register(code);
+
+        ConfigSubGroup codeSearch = new ConfigSubGroup("code_search");
+        codeSearch.register(new BooleanSetting("codeSearchTracers", false));
+        codeSearch.register(new BooleanSetting("codeSearchPulse", false));
+        codeSearch.register(new BooleanSetting("codeSearchTwoWayPulse", false));
+        this.register(codeSearch);
     }
 }
