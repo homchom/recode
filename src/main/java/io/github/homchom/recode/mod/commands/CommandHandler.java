@@ -55,6 +55,7 @@ public class CommandHandler {
                 new TemplatesCommand(),
                 new WebviewCommand(),
                 new NBSCommand(),
+                new BaseVarCommand(),
                 new ImageHologramCommand(),
                 new ImageParticleCommand(),
                 new SendTemplateCommand(),
