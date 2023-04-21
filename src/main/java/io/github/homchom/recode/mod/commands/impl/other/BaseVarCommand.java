@@ -29,9 +29,8 @@ public class BaseVarCommand extends Command {
             if (tag != null && tag.getString("hypercube:varitem") != "") {
                     JsonObject data = JsonParser.parseString(tag.getString("hypercube:varitem")).getAsJsonObject();
                     if (data.get("id").getAsString().contains("loc") || data.get("id").getAsString().contains("snd") || data.get("id").getAsString().contains("pot") || data.get("id").getAsString().contains("vec") || data.get("id").getAsString().contains("part")) {
-
-                        mc.keyboardHandler.setClipboard(Base64.getEncoder().encodeToString(data.get("data").getAsJsonObject().get(data.get("id").getAsString()).toString().getBytes()));
-                        ChatUtil.sendMessage("Successfully copied to clipboard", ChatType.SUCCESS);
+                        mc.keyboardHandler.setClipboard(Base64.getEncoder().encodeToString(data.get("data").getAsJsonObject().toString().getBytes()));
+                        ChatUtil.sendMessage("Successfully copied to the clipboard.", ChatType.SUCCESS);
                     }
                     else {
                         ChatUtil.sendMessage("The item your holding is not a valid variable. (you can only use vectors, locations, potion vars, particle vars and sounds)", ChatType.FAIL);
