@@ -5,8 +5,6 @@ import io.github.homchom.recode.lifecycle.RModule
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import net.fabricmc.fabric.api.event.Event
-import net.fabricmc.fabric.api.event.EventFactory
-import net.minecraft.resources.ResourceLocation
 import kotlin.time.Duration
 
 typealias EventListener<T> = (context: T) -> Unit
@@ -14,12 +12,18 @@ typealias EventListener<T> = (context: T) -> Unit
 typealias SimpleValidatedEvent<T> = CustomEvent<SimpleValidated<T>, Boolean>
 
 /**
- * Creates a [CustomEvent].
+ * Creates a [CustomEvent], providing results by transforming context with [resultCapture].
  */
 fun <T, R : Any> createEvent(resultCapture: T.() -> R): CustomEvent<T, R> = SharedFlowEvent(resultCapture)
 
+/**
+ * Creates a [CustomEvent] with a Unit result.
+ */
 fun <T> createEvent() = createEvent<T, Unit> {}
 
+/**
+ * Creates a [SimpleValidatedEvent].
+ */
 fun <T> createValidatedEvent() = createEvent<SimpleValidated<T>, Boolean> { isValid }
 
 /**
@@ -34,27 +38,21 @@ fun <T, L> wrapFabricEvent(
 }
 
 /**
- * A shared [Listenable] event that can be [run].
- *
- * @see MutableSharedFlow
+ * A custom [Listenable] event that can be [run]. Event contexts are transformed into "results", and the previous
+ * one is stored in [prevResult].
  */
 interface CustomEvent<T, R : Any> : Listenable<T> {
+    // TODO: events cannot suspend, but is shared mutable state still a problem? do we need StateEvent back?
     val prevResult: R?
 
     fun run(context: T): R
 }
 
+/**
+ * A Fabric [Event] wrapped into a [Listenable].
+ */
 interface WrappedEvent<T, L> : Listenable<T> {
     val invoker: L
-}
-
-/**
- * A wrapper for a Fabric [Event] phase.
- *
- * @see EventFactory.createWithPhases
- */
-interface EventPhase {
-    val id: ResourceLocation
 }
 
 // TODO: revisit Detector and Requester interfaces (should more be exposed/documented? less?)

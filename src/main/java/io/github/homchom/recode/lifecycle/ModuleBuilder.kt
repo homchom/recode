@@ -77,14 +77,14 @@ class ModuleBuilder : ModuleDetail {
     /**
      * A [ModuleActionBuilder] invoked once, when the module is loaded.
      *
-     * Hook onto [Hook] events here, but listen for [Listenable] notifications via [onEnable] instead.
+     * Listen for [Listenable] notifications with [onEnable], not here.
      */
     private var loadAction = action()
 
     /**
      * A [ModuleActionBuilder] invoked when the module is enabled.
      *
-     * Listen for [Listenable] notifications here, hook onto [Hook] events via [onLoad] instead.
+     * Listen for [Listenable] notifications here.
      */
     private var enableAction = action()
 

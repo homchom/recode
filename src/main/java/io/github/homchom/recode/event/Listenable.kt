@@ -10,9 +10,10 @@ import java.util.function.Consumer
  * Something that can be listened to. Listenable objects come in two types: *events*, which are run
  * explicitly, and *detectors*, which are run algorithmically (via a [Trial]) based on another Listenable.
  *
- * @param T The context type of each invocation.
+ * @param T The context type of each invocation. Context includes return values and can therefore be mutated.
  *
  * @see CustomEvent
+ * @see WrappedEvent
  * @see Detector
  */
 interface Listenable<T> {
@@ -45,6 +46,7 @@ interface Listenable<T> {
     fun register(action: Consumer<T>) = listenEachFrom(GlobalModule) { action.accept(it) }
 }
 
+// TODO: reconcile with removal of StateEvent (in either direction)
 /**
  * A [Listenable] with a state.
  *
@@ -72,10 +74,16 @@ value class StateFlowListenable<T>(private val notifications: StateFlow<T>) : St
     override fun getNotificationsFrom(module: ExposedModule) = notifications
 }
 
+/**
+ * A type that is validated by a [Listenable], mutating and returning [isValid].
+ */
 interface Validated {
     var isValid: Boolean
 }
 
+/**
+ * @see createValidatedEvent
+ */
 data class SimpleValidated<T>(val value: T, override var isValid: Boolean) : Validated {
     operator fun invoke() = value
 }
