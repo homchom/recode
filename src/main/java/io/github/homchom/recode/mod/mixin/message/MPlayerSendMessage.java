@@ -9,6 +9,7 @@ import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.ChatType;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -20,12 +21,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(LocalPlayer.class)
+@Mixin(ClientPacketListener.class)
 public class MPlayerSendMessage {
     private final Minecraft minecraftClient = Minecraft.getInstance();
 
     @Inject(method = "sendChat", at = @At("HEAD"), cancellable = true)
-    public void chat(String string, Component component, CallbackInfo ci) {
+    public void chat(String string, CallbackInfo ci) {
         String[] args = string.split(" ");
         if (minecraftClient.player != null) {
             if (!string.startsWith("/")) {
@@ -111,7 +112,7 @@ public class MPlayerSendMessage {
         if (Config.getBoolean("automsg") && ConversationTimer.currentConversation != null && (DFInfo.currentState.getMode() != LegacyState.Mode.PLAY || !message.startsWith("@"))) {
             ci.cancel();
             ConversationTimer.conversationUpdateTime = String.valueOf(System.currentTimeMillis());
-            minecraftClient.player.commandUnsigned("msg " + ConversationTimer.currentConversation + " " + message);
+            minecraftClient.player.connection.sendUnsignedCommand("msg " + ConversationTimer.currentConversation + " " + message);
         }
     }
 }

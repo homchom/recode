@@ -9,7 +9,7 @@ import io.github.homchom.recode.sys.renderer.IMenu;
 import io.github.homchom.recode.sys.renderer.widgets.CItem;
 import io.github.homchom.recode.sys.util.TextUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -65,7 +65,7 @@ public class ItemEditorMenu extends LightweightGuiDescription implements IMenu {
         material.setMaxLength(Integer.MAX_VALUE);
         material.setText(item[0].getItem().toString());
         material.setChangedListener(s -> {
-            Item newMat = Registry.ITEM.get(new ResourceLocation("minecraft:" + s));
+            Item newMat = BuiltInRegistries.ITEM.get(new ResourceLocation("minecraft:" + s));
             if (newMat != Items.AIR) {
                 save.setEnabled(true);
                 ItemStack newItem = new ItemStack(newMat, item[0].getCount());

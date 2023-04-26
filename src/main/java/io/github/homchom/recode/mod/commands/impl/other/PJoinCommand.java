@@ -49,7 +49,7 @@ public class PJoinCommand extends Command {
             return -1;
         }
 
-        mc.player.commandUnsigned("locate " + player);
+        mc.player.connection.sendUnsignedCommand("locate " + player);
 
         LegacyReceiveChatMessageEvent.pjoin = true;
         ChatUtil.sendMessage("Joining the plot §e" + player + "§b is currently playing...", ChatType.INFO_BLUE);

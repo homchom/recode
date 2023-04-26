@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(ClientPacketListener.class)
-public class MClientPacketListener {
+public abstract class MClientPacketListener {
 	@Redirect(method = "handleServerData", at = @At(value = "INVOKE", target =
 		"Lnet/minecraft/client/gui/components/toasts/ToastComponent;addToast(Lnet/minecraft/client/gui/components/toasts/Toast;)V"))
 	public void hideSecureChatToastIfTrusted(ToastComponent instance, Toast toast) {

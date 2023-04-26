@@ -4,11 +4,9 @@ import io.github.homchom.recode.mod.commands.IManager;
 import io.github.homchom.recode.sys.file.ExternalFile;
 import io.github.homchom.recode.sys.file.ISave;
 import io.github.homchom.recode.sys.util.ItemUtil;
-import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.item.ItemStack;
 
@@ -66,8 +64,11 @@ public class TemplateStorageHandler implements IManager<TemplateItem>, ISave {
             if (!compoundTag.contains("DataVersion", 99)) {
                 compoundTag.putInt("DataVersion", 1343);
             }
-            compoundTag = NbtUtils.update(Minecraft.getInstance().getFixerUpper(),
-                    DataFixTypes.HOTBAR, compoundTag, compoundTag.getInt("DataVersion"));
+            compoundTag = DataFixTypes.HOTBAR.update(
+                    Minecraft.getInstance().getFixerUpper(),
+                    compoundTag, compoundTag.getInt("DataVersion"),
+                    Globals.getCurrentDataVersion()
+            );
 
             for (ItemStack stack : ItemUtil.fromListTag(compoundTag.getList("items", 10))) {
                 TemplateItem templateItem = new TemplateItem(stack);
@@ -92,7 +93,7 @@ public class TemplateStorageHandler implements IManager<TemplateItem>, ISave {
     public void save() {
         try {
             CompoundTag compoundTag = new CompoundTag();
-            compoundTag.putInt("DataVersion", SharedConstants.getCurrentVersion().getWorldVersion());
+            compoundTag.putInt("DataVersion", Globals.getCurrentDataVersion());
             compoundTag.put("items", ItemUtil.toListTag(registeredTemplates.stream()
                     .map((templateItem -> templateItem.stack)).collect(Collectors.toList())));
 

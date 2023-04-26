@@ -54,7 +54,8 @@ public class SearchCommand extends Command {
 							try {
 								String query = ctx.getArgument("action", String.class);
 								ArrayList<Action> actions = ActionDump.getActions(query);
-								mc.player.displayClientMessage(TextUtil.colorCodesToTextComponent("§x§0§0§b§5§f§c✎ §x§0§0§e§0§b§0" + new TranslatableContents("recode.template_search.begin_search", "§x§0§0§f§8§f§c" + query + "§x§0§0§e§0§b§0").resolve(mc.player.createCommandSourceStack(), mc.player, 1).getString()).copy(), false);
+								mc.player.displayClientMessage(TextUtil.colorCodesToTextComponent("§x§0§0§b§5§f§c✎ §x§0§0§e§0§b§0" + new TranslatableContents("recode.template_search.begin_search", null, new String[]{"§x§0§0§f§8§f§c" + query + "§x§0§0§e§0§b§0"})
+										.resolve(mc.player.createCommandSourceStack(), mc.player, 1).getString()).copy(), false);
 								mc.player.displayClientMessage(Component.literal(""), false);
 								for (Action action : actions) {
 									try {
@@ -68,7 +69,8 @@ public class SearchCommand extends Command {
 							} catch (Exception e) {
 								e.printStackTrace();
 
-								ChatUtil.sendMessage(new TranslatableContents("recode.template_search.invalid", ctx.getArgument("action", String.class)).resolve(mc.player.createCommandSourceStack(), mc.player, 1), ChatType.FAIL);
+								ChatUtil.sendMessage(new TranslatableContents("recode.template_search.invalid", null, new String[]{ctx.getArgument("action", String.class)})
+										.resolve(mc.player.createCommandSourceStack(), mc.player, 1), ChatType.FAIL);
 							}
 							return 1;
 						})));
@@ -84,13 +86,15 @@ public class SearchCommand extends Command {
 										if (DFInfo.isOnDF() && DFInfo.currentState.getMode() == LegacyState.Mode.DEV && mc.player.isCreative()) {
 											CodeSearcher.beginSearch(searchType, actionArgument);
 										} else {
-											ChatUtil.sendMessage(new TranslatableContents("recode.command.require_dev_mode", ctx.getArgument("action", String.class)).resolve(mc.player.createCommandSourceStack(), mc.player, 1), ChatType.FAIL);
+											ChatUtil.sendMessage(new TranslatableContents("recode.command.require_dev_mode", null, new String[]{ctx.getArgument("action", String.class)})
+													.resolve(mc.player.createCommandSourceStack(), mc.player, 1), ChatType.FAIL);
 										}
 
 									} catch (Exception e) {
 										e.printStackTrace();
 
-										ChatUtil.sendMessage(new TranslatableContents("recode.template_search.invalid").resolve(mc.player.createCommandSourceStack(), mc.player, 1), ChatType.FAIL);
+										ChatUtil.sendMessage(new TranslatableContents("recode.template_search.invalid", null, TranslatableContents.NO_ARGS)
+												.resolve(mc.player.createCommandSourceStack(), mc.player, 1), ChatType.FAIL);
 									}
 									return 1;
 

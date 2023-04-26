@@ -83,31 +83,31 @@ public class MMouseHandler {
                                             if (vertical > 0) {
                                                 bigDecimal = bigDecimal.add(BigDecimal.valueOf(Config.getDouble("quicknumSecondaryAmount")));
                                                 if (Config.getBoolean("quicknumSound"))
-                                                    LegacyRecode.MC.player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT, SoundSource.PLAYERS, 1, 1);
+                                                    LegacyRecode.MC.player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT.value(), SoundSource.PLAYERS, 1, 1);
                                             } else {
                                                 bigDecimal = bigDecimal.subtract(BigDecimal.valueOf(Config.getDouble("quicknumSecondaryAmount")));
                                                 if (Config.getBoolean("quicknumSound"))
-                                                    LegacyRecode.MC.player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT, SoundSource.PLAYERS, 1, 0);
+                                                    LegacyRecode.MC.player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT.value(), SoundSource.PLAYERS, 1, 0);
                                             }
                                         } else if (Screen.hasShiftDown()) {
                                             if (vertical > 0) {
                                                 bigDecimal = bigDecimal.add(BigDecimal.valueOf(Config.getDouble("quicknumTertiaryAmount")));
                                                 if (Config.getBoolean("quicknumSound"))
-                                                    LegacyRecode.MC.player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT, SoundSource.PLAYERS, 1, 1);
+                                                    LegacyRecode.MC.player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT.value(), SoundSource.PLAYERS, 1, 1);
                                             } else {
                                                 bigDecimal = bigDecimal.subtract(BigDecimal.valueOf(Config.getDouble("quicknumTertiaryAmount")));
                                                 if (Config.getBoolean("quicknumSound"))
-                                                    LegacyRecode.MC.player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT, SoundSource.PLAYERS, 1, 0);
+                                                    LegacyRecode.MC.player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT.value(), SoundSource.PLAYERS, 1, 0);
                                             }
                                         } else {
                                             if (vertical > 0) {
                                                 bigDecimal = bigDecimal.add(BigDecimal.valueOf(Config.getDouble("quicknumPrimaryAmount")));
                                                 if (Config.getBoolean("quicknumSound"))
-                                                    LegacyRecode.MC.player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT, SoundSource.PLAYERS, 1, 1);
+                                                    LegacyRecode.MC.player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT.value(), SoundSource.PLAYERS, 1, 1);
                                             } else {
                                                 bigDecimal = bigDecimal.subtract(BigDecimal.valueOf(Config.getDouble("quicknumPrimaryAmount")));
                                                 if (Config.getBoolean("quicknumSound"))
-                                                    LegacyRecode.MC.player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT, SoundSource.PLAYERS, 1, 0);
+                                                    LegacyRecode.MC.player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT.value(), SoundSource.PLAYERS, 1, 0);
                                             }
                                         }
 
@@ -126,7 +126,7 @@ public class MMouseHandler {
                                         ItemUtil.setContainerItem(slot.index, itemStack);
                                     } catch (NumberFormatException e) {
                                         if (Config.getBoolean("quicknumSound"))
-                                            LegacyRecode.MC.player.playNotifySound(SoundEvents.NOTE_BLOCK_DIDGERIDOO, SoundSource.PLAYERS, 1, 0);
+                                            LegacyRecode.MC.player.playNotifySound(SoundEvents.NOTE_BLOCK_DIDGERIDOO.value(), SoundSource.PLAYERS, 1, 0);
                                     }
                                 }
                             }

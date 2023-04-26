@@ -15,7 +15,7 @@ import io.github.homchom.recode.sys.player.chat.ChatUtil;
 import io.github.homchom.recode.sys.renderer.IMenu;
 import io.github.homchom.recode.sys.renderer.widgets.ItemScrollablePanel;
 import net.fabricmc.fabric.api.util.TriState;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.ListTag;
@@ -143,7 +143,7 @@ public class CodeVaultMenu extends LightweightGuiDescription implements IMenu {
                 String name = arr.get(6).getAsString();
                 String material = arr.get(7).getAsString();
 
-                ItemStack item = new ItemStack(Registry.ITEM.get(new ResourceLocation(material)));
+                ItemStack item = new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(material)));
                 item.setHoverName(Component.literal(name));
 
                 ListTag loreTag = new ListTag();

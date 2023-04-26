@@ -42,7 +42,7 @@ public class LegacyAfterScreenInitEvent {
 			AbstractWidget button = buttons.get(i);
 			if (buttonHasText(button, "menu.multiplayer") && button.visible) {
 				index = i + 1;
-				y = button.y;
+				y = button.getY();
 			}
 		}
 

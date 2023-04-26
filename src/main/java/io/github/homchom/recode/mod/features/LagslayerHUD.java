@@ -69,6 +69,6 @@ public class LagslayerHUD {
     }
 
     private static void renderComponent(PoseStack stack, Component text, int line, int color) {
-        font.draw(stack, text, 4, mainWindow.getGuiScaledHeight() - (font.lineHeight * line + 4), color);
+        font.drawShadow(stack, text, 4, mainWindow.getGuiScaledHeight() - (font.lineHeight * line + 4), color);
     }
 }

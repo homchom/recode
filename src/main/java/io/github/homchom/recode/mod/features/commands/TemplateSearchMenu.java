@@ -9,7 +9,7 @@ import io.github.homchom.recode.sys.hypercube.templates.TemplateUtil;
 import io.github.homchom.recode.sys.renderer.widgets.ClickableGiveItem;
 import io.github.homchom.recode.sys.renderer.widgets.ItemScrollablePanel;
 import net.fabricmc.fabric.api.util.TriState;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
@@ -40,7 +40,7 @@ public class TemplateSearchMenu extends LightweightGuiDescription {
             String name = template.get("name").getAsString();
             int listed = template.get("public").getAsInt();
             String uploader = template.get("uploadername").getAsString();
-            ItemStack templateItem = new ItemStack(Registry.ITEM.get(new ResourceLocation(template.get("material").getAsString())));
+            ItemStack templateItem = new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(template.get("material").getAsString())));
 
             try {
                 TemplateUtil.applyRawTemplateNBT(templateItem, name, uploader, template.get("data").getAsString());

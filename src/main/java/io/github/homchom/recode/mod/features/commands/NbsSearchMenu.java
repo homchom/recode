@@ -41,20 +41,20 @@ public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
 
     public final String query;
     private final SoundEvent[] instrumentids = {
-        SoundEvents.NOTE_BLOCK_HARP,
-        SoundEvents.NOTE_BLOCK_BASS,
-        SoundEvents.NOTE_BLOCK_BASEDRUM,
-        SoundEvents.NOTE_BLOCK_SNARE,
-        SoundEvents.NOTE_BLOCK_HAT,
-        SoundEvents.NOTE_BLOCK_GUITAR,
-        SoundEvents.NOTE_BLOCK_FLUTE,
-        SoundEvents.NOTE_BLOCK_BELL,
-        SoundEvents.NOTE_BLOCK_CHIME,
-        SoundEvents.NOTE_BLOCK_XYLOPHONE,
-        SoundEvents.NOTE_BLOCK_IRON_XYLOPHONE,
-        SoundEvents.NOTE_BLOCK_COW_BELL,
-        SoundEvents.NOTE_BLOCK_DIDGERIDOO,
-        SoundEvents.NOTE_BLOCK_BIT
+        SoundEvents.NOTE_BLOCK_HARP.value(),
+        SoundEvents.NOTE_BLOCK_BASS.value(),
+        SoundEvents.NOTE_BLOCK_BASEDRUM.value(),
+        SoundEvents.NOTE_BLOCK_SNARE.value(),
+        SoundEvents.NOTE_BLOCK_HAT.value(),
+        SoundEvents.NOTE_BLOCK_GUITAR.value(),
+        SoundEvents.NOTE_BLOCK_FLUTE.value(),
+        SoundEvents.NOTE_BLOCK_BELL.value(),
+        SoundEvents.NOTE_BLOCK_CHIME.value(),
+        SoundEvents.NOTE_BLOCK_XYLOPHONE.value(),
+        SoundEvents.NOTE_BLOCK_IRON_XYLOPHONE.value(),
+        SoundEvents.NOTE_BLOCK_COW_BELL.value(),
+        SoundEvents.NOTE_BLOCK_DIDGERIDOO.value(),
+        SoundEvents.NOTE_BLOCK_BIT.value()
     };
     int previewId = -1;
 

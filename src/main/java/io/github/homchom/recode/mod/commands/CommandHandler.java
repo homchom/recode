@@ -63,7 +63,6 @@ public class CommandHandler {
                 new SchemCommand(),
                 new RelativeLocCommand(),
                 new NBSSearchCommand(),
-                new PartnerBracketCommand(),
                 new CodeVaultCommand(),
                 new ImportFileCommand()
             );

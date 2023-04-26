@@ -13,7 +13,7 @@ public class TexturedOtherPlayerEntity extends RemotePlayer {
     ResourceLocation texture;
 
     public TexturedOtherPlayerEntity(ResourceLocation texture) {
-        super(LegacyRecode.MC.level, new GameProfile(UUID.fromString("00000000-0000-0000-0000-000000000000"),""), null);
+        super(LegacyRecode.MC.level, new GameProfile(UUID.fromString("00000000-0000-0000-0000-000000000000"), ""));
         this.texture = texture;
     }
 

@@ -5,7 +5,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.homchom.recode.LegacyRecode;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -84,7 +84,7 @@ public class ItemUtil {
     }
 
     public static ItemStack fromID(String id) {
-        return new ItemStack(Registry.ITEM.get(new ResourceLocation(id.toLowerCase())));
+        return new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(id.toLowerCase())));
     }
 
     public static void setLore(ItemStack itemStack, Component[] lores){

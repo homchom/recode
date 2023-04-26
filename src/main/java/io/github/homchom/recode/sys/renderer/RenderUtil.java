@@ -2,8 +2,8 @@ package io.github.homchom.recode.sys.renderer;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import com.mojang.math.Matrix4f;
 import net.minecraft.client.gui.GuiComponent;
+import org.joml.Matrix4f;
 
 import java.awt.*;
 
@@ -14,7 +14,6 @@ public class RenderUtil extends GuiComponent {
     }
 
     public static void drawGradientRect(PoseStack matrices, int xStart, int yStart, int xEnd, int yEnd, Color colorStart, Color colorEnd, int zOffset) {
-        RenderSystem.disableTexture();
         RenderSystem.enableBlend();
         RenderSystem.disableDepthTest();
         RenderSystem.defaultBlendFunc();
@@ -27,7 +26,6 @@ public class RenderUtil extends GuiComponent {
         RenderSystem.blendEquation(7424);
         RenderSystem.disableBlend();
         RenderSystem.enableDepthTest();
-        RenderSystem.enableTexture();
     }
 
     protected void drawGradientRect(Matrix4f matrix, BufferBuilder bufferBuilder, int xStart, int yStart, int xEnd, int yEnd, int z, int colorStart, int colorEnd) {

@@ -2,10 +2,7 @@ package io.github.homchom.recode.mixin.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.homchom.recode.event.SimpleValidated;
-import io.github.homchom.recode.render.Blaze3DExtensions;
-import io.github.homchom.recode.render.BlockEntityOutlineContext;
-import io.github.homchom.recode.render.OutlineBlockEntityEvent;
-import io.github.homchom.recode.render.RenderBlockEntityEvent;
+import io.github.homchom.recode.render.*;
 import io.github.homchom.recode.ui.RGBAColor;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
@@ -17,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = BlockEntityRenderDispatcher.class, priority = 100)
-public class MBlockEntityRenderDispatcher {
+public abstract class MBlockEntityRenderDispatcher {
 	@Inject(method = "render", at = @At("HEAD"), cancellable = true)
 	public void renderBlockEntities(
 			BlockEntity blockEntity, float f, PoseStack poseStack,

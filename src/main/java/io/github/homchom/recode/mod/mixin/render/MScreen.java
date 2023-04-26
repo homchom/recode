@@ -75,7 +75,8 @@ public class MScreen {
                             }
                             if (cache.get(url.toString()) != null) {
                                 TexturedOtherPlayerEntity entity = new TexturedOtherPlayerEntity(cache.get(url.toString()));
-                                InventoryScreen.renderEntityInInventory(mc.screen.width/5, mc.screen.height/2+20, 40, -20, -20, entity);
+                                // TODO: replace with quaternion-based method?
+                                InventoryScreen.renderEntityInInventoryFollowsMouse(matrices, mc.screen.width/5, mc.screen.height/2+20, 40, -20, -20, entity);
                             }
                         }
                     }
