@@ -100,7 +100,7 @@ public class StreamerModeHandler {
         // Note: May trigger simultaneously with StreamerHandler#handleServerJoin, but this is not a problem
         if (autoChatLocal() && newState instanceof PlayState playState &&
                 playState.getMode().equals(PlotMode.Play)) {
-            LegacyRecode.MC.player.connection.sendCommandUnsigned("c l");
+            LegacyRecode.MC.player.connection.sendUnsignedCommand("c l");
             MessageGrabber.hide(1);
         }
     }

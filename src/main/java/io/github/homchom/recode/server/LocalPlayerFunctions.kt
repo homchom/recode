@@ -20,7 +20,7 @@ fun sendLiteralMessage(message: String) = sendMessage(literalText(message))
  *
  * @throws IllegalStateException if there is no current player
  */
-fun sendCommand(command: String) = asPlayer { commandUnsigned(command) }
+fun sendCommand(command: String) = asPlayer { connection.sendUnsignedCommand(command) }
 
 private inline fun <R> asPlayer(block: LocalPlayer.() -> R) = mc.player?.block()
     ?: error("There is no current player to send a command as")

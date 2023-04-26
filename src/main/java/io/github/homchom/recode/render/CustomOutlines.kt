@@ -1,10 +1,11 @@
 package io.github.homchom.recode.render
 
-import io.github.homchom.recode.event.*
+import io.github.homchom.recode.event.CustomEvent
+import io.github.homchom.recode.event.DependentEvent
+import io.github.homchom.recode.event.createEvent
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.ui.RGBAColor
 import io.github.homchom.recode.util.Case
-import io.github.homchom.recode.util.MutableCase
 import kotlinx.coroutines.withContext
 import net.minecraft.world.level.block.entity.BlockEntity
 

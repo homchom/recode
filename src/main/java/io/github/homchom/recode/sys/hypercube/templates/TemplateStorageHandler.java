@@ -1,5 +1,6 @@
 package io.github.homchom.recode.sys.hypercube.templates;
 
+import io.github.homchom.recode.Globals;
 import io.github.homchom.recode.mod.commands.IManager;
 import io.github.homchom.recode.sys.file.ExternalFile;
 import io.github.homchom.recode.sys.file.ISave;
