@@ -1,11 +1,12 @@
 package io.github.homchom.recode.mixin.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import io.github.homchom.recode.event.SimpleValidated;
 import io.github.homchom.recode.render.Blaze3DExtensions;
+import io.github.homchom.recode.render.BlockEntityOutlineContext;
 import io.github.homchom.recode.render.OutlineBlockEntityEvent;
 import io.github.homchom.recode.render.RenderBlockEntityEvent;
 import io.github.homchom.recode.ui.RGBAColor;
-import io.github.homchom.recode.util.MutableCase;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -21,14 +22,14 @@ public class MBlockEntityRenderDispatcher {
 	public void renderBlockEntities(
 			BlockEntity blockEntity, float f, PoseStack poseStack,
 			MultiBufferSource multiBufferSource, CallbackInfo ci) {
-		if (!RenderBlockEntityEvent.INSTANCE.run(blockEntity, true)) {
+		if (!RenderBlockEntityEvent.INSTANCE.run(new SimpleValidated<>(blockEntity, true))) {
 			ci.cancel();
 		}
 	}
 
 	@ModifyVariable(method = "render", at = @At("HEAD"), ordinal = 0, argsOnly = true)
 	public MultiBufferSource outlineBlockEntities(MultiBufferSource multiBufferSource, BlockEntity blockEntity) {
-		RGBAColor outlineColor = OutlineBlockEntityEvent.INSTANCE.run(blockEntity, new MutableCase<>(null))
+		RGBAColor outlineColor = OutlineBlockEntityEvent.INSTANCE.run(new BlockEntityOutlineContext(blockEntity, null))
 				.getContent();
 		if (outlineColor != null) {
 			return Blaze3DExtensions.withOutline(multiBufferSource, outlineColor);

@@ -1,5 +1,6 @@
 package io.github.homchom.recode.mixin.server;
 
+import io.github.homchom.recode.event.SimpleValidated;
 import io.github.homchom.recode.server.SendCommandEvent;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
@@ -17,7 +18,7 @@ public class MLocalPlayer {
     public void interceptCommandPackets(ClientPacketListener instance, Packet<?> packet) {
         if (packet instanceof ServerboundChatCommandPacket commandPacket) {
             // TODO: should this not be a validated hook?
-            if (SendCommandEvent.INSTANCE.run(commandPacket.command(), true)) {
+            if (SendCommandEvent.INSTANCE.run(new SimpleValidated<>(commandPacket.command(), true))) {
                 instance.send(packet);
             }
         }

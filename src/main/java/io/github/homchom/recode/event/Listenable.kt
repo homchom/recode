@@ -7,12 +7,12 @@ import kotlinx.coroutines.flow.*
 import java.util.function.Consumer
 
 /**
- * Something that can be listened to, like a [Hook]. Listenable objects come in two types: *events*, which are run
+ * Something that can be listened to. Listenable objects come in two types: *events*, which are run
  * explicitly, and *detectors*, which are run algorithmically (via a [Trial]) based on another Listenable.
  *
  * @param T The context type of each invocation.
  *
- * @see SharedEvent
+ * @see CustomEvent
  * @see Detector
  */
 interface Listenable<T> {
@@ -70,6 +70,14 @@ value class StateFlowListenable<T>(private val notifications: StateFlow<T>) : St
     override val currentState get() = notifications.value
 
     override fun getNotificationsFrom(module: ExposedModule) = notifications
+}
+
+interface Validated {
+    var isValid: Boolean
+}
+
+data class SimpleValidated<T>(val value: T, override var isValid: Boolean) : Validated {
+    operator fun invoke() = value
 }
 
 /**

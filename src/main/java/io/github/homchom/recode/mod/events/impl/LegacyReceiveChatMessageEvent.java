@@ -1,6 +1,7 @@
 package io.github.homchom.recode.mod.events.impl;
 
 import io.github.homchom.recode.LegacyRecode;
+import io.github.homchom.recode.event.SimpleValidated;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.server.ReceiveChatMessageEvent;
 import io.github.homchom.recode.server.ServerConstants;
@@ -31,11 +32,12 @@ public class LegacyReceiveChatMessageEvent {
 
     private final Pattern tipPlayerRegex;
 
-    public boolean run(Component message, boolean send) {
+    public void run(SimpleValidated<Component> context) {
+        var message = context.getValue();
         System.out.println("receiving message: " + message.getString());
         Minecraft mc = Minecraft.getInstance();
 
-        if (mc.player == null) return false;
+        if (mc.player == null) context.setValid(false);
 
         boolean cancel = false;
 
@@ -181,6 +183,6 @@ public class LegacyReceiveChatMessageEvent {
             }
         }
 
-        return !cancel;
+        context.setValid(!cancel);
     }
 }

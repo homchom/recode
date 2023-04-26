@@ -17,15 +17,15 @@ import net.minecraft.client.multiplayer.ClientPacketListener
 import net.minecraft.network.chat.Component
 
 object JoinServerEvent :
-    WrappedHook<ServerJoinContext, Unit, Join> by
+    WrappedEvent<ServerJoinContext, Join> by
         wrapFabricEvent(ClientPlayConnectionEvents.JOIN, { listener ->
-            Join { handler, sender, client -> listener(ServerJoinContext(handler, sender, client), Unit) }
+            Join { handler, sender, client -> listener(ServerJoinContext(handler, sender, client)) }
         })
 
 object DisconnectFromServerEvent :
-    WrappedHook<ServerDisconnectContext, Unit, Disconnect> by
+    WrappedEvent<ServerDisconnectContext, Disconnect> by
         wrapFabricEvent(ClientPlayConnectionEvents.DISCONNECT, { listener ->
-            Disconnect { handler, client -> listener(ServerDisconnectContext(handler, client), Unit) }
+            Disconnect { handler, client -> listener(ServerDisconnectContext(handler, client)) }
         })
 
 data class ServerJoinContext(val handler: ClientPacketListener, val sender: PacketSender, val client: Minecraft)
@@ -37,10 +37,10 @@ object JoinDFDetector :
     Detector<Unit, JoinDFInfo> by detector(nullaryTrial(JoinServerEvent) {
         if (!ipMatchesDF) fail()
         enforceOn(DisconnectFromServerEvent) { null }
-        +testBooleanOn(ReceiveChatMessageEvent, 3u) {
-            it.equalsUnstyled("◆ Welcome back to DiamondFire! ◆")
+        +testBooleanOn(ReceiveChatMessageEvent, 3u) { (text) ->
+            text.equalsUnstyled("◆ Welcome back to DiamondFire! ◆")
         }
-        val patch = +testOn(ReceiveChatMessageEvent) { patchRegex.matchEntireUnstyled(it)?.groupValues?.get(1) }
+        val patch = +testOn(ReceiveChatMessageEvent) { patchRegex.matchEntireUnstyled(it())?.groupValues?.get(1) }
 
         coroutineScope {
             val tipPlayer = async { testBy(TipMessage, null).value?.player }
@@ -52,9 +52,7 @@ object JoinDFDetector :
 data class JoinDFInfo(val node: Node, val patch: String, val tipPlayer: String?)
 
 object ReceiveChatMessageEvent :
-    CustomHook<Component, Boolean> by createHook(),
-    ValidatedHook<Component>
+    SimpleValidatedEvent<Component> by createValidatedEvent()
 
 object SendCommandEvent :
-    CustomHook<String, Boolean> by createHook(),
-    ValidatedHook<String>
+    SimpleValidatedEvent<String> by createValidatedEvent()

@@ -12,7 +12,8 @@ import kotlin.math.sqrt
 
 val FCodeSearch = feature("Code Search") {
     onLoad {
-        OutlineBlockEntityEvent.hook { blockEntity, result ->
+        OutlineBlockEntityEvent.listenEach { context ->
+            val blockEntity = context.blockEntity
             if (blockEntity is SignBlockEntity) {
                 if (DFInfo.currentState.getMode() == LegacyState.Mode.DEV && mc.player!!.isCreative) {
                     if (CodeSearcher.isSignMatch(blockEntity)) {
@@ -22,11 +23,10 @@ val FCodeSearch = feature("Code Search") {
                         )
                         // TODO: test if alpha actually makes a difference
                         val alpha = (distance.coerceIn(1.0, 15.0) * 17).toInt()
-                        result.content = rgba(255, 255, 255, alpha)
+                        context.outlineColor = rgba(255, 255, 255, alpha)
                     }
                 }
             }
-            result
         }
     }
 }

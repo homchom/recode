@@ -10,15 +10,14 @@ import io.github.homchom.recode.ui.matchEntireUnstyled
 import io.github.homchom.recode.ui.matchesUnstyled
 import io.github.homchom.recode.util.cachedRegexBuilder
 import io.github.homchom.recode.util.namedGroupValues
-import net.minecraft.network.chat.Component
 import org.intellij.lang.annotations.Language
 import org.intellij.lang.annotations.RegExp
 
 data class LocateMessage(val username: String, val state: LocateState) {
     companion object : Requester<String, LocateMessage> by requester(trial(
         ReceiveChatMessageEvent,
-        start = { username -> sendCommand("locate $username") },
-        tests = { username, text: Component, _ ->
+        start = { username: String -> sendCommand("locate $username") },
+        tests = { username, (text), _ ->
             val values = regex(username).matchEntireUnstyled(text)?.namedGroupValues ?: fail()
             val player = values["player"].let { if (it == "You") mc.player!!.username else it }
             val node = nodeByName(values["node"])
@@ -56,9 +55,9 @@ data class LocateMessage(val username: String, val state: LocateState) {
 data class TipMessage(val player: String) {
     companion object : Detector<Unit, TipMessage> by detector(nullaryTrial(
         ReceiveChatMessageEvent,
-        tests = { message ->
+        tests = { (message) ->
             val player = mainRegex.matchEntireUnstyled(message)?.groupValues?.get(1) ?: fail()
-            +testBooleanOn(ReceiveChatMessageEvent, 2u) { timeRegex.matchesUnstyled(it) }
+            +testBooleanOn(ReceiveChatMessageEvent, 2u) { timeRegex.matchesUnstyled(it()) }
             TipMessage(player)
         }
     )) {

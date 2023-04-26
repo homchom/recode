@@ -11,24 +11,25 @@ import net.minecraft.world.phys.HitResult
 import kotlin.coroutines.CoroutineContext
 
 object BeforeOutlineBlockEvent :
-    WrappedHook<BlockOutlineContext, Boolean, BeforeBlockOutline> by
+    WrappedEvent<BlockOutlineContext, BeforeBlockOutline> by
         wrapFabricEvent(WorldRenderEvents.BEFORE_BLOCK_OUTLINE, { listener ->
             BeforeBlockOutline { worldRenderContext, hitResult ->
                 RenderSystem.assertOnRenderThread()
                 runBlocking {
-                    val context = BlockOutlineContext(worldRenderContext, coroutineContext, hitResult)
-                    listener(context, true)
+                    val context =
+                        BlockOutlineContext(worldRenderContext, coroutineContext, hitResult, true)
+                    listener(context)
+                    context.isValid
                 }
             }
-        }),
-    ValidatedHook<BlockOutlineContext>
+        })
 
 data class BlockOutlineContext(
     val worldRenderContext: WorldRenderContext,
     val coroutineContext: CoroutineContext,
-    val hitResult: HitResult?
-)
+    val hitResult: HitResult?,
+    override var isValid: Boolean
+) : Validated
 
 object RenderBlockEntityEvent :
-    CustomHook<BlockEntity, Boolean> by createHook(),
-    ValidatedHook<BlockEntity>
+    SimpleValidatedEvent<BlockEntity> by createValidatedEvent()

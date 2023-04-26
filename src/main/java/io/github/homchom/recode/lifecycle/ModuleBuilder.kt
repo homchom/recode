@@ -1,6 +1,5 @@
 package io.github.homchom.recode.lifecycle
 
-import io.github.homchom.recode.event.Hook
 import io.github.homchom.recode.event.Listenable
 import io.github.homchom.recode.util.collections.immutable
 

@@ -2,6 +2,7 @@ package io.github.homchom.recode.mod.mixin.message;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.homchom.recode.LegacyRecode;
+import io.github.homchom.recode.event.SimpleValidated;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.LagslayerHUD;
 import io.github.homchom.recode.mod.features.social.chat.message.LegacyMessage;
@@ -35,7 +36,9 @@ public class MMessageListener {
             // TODO: remove after new message listener is complete
             new LegacyMessage(packet, ci);
 
-            if (!ReceiveChatMessageEvent.INSTANCE.run(packet.content(), true)) ci.cancel();
+            if (!ReceiveChatMessageEvent.INSTANCE.run(new SimpleValidated<>(packet.content(), true))) {
+                ci.cancel();
+            }
             try {
                 this.updateVersion(packet.content());
                 this.updateState(packet.content());

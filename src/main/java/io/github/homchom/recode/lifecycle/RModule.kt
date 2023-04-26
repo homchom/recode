@@ -32,21 +32,11 @@ interface RModule {
 }
 
 /**
- * A [RModule] that can hook onto [Hook] events.
- */
-interface HookableModule : RModule {
-    /**
-     * @see Hook.hookFrom
-     */
-    fun <T, R> Hook<T, R>.hook(listener: HookListener<T, R>) = hookFrom(this@HookableModule, listener)
-}
-
-/**
- * An [HookableModule] with a [CoroutineScope] and that can listen for [Listenable] notifications, with exposed
- * functions for mutating active state. This should be used when creating module 2subtypes, not when creating
+ * A module with a [CoroutineScope] and that can listen for [Listenable] notifications, with exposed
+ * functions for mutating active state. This should be used when creating module subtypes, not when creating
  * top-level modules directly.
  */
-interface ExposedModule : HookableModule, CoroutineScope {
+interface ExposedModule : RModule, CoroutineScope {
     fun <T> Listenable<T>.listen(block: Flow<T>.() -> Flow<T>) =
         listenFrom(this@ExposedModule, block)
 

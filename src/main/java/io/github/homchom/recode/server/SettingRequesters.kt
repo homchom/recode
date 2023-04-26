@@ -14,7 +14,7 @@ import net.minecraft.world.effect.MobEffects
 val ChatLocalRequester = requester(nullaryTrial(
     ReceiveChatMessageEvent,
     start = { sendCommand("chat local") },
-    tests = { text, _ -> text.equalsUnstyled("Your chat is now set to LOCAL").unitOrNull() }
+    tests = { (text), _ -> text.equalsUnstyled("Your chat is now set to LOCAL").unitOrNull() }
 ))
 
 private val timeRegex = cachedRegexBuilder<Long> { time ->
@@ -25,7 +25,7 @@ private val timeRegex = cachedRegexBuilder<Long> { time ->
 val ClientTimeRequester = requester(trial(
     ReceiveChatMessageEvent,
     start = { time: Long -> sendCommand("time $time") },
-    tests = { time, text, _ ->
+    tests = { time, (text), _ ->
         timeRegex(time).matchesUnstyled(text).unitOrNull()
     }
 ))
@@ -37,14 +37,14 @@ val NightVisionRequesters = toggleRequesterGroup(
     ReceiveChatMessageEvent,
     start = { _: Unit? -> sendCommand("nightvis") },
     enabledPredicate = { mc.player!!.hasEffect(MobEffects.NIGHT_VISION) },
-    enabledTests = { _, text, _ -> nvEnabledRegex.matchesUnstyled(text).unitOrNull() },
-    disabledTests = { _, text, _ -> nvDisabledRegex.matchesUnstyled(text).unitOrNull() }
+    enabledTests = { _, (text), _ -> nvEnabledRegex.matchesUnstyled(text).unitOrNull() },
+    disabledTests = { _, (text), _ -> nvDisabledRegex.matchesUnstyled(text).unitOrNull() }
 )
 
 val LagSlayerRequesters = toggleRequesterGroup(
     ReceiveChatMessageEvent,
     start = { _: Unit? -> sendCommand("lagslayer") },
     enabledPredicate = { mc.player!!.hasEffect(MobEffects.NIGHT_VISION) },
-    enabledTests = { _, text, _ -> nvEnabledRegex.matchesUnstyled(text).unitOrNull() },
-    disabledTests = { _, text, _ -> nvDisabledRegex.matchesUnstyled(text).unitOrNull() }
+    enabledTests = { _, (text), _ -> nvEnabledRegex.matchesUnstyled(text).unitOrNull() },
+    disabledTests = { _, (text), _ -> nvDisabledRegex.matchesUnstyled(text).unitOrNull() }
 )

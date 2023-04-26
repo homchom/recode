@@ -29,7 +29,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>>, ExposedModule by modu
     }
 
     val EnterSpawn = group.add(detector(
-        nullaryTrial(SendCommandEvent) { command ->
+        nullaryTrial(SendCommandEvent) { (command) ->
             // TODO: use an inventory event instead
             if (command != "spawn" && command != "s" && command != "leave") fail()
             Case(DFState.AtSpawn(locate().node, false))
@@ -39,7 +39,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>>, ExposedModule by modu
         }
     ))
 
-    val ChangeMode = group.add(detector(nullaryTrial(ReceiveChatMessageEvent) { message ->
+    val ChangeMode = group.add(detector(nullaryTrial(ReceiveChatMessageEvent) { (message) ->
         PlotMode.match(message)?.encase { match ->
             val state = currentDFState!!.withState(locate()) as? DFState.OnPlot
             if (state?.mode != match.matcher) fail()

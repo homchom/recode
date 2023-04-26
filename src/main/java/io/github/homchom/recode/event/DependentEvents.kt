@@ -1,6 +1,9 @@
 package io.github.homchom.recode.event
 
-import io.github.homchom.recode.lifecycle.*
+import io.github.homchom.recode.lifecycle.ExposedModule
+import io.github.homchom.recode.lifecycle.ModuleBuilderScope
+import io.github.homchom.recode.lifecycle.RModule
+import io.github.homchom.recode.lifecycle.module
 import kotlinx.coroutines.flow.Flow
 
 inline fun <T> DependentListenable(delegate: Listenable<T>, dependencyBuilder: ModuleBuilderScope) =
@@ -9,25 +12,15 @@ inline fun <T> DependentListenable(delegate: Listenable<T>, dependencyBuilder: M
 inline fun <T> DependentStateListenable(delegate: StateListenable<T>, dependencyBuilder: ModuleBuilderScope) =
     DependentStateListenable(delegate, module(builder = dependencyBuilder))
 
-inline fun <T> DependentEvent(
-    delegate: SharedEvent<T> = createEvent(),
+inline fun <T, R : Any> DependentEvent(
+    delegate: CustomEvent<T, R>,
     dependencyBuilder: ModuleBuilderScope
-): DependentEvent<T> {
+): DependentEvent<T, R> {
     return DependentEvent(delegate, module(builder = dependencyBuilder))
 }
 
-inline fun <T> DependentStateEvent(delegate: StateEvent<T>, dependencyBuilder: ModuleBuilderScope) =
-    DependentStateEvent(delegate, module(builder = dependencyBuilder))
-
-inline fun <T> DependentStateEvent(initialValue: T, dependencyBuilder: ModuleBuilderScope) =
-    DependentStateEvent(createStateEvent(initialValue), dependencyBuilder)
-
-inline fun <T, R : Any> DependentHook(
-    delegate: CustomHook<T, R> = createHook(),
-    dependencyBuilder: ModuleBuilderScope
-): DependentHook<T, R> {
-    return DependentHook(delegate, module(builder = dependencyBuilder))
-}
+inline fun <T> DependentEvent(dependencyBuilder: ModuleBuilderScope) =
+    DependentEvent(createEvent<T>(), dependencyBuilder)
 
 /**
  * A [Listenable] with a [dependency] that is respected by listening modules.
@@ -54,43 +47,14 @@ class DependentStateListenable<T>(
 
 /**
  * @see DependentListenable
- * @see SharedEvent
+ * @see CustomEvent
  */
-class DependentEvent<T>(
-    private val delegate: SharedEvent<T>,
+class DependentEvent<T, R : Any>(
+    private val delegate: CustomEvent<T, R>,
     private val dependency: RModule
-) : SharedEvent<T> by delegate {
+) : CustomEvent<T, R> by delegate {
     override fun getNotificationsFrom(module: ExposedModule) =
         delegate.getNotificationsDependent(module, dependency)
-}
-
-/**
- * @see DependentListenable
- * @see StateEvent
- */
-class DependentStateEvent<T>(
-    private val delegate: StateEvent<T>,
-    private val dependency: RModule
-) : StateEvent<T> by delegate {
-    override fun getNotificationsFrom(module: ExposedModule) =
-        delegate.getNotificationsDependent(module, dependency)
-}
-
-/**
- * @see DependentListenable
- * @see CustomHook
- */
-class DependentHook<T, R : Any>(
-    private val delegate: CustomHook<T, R>,
-    private val dependency: RModule
-) : CustomHook<T, R> by delegate {
-    override fun getNotificationsFrom(module: ExposedModule) =
-        delegate.getNotificationsDependent(module, dependency)
-
-    override fun hookFrom(module: HookableModule, listener: HookListener<T, R>) {
-        dependency.addParent(module)
-        delegate.hookFrom(module, listener)
-    }
 }
 
 private fun <T> Listenable<T>.getNotificationsDependent(module: ExposedModule, dependency: RModule): Flow<T> {
