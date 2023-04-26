@@ -13,12 +13,8 @@ import kotlinx.coroutines.launch
 // TODO: combine into one module per event after config is figured out
 
 val FAutoWand = autoCommand("/wand", DFStateDetectors.ChangeMode) { (new) ->
-    println("start auto wand")
     if (Config.getBoolean("autowand")) {
-        if (new.mode == PlotMode.Build) {
-            println("send auto wand")
-            sendCommand("/wand")
-        }
+        if (new.mode == PlotMode.Build) sendCommand("/wand")
     }
 }
 
@@ -45,12 +41,8 @@ val FAutoNightVision = autoCommand("nightvis", DFStateDetectors.ChangeMode) { (n
 }
 
 val FAutoResetCompact = autoCommand("resetcompact", DFStateDetectors.ChangeMode) { (new) ->
-    println("start auto rc")
     if (Config.getBoolean("autoRC") && !DFInfo.currentState.isInSession) {
-        if (new.mode == PlotMode.Dev) {
-            println("send auto rc")
-            sendCommand("resetcompact")
-        }
+        if (new.mode == PlotMode.Dev) sendCommand("resetcompact")
     }
 }
 
