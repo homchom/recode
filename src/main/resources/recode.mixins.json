@@ -7,9 +7,7 @@
     "render.MBlockEntityRenderDispatcher",
     "render.MGui",
     "render.MLevelRenderer",
-    "server.MClientPacketListener",
-    "server.MLocalPlayer",
-    "server.MPlayerInfo"
+    "server.MClientPacketListener"
   ],
   "server": [],
   "injectors": {
