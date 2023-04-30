@@ -1,9 +1,10 @@
 package io.github.homchom.recode.event
 
-import io.github.homchom.recode.lifecycle.ExposedModule
 import io.github.homchom.recode.lifecycle.RModule
+import io.github.homchom.recode.util.coroutines.RendezvousFlow
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.runBlocking
 import net.fabricmc.fabric.api.event.Event
 import kotlin.time.Duration
 
@@ -14,7 +15,7 @@ typealias SimpleValidatedEvent<T> = CustomEvent<SimpleValidated<T>, Boolean>
 /**
  * Creates a [CustomEvent], providing results by transforming context with [resultCapture].
  */
-fun <T, R : Any> createEvent(resultCapture: T.() -> R): CustomEvent<T, R> = SharedFlowEvent(resultCapture)
+fun <T, R : Any> createEvent(resultCapture: T.() -> R): CustomEvent<T, R> = RendezvousFlowEvent(resultCapture)
 
 /**
  * Creates a [CustomEvent] with a Unit result.
@@ -24,7 +25,7 @@ fun <T> createEvent() = createEvent<T, Unit> {}
 /**
  * Creates a [SimpleValidatedEvent].
  */
-fun <T> createValidatedEvent() = createEvent<SimpleValidated<T>, Boolean> { isValid }
+fun <T> createValidatedEvent() = createEvent<SimpleValidated<T>, Boolean> { isValid.get() }
 
 /**
  * Wraps an existing Fabric [Event] into a [Listenable], using [transform] to map recode listeners to its
@@ -45,7 +46,9 @@ interface CustomEvent<T, R : Any> : Listenable<T> {
     // TODO: events cannot suspend, but is shared mutable state still a problem? do we need StateEvent back?
     val prevResult: R?
 
-    fun run(context: T): R
+    suspend fun run(context: T): R
+
+    fun runBlocking(context: T) = runBlocking(Dispatchers.Default) { run(context) }
 }
 
 /**
@@ -114,8 +117,10 @@ interface DetectorModule<T : Any, R : Any> : Detector<T, R>, RModule
  */
 interface RequesterModule<T : Any, R : Any> : Requester<T, R>, RModule
 
-private class SharedFlowEvent<T, R : Any>(private val resultCapture: T.() -> R) : CustomEvent<T, R> {
-    private val flow = MutableSharedFlow<T>(
+private class RendezvousFlowEvent<T, R : Any>(
+    private val resultCapture: T.() -> R
+) : CustomEvent<T, R> {
+    private val flow = RendezvousFlow<T>(
         extraBufferCapacity = 1,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
@@ -123,10 +128,10 @@ private class SharedFlowEvent<T, R : Any>(private val resultCapture: T.() -> R) 
     override var prevResult: R? = null
         private set
 
-    override fun getNotificationsFrom(module: ExposedModule) = flow
+    override fun getNotificationsFrom(module: RModule) = flow
 
-    override fun run(context: T): R {
-        check(flow.tryEmit(context)) { "SharedEvent listeners should never suspend" }
+    override suspend fun run(context: T): R {
+        flow.emit(context)
         return resultCapture(context)
     }
 }
@@ -140,8 +145,8 @@ private class EventWrapper<T, L>(
     override val invoker: L get() = fabricEvent.invoker()
 
     init {
-        fabricEvent.register(transform(async::run))
+        fabricEvent.register(transform(async::runBlocking))
     }
 
-    override fun getNotificationsFrom(module: ExposedModule) = async.getNotificationsFrom(module)
+    override fun getNotificationsFrom(module: RModule) = async.getNotificationsFrom(module)
 }

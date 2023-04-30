@@ -14,7 +14,7 @@ val FSignRenderDistance = feature("Sign Render Distance") {
                 val cameraPos = mc.cameraEntity!!.blockPosition()
                 val distance = Config.getInteger("signRenderDistance").toDouble()
                 if (!blockEntity.getBlockPos().closerThan(cameraPos, distance)) {
-                    context.isValid = false
+                    context.isValid.set(false)
                 }
             }
         }

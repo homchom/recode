@@ -52,7 +52,7 @@ public class DFInfo {
     public static void setCurrentState(LegacyState state) {
         LegacyState.CurrentState newState = new LegacyState.CurrentState(state);
         if (!currentState.equals(newState)) {
-            DFStateDetectors.INSTANCE.getLegacy().run(new Case<>(DF.toDFState(newState)));
+            DFStateDetectors.INSTANCE.getLegacy().runBlocking(new Case<>(DF.toDFState(newState)));
         }
         currentState = newState;
     }

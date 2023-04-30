@@ -14,7 +14,7 @@ public class LegacyReceiveSoundEvent {
     private void run(SimpleValidated<ClientboundSoundPacket> context) {
         if (cancelNextSounds > 0) {
             cancelNextSounds--;
-            context.setValid(false);
+            context.isValid().set(false);
         }
     }
 

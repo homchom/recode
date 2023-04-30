@@ -2,7 +2,10 @@ package io.github.homchom.recode.event
 
 import io.github.homchom.recode.lifecycle.ExposedModule
 import io.github.homchom.recode.lifecycle.RModule
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.flow.map
+
+typealias TrialResult<R> = Deferred<R?>?
 
 /**
  * Creates a [DetectorTrial] with the given [basis] and [tests].
@@ -84,18 +87,18 @@ sealed interface DetectorTrial<T : Any, R : Any> : Trial<DetectorTrial.ResultSup
      * @see runTests
      */
     fun interface Tester<T : Any, B, R : Any> {
-        suspend fun TrialScope.runTests(input: T?, baseContext: B): R?
+        fun TrialScope.runTests(input: T?, baseContext: B): TrialResult<R>
 
-        suspend fun runTestsIn(scope: TrialScope, input: T?, baseContext: B) = scope.runTests(input, baseContext)
+        fun runTestsIn(scope: TrialScope, input: T?, baseContext: B) = scope.runTests(input, baseContext)
     }
 
     /**
      * @see runTests
      */
     fun interface NullaryTester<B, R : Any> {
-        suspend fun TrialScope.runTests(baseContext: B): R?
+        fun TrialScope.runTests(baseContext: B): TrialResult<R>
 
-        suspend fun runTestsIn(scope: TrialScope, baseContext: B) = scope.runTests(baseContext)
+        fun runTestsIn(scope: TrialScope, baseContext: B) = scope.runTests(baseContext)
 
         /**
          * Converts this NullaryTester to a unary [Tester].
@@ -108,9 +111,9 @@ sealed interface DetectorTrial<T : Any, R : Any> : Trial<DetectorTrial.ResultSup
      * @see supply
      */
     fun interface ResultSupplier<T : Any, R : Any> {
-        suspend fun TrialScope.supply(input: T?): R?
+        fun TrialScope.supply(input: T?): TrialResult<R>
 
-        suspend fun supplyIn(scope: TrialScope, input: T?) = scope.supply(input)
+        fun supplyIn(scope: TrialScope, input: T?) = scope.supply(input)
     }
 }
 
@@ -126,9 +129,9 @@ sealed interface RequesterTrial<T : Any, R : Any> : Trial<RequesterTrial.ResultS
      * @see runTests
      */
     fun interface Tester<T : Any, B, R : Any> {
-        suspend fun TrialScope.runTests(input: T?, baseContext: B, isRequest: Boolean): R?
+        fun TrialScope.runTests(input: T?, baseContext: B, isRequest: Boolean): TrialResult<R>
 
-        suspend fun runTestsIn(scope: TrialScope, input: T?, baseContext: B, isRequest: Boolean) =
+        fun runTestsIn(scope: TrialScope, input: T?, baseContext: B, isRequest: Boolean) =
             scope.runTests(input, baseContext, isRequest)
     }
 
@@ -136,9 +139,9 @@ sealed interface RequesterTrial<T : Any, R : Any> : Trial<RequesterTrial.ResultS
      * @see runTests
      */
     fun interface NullaryTester<B, R : Any> {
-        suspend fun TrialScope.runTests(baseContext: B, isRequest: Boolean): R?
+        fun TrialScope.runTests(baseContext: B, isRequest: Boolean): TrialResult<R>
 
-        suspend fun runTestsIn(scope: TrialScope, baseContext: B, isRequest: Boolean) =
+        fun runTestsIn(scope: TrialScope, baseContext: B, isRequest: Boolean) =
             scope.runTests(baseContext, isRequest)
 
         /**
@@ -154,9 +157,9 @@ sealed interface RequesterTrial<T : Any, R : Any> : Trial<RequesterTrial.ResultS
      * @see supply
      */
     fun interface ResultSupplier<T : Any, R : Any> {
-        suspend fun TrialScope.supply(input: T?, isRequest: Boolean): R?
+        fun TrialScope.supply(input: T?, isRequest: Boolean): TrialResult<R>
 
-        suspend fun supplyIn(scope: TrialScope, input: T?, isRequest: Boolean) =
+        fun supplyIn(scope: TrialScope, input: T?, isRequest: Boolean) =
             scope.supply(input, isRequest)
     }
 }

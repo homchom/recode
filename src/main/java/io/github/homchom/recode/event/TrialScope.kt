@@ -14,7 +14,7 @@ import kotlin.time.Duration
 /**
  * Runs [block] in a [TrialScope].
  */
-suspend fun <R : Any> ExposedModule.trialScope(block: suspend TrialScope.() -> R) =
+suspend fun <R : Any> ExposedModule.trialScope(block: suspend TrialScope.() -> Deferred<R?>?) =
     nullable {
         withContext(Dispatchers.IO) {
             coroutineScope {
@@ -23,19 +23,25 @@ suspend fun <R : Any> ExposedModule.trialScope(block: suspend TrialScope.() -> R
                     this@nullable,
                     this@coroutineScope
                 )
-                trialScope.block().also { coroutineContext.cancelChildren() }
+                val result = trialScope.block() ?: fail()
+                coroutineContext.cancelChildren()
+                result
             }
         }
     }
 
 /**
- * A scope that a trial executes in, providing several DSL functions.
+ * A scope that a trial executes in.
+ *
+ * A trial is a test containing one or more suspension points on events; they are useful for detecting an
+ * occurrence that happens in complex steps. TrialScope includes corresponding DSL functions such as [testOn]
+ * and [testBy].
  */
 sealed class TrialScope(
     private val module: ExposedModule,
     private val nullableScope: NullableScope,
     val ruleScope: CoroutineScope
-) {
+) : CoroutineScope by module {
     /**
      * A list of blocking rules that are tested after most trial suspensions, failing the trial on a failed test.
      *
@@ -46,9 +52,17 @@ sealed class TrialScope(
     private val _rules = mutableListOf<() -> Any?>()
 
     /**
+     * Fails the trial if [predicate] is false.
+     */
+    fun requireTrue(predicate: Boolean) {
+        if (!predicate) fail()
+    }
+
+    /**
      * Enforces [block] by adding it to [rules].
      */
-    fun <T : Any> enforce(block: () -> T?) {
+    fun enforce(block: () -> Unit) {
+        block()
         _rules += block
     }
 
@@ -188,13 +202,6 @@ sealed class TrialScope(
     }
 
     /**
-     * Fails this trial.
-     *
-     * @see NullableScope.fail
-     */
-    fun fail(): Nothing = nullableScope.fail()
-
-    /**
      * Tests [test] on the next invocation of [event], where the test returns whether the test passed.
      *
      * @see testOn
@@ -233,6 +240,29 @@ sealed class TrialScope(
     ): TestResult<Unit> {
         return testAndEnforceOn(event, attempts, timeoutDuration) { test(it).unitOrNull() }
     }
+
+    /**
+     * Fails this trial.
+     *
+     * @see NullableScope.fail
+     */
+    fun fail(): Nothing = nullableScope.fail()
+
+    /**
+     * Creates and returns an instant [Deferred] result with [value].
+     * Use this when a trial does not end asynchronously.
+     *
+     * @see CompletableDeferred
+     */
+    fun <R> instant(value: R) = CompletableDeferred(value)
+
+    /**
+     * A shorthand for `unitOrNull().let(::instant)`.
+     *
+     * @see instant
+     * @see unitOrNull
+     */
+    fun Boolean.instantUnitOrNull() = instant(unitOrNull())
 
     /**
      * A result from a suspending test. To require a passing result or fail the trial, prepend it with [unaryPlus].

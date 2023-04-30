@@ -95,11 +95,13 @@ public class DFDiscordRPC implements ILoader {
             presence.setDetails(dyn("discordRPCSpawnDetails"));
             presence.setState(dyn("discordRPCSpawnState"));
 
-            if (Config.getBoolean("discordRPCShowSession") && state.isInSession()) {
+            // TODO: readd
+            /*if (Config.getBoolean("discordRPCShowSession") && state.isInSession()) {
                 presence.setSmallImage("supportsession", "In Support Session");
             } else {
                 presence.setSmallImage(null, null);
-            }
+            }*/
+            presence.setSmallImage(null, null);
 
             presence.setLargeImage("diamondfirelogo", getLargeImageText());
 
@@ -116,9 +118,10 @@ public class DFDiscordRPC implements ILoader {
                 presence.setSmallImage("mode" + playState.getMode().getId(), BasicTypeExtensions.capitalize(playState.getMode().getDescriptor()));
             }
 
-            if (Config.getBoolean("discordRPCShowSession") && state.isInSession()) {
+            // TODO: readd
+            /*if (Config.getBoolean("discordRPCShowSession") && state.isInSession()) {
                 presence.setSmallImage("supportsession", "In Support Session (" + playState.getMode().getDescriptor() + ")");
-            }
+            }*/
 
             presence.setLargeImage("diamondfirelogo", Objects.equals(playState.getStatus(), "") ? getLargeImageText() : playState.getStatus());
 

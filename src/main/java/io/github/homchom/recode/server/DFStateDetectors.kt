@@ -4,12 +4,15 @@
 package io.github.homchom.recode.server
 
 import io.github.homchom.recode.event.*
+import io.github.homchom.recode.game.ItemSlotUpdateEvent
 import io.github.homchom.recode.lifecycle.ExposedModule
+import io.github.homchom.recode.lifecycle.RModule
 import io.github.homchom.recode.lifecycle.exposedModule
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.server.message.LocateMessage
 import io.github.homchom.recode.util.Case
 import io.github.homchom.recode.util.encase
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 
@@ -29,33 +32,47 @@ object DFStateDetectors : StateListenable<Case<DFState?>>, ExposedModule by modu
     }
 
     val EnterSpawn = group.add(detector(
-        nullaryTrial(SendCommandEvent) { (command) ->
-            // TODO: use an inventory event instead
-            if (command != "spawn" && command != "s" && command != "leave") fail()
-            Case(DFState.AtSpawn(locate().node, false))
+        nullaryTrial(ItemSlotUpdateEvent) { packet ->
+            enforce {
+                requireTrue(isOnDF && currentDFState !is DFState.AtSpawn)
+            }
+            val stack = packet.item
+            requireTrue("◇ Game Menu ◇" in stack.hoverName.string)
+            val display = stack.orCreateTag.getCompound("display")
+            val lore = display.getList("Lore", 8).toString()
+            requireTrue("\"Click to open the Game Menu.\"" in lore)
+            requireTrue("\"Hold and type in chat to search.\"" in lore)
+
+            async { Case(DFState.AtSpawn(locate().node, /*false*/)) }
         },
         nullaryTrial(JoinDFDetector) { (node) ->
-            Case(DFState.AtSpawn(node, false))
+            instant(Case(DFState.AtSpawn(node, /*false*/)))
         }
     ))
 
     val ChangeMode = group.add(detector(nullaryTrial(ReceiveChatMessageEvent) { (message) ->
-        PlotMode.match(message)?.encase { match ->
-            val state = currentDFState!!.withState(locate()) as? DFState.OnPlot
-            if (state?.mode != match.matcher) fail()
-            state
+        enforce { requireTrue(isOnDF) }
+        async {
+            PlotMode.match(message)?.encase { match ->
+                val state = currentDFState!!.withState(locate()) as? DFState.OnPlot
+                if (state?.mode != match.matcher) fail()
+                state
+            }
         }
     }))
 
-    val Leave = group.add(detector(nullaryTrial(DisconnectFromServerEvent) { Case(null) }))
+    val Leave = group.add(detector(nullaryTrial(DisconnectFromServerEvent) { instant(Case(null)) }))
 
     @Deprecated("Only for Java use")
     val Legacy = group.add(createEvent())
 
     override val currentState get() = event.currentState
 
-    override fun getNotificationsFrom(module: ExposedModule) = event.getNotificationsFrom(module)
+    override fun getNotificationsFrom(module: RModule) = event.getNotificationsFrom(module)
 
     private suspend fun TrialScope.locate() =
-        mc.player?.run { (+awaitBy(LocateMessage, username)).state } ?: fail()
+        mc.player?.run {
+            val message = +awaitBy(LocateMessage, LocateMessage.Request(username, true))
+            message.state
+        } ?: fail()
 }

@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.homchom.recode.LegacyRecode;
+import io.github.homchom.recode.server.DFStateDetectors;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -18,6 +19,10 @@ public class LagslayerHUD {
     private static Component barsComponent;
     private static Component numberComponent;
     private static long lastUpdate;
+
+    public LagslayerHUD() {
+        DFStateDetectors.INSTANCE.getEnterSpawn().register((packet) -> lagSlayerEnabled = false);
+    }
 
     public static void updateCPU(ClientboundSetActionBarTextPacket packet) {
         JsonArray msgArray = Component.Serializer.toJsonTree(packet.getText()).getAsJsonObject().getAsJsonArray("extra");

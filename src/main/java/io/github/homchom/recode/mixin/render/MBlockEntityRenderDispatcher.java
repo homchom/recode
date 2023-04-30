@@ -22,15 +22,15 @@ public abstract class MBlockEntityRenderDispatcher {
 	public void renderBlockEntities(
 			BlockEntity blockEntity, float f, PoseStack poseStack,
 			MultiBufferSource multiBufferSource, CallbackInfo ci) {
-		if (!RenderBlockEntityEvent.INSTANCE.run(new SimpleValidated<>(blockEntity, true))) {
+		if (!RenderBlockEntityEvent.INSTANCE.runBlocking(new SimpleValidated<>(blockEntity))) {
 			ci.cancel();
 		}
 	}
 
 	@ModifyVariable(method = "render", at = @At("HEAD"), ordinal = 0, argsOnly = true)
 	public MultiBufferSource outlineBlockEntities(MultiBufferSource multiBufferSource, BlockEntity blockEntity) {
-		RGBAColor outlineColor = OutlineBlockEntityEvent.INSTANCE.run(new BlockEntityOutlineContext(blockEntity, null))
-				.getContent();
+		var context = new BlockEntityOutlineContext(blockEntity, null);
+		RGBAColor outlineColor = OutlineBlockEntityEvent.INSTANCE.runBlocking(context).getContent();
 		if (outlineColor != null) {
 			return Blaze3DExtensions.withOutline(multiBufferSource, outlineColor);
 		}

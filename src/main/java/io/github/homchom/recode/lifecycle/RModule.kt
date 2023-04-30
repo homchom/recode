@@ -32,11 +32,16 @@ interface RModule {
 }
 
 /**
- * A module with a [CoroutineScope] and that can listen for [Listenable] notifications, with exposed
- * functions for mutating active state. This should be used when creating module subtypes, not when creating
+ * An [RModule] with a [CoroutineScope].
+ */
+interface CoroutineModule : RModule, CoroutineScope
+
+/**
+ * A [CoroutineModule] that can listen for [Listenable] notifications, with exposed functions
+ * for mutating active state. This should be used when creating module subtypes, not when creating
  * top-level modules directly.
  */
-interface ExposedModule : RModule, CoroutineScope {
+interface ExposedModule : CoroutineModule {
     fun <T> Listenable<T>.listen(block: Flow<T>.() -> Flow<T>) =
         listenFrom(this@ExposedModule, block)
 

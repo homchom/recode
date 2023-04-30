@@ -16,16 +16,20 @@ val ipMatchesDF get() = mc.currentServer?.ip?.matches(dfIPRegex) ?: false
 private val dfIPRegex = Regex("""(?:\w+\.)?mcdiamondfire\.com(?::\d+)?""")
 
 sealed interface DFState : LocateState {
-    val isInSession: Boolean
+    // TODO: implement this (how should we handle supportee vs support?)
+    //val isInSession: Boolean
 
     fun withState(state: LocateState) = when (state) {
-        is SpawnState -> AtSpawn(state.node, isInSession)
-        is PlayState -> OnPlot(state, isInSession)
+        is SpawnState -> AtSpawn(state.node, /*isInSession*/)
+        is PlayState -> OnPlot(state, /*isInSession*/)
     }
 
-    class AtSpawn(override val node: Node, override val isInSession: Boolean) : DFState, SpawnState
-    class OnPlot(state: PlayState, override val isInSession: Boolean) : DFState, PlayState by state
+    class AtSpawn(override val node: Node, /*override val isInSession: Boolean*/) : DFState, SpawnState
+
+    class OnPlot(state: PlayState, /*override val isInSession: Boolean*/) : DFState, PlayState by state
 }
+
+fun DFState?.isInMode(mode: PlotMode) = this is DFState.OnPlot && this.mode == mode
 
 @JvmInline
 value class Node(private val id: String) {
@@ -83,11 +87,11 @@ fun plotModeByDescriptorOrNull(descriptor: String) =
 fun LegacyState.toDFState(): DFState? {
     if (mode == null || mode == LegacyState.Mode.OFFLINE) return null
     val newNode = Node(node.raw)
-    return if (mode == LegacyState.Mode.SPAWN) DFState.AtSpawn(newNode, session) else {
+    return if (mode == LegacyState.Mode.SPAWN) DFState.AtSpawn(newNode, /*session*/) else {
         val newPlot = Plot(plot.name, plot.owner, plot.id.toUInt())
         val newMode = plotModeByDescriptor(mode.continuousVerb.uncapitalize())
         val locateState = LocateState.OnPlot(newNode, newPlot, newMode, plot.status)
-        DFState.OnPlot(locateState, session)
+        DFState.OnPlot(locateState, /*session*/)
     }
 }
 

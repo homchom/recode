@@ -35,17 +35,28 @@ private val patchRegex = Regex("""Current patch: (.+). See the patch notes with 
 
 object JoinDFDetector :
     Detector<Unit, JoinDFInfo> by detector(nullaryTrial(JoinServerEvent) {
-        if (!ipMatchesDF) fail()
-        enforceOn(DisconnectFromServerEvent) { null }
-        +testBooleanOn(ReceiveChatMessageEvent, 3u) { (text) ->
-            text.equalsUnstyled("◆ Welcome back to DiamondFire! ◆")
-        }
-        val patch = +testOn(ReceiveChatMessageEvent) { patchRegex.matchEntireUnstyled(it())?.groupValues?.get(1) }
+        requireTrue(ipMatchesDF)
+        async {
+            enforceOn<_, Unit>(DisconnectFromServerEvent) { null } // TODO: nicer syntax?
+            +testBooleanOn(ReceiveChatMessageEvent, 3u) { (text) ->
+                text.equalsUnstyled("◆ Welcome back to DiamondFire! ◆")
+            }
+            val patch = +testOn(ReceiveChatMessageEvent) { (text) ->
+                patchRegex.matchEntireUnstyled(text)?.groupValues?.get(1)
+            }
 
-        coroutineScope {
-            val tipPlayer = async { testBy(TipMessage, null).value?.player }
-            val state = mc.player?.run { (+testBy(LocateMessage, username, attempts = 5u)).state } ?: fail()
-            JoinDFInfo(state.node, patch, tipPlayer.await())
+            coroutineScope {
+                val tipPlayer = async { testBy(TipMessage, null).value?.player }
+                val state = mc.player?.run {
+                    val message = +testBy(
+                        LocateMessage,
+                        LocateMessage.Request(username, true),
+                        attempts = 5u
+                    )
+                    message.state
+                } ?: fail()
+                JoinDFInfo(state.node, patch, tipPlayer.await())
+            }
         }
     })
 

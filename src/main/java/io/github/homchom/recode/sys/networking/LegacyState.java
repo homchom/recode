@@ -341,17 +341,8 @@ public class LegacyState {
         return JsonParser.parseString("{\"mode\":"+(this.getMode() == null ? "null" : ("{\"identifier\":\""+this.getMode().getIdentifier()+"\",\"verb\":\""+this.getMode().getContinuousVerb()+"\"}"))+",\"node\":"+(this.getNode() == null ? "null" : ("{\"identifier\":\""+this.getNode().getIdentifier()+"\"}"))+",\"plot\":"+ (this.getPlot() == null ? "null" : ("{\"id\":\""+this.getPlot().getId()+"\",\"name\":\""+this.getPlot().getName()+"\",\"status\":\""+this.getPlot().getStatus()+"\"}"))+"}");
     }
 
-    public void sendLocate() {
-        if (mc.player != null){
-            if (!mc.player.isDeadOrDying()){
-                //ChatUtil.executeCommand("locate");
-                //MessageGrabber.hide(1, MessageType.LOCATE);
-            }
-        }
-    }
-
     private static void notifyStateChange(LegacyState newState) {
-        DFStateDetectors.INSTANCE.getLegacy().run(new Case<>(DF.toDFState(newState)));
+        DFStateDetectors.INSTANCE.getLegacy().runBlocking(new Case<>(DF.toDFState(newState)));
     }
 
     public static class CurrentState extends LegacyState {

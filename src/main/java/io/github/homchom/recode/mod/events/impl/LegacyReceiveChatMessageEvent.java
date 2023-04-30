@@ -34,10 +34,9 @@ public class LegacyReceiveChatMessageEvent {
 
     public void run(SimpleValidated<Component> context) {
         var message = context.getValue();
-        System.out.println("receiving message: " + message.getString());
         Minecraft mc = Minecraft.getInstance();
 
-        if (mc.player == null) context.setValid(false);
+        if (mc.player == null) context.isValid().set(false);
 
         boolean cancel = false;
 
@@ -183,6 +182,6 @@ public class LegacyReceiveChatMessageEvent {
             }
         }
 
-        context.setValid(!cancel);
+        context.isValid().set(!cancel);
     }
 }

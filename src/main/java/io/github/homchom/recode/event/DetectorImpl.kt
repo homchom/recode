@@ -3,8 +3,10 @@ package io.github.homchom.recode.event
 import io.github.homchom.recode.DEFAULT_TIMEOUT_DURATION
 import io.github.homchom.recode.lifecycle.*
 import io.github.homchom.recode.util.attempt
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.time.Duration
 
@@ -41,23 +43,27 @@ private sealed class DetectorDetail<T : Any, R : Any, S> : Detector<T, R>, Modul
 
     private val queue = ConcurrentLinkedQueue<TrialEntry<T, R>>()
 
-    override fun getNotificationsFrom(module: ExposedModule) = event.getNotificationsFrom(module)
+    override fun getNotificationsFrom(module: RModule) = event.getNotificationsFrom(module)
 
     override fun ExposedModule.onEnable() {
         for (trial in trials) trial.supplyResultsFrom(this).listenEach { supplier ->
-            suspend fun getResponse(entry: TrialEntry<T, *>?) =
-                trialScope { runTests(supplier, entry) ?: fail() }
+            suspend fun getResponse(entry: TrialEntry<T, *>?) = trialScope { runTests(supplier, entry) }
 
             if (queue.isEmpty()) {
                 val response = getResponse(null)
-                if (response != null) event.run(response)
+                if (response != null) launch {
+                    response.await()?.let { event.run(it) }
+                }
             } else while (queue.isNotEmpty()) {
                 if (queue.peek()!!.basis != trial.basis) continue
                 val entry: TrialEntry<T, R> = queue.poll()
                 val response = getResponse(entry)
                 if (response != null || queue.isEmpty()) {
-                    entry.response.complete(response)
-                    if (response != null) event.run(response)
+                    launch {
+                        val awaited = response?.await()
+                        entry.response.complete(awaited)
+                        if (awaited != null) event.run(awaited)
+                    }
                     break
                 }
             }
@@ -83,38 +89,31 @@ private sealed class DetectorDetail<T : Any, R : Any, S> : Detector<T, R>, Modul
         basis: Listenable<*>?,
         attemptFunc: (block: suspend () -> R?) -> R?
     ): R? {
-        return addAndAwait(attemptFunc) { DetectEntry(input, basis ?: trials[0].basis, it) }
+        return addAndAwait(input, basis ?: trials[0].basis, false, attemptFunc)
     }
 
     protected suspend inline fun addAndAwait(
-        attemptFunc: (suspend () -> R?) -> R?,
-        crossinline entry: (CompletableDeferred<R?>) -> TrialEntry<T, R>
+        input: T?,
+        basis: Listenable<*>,
+        isRequest: Boolean,
+        attemptFunc: (suspend () -> R?) -> R?
     ): R? {
         return attemptFunc {
             val deferredResponse = CompletableDeferred<R?>()
-
-            // TODO: better way to do this with referential equality?
-            withContext(Dispatchers.IO) { yield() }
-
-            queue += entry(deferredResponse)
+            queue += TrialEntry(isRequest, input, basis, deferredResponse)
             withTimeoutOrNull(timeoutDuration) { deferredResponse.await() }
         }
     }
 
-    protected abstract suspend fun TrialScope.runTests(supplier: S, entry: TrialEntry<T, *>?): R?
-
-    private data class DetectEntry<T : Any, R : Any>(
-        override val input: T?,
-        override val basis: Listenable<*>,
-        override val response: CompletableDeferred<R?>
-    ) : TrialEntry<T, R>
+    protected abstract suspend fun TrialScope.runTests(supplier: S, entry: TrialEntry<T, *>?): TrialResult<R>
 }
 
-private sealed interface TrialEntry<T : Any, R : Any> {
-    val input: T?
-    val basis: Listenable<*>
+private data class TrialEntry<T : Any, R : Any>(
+    val isRequest: Boolean,
+    val input: T?,
+    val basis: Listenable<*>,
     val response: CompletableDeferred<R?>
-}
+)
 
 private class TrialDetector<T : Any, R : Any>(
     override val trials: List<DetectorTrial<T, R>>,
@@ -123,7 +122,7 @@ private class TrialDetector<T : Any, R : Any>(
     override suspend fun TrialScope.runTests(
         supplier: DetectorTrial.ResultSupplier<T, R>,
         entry: TrialEntry<T, *>?
-    ): R? {
+    ): TrialResult<R> {
         return supplier.supplyIn(this, entry?.input)
     }
 }
@@ -139,8 +138,8 @@ private class TrialRequester<T : Any, R : Any>(
     override suspend fun TrialScope.runTests(
         supplier: RequesterTrial.ResultSupplier<T, R>,
         entry: TrialEntry<T, *>?
-    ): R? {
-        return supplier.supplyIn(this, entry?.input, entry is RequestEntry)
+    ): TrialResult<R> {
+        return supplier.supplyIn(this, entry?.input, entry?.isRequest ?: false)
     }
 
     override suspend fun requestFrom(module: RModule, input: T) =
@@ -158,15 +157,9 @@ private class TrialRequester<T : Any, R : Any>(
         attemptFunc: (block: suspend () -> R?) -> R?
     ): R {
         trials[0].start(input)?.let { return it }
-        return addAndAwait(attemptFunc) { RequestEntry(input, trials[0].basis, it) }
+        return addAndAwait(input, trials[0].basis, true, attemptFunc)
             ?: error("Request trial failed")
     }
-
-    private data class RequestEntry<T : Any, R : Any>(
-        override val input: T?,
-        override val basis: Listenable<*>,
-        override val response: CompletableDeferred<R?>
-    ) : TrialEntry<T, R>
 }
 
 private open class SimpleDetectorModule<T : Any, R : Any>(
@@ -175,7 +168,7 @@ private open class SimpleDetectorModule<T : Any, R : Any>(
 ) : DetectorModule<T, R>, RModule by module {
     override val timeoutDuration get() = detail.timeoutDuration
 
-    override fun getNotificationsFrom(module: ExposedModule): Flow<R> {
+    override fun getNotificationsFrom(module: RModule): Flow<R> {
         module.depend(this)
         return detail.getNotificationsFrom(module)
     }

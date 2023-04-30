@@ -1,6 +1,5 @@
 package io.github.homchom.recode.event
 
-import io.github.homchom.recode.lifecycle.ExposedModule
 import io.github.homchom.recode.lifecycle.ModuleBuilderScope
 import io.github.homchom.recode.lifecycle.RModule
 import io.github.homchom.recode.lifecycle.module
@@ -29,7 +28,7 @@ class DependentListenable<T>(
     private val delegate: Listenable<T>,
     private val dependency: RModule
 ) : Listenable<T> {
-    override fun getNotificationsFrom(module: ExposedModule) =
+    override fun getNotificationsFrom(module: RModule) =
         delegate.getNotificationsDependent(module, dependency)
 }
 
@@ -41,7 +40,7 @@ class DependentStateListenable<T>(
     private val delegate: StateListenable<T>,
     private val dependency: RModule
 ) : StateListenable<T> by delegate {
-    override fun getNotificationsFrom(module: ExposedModule) =
+    override fun getNotificationsFrom(module: RModule) =
         delegate.getNotificationsDependent(module, dependency)
 }
 
@@ -53,11 +52,11 @@ class DependentEvent<T, R : Any>(
     private val delegate: CustomEvent<T, R>,
     private val dependency: RModule
 ) : CustomEvent<T, R> by delegate {
-    override fun getNotificationsFrom(module: ExposedModule) =
+    override fun getNotificationsFrom(module: RModule) =
         delegate.getNotificationsDependent(module, dependency)
 }
 
-private fun <T> Listenable<T>.getNotificationsDependent(module: ExposedModule, dependency: RModule): Flow<T> {
+private fun <T> Listenable<T>.getNotificationsDependent(module: RModule, dependency: RModule): Flow<T> {
     module.depend(dependency)
     return getNotificationsFrom(module)
 }

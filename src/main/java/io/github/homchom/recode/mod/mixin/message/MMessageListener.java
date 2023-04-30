@@ -7,14 +7,12 @@ import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.LagslayerHUD;
 import io.github.homchom.recode.mod.features.social.chat.message.LegacyMessage;
 import io.github.homchom.recode.server.ReceiveChatMessageEvent;
-import io.github.homchom.recode.sys.networking.LegacyState;
 import io.github.homchom.recode.sys.player.DFInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
-import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -33,15 +31,14 @@ public class MMessageListener {
     private void handleChat(ClientboundSystemChatPacket packet, CallbackInfo ci) {
         if (DFInfo.isOnDF() && RenderSystem.isOnRenderThread()) {
             // temporary, to preserve non-migrated side effects (like message grabbing)
-            // TODO: remove after new message listener is complete
+            // TODO: remove after new message listener is 100% complete
             new LegacyMessage(packet, ci);
-
-            if (!ReceiveChatMessageEvent.INSTANCE.run(new SimpleValidated<>(packet.content(), true))) {
+            var result = ReceiveChatMessageEvent.INSTANCE.runBlocking(new SimpleValidated<>(packet.content()));
+            if (!result) {
                 ci.cancel();
             }
             try {
                 this.updateVersion(packet.content());
-                this.updateState(packet.content());
             } catch (Exception e) {
                 e.printStackTrace();
                 LegacyRecode.error("Error while trying to parse the chat text!");
@@ -109,7 +106,6 @@ public class MMessageListener {
 
                     DFInfo.isPatchNewer(patchText, "0"); //very lazy validation lol
                     DFInfo.patchId = patchText;
-                    DFInfo.currentState.sendLocate();
                     LegacyRecode.info("DiamondFire Patch " + DFInfo.patchId + " detected!");
 
                     lastPatchCheck = time;
@@ -124,6 +120,8 @@ public class MMessageListener {
         }
     }
 
+    // TODO: reimplement in DFStateDetectors (supportee vs support?)
+    /*
     private void updateState(Component component) {
         Player player = Minecraft.getInstance().player;
         if (player == null) return;
@@ -167,4 +165,5 @@ public class MMessageListener {
             }
         }
     }
+    */
 }

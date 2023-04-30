@@ -10,15 +10,17 @@ import io.github.homchom.recode.ui.matchEntireUnstyled
 import io.github.homchom.recode.ui.matchesUnstyled
 import io.github.homchom.recode.util.cachedRegexBuilder
 import io.github.homchom.recode.util.namedGroupValues
+import kotlinx.coroutines.async
 import org.intellij.lang.annotations.Language
 import org.intellij.lang.annotations.RegExp
 
 data class LocateMessage(val username: String, val state: LocateState) {
-    companion object : Requester<String, LocateMessage> by requester(trial(
+    companion object : Requester<Request, LocateMessage> by requester(trial(
         ReceiveChatMessageEvent,
-        start = { username: String -> sendCommand("locate $username") },
-        tests = { username, (text), _ ->
-            val values = regex(username).matchEntireUnstyled(text)?.namedGroupValues ?: fail()
+        start = { request: Request -> sendCommand("locate ${request.username}") },
+        tests = { request, context, _ ->
+            val message = context.value
+            val values = regex(request?.username).matchEntireUnstyled(message)?.namedGroupValues ?: fail()
             val player = values["player"].let { if (it == "You") mc.player!!.username else it }
             val node = nodeByName(values["node"])
             val state = if (values["mode"].isEmpty()) {
@@ -31,7 +33,8 @@ data class LocateMessage(val username: String, val state: LocateState) {
                 val status = values["status"].takeUnless(String::isEmpty)
                 LocateState.OnPlot(node, Plot(plotName, owner, plotID), mode, status)
             }
-            LocateMessage(player, state)
+            if (request?.hideMessage == true) context.isValid.set(false)
+            instant(LocateMessage(player, state))
         }
     )) {
         private val regex = cachedRegexBuilder<String> { username ->
@@ -50,6 +53,9 @@ data class LocateMessage(val username: String, val state: LocateState) {
             Regex(""" {39}\n$player (?:at spawn|$mode$plot$owner$status)$server\n {39}""")
         }
     }
+
+    // TODO: is there a clean way to make *any* requester invalidatable if its basis is validated? (if so, unneeded)
+    data class Request(val username: String, val hideMessage: Boolean = false)
 }
 
 data class TipMessage(val player: String) {
@@ -57,8 +63,10 @@ data class TipMessage(val player: String) {
         ReceiveChatMessageEvent,
         tests = { (message) ->
             val player = mainRegex.matchEntireUnstyled(message)?.groupValues?.get(1) ?: fail()
-            +testBooleanOn(ReceiveChatMessageEvent, 2u) { timeRegex.matchesUnstyled(it()) }
-            TipMessage(player)
+            async {
+                +testBooleanOn(ReceiveChatMessageEvent, 2u) { timeRegex.matchesUnstyled(it()) }
+                TipMessage(player)
+            }
         }
     )) {
         private val mainRegex =
