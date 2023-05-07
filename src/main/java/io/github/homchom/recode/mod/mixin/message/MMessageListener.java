@@ -33,8 +33,9 @@ public class MMessageListener {
             // temporary, to preserve non-migrated side effects (like message grabbing)
             // TODO: remove after new message listener is 100% complete
             new LegacyMessage(packet, ci);
-            var result = ReceiveChatMessageEvent.INSTANCE.runBlocking(new SimpleValidated<>(packet.content()));
-            if (!result) {
+            var context = new SimpleValidated<>(packet.content());
+            System.out.println("Before ReceiveChatMessage runBlocking");
+            if (!ReceiveChatMessageEvent.INSTANCE.runBlocking(context)) {
                 ci.cancel();
             }
             try {
@@ -109,9 +110,6 @@ public class MMessageListener {
                     LegacyRecode.info("DiamondFire Patch " + DFInfo.patchId + " detected!");
 
                     lastPatchCheck = time;
-
-                    // update state on server join
-                    DFInfo.currentState.setInSession(false);
                 }
             } catch (Exception e) {
                 LegacyRecode.info("Error on parsing patch number!");

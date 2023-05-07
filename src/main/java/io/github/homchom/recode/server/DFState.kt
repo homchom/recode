@@ -5,7 +5,6 @@ package io.github.homchom.recode.server
 
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.server.*
-import io.github.homchom.recode.sys.networking.LegacyState
 import io.github.homchom.recode.ui.equalsUnstyled
 import io.github.homchom.recode.ui.matchesUnstyled
 import io.github.homchom.recode.util.*
@@ -82,18 +81,6 @@ fun plotModeByDescriptor(descriptor: String) =
     PlotMode.values().single { it.descriptor == descriptor }
 fun plotModeByDescriptorOrNull(descriptor: String) =
     PlotMode.values().singleOrNull { it.descriptor == descriptor }
-
-@Deprecated("Use DFState, not LegacyState")
-fun LegacyState.toDFState(): DFState? {
-    if (mode == null || mode == LegacyState.Mode.OFFLINE) return null
-    val newNode = Node(node.raw)
-    return if (mode == LegacyState.Mode.SPAWN) DFState.AtSpawn(newNode, /*session*/) else {
-        val newPlot = Plot(plot.name, plot.owner, plot.id.toUInt())
-        val newMode = plotModeByDescriptor(mode.continuousVerb.uncapitalize())
-        val locateState = LocateState.OnPlot(newNode, newPlot, newMode, plot.status)
-        DFState.OnPlot(locateState, /*session*/)
-    }
-}
 
 sealed interface LocateState {
     val node: Node

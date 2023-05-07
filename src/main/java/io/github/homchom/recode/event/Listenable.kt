@@ -6,12 +6,11 @@ import io.github.homchom.recode.lifecycle.GlobalModule
 import io.github.homchom.recode.lifecycle.RModule
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.*
-import java.util.concurrent.atomic.AtomicBoolean
 import java.util.function.Consumer
 
 /**
  * Something that can be listened to. Listenable objects come in two types: *events*, which are run
- * explicitly, and *detectors*, which are run algorithmically (via a [EventTest]) based on another Listenable.
+ * explicitly, and *detectors*, which are run algorithmically (via a [Trial]) based on another Listenable.
  *
  * @param T The context type of each invocation. Context includes return values and can therefore be mutated.
  * These types are **not** necessarily thread-safe, so be careful when mutating context concurrently.
@@ -79,24 +78,6 @@ value class StateFlowListenable<T>(private val notifications: StateFlow<T>) : St
 }
 
 /**
- * A type that is validated by a [Listenable], mutating and returning [isValid].
- */
-interface Validated {
-    // TODO: revisit (kotlinx.atomicfu? should this even be atomic, as opposed to some other solution?)
-    val isValid: AtomicBoolean
-}
-
-/**
- * @see createValidatedEvent
- */
-data class SimpleValidated<T> @JvmOverloads constructor(
-    val value: T,
-    override val isValid: AtomicBoolean = AtomicBoolean(true)
-) : Validated {
-    operator fun invoke() = value
-}
-
-/**
  * Wraps this [Flow] into a [Listenable].
  */
 fun <T> Flow<T>.asListenable() = FlowListenable(this)
@@ -151,7 +132,7 @@ class GroupListenable<T>(
 
     override fun getNotificationsFrom(module: RModule) = notifications
 
-    fun <S : Listenable<out T>> addFrom(module: ExposedModule, event: S) = event.also {
+    fun <S : Listenable<out T>> addFrom(module: RModule, event: S) = event.also {
         flows.add(it.getNotificationsFrom(module))
         update = true
     }

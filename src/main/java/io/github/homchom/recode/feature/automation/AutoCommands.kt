@@ -7,27 +7,25 @@ import io.github.homchom.recode.lifecycle.ExposedModule
 import io.github.homchom.recode.mod.config.Config
 import io.github.homchom.recode.mod.features.LagslayerHUD
 import io.github.homchom.recode.server.*
-import io.github.homchom.recode.sys.player.DFInfo
 import kotlinx.coroutines.launch
 
 // TODO: combine into one module per event after config is figured out
 
-val FAutoWand = autoCommand("/wand", DFStateDetectors.ChangeMode) { (new) ->
-    if (Config.getBoolean("autowand")) {
-        if (new.mode == PlotMode.Build) sendCommand("/wand")
-    }
-}
-
 val FAutoChatLocal = autoCommand("chat local", DFStateDetectors) { (new) ->
-    if (Config.getBoolean("autoChatLocal") && !DFInfo.currentState.isInSession) {
+    if (Config.getBoolean("autoChatLocal") /*&& !new.isInSession*/) {
         if (new is PlayState) launch { ChatLocalRequester.requestNext() }
     }
 }
 
-val FAutoTime = autoCommand("time", DFStateDetectors.ChangeMode) { (new) ->
-    if (Config.getBoolean("autotime") /*&& !new.isInSession*/) {
-        if (new.mode != PlotMode.Play) {
-            launch { ClientTimeRequester.requestNext(Config.getLong("autotimeval")) }
+val FAutoFly = autoCommand("fly", DFStateDetectors.EnterSpawn) {
+    if (Config.getBoolean("autofly")) sendCommand("fly")
+}
+
+val FAutoLagSlayer = autoCommand("lagslayer", DFStateDetectors.ChangeMode) { (new) ->
+    if (Config.getBoolean("autolagslayer") /*&& !new.isInSession*/) {
+        if (!LagslayerHUD.lagSlayerEnabled) {
+            // TODO: execute silently without ChatUtil
+            if (new.mode == PlotMode.Dev) sendCommand("lagslayer")
         }
     }
 }
@@ -46,17 +44,24 @@ val FAutoResetCompact = autoCommand("resetcompact", DFStateDetectors.ChangeMode)
     }
 }
 
-val FAutoLagSlayer = autoCommand("lagslayer", DFStateDetectors.ChangeMode) { (new) ->
-    if (Config.getBoolean("autolagslayer") /*&& !new.isInSession*/) {
-        if (!LagslayerHUD.lagSlayerEnabled) {
-            // TODO: execute silently without ChatUtil
-            if (new.mode == PlotMode.Dev) sendCommand("lagslayer")
+val FAutoTime = autoCommand("time", DFStateDetectors.ChangeMode) { (new) ->
+    if (Config.getBoolean("autotime") /*&& !new.isInSession*/) {
+        if (new.mode != PlotMode.Play) {
+            launch { ClientTimeRequester.requestNext(Config.getLong("autotimeval")) }
         }
     }
 }
 
-val FAutoFly = autoCommand("fly", DFStateDetectors.EnterSpawn) { (new) ->
-    if (Config.getBoolean("autofly")) sendCommand("fly")
+val FAutoTip = autoCommand("tip", JoinDFDetector) { info ->
+    if (Config.getBoolean("autoTip") && info.canTip) {
+        sendCommand("tip")
+    }
+}
+
+val FAutoWand = autoCommand("/wand", DFStateDetectors.ChangeMode) { (new) ->
+    if (Config.getBoolean("autowand")) {
+        if (new.mode == PlotMode.Build) sendCommand("/wand")
+    }
 }
 
 private inline fun <T> autoCommand(

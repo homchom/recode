@@ -12,7 +12,6 @@ import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
 import net.minecraft.network.protocol.game.ServerboundChatCommandPacket;
-import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -24,7 +23,7 @@ public abstract class MClientPacketListener {
 	@Inject(method = "handleContainerSetSlot", at = @At("TAIL"))
 	public void handleItemSlotUpdateEvent(ClientboundContainerSetSlotPacket packet, CallbackInfo ci) {
 		if (packet.getContainerId() == 0) {
-			ItemStack stack = packet.getItem();
+			var stack = packet.getItem();
 			if (TemplateUtil.isTemplate(stack)) {
 				TemplateStorageHandler.addTemplate(stack);
 			}
@@ -38,7 +37,8 @@ public abstract class MClientPacketListener {
 	public void interceptCommandPackets(ClientPacketListener instance, Packet<?> packet) {
 		if (packet instanceof ServerboundChatCommandPacket commandPacket) {
 			// TODO: should this not be a validated event?
-			if (SendCommandEvent.INSTANCE.runBlocking(new SimpleValidated<>(commandPacket.command()))) {
+			var context = new SimpleValidated<>(commandPacket.command());
+			if (SendCommandEvent.INSTANCE.runBlocking(context)) {
 				instance.send(packet);
 			}
 		}

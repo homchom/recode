@@ -2,12 +2,13 @@ package io.github.homchom.recode.server
 
 import io.github.homchom.recode.event.*
 import io.github.homchom.recode.mc
+import io.github.homchom.recode.render.RenderThreadContext
 import io.github.homchom.recode.server.message.LocateMessage
 import io.github.homchom.recode.server.message.TipMessage
 import io.github.homchom.recode.ui.equalsUnstyled
 import io.github.homchom.recode.ui.matchEntireUnstyled
 import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.Disconnect
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.Join
@@ -45,22 +46,21 @@ object JoinDFDetector :
                 patchRegex.matchEntireUnstyled(text)?.groupValues?.get(1)
             }
 
-            coroutineScope {
-                val tipPlayer = async { testBy(TipMessage, null).value?.player }
+            withContext(RenderThreadContext) {
+                val canTip = async { testBy(TipMessage, null).value?.canTip ?: false }
                 val state = mc.player?.run {
-                    val message = +testBy(
+                    val message = +awaitBy(
                         LocateMessage,
-                        LocateMessage.Request(username, true),
-                        attempts = 5u
+                        LocateMessage.Request(username, true)
                     )
                     message.state
                 } ?: fail()
-                JoinDFInfo(state.node, patch, tipPlayer.await())
+                JoinDFInfo(state.node, patch, canTip.await())
             }
         }
     })
 
-data class JoinDFInfo(val node: Node, val patch: String, val tipPlayer: String?)
+data class JoinDFInfo(val node: Node, val patch: String, val canTip: Boolean)
 
 object ReceiveChatMessageEvent :
     SimpleValidatedEvent<Component> by createValidatedEvent()

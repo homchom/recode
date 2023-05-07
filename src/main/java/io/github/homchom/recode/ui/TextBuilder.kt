@@ -1,5 +1,6 @@
 package io.github.homchom.recode.ui
 
+import io.github.homchom.recode.render.IntegralColor
 import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.ClickEvent
 import net.minecraft.network.chat.Component

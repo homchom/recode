@@ -1,21 +1,28 @@
 package io.github.homchom.recode.event
 
+import com.google.common.cache.CacheBuilder
+import io.github.homchom.recode.lifecycle.CoroutineModule
 import io.github.homchom.recode.lifecycle.RModule
+import io.github.homchom.recode.lifecycle.exposedModule
+import io.github.homchom.recode.util.collections.concurrentSet
 import io.github.homchom.recode.util.coroutines.RendezvousFlow
-import kotlinx.coroutines.Dispatchers
+import io.github.homchom.recode.util.coroutines.timer
 import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import net.fabricmc.fabric.api.event.Event
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.toJavaDuration
 
-typealias EventListener<T> = (context: T) -> Unit
-
-typealias SimpleValidatedEvent<T> = CustomEvent<SimpleValidated<T>, Boolean>
+typealias EventInvoker<T> = (context: T) -> Unit
 
 /**
  * Creates a [CustomEvent], providing results by transforming context with [resultCapture].
  */
-fun <T, R : Any> createEvent(resultCapture: T.() -> R): CustomEvent<T, R> = RendezvousFlowEvent(resultCapture)
+fun <T, R : Any> createEvent(resultCapture: (T) -> R): CustomEvent<T, R> = FlowEvent(resultCapture)
 
 /**
  * Creates a [CustomEvent] with a Unit result.
@@ -23,9 +30,19 @@ fun <T, R : Any> createEvent(resultCapture: T.() -> R): CustomEvent<T, R> = Rend
 fun <T> createEvent() = createEvent<T, Unit> {}
 
 /**
- * Creates a [SimpleValidatedEvent].
+ * Creates a buffered [CustomEvent] that runs asynchronously and caches the result on [interval].
+ *
+ * @param keySelector A function that transforms [T] into a hashable key type [K] for the buffer.
+ * @param cacheDuration How long event contexts should stay in the cache after being written before eviction.
  */
-fun <T> createValidatedEvent() = createEvent<SimpleValidated<T>, Boolean> { isValid.get() }
+fun <T, R : Any, K : Any> createBufferedEvent(
+    resultCapture: (T) -> R,
+    interval: Duration,
+    keySelector: (T) -> K,
+    cacheDuration: Duration = 1.seconds
+): CustomEvent<T, R> {
+    return BufferedEvent(createEvent(resultCapture), interval, keySelector, cacheDuration)
+}
 
 /**
  * Wraps an existing Fabric [Event] into a [Listenable], using [transform] to map recode listeners to its
@@ -33,22 +50,19 @@ fun <T> createValidatedEvent() = createEvent<SimpleValidated<T>, Boolean> { isVa
  */
 fun <T, L> wrapFabricEvent(
     event: Event<L>,
-    transform: (EventListener<T>) -> L
+    transform: (EventInvoker<T>) -> L
 ): WrappedEvent<T, L> {
     return EventWrapper(event, transform)
 }
 
 /**
- * A custom [Listenable] event that can be [run]. Event contexts are transformed into "results", and the previous
- * one is stored in [prevResult].
+ * A custom [Listenable] event that can be [run]. Event contexts are transformed into "results", which are
+ * returned by [run].
  */
 interface CustomEvent<T, R : Any> : Listenable<T> {
-    // TODO: events cannot suspend, but is shared mutable state still a problem? do we need StateEvent back?
-    val prevResult: R?
-
     suspend fun run(context: T): R
 
-    fun runBlocking(context: T) = runBlocking(Dispatchers.Default) { run(context) }
+    fun runBlocking(context: T) = runBlocking { run(context) }
 }
 
 /**
@@ -117,22 +131,59 @@ interface DetectorModule<T : Any, R : Any> : Detector<T, R>, RModule
  */
 interface RequesterModule<T : Any, R : Any> : Requester<T, R>, RModule
 
-private class RendezvousFlowEvent<T, R : Any>(
-    private val resultCapture: T.() -> R
-) : CustomEvent<T, R> {
+private class FlowEvent<T, R : Any>(private val resultCapture: (T) -> R) : CustomEvent<T, R> {
     private val flow = RendezvousFlow<T>(
         extraBufferCapacity = 1,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
 
-    override var prevResult: R? = null
-        private set
-
     override fun getNotificationsFrom(module: RModule) = flow
 
     override suspend fun run(context: T): R {
-        flow.emit(context)
+        flow.emitAndAwait(context)
         return resultCapture(context)
+    }
+}
+
+private class BufferedEvent<T, R : Any, K : Any>(
+    delegate: CustomEvent<T, R>,
+    interval: Duration,
+    private val keySelector: (T) -> K,
+    cacheDuration: Duration = 1.seconds,
+    private val module: CoroutineModule = exposedModule()
+) : CustomEvent<T, R> {
+    private val delegate = DependentEvent(delegate, module)
+
+    // TODO: use Caffeine (official successor) or other alternative?
+    private val buffer = CacheBuilder.newBuilder()
+        .expireAfterAccess(cacheDuration.toJavaDuration())
+        .build<K, R>()
+
+    private val currentSet = concurrentSet<K>()
+
+    init {
+        timer(interval)
+            .onEach { currentSet.clear() }
+            .launchIn(module)
+    }
+
+    override fun getNotificationsFrom(module: RModule) = delegate.getNotificationsFrom(module)
+
+    override suspend fun run(context: T): R {
+        val key = keySelector(context)
+        val bufferResult = buffer.getIfPresent(key)
+        val result = if (bufferResult == null) {
+            currentSet.add(key)
+            delegate.run(context).also { buffer.put(key, it) }
+        } else {
+            if (currentSet.add(key)) {
+                module.launch {
+                    buffer.put(key, delegate.run(context))
+                }
+            }
+            bufferResult
+        }
+        return result
     }
 }
 

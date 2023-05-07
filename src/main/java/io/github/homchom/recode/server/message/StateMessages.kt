@@ -2,8 +2,10 @@ package io.github.homchom.recode.server.message
 
 import io.github.homchom.recode.event.*
 import io.github.homchom.recode.mc
+import io.github.homchom.recode.render.RenderThreadContext
 import io.github.homchom.recode.server.*
 import io.github.homchom.recode.server.message.LocateMessage.Companion.regex
+import io.github.homchom.recode.server.message.TipMessage.Companion.commandRegex
 import io.github.homchom.recode.server.message.TipMessage.Companion.mainRegex
 import io.github.homchom.recode.server.message.TipMessage.Companion.timeRegex
 import io.github.homchom.recode.ui.matchEntireUnstyled
@@ -33,7 +35,7 @@ data class LocateMessage(val username: String, val state: LocateState) {
                 val status = values["status"].takeUnless(String::isEmpty)
                 LocateState.OnPlot(node, Plot(plotName, owner, plotID), mode, status)
             }
-            if (request?.hideMessage == true) context.isValid.set(false)
+            if (request?.hideMessage == true) context.invalidate()
             instant(LocateMessage(player, state))
         }
     )) {
@@ -58,20 +60,27 @@ data class LocateMessage(val username: String, val state: LocateState) {
     data class Request(val username: String, val hideMessage: Boolean = false)
 }
 
-data class TipMessage(val player: String) {
+data class TipMessage(val player: String, val canTip: Boolean) {
     companion object : Detector<Unit, TipMessage> by detector(nullaryTrial(
         ReceiveChatMessageEvent,
         tests = { (message) ->
             val player = mainRegex.matchEntireUnstyled(message)?.groupValues?.get(1) ?: fail()
-            async {
+            async(RenderThreadContext) {
+                val canTip = async {
+                    val result = testBooleanOn(ReceiveChatMessageEvent) { commandRegex.matchesUnstyled(it()) }
+                    result.value != null
+                }
                 +testBooleanOn(ReceiveChatMessageEvent, 2u) { timeRegex.matchesUnstyled(it()) }
-                TipMessage(player)
+                TipMessage(player, canTip.await())
             }
         }
     )) {
         private val mainRegex =
-            Regex("""$BOOSTER_ARROW_SYMBOL ($USERNAME_PATTERN) is using a \d+x booster.""")
+            Regex("""$BOOSTER_ARROW_PATTERN ($USERNAME_PATTERN) is using a \d+x booster.""")
+        private val commandRegex =
+            Regex("""$BOOSTER_ARROW_PATTERN Use /tip to show your appreciation """ +
+                    """and receive a $TOKEN_NOTCH_CHAR token notch!""")
         private val timeRegex =
-            Regex("""$BOOSTER_ARROW_SYMBOL The booster wears off in \d+ (?:day|hour|minute|second)s?.""")
+            Regex("""$BOOSTER_ARROW_PATTERN The booster wears off in \d+ (?:day|hour|minute|second)s?.""")
     }
 }

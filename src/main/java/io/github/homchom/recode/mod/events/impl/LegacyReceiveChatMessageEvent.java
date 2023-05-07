@@ -1,12 +1,11 @@
 package io.github.homchom.recode.mod.events.impl;
 
-import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.event.SimpleValidated;
 import io.github.homchom.recode.mod.config.Config;
+import io.github.homchom.recode.server.DF;
+import io.github.homchom.recode.server.PlotMode;
 import io.github.homchom.recode.server.ReceiveChatMessageEvent;
 import io.github.homchom.recode.server.ServerConstants;
-import io.github.homchom.recode.sys.networking.LegacyState;
-import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.ChatType;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
 import io.github.homchom.recode.sys.util.TextUtil;
@@ -36,7 +35,7 @@ public class LegacyReceiveChatMessageEvent {
         var message = context.getValue();
         Minecraft mc = Minecraft.getInstance();
 
-        if (mc.player == null) context.isValid().set(false);
+        if (mc.player == null) context.invalidate();
 
         boolean cancel = false;
 
@@ -78,8 +77,8 @@ public class LegacyReceiveChatMessageEvent {
         // highlight name
         if (Config.getBoolean("highlight")) {
             String highlightMatcher = Config.getString("highlightMatcher").replaceAll("\\{name}", mc.player.getName().getString());
-            if ((DFInfo.currentState.getMode() != LegacyState.Mode.PLAY && msgWithoutColor.matches("^[^0-z]+.*[a-zA-Z]+: .*"))
-                    || (DFInfo.currentState.getMode() == LegacyState.Mode.PLAY && msgWithoutColor.matches("^.*[a-zA-Z]+: .*"))) {
+            if (DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev) && (msgWithoutColor.matches("^[^0-z]+.*[a-zA-Z]+: .*")
+                    || msgWithoutColor.matches("^.*[a-zA-Z]+: .*"))) {
                 if ((!msgWithoutColor.matches("^.*" + highlightMatcher + ": .*")) || Config.getBoolean("highlightIgnoreSender")) {
                     if (msgWithoutColor.contains(highlightMatcher)) {
                         if (!msgWithoutColor.contains("» Joined game: ") && !msgWithoutColor.contains(" by " + highlightMatcher + ".")) {
@@ -145,7 +144,7 @@ public class LegacyReceiveChatMessageEvent {
             cancel = true;
         }
 
-        if (DFInfo.currentState.getMode() == LegacyState.Mode.DEV) {
+        if (DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev)) {
             // hide var scope messages
             if (Config.getBoolean("hideVarScopeMessages") && msgToString.startsWith("Scope set to ")) {
                 cancel = true;
@@ -164,24 +163,6 @@ public class LegacyReceiveChatMessageEvent {
             cancel = true;
         }
 
-        if (Config.getBoolean("autoTip") && msgToString.startsWith("⏵⏵ ")) {
-            var matcher = tipPlayerRegex.matcher(msgToString);
-            if (matcher.matches()) {
-                System.out.println("");
-                for (int i = 0; i < matcher.groupCount(); i++) {
-                    System.out.println("Group " + i + ": " + matcher.group(i));
-                }
-                tipPlayer = matcher.group(1);
-            } else if (msgWithColor.matches("§x§a§a§5§5§f§f⏵⏵ §7Use §x§f§f§f§f§a§a/tip§7 to show your appreciation and receive a §x§f§f§d§4§2§a□ token notch§7!")) {
-                LegacyRecode.executor.submit(() -> {
-                    try {
-                        Thread.sleep(3000);
-                    } catch (Exception ignored) {}
-                    mc.player.connection.sendUnsignedCommand("tip " + tipPlayer);
-                });
-            }
-        }
-
-        context.isValid().set(!cancel);
+        if (cancel) context.invalidate();
     }
 }

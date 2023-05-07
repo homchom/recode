@@ -3,7 +3,6 @@
   "package": "io.github.homchom.recode.mod.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "game.MClient",
     "game.MMinecraftClient",
     "inventory.MHeldItemTooltip",
     "inventory.MItemCreative",

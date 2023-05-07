@@ -3,6 +3,7 @@ package io.github.homchom.recode.event
 import io.github.homchom.recode.DEFAULT_TIMEOUT_DURATION
 import io.github.homchom.recode.lifecycle.*
 import io.github.homchom.recode.util.attempt
+import io.github.homchom.recode.util.nullable
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -60,7 +61,7 @@ private sealed class DetectorDetail<T : Any, R : Any, S> : Detector<T, R>, Modul
                 val response = getResponse(entry)
                 if (response != null || queue.isEmpty()) {
                     launch {
-                        val awaited = response?.await()
+                        val awaited = nullable { response?.await() }
                         entry.response.complete(awaited)
                         if (awaited != null) event.run(awaited)
                     }

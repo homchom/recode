@@ -5,7 +5,6 @@ package io.github.homchom.recode.server
 
 import io.github.homchom.recode.event.*
 import io.github.homchom.recode.game.ItemSlotUpdateEvent
-import io.github.homchom.recode.lifecycle.ExposedModule
 import io.github.homchom.recode.lifecycle.RModule
 import io.github.homchom.recode.lifecycle.exposedModule
 import io.github.homchom.recode.mc
@@ -22,12 +21,12 @@ val isOnDF get() = currentDFState != null
 
 private val module = exposedModule()
 
-object DFStateDetectors : StateListenable<Case<DFState?>>, ExposedModule by module {
+object DFStateDetectors : StateListenable<Case<DFState?>>, RModule by module {
     private val group = GroupListenable<Case<DFState?>>()
 
     private val event by lazy {
-        group.getNotificationsFrom(this)
-            .stateIn(this, SharingStarted.WhileSubscribed(), Case(null))
+        group.getNotificationsFrom(module)
+            .stateIn(module, SharingStarted.WhileSubscribed(), Case(null))
             .let { DependentStateListenable(it.asStateListenable(), module) }
     }
 
@@ -62,9 +61,6 @@ object DFStateDetectors : StateListenable<Case<DFState?>>, ExposedModule by modu
     }))
 
     val Leave = group.add(detector(nullaryTrial(DisconnectFromServerEvent) { instant(Case(null)) }))
-
-    @Deprecated("Only for Java use")
-    val Legacy = group.add(createEvent())
 
     override val currentState get() = event.currentState
 

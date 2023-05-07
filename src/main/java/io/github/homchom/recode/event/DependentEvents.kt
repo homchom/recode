@@ -11,15 +11,8 @@ inline fun <T> DependentListenable(delegate: Listenable<T>, dependencyBuilder: M
 inline fun <T> DependentStateListenable(delegate: StateListenable<T>, dependencyBuilder: ModuleBuilderScope) =
     DependentStateListenable(delegate, module(builder = dependencyBuilder))
 
-inline fun <T, R : Any> DependentEvent(
-    delegate: CustomEvent<T, R>,
-    dependencyBuilder: ModuleBuilderScope
-): DependentEvent<T, R> {
-    return DependentEvent(delegate, module(builder = dependencyBuilder))
-}
-
-inline fun <T> DependentEvent(dependencyBuilder: ModuleBuilderScope) =
-    DependentEvent(createEvent<T>(), dependencyBuilder)
+inline fun <T, R : Any> DependentEvent(delegate: CustomEvent<T, R>, dependencyBuilder: ModuleBuilderScope) =
+    DependentEvent(delegate, module(builder = dependencyBuilder))
 
 /**
  * A [Listenable] with a [dependency] that is respected by listening modules.
@@ -39,7 +32,9 @@ class DependentListenable<T>(
 class DependentStateListenable<T>(
     private val delegate: StateListenable<T>,
     private val dependency: RModule
-) : StateListenable<T> by delegate {
+) : StateListenable<T> {
+    override val currentState get() = delegate.currentState
+
     override fun getNotificationsFrom(module: RModule) =
         delegate.getNotificationsDependent(module, dependency)
 }
@@ -51,9 +46,11 @@ class DependentStateListenable<T>(
 class DependentEvent<T, R : Any>(
     private val delegate: CustomEvent<T, R>,
     private val dependency: RModule
-) : CustomEvent<T, R> by delegate {
+) : CustomEvent<T, R> {
     override fun getNotificationsFrom(module: RModule) =
         delegate.getNotificationsDependent(module, dependency)
+
+    override suspend fun run(context: T) = delegate.run(context)
 }
 
 private fun <T> Listenable<T>.getNotificationsDependent(module: RModule, dependency: RModule): Flow<T> {

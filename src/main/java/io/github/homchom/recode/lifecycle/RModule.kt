@@ -29,12 +29,42 @@ interface RModule {
 
     override operator fun equals(other: Any?): Boolean
     override fun hashCode(): Int
+
+    suspend fun <T : Any, R : Any> Detector<T, R>.detect(input: T?, basis: Listenable<*>? = null) =
+        detectFrom(this@RModule, input, basis)
+
+    suspend fun <T : Any, R : Any> Detector<T, R>.checkNext(
+        input: T?,
+        basis: Listenable<*>? = null,
+        attempts: UInt = 1u
+    ): R? {
+        return checkNextFrom(this@RModule, input, basis, attempts)
+    }
+
+    suspend fun <T : Any, R : Any> Requester<T, R>.request(input: T) =
+        requestFrom(this@RModule, input)
+
+    suspend fun <T : Any, R : Any> Requester<T, R>.requestNext(input: T, attempts: UInt = 1u) =
+        requestNextFrom(this@RModule, input, attempts)
+
+    fun <T, S : Listenable<out T>> GroupListenable<T>.add(event: S) =
+        addFrom(this@RModule, event)
+
+    suspend fun <R : Any> Requester<Unit, R>.request() = request(Unit)
+
+    suspend fun <R : Any> Requester<Unit, R>.requestNext(attempts: UInt = 1u) = requestNext(Unit, attempts)
 }
 
 /**
  * An [RModule] with a [CoroutineScope].
  */
-interface CoroutineModule : RModule, CoroutineScope
+interface CoroutineModule : RModule, CoroutineScope {
+    fun <T> Listenable<T>.listen(block: Flow<T>.() -> Flow<T>) =
+        listenFrom(this@CoroutineModule, block)
+
+    fun <T> Listenable<T>.listenEach(block: suspend (T) -> Unit) =
+        listenEachFrom(this@CoroutineModule, block)
+}
 
 /**
  * A [CoroutineModule] that can listen for [Listenable] notifications, with exposed functions
@@ -42,36 +72,6 @@ interface CoroutineModule : RModule, CoroutineScope
  * top-level modules directly.
  */
 interface ExposedModule : CoroutineModule {
-    fun <T> Listenable<T>.listen(block: Flow<T>.() -> Flow<T>) =
-        listenFrom(this@ExposedModule, block)
-
-    fun <T> Listenable<T>.listenEach(block: suspend (T) -> Unit) =
-        listenEachFrom(this@ExposedModule, block)
-
-    suspend fun <T : Any, R : Any> Detector<T, R>.detect(input: T?, basis: Listenable<*>? = null) =
-        detectFrom(this@ExposedModule, input, basis)
-
-    suspend fun <T : Any, R : Any> Detector<T, R>.checkNext(
-        input: T?,
-        basis: Listenable<*>? = null,
-        attempts: UInt = 1u
-    ): R? {
-        return checkNextFrom(this@ExposedModule, input, basis, attempts)
-    }
-
-    suspend fun <T : Any, R : Any> Requester<T, R>.request(input: T) =
-        requestFrom(this@ExposedModule, input)
-
-    suspend fun <T : Any, R : Any> Requester<T, R>.requestNext(input: T, attempts: UInt = 1u) =
-        requestNextFrom(this@ExposedModule, input, attempts)
-
-    fun <T, S : Listenable<out T>> GroupListenable<T>.add(event: S) =
-        addFrom(this@ExposedModule, event)
-
-    suspend fun <R : Any> Requester<Unit, R>.request() = request(Unit)
-
-    suspend fun <R : Any> Requester<Unit, R>.requestNext(attempts: UInt = 1u) = requestNext(Unit, attempts)
-
     @MutatesModuleState
     fun load()
 
