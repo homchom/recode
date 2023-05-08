@@ -15,7 +15,7 @@ val FCodeSearch = feature("Code Search") {
     onEnable {
         OutlineBlockEntitiesEvent.listenEach { context ->
             if (currentDFState.isInMode(PlotMode.Dev)) {
-                for ((blockEntity, outlineColor) in context.array) {
+                for ((blockEntity, outlineColor) in context) {
                     if (blockEntity is SignBlockEntity && CodeSearcher.isSignMatch(blockEntity)) {
                         val distance = sqrt(blockEntity.getBlockPos().distSqr(mc.cameraEntity!!.blockPosition()))
                         // TODO: test if alpha actually makes a difference

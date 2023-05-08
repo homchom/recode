@@ -38,15 +38,19 @@ object RenderBlockEntitiesEvent :
     SimpleValidatedListEvent<BlockEntity> by createEvent({ it.mapValid() })
 
 object OutlineBlockEntitiesEvent :
-    CustomEvent<BlockEntityOutlineContext, Map<BlockPos, RGBAColor>> by DependentEvent(
+    BufferedCustomEvent<Array<out BlockEntityOutlineContext>, Map<BlockPos, RGBAColor>,
+            BlockEntityOutlineContext.Input> by DependentBufferedEvent(
         createBufferedEvent(
             resultCapture = { context ->
-                context.array
+                context
                     .filter { it.outlineColor.get() != null }
                     .associate { it.blockEntity.blockPos to it.outlineColor.get()!! }
             },
-            interval = 2.ticks,
-            keySelector = { Case(it.chunkPos) }
+            interval = 3.ticks,
+            keySelector = { Case(it.chunkPos) },
+            contextGenerator = { input ->
+                input.blockEntities.mapToArray { BlockEntityOutlineContext(it) }
+            }
         ),
         {
             onEnable {
@@ -62,17 +66,11 @@ object OutlineBlockEntitiesEvent :
         }
     )
 
-class BlockEntityOutlineContext(
-    val array: Array<out Element>,
-    val chunkPos: ChunkPos3D?
+data class BlockEntityOutlineContext @JvmOverloads constructor(
+    val blockEntity: BlockEntity,
+    var outlineColor: AtomicReference<RGBAColor?> = AtomicReference(null)
 ) {
-    constructor(blockEntities: Collection<BlockEntity>, chunkPos: ChunkPos3D?) :
-            this(blockEntities.mapToArray { Element(it) }, chunkPos)
-
-    data class Element @JvmOverloads constructor(
-        val blockEntity: BlockEntity,
-        var outlineColor: AtomicReference<RGBAColor?> = AtomicReference(null)
-    )
+    data class Input(val blockEntities: Collection<BlockEntity>, val chunkPos: ChunkPos3D?)
 }
 
 interface OutlineProcessor {
