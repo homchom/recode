@@ -1,6 +1,7 @@
 package io.github.homchom.recode.sys.renderer.widgets;
 
-import io.github.cottonmc.cotton.gui.widget.*;
+import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
+import io.github.cottonmc.cotton.gui.widget.WWidget;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;

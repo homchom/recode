@@ -1,11 +1,9 @@
 package io.github.homchom.recode.lifecycle
 
-import io.github.homchom.recode.event.Listener
-import io.github.homchom.recode.event.REvent
-import io.github.homchom.recode.event.hookFrom
+import io.github.homchom.recode.event.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.Flow
 
 /**
  * A group of code with dependencies ("children") and that can be loaded, enabled, and disabled.
@@ -17,43 +15,63 @@ import kotlinx.coroutines.GlobalScope
  * @see strongModule
  */
 interface RModule {
-    val children: List<RModule>
+    val children: Set<RModule>
 
     val isLoaded: Boolean
     val isEnabled: Boolean
 
     fun addParent(module: RModule)
     fun addChild(module: ExposedModule)
+
+    fun depend(module: RModule) {
+        if (module !in children) module.addParent(this)
+    }
+
+    override operator fun equals(other: Any?): Boolean
+    override fun hashCode(): Int
+
+    suspend fun <T : Any, R : Any> Detector<T, R>.detect(input: T?, basis: Listenable<*>? = null) =
+        detectFrom(this@RModule, input, basis)
+
+    suspend fun <T : Any, R : Any> Detector<T, R>.checkNext(
+        input: T?,
+        basis: Listenable<*>? = null,
+        attempts: UInt = 1u
+    ): R? {
+        return checkNextFrom(this@RModule, input, basis, attempts)
+    }
+
+    suspend fun <T : Any, R : Any> Requester<T, R>.request(input: T) =
+        requestFrom(this@RModule, input)
+
+    suspend fun <T : Any, R : Any> Requester<T, R>.requestNext(input: T, attempts: UInt = 1u) =
+        requestNextFrom(this@RModule, input, attempts)
+
+    fun <T, S : Listenable<out T>> GroupListenable<T>.add(event: S) =
+        addFrom(this@RModule, event)
+
+    suspend fun <R : Any> Requester<Unit, R>.request() = request(Unit)
+
+    suspend fun <R : Any> Requester<Unit, R>.requestNext(attempts: UInt = 1u) = requestNext(Unit, attempts)
 }
 
 /**
- * A [RModule] that can listen to an [REvent].
+ * An [RModule] with a [CoroutineScope].
  */
-interface ListenableModule : RModule {
-    /**
-     * @see REvent.listenFrom
-     */
-    fun <C, R> REvent<C, R>.listen(listener: Listener<C, R>) =
-        listenFrom(this@ListenableModule, listener)
+interface CoroutineModule : RModule, CoroutineScope {
+    fun <T> Listenable<T>.listen(block: Flow<T>.() -> Flow<T>) =
+        listenFrom(this@CoroutineModule, block)
 
-    /**
-     * @see hookFrom
-     */
-    fun <C, R> REvent<C, R>.hook(hook: (C) -> Unit) = hookFrom(this@ListenableModule, hook)
+    fun <T> Listenable<T>.listenEach(block: suspend (T) -> Unit) =
+        listenEachFrom(this@CoroutineModule, block)
 }
 
 /**
- * A [RModule] with a [CoroutineScope].
+ * A [CoroutineModule] that can listen for [Listenable] notifications, with exposed functions
+ * for mutating active state. This should be used when creating module subtypes, not when creating
+ * top-level modules directly.
  */
-interface CoroutineModule : RModule {
-    val coroutineScope: CoroutineScope
-}
-
-/**
- * A [ListenableModule] and [CoroutineModule] with exposed functions for mutating active state. This
- * should be used when creating module subtypes, not when creating top-level modules directly.
- */
-interface ExposedModule : ListenableModule, CoroutineModule {
+interface ExposedModule : CoroutineModule {
     @MutatesModuleState
     fun load()
 
@@ -82,23 +100,17 @@ interface ExposedModule : ListenableModule, CoroutineModule {
 }
 
 /**
- * A [ListenableModule] that is always enabled. Useful for listening to events globally. Don't use
- * inside another module, and prefer listening to more localized modules when applicable.
- */
-val GlobalModule: ListenableModule get() = GlobalExposedModule
-
-/**
- * A [CoroutineModule] that is always enabled. Don't use inside another module, and prefer using
+ * An [ExposedModule] that is always enabled. Don't use inside another module, and prefer using more localized
  * modules with properly confined coroutine scopes.
  *
  * @see kotlinx.coroutines.CoroutineScope
  */
+@OptIn(MutatesModuleState::class)
 @DelicateCoroutinesApi
-val GlobalCoroutineModule: CoroutineModule get() = GlobalExposedModule
-
-private object GlobalExposedModule : ExposedModule by buildStrongExposedModule() {
-    @DelicateCoroutinesApi
-    override val coroutineScope get() = GlobalScope
+object GlobalModule : ExposedModule by strongExposedModule() {
+    init {
+        enable()
+    }
 }
 
 /**

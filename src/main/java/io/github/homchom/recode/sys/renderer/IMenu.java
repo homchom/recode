@@ -1,7 +1,8 @@
 package io.github.homchom.recode.sys.renderer;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import io.github.cottonmc.cotton.gui.client.*;
+import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
+import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import net.minecraft.client.Minecraft;
 
 public interface IMenu {

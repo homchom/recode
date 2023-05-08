@@ -1,18 +1,27 @@
 package io.github.homchom.recode.mod.config.menu;
 
-import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.internal.ITranslatable;
-import io.github.homchom.recode.mod.config.structure.*;
+import io.github.homchom.recode.mod.config.structure.ConfigGroup;
+import io.github.homchom.recode.mod.config.structure.ConfigManager;
+import io.github.homchom.recode.mod.config.structure.ConfigSetting;
+import io.github.homchom.recode.mod.config.structure.ConfigSubGroup;
 import io.github.homchom.recode.mod.config.types.*;
-import io.github.homchom.recode.mod.config.types.list.*;
-import me.shedaniel.clothconfig2.api.*;
-import me.shedaniel.clothconfig2.impl.builders.*;
+import io.github.homchom.recode.mod.config.types.list.ListSetting;
+import io.github.homchom.recode.mod.config.types.list.StringListSetting;
+import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
+import me.shedaniel.clothconfig2.api.ConfigBuilder;
+import me.shedaniel.clothconfig2.api.ConfigCategory;
+import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
+import me.shedaniel.clothconfig2.impl.builders.EnumSelectorBuilder;
+import me.shedaniel.clothconfig2.impl.builders.SubCategoryBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 

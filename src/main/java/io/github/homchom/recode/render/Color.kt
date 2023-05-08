@@ -1,6 +1,6 @@
 @file:JvmName("Color")
 
-package io.github.homchom.recode.ui
+package io.github.homchom.recode.render
 
 fun rgb(red: Int, green: Int, blue: Int) = RGBColor(red, green, blue)
 fun rgba(red: Int, green: Int, blue: Int, alpha: Int = 255) = RGBAColor(red, green, blue, alpha)

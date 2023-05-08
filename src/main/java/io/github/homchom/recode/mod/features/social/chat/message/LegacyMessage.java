@@ -8,7 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-public class Message {
+public class LegacyMessage {
 
     private final ClientboundSystemChatPacket packet;
     private final Component text;
@@ -18,7 +18,7 @@ public class Message {
     private MessageCheck check;
     private boolean cancelled;
 
-    public Message(ClientboundSystemChatPacket packet, CallbackInfo ci) {
+    public LegacyMessage(ClientboundSystemChatPacket packet, CallbackInfo ci) {
         this.packet = packet;
         this.text = packet.content();
         this.callback = ci;

@@ -2,21 +2,20 @@ package io.github.homchom.recode.mod.mixin.message;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.homchom.recode.LegacyRecode;
+import io.github.homchom.recode.event.SimpleValidated;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.LagslayerHUD;
-import io.github.homchom.recode.mod.features.social.chat.message.Message;
+import io.github.homchom.recode.mod.features.social.chat.message.LegacyMessage;
 import io.github.homchom.recode.server.ReceiveChatMessageEvent;
-import io.github.homchom.recode.sys.networking.LegacyState;
 import io.github.homchom.recode.sys.player.DFInfo;
-import io.github.homchom.recode.sys.player.chat.ChatUtil;
-import io.github.homchom.recode.util.LegacyCoroutineFunctions;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.game.*;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
+import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.regex.Pattern;
@@ -32,14 +31,14 @@ public class MMessageListener {
     private void handleChat(ClientboundSystemChatPacket packet, CallbackInfo ci) {
         if (DFInfo.isOnDF() && RenderSystem.isOnRenderThread()) {
             // temporary, to preserve non-migrated side effects (like message grabbing)
-            // TODO: remove after new message listener is complete
-            new Message(packet, ci);
-
-            boolean result = ReceiveChatMessageEvent.INSTANCE.invoke(packet.content(), true);
-            if (!result) ci.cancel();
+            // TODO: remove after new message listener is 100% complete
+            new LegacyMessage(packet, ci);
+            var context = new SimpleValidated<>(packet.content());
+            if (!ReceiveChatMessageEvent.INSTANCE.runBlocking(context)) {
+                ci.cancel();
+            }
             try {
                 this.updateVersion(packet.content());
-                this.updateState(packet.content());
             } catch (Exception e) {
                 e.printStackTrace();
                 LegacyRecode.error("Error while trying to parse the chat text!");
@@ -107,13 +106,9 @@ public class MMessageListener {
 
                     DFInfo.isPatchNewer(patchText, "0"); //very lazy validation lol
                     DFInfo.patchId = patchText;
-                    DFInfo.currentState.sendLocate();
                     LegacyRecode.info("DiamondFire Patch " + DFInfo.patchId + " detected!");
 
                     lastPatchCheck = time;
-
-                    // update state on server join
-                    DFInfo.currentState.setInSession(false);
                 }
             } catch (Exception e) {
                 LegacyRecode.info("Error on parsing patch number!");
@@ -122,7 +117,8 @@ public class MMessageListener {
         }
     }
 
-    // TODO: remove duplicate code and thread abominations
+    // TODO: reimplement in DFStateDetectors (supportee vs support?)
+    /*
     private void updateState(Component component) {
         Player player = Minecraft.getInstance().player;
         if (player == null) return;
@@ -165,49 +161,6 @@ public class MMessageListener {
                 }).start();
             }
         }
-
-        // Play Mode
-        if (text.matches("^» Joined game: .* by .*$")) {
-            LegacyCoroutineFunctions.checkTwiceForMode(LegacyState.Mode.PLAY, () -> {
-                if (Config.getBoolean("autoChatLocal") && !DFInfo.currentState.isInSession()) {
-                    ChatUtil.executeCommandSilently("chat local");
-                }
-            });
-        }
-
-        // Build Mode
-        if (text.matches("^» You are now in build mode\\.$")) {
-            LegacyCoroutineFunctions.checkTwiceForMode(LegacyState.Mode.BUILD, () -> {
-                if (Config.getBoolean("autotime")) {
-                    ChatUtil.executeCommandSilently("time " + Config.getLong("autotimeval"));
-                }
-                if (Config.getBoolean("autonightvis")) {
-                    ChatUtil.executeCommandSilently("nightvis");
-                }
-                if (Config.getBoolean("autoChatLocal") && !DFInfo.currentState.isInSession()) {
-                    ChatUtil.executeCommandSilently("chat local");
-                }
-            });
-        }
-
-        if (text.matches("^» You are now in dev mode\\.$")) {
-            LegacyCoroutineFunctions.checkTwiceForMode(LegacyState.Mode.DEV, () -> {
-                if (Config.getBoolean("autoRC")) {
-                    ChatUtil.executeCommand("resetcompact");
-                }
-                if (Config.getBoolean("autotime")) {
-                    ChatUtil.executeCommandSilently("time " + Config.getLong("autotimeval"));
-                }
-                if (Config.getBoolean("autonightvis")) {
-                    ChatUtil.executeCommandSilently("nightvis");
-                }
-                if (Config.getBoolean("autoChatLocal") && !DFInfo.currentState.isInSession()) {
-                    ChatUtil.executeCommandSilently("chat local");
-                }
-                if (!LagslayerHUD.lagSlayerEnabled && Config.getBoolean("autolagslayer")) {
-                    ChatUtil.executeCommandSilently("lagslayer");
-                }
-            });
-        }
     }
+    */
 }

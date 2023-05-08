@@ -1,6 +1,7 @@
 package io.github.homchom.recode.sys.hypercube.codeaction;
 
-import com.google.gson.*;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import io.github.homchom.recode.sys.util.StringUtil;
 
 public class Action {

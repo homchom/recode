@@ -1,21 +1,31 @@
 package io.github.homchom.recode.util
 
-import io.github.homchom.recode.event.Trial
-import io.github.homchom.recode.event.runTrial
+// TODO: revisit
 
-interface Matcher<T, R : Any> {
-    suspend fun match(input: T): R?
+fun interface Matcher<in T, out R : Any> {
+    fun match(input: T): R?
 }
 
-class TrialMatcher<T, R : Any>(private val definition: Trial.(T) -> R) : Matcher<T, R> {
-    override suspend fun match(input: T) = runTrial { definition(input) }
+inline fun <reified E, T, R : Any> enumMatcher(): GroupMatcher<T, R, E>
+    where E : Enum<E>, E : Matcher<T, R>
+{
+    return MatcherList(enumValues<E>().asList())
 }
 
-class MatcherList<T, R : Any>(private val default: (T) -> R) : Matcher<T, R> {
-    private val matchers = mutableListOf<Matcher<T, R>>()
+interface GroupMatcher<T, R : Any, M : Matcher<T, R>> : Matcher<T, GroupMatcherResult<T, R, M>>
 
-    fun add(matcher: Trial.(T) -> R) = matcher.also { matchers += TrialMatcher(it) }
+class MatcherList<T, R : Any, M : Matcher<T, R>>(matchers: List<M>) : GroupMatcher<T, R, M>, List<M> by matchers {
+    private val matchers = matchers.toMutableList()
 
-    override suspend fun match(input: T) = matchers.firstNotNullOfOrNull { it.match(input) }
-        ?: default(input)
+    constructor() : this(mutableListOf())
+
+    fun add(matcher: M) = matcher.also { matchers += it }
+
+    override fun match(input: T): GroupMatcherResult<T, R, M>? {
+        for (matcher in matchers) matcher.match(input)
+            ?.let { return GroupMatcherResult(matcher, it) }
+        return null
+    }
 }
+
+data class GroupMatcherResult<T, R : Any, M : Matcher<T, R>>(val matcher: M, val value: R)

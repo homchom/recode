@@ -1,11 +1,10 @@
 package io.github.homchom.recode.lifecycle
 
 /**
- * A **static** key to be passed to a singleton with a constructor, or to be otherwise used in
- * its initialization. Keys can only be [use]d once, which prevents the singleton from being
- * instantiated twice.
+ * A "key" for class initialization that can be only used once. Useful for enforcing the singleton invariant of a
+ * singleton with a constructor.
  */
-class SingletonKey @StaticOnly constructor() {
+class SingletonKey {
     private var wasUsed = false
 
     /**
@@ -18,11 +17,3 @@ class SingletonKey @StaticOnly constructor() {
         wasUsed = true
     }
 }
-
-/**
- * An opt-in annotation denoting that a constructor or function should only be invoked from a
- * static context.
- */
-@RequiresOptIn("This should only be invoked from a static context and requires opt-in")
-@Target(AnnotationTarget.CONSTRUCTOR, AnnotationTarget.FUNCTION)
-annotation class StaticOnly

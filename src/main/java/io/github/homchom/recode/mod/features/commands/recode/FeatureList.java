@@ -1,8 +1,12 @@
 package io.github.homchom.recode.mod.features.commands.recode;
 
-import io.github.homchom.recode.mod.commands.*;
+import io.github.homchom.recode.mod.commands.Command;
+import io.github.homchom.recode.mod.commands.CommandHandler;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 
 public class FeatureList {
 

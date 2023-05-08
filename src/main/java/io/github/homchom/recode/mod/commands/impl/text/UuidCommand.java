@@ -1,20 +1,23 @@
 package io.github.homchom.recode.mod.commands.impl.text;
 
-import com.google.gson.*;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
 import io.github.homchom.recode.mod.commands.arguments.types.PlayerArgumentType;
-import io.github.homchom.recode.sys.networking.LegacyState;
-import io.github.homchom.recode.sys.player.DFInfo;
+import io.github.homchom.recode.server.DF;
+import io.github.homchom.recode.server.PlotMode;
 import io.github.homchom.recode.sys.player.chat.ChatType;
-import io.github.homchom.recode.sys.player.chat.*;
+import io.github.homchom.recode.sys.player.chat.ChatUtil;
 import io.github.homchom.recode.sys.util.StringUtil;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandBuildContext;
-import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
@@ -48,7 +51,7 @@ public class UuidCommand extends Command {
                                             ).withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, fullUUID)));
                                     this.sendMessage(mc, text);
 
-                                    if (mc.player != null && mc.player.isCreative() && DFInfo.isOnDF() && DFInfo.currentState.getMode() == LegacyState.Mode.DEV) {
+                                    if (DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev)) {
                                         this.sendCommand(mc, "txt " + fullUUID);
                                     }
                                 } catch (IOException e) {

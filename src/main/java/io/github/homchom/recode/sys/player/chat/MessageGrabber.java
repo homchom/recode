@@ -1,14 +1,18 @@
 package io.github.homchom.recode.sys.player.chat;
 
-import io.github.homchom.recode.mod.features.social.chat.message.*;
+import io.github.homchom.recode.mod.features.social.chat.message.LegacyMessage;
+import io.github.homchom.recode.mod.features.social.chat.message.MessageType;
 import net.minecraft.network.chat.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
  * A utility class to grab the next X chat messages.
  */
+@Deprecated
 public class MessageGrabber {
 
     private static final List<Component> currentMessages = new ArrayList<>();
@@ -64,7 +68,7 @@ public class MessageGrabber {
         if (messages > 0) grabSilently(messages, timeout, ignored -> {}, filter);
     }
 
-    public static void supply(Message msg) {
+    public static void supply(LegacyMessage msg) {
         if (filter != null && !msg.typeIs(filter)) return;
         if (timeout != null && new Date().after(timeout)) return;
 

@@ -1,12 +1,10 @@
 package io.github.homchom.recode.sys.hypercube.templates;
 
-import io.github.homchom.recode.Constants;
 import io.github.homchom.recode.Globals;
 import io.github.homchom.recode.mod.commands.IManager;
 import io.github.homchom.recode.sys.file.ExternalFile;
 import io.github.homchom.recode.sys.file.ISave;
 import io.github.homchom.recode.sys.util.ItemUtil;
-import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;

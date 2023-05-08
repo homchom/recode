@@ -1,14 +1,20 @@
 package io.github.homchom.recode.sys.networking.websocket;
 
 import io.github.homchom.recode.sys.file.ILoader;
-import io.github.homchom.recode.sys.networking.websocket.client.*;
-import io.github.homchom.recode.sys.networking.websocket.client.type.*;
+import io.github.homchom.recode.sys.networking.websocket.client.SocketClient;
+import io.github.homchom.recode.sys.networking.websocket.client.WebsocketServer;
+import io.github.homchom.recode.sys.networking.websocket.client.type.NbtItem;
+import io.github.homchom.recode.sys.networking.websocket.client.type.RawTemplateItem;
+import io.github.homchom.recode.sys.networking.websocket.client.type.SocketItem;
+import io.github.homchom.recode.sys.networking.websocket.client.type.TemplateItem;
 import org.java_websocket.WebSocket;
 
 import java.io.IOException;
-import java.net.*;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
 import java.util.*;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class SocketHandler implements ILoader {
 

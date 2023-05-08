@@ -1,7 +1,9 @@
 package io.github.homchom.recode.mod.features.commands.recode;
 
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
-import io.github.cottonmc.cotton.gui.widget.*;
+import io.github.cottonmc.cotton.gui.widget.WButton;
+import io.github.cottonmc.cotton.gui.widget.WLabel;
+import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.github.homchom.recode.Recode;
 import io.github.homchom.recode.mod.config.menu.ConfigScreen;
 import io.github.homchom.recode.sys.renderer.IMenu;

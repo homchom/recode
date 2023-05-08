@@ -7,7 +7,8 @@ import io.github.homchom.recode.mod.config.structure.ConfigSetting;
 import io.github.homchom.recode.mod.config.types.*;
 
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ConfigSerializer implements JsonSerializer<ConfigInstruction>, JsonDeserializer<ConfigInstruction> {

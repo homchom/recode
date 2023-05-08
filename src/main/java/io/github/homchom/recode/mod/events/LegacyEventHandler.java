@@ -3,7 +3,8 @@ package io.github.homchom.recode.mod.events;
 import io.github.homchom.recode.mod.commands.IManager;
 import io.github.homchom.recode.mod.events.impl.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LegacyEventHandler implements IManager<Object> {
     private final List<Object> registeredEvents = new ArrayList<>();

@@ -3,7 +3,8 @@ package io.github.homchom.recode.sys.sidedchat;
 import com.google.common.collect.Lists;
 import io.github.homchom.recode.mod.config.Config;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 
 import java.util.List;
 import java.util.function.Predicate;

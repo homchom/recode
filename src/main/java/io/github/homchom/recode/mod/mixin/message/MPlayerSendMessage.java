@@ -4,17 +4,16 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.social.chat.ConversationTimer;
-import io.github.homchom.recode.sys.networking.LegacyState;
-import io.github.homchom.recode.sys.player.DFInfo;
+import io.github.homchom.recode.server.DF;
+import io.github.homchom.recode.server.DFState;
+import io.github.homchom.recode.server.PlotMode;
 import io.github.homchom.recode.sys.player.chat.ChatType;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -34,56 +33,8 @@ public class MPlayerSendMessage {
                 if (mainHand.hasTag()) {
                     CompoundTag tag = mainHand.getTag();
                     CompoundTag publicBukkitValues = tag.getCompound("PublicBukkitValues");
-                    if (tag.contains("PublicBukkitValues") && publicBukkitValues.contains("hypercube:varitem")) {
-                        if ((string.endsWith(" -l") || string.endsWith(" -s") || string.endsWith(" -g")) && Config.getBoolean("quickVarScope")) {
-                            String varItem = publicBukkitValues.getString("hypercube:varitem");
-                            try {
-                                JsonObject jsonObject = new JsonParser().parse(varItem).getAsJsonObject();
-                                if (jsonObject.has("id")) {
-                                    if (jsonObject.get("id").getAsString().equals("var")) {
-                                        JsonObject data = jsonObject.get("data").getAsJsonObject();
-                                        String displayScope = "";
-                                        String displayScopeColor = "";
-                                        if (string.endsWith(" -l")) {
-                                            displayScope = "LOCAL";
-                                            displayScopeColor = "green";
-                                            data.addProperty("scope", "local");
-                                        }
-                                        if (string.endsWith(" -s")) {
-                                            displayScope = "SAVE";
-                                            displayScopeColor = "yellow";
-                                            data.addProperty("scope", "saved");
-                                        }
-                                        if (string.endsWith(" -g")) {
-                                            displayScope = "GAME";
-                                            displayScopeColor = "gray";
-                                            data.addProperty("scope", "unsaved");
-                                        }
-                                        final String name = string.substring(0, string.length() - 3);
-                                        data.addProperty("name", name);
-                                        jsonObject.add("data", data);
-                                        publicBukkitValues.putString("hypercube:varitem", jsonObject.toString());
-                                        tag.put("PublicBukkitValues", publicBukkitValues);
-                                        mainHand.setTag(tag);
-
-                                        mainHand.getTag().remove("display");
-                                        CompoundTag display = new CompoundTag();
-                                        ListTag lore = new ListTag();
-                                        display.putString("Name", String.format("{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"white\",\"text\":\"%s\"}],\"text\":\"\"}", name));
-                                        lore.add(StringTag.valueOf(String.format("{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"%s\",\"text\":\"%s\"}],\"text\":\"\"}", displayScopeColor, displayScope)));
-                                        display.put("Lore", lore);
-                                        mainHand.getTag().put("display", display);
-
-                                        ci.cancel();
-                                        minecraftClient.gameMode.handleCreativeModeItemAdd(mainHand, minecraftClient.player.getInventory().selected + 36);
-                                    }
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    } else {
-                        if (DFInfo.currentState.getMode() != LegacyState.Mode.SPAWN || !mainHand.getHoverName().getString().equals("◇ Game Menu ◇"))
+                    if (!tag.contains("PublicBukkitValues") || !publicBukkitValues.contains("hypercube:varitem")) {
+                        if (!(DF.getCurrentDFState() instanceof DFState.AtSpawn) || !mainHand.getHoverName().getString().equals("◇ Game Menu ◇"))
                             conversationMessage(string, ci);
                     }
                 } else conversationMessage(string, ci);
@@ -109,7 +60,7 @@ public class MPlayerSendMessage {
     }
 
     private void conversationMessage(String message, CallbackInfo ci) {
-        if (Config.getBoolean("automsg") && ConversationTimer.currentConversation != null && (DFInfo.currentState.getMode() != LegacyState.Mode.PLAY || !message.startsWith("@"))) {
+        if (Config.getBoolean("automsg") && ConversationTimer.currentConversation != null && (!DF.isInMode(DF.getCurrentDFState(), PlotMode.Play) || !message.startsWith("@"))) {
             ci.cancel();
             ConversationTimer.conversationUpdateTime = String.valueOf(System.currentTimeMillis());
             minecraftClient.player.connection.sendUnsignedCommand("msg " + ConversationTimer.currentConversation + " " + message);

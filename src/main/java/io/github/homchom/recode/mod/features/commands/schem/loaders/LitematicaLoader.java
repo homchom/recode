@@ -4,7 +4,8 @@ import io.github.homchom.recode.mod.features.commands.schem.Schematic;
 import io.github.homchom.recode.mod.features.commands.schem.sk89q.jnbt.*;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 public class LitematicaLoader extends MNBTSchematicReader {
 

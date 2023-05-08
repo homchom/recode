@@ -1,6 +1,6 @@
 package io.github.homchom.recode.server
 
-import io.github.homchom.recode.util.unmodifiable
+import io.github.homchom.recode.util.collections.immutable
 
 /**
  * A group of server command aliases. Add here as needed.
@@ -12,7 +12,7 @@ enum class CommandAliasGroup(vararg aliases: String) {
     ITEM_LORE_SET("ils", "sll", "lore set", "i lore set", "item lore set", "setloreline"),
     PLOT_NAME("p name", "plot name");
 
-    val aliases = aliases.asList().unmodifiable()
+    val aliases = aliases.immutable()
 
     operator fun unaryPlus() = aliases
 }

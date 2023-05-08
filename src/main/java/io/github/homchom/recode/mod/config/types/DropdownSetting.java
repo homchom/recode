@@ -2,7 +2,8 @@ package io.github.homchom.recode.mod.config.types;
 
 import io.github.homchom.recode.mod.config.types.list.StringListSetting;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DropdownSetting<E extends Enum<E> & IConfigDropdownEnum<E>> extends StringListSetting {
 

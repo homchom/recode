@@ -4,7 +4,9 @@ import io.github.homchom.recode.sys.renderer.ToasterUtil;
 import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class CodeSearcher {
     public static SearchType searchType;

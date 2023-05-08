@@ -19,7 +19,8 @@
 
 package io.github.homchom.recode.mod.features.commands.schem.sk89q.jnbt;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * The {@code TAG_List} tag.

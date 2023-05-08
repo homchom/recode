@@ -6,11 +6,11 @@ import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
 import io.github.homchom.recode.mod.commands.arguments.types.ChoiceArgumentType;
 import io.github.homchom.recode.mod.features.commands.CodeSearcher;
+import io.github.homchom.recode.server.DF;
+import io.github.homchom.recode.server.PlotMode;
 import io.github.homchom.recode.sys.hypercube.codeaction.Action;
 import io.github.homchom.recode.sys.hypercube.codeaction.ActionDump;
 import io.github.homchom.recode.sys.hypercube.codeaction.Types;
-import io.github.homchom.recode.sys.networking.LegacyState;
-import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.sys.player.chat.ChatType;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
 import io.github.homchom.recode.sys.util.ItemUtil;
@@ -83,7 +83,7 @@ public class SearchCommand extends Command {
 										String actionArgument = ctx.getArgument("action", String.class);
 										String codeblockArgument = ctx.getArgument("codeblock", String.class);
 										CodeSearcher.SearchType searchType = CodeSearcher.SearchType.valueOf(codeblockArgument.toUpperCase());
-										if (DFInfo.isOnDF() && DFInfo.currentState.getMode() == LegacyState.Mode.DEV && mc.player.isCreative()) {
+										if (DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev)) {
 											CodeSearcher.beginSearch(searchType, actionArgument);
 										} else {
 											ChatUtil.sendMessage(new TranslatableContents("recode.command.require_dev_mode", null, new String[]{ctx.getArgument("action", String.class)})

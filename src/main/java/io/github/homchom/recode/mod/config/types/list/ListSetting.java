@@ -3,7 +3,8 @@ package io.github.homchom.recode.mod.config.types.list;
 import io.github.homchom.recode.mod.config.structure.ConfigSetting;
 import io.github.homchom.recode.mod.config.types.IConfigDropdownEnum;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 
 public class ListSetting<Type> extends ConfigSetting<List<Type>> {
     private Type selected;
