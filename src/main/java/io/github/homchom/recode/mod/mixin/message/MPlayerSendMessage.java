@@ -33,55 +33,7 @@ public class MPlayerSendMessage {
                 if (mainHand.hasTag()) {
                     CompoundTag tag = mainHand.getTag();
                     CompoundTag publicBukkitValues = tag.getCompound("PublicBukkitValues");
-                    if (tag.contains("PublicBukkitValues") && publicBukkitValues.contains("hypercube:varitem")) {
-                        if ((string.endsWith(" -l") || string.endsWith(" -s") || string.endsWith(" -g")) && Config.getBoolean("quickVarScope")) {
-                            String varItem = publicBukkitValues.getString("hypercube:varitem");
-                            try {
-                                JsonObject jsonObject = new JsonParser().parse(varItem).getAsJsonObject();
-                                if (jsonObject.has("id")) {
-                                    if (jsonObject.get("id").getAsString().equals("var")) {
-                                        JsonObject data = jsonObject.get("data").getAsJsonObject();
-                                        String displayScope = "";
-                                        String displayScopeColor = "";
-                                        if (string.endsWith(" -l")) {
-                                            displayScope = "LOCAL";
-                                            displayScopeColor = "green";
-                                            data.addProperty("scope", "local");
-                                        }
-                                        if (string.endsWith(" -s")) {
-                                            displayScope = "SAVE";
-                                            displayScopeColor = "yellow";
-                                            data.addProperty("scope", "saved");
-                                        }
-                                        if (string.endsWith(" -g")) {
-                                            displayScope = "GAME";
-                                            displayScopeColor = "gray";
-                                            data.addProperty("scope", "unsaved");
-                                        }
-                                        final String name = string.substring(0, string.length() - 3);
-                                        data.addProperty("name", name);
-                                        jsonObject.add("data", data);
-                                        publicBukkitValues.putString("hypercube:varitem", jsonObject.toString());
-                                        tag.put("PublicBukkitValues", publicBukkitValues);
-                                        mainHand.setTag(tag);
-
-                                        mainHand.getTag().remove("display");
-                                        CompoundTag display = new CompoundTag();
-                                        ListTag lore = new ListTag();
-                                        display.putString("Name", String.format("{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"white\",\"text\":\"%s\"}],\"text\":\"\"}", name));
-                                        lore.add(StringTag.valueOf(String.format("{\"extra\":[{\"bold\":false,\"italic\":false,\"underlined\":false,\"strikethrough\":false,\"obfuscated\":false,\"color\":\"%s\",\"text\":\"%s\"}],\"text\":\"\"}", displayScopeColor, displayScope)));
-                                        display.put("Lore", lore);
-                                        mainHand.getTag().put("display", display);
-
-                                        ci.cancel();
-                                        minecraftClient.gameMode.handleCreativeModeItemAdd(mainHand, minecraftClient.player.getInventory().selected + 36);
-                                    }
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    } else {
+                    if (!tag.contains("PublicBukkitValues") || !publicBukkitValues.contains("hypercube:varitem")) {
                         if (!(DF.getCurrentDFState() instanceof DFState.AtSpawn) || !mainHand.getHoverName().getString().equals("◇ Game Menu ◇"))
                             conversationMessage(string, ci);
                     }

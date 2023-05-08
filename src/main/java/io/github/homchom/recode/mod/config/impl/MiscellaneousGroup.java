@@ -18,7 +18,6 @@ public class MiscellaneousGroup extends ConfigGroup {
     public void initialize() {
         // Non sub-grouped
         this.register(new BooleanSetting("itemApi", true));
-        this.register(new BooleanSetting("quickVarScope", true));
         this.register(new EnumSetting<>("destroyItemReset", DestroyItemResetType.class, DestroyItemResetType.OFF));
         this.register(new SoundSetting("incomingReportSound")
                 .setSelected(ConfigSounds.FLUTE));
