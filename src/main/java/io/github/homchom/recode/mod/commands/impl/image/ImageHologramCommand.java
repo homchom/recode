@@ -53,7 +53,7 @@ public class ImageHologramCommand extends AbstractImageCommand {
 
             String[] strings = useHex ? ImageToHologram.convertWithHex(f) : ImageToHologram.convertWithColorCodes(f);
 
-            Templates.giveUserTemplate(Items.GLOW_ITEM_FRAME, f.getName(), convert(strings));
+            Templates.giveUserTemplate(Items.GOLD_ORE, f.getName(), convert(strings));
             ChatUtil.sendMessage("Image loaded! Change the first Set Variable to the location!", ChatType.SUCCESS);
             return 1;
         } catch (Exception e) {
