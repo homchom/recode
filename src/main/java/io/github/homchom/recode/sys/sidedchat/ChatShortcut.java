@@ -4,7 +4,9 @@ import net.minecraft.client.KeyMapping;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public enum ChatShortcut {
     SUPPORT_CHAT("support_chat", new Color(0,   148, 193, 100), "/sb "),

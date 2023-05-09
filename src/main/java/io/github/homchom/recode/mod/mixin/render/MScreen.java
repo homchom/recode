@@ -12,18 +12,24 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.*;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.AbstractSkullBlock;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.SkullBlockEntity;
 import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.net.URL;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 @Mixin(Screen.class)
 public class MScreen {
@@ -69,7 +75,8 @@ public class MScreen {
                             }
                             if (cache.get(url.toString()) != null) {
                                 TexturedOtherPlayerEntity entity = new TexturedOtherPlayerEntity(cache.get(url.toString()));
-                                InventoryScreen.renderEntityInInventory(mc.screen.width/5, mc.screen.height/2+20, 40, -20, -20, entity);
+                                // TODO: replace with quaternion-based method?
+                                InventoryScreen.renderEntityInInventoryFollowsMouse(matrices, mc.screen.width/5, mc.screen.height/2+20, 40, -20, -20, entity);
                             }
                         }
                     }

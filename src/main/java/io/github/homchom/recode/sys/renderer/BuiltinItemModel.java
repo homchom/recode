@@ -2,15 +2,18 @@ package io.github.homchom.recode.sys.renderer;
 
 import com.google.common.collect.Lists;
 import io.github.homchom.recode.LegacyRecode;
-import net.minecraft.client.renderer.block.model.*;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.*;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.List;
 
 public class BuiltinItemModel implements BakedModel {
 
@@ -41,7 +44,7 @@ public class BuiltinItemModel implements BakedModel {
 
     @Override
     public TextureAtlasSprite getParticleIcon() {
-        return LegacyRecode.MC.getModelManager().getModel(new ModelResourceLocation("missing")).getParticleIcon();
+        return LegacyRecode.MC.getModelManager().getModel(ModelBakery.MISSING_MODEL_LOCATION).getParticleIcon();
     }
 
     @Override

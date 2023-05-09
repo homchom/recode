@@ -1,10 +1,13 @@
 package io.github.homchom.recode.sys.networking.websocket.client.type;
 
-import com.google.gson.*;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import io.github.homchom.recode.sys.hypercube.templates.TemplateUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.*;
-import net.minecraft.world.item.*;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 import java.io.IOException;
 

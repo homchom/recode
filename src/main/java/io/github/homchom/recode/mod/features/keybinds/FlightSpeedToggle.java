@@ -15,7 +15,7 @@ public class FlightSpeedToggle {
 
         float current = player.getAbilities().getFlyingSpeed();
         int target = current == normalFs ? percent : Config.getInteger("fsNormal");
-        player.commandUnsigned("fs " + target);
+        player.connection.sendUnsignedCommand("fs " + target);
     }
 
     // TODO: globalize or automate

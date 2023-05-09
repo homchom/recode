@@ -1,7 +1,8 @@
 package io.github.homchom.recode.mod.features.commands.schem;
 
 import io.github.homchom.recode.mod.features.commands.schem.sk89q.worldedit.math.BlockVector3;
-import io.github.homchom.recode.mod.features.commands.schem.utils.*;
+import io.github.homchom.recode.mod.features.commands.schem.utils.DFText;
+import io.github.homchom.recode.mod.features.commands.schem.utils.DFUtils;
 
 import java.util.ArrayList;
 

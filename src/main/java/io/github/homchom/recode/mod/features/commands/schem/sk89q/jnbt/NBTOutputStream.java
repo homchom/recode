@@ -19,8 +19,12 @@
 
 package io.github.homchom.recode.mod.features.commands.schem.sk89q.jnbt;
 
-import java.io.*;
-import java.util.*;
+import java.io.Closeable;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class writes <strong>NBT</strong>, or <strong>Named Binary Tag</strong>

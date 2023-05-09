@@ -1,7 +1,10 @@
 package io.github.homchom.recode.mod.features.social.chat.message.checks;
 
-import io.github.homchom.recode.mod.features.social.chat.message.*;
-import io.github.homchom.recode.mod.features.streamer.*;
+import io.github.homchom.recode.mod.features.social.chat.message.LegacyMessage;
+import io.github.homchom.recode.mod.features.social.chat.message.MessageCheck;
+import io.github.homchom.recode.mod.features.social.chat.message.MessageType;
+import io.github.homchom.recode.mod.features.streamer.StreamerModeHandler;
+import io.github.homchom.recode.mod.features.streamer.StreamerModeMessageCheck;
 
 public class SpiesCheck extends MessageCheck implements StreamerModeMessageCheck {
 
@@ -11,13 +14,13 @@ public class SpiesCheck extends MessageCheck implements StreamerModeMessageCheck
     }
 
     @Override
-    public boolean check(Message message, String stripped) {
+    public boolean check(LegacyMessage message, String stripped) {
         // Hide spies (Session spy, Muted spy, DM spy)
         return stripped.startsWith("*");
     }
 
     @Override
-    public void onReceive(Message message) {
+    public void onReceive(LegacyMessage message) {
 
     }
 

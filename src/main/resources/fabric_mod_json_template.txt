@@ -34,8 +34,8 @@
     "fabric-api": "^${fabricVersion - metadataRegex}",
     $dependencyMods
   },
-  "breaks": {
-    "codeutilities": "*"
+  "conflicts": {
+    "optifabric": "*"
   },
   "custom": {
     "modmenu:clientsideOnly": true

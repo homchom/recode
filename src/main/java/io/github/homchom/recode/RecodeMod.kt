@@ -4,6 +4,7 @@ package io.github.homchom.recode
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import io.github.homchom.recode.feature.AutomationFeatureGroup
 import io.github.homchom.recode.feature.RenderingFeatureGroup
 import io.github.homchom.recode.lifecycle.entrypointModule
 import io.github.homchom.recode.mod.commands.CommandHandler
@@ -40,7 +41,7 @@ val trimmedModVersion by lazy {
 
 val RecodeMod = entrypointModule {
     // TODO: move feature groups to a config module
-    depend(RenderingFeatureGroup)
+    depend(AutomationFeatureGroup, RenderingFeatureGroup)
 
     // On mod initialize
     onLoad {

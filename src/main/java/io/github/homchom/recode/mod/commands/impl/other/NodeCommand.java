@@ -8,7 +8,8 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandBuildContext;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class NodeCommand extends Command {
 

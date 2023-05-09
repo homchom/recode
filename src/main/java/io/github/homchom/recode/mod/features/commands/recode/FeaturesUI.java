@@ -1,8 +1,11 @@
 package io.github.homchom.recode.mod.features.commands.recode;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import io.github.cottonmc.cotton.gui.client.*;
-import io.github.cottonmc.cotton.gui.widget.*;
+import io.github.cottonmc.cotton.gui.client.LibGui;
+import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
+import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
+import io.github.cottonmc.cotton.gui.widget.WScrollPanel;
+import io.github.cottonmc.cotton.gui.widget.WText;
 import io.github.cottonmc.cotton.gui.widget.data.HorizontalAlignment;
 import io.github.cottonmc.cotton.gui.widget.data.Insets;
 import io.github.homchom.recode.sys.renderer.IMenu;
@@ -11,7 +14,8 @@ import io.github.homchom.recode.sys.util.TextUtil;
 import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.network.chat.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FeaturesUI extends LightweightGuiDescription implements IMenu {
     List<CButton> all = new ArrayList<>();

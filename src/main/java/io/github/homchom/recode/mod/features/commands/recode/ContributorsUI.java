@@ -1,9 +1,13 @@
 package io.github.homchom.recode.mod.features.commands.recode;
 
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.mojang.blaze3d.platform.NativeImage;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
-import io.github.cottonmc.cotton.gui.widget.*;
+import io.github.cottonmc.cotton.gui.widget.WLabel;
+import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
+import io.github.cottonmc.cotton.gui.widget.WScrollPanel;
 import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.sys.networking.WebUtil;
 import io.github.homchom.recode.sys.renderer.IMenu;
@@ -14,7 +18,8 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ContributorsUI extends LightweightGuiDescription implements IMenu {
     private static ContributorsUI INSTANCE;

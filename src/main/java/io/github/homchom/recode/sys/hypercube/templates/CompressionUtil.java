@@ -3,7 +3,8 @@ package io.github.homchom.recode.sys.hypercube.templates;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import java.util.zip.*;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 public class CompressionUtil {
 

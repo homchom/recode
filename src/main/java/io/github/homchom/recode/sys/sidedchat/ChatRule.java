@@ -6,7 +6,9 @@ import io.github.homchom.recode.mod.config.types.IConfigEnum;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
 import java.util.function.Predicate;
 
 /**

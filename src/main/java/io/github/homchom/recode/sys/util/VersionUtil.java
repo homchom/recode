@@ -1,6 +1,7 @@
 package io.github.homchom.recode.sys.util;
 
-import com.google.gson.*;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import io.github.homchom.recode.Recode;
 import io.github.homchom.recode.sys.networking.WebUtil;
 

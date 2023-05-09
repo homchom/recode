@@ -3,12 +3,10 @@
   "package": "io.github.homchom.recode.mod.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "game.MClient",
     "game.MMinecraftClient",
     "inventory.MHeldItemTooltip",
     "inventory.MItemCreative",
     "inventory.MItemInsert",
-    "inventory.MItemSlotUpdate",
     "inventory.MItemStack",
     "message.MMessageListener",
     "message.MPlayerSendMessage",

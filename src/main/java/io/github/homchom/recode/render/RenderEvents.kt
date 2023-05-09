@@ -1,31 +1,80 @@
 package io.github.homchom.recode.render
 
+import com.mojang.blaze3d.systems.RenderSystem
 import io.github.homchom.recode.event.*
-import io.github.homchom.recode.ui.RGBAColor
+import io.github.homchom.recode.game.ChunkPos3D
+import io.github.homchom.recode.game.ticks
+import io.github.homchom.recode.mc
+import io.github.homchom.recode.util.AtomicMixedInt
+import io.github.homchom.recode.util.Case
+import io.github.homchom.recode.util.collections.mapToArray
+import kotlinx.coroutines.withContext
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents.BeforeBlockOutline
+import net.minecraft.core.BlockPos
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.phys.HitResult
+import java.util.concurrent.atomic.AtomicReference
 
 object BeforeOutlineBlockEvent :
-    InvokableEvent<BlockOutlineContext, Boolean, BeforeBlockOutline> by
-        wrapEvent(WorldRenderEvents.BEFORE_BLOCK_OUTLINE, { listener ->
+    WrappedEvent<BlockOutlineContext, BeforeBlockOutline> by
+        wrapFabricEvent(WorldRenderEvents.BEFORE_BLOCK_OUTLINE, { listener ->
             BeforeBlockOutline { worldRenderContext, hitResult ->
-                listener(BlockOutlineContext(worldRenderContext, hitResult), true)
+                RenderSystem.assertOnRenderThread()
+                val context = BlockOutlineContext(worldRenderContext, hitResult)
+                listener(context)
+                context.isValid
             }
-        }),
-    ValidatedEvent<BlockOutlineContext>
+        })
 
-data class BlockOutlineContext(val worldRenderContext: WorldRenderContext, val hitResult: HitResult?)
+data class BlockOutlineContext(
+    val worldRenderContext: WorldRenderContext,
+    val hitResult: HitResult?,
+    override val validity: AtomicMixedInt = AtomicMixedInt(1)
+) : Validated
 
-object RenderBlockEntityEvent :
-    CustomEvent<BlockEntity, Boolean> by createEvent(),
-    ValidatedEvent<BlockEntity>
+object RenderBlockEntitiesEvent :
+    SimpleValidatedListEvent<BlockEntity> by createEvent({ it.mapValid() })
 
-object OutlineBlockEntityEvent :
-    CustomEvent<BlockEntity, OutlineResult> by DependentEvent(createEvent(), CustomOutlineProcessor)
+object OutlineBlockEntitiesEvent :
+    BufferedCustomEvent<Array<out BlockEntityOutlineContext>, Map<BlockPos, RGBAColor>,
+            BlockEntityOutlineContext.Input> by DependentBufferedEvent(
+        createBufferedEvent(
+            resultCapture = { context ->
+                context
+                    .filter { it.outlineColor.get() != null }
+                    .associate { it.blockEntity.blockPos to it.outlineColor.get()!! }
+            },
+            interval = 3.ticks,
+            keySelector = { Case(it.chunkPos) },
+            contextGenerator = { input ->
+                input.blockEntities.mapToArray { BlockEntityOutlineContext(it) }
+            }
+        ),
+        {
+            onEnable {
+                BeforeOutlineBlockEvent.listenEach { context ->
+                    val processor = context.worldRenderContext.worldRenderer() as OutlineProcessor
+                    if (processor.needsOutlineProcessing()) {
+                        withContext(RenderThreadContext) {
+                            processor.processOutlines(mc.frameTime)
+                        }
+                    }
+                }
+            }
+        }
+    )
 
-class OutlineResult {
-    var outlineColor: RGBAColor? = null
+data class BlockEntityOutlineContext @JvmOverloads constructor(
+    val blockEntity: BlockEntity,
+    var outlineColor: AtomicReference<RGBAColor?> = AtomicReference(null)
+) {
+    data class Input(val blockEntities: Collection<BlockEntity>, val chunkPos: ChunkPos3D?)
+}
+
+interface OutlineProcessor {
+    fun needsOutlineProcessing(): Boolean
+    fun processOutlines(partialTick: Float)
+    fun getBlockEntityOutlineColor(blockEntity: BlockEntity): RGBAColor?
 }

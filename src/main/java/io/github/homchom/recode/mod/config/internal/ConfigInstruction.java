@@ -2,7 +2,8 @@ package io.github.homchom.recode.mod.config.internal;
 
 import io.github.homchom.recode.mod.config.structure.ConfigSetting;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ConfigInstruction {
     private final Map<String, ConfigSetting<?>> settingMap = new HashMap<>();

@@ -23,7 +23,8 @@ package io.github.homchom.recode.mod.features.commands.schem.loaders;
 
 import io.github.homchom.recode.mod.features.commands.schem.Schematic;
 
-import java.io.*;
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.OptionalInt;
 
 /**

@@ -1,6 +1,7 @@
 package io.github.homchom.recode.mod.config.types.hud;
 
-import io.github.homchom.recode.mod.config.structure.*;
+import io.github.homchom.recode.mod.config.structure.ConfigSetting;
+import io.github.homchom.recode.mod.config.structure.IAdvancedSetting;
 
 public class PositionSetting extends ConfigSetting<HudData> implements IAdvancedSetting {
     public PositionSetting() {

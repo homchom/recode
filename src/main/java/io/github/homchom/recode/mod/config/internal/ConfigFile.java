@@ -1,10 +1,15 @@
 package io.github.homchom.recode.mod.config.internal;
 
-import com.google.gson.*;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import io.github.homchom.recode.LegacyRecode;
-import io.github.homchom.recode.mod.config.structure.*;
-import io.github.homchom.recode.sys.file.*;
+import io.github.homchom.recode.mod.config.structure.ConfigGroup;
+import io.github.homchom.recode.mod.config.structure.ConfigManager;
+import io.github.homchom.recode.mod.config.structure.ConfigSetting;
+import io.github.homchom.recode.mod.config.structure.ConfigSubGroup;
+import io.github.homchom.recode.sys.file.ILoader;
+import io.github.homchom.recode.sys.file.ISave;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.*;

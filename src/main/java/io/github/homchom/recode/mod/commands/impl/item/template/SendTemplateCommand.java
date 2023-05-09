@@ -1,9 +1,11 @@
 package io.github.homchom.recode.mod.commands.impl.item.template;
 
-import com.google.gson.*;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.sys.networking.websocket.SocketHandler;
-import io.github.homchom.recode.sys.player.chat.*;
+import io.github.homchom.recode.sys.player.chat.ChatType;
+import io.github.homchom.recode.sys.player.chat.ChatUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;

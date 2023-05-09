@@ -164,8 +164,6 @@
     "config.recode.option.hideMutedChat": "[Mod] Hide Muted Chat",
     "config.recode.option.hideMutedChat.tooltip": "Hides chat messages from\nmuted players for moderators.",
 
-    "config.recode.option.quickVarScope": "Quick Variable Scope",
-    "config.recode.option.quickVarScope.tooltip": "Typing \"-s\", \"-l\" or \"-g\" after a\nvariable name in chat will change its scope,\nsimilar to the way /var works.",
     "config.recode.option.destroyItemReset": "Destroy Item Reset",
     "config.recode.option.destroyItemReset.tooltip": "Resets your inventory to the specified set of items after shift clicking the destroy item slot while in dev mode.",
 
