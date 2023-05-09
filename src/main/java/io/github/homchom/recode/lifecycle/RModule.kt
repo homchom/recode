@@ -64,6 +64,9 @@ interface CoroutineModule : RModule, CoroutineScope {
 
     fun <T> Listenable<T>.listenEach(block: suspend (T) -> Unit) =
         listenEachFrom(this@CoroutineModule, block)
+
+    fun <T> StateListenable<T>.replayAndListenEach(block: suspend (T) -> Unit) =
+        replayAndListenEachFrom(this@CoroutineModule, block)
 }
 
 /**

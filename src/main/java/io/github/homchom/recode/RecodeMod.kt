@@ -6,6 +6,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import io.github.homchom.recode.feature.AutomationFeatureGroup
 import io.github.homchom.recode.feature.RenderingFeatureGroup
+import io.github.homchom.recode.feature.SocialFeatureGroup
 import io.github.homchom.recode.lifecycle.entrypointModule
 import io.github.homchom.recode.mod.commands.CommandHandler
 import io.github.homchom.recode.mod.config.Config
@@ -18,7 +19,6 @@ import io.github.homchom.recode.mod.config.structure.ConfigManager
 import io.github.homchom.recode.mod.config.types.*
 import io.github.homchom.recode.mod.config.types.list.StringListSetting
 import io.github.homchom.recode.mod.events.LegacyEventHandler
-import io.github.homchom.recode.mod.features.discordrpc.DFDiscordRPC
 import io.github.homchom.recode.sys.hypercube.codeaction.ActionDump
 import io.github.homchom.recode.sys.hypercube.templates.TemplateStorageHandler
 import io.github.homchom.recode.sys.networking.websocket.SocketHandler
@@ -30,7 +30,7 @@ import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-private val Logger = LoggerFactory.getLogger(MOD_ID)
+private val logger = LoggerFactory.getLogger(MOD_ID)
 
 lateinit var modVersion: String
     private set
@@ -41,7 +41,7 @@ val trimmedModVersion by lazy {
 
 val RecodeMod = entrypointModule {
     // TODO: move feature groups to a config module
-    depend(AutomationFeatureGroup, RenderingFeatureGroup)
+    depend(AutomationFeatureGroup, SocialFeatureGroup, RenderingFeatureGroup)
 
     // On mod initialize
     onLoad {
@@ -113,7 +113,6 @@ object LegacyRecode {
         initializer.add(ConfigFile())
         initializer.add(ConfigManager())
         initializer.add(TemplateStorageHandler())
-        initializer.add(DFDiscordRPC())
         initializer.add(ActionDump())
         initializer.add(LegacyEventHandler())
 
@@ -132,6 +131,11 @@ object LegacyRecode {
     fun error(message: String) = logError("[$MOD_NAME] $message")
 }
 
-fun logInfo(message: String) = Logger.info("[$MOD_NAME] $message")
+fun logInfo(message: String) = logger.info("[$MOD_NAME] $message")
 
-fun logError(message: String) = Logger.error("[$MOD_NAME] $message")
+fun logError(message: String, mentionBugReport: Boolean = false) {
+    val bugString = if (mentionBugReport) {
+        " If you believe this is a bug, you can report it here: github.com/homchom/recode/issues"
+    } else ""
+    logger.error("[$MOD_NAME] $message$bugString")
+}

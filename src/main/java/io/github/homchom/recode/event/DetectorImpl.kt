@@ -5,6 +5,7 @@ import io.github.homchom.recode.lifecycle.*
 import io.github.homchom.recode.util.attempt
 import io.github.homchom.recode.util.nullable
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
@@ -40,20 +41,23 @@ fun <T : Any, R : Any> requester(
 private sealed class DetectorDetail<T : Any, R : Any, S> : Detector<T, R>, ModuleDetail {
     protected abstract val trials: List<Trial<S>>
 
-    private val event = createEvent<R>()
+    private val event = createEvent<R, R> { it }
 
     private val queue = ConcurrentLinkedQueue<TrialEntry<T, R>>()
+
+    override val prevResult: R? get() = event.prevResult
 
     override fun getNotificationsFrom(module: RModule) = event.getNotificationsFrom(module)
 
     override fun ExposedModule.onEnable() {
         for (trial in trials) trial.supplyResultsFrom(this).listenEach { supplier ->
             suspend fun getResponse(entry: TrialEntry<T, *>?) = trialScope { runTests(supplier, entry) }
+            suspend fun awaitResponse(response: Deferred<R?>?) = nullable { response?.await() }
 
             if (queue.isEmpty()) {
                 val response = getResponse(null)
                 if (response != null) launch {
-                    response.await()?.let { event.run(it) }
+                    awaitResponse(response)?.let { event.run(it) }
                 }
             } else while (queue.isNotEmpty()) {
                 if (queue.peek()!!.basis != trial.basis) continue
@@ -61,7 +65,7 @@ private sealed class DetectorDetail<T : Any, R : Any, S> : Detector<T, R>, Modul
                 val response = getResponse(entry)
                 if (response != null || queue.isEmpty()) {
                     launch {
-                        val awaited = nullable { response?.await() }
+                        val awaited = awaitResponse(response)
                         entry.response.complete(awaited)
                         if (awaited != null) event.run(awaited)
                     }
@@ -168,6 +172,7 @@ private open class SimpleDetectorModule<T : Any, R : Any>(
     module: RModule
 ) : DetectorModule<T, R>, RModule by module {
     override val timeoutDuration get() = detail.timeoutDuration
+    override val prevResult get() = detail.prevResult
 
     override fun getNotificationsFrom(module: RModule): Flow<R> {
         module.depend(this)

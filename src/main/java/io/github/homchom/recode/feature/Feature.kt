@@ -12,8 +12,8 @@ sealed interface Configurable : RModule {
 /**
  * Builds a [FeatureModule].
  */
-inline fun feature(name: String, builder: ModuleBuilderScope): FeatureModule =
-    SimpleFeatureModule(name, strongExposedModule(builder = builder))
+inline fun feature(name: String, vararg details: ModuleDetail, builder: ModuleBuilderScope = {}): FeatureModule =
+    SimpleFeatureModule(name, strongExposedModule(*details, builder = builder))
 
 /**
  * Builds a [FeatureGroupModule].

@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 
 // TODO: combine into one module per event after config is figured out
 
-val FAutoChatLocal = autoCommand("chat local", DFStateDetectors) { (new) ->
+val FAutoChatLocal = autoCommand("chat local", DFStateDetectors) { new ->
     if (Config.getBoolean("autoChatLocal") /*&& !new.isInSession*/) {
         if (new is PlayState) launch { ChatLocalRequester.requestNext() }
     }
@@ -21,7 +21,7 @@ val FAutoFly = autoCommand("fly", DFStateDetectors.EnterSpawn) {
     if (Config.getBoolean("autofly")) sendCommand("fly")
 }
 
-val FAutoLagSlayer = autoCommand("lagslayer", DFStateDetectors.ChangeMode) { (new) ->
+val FAutoLagSlayer = autoCommand("lagslayer", DFStateDetectors.ChangeMode) { new ->
     if (Config.getBoolean("autolagslayer") /*&& !new.isInSession*/) {
         if (!LagslayerHUD.lagSlayerEnabled) {
             // TODO: execute silently without ChatUtil
@@ -30,7 +30,7 @@ val FAutoLagSlayer = autoCommand("lagslayer", DFStateDetectors.ChangeMode) { (ne
     }
 }
 
-val FAutoNightVision = autoCommand("nightvis", DFStateDetectors.ChangeMode) { (new) ->
+val FAutoNightVision = autoCommand("nightvis", DFStateDetectors.ChangeMode) { new ->
     if (Config.getBoolean("autonightvis") /*&& !new.isInSession*/) {
         if (new.mode != PlotMode.Play) {
             launch { NightVisionRequesters.enable.requestNext() }
@@ -38,13 +38,13 @@ val FAutoNightVision = autoCommand("nightvis", DFStateDetectors.ChangeMode) { (n
     }
 }
 
-val FAutoResetCompact = autoCommand("resetcompact", DFStateDetectors.ChangeMode) { (new) ->
+val FAutoResetCompact = autoCommand("resetcompact", DFStateDetectors.ChangeMode) { new ->
     if (Config.getBoolean("autoRC") /*&& !new.isInSession*/) {
         if (new.mode == PlotMode.Dev) sendCommand("resetcompact")
     }
 }
 
-val FAutoTime = autoCommand("time", DFStateDetectors.ChangeMode) { (new) ->
+val FAutoTime = autoCommand("time", DFStateDetectors.ChangeMode) { new ->
     if (Config.getBoolean("autotime") /*&& !new.isInSession*/) {
         if (new.mode != PlotMode.Play) {
             launch { ClientTimeRequester.requestNext(Config.getLong("autotimeval")) }
@@ -58,7 +58,7 @@ val FAutoTip = autoCommand("tip", JoinDFDetector) { info ->
     }
 }
 
-val FAutoWand = autoCommand("/wand", DFStateDetectors.ChangeMode) { (new) ->
+val FAutoWand = autoCommand("/wand", DFStateDetectors.ChangeMode) { new ->
     if (Config.getBoolean("autowand")) {
         if (new.mode == PlotMode.Build) sendCommand("/wand")
     }

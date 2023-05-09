@@ -6,7 +6,10 @@ import io.github.homchom.recode.lifecycle.GlobalModule
 import io.github.homchom.recode.lifecycle.RModule
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import java.util.function.Consumer
+
+typealias StateListenable<T> = ResultListenable<T, T>
 
 /**
  * Something that can be listened to. Listenable objects come in two types: *events*, which are run
@@ -28,7 +31,7 @@ interface Listenable<T> {
     fun getNotificationsFrom(module: RModule): Flow<T>
 
     /**
-     * Adds a listener to this object, running [block] on the object's notifications.
+     * Adds a listener, running [block] on the object's notifications.
      *
      * @see getNotificationsFrom
      */
@@ -36,7 +39,7 @@ interface Listenable<T> {
         getNotificationsFrom(module).block().launchIn(module)
 
     /**
-     * Adds a listener to this object, running [action] for each notification.
+     * Adds a listener, running [action] for each notification.
      *
      * @see listenFrom
      * @see getNotificationsFrom
@@ -49,15 +52,25 @@ interface Listenable<T> {
     fun register(action: Consumer<T>) = listenEachFrom(GlobalModule) { action.accept(it) }
 }
 
-// TODO: reconcile with removal of StateEvent (in either direction)
 /**
- * A [Listenable] with a state.
+ * A [Listenable] with a result of type [R].
  *
- * @property currentState
+ * @property prevResult
  */
-interface StateListenable<T> : Listenable<T> {
-    val currentState: T
+interface ResultListenable<T, R> : Listenable<T> {
+    val prevResult: R
 }
+
+/**
+ * Adds a listener, additionally running [action] initially with [ResultListenable.prevResult].
+ *
+ * @see Listenable.listenEachFrom
+ */
+fun <T> StateListenable<T>.replayAndListenEachFrom(module: CoroutineModule, action: suspend (T) -> Unit) =
+    module.launch {
+        action(prevResult)
+        getNotificationsFrom(module).onEach(action)
+    }
 
 /**
  * A wrapper for a [Flow] into a [Listenable].
@@ -68,11 +81,11 @@ value class FlowListenable<T>(private val notifications: Flow<T>) : Listenable<T
 }
 
 /**
- * A wrapper for a [StateFlow] into a [Listenable].
+ * A wrapper for a [StateFlow] into a [StateListenable].
  */
 @JvmInline
 value class StateFlowListenable<T>(private val notifications: StateFlow<T>) : StateListenable<T> {
-    override val currentState get() = notifications.value
+    override val prevResult get() = notifications.value
 
     override fun getNotificationsFrom(module: RModule) = notifications
 }

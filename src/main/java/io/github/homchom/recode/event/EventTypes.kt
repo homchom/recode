@@ -8,10 +8,10 @@ import kotlin.time.Duration
 typealias EventInvoker<T> = (context: T) -> Unit
 
 /**
- * A custom (unbuffered) [Listenable] event that can be [run]. Event contexts are transformed into "results",
- * which are returned by [run].
+ * A custom (unbuffered) [ResultListenable] event that can be [run]. Event contexts are transformed into results,
+ * the most recent of which is stored in [prevResult].
  */
-interface CustomEvent<T, R> : Listenable<T> {
+interface CustomEvent<T, R : Any> : ResultListenable<T, R?> {
     suspend fun run(context: T): R
 
     /**
@@ -23,12 +23,13 @@ interface CustomEvent<T, R> : Listenable<T> {
 }
 
 /**
- * A custom, buffered [Listenable] event that can be [run]. Event contexts are supplied and transformed into
- * "results", which are returned by [run]; the event runs asynchronously and caches the result on some interval.
+ * A custom, buffered [ResultListenable] event that can be [run]. Event contexts are supplied and transformed
+ * into results; the event runs asynchronously and caches the result on some interval, and the most recent result
+ * is stored in [prevResult].
  *
  * @param I The event's input type, which is mapped to [T] only when needed.
  */
-interface BufferedCustomEvent<T, R, I> : Listenable<T> {
+interface BufferedCustomEvent<T, R, I> : ResultListenable<T, R?> {
     suspend fun run(input: I): R
 
     /**
@@ -58,7 +59,7 @@ interface WrappedEvent<T, L> : Listenable<T> {
  *
  * @property timeoutDuration The maximum duration used in detection functions.
  */
-interface Detector<T : Any, R : Any> : Listenable<R> {
+interface Detector<T : Any, R : Any> : ResultListenable<R, R?> {
     val timeoutDuration: Duration
 
     /**

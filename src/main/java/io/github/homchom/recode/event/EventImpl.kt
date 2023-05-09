@@ -5,7 +5,6 @@ import io.github.homchom.recode.lifecycle.CoroutineModule
 import io.github.homchom.recode.lifecycle.RModule
 import io.github.homchom.recode.lifecycle.exposedModule
 import io.github.homchom.recode.util.coroutines.RendezvousFlow
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.launch
 import net.fabricmc.fabric.api.event.Event
@@ -17,7 +16,7 @@ import kotlin.time.toJavaDuration
 /**
  * Creates a [CustomEvent], providing results by transforming context with [resultCapture].
  */
-fun <T, R> createEvent(resultCapture: (T) -> R): CustomEvent<T, R> = FlowEvent(resultCapture)
+fun <T, R : Any> createEvent(resultCapture: (T) -> R): CustomEvent<T, R> = FlowEvent(resultCapture)
 
 /**
  * Creates a [CustomEvent] with a Unit result.
@@ -52,17 +51,20 @@ fun <T, L> wrapFabricEvent(
     return EventWrapper(event, transform)
 }
 
-private class FlowEvent<T, R>(private val resultCapture: (T) -> R) : CustomEvent<T, R> {
+private class FlowEvent<T, R : Any>(private val resultCapture: (T) -> R) : CustomEvent<T, R> {
     private val flow = RendezvousFlow<T>(
         extraBufferCapacity = 1,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
 
+    override var prevResult: R? = null
+        private set
+
     override fun getNotificationsFrom(module: RModule) = flow
 
     override suspend fun run(context: T): R {
         flow.emitAndAwait(context)
-        return resultCapture(context)
+        return resultCapture(context).also { prevResult = it }
     }
 }
 
@@ -102,12 +104,15 @@ private class BufferedFlowEvent<T, R : Any, I, K : Any>(
         }
     }
 
+    override var prevResult: R? = null
+        private set
+
     override fun getNotificationsFrom(module: RModule) = delegate.getNotificationsFrom(module)
 
     override suspend fun run(input: I): R {
         val key = keySelector(input)
         val bufferResult = buffer.getIfPresent(key)
-        return if (bufferResult == null) {
+        val result = if (bufferResult == null) {
             delegate.run(contextGenerator(input)).also { buffer.put(key, it) }
         } else {
             if (++stabilizer.runIndex == stabilizer.passes) {
@@ -118,11 +123,11 @@ private class BufferedFlowEvent<T, R : Any, I, K : Any>(
             }
             bufferResult
         }
+        prevResult = result
+        return result
     }
 
     override fun stabilize() = stabilizer.stamp()
-
-    private data class BufferValue<R>(val result: R, val timerJob: Job)
 }
 
 private class EventWrapper<T, L>(
