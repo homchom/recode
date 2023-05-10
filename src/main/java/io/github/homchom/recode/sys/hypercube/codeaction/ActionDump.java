@@ -21,7 +21,7 @@ public class ActionDump implements ILoader {
     public void load() {
         try{
             JsonObject actionDump = WebUtil.getObject(
-                "https://dfonline.dev/public/db.json");
+                "https://raw.githubusercontent.com/CodeUtilities/data/main/actiondump/db.json");
             if (!actionDump.isJsonNull()){
                 // gather codeblocks
                 JsonArray codeblockArray = actionDump.getAsJsonArray("codeblocks");
