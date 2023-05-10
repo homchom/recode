@@ -1,12 +1,12 @@
 package io.github.homchom.recode.mod.config.impl;
 
+//import io.github.homchom.recode.feature.social.DiscordActivityTimeMeasurement;
 import io.github.homchom.recode.mod.config.structure.ConfigGroup;
 import io.github.homchom.recode.mod.config.structure.ConfigSubGroup;
 import io.github.homchom.recode.mod.config.types.BooleanSetting;
 import io.github.homchom.recode.mod.config.types.DynamicStringSetting;
 import io.github.homchom.recode.mod.config.types.EnumSetting;
 import io.github.homchom.recode.mod.config.types.TextDescription;
-import io.github.homchom.recode.mod.features.discordrpc.RPCElapsedOption;
 
 public class DiscordRPCGroup extends ConfigGroup {
     public DiscordRPCGroup(String name) {
@@ -34,9 +34,9 @@ public class DiscordRPCGroup extends ConfigGroup {
         plot.register(new BooleanSetting("discordRPCShowPlotMode", true));
 
         // Elapsed Behaviour
-        ConfigSubGroup elapsed = new ConfigSubGroup("discordRPCElapsed");
+        ConfigSubGroup elapsed = new ConfigSubGroup("discordActivityTimeMeasurement");
         elapsed.register(new BooleanSetting("discordRPCShowElapsed", true));
-        elapsed.register(new EnumSetting<>("discordRPCElapsed", RPCElapsedOption.class, RPCElapsedOption.SERVER_JOIN));
+        //elapsed.register(new EnumSetting<>("discordActivityTimeMeasurement", DiscordActivityTimeMeasurement.class, DiscordActivityTimeMeasurement.ON_SERVER));
 
         this.register(spawn);
         this.register(plot);

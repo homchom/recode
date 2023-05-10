@@ -98,8 +98,6 @@ sealed interface DetectorTrial<T : Any, R : Any> : Trial<DetectorTrial.ResultSup
     fun interface NullaryTester<B, R : Any> {
         fun TrialScope.runTests(baseContext: B): TrialResult<R>
 
-        fun runTestsIn(scope: TrialScope, baseContext: B) = scope.runTests(baseContext)
-
         /**
          * Converts this NullaryTester to a unary [Tester].
          */
@@ -140,9 +138,6 @@ sealed interface RequesterTrial<T : Any, R : Any> : Trial<RequesterTrial.ResultS
      */
     fun interface NullaryTester<B, R : Any> {
         fun TrialScope.runTests(baseContext: B, isRequest: Boolean): TrialResult<R>
-
-        fun runTestsIn(scope: TrialScope, baseContext: B, isRequest: Boolean) =
-            scope.runTests(baseContext, isRequest)
 
         /**
          * Converts this NullaryTester to a unary [Tester].

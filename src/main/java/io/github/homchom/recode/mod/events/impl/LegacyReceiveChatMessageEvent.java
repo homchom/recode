@@ -5,7 +5,6 @@ import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.server.DF;
 import io.github.homchom.recode.server.PlotMode;
 import io.github.homchom.recode.server.ReceiveChatMessageEvent;
-import io.github.homchom.recode.server.ServerConstants;
 import io.github.homchom.recode.sys.player.chat.ChatType;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
 import io.github.homchom.recode.sys.util.TextUtil;
@@ -19,17 +18,10 @@ import java.util.regex.Pattern;
 
 public class LegacyReceiveChatMessageEvent {
     public LegacyReceiveChatMessageEvent() {
-        var pattern = "§x§a§a§5§5§f§f⏵⏵ §f§l(" + ServerConstants.USERNAME_PATTERN + ")§7 is using a §x§f§f§f§f§a§a§l2§x§f§f§f§f§a§a§lx§7 booster.";
-        tipPlayerRegex = Pattern.compile(pattern);
         ReceiveChatMessageEvent.INSTANCE.register(this::run);
     }
 
     public static boolean pjoin = false;
-
-    // TODO: improve
-    public static String tipPlayer = "";
-
-    private final Pattern tipPlayerRegex;
 
     public void run(SimpleValidated<Component> context) {
         var message = context.getValue();

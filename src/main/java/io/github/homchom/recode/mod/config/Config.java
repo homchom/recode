@@ -5,8 +5,8 @@ import io.github.homchom.recode.mod.config.structure.ConfigSetting;
 import io.github.homchom.recode.mod.config.types.list.ListSetting;
 import net.minecraft.sounds.SoundEvent;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class Config {
@@ -17,7 +17,7 @@ public class Config {
         return getValue(setting, String.class);
     }
 
-    public static String getDynamicString(String key, HashMap<String, String> vars) {
+    public static String getDynamicString(String key, Map<String, String> vars) {
         ConfigSetting<?> setting = config.find(key);
         String value = getValue(setting, String.class);
 
