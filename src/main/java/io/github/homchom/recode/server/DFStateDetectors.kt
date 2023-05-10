@@ -9,25 +9,23 @@ import io.github.homchom.recode.lifecycle.RModule
 import io.github.homchom.recode.lifecycle.exposedModule
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.server.message.LocateMessage
-import io.github.homchom.recode.util.Case
-import io.github.homchom.recode.util.encase
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 
-val currentDFState get() = DFStateDetectors.currentState.content
+val currentDFState get() = DFStateDetectors.prevResult
 
 val isOnDF get() = currentDFState != null
 
 private val module = exposedModule()
 
-object DFStateDetectors : StateListenable<Case<DFState?>>, RModule by module {
-    private val group = GroupListenable<Case<DFState?>>()
+object DFStateDetectors : StateListenable<DFState?>, RModule by module {
+    private val group = GroupListenable<DFState?>()
 
     private val event by lazy {
         group.getNotificationsFrom(module)
-            .stateIn(module, SharingStarted.WhileSubscribed(), Case(null))
-            .let { DependentStateListenable(it.asStateListenable(), module) }
+            .stateIn(module, SharingStarted.WhileSubscribed(), null)
+            .let { DependentResultListenable(it.asStateListenable(), module) }
     }
 
     val EnterSpawn = group.add(detector(
@@ -42,17 +40,17 @@ object DFStateDetectors : StateListenable<Case<DFState?>>, RModule by module {
             requireTrue("\"Click to open the Game Menu.\"" in lore)
             requireTrue("\"Hold and type in chat to search.\"" in lore)
 
-            async { Case(DFState.AtSpawn(locate().node, /*false*/)) }
+            async { DFState.AtSpawn(locate().node, /*false*/) }
         },
         nullaryTrial(JoinDFDetector) { (node) ->
-            instant(Case(DFState.AtSpawn(node, /*false*/)))
+            instant(DFState.AtSpawn(node, /*false*/))
         }
     ))
 
     val ChangeMode = group.add(detector(nullaryTrial(ReceiveChatMessageEvent) { (message) ->
         enforce { requireTrue(isOnDF) }
         async {
-            PlotMode.match(message)?.encase { match ->
+            PlotMode.match(message)?.let { match ->
                 val state = currentDFState!!.withState(locate()) as? DFState.OnPlot
                 if (state?.mode != match.matcher) fail()
                 state
@@ -60,9 +58,9 @@ object DFStateDetectors : StateListenable<Case<DFState?>>, RModule by module {
         }
     }))
 
-    val Leave = group.add(detector(nullaryTrial(DisconnectFromServerEvent) { instant(Case(null)) }))
+    val Leave = group.add(detector(nullaryTrial(DisconnectFromServerEvent) { instant(null) }))
 
-    override val currentState get() = event.currentState
+    override val prevResult get() = event.prevResult
 
     override fun getNotificationsFrom(module: RModule) = event.getNotificationsFrom(module)
 

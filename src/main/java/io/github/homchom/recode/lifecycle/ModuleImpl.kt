@@ -7,8 +7,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 
-// TODO: should these factory functions use something like PolymorphicModule?
-
 fun exposedModule(vararg details: ModuleDetail): ExposedModule =
     createModule(details) { WeakModule(UsageModule(it)) }
 

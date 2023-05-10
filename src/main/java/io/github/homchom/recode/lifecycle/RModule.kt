@@ -44,15 +44,10 @@ interface RModule {
     suspend fun <T : Any, R : Any> Requester<T, R>.request(input: T) =
         requestFrom(this@RModule, input)
 
-    suspend fun <T : Any, R : Any> Requester<T, R>.requestNext(input: T, attempts: UInt = 1u) =
-        requestNextFrom(this@RModule, input, attempts)
-
     fun <T, S : Listenable<out T>> GroupListenable<T>.add(event: S) =
         addFrom(this@RModule, event)
 
     suspend fun <R : Any> Requester<Unit, R>.request() = request(Unit)
-
-    suspend fun <R : Any> Requester<Unit, R>.requestNext(attempts: UInt = 1u) = requestNext(Unit, attempts)
 }
 
 /**
@@ -64,6 +59,9 @@ interface CoroutineModule : RModule, CoroutineScope {
 
     fun <T> Listenable<T>.listenEach(block: suspend (T) -> Unit) =
         listenEachFrom(this@CoroutineModule, block)
+
+    fun <T> StateListenable<T>.replayAndListenEach(block: suspend (T) -> Unit) =
+        replayAndListenEachFrom(this@CoroutineModule, block)
 }
 
 /**
