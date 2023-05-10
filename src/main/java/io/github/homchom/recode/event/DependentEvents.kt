@@ -8,8 +8,12 @@ import kotlinx.coroutines.flow.Flow
 inline fun <T> DependentListenable(delegate: Listenable<T>, dependencyBuilder: ModuleBuilderScope) =
     DependentListenable(delegate, module(builder = dependencyBuilder))
 
-inline fun <T> DependentStateListenable(delegate: StateListenable<T>, dependencyBuilder: ModuleBuilderScope) =
-    DependentStateListenable(delegate, module(builder = dependencyBuilder))
+inline fun <T, R> DependentResultListenable(
+    delegate: ResultListenable<T, R>,
+    dependencyBuilder: ModuleBuilderScope
+): DependentResultListenable<T, R> {
+    return DependentResultListenable(delegate, module(builder = dependencyBuilder))
+}
 
 inline fun <T, R : Any> DependentEvent(delegate: CustomEvent<T, R>, dependencyBuilder: ModuleBuilderScope) =
     DependentEvent(delegate, module(builder = dependencyBuilder))
@@ -34,13 +38,13 @@ class DependentListenable<T>(
 
 /**
  * @see DependentListenable
- * @see StateListenable
+ * @see ResultListenable
  */
-class DependentStateListenable<T>(
-    private val delegate: StateListenable<T>,
+class DependentResultListenable<T, R>(
+    private val delegate: ResultListenable<T, R>,
     private val dependency: RModule
-) : StateListenable<T> {
-    override val currentState get() = delegate.currentState
+) : ResultListenable<T, R> {
+    override val prevResult get() = delegate.prevResult
 
     override fun getNotificationsFrom(module: RModule) =
         delegate.getNotificationsDependent(module, dependency)
@@ -54,6 +58,8 @@ class DependentEvent<T, R : Any>(
     private val delegate: CustomEvent<T, R>,
     private val dependency: RModule
 ) : CustomEvent<T, R> {
+    override val prevResult get() = delegate.prevResult
+
     override fun getNotificationsFrom(module: RModule) =
         delegate.getNotificationsDependent(module, dependency)
 
@@ -68,6 +74,8 @@ class DependentBufferedEvent<T, R : Any, I>(
     private val delegate: BufferedCustomEvent<T, R, I>,
     private val dependency: RModule
 ) : BufferedCustomEvent<T, R, I> {
+    override val prevResult get() = delegate.prevResult
+
     override fun getNotificationsFrom(module: RModule) =
         delegate.getNotificationsDependent(module, dependency)
 

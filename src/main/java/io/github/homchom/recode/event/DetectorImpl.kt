@@ -5,6 +5,7 @@ import io.github.homchom.recode.lifecycle.*
 import io.github.homchom.recode.util.attempt
 import io.github.homchom.recode.util.nullable
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
@@ -40,20 +41,23 @@ fun <T : Any, R : Any> requester(
 private sealed class DetectorDetail<T : Any, R : Any, S> : Detector<T, R>, ModuleDetail {
     protected abstract val trials: List<Trial<S>>
 
-    private val event = createEvent<R>()
+    private val event = createEvent<R, R> { it }
 
     private val queue = ConcurrentLinkedQueue<TrialEntry<T, R>>()
+
+    override val prevResult: R? get() = event.prevResult
 
     override fun getNotificationsFrom(module: RModule) = event.getNotificationsFrom(module)
 
     override fun ExposedModule.onEnable() {
         for (trial in trials) trial.supplyResultsFrom(this).listenEach { supplier ->
             suspend fun getResponse(entry: TrialEntry<T, *>?) = trialScope { runTests(supplier, entry) }
+            suspend fun awaitResponse(response: Deferred<R?>?) = nullable { response?.await() }
 
             if (queue.isEmpty()) {
                 val response = getResponse(null)
                 if (response != null) launch {
-                    response.await()?.let { event.run(it) }
+                    awaitResponse(response)?.let { event.run(it) }
                 }
             } else while (queue.isNotEmpty()) {
                 if (queue.peek()!!.basis != trial.basis) continue
@@ -61,7 +65,7 @@ private sealed class DetectorDetail<T : Any, R : Any, S> : Detector<T, R>, Modul
                 val response = getResponse(entry)
                 if (response != null || queue.isEmpty()) {
                     launch {
-                        val awaited = nullable { response?.await() }
+                        val awaited = awaitResponse(response)
                         entry.response.complete(awaited)
                         if (awaited != null) event.run(awaited)
                     }
@@ -143,23 +147,17 @@ private class TrialRequester<T : Any, R : Any>(
         return supplier.supplyIn(this, entry?.input, entry?.isRequest ?: false)
     }
 
-    override suspend fun requestFrom(module: RModule, input: T) =
-        addRequestAndAwait(input) { block ->
-            attempt(timeoutDuration, block)
+    override suspend fun requestFrom(module: RModule, input: T): R {
+        val response = addAndAwait(input, trials[0].basis, true) { block ->
+            var started = false
+            attempt(timeoutDuration) {
+                if (started) block() else {
+                    started = true
+                    trials[0].start(input) ?: block()
+                }
+            }
         }
-
-    override suspend fun requestNextFrom(module: RModule, input: T, attempts: UInt) =
-        addRequestAndAwait(input) { block ->
-            attempt(attempts) { block() }
-        }
-
-    private suspend inline fun addRequestAndAwait(
-        input: T,
-        attemptFunc: (block: suspend () -> R?) -> R?
-    ): R {
-        trials[0].start(input)?.let { return it }
-        return addAndAwait(input, trials[0].basis, true, attemptFunc)
-            ?: error("Request trial failed")
+        return response ?: error("Request trial failed")
     }
 }
 
@@ -168,6 +166,7 @@ private open class SimpleDetectorModule<T : Any, R : Any>(
     module: RModule
 ) : DetectorModule<T, R>, RModule by module {
     override val timeoutDuration get() = detail.timeoutDuration
+    override val prevResult get() = detail.prevResult
 
     override fun getNotificationsFrom(module: RModule): Flow<R> {
         module.depend(this)
@@ -189,11 +188,6 @@ private class SimpleRequesterModule<T : Any, R : Any>(
     private val detail: TrialRequester<T, R>,
     module: RModule
 ) : SimpleDetectorModule<T, R>(detail, module), RequesterModule<T, R> {
-    override suspend fun requestNextFrom(module: RModule, input: T, attempts: UInt): R {
-        module.depend(this)
-        return detail.requestNextFrom(module, input, attempts)
-    }
-
     override suspend fun requestFrom(module: RModule, input: T): R {
         module.depend(this)
         return detail.requestFrom(module, input)

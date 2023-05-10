@@ -1,11 +1,10 @@
 package io.github.homchom.recode.util
 
-// TODO: make these value classes when supported
-
 /**
  * A wrapper for [T]. Useful in generic contexts of a non-nullable upper bound.
  */
-data class Case<out T>(val content: T)
+@JvmInline
+value class Case<out T>(val content: T)
 
 /**
  * @see Case

@@ -1,3 +1,4 @@
+import Build_gradle.DependencyMod
 import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -39,7 +40,6 @@ repositories {
         url = uri("https://maven.terraformersmc.com/")
     }
     mavenCentral()
-    jcenter() // TODO: remove after Discord RPC dependency is removed
 }
 
 val shade: Configuration by configurations.creating {
@@ -62,9 +62,6 @@ dependencies {
     // Declare mod dependencies listed in gradle.properties
     for (mod in requiredDependencyMods) includeModImpl("${mod.artifact}:${mod.version}")
     for (mod in optionalDependencyMods) modCompileOnly("${mod.artifact}:${mod.version}")
-
-    // Discord RPC TODO: remove
-    shadeImpl("com.jagrosh:DiscordIPC:0.4")
 
     // Websocket TODO: clean this up
     shadeImpl("org.java-websocket:Java-WebSocket:1.5.3")

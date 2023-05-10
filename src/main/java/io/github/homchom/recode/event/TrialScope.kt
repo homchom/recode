@@ -164,27 +164,7 @@ sealed class TrialScope(
     }
 
     /**
-     * Requests and tests [requester] by checking the next invocation of its primary basis, returning the
-     * request result.
-     *
-     * @see Requester.requestNextFrom
-     * @see TestResult
-     */
-    suspend fun <T : Any, R : Any> testBy(
-        requester: Requester<T, R>,
-        input: T,
-        isRequest: Boolean = true,
-        attempts: UInt = 1u
-    ): TestResult<R> {
-        return if (isRequest) {
-            TestResult(requester.requestNextFrom(module, input, attempts))
-        } else {
-            testBy(requester, input, null, attempts)
-        }
-    }
-
-    /**
-     * Awaits a requested result from [requester].
+     * Awaits a requested (if [isRequest] is true) or detected (otherwise) result from [requester].
      *
      * @see Requester.requestFrom
      * @see TestResult
@@ -197,7 +177,7 @@ sealed class TrialScope(
         return if (isRequest) {
             TestResult(requester.requestFrom(module, input))
         } else {
-            testBy(requester, input, null)
+            awaitBy(requester, input, null)
         }
     }
 

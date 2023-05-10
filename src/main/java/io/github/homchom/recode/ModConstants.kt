@@ -13,4 +13,7 @@ const val ROOT_PACKAGE = "io.github.homchom.recode"
 // TODO: add this as config setting
 val DEFAULT_TIMEOUT_DURATION = 2.minutes
 
+// the Application ID given to recode by the Discord Developer Portal
+const val DISCORD_APP_ID = 1105614492534059020
+
 fun id(string: String) = ResourceLocation(MOD_ID, string)
