@@ -147,23 +147,17 @@ private class TrialRequester<T : Any, R : Any>(
         return supplier.supplyIn(this, entry?.input, entry?.isRequest ?: false)
     }
 
-    override suspend fun requestFrom(module: RModule, input: T) =
-        addRequestAndAwait(input) { block ->
-            attempt(timeoutDuration, block)
+    override suspend fun requestFrom(module: RModule, input: T): R {
+        val response = addAndAwait(input, trials[0].basis, true) { block ->
+            var started = false
+            attempt(timeoutDuration) {
+                if (started) block() else {
+                    started = true
+                    trials[0].start(input) ?: block()
+                }
+            }
         }
-
-    override suspend fun requestNextFrom(module: RModule, input: T, attempts: UInt) =
-        addRequestAndAwait(input) { block ->
-            attempt(attempts) { block() }
-        }
-
-    private suspend inline fun addRequestAndAwait(
-        input: T,
-        attemptFunc: (block: suspend () -> R?) -> R?
-    ): R {
-        trials[0].start(input)?.let { return it }
-        return addAndAwait(input, trials[0].basis, true, attemptFunc)
-            ?: error("Request trial failed")
+        return response ?: error("Request trial failed")
     }
 }
 
@@ -194,11 +188,6 @@ private class SimpleRequesterModule<T : Any, R : Any>(
     private val detail: TrialRequester<T, R>,
     module: RModule
 ) : SimpleDetectorModule<T, R>(detail, module), RequesterModule<T, R> {
-    override suspend fun requestNextFrom(module: RModule, input: T, attempts: UInt): R {
-        module.depend(this)
-        return detail.requestNextFrom(module, input, attempts)
-    }
-
     override suspend fun requestFrom(module: RModule, input: T): R {
         module.depend(this)
         return detail.requestFrom(module, input)

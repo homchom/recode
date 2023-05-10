@@ -87,13 +87,6 @@ interface Requester<T : Any, R : Any> : Detector<T, R> {
      * @see detectFrom
      */
     suspend fun requestFrom(module: RModule, input: T): R
-
-    /**
-     * Makes a request and detects the result only from the next invocation.
-     *
-     * @see checkNextFrom
-     */
-    suspend fun requestNextFrom(module: RModule, input: T, attempts: UInt = 1u): R
 }
 
 /**

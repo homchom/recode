@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 
 val FAutoChatLocal = autoCommand("chat local", DFStateDetectors) { new ->
     if (Config.getBoolean("autoChatLocal") /*&& !new.isInSession*/) {
-        if (new is PlayState) launch { ChatLocalRequester.requestNext() }
+        if (new is PlayState) launch { ChatLocalRequester.request() }
     }
 }
 
@@ -24,7 +24,6 @@ val FAutoFly = autoCommand("fly", DFStateDetectors.EnterSpawn) {
 val FAutoLagSlayer = autoCommand("lagslayer", DFStateDetectors.ChangeMode) { new ->
     if (Config.getBoolean("autolagslayer") /*&& !new.isInSession*/) {
         if (!LagslayerHUD.lagSlayerEnabled) {
-            // TODO: execute silently without ChatUtil
             if (new.mode == PlotMode.Dev) sendCommand("lagslayer")
         }
     }
@@ -33,7 +32,7 @@ val FAutoLagSlayer = autoCommand("lagslayer", DFStateDetectors.ChangeMode) { new
 val FAutoNightVision = autoCommand("nightvis", DFStateDetectors.ChangeMode) { new ->
     if (Config.getBoolean("autonightvis") /*&& !new.isInSession*/) {
         if (new.mode != PlotMode.Play) {
-            launch { NightVisionRequesters.enable.requestNext() }
+            launch { NightVisionRequesters.enable.request() }
         }
     }
 }
@@ -47,7 +46,7 @@ val FAutoResetCompact = autoCommand("resetcompact", DFStateDetectors.ChangeMode)
 val FAutoTime = autoCommand("time", DFStateDetectors.ChangeMode) { new ->
     if (Config.getBoolean("autotime") /*&& !new.isInSession*/) {
         if (new.mode != PlotMode.Play) {
-            launch { ClientTimeRequester.requestNext(Config.getLong("autotimeval")) }
+            launch { ClientTimeRequester.request(Config.getLong("autotimeval")) }
         }
     }
 }
