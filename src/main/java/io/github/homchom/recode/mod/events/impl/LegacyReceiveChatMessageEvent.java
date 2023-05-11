@@ -52,9 +52,9 @@ public class LegacyReceiveChatMessageEvent {
                     }
                     id = id.replaceAll("[\\[\\]\n]", "");
 
-                    String cmd = "/join " + id;
+                    String cmd = "join " + id;
 
-                    if (cmd.matches("/join \\d+")) {
+                    if (cmd.matches("join \\d+")) {
                         mc.player.connection.sendUnsignedCommand(cmd);
                     } else {
                         ChatUtil.sendMessage("Error while trying to join the plot.", ChatType.FAIL);

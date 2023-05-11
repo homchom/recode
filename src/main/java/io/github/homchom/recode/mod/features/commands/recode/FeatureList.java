@@ -23,9 +23,6 @@ public class FeatureList {
             "Displays which plot you are in on \"Currently Playing\" status of your Discord profile.\n" +
             "You can modify the appearance in the config menu."
         ), new LegacyFeature(
-            "Tablist Stars",
-            "A star is displayed next to each CodeUtilities mod user in the tab player list."
-        ), new LegacyFeature(
             "Side Chat",
             "Gives you 2 chats in which you can seperate messages to. Check out the config for more information."
         ), new LegacyFeature(
