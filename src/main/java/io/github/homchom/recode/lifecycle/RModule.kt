@@ -103,13 +103,8 @@ interface ExposedModule : CoroutineModule {
  *
  * @see kotlinx.coroutines.CoroutineScope
  */
-@OptIn(MutatesModuleState::class)
 @DelicateCoroutinesApi
-object GlobalModule : ExposedModule by strongExposedModule() {
-    init {
-        enable()
-    }
-}
+object GlobalModule : ExposedModule by strongExposedModule()
 
 /**
  * An opt-in annotation denoting that something mutates global active state of an [ExposedModule].

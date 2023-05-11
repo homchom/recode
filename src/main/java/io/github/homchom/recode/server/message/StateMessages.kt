@@ -76,11 +76,11 @@ data class TipMessage(val player: String, val canTip: Boolean) {
         }
     )) {
         private val mainRegex =
-            Regex("""$BOOSTER_ARROW_PATTERN ($USERNAME_PATTERN) is using a \d+x booster.""")
+            Regex("""$BOOSTER_ARROW_PATTERN ($USERNAME_PATTERN) is using a \d+x booster\.""")
         private val commandRegex =
             Regex("""$BOOSTER_ARROW_PATTERN Use /tip to show your appreciation """ +
                     """and receive a $TOKEN_NOTCH_CHAR token notch!""")
         private val timeRegex =
-            Regex("""$BOOSTER_ARROW_PATTERN The booster wears off in \d+ (?:day|hour|minute|second)s?.""")
+            Regex("""$BOOSTER_ARROW_PATTERN The booster wears off in \d+ (?:day|hour|minute|second)s?\.""")
     }
 }

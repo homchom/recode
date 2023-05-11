@@ -21,7 +21,7 @@ public class LagslayerHUD {
     private static long lastUpdate;
 
     public LagslayerHUD() {
-        DFStateDetectors.INSTANCE.getEnterSpawn().register((packet) -> lagSlayerEnabled = false);
+        DFStateDetectors.INSTANCE.getEnterSpawn().register(packet -> lagSlayerEnabled = false);
     }
 
     public static void updateCPU(ClientboundSetActionBarTextPacket packet) {

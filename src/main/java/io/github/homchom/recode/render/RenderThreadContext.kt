@@ -1,7 +1,17 @@
 package io.github.homchom.recode.render
 
 import io.github.homchom.recode.util.MixinPrivate
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
+
+/**
+ * Runs [block] on Minecraft's render thread, suspending until completion.
+ *
+ * @see RenderThreadContext
+ */
+suspend fun <T> runOnRenderThread(block: suspend CoroutineScope.() -> T) =
+    withContext(RenderThreadContext, block)
 
 /**
  * A [CoroutineContext] confined to Minecraft's render thread.

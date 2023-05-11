@@ -14,3 +14,5 @@ const val GREEN_ARROW_CHAR = '»'
 const val RIGHT_ARROW_CHAR = '→'
 
 const val TOKEN_NOTCH_CHAR = '□'
+
+@RegExp const val LAGSLAYER_PATTERN = """\[LagSlayer]"""

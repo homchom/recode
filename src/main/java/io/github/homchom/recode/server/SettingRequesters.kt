@@ -1,10 +1,11 @@
 package io.github.homchom.recode.server
 
+import io.github.homchom.recode.event.nullaryToggleRequesterGroup
 import io.github.homchom.recode.event.nullaryTrial
 import io.github.homchom.recode.event.requester
-import io.github.homchom.recode.event.toggleRequesterGroup
 import io.github.homchom.recode.event.trial
 import io.github.homchom.recode.mc
+import io.github.homchom.recode.mod.features.LagslayerHUD
 import io.github.homchom.recode.ui.equalsUnstyled
 import io.github.homchom.recode.ui.matchesUnstyled
 import io.github.homchom.recode.util.cachedRegexBuilder
@@ -30,21 +31,41 @@ val ClientTimeRequester = requester(trial(
     }
 ))
 
-private val nvEnabledRegex = Regex("$GREEN_ARROW_CHAR Enabled night vision.")
-private val nvDisabledRegex = Regex("$GREEN_ARROW_CHAR Disabled night vision")
-
-val NightVisionRequesters = toggleRequesterGroup(
+// TODO: support time keywords through command suggestions, not enum
+val FlightRequesters = nullaryToggleRequesterGroup(
     ReceiveChatMessageEvent,
-    start = { _: Unit? -> sendCommand("nightvis") },
-    enabledPredicate = { mc.player!!.hasEffect(MobEffects.NIGHT_VISION) },
-    enabledTests = { _, (text), _ -> nvEnabledRegex.matchesUnstyled(text).instantUnitOrNull() },
-    disabledTests = { _, (text), _ -> nvDisabledRegex.matchesUnstyled(text).instantUnitOrNull() }
+    start = { sendCommand("fly") },
+    enabledPredicate = { mc.player!!.isFlightEnabled },
+    enabledTests = { (text), _ ->
+        text.equalsUnstyled("$GREEN_ARROW_CHAR Flight enabled.").instantUnitOrNull()
+    },
+    disabledTests = { (text), _ ->
+        text.equalsUnstyled("$GREEN_ARROW_CHAR Flight disabled.").instantUnitOrNull()
+    }
 )
 
-val LagSlayerRequesters = toggleRequesterGroup(
+private val lsEnabledRegex =
+    Regex("""$LAGSLAYER_PATTERN Now monitoring plot (\d+)\. Type /lagslayer to stop monitoring\.""")
+private val lsDisabledRegex =
+    Regex("""$LAGSLAYER_PATTERN Stopped monitoring plot (\d+)\.""")
+
+// TODO: improve enabledPredicate once arbitrary requesters are able to be invalidated
+val LagSlayerRequesters = nullaryToggleRequesterGroup(
     ReceiveChatMessageEvent,
-    start = { _: Unit? -> sendCommand("lagslayer") },
+    start = { sendCommand("lagslayer") },
+    enabledPredicate = { LagslayerHUD.lagSlayerEnabled },
+    enabledTests = { (text), _ -> lsEnabledRegex.matchesUnstyled(text).instantUnitOrNull() },
+    disabledTests = { (text), _ -> lsDisabledRegex.matchesUnstyled(text).instantUnitOrNull() }
+)
+
+val NightVisionRequesters = nullaryToggleRequesterGroup(
+    ReceiveChatMessageEvent,
+    start = { sendCommand("nightvis") },
     enabledPredicate = { mc.player!!.hasEffect(MobEffects.NIGHT_VISION) },
-    enabledTests = { _, (text), _ -> nvEnabledRegex.matchesUnstyled(text).instantUnitOrNull() },
-    disabledTests = { _, (text), _ -> nvDisabledRegex.matchesUnstyled(text).instantUnitOrNull() }
+    enabledTests = { (text), _ ->
+        text.equalsUnstyled("$GREEN_ARROW_CHAR Enabled night vision.").instantUnitOrNull()
+    },
+    disabledTests = { (text), _ ->
+        text.equalsUnstyled("$GREEN_ARROW_CHAR Disabled night vision.").instantUnitOrNull()
+    }
 )

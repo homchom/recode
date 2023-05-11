@@ -3,13 +3,15 @@ package io.github.homchom.recode.event
 import io.github.homchom.recode.DEFAULT_TIMEOUT_DURATION
 import io.github.homchom.recode.lifecycle.*
 import io.github.homchom.recode.util.attempt
+import io.github.homchom.recode.util.collections.synchronizedLinkedList
 import io.github.homchom.recode.util.nullable
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
-import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.time.Duration
 
 /**
@@ -43,33 +45,44 @@ private sealed class DetectorDetail<T : Any, R : Any, S> : Detector<T, R>, Modul
 
     private val event = createEvent<R, R> { it }
 
-    private val queue = ConcurrentLinkedQueue<TrialEntry<T, R>>()
+    private val entries = synchronizedLinkedList<TrialEntry<T, R>>()
 
     override val prevResult: R? get() = event.prevResult
 
     override fun getNotificationsFrom(module: RModule) = event.getNotificationsFrom(module)
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     override fun ExposedModule.onEnable() {
         for (trial in trials) trial.supplyResultsFrom(this).listenEach { supplier ->
             suspend fun getResponse(entry: TrialEntry<T, *>?) = trialScope { runTests(supplier, entry) }
             suspend fun awaitResponse(response: Deferred<R?>?) = nullable { response?.await() }
 
-            if (queue.isEmpty()) {
+            if (entries.isEmpty()) {
                 val response = getResponse(null)
                 if (response != null) launch {
                     awaitResponse(response)?.let { event.run(it) }
                 }
-            } else while (queue.isNotEmpty()) {
-                if (queue.peek()!!.basis != trial.basis) continue
-                val entry: TrialEntry<T, R> = queue.poll()
-                val response = getResponse(entry)
-                if (response != null || queue.isEmpty()) {
-                    launch {
-                        val awaited = awaitResponse(response)
-                        entry.response.complete(awaited)
-                        if (awaited != null) event.run(awaited)
+            } else {
+                val iterator = entries.iterator()
+                val successful = AtomicBoolean(false)
+
+                for (entry in iterator) {
+                    if (entry.responses.isClosedForSend) {
+                        iterator.remove()
+                        continue
                     }
-                    break
+                    if (entry.basis != trial.basis) continue
+
+                    val response = getResponse(entry)
+                    if (response == null) {
+                        entry.responses.send(null)
+                    } else launch {
+                        val awaited = awaitResponse(response)
+                        if (successful.compareAndSet(false, true)) {
+                            entry.responses.send(awaited)
+                            if (awaited != null) event.run(awaited)
+                        }
+                    }
                 }
             }
         }
@@ -103,11 +116,13 @@ private sealed class DetectorDetail<T : Any, R : Any, S> : Detector<T, R>, Modul
         isRequest: Boolean,
         attemptFunc: (suspend () -> R?) -> R?
     ): R? {
-        return attemptFunc {
-            val deferredResponse = CompletableDeferred<R?>()
-            queue += TrialEntry(isRequest, input, basis, deferredResponse)
-            withTimeoutOrNull(timeoutDuration) { deferredResponse.await() }
+        val responses = Channel<R?>()
+        entries += TrialEntry(isRequest, input, basis, responses)
+        val final = attemptFunc {
+            withTimeoutOrNull(timeoutDuration) { responses.receive() }
         }
+        responses.close()
+        return final
     }
 
     protected abstract suspend fun TrialScope.runTests(supplier: S, entry: TrialEntry<T, *>?): TrialResult<R>
@@ -117,7 +132,7 @@ private data class TrialEntry<T : Any, R : Any>(
     val isRequest: Boolean,
     val input: T?,
     val basis: Listenable<*>,
-    val response: CompletableDeferred<R?>
+    val responses: Channel<R?>
 )
 
 private class TrialDetector<T : Any, R : Any>(
@@ -157,7 +172,7 @@ private class TrialRequester<T : Any, R : Any>(
                 }
             }
         }
-        return response ?: error("Request trial failed")
+        return response ?: error("Requester trial failed")
     }
 }
 

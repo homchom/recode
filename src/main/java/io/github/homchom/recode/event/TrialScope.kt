@@ -38,7 +38,7 @@ suspend fun <R : Any> ExposedModule.trialScope(block: suspend TrialScope.() -> D
  * and [testBy].
  */
 sealed class TrialScope(
-    private val module: ExposedModule,
+    val module: ExposedModule,
     private val nullableScope: NullableScope,
     val ruleScope: CoroutineScope
 ) : CoroutineScope by module {
@@ -56,6 +56,13 @@ sealed class TrialScope(
      */
     fun requireTrue(predicate: Boolean) {
         if (!predicate) fail()
+    }
+
+    /**
+     * Fails the trial if [predicate] is true.
+     */
+    fun requireFalse(predicate: Boolean) {
+        if (predicate) fail()
     }
 
     /**

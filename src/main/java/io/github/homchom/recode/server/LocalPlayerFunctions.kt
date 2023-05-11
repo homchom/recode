@@ -24,3 +24,5 @@ fun sendCommand(command: String) = asPlayer { connection.sendUnsignedCommand(com
 
 private inline fun <R> asPlayer(block: LocalPlayer.() -> R) = mc.player?.block()
     ?: error("There is no current player to send a command as")
+
+val LocalPlayer.isFlightEnabled get() = abilities.mayfly

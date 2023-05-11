@@ -19,6 +19,7 @@ val isOnDF get() = currentDFState != null
 
 private val module = exposedModule()
 
+// TODO: enable and disable JoinDFDetector and make this a child
 object DFStateDetectors : StateListenable<DFState?>, RModule by module {
     private val group = GroupListenable<DFState?>()
 
@@ -28,6 +29,7 @@ object DFStateDetectors : StateListenable<DFState?>, RModule by module {
             .let { DependentResultListenable(it.asStateListenable(), module) }
     }
 
+    // TODO: auto /fly uses a ToggleRequesterGroup so it doesn't erroneously run twice, but this still can. fix
     val EnterSpawn = group.add(detector(
         nullaryTrial(ItemSlotUpdateEvent) { packet ->
             enforce {

@@ -6,3 +6,5 @@ import java.util.concurrent.ConcurrentHashMap
 fun <K, V> concurrentMap(): MutableMap<K, V> = ConcurrentHashMap<K, V>()
 
 fun <E> concurrentSet(): MutableSet<E> = Collections.newSetFromMap(concurrentMap<E, _>())
+
+fun <E> synchronizedLinkedList(): MutableList<E> = Collections.synchronizedList(LinkedList())
