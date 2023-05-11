@@ -3,7 +3,6 @@ package io.github.homchom.recode.event
 import io.github.homchom.recode.DEFAULT_TIMEOUT_DURATION
 import io.github.homchom.recode.lifecycle.*
 import io.github.homchom.recode.util.attempt
-import io.github.homchom.recode.util.collections.synchronizedLinkedList
 import io.github.homchom.recode.util.nullable
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -11,6 +10,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
+import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.time.Duration
 
@@ -45,7 +45,7 @@ private sealed class DetectorDetail<T : Any, R : Any, S> : Detector<T, R>, Modul
 
     private val event = createEvent<R, R> { it }
 
-    private val entries = synchronizedLinkedList<TrialEntry<T, R>>()
+    private val entries = ConcurrentLinkedQueue<TrialEntry<T, R>>()
 
     override val prevResult: R? get() = event.prevResult
 
