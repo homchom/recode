@@ -55,7 +55,7 @@ private sealed class DetectorDetail<T : Any, R : Any, S> : Detector<T, R>, Modul
     override fun ExposedModule.onEnable() {
         for (trial in trials) trial.supplyResultsFrom(this).listenEach { supplier ->
             suspend fun getResponse(entry: TrialEntry<T, *>?) = trialScope { runTests(supplier, entry) }
-            suspend fun awaitResponse(response: Deferred<R?>?) = nullable { response?.await() }
+            suspend fun awaitResponse(response: Deferred<R?>) = nullable { response.await() }
 
             if (entries.isEmpty()) {
                 val response = getResponse(null)
@@ -78,9 +78,9 @@ private sealed class DetectorDetail<T : Any, R : Any, S> : Detector<T, R>, Modul
                         entry.responses.send(null)
                     } else launch {
                         val awaited = awaitResponse(response)
-                        if (successful.compareAndSet(false, true)) {
-                            entry.responses.send(awaited)
-                            if (awaited != null) event.run(awaited)
+                        entry.responses.send(awaited)
+                        if (awaited != null && successful.compareAndSet(false, true)) {
+                            event.run(awaited)
                         }
                     }
                 }
