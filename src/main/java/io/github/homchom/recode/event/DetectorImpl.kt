@@ -4,14 +4,11 @@ import io.github.homchom.recode.DEFAULT_TIMEOUT_DURATION
 import io.github.homchom.recode.lifecycle.*
 import io.github.homchom.recode.util.attempt
 import io.github.homchom.recode.util.nullable
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.withTimeoutOrNull
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.time.Duration
 
@@ -40,6 +37,9 @@ fun <T : Any, R : Any> requester(
     val detail = TrialRequester(trials.toList(), timeoutDuration)
     return SimpleRequesterModule(detail, module(detail))
 }
+
+@OptIn(DelicateCoroutinesApi::class)
+private val detectorThreadContext = newSingleThreadContext("recode detector thread")
 
 private sealed class DetectorDetail<T : Any, R : Any, S> : Detector<T, R>, ModuleDetail {
     protected abstract val trials: List<Trial<S>>
@@ -80,7 +80,7 @@ private sealed class DetectorDetail<T : Any, R : Any, S> : Detector<T, R>, Modul
                 val response = getResponse(entry)
                 if (response == null) {
                     entry.responses.send(null)
-                } else launch {
+                } else launch(detectorThreadContext) {
                     val awaited = awaitResponse(response)
                     responseMutex.withLock {
                         if (!successful) {
