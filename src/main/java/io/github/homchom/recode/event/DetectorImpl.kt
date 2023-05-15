@@ -9,9 +9,10 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withTimeoutOrNull
 import java.util.concurrent.ConcurrentLinkedQueue
-import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.time.Duration
 
 /**
@@ -46,6 +47,7 @@ private sealed class DetectorDetail<T : Any, R : Any, S> : Detector<T, R>, Modul
     private val event = createEvent<R, R> { it }
 
     private val entries = ConcurrentLinkedQueue<TrialEntry<T, R>>()
+    private val responseMutex = Mutex()
 
     override val prevResult: R? get() = event.prevResult
 
@@ -62,24 +64,29 @@ private sealed class DetectorDetail<T : Any, R : Any, S> : Detector<T, R>, Modul
                 if (response != null) launch {
                     awaitResponse(response)?.let { event.run(it) }
                 }
-            } else {
-                val iterator = entries.iterator()
-                val successful = AtomicBoolean(false)
+                return@listenEach
+            }
 
-                for (entry in iterator) {
-                    if (entry.responses.isClosedForSend) {
-                        iterator.remove()
-                        continue
-                    }
-                    if (entry.basis != trial.basis) continue
+            val iterator = entries.iterator()
+            var successful = false
 
-                    val response = getResponse(entry)
-                    if (response == null) {
-                        entry.responses.send(null)
-                    } else launch {
-                        awaitResponse(response)?.let { awaited ->
-                            if (successful.compareAndSet(false, true)) {
-                                entry.responses.send(awaited)
+            for (entry in iterator) {
+                if (entry.responses.isClosedForSend) {
+                    iterator.remove()
+                    continue
+                }
+                if (entry.basis != trial.basis) continue
+
+                val response = getResponse(entry)
+                if (response == null) {
+                    entry.responses.send(null)
+                } else launch {
+                    val awaited = awaitResponse(response)
+                    responseMutex.withLock {
+                        if (!successful) {
+                            entry.responses.send(awaited)
+                            if (awaited != null) {
+                                successful = true
                                 event.run(awaited)
                             }
                         }
