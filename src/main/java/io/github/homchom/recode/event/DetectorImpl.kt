@@ -78,8 +78,8 @@ private sealed class DetectorDetail<T : Any, R : Any, S> : Detector<T, R>, Modul
                         entry.responses.send(null)
                     } else launch {
                         awaitResponse(response)?.let { awaited ->
-                            entry.responses.send(awaited)
                             if (successful.compareAndSet(false, true)) {
+                                entry.responses.send(awaited)
                                 event.run(awaited)
                             }
                         }

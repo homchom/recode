@@ -70,12 +70,30 @@ private class ShortCircuitToggle<T : Any, B>(
     )
 
     override val enable = requester(
-        shortCircuitTrial(basis, { if (!enabledPredicate()) start(it) else null }, enabledTests),
+        shortCircuitTrial(
+            basis = basis,
+            start = { input ->
+                if (enabledPredicate()) Unit else {
+                    start(input)
+                    null
+                }
+            },
+            tests = enabledTests
+        ),
         timeoutDuration = timeoutDuration
     )
 
     override val disable = requester(
-        shortCircuitTrial(basis, { if (enabledPredicate()) start(it) else null }, enabledTests),
+        shortCircuitTrial(
+            basis = basis,
+            start = { input ->
+                if (enabledPredicate()) {
+                    start(input)
+                    null
+                } else Unit
+            },
+            tests = disabledTests
+        ),
         timeoutDuration = timeoutDuration
     )
 }
