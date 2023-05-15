@@ -77,10 +77,11 @@ private sealed class DetectorDetail<T : Any, R : Any, S> : Detector<T, R>, Modul
                     if (response == null) {
                         entry.responses.send(null)
                     } else launch {
-                        val awaited = awaitResponse(response)
-                        entry.responses.send(awaited)
-                        if (awaited != null && successful.compareAndSet(false, true)) {
-                            event.run(awaited)
+                        awaitResponse(response)?.let { awaited ->
+                            entry.responses.send(awaited)
+                            if (successful.compareAndSet(false, true)) {
+                                event.run(awaited)
+                            }
                         }
                     }
                 }
