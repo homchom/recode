@@ -56,7 +56,7 @@ private sealed class DetectorDetail<T : Any, R : Any, S> : Detector<T, R>, Modul
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun ExposedModule.onEnable() {
         for (trial in trials) trial.supplyResultsFrom(this).listenEach { supplier ->
-            suspend fun getResponse(entry: TrialEntry<T, *>?) = trialScope { runTests(supplier, entry) }
+            fun getResponse(entry: TrialEntry<T, *>?) = trialScope { runTests(supplier, entry) }
             suspend fun awaitResponse(response: Deferred<R?>) = nullable { response.await() }
 
             if (entries.isEmpty()) {
@@ -81,6 +81,7 @@ private sealed class DetectorDetail<T : Any, R : Any, S> : Detector<T, R>, Modul
                 if (response == null) {
                     entry.responses.send(null)
                 } else launch(detectorThreadContext) {
+                    // TODO: still a (very minor) race condition here. what should be changed?
                     val awaited = awaitResponse(response)
                     responseMutex.withLock {
                         if (!successful) {
@@ -133,7 +134,7 @@ private sealed class DetectorDetail<T : Any, R : Any, S> : Detector<T, R>, Modul
         return final
     }
 
-    protected abstract suspend fun TrialScope.runTests(supplier: S, entry: TrialEntry<T, *>?): TrialResult<R>
+    protected abstract fun TrialScope.runTests(supplier: S, entry: TrialEntry<T, *>?): TrialResult<R>?
 }
 
 private data class TrialEntry<T : Any, R : Any>(
@@ -147,10 +148,10 @@ private class TrialDetector<T : Any, R : Any>(
     override val trials: List<DetectorTrial<T, R>>,
     override val timeoutDuration: Duration
 ) : DetectorDetail<T, R, DetectorTrial.ResultSupplier<T, R>>() {
-    override suspend fun TrialScope.runTests(
+    override fun TrialScope.runTests(
         supplier: DetectorTrial.ResultSupplier<T, R>,
         entry: TrialEntry<T, *>?
-    ): TrialResult<R> {
+    ): TrialResult<R>? {
         return supplier.supplyIn(this, entry?.input)
     }
 }
@@ -163,10 +164,10 @@ private class TrialRequester<T : Any, R : Any>(
         require(trials.isNotEmpty())
     }
 
-    override suspend fun TrialScope.runTests(
+    override fun TrialScope.runTests(
         supplier: RequesterTrial.ResultSupplier<T, R>,
         entry: TrialEntry<T, *>?
-    ): TrialResult<R> {
+    ): TrialResult<R>? {
         return supplier.supplyIn(this, entry?.input, entry?.isRequest ?: false)
     }
 

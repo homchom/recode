@@ -1,5 +1,8 @@
 package io.github.homchom.recode.util
 
+import io.github.homchom.recode.util.Computation.Failure
+import io.github.homchom.recode.util.Computation.Success
+
 /**
  * Computes the nullable result of [block] with the ability to concisely short-circuit with [NullableScope.fail].
  *
@@ -30,7 +33,10 @@ inline fun <S, F> compute(block: ComputeScope<F>.() -> S) = computeIn(ComputeSco
 /**
  * @see compute
  */
-class ComputeScope<T> : FailScope<T>
+@JvmInline
+value class ComputeScope<T> private constructor(private val unit: NullableScope) : FailScope<T> {
+    constructor() : this(NullableScope)
+}
 
 /**
  * Computes the result of [block] in [scope], where [scope] is a [FailScope].

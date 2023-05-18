@@ -9,7 +9,6 @@ import io.github.homchom.recode.lifecycle.RModule
 import io.github.homchom.recode.lifecycle.exposedModule
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.server.message.LocateMessage
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 
@@ -42,7 +41,7 @@ object DFStateDetectors : StateListenable<DFState?>, RModule by module {
             requireTrue("\"Click to open the Game Menu.\"" in lore)
             requireTrue("\"Hold and type in chat to search.\"" in lore)
 
-            async { DFState.AtSpawn(locate().node, /*false*/) }
+            suspending { DFState.AtSpawn(locate().node, /*false*/) }
         },
         nullaryTrial(JoinDFDetector) { (node) ->
             instant(DFState.AtSpawn(node, /*false*/))
@@ -51,7 +50,7 @@ object DFStateDetectors : StateListenable<DFState?>, RModule by module {
 
     val ChangeMode = group.add(detector(nullaryTrial(ReceiveChatMessageEvent) { (message) ->
         enforce { requireTrue(isOnDF) }
-        async {
+        suspending {
             PlotMode.match(message)?.let { match ->
                 val state = currentDFState!!.withState(locate()) as? DFState.OnPlot
                 if (state?.mode != match.matcher) fail()
@@ -66,7 +65,7 @@ object DFStateDetectors : StateListenable<DFState?>, RModule by module {
 
     override fun getNotificationsFrom(module: RModule) = event.getNotificationsFrom(module)
 
-    private suspend fun TrialScope.locate() =
+    private suspend fun AsyncTrialScope.locate() =
         mc.player?.run {
             val message = +awaitBy(LocateMessage, LocateMessage.Request(username, true))
             message.state

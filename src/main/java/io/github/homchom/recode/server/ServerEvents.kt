@@ -41,7 +41,7 @@ object JoinDFDetector :
         // pre-register TipMessage as an implicit dependency
         TipMessage.getNotificationsFrom(module)
 
-        async {
+        suspending {
             enforceOn<_, Unit>(DisconnectFromServerEvent) { null } // TODO: nicer syntax?
             +testBooleanOn(ReceiveChatMessageEvent, 3u) { (text) ->
                 text.equalsUnstyled("◆ Welcome back to DiamondFire! ◆")

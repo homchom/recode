@@ -13,6 +13,7 @@ import io.github.homchom.recode.ui.matchesUnstyled
 import io.github.homchom.recode.util.cachedRegexBuilder
 import io.github.homchom.recode.util.namedGroupValues
 import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 import org.intellij.lang.annotations.Language
 import org.intellij.lang.annotations.RegExp
 
@@ -40,19 +41,19 @@ data class LocateMessage(val username: String, val state: LocateState) {
         }
     )) {
         private val regex = cachedRegexBuilder<String> { username ->
-            @RegExp fun bullet(name: String, @RegExp pattern: String) = """\n$RIGHT_ARROW_CHAR $name: $pattern"""
+            @RegExp fun bullet(@RegExp pattern: String) = """\n$RIGHT_ARROW_CHAR $pattern"""
 
             val player = (if (username == null) USERNAME_PATTERN else Regex.escape(username))
                 .let { """(?:You are|(?<player>$it) is) currently""" }
             @Language("regexp") val mode = """(?<mode>playing|building|coding) on:\n"""
             @Language("regexp") val plot =
-                """\n$RIGHT_ARROW_CHAR (?<plotName>$PLOT_NAME_PATTERN) \[(?<plotID>\d+)]"""
+                bullet("""(?<plotName>$PLOT_NAME_PATTERN) \[(?<plotID>\d+)]""")
+            @Language("regexp") val status = """(?:${bullet("""(?<status>.+)""")})?"""
             @Language("regexp") val owner =
-                bullet("Owner", """(?<owner>$USERNAME_PATTERN) (?:\[Whitelisted])?""")
-            @Language("regexp") val status = """(?:${bullet("Status", """(?<status>.+)""")})?"""
-            @Language("regexp") val server = bullet("Server", """(?<node>[A-Za-z\d ]+)""")
+                bullet("""Owner: (?<owner>$USERNAME_PATTERN) (?:\[Whitelisted])?""")
+            @Language("regexp") val server = bullet("""Server: (?<node>[A-Za-z\d ]+)""")
 
-            Regex(""" {39}\n$player (?:at spawn|$mode$plot$owner$status)$server\n {39}""")
+            Regex(""" {39}\n$player (?:at spawn|$mode$plot$status$owner)$server\n {39}""")
         }
     }
 
@@ -65,13 +66,15 @@ data class TipMessage(val player: String, val canTip: Boolean) {
         ReceiveChatMessageEvent,
         tests = { (message) ->
             val player = mainRegex.matchEntireUnstyled(message)?.groupValues?.get(1) ?: fail()
-            async(RenderThreadContext) {
-                val canTip = async {
-                    val result = testBooleanOn(ReceiveChatMessageEvent) { commandRegex.matchesUnstyled(it()) }
-                    result.value != null
+            suspending {
+                withContext(RenderThreadContext) {
+                    val canTip = async {
+                        val result = testBooleanOn(ReceiveChatMessageEvent) { commandRegex.matchesUnstyled(it()) }
+                        result.value != null
+                    }
+                    +testBooleanOn(ReceiveChatMessageEvent, 2u) { timeRegex.matchesUnstyled(it()) }
+                    TipMessage(player, canTip.await())
                 }
-                +testBooleanOn(ReceiveChatMessageEvent, 2u) { timeRegex.matchesUnstyled(it()) }
-                TipMessage(player, canTip.await())
             }
         }
     )) {

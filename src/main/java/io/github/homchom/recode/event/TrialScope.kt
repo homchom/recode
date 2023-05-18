@@ -1,10 +1,9 @@
 package io.github.homchom.recode.event
 
 import io.github.homchom.recode.DEFAULT_TIMEOUT_DURATION
-import io.github.homchom.recode.lifecycle.ExposedModule
+import io.github.homchom.recode.lifecycle.CoroutineModule
 import io.github.homchom.recode.util.NullableScope
 import io.github.homchom.recode.util.attempt
-import io.github.homchom.recode.util.collections.immutable
 import io.github.homchom.recode.util.nullable
 import io.github.homchom.recode.util.unitOrNull
 import kotlinx.coroutines.*
@@ -14,42 +13,59 @@ import kotlin.time.Duration
 /**
  * Runs [block] in a [TrialScope].
  */
-suspend fun <R : Any> ExposedModule.trialScope(block: suspend TrialScope.() -> Deferred<R?>?) =
+fun <R : Any> CoroutineModule.trialScope(block: TrialScope.() -> TrialResult<R>?) =
     nullable {
-        withContext(Dispatchers.IO) {
-            coroutineScope {
-                val trialScope = ConcreteTrialScope(
-                    this@trialScope,
-                    this@nullable,
-                    this@coroutineScope
-                )
-                val result = trialScope.block() ?: fail()
-                coroutineContext.cancelChildren()
-                result
+        EnforcerTrialScope(this@trialScope, this@nullable).block()
+    }
+
+/**
+ * A wrapper for a [Deferred] [Trial] result.
+ */
+@JvmInline
+value class TrialResult<T : Any> private constructor(
+    private val deferred: Deferred<T?>
+) : Deferred<T?> by deferred {
+    constructor(instantValue: T?) : this(CompletableDeferred(instantValue))
+
+    constructor(asyncBlock: suspend AsyncTrialScope.() -> T?, module: CoroutineModule) : this(
+        module.async(Dispatchers.IO) {
+            nullable {
+                coroutineScope {
+                    val trialScope = ConcreteAsyncTrialScope(
+                        module,
+                        this@nullable,
+                        this@coroutineScope
+                    )
+                    val result = trialScope.asyncBlock() ?: fail()
+                    coroutineContext.cancelChildren()
+                    result
+                }
             }
         }
-    }
+    )
+}
 
 /**
  * A scope that a trial executes in.
  *
  * A trial is a test containing one or more suspension points on events; they are useful for detecting an
- * occurrence that happens in complex steps. TrialScope includes corresponding DSL functions such as [testOn]
- * and [testBy].
+ * occurrence that happens in complex steps. TrialScope includes corresponding DSL functions such as [requireTrue]
+ * and the suspend functions in [AsyncTrialScope].
  */
-sealed class TrialScope(
-    val module: ExposedModule,
-    private val nullableScope: NullableScope,
-    val ruleScope: CoroutineScope
-) : CoroutineScope by module {
+sealed interface TrialScope {
+    val module: CoroutineModule
+
     /**
      * A list of blocking rules that are tested after most trial suspensions, failing the trial on a failed test.
      *
-     * @see testOn
+     * @see AsyncTrialScope.testOn
      */
-    val rules get() = _rules.immutable()
+    val rules: List<() -> Unit>
 
-    private val _rules = mutableListOf<() -> Any?>()
+    /**
+     * Enforces [block] by adding it to [rules].
+     */
+    fun enforce(block: () -> Unit)
 
     /**
      * Fails the trial if [predicate] is false.
@@ -66,12 +82,40 @@ sealed class TrialScope(
     }
 
     /**
-     * Enforces [block] by adding it to [rules].
+     * Fails this trial.
+     *
+     * @see NullableScope.fail
      */
-    fun enforce(block: () -> Unit) {
-        block()
-        _rules += block
-    }
+    fun fail(): Nothing
+
+    /**
+     * Returns an instant [TrialResult] with [value]. Use this when a trial does not end asynchronously.
+     */
+    fun <R : Any> instant(value: R?) = TrialResult(value)
+
+    /**
+     * Returns the asynchronous [TrialResult] of [block] ran in an [AsyncTrialScope],
+     * derived from this [TrialScope].
+     */
+    fun <R : Any> suspending(block: suspend AsyncTrialScope.() -> R?) = TrialResult(block, module)
+
+    /**
+     * A shorthand for `unitOrNull().let(::instant)`.
+     *
+     * @see instant
+     * @see unitOrNull
+     */
+    fun Boolean.instantUnitOrNull() = instant(unitOrNull())
+}
+
+/**
+ * A [TrialScope] with suspending DSL functions such as [testOn] and [testBy].
+ */
+sealed class AsyncTrialScope(
+    module: CoroutineModule,
+    nullableScope: NullableScope
+) : TrialScope by EnforcerTrialScope(module, nullableScope) {
+    abstract val ruleScope: CoroutineScope
 
     /**
      * Tests [test] on the next invocation of [event], where a null result is a failed test and a non-null result
@@ -88,7 +132,7 @@ sealed class TrialScope(
         val result = attempt(attempts) {
             withTimeoutOrNull(timeoutDuration) { test(event.notifications.first()) }
         }
-        for (rule in rules) rule() ?: fail()
+        for (rule in rules) rule()
         return TestResult(result)
     }
 
@@ -103,7 +147,7 @@ sealed class TrialScope(
         crossinline test: (C) -> T?
     ): TestResult<T> {
         val result = attempt(timeoutDuration) { test(event.notifications.first()) }
-        for (rule in rules) rule() ?: fail()
+        for (rule in rules) rule()
         return TestResult(result)
     }
 
@@ -229,29 +273,6 @@ sealed class TrialScope(
     }
 
     /**
-     * Fails this trial.
-     *
-     * @see NullableScope.fail
-     */
-    fun fail(): Nothing = nullableScope.fail()
-
-    /**
-     * Creates and returns an instant [Deferred] result with [value].
-     * Use this when a trial does not end asynchronously.
-     *
-     * @see CompletableDeferred
-     */
-    fun <R> instant(value: R) = CompletableDeferred(value)
-
-    /**
-     * A shorthand for `unitOrNull().let(::instant)`.
-     *
-     * @see instant
-     * @see unitOrNull
-     */
-    fun Boolean.instantUnitOrNull() = instant(unitOrNull())
-
-    /**
      * A result from a suspending test. To require a passing result or fail the trial, prepend it with [unaryPlus].
      */
     @JvmInline
@@ -268,8 +289,24 @@ sealed class TrialScope(
     operator fun <T : Any> TestResult<T>.unaryPlus() = value ?: fail()
 }
 
-private class ConcreteTrialScope(
-    module: ExposedModule,
+private class EnforcerTrialScope(
+    override val module: CoroutineModule,
+    private val nullableScope: NullableScope
+) : TrialScope {
+    override val rules get() = _rules
+
+    private val _rules = mutableListOf<() -> Unit>()
+
+    override fun enforce(block: () -> Unit) {
+        block()
+        rules += _rules
+    }
+
+    override fun fail(): Nothing = nullableScope.fail()
+}
+
+private class ConcreteAsyncTrialScope(
+    module: CoroutineModule,
     nullableScope: NullableScope,
-    ruleScope: CoroutineScope
-) : TrialScope(module, nullableScope, ruleScope)
+    override val ruleScope: CoroutineScope
+) : AsyncTrialScope(module, nullableScope)
