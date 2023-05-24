@@ -57,7 +57,7 @@ dependencies {
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
 
     shadeApi(kotlin("stdlib", "1.8.0"))
-    shadeApi("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+    shadeApi("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
 
     // Declare mod dependencies listed in gradle.properties
     for (mod in requiredDependencyMods) includeModImpl("${mod.artifact}:${mod.version}")
