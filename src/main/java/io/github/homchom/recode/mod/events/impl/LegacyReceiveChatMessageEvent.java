@@ -2,8 +2,8 @@ package io.github.homchom.recode.mod.events.impl;
 
 import io.github.homchom.recode.event.SimpleValidated;
 import io.github.homchom.recode.mod.config.Config;
-import io.github.homchom.recode.server.DF;
-import io.github.homchom.recode.server.PlotMode;
+import io.github.homchom.recode.server.state.DF;
+import io.github.homchom.recode.server.state.PlotMode;
 import io.github.homchom.recode.server.ReceiveChatMessageEvent;
 import io.github.homchom.recode.sys.player.chat.ChatType;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;

@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.homchom.recode.LegacyRecode;
-import io.github.homchom.recode.server.DFStateDetectors;
+import io.github.homchom.recode.server.state.DFStateDetectors;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;

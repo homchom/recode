@@ -2,12 +2,13 @@ package io.github.homchom.recode.server
 
 import io.github.homchom.recode.event.*
 import io.github.homchom.recode.mc
-import io.github.homchom.recode.render.runOnRenderThread
-import io.github.homchom.recode.server.message.LocateMessage
-import io.github.homchom.recode.server.message.TipMessage
-import io.github.homchom.recode.ui.equalsUnstyled
+import io.github.homchom.recode.render.RenderThreadContext
+import io.github.homchom.recode.server.state.*
 import io.github.homchom.recode.ui.matchEntireUnstyled
+import io.github.homchom.recode.ui.matchesUnstyled
 import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.Disconnect
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.Join
@@ -31,6 +32,7 @@ object DisconnectFromServerEvent :
 data class ServerJoinContext(val handler: ClientPacketListener, val sender: PacketSender, val client: Minecraft)
 data class ServerDisconnectContext(val handler: ClientPacketListener, val client: Minecraft)
 
+private val welcomeRegex = Regex("""$DIAMOND_CHAR Welcome (?:back )?to DiamondFire! $DIAMOND_CHAR""")
 private val patchRegex = Regex("""Current patch: (.+). See the patch notes with /patch!""")
 
 object JoinDFDetector :
@@ -43,25 +45,28 @@ object JoinDFDetector :
 
         suspending {
             enforceOn<_, Unit>(DisconnectFromServerEvent) { null } // TODO: nicer syntax?
-            +testBooleanOn(ReceiveChatMessageEvent, 3u) { (text) ->
-                text.equalsUnstyled("◆ Welcome back to DiamondFire! ◆")
-            }
-            val patch = +testOn(ReceiveChatMessageEvent) { (text) ->
-                patchRegex.matchEntireUnstyled(text)?.groupValues?.get(1)
+
+            val patch = withContext(RenderThreadContext) {
+                // 3 extra attempts: new player, alert, chat
+                +testBooleanOn(ReceiveChatMessageEvent, 4u) { (text) ->
+                    welcomeRegex.matchesUnstyled(text)
+                }
+                // 1 extra attempt: alert
+                +testOn(ReceiveChatMessageEvent, 2u) { (text) ->
+                    patchRegex.matchEntireUnstyled(text)?.groupValues?.get(1)
+                }
             }
 
-            // TODO: a lot of this nuance should be abstracted and/or strengthened somehow
-            // so the test starts before the tip message is processed
-            runOnRenderThread {
-                val canTip = async { testBy(TipMessage, null).value?.canTip ?: false }
-                val state = mc.player?.run {
-                    val message = +awaitBy(
-                        LocateMessage,
-                        LocateMessage.Request(username, true)
-                    )
-                    message.state
-                } ?: fail()
-                JoinDFInfo(state.node, patch, canTip.await())
+            coroutineScope {
+                // TODO: this nuance should be strengthened/abstracted somehow (race condition?)
+                // so the test starts before the tip message is processed
+                val canTip = async(RenderThreadContext) {
+                    testBy(TipMessage, null).value?.canTip ?: false
+                }
+
+                val request = HideableStateRequest(mc.player?.username ?: fail(), true)
+                val message = +awaitBy(LocateMessage, request)
+                JoinDFInfo(message.state.node, patch, canTip.await())
             }
         }
     })

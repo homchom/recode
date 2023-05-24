@@ -5,6 +5,7 @@
   "mixins": [],
   "client": [
     "MClientMain",
+    "MMinecraft",
     "render.MBlockEntityRenderDispatcher",
     "render.MGui",
     "render.MLevelRenderer",

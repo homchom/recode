@@ -2,6 +2,7 @@ package io.github.homchom.recode.event
 
 import io.github.homchom.recode.DEFAULT_TIMEOUT_DURATION
 import io.github.homchom.recode.lifecycle.CoroutineModule
+import io.github.homchom.recode.lifecycle.RModule
 import io.github.homchom.recode.util.NullableScope
 import io.github.homchom.recode.util.attempt
 import io.github.homchom.recode.util.nullable
@@ -53,7 +54,7 @@ value class TrialResult<T : Any> private constructor(
  * and the suspend functions in [AsyncTrialScope].
  */
 sealed interface TrialScope {
-    val module: CoroutineModule
+    val module: RModule
 
     /**
      * A list of blocking rules that are tested after most trial suspensions, failing the trial on a failed test.
@@ -97,7 +98,7 @@ sealed interface TrialScope {
      * Returns the asynchronous [TrialResult] of [block] ran in an [AsyncTrialScope],
      * derived from this [TrialScope].
      */
-    fun <R : Any> suspending(block: suspend AsyncTrialScope.() -> R?) = TrialResult(block, module)
+    fun <R : Any> suspending(block: suspend AsyncTrialScope.() -> R?): TrialResult<R>
 
     /**
      * A shorthand for `unitOrNull().let(::instant)`.
@@ -301,6 +302,8 @@ private class EnforcerTrialScope(
         block()
         rules += _rules
     }
+
+    override fun <R : Any> suspending(block: suspend AsyncTrialScope.() -> R?) = TrialResult(block, module)
 
     override fun fail(): Nothing = nullableScope.fail()
 }

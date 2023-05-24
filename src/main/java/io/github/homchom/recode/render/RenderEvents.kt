@@ -8,6 +8,7 @@ import io.github.homchom.recode.mc
 import io.github.homchom.recode.util.AtomicMixedInt
 import io.github.homchom.recode.util.Case
 import io.github.homchom.recode.util.collections.mapToArray
+import kotlinx.coroutines.withContext
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents.BeforeBlockOutline
@@ -56,7 +57,7 @@ object OutlineBlockEntitiesEvent :
                 BeforeOutlineBlockEvent.listenEach { context ->
                     val processor = context.worldRenderContext.worldRenderer() as OutlineProcessor
                     if (processor.needsOutlineProcessing()) {
-                        runOnRenderThread {
+                        withContext(RenderThreadContext) {
                             processor.processOutlines(mc.frameTime)
                         }
                     }

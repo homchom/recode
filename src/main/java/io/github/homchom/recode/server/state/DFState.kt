@@ -1,13 +1,15 @@
 @file:JvmName("DF")
 @file:JvmMultifileClass
 
-package io.github.homchom.recode.server
+package io.github.homchom.recode.server.state
 
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.server.*
 import io.github.homchom.recode.ui.equalsUnstyled
 import io.github.homchom.recode.ui.matchesUnstyled
 import io.github.homchom.recode.util.*
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Deferred
 import net.minecraft.network.chat.Component
 
 val ipMatchesDF get() = mc.currentServer?.ip?.matches(dfIPRegex) ?: false
@@ -15,17 +17,41 @@ val ipMatchesDF get() = mc.currentServer?.ip?.matches(dfIPRegex) ?: false
 private val dfIPRegex = Regex("""(?:\w+\.)?mcdiamondfire\.com(?::\d+)?""")
 
 sealed interface DFState : LocateState {
+    val permissions: Deferred<PermissionGroup>
+
     // TODO: implement this (how should we handle supportee vs support?)
     //val isInSession: Boolean
 
-    fun withState(state: LocateState) = when (state) {
-        is SpawnState -> AtSpawn(state.node, /*isInSession*/)
-        is PlayState -> OnPlot(state, /*isInSession*/)
+    /**
+     * The player's current permissions, suspending if permissions have not yet been initially detected.
+     */
+    suspend fun permissions() = permissions.await()
+
+    suspend fun withState(state: LocateState) = when (state) {
+        is SpawnState -> AtSpawn(state.node, permissions, /*isInSession*/)
+        is PlayState -> OnPlot(state, permissions(), /*isInSession*/)
     }
 
-    class AtSpawn(override val node: Node, /*override val isInSession: Boolean*/) : DFState, SpawnState
+    fun withPermissions(permissions: PermissionGroup) = when (this) {
+        is SpawnState -> AtSpawn(node, CompletableDeferred(permissions))
+        is PlayState -> OnPlot(this, permissions)
+    }
 
-    class OnPlot(state: PlayState, /*override val isInSession: Boolean*/) : DFState, PlayState by state
+    class AtSpawn(
+        override val node: Node,
+        override val permissions: Deferred<PermissionGroup>,
+        /*override val isInSession: Boolean*/
+    ) : DFState, SpawnState {
+        override suspend fun permissions() = permissions.await()
+    }
+
+    class OnPlot(
+        state: PlayState,
+        permissions: PermissionGroup,
+        /*override val isInSession: Boolean*/
+    ) : DFState, PlayState by state {
+        override val permissions = CompletableDeferred(permissions)
+    }
 }
 
 fun DFState?.isInMode(mode: PlotMode) = this is DFState.OnPlot && this.mode == mode

@@ -44,7 +44,7 @@ inline fun strongModule(vararg details: ModuleDetail, builder: ModuleBuilderScop
 @OptIn(MutatesModuleState::class)
 inline fun entrypointModule(builder: ModuleBuilderScope) = strongExposedModule {
     onEnable {
-        ClientStopEvent.listenEach { disable() }
+        QuitGameEvent.listenEach { disable() }
     }
 
     builder()

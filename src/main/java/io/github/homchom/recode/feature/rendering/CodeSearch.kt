@@ -5,9 +5,9 @@ import io.github.homchom.recode.mc
 import io.github.homchom.recode.mod.features.commands.CodeSearcher
 import io.github.homchom.recode.render.OutlineBlockEntitiesEvent
 import io.github.homchom.recode.render.rgba
-import io.github.homchom.recode.server.PlotMode
-import io.github.homchom.recode.server.currentDFState
-import io.github.homchom.recode.server.isInMode
+import io.github.homchom.recode.server.state.PlotMode
+import io.github.homchom.recode.server.state.currentDFState
+import io.github.homchom.recode.server.state.isInMode
 import net.minecraft.world.level.block.entity.SignBlockEntity
 import kotlin.math.sqrt
 

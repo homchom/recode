@@ -1,19 +1,15 @@
 package io.github.homchom.recode.mod.mixin.message;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.social.chat.ConversationTimer;
-import io.github.homchom.recode.server.DF;
-import io.github.homchom.recode.server.DFState;
-import io.github.homchom.recode.server.PlotMode;
+import io.github.homchom.recode.server.state.DF;
+import io.github.homchom.recode.server.state.DFState;
+import io.github.homchom.recode.server.state.PlotMode;
 import io.github.homchom.recode.sys.player.chat.ChatType;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

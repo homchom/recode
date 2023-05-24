@@ -181,7 +181,7 @@ private class TrialRequester<T : Any, R : Any>(
                 }
             }
         }
-        return response ?: error("Requester trial failed")
+        return response ?: error("Request trial failed in requester ${this::class.simpleName} with input $input")
     }
 }
 
