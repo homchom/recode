@@ -38,7 +38,6 @@ object DFStateDetectors : StateListenable<Case<DFState?>>, RModule by stateModul
     private val scoreboardNodeRegex = Regex("""(?<node>.+) - .+""")
 
     val EnterSpawn = group.add(detector(
-        // leave plot
         nullaryTrial(TeleportEvent) { _ ->
             println("on teleport event")
             enforce { requireTrue(isOnDF) }
