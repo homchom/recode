@@ -14,5 +14,5 @@ fun fixDfIp(ip: String): String {
         // first and second capture groups are any subdomain to ip & port respectively
         return ip.replace(dfIPsRegex, "$1mcdiamondfire.com$2")
     }
-    return ip;
+    return ip
 }
