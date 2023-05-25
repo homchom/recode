@@ -4,13 +4,18 @@ import io.github.homchom.recode.util.Computation.Failure
 import io.github.homchom.recode.util.Computation.Success
 
 /**
- * Computes the nullable result of [block] with the ability to concisely short-circuit with [NullableScope.fail].
+ * Computes the nullable result of [block] with the ability to concisely short-circuit with
+ * both [NullableScope.fail] and [NullPointerException].
  *
  * **[NullableScope] should not be leaked.** See [FailScope] for more details.
  */
 inline fun <T : Any> nullable(block: NullableScope.() -> T?): T? {
-    val comp = computeIn(NullableScope, block)
-    return (comp as? Computation.Success<T?>)?.value
+    val comp = try {
+        computeIn(NullableScope, block)
+    } catch (npe: NullPointerException) {
+        return null
+    }
+    return (comp as? Success<T?>)?.value
 }
 
 /**
@@ -45,10 +50,10 @@ value class ComputeScope<T> private constructor(private val unit: NullableScope)
  */
 inline fun <S, F, C : FailScope<F>> computeIn(scope: C, block: C.() -> S): Computation<S, F> {
     return try {
-        Computation.Success(scope.block())
+        Success(scope.block())
     } catch (e: FailureException) {
         @Suppress("UNCHECKED_CAST")
-        Computation.Failure(e.value as F)
+        Failure(e.value as F)
     }
 }
 

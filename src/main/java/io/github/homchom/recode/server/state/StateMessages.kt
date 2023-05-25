@@ -14,15 +14,14 @@ import org.intellij.lang.annotations.Language
 import org.intellij.lang.annotations.RegExp
 
 data class LocateMessage(val username: String, val state: LocateState) {
-    companion object : Requester<HideableStateRequest, LocateMessage> by requester(trial(
+    companion object : Requester<HideableStateRequest, LocateMessage> by requester("/locate", trial(
         ReceiveChatMessageEvent,
         start = { request -> sendCommand("locate ${request.username}") },
         tests = { request, context, _ ->
             val message = context.value
             val values = LocateMessage.regex(request?.username)
-                .matchEntireUnstyled(message)
-                ?.namedGroupValues
-                ?: fail()
+                .matchEntireUnstyled(message)!!
+                .namedGroupValues
             val player = values["player"].let { if (it == "You") mc.player!!.username else it }
             val node = nodeByName(values["node"])
             val state = if (values["mode"].isEmpty()) {
@@ -55,15 +54,14 @@ data class LocateMessage(val username: String, val state: LocateState) {
 }
 
 data class ProfileMessage(val username: String, val ranks: Set<Rank>) {
-    companion object : Requester<HideableStateRequest, ProfileMessage> by requester(trial(
+    companion object : Requester<HideableStateRequest, ProfileMessage> by requester("/profile", trial(
         ReceiveChatMessageEvent,
         start = { request -> sendCommand("profile ${request.username}") },
         tests = { request, context, _ ->
             val message = context.value
             val values = ProfileMessage.regex(request?.username)
-                .matchEntireUnstyled(message)
-                ?.namedGroupValues
-                ?: fail()
+                .matchEntireUnstyled(message)!!
+                .namedGroupValues
             val player = values["player"]
 
             val rankMap = DonorRank.values().associateBy { it.displayName }
@@ -91,7 +89,7 @@ data class TipMessage(val player: String, val canTip: Boolean) {
     companion object : Detector<Unit, TipMessage> by detector(nullaryTrial(
         ReceiveChatMessageEvent,
         tests = { (message) ->
-            val player = TipMessage.mainRegex.matchEntireUnstyled(message)?.groupValues?.get(1) ?: fail()
+            val player = TipMessage.mainRegex.matchEntireUnstyled(message)!!.groupValues[1]
             suspending {
                 withContext(RenderThreadContext) {
                     val canTip = async {

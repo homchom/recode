@@ -4,13 +4,18 @@ import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.network.chat.Style
 
-val FORMATTING_CODE_REGEX = Regex("§.")
+val FORMATTING_CODE_REGEX = Regex("""§(?:[0-9a-fk-o]|x(?:§[0-9a-f]){6})""", RegexOption.IGNORE_CASE)
 
 operator fun MutableComponent.plusAssign(component: Component) {
     append(component)
 }
 
-val Component.unstyledString get() = string.replace(FORMATTING_CODE_REGEX, "")
+/**
+ * Removes all § formatting codes from [componentString].
+ */
+fun unstyle(componentString: String) = componentString.replace(FORMATTING_CODE_REGEX, "")
+
+val Component.unstyledString get() = unstyle(string)
 
 infix fun Component.looksLike(other: Component) =
     toFlatList(Style.EMPTY) == other.toFlatList(Style.EMPTY)

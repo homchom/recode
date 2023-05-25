@@ -19,13 +19,7 @@ fun <R : Any> CoroutineModule.trialScope(block: TrialScope.() -> TrialResult<R>?
         EnforcerTrialScope(this@trialScope, this@nullable).block()
     }
 
-/**
- * A wrapper for a [Deferred] [Trial] result.
- */
-@JvmInline
-value class TrialResult<T : Any> private constructor(
-    private val deferred: Deferred<T?>
-) : Deferred<T?> by deferred {
+class TrialResult<T : Any> private constructor(private val deferred: Deferred<T?>) : Deferred<T?> by deferred {
     constructor(instantValue: T?) : this(CompletableDeferred(instantValue))
 
     constructor(asyncBlock: suspend AsyncTrialScope.() -> T?, module: CoroutineModule) : this(
@@ -47,7 +41,7 @@ value class TrialResult<T : Any> private constructor(
 }
 
 /**
- * A scope that a trial executes in.
+ * A [NullableScope] that a trial executes in.
  *
  * A trial is a test containing one or more suspension points on events; they are useful for detecting an
  * occurrence that happens in complex steps. TrialScope includes corresponding DSL functions such as [requireTrue]
@@ -192,6 +186,7 @@ sealed class AsyncTrialScope(
      * @see Detector.checkNextFrom
      * @see TestResult
      */
+    @ExperimentalCoroutinesApi
     suspend fun <T : Any, R : Any> testBy(
         detector: Detector<T, R>,
         input: T?,
@@ -199,6 +194,7 @@ sealed class AsyncTrialScope(
         attempts: UInt = 1u
     ): TestResult<R> {
         return TestResult(detector.checkNextFrom(module, input, basis, attempts))
+            .also { for (rule in rules) rule() }
     }
 
     /**
@@ -207,20 +203,18 @@ sealed class AsyncTrialScope(
      * @see Detector.detectFrom
      * @see TestResult
      */
+    @ExperimentalCoroutinesApi
     suspend fun <T : Any, R : Any> awaitBy(
         detector: Detector<T, R>,
         input: T?,
         basis: Listenable<*>? = null
     ): TestResult<R> {
         return TestResult(detector.detectFrom(module, input, basis))
+            .also { for (rule in rules) rule() }
     }
 
-    /**
-     * Awaits a requested (if [isRequest] is true) or detected (otherwise) result from [requester].
-     *
-     * @see Requester.requestFrom
-     * @see TestResult
-     */
+
+    @OptIn(ExperimentalCoroutinesApi::class)
     suspend fun <T : Any, R : Any> awaitBy(
         requester: Requester<T, R>,
         input: T,
@@ -228,6 +222,7 @@ sealed class AsyncTrialScope(
     ): TestResult<R> {
         return if (isRequest) {
             TestResult(requester.requestFrom(module, input))
+                .also { for (rule in rules) rule() }
         } else {
             awaitBy(requester, input, null)
         }

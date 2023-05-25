@@ -3,10 +3,7 @@ package io.github.homchom.recode.util
 /**
  * A wrapper for [T]. Useful in generic contexts of a non-nullable upper bound.
  */
-@JvmInline
-value class Case<out T>(val content: T) {
-    operator fun component1() = content
-}
+data class Case<out T>(val content: T)
 
 /**
  * @see Case

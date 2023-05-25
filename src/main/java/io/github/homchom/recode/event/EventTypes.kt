@@ -1,6 +1,7 @@
 package io.github.homchom.recode.event
 
 import io.github.homchom.recode.lifecycle.RModule
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import net.fabricmc.fabric.api.event.Event
 import kotlin.time.Duration
@@ -67,6 +68,7 @@ interface Detector<T : Any, R : Any> : ResultListenable<R, R?> {
      *
      * @returns The event result, or null if one could not be found in time.
      */
+    @ExperimentalCoroutinesApi
     suspend fun detectFrom(module: RModule, input: T?, basis: Listenable<*>? = null): R?
 
     /**
@@ -74,6 +76,7 @@ interface Detector<T : Any, R : Any> : ResultListenable<R, R?> {
      *
      * @returns The event result, or null if there was not a match.
      */
+    @ExperimentalCoroutinesApi
     suspend fun checkNextFrom(module: RModule, input: T?, basis: Listenable<*>? = null, attempts: UInt = 1u): R?
 }
 

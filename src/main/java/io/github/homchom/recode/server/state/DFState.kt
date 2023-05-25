@@ -32,11 +32,6 @@ sealed interface DFState : LocateState {
         is PlayState -> OnPlot(state, permissions(), /*isInSession*/)
     }
 
-    fun withPermissions(permissions: PermissionGroup) = when (this) {
-        is SpawnState -> AtSpawn(node, CompletableDeferred(permissions))
-        is PlayState -> OnPlot(this, permissions)
-    }
-
     class AtSpawn(
         override val node: Node,
         override val permissions: Deferred<PermissionGroup>,

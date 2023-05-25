@@ -4,17 +4,17 @@
 package io.github.homchom.recode.server.state
 
 import io.github.homchom.recode.event.*
-import io.github.homchom.recode.game.ItemSlotUpdateEvent
+import io.github.homchom.recode.game.TeleportEvent
+import io.github.homchom.recode.game.UpdateScoreboardScoreEvent
 import io.github.homchom.recode.lifecycle.RModule
 import io.github.homchom.recode.lifecycle.exposedModule
 import io.github.homchom.recode.mc
-import io.github.homchom.recode.server.DisconnectFromServerEvent
-import io.github.homchom.recode.server.JoinDFDetector
-import io.github.homchom.recode.server.ReceiveChatMessageEvent
-import io.github.homchom.recode.server.username
+import io.github.homchom.recode.server.*
+import io.github.homchom.recode.ui.unstyle
 import io.github.homchom.recode.util.Case
 import io.github.homchom.recode.util.collections.immutable
 import io.github.homchom.recode.util.encase
+import io.github.homchom.recode.util.namedGroupValues
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
@@ -35,27 +35,33 @@ object DFStateDetectors : StateListenable<Case<DFState?>>, RModule by stateModul
             .let { DependentResultListenable(it.asStateListenable(), stateModule) }
     }
 
-    // TODO: auto /fly uses a ToggleRequesterGroup so it doesn't erroneously run twice, but this still can. fix
+    private val scoreboardNodeRegex = Regex("""(?<node>.+) - .+""")
+
     val EnterSpawn = group.add(detector(
-        nullaryTrial(ItemSlotUpdateEvent) { packet ->
-            enforce {
-                requireTrue(isOnDF && currentDFState !is SpawnState)
-            }
-            val stack = packet.item
-            requireTrue("◇ Game Menu ◇" in stack.hoverName.string)
-            val display = stack.orCreateTag.getCompound("display")
-            val lore = display.getList("Lore", 8).toString()
-            requireTrue("\"Click to open the Game Menu.\"" in lore)
-            requireTrue("\"Hold and type in chat to search.\"" in lore)
+        // leave plot
+        nullaryTrial(TeleportEvent) { _ ->
+            println("on teleport event")
+            enforce { requireTrue(isOnDF) }
+
+            val scoreboard = mc.player!!.scoreboard
+            val objective = scoreboard.getObjective("info")!!
+            val score = scoreboard.getPlayerScores(objective).singleOrNull { it.score == 3 } ?: fail()
+
+            val node = scoreboardNodeRegex.matchEntire(unstyle(score.owner))!!
+                .namedGroupValues["node"]
+                .let(::nodeByName)
+            requireTrue(currentDFState !is SpawnState || node != currentDFState!!.node)
 
             suspending {
-                Case(currentDFState?.withState(locate()) ?: fail())
+                val locateState = locate()
+                requireTrue(locateState is SpawnState)
+                Case(currentDFState!!.withState(locateState))
             }
         },
         nullaryTrial(JoinDFDetector) { info ->
             suspending {
                 val permissions = stateModule.async {
-                    val request = HideableStateRequest(mc.player?.username ?: fail(), true)
+                    val request = HideableStateRequest(mc.player!!.username, true)
                     val message = +awaitBy(ProfileMessage, request)
                     PermissionGroup(message.ranks.immutable())
                 }

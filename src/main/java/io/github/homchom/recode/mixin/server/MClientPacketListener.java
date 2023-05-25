@@ -1,7 +1,9 @@
 package io.github.homchom.recode.mixin.server;
 
 import io.github.homchom.recode.event.SimpleValidated;
-import io.github.homchom.recode.game.ItemSlotUpdateEvent;
+import io.github.homchom.recode.game.RespawnEvent;
+import io.github.homchom.recode.game.TeleportEvent;
+import io.github.homchom.recode.game.UpdateScoreboardScoreEvent;
 import io.github.homchom.recode.server.SendCommandEvent;
 import io.github.homchom.recode.server.ServerTrust;
 import io.github.homchom.recode.sys.hypercube.templates.TemplateStorageHandler;
@@ -10,8 +12,7 @@ import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastComponent;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
-import net.minecraft.network.protocol.game.ServerboundChatCommandPacket;
+import net.minecraft.network.protocol.game.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -20,15 +21,30 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPacketListener.class)
 public abstract class MClientPacketListener {
+	@Inject(method = "handleMovePlayer", at = @At("TAIL"))
+	public void handleTeleportEvent(ClientboundPlayerPositionPacket packet, CallbackInfo ci) {
+		TeleportEvent.INSTANCE.runBlocking(packet);
+	}
+
+	@Inject(method = "handleSetScore", at = @At("TAIL"))
+	public void handleUpdateScoreboardScoreEvent(ClientboundSetScorePacket packet, CallbackInfo ci) {
+		UpdateScoreboardScoreEvent.INSTANCE.runBlocking(packet);
+	}
+
+	@Inject(method = "handleRespawn", at = @At("TAIL"))
+	public void handleRespawnEvent(ClientboundRespawnPacket packet, CallbackInfo ci) {
+		RespawnEvent.INSTANCE.runBlocking(packet);
+	}
+
 	@Inject(method = "handleContainerSetSlot", at = @At("TAIL"))
 	public void handleItemSlotUpdateEvent(ClientboundContainerSetSlotPacket packet, CallbackInfo ci) {
+		// TODO: move
 		if (packet.getContainerId() == 0) {
 			var stack = packet.getItem();
 			if (TemplateUtil.isTemplate(stack)) {
 				TemplateStorageHandler.addTemplate(stack);
 			}
 		}
-		ItemSlotUpdateEvent.INSTANCE.runBlocking(packet);
 	}
 
 	@Redirect(method = "sendCommand", at = @At(value = "INVOKE",

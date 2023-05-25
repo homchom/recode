@@ -28,13 +28,17 @@ fun <T : Any, R : Any> detector(
 /**
  * Creates a [RequesterModule] that runs via one or more [trials].
  *
+ * @param debugName A short description of what the requester services. For example,
+ * [io.github.homchom.recode.server.ChatLocalRequester] has the debug name "/chat local".
+ *
  * @see RequesterTrial
  */
 fun <T : Any, R : Any> requester(
+    debugName: String,
     vararg trials: RequesterTrial<T, R>,
     timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION
 ): RequesterModule<T, R> {
-    val detail = TrialRequester(trials.toList(), timeoutDuration)
+    val detail = TrialRequester(debugName, trials.toList(), timeoutDuration)
     return SimpleRequesterModule(detail, module(detail))
 }
 
@@ -53,7 +57,7 @@ private sealed class DetectorDetail<T : Any, R : Any, S> : Detector<T, R>, Modul
 
     override fun getNotificationsFrom(module: RModule) = event.getNotificationsFrom(module)
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+    @OptIn(DelicateCoroutinesApi::class)
     override fun ExposedModule.onEnable() {
         for (trial in trials) trial.supplyResultsFrom(this).listenEach { supplier ->
             fun getResponse(entry: TrialEntry<T, *>?) = trialScope { runTests(supplier, entry) }
@@ -79,13 +83,13 @@ private sealed class DetectorDetail<T : Any, R : Any, S> : Detector<T, R>, Modul
 
                 val response = getResponse(entry)
                 if (response == null) {
-                    entry.responses.send(null)
+                    entry.responses.trySend(null)
                 } else launch(detectorThreadContext) {
                     // TODO: still a (very minor) race condition here. what should be changed?
                     val awaited = awaitResponse(response)
                     responseMutex.withLock {
                         if (!successful) {
-                            entry.responses.send(awaited)
+                            entry.responses.trySend(awaited)
                             if (awaited != null) {
                                 successful = true
                                 event.run(awaited)
@@ -101,11 +105,13 @@ private sealed class DetectorDetail<T : Any, R : Any, S> : Detector<T, R>, Modul
     override fun ExposedModule.onDisable() {}
     override fun children() = emptyModuleList()
 
+    @ExperimentalCoroutinesApi
     override suspend fun detectFrom(module: RModule, input: T?, basis: Listenable<*>?) =
         addDetectAndAwait(input, basis) { block ->
             attempt(timeoutDuration, block)
         }
 
+    @ExperimentalCoroutinesApi
     override suspend fun checkNextFrom(module: RModule, input: T?, basis: Listenable<*>?, attempts: UInt) =
         addDetectAndAwait(input, basis) { block ->
             attempt(attempts) { block() }
@@ -157,6 +163,7 @@ private class TrialDetector<T : Any, R : Any>(
 }
 
 private class TrialRequester<T : Any, R : Any>(
+    private val debugName: String,
     override val trials: List<RequesterTrial<T, R>>,
     override val timeoutDuration: Duration
 ) : DetectorDetail<T, R, RequesterTrial.ResultSupplier<T, R>>(), Requester<T, R> {
@@ -181,7 +188,7 @@ private class TrialRequester<T : Any, R : Any>(
                 }
             }
         }
-        return response ?: error("Request trial failed in requester ${this::class.simpleName} with input $input")
+        return response ?: error("Request trial failed for $debugName requester with input $input")
     }
 }
 
@@ -197,11 +204,13 @@ private open class SimpleDetectorModule<T : Any, R : Any>(
         return detail.getNotificationsFrom(module)
     }
 
+    @ExperimentalCoroutinesApi
     override suspend fun checkNextFrom(module: RModule, input: T?, basis: Listenable<*>?, attempts: UInt): R? {
         module.depend(this)
         return detail.checkNextFrom(module, input, basis, attempts)
     }
 
+    @ExperimentalCoroutinesApi
     override suspend fun detectFrom(module: RModule, input: T?, basis: Listenable<*>?): R? {
         module.depend(this)
         return detail.detectFrom(module, input, basis)

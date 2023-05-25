@@ -3,6 +3,7 @@ package io.github.homchom.recode.lifecycle
 import io.github.homchom.recode.event.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -30,9 +31,11 @@ interface RModule {
     override operator fun equals(other: Any?): Boolean
     override fun hashCode(): Int
 
+    @ExperimentalCoroutinesApi
     suspend fun <T : Any, R : Any> Detector<T, R>.detect(input: T?, basis: Listenable<*>? = null) =
         detectFrom(this@RModule, input, basis)
 
+    @ExperimentalCoroutinesApi
     suspend fun <T : Any, R : Any> Detector<T, R>.checkNext(
         input: T?,
         basis: Listenable<*>? = null,

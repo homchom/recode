@@ -64,7 +64,7 @@ object JoinDFDetector :
                     testBy(TipMessage, null).value?.canTip ?: false
                 }
 
-                val request = HideableStateRequest(mc.player?.username ?: fail(), true)
+                val request = HideableStateRequest(mc.player!!.username, true)
                 val message = +awaitBy(LocateMessage, request)
                 JoinDFInfo(message.state.node, patch, canTip.await())
             }

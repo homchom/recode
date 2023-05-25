@@ -13,6 +13,7 @@ import kotlin.time.Duration
  * @see RequesterTrial
  */
 fun <T : Any, B> toggleRequesterGroup(
+    debugName: String,
     basis: Listenable<B>,
     start: suspend (input: T?) -> Unit,
     timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION,
@@ -20,7 +21,10 @@ fun <T : Any, B> toggleRequesterGroup(
     enabledTests: RequesterTrial.Tester<T, B, Unit>,
     disabledTests: RequesterTrial.Tester<T, B, Unit>
 ) : ToggleRequesterGroup<T> {
-    return ShortCircuitToggle(basis, start, timeoutDuration, enabledPredicate, enabledTests, disabledTests)
+    return ShortCircuitToggle(debugName, basis, start, timeoutDuration, enabledPredicate,
+        enabledTests,
+        disabledTests
+    )
 }
 
 /**
@@ -28,6 +32,7 @@ fun <T : Any, B> toggleRequesterGroup(
  * @see RequesterTrial.NullaryTester
  */
 inline fun <B> nullaryToggleRequesterGroup(
+    debugName: String,
     basis: Listenable<B>,
     crossinline start: suspend () -> Unit,
     timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION,
@@ -35,7 +40,7 @@ inline fun <B> nullaryToggleRequesterGroup(
     enabledTests: RequesterTrial.NullaryTester<B, Unit>,
     disabledTests: RequesterTrial.NullaryTester<B, Unit>
 ) : ToggleRequesterGroup<Unit> {
-    return toggleRequesterGroup(basis, { start() }, timeoutDuration, enabledPredicate,
+    return toggleRequesterGroup(debugName, basis, { start() }, timeoutDuration, enabledPredicate,
         enabledTests = enabledTests.toUnary(),
         disabledTests = disabledTests.toUnary()
     )
@@ -51,6 +56,7 @@ sealed interface ToggleRequesterGroup<T : Any> {
 }
 
 private class ShortCircuitToggle<T : Any, B>(
+    debugName: String,
     basis: Listenable<B>,
     start: suspend (input: T?) -> Unit,
     timeoutDuration: Duration,
@@ -58,7 +64,7 @@ private class ShortCircuitToggle<T : Any, B>(
     enabledTests: RequesterTrial.Tester<T, B, Unit>,
     disabledTests: RequesterTrial.Tester<T, B, Unit>
 ) : ToggleRequesterGroup<T> {
-    override val toggle = requester(
+    override val toggle = requester(debugName,
         trial(basis, start) { input, baseContext, isRequest ->
             if (enabledPredicate()) {
                 enabledTests.runTestsIn(this, input, baseContext, isRequest)
@@ -69,7 +75,7 @@ private class ShortCircuitToggle<T : Any, B>(
         timeoutDuration = timeoutDuration
     )
 
-    override val enable = requester(
+    override val enable = requester(debugName,
         shortCircuitTrial(
             basis = basis,
             start = { input ->
@@ -83,7 +89,7 @@ private class ShortCircuitToggle<T : Any, B>(
         timeoutDuration = timeoutDuration
     )
 
-    override val disable = requester(
+    override val disable = requester(debugName,
         shortCircuitTrial(
             basis = basis,
             start = { input ->
