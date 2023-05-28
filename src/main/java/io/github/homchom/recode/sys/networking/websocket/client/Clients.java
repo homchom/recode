@@ -2,8 +2,6 @@ package io.github.homchom.recode.sys.networking.websocket.client;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.mojang.authlib.minecraft.client.MinecraftClient;
-import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.sys.networking.websocket.SocketHandler;
 import io.github.homchom.recode.sys.networking.websocket.client.type.SocketItem;
 import io.github.homchom.recode.sys.renderer.ToasterUtil;
