@@ -73,7 +73,7 @@ fun <B, R : Any> nullaryTrial(
 sealed interface Trial<S> {
     val basis: Listenable<*>
 
-    fun supplyResultsFrom(module: ExposedModule): Listenable<S>
+    fun supplyResultsFrom(module: ExposedModule): FlowListenable<S>
 }
 
 /**
@@ -115,7 +115,8 @@ sealed interface DetectorTrial<T : Any, R : Any> : Trial<DetectorTrial.ResultSup
 /**
  * A [Trial] that supplies to [Requester] events.
  *
- * @property start The executor function that starts the request.
+ * @property start The executor function that starts the request. Note that [Requester.activeRequests] is
+ * incremented *before* [start] is invoked.
  */
 sealed interface RequesterTrial<T : Any, R : Any> : Trial<RequesterTrial.ResultSupplier<T, R>> {
     val start: suspend (input: T) -> R?

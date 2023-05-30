@@ -2,13 +2,11 @@ package io.github.homchom.recode.server
 
 import io.github.homchom.recode.event.*
 import io.github.homchom.recode.mc
-import io.github.homchom.recode.render.RenderThreadContext
 import io.github.homchom.recode.server.state.*
 import io.github.homchom.recode.ui.matchEntireUnstyled
 import io.github.homchom.recode.ui.matchesUnstyled
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.withContext
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.Disconnect
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.Join
@@ -43,25 +41,23 @@ object JoinDFDetector :
         // pre-register TipMessage as an implicit dependency
         TipMessage.getNotificationsFrom(module)
 
-        suspending {
-            enforceOn<_, Unit>(DisconnectFromServerEvent) { null } // TODO: nicer syntax?
+        // 6 potential messages: new player, alert 1, chat, welcome, alert 2, patch
+        val messages = ReceiveChatMessageEvent.channel(6)
 
-            val patch = withContext(RenderThreadContext) {
-                // 3 extra attempts: new player, alert, chat
-                +testBooleanOn(ReceiveChatMessageEvent, 4u) { (text) ->
-                    welcomeRegex.matchesUnstyled(text)
-                }
-                // 1 extra attempt: alert
-                +testOn(ReceiveChatMessageEvent, 2u) { (text) ->
-                    patchRegex.matchEntireUnstyled(text)?.groupValues?.get(1)
-                }
+        suspending {
+            enforce<_, Unit>(DisconnectFromServerEvent) { null } // TODO: nicer syntax?
+
+            +sampleBoolean(messages, 4u) { (text) ->
+                welcomeRegex.matchesUnstyled(text)
+            }
+            val patch = +sample(messages, 2u) { (text) ->
+                patchRegex.matchEntireUnstyled(text)?.groupValues?.get(1)
             }
 
             coroutineScope {
-                // TODO: this nuance should be strengthened/abstracted somehow (race condition?)
                 // so the test starts before the tip message is processed
-                val canTip = async(RenderThreadContext) {
-                    testBy(TipMessage, null).value?.canTip ?: false
+                val canTip = async {
+                    sampleBy(TipMessage, null).value?.canTip ?: false
                 }
 
                 val request = HideableStateRequest(mc.player!!.username, true)

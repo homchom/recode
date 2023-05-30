@@ -75,7 +75,7 @@ private class UsageModule(private val details: ImmutableList<ModuleDetail>) : Ex
     override fun disable() {
         errorIf(!isEnabled) { "is disabled" }
         for (child in children) child.removeUsage(this)
-        coroutineScope.cancel()
+        coroutineScope.cancel("Module disabled")
         coroutineScope = newCoroutineScope()
         isEnabled = false
         forEachDetail { onDisable() }
@@ -91,10 +91,8 @@ private class UsageModule(private val details: ImmutableList<ModuleDetail>) : Ex
         if (isEnabled) module.addUsage(this)
     }
 
-    @Suppress("RedundantOverride")
     override fun equals(other: Any?) = super.equals(other)
 
-    @Suppress("RedundantOverride")
     override fun hashCode() = super.hashCode()
 
     override fun addParent(module: RModule) {

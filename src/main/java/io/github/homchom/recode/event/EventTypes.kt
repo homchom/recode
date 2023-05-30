@@ -85,6 +85,11 @@ interface Detector<T : Any, R : Any> : ResultListenable<R, R?> {
  */
 interface Requester<T : Any, R : Any> : Detector<T, R> {
     /**
+     * The number of active, non-failed requests awaiting a result.
+     */
+    val activeRequests: UInt
+
+    /**
      * Makes a request and detects the result.
      *
      * @see detectFrom

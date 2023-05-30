@@ -5,7 +5,6 @@ package io.github.homchom.recode.server.state
 
 import io.github.homchom.recode.event.*
 import io.github.homchom.recode.game.TeleportEvent
-import io.github.homchom.recode.game.UpdateScoreboardScoreEvent
 import io.github.homchom.recode.lifecycle.RModule
 import io.github.homchom.recode.lifecycle.exposedModule
 import io.github.homchom.recode.mc
@@ -39,7 +38,6 @@ object DFStateDetectors : StateListenable<Case<DFState?>>, RModule by stateModul
 
     val EnterSpawn = group.add(detector(
         nullaryTrial(TeleportEvent) { _ ->
-            println("on teleport event")
             enforce { requireTrue(isOnDF) }
 
             val scoreboard = mc.player!!.scoreboard

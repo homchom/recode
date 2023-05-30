@@ -2,14 +2,12 @@ package io.github.homchom.recode.server.state
 
 import io.github.homchom.recode.event.*
 import io.github.homchom.recode.mc
-import io.github.homchom.recode.render.RenderThreadContext
 import io.github.homchom.recode.server.*
 import io.github.homchom.recode.ui.matchEntireUnstyled
 import io.github.homchom.recode.ui.matchesUnstyled
 import io.github.homchom.recode.util.cachedRegexBuilder
 import io.github.homchom.recode.util.namedGroupValues
 import kotlinx.coroutines.async
-import kotlinx.coroutines.withContext
 import org.intellij.lang.annotations.Language
 import org.intellij.lang.annotations.RegExp
 
@@ -90,19 +88,19 @@ data class TipMessage(val player: String, val canTip: Boolean) {
         ReceiveChatMessageEvent,
         tests = { (message) ->
             val player = TipMessage.mainRegex.matchEntireUnstyled(message)!!.groupValues[1]
+            val subsequent = ReceiveChatMessageEvent.channel(3)
+
             suspending {
-                withContext(RenderThreadContext) {
-                    val canTip = async {
-                        val result = testBooleanOn(ReceiveChatMessageEvent) { (text) ->
-                            TipMessage.commandRegex.matchesUnstyled(text)
-                        }
-                        result.value != null
+                val canTip = async {
+                    val result = sampleBoolean(subsequent) { (text) ->
+                        TipMessage.commandRegex.matchesUnstyled(text)
                     }
-                    +testBooleanOn(ReceiveChatMessageEvent, 2u) { (text) ->
-                        TipMessage.timeRegex.matchesUnstyled(text)
-                    }
-                    TipMessage(player, canTip.await())
+                    result.value != null
                 }
+                +sampleBoolean(subsequent, 2u) { (text) ->
+                    TipMessage.timeRegex.matchesUnstyled(text)
+                }
+                TipMessage(player, canTip.await())
             }
         }
     )) {

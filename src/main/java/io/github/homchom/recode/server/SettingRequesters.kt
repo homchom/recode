@@ -9,7 +9,6 @@ import io.github.homchom.recode.mod.features.LagslayerHUD
 import io.github.homchom.recode.ui.equalsUnstyled
 import io.github.homchom.recode.ui.matchesUnstyled
 import io.github.homchom.recode.util.cachedRegexBuilder
-import io.github.homchom.recode.util.unitOrNull
 import net.minecraft.world.effect.MobEffects
 
 val ChatLocalRequester = requester("/chat local", nullaryTrial(
@@ -27,7 +26,7 @@ val ClientTimeRequester = requester("/time", trial(
     ReceiveChatMessageEvent,
     start = { time: Long -> sendCommand("time $time") },
     tests = { time, (text), _ ->
-        timeRegex(time).matchesUnstyled(text).unitOrNull().let(::instant)
+        timeRegex(time).matchesUnstyled(text).instantUnitOrNull()
     }
 ))
 
