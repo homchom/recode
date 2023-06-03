@@ -1,5 +1,6 @@
 package io.github.homchom.recode.sys.file;
 
+import com.google.gson.JsonElement;
 import io.github.homchom.recode.Constants;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.nbt.CompoundTag;
@@ -84,4 +85,20 @@ public class ExternalFileBuilder {
                     }
                 });
     }
+
+    public static Path json(String name, JsonElement initVal) {
+        return new ExternalFileBuilder()
+                .isDirectory(false)
+                .setName(name)
+                .build(path -> {
+                    try {
+                        if (path.toFile().exists()) return;
+
+                        Files.writeString(path, initVal.toString());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+    }
+
 }
