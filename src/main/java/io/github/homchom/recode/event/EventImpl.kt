@@ -63,7 +63,7 @@ private class FlowEvent<T, R : Any>(private val resultCapture: (T) -> R) : Custo
     override fun getNotificationsFrom(module: RModule) = flow
 
     override suspend fun run(context: T): R {
-        flow.emitAndAwait(context)
+        flow.emit(context)
         return resultCapture(context).also { prevResult = it }
     }
 }

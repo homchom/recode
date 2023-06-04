@@ -12,7 +12,7 @@ import org.intellij.lang.annotations.Language
 import org.intellij.lang.annotations.RegExp
 
 data class LocateMessage(val username: String, val state: LocateState) {
-    companion object : Requester<HideableStateRequest, LocateMessage> by requester("/locate", trial(
+    companion object : Requester<HideableStateRequest, LocateMessage> by requester(trial(
         ReceiveChatMessageEvent,
         start = { request -> sendCommand("locate ${request.username}") },
         tests = { request, context, _ ->
@@ -52,7 +52,7 @@ data class LocateMessage(val username: String, val state: LocateState) {
 }
 
 data class ProfileMessage(val username: String, val ranks: Set<Rank>) {
-    companion object : Requester<HideableStateRequest, ProfileMessage> by requester("/profile", trial(
+    companion object : Requester<HideableStateRequest, ProfileMessage> by requester(trial(
         ReceiveChatMessageEvent,
         start = { request -> sendCommand("profile ${request.username}") },
         tests = { request, context, _ ->
@@ -88,16 +88,16 @@ data class TipMessage(val player: String, val canTip: Boolean) {
         ReceiveChatMessageEvent,
         tests = { (message) ->
             val player = TipMessage.mainRegex.matchEntireUnstyled(message)!!.groupValues[1]
-            val subsequent = ReceiveChatMessageEvent.channel(3)
+            val subsequent = ReceiveChatMessageEvent.next(3)
 
             suspending {
                 val canTip = async {
-                    val result = sampleBoolean(subsequent) { (text) ->
+                    val result = testBoolean(subsequent) { (text) ->
                         TipMessage.commandRegex.matchesUnstyled(text)
                     }
                     result.value != null
                 }
-                +sampleBoolean(subsequent, 2u) { (text) ->
+                +testBoolean(subsequent, 2u) { (text) ->
                     TipMessage.timeRegex.matchesUnstyled(text)
                 }
                 TipMessage(player, canTip.await())

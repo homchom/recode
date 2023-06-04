@@ -8,7 +8,10 @@ import io.github.homchom.recode.game.TeleportEvent
 import io.github.homchom.recode.lifecycle.RModule
 import io.github.homchom.recode.lifecycle.exposedModule
 import io.github.homchom.recode.mc
-import io.github.homchom.recode.server.*
+import io.github.homchom.recode.server.DisconnectFromServerEvent
+import io.github.homchom.recode.server.JoinDFDetector
+import io.github.homchom.recode.server.ReceiveChatMessageEvent
+import io.github.homchom.recode.server.username
 import io.github.homchom.recode.ui.unstyle
 import io.github.homchom.recode.util.Case
 import io.github.homchom.recode.util.collections.immutable
@@ -30,7 +33,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>>, RModule by stateModul
 
     private val event by lazy {
         group.getNotificationsFrom(stateModule)
-            .stateIn(stateModule, SharingStarted.WhileSubscribed(), Case(null))
+            .stateIn(stateModule, SharingStarted.Eagerly, Case(null))
             .let { DependentResultListenable(it.asStateListenable(), stateModule) }
     }
 
@@ -40,16 +43,22 @@ object DFStateDetectors : StateListenable<Case<DFState?>>, RModule by stateModul
         nullaryTrial(TeleportEvent) { _ ->
             enforce { requireTrue(isOnDF) }
 
+            val gameMenuStack = mc.player!!.inventory.getItem(4) // middle hotbar slot
+            requireTrue("◇ Game Menu ◇" in gameMenuStack.hoverName.string)
+
             val scoreboard = mc.player!!.scoreboard
             val objective = scoreboard.getObjective("info")!!
             val score = scoreboard.getPlayerScores(objective).singleOrNull { it.score == 3 } ?: fail()
-
             val node = scoreboardNodeRegex.matchEntire(unstyle(score.owner))!!
                 .namedGroupValues["node"]
                 .let(::nodeByName)
             requireTrue(currentDFState !is SpawnState || node != currentDFState!!.node)
 
+            val extraTeleports = TeleportEvent.channel()
             suspending {
+                // the player is teleported multiple times, so only detect the last one
+                failOn(extraTeleports)
+
                 val locateState = locate()
                 requireTrue(locateState is SpawnState)
                 Case(currentDFState!!.withState(locateState))
@@ -59,7 +68,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>>, RModule by stateModul
             suspending {
                 val permissions = stateModule.async {
                     val request = HideableStateRequest(mc.player!!.username, true)
-                    val message = +awaitBy(ProfileMessage, request)
+                    val message = ProfileMessage.request(request)
                     PermissionGroup(message.ranks.immutable())
                 }
 
@@ -88,7 +97,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>>, RModule by stateModul
 
     private suspend fun AsyncTrialScope.locate() =
         mc.player?.run {
-            val message = +awaitBy(LocateMessage, HideableStateRequest(username, true))
+            val message = LocateMessage.request(HideableStateRequest(username, true))
             message.state
         } ?: fail()
 }

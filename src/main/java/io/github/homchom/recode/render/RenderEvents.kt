@@ -1,6 +1,7 @@
 package io.github.homchom.recode.render
 
 import com.mojang.blaze3d.systems.RenderSystem
+import io.github.homchom.recode.MinecraftDispatcher
 import io.github.homchom.recode.event.*
 import io.github.homchom.recode.game.ChunkPos3D
 import io.github.homchom.recode.game.ticks
@@ -8,7 +9,6 @@ import io.github.homchom.recode.mc
 import io.github.homchom.recode.util.AtomicMixedInt
 import io.github.homchom.recode.util.Case
 import io.github.homchom.recode.util.collections.mapToArray
-import io.github.homchom.recode.util.coroutines.MinecraftDispatcher
 import kotlinx.coroutines.withContext
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents

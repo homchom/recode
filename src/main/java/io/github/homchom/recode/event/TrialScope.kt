@@ -1,15 +1,20 @@
 package io.github.homchom.recode.event
 
 import io.github.homchom.recode.DEFAULT_TIMEOUT_DURATION
+import io.github.homchom.recode.lifecycle.CoroutineModule
 import io.github.homchom.recode.lifecycle.RModule
-import io.github.homchom.recode.logError
 import io.github.homchom.recode.util.NullableScope
 import io.github.homchom.recode.util.attempt
 import io.github.homchom.recode.util.nullable
 import io.github.homchom.recode.util.unitOrNull
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.produceIn
+import kotlinx.coroutines.flow.take
 import kotlin.time.Duration
 
 /**
@@ -37,7 +42,11 @@ class TrialResult<T : Any> private constructor(private val deferred: Deferred<T?
                         this@nullable,
                         this@coroutineScope
                     )
-                    val result = trialScope.asyncBlock() ?: fail()
+                    val result = try {
+                        trialScope.asyncBlock() ?: fail()
+                    } catch (e: RequestTimeoutException) {
+                        fail()
+                    }
                     coroutineContext.cancelChildren()
                     result
                 }
@@ -55,44 +64,42 @@ class TrialResult<T : Any> private constructor(private val deferred: Deferred<T?
  *
  * @see trialScope
  */
-sealed interface TrialScope : CoroutineScope {
-    val module: RModule
-
+sealed interface TrialScope : CoroutineModule {
     /**
      * A list of blocking rules that are tested after most trial suspensions, failing the trial on a failed test.
      *
-     * @see AsyncTrialScope.sample
+     * @see AsyncTrialScope.test
      */
     val rules: List<() -> Unit>
 
     /**
-     * Gets this Listenable object's notifications from the module passed to the TrialScope.
-     */
-    val <T> Listenable<T>.notifications get() = getNotificationsFrom(module)
-
-    /**
-     *
-     * Takes [count] of this Listenable object's notifications lazily.
-     *
-     * @see kotlinx.coroutines.flow.take
-     */
-    fun <T> Listenable<T>.take(count: Int) = notifications.take(count).asListenable()
-
-    /**
-     *
-     * Transfers [count] of this Listenable object's notifications eagerly into a
+     * Transfers [amount] of this Listenable object's notifications eagerly into a
      * [kotlinx.coroutines.channels.Channel].
      *
      * @see produceIn
+     * @see AsyncTrialScope.test
      */
-    fun <T> Listenable<T>.channel(count: Int): ReceiveChannel<T>
+    fun <T> Listenable<T>.next(amount: Int = 1): ReceiveChannel<T>
 
     /**
-     * Gets this Listenable object's notifications eagerly in a coroutine confined to the trial's execution.
+     * Transfers this Listenable object's notifications eagerly into a
+     * [kotlinx.coroutines.channels.Channel] without limit.
      *
-     * @see shareIn
+     * @see next
      */
-    fun <T> Listenable<T>.share(): FlowListenable<T>
+    fun <T> Listenable<T>.channel() = next(Int.MAX_VALUE)
+
+    /**
+     * @see asListenable
+     * @see Listenable.next
+     */
+    fun <T> Flow<T>.next(amount: Int = 1) = asListenable().next(amount)
+
+    /**
+     * @see asListenable
+     * @see Listenable.channel
+     */
+    fun <T> Flow<T>.channel() = asListenable().channel()
 
     /**
      * Enforces [block] by adding it to [rules].
@@ -141,7 +148,7 @@ sealed interface TrialScope : CoroutineScope {
 }
 
 /**
- * A [TrialScope] with suspending DSL functions such as [sample] and [sampleBy].
+ * A [TrialScope] with suspending DSL functions, mainly [next] and [test].
  */
 sealed class AsyncTrialScope(
     module: RModule,
@@ -151,32 +158,15 @@ sealed class AsyncTrialScope(
     abstract val ruleScope: CoroutineScope
 
     /**
-     * Tests [test] on the invocations of [event] until a non-null result is returned. To test only some
-     * invocations (e.g. the first), use a function like [TrialScope.take] or [TrialScope.channel].
-     *
-     * @see TestResult
-     */
-    suspend inline fun <C, T : Any> await(
-        event: Listenable<C>,
-        timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION,
-        crossinline test: (C) -> T?
-    ): TestResult<T> {
-        val result = withTimeoutOrNull(timeoutDuration) {
-            event.notifications.mapNotNull(test).firstOrNull()
-        }
-        for (rule in rules) rule()
-        return TestResult(result)
-    }
-
-    /**
      * Tests [test] on the first [attempts] values of [channel] until a non-null result is returned.
      *
      * @throws kotlinx.coroutines.channels.ClosedReceiveChannelException
      * if [channel] closes while still attempting.
      *
+     * @see next
      * @see TestResult
      */
-    suspend inline fun <C, T : Any> sample(
+    suspend inline fun <C, T : Any> test(
         channel: ReceiveChannel<C>,
         attempts: UInt = 1u,
         timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION,
@@ -190,91 +180,23 @@ sealed class AsyncTrialScope(
     }
 
     /**
-     * Enforces [test] on each invocation of [event], failing the trial on a failed test.
+     * Enforces [test] on the remaining elements of [channel], consuming the channel and failing the trial
+     * on a failed test.
      *
      * @see TrialScope.enforce
      */
-    suspend inline fun <C, T : Any> enforce(
-        event: Listenable<C>,
-        timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION,
-        crossinline test: (C) -> T?
-    ) {
+    inline fun <C, T : Any> enforce(channel: ReceiveChannel<C>, crossinline test: (C) -> T?) {
         ruleScope.launch {
-            while (isActive) { +await(event.take(1), timeoutDuration, test) }
+            channel.consumeEach { test(it)!! }
         }
     }
 
     /**
-     * Awaits a detected result from [detector] on the invocation of [basis].
+     * Fails the trial if any elements in [channel] are received.
      *
-     * @see Detector.detectFrom
-     * @see TestResult
+     * @see enforce
      */
-    @ExperimentalCoroutinesApi
-    suspend fun <T : Any, R : Any> awaitBy(
-        detector: Detector<T, R>,
-        input: T?,
-        basis: Listenable<*>? = null
-    ): TestResult<R> {
-        return TestResult(detector.detectFrom(module, input, basis))
-            .also { for (rule in rules) rule() }
-    }
-
-    /**
-     * Tests [detector] by checking the next invocation of [basis].
-     *
-     * @see Detector.checkNextFrom
-     * @see TestResult
-     */
-    @ExperimentalCoroutinesApi
-    suspend fun <T : Any, R : Any> sampleBy(
-        detector: Detector<T, R>,
-        input: T?,
-        basis: Listenable<*>? = null,
-        attempts: UInt = 1u
-    ): TestResult<R> {
-        return TestResult(detector.checkNextFrom(module, input, basis, attempts))
-            .also { for (rule in rules) rule() }
-    }
-
-    /**
-     * Awaits a requested (if [isRequest] is true) or detected (otherwise) result from [requester].
-     *
-     * @see Requester.requestFrom
-     * @see TestResult
-     */
-    @OptIn(ExperimentalCoroutinesApi::class)
-    suspend fun <T : Any, R : Any> awaitBy(
-        requester: Requester<T, R>,
-        input: T,
-        isRequest: Boolean = true
-    ): TestResult<R> {
-        return if (isRequest) {
-            val result = try {
-                requester.requestFrom(module, input)
-                    .also { for (rule in rules) rule() }
-            } catch (e: RequestTrialException) {
-                logError(e.localizedMessage)
-                null
-            }
-            TestResult(result)
-        } else {
-            awaitBy(requester, input, null)
-        }
-    }
-
-    /**
-     * Tests [test] on the invocations of [event] until a true result is returned.
-     *
-     * @see await
-     */
-    suspend inline fun <C> awaitBoolean(
-        event: Listenable<C>,
-        timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION,
-        crossinline test: (C) -> Boolean
-    ): TestResult<Unit> {
-        return await(event, timeoutDuration) { test(it).unitOrNull() }
-    }
+    fun <C> failOn(channel: ReceiveChannel<C>) = enforce(channel) { null }
 
     /**
      * Tests [test] on the first [attempts] values of [channel] until a true result is returned.
@@ -284,24 +206,20 @@ sealed class AsyncTrialScope(
      *
      * @see test
      */
-    suspend inline fun <C> sampleBoolean(
+    suspend inline fun <C> testBoolean(
         channel: ReceiveChannel<C>,
         attempts: UInt = 1u,
         timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION,
         crossinline test: (C) -> Boolean
     ): TestResult<Unit> {
-        return sample(channel, attempts, timeoutDuration) { test(it).unitOrNull() }
+        return test(channel, attempts, timeoutDuration) { test(it).unitOrNull() }
     }
 
     /**
-     * @see enforce
+     * @see failOn
      */
-    suspend inline fun <C> enforceBoolean(
-        event: Listenable<C>,
-        timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION,
-        crossinline test: (C) -> Boolean
-    ) {
-        enforce(event, timeoutDuration) { test(it).unitOrNull() }
+    inline fun <C> enforceBoolean(channel: Channel<C>, crossinline test: (C) -> Boolean) {
+        enforce(channel) { test(it).unitOrNull() }
     }
 
     /**
@@ -323,23 +241,21 @@ sealed class AsyncTrialScope(
 }
 
 private class EnforcerTrialScope(
-    override val module: RModule,
+    module: RModule,
     private val coroutineScope: CoroutineScope,
     private val nullableScope: NullableScope
-) : TrialScope, CoroutineScope by coroutineScope {
+) : TrialScope, RModule by module {
+    // https://youtrack.jetbrains.com/issue/KT-59051/
+    override val coroutineContext get() = coroutineScope.coroutineContext
+
     override val rules get() = _rules
 
     private val _rules = mutableListOf<() -> Unit>()
 
-    override fun <T> Listenable<T>.channel(count: Int) = notifications
-        .take(count)
-        .buffer(count)
+    override fun <T> Listenable<T>.next(amount: Int) = notifications
+        .take(amount)
+        .buffer(amount)
         .produceIn(coroutineScope)
-
-    override fun <T> Listenable<T>.share() = notifications
-        .shareIn(coroutineScope, SharingStarted.Eagerly)
-        .asListenable()
-
 
     override fun enforce(block: () -> Unit) {
         block()
@@ -347,7 +263,7 @@ private class EnforcerTrialScope(
     }
 
     override fun <R : Any> suspending(block: suspend AsyncTrialScope.() -> R?) =
-        TrialResult(block, module, coroutineScope)
+        TrialResult(block, this, coroutineScope)
 
     override fun fail(): Nothing = nullableScope.fail()
 }

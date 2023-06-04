@@ -6,7 +6,6 @@ import io.github.homchom.recode.lifecycle.GlobalModule
 import io.github.homchom.recode.lifecycle.RModule
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import java.util.function.Consumer
 
 typealias StateListenable<T> = ResultListenable<T, T>
@@ -60,17 +59,6 @@ interface Listenable<T> {
 interface ResultListenable<T, R> : Listenable<T> {
     val prevResult: R
 }
-
-/**
- * Adds a listener, additionally running [action] initially with [ResultListenable.prevResult].
- *
- * @see Listenable.listenEachFrom
- */
-fun <T> StateListenable<T>.replayAndListenEachFrom(module: CoroutineModule, action: suspend (T) -> Unit) =
-    module.launch {
-        action(prevResult)
-        getNotificationsFrom(module).onEach(action)
-    }
 
 /**
  * A wrapper for a [Flow] into a [Listenable].

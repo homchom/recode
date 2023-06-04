@@ -11,7 +11,7 @@ import io.github.homchom.recode.ui.matchesUnstyled
 import io.github.homchom.recode.util.cachedRegexBuilder
 import net.minecraft.world.effect.MobEffects
 
-val ChatLocalRequester = requester("/chat local", nullaryTrial(
+val ChatLocalRequester = requester(nullaryTrial(
     ReceiveChatMessageEvent,
     start = { sendCommand("chat local") },
     tests = { (text), _ -> text.equalsUnstyled("Your chat is now set to LOCAL").instantUnitOrNull() }
@@ -22,7 +22,7 @@ private val timeRegex = cachedRegexBuilder<Long> { time ->
 }
 
 // TODO: support time keywords through command suggestions, not enum
-val ClientTimeRequester = requester("/time", trial(
+val ClientTimeRequester = requester(trial(
     ReceiveChatMessageEvent,
     start = { time: Long -> sendCommand("time $time") },
     tests = { time, (text), _ ->
@@ -31,7 +31,7 @@ val ClientTimeRequester = requester("/time", trial(
 ))
 
 // TODO: support time keywords through command suggestions, not enum
-val FlightRequesters = nullaryToggleRequesterGroup("/fly",
+val FlightRequesters = nullaryToggleRequesterGroup(
     ReceiveChatMessageEvent,
     start = { sendCommand("fly") },
     enabledPredicate = { mc.player!!.isFlightEnabled },
@@ -49,7 +49,7 @@ private val lsDisabledRegex =
     Regex("""$LAGSLAYER_PATTERN Stopped monitoring plot (\d+)\.""")
 
 // TODO: improve enabledPredicate once arbitrary requesters are able to be invalidated
-val LagSlayerRequesters = nullaryToggleRequesterGroup("/lagslayer",
+val LagSlayerRequesters = nullaryToggleRequesterGroup(
     ReceiveChatMessageEvent,
     start = { sendCommand("lagslayer") },
     enabledPredicate = { LagslayerHUD.lagSlayerEnabled },
@@ -57,7 +57,7 @@ val LagSlayerRequesters = nullaryToggleRequesterGroup("/lagslayer",
     disabledTests = { (text), _ -> lsDisabledRegex.matchesUnstyled(text).instantUnitOrNull() }
 )
 
-val NightVisionRequesters = nullaryToggleRequesterGroup("night vision",
+val NightVisionRequesters = nullaryToggleRequesterGroup(
     ReceiveChatMessageEvent,
     start = { sendCommand("nightvis") },
     enabledPredicate = { mc.player!!.hasEffect(MobEffects.NIGHT_VISION) },

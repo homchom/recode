@@ -17,7 +17,6 @@ import kotlin.time.Duration
  * @see RequesterTrial
  */
 fun <T : Any, B> toggleRequesterGroup(
-    debugName: String,
     basis: Listenable<B>,
     start: suspend (input: T?) -> Unit,
     timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION,
@@ -25,7 +24,7 @@ fun <T : Any, B> toggleRequesterGroup(
     enabledTests: RequesterTrial.Tester<T, B, Unit>,
     disabledTests: RequesterTrial.Tester<T, B, Unit>
 ) : ToggleRequesterGroup<T> {
-    return ShortCircuitToggle(debugName, basis, start, timeoutDuration, enabledPredicate,
+    return ShortCircuitToggle(basis, start, timeoutDuration, enabledPredicate,
         enabledTests,
         disabledTests
     )
@@ -36,7 +35,6 @@ fun <T : Any, B> toggleRequesterGroup(
  * @see RequesterTrial.NullaryTester
  */
 inline fun <B> nullaryToggleRequesterGroup(
-    debugName: String,
     basis: Listenable<B>,
     crossinline start: suspend () -> Unit,
     timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION,
@@ -44,7 +42,7 @@ inline fun <B> nullaryToggleRequesterGroup(
     enabledTests: RequesterTrial.NullaryTester<B, Unit>,
     disabledTests: RequesterTrial.NullaryTester<B, Unit>
 ) : ToggleRequesterGroup<Unit> {
-    return toggleRequesterGroup(debugName, basis, { start() }, timeoutDuration, enabledPredicate,
+    return toggleRequesterGroup(basis, { start() }, timeoutDuration, enabledPredicate,
         enabledTests = enabledTests.toUnary(),
         disabledTests = disabledTests.toUnary()
     )
@@ -60,7 +58,6 @@ sealed interface ToggleRequesterGroup<T : Any> {
 }
 
 private class ShortCircuitToggle<T : Any, B>(
-    debugName: String,
     basis: Listenable<B>,
     start: suspend (input: T?) -> Unit,
     timeoutDuration: Duration,
@@ -73,9 +70,9 @@ private class ShortCircuitToggle<T : Any, B>(
     private val predictedState get() = if (shouldPredict) futureState.get() else enabledPredicate()
 
     private val shouldPredict: Boolean get() =
-        toggle.activeRequests > 1u || enable.activeRequests > 1u || disable.activeRequests > 1u
+        toggle.activeRequests > 1 || enable.activeRequests > 1 || disable.activeRequests > 1
 
-    override val toggle = requester(debugName,
+    override val toggle = requester(
         trial(basis,
             start = { input: T? ->
                 start(input)
@@ -103,7 +100,7 @@ private class ShortCircuitToggle<T : Any, B>(
         timeoutDuration = timeoutDuration
     )
 
-    override val enable = requester(debugName,
+    override val enable = requester(
         shortCircuitTrial(basis,
             start = { input: T? ->
                 if (predictedState) Unit else {
@@ -120,7 +117,7 @@ private class ShortCircuitToggle<T : Any, B>(
         timeoutDuration = timeoutDuration
     )
 
-    override val disable = requester(debugName,
+    override val disable = requester(
         shortCircuitTrial(basis,
             start = { input: T? ->
                 if (predictedState) {

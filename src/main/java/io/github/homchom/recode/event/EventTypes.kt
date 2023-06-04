@@ -1,7 +1,7 @@
 package io.github.homchom.recode.event
 
 import io.github.homchom.recode.lifecycle.RModule
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.runBlocking
 import net.fabricmc.fabric.api.event.Event
 import kotlin.time.Duration
@@ -64,20 +64,9 @@ interface Detector<T : Any, R : Any> : ResultListenable<R, R?> {
     val timeoutDuration: Duration
 
     /**
-     * Listens for [basis] invocations from [module] until a match is found.
-     *
-     * @returns The event result, or null if one could not be found in time.
+     * Listens for basis invocations from [module] and returns a [Flow] of results.
      */
-    @ExperimentalCoroutinesApi
-    suspend fun detectFrom(module: RModule, input: T?, basis: Listenable<*>? = null): R?
-
-    /**
-     * Listens to the next [basis] invocation from [module] and returns a potential match.
-     *
-     * @returns The event result, or null if there was not a match.
-     */
-    @ExperimentalCoroutinesApi
-    suspend fun checkNextFrom(module: RModule, input: T?, basis: Listenable<*>? = null, attempts: UInt = 1u): R?
+    fun detectFrom(module: RModule, input: T?): Flow<R?>
 }
 
 /**
@@ -87,10 +76,14 @@ interface Requester<T : Any, R : Any> : Detector<T, R> {
     /**
      * The number of active, non-failed requests awaiting a result.
      */
-    val activeRequests: UInt
+    val activeRequests: Int
 
     /**
-     * Makes a request and detects the result.
+     * Makes a request and detects the first non-null result.
+     *
+     * @throws RequestTimeoutException if a non-null result is not detected in time
+     * (as specified by [timeoutDuration]). Note: This exception is caught by the constructor of [TrialResult]
+     * and treated as a failure.
      *
      * @see detectFrom
      */
@@ -108,3 +101,5 @@ interface DetectorModule<T : Any, R : Any> : Detector<T, R>, RModule
  * @see RModule
  */
 interface RequesterModule<T : Any, R : Any> : Requester<T, R>, RModule
+
+class RequestTimeoutException(val input: Any?) : IllegalStateException()

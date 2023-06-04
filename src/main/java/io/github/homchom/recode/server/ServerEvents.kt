@@ -6,7 +6,6 @@ import io.github.homchom.recode.server.state.*
 import io.github.homchom.recode.ui.matchEntireUnstyled
 import io.github.homchom.recode.ui.matchesUnstyled
 import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.Disconnect
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.Join
@@ -38,32 +37,26 @@ object JoinDFDetector :
         requireFalse(isOnDF) // if already on DF, this is a node switch and should not be tested
         requireTrue(ipMatchesDF)
 
-        // pre-register TipMessage as an implicit dependency
-        TipMessage.getNotificationsFrom(module)
-
         // 6 potential messages: new player, alert 1, chat, welcome, alert 2, patch
-        val messages = ReceiveChatMessageEvent.channel(6)
+        val messages = ReceiveChatMessageEvent.next(6)
+        val tipMessage = TipMessage.detect(null).next()
 
+        val disconnect = DisconnectFromServerEvent.next()
         suspending {
-            enforce<_, Unit>(DisconnectFromServerEvent) { null } // TODO: nicer syntax?
+            failOn(disconnect)
 
-            +sampleBoolean(messages, 4u) { (text) ->
+            +testBoolean(messages, 4u) { (text) ->
                 welcomeRegex.matchesUnstyled(text)
             }
-            val patch = +sample(messages, 2u) { (text) ->
+            val patch = +test(messages, 2u) { (text) ->
                 patchRegex.matchEntireUnstyled(text)?.groupValues?.get(1)
             }
 
-            coroutineScope {
-                // so the test starts before the tip message is processed
-                val canTip = async {
-                    sampleBy(TipMessage, null).value?.canTip ?: false
-                }
+            val canTip = async { tipMessage.receive()?.canTip ?: false }
+            val request = HideableStateRequest(mc.player!!.username, true)
+            val message = LocateMessage.request(request)
 
-                val request = HideableStateRequest(mc.player!!.username, true)
-                val message = +awaitBy(LocateMessage, request)
-                JoinDFInfo(message.state.node, patch, canTip.await())
-            }
+            JoinDFInfo(message.state.node, patch, canTip.await())
         }
     })
 

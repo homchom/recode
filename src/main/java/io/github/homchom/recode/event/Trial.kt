@@ -2,6 +2,7 @@ package io.github.homchom.recode.event
 
 import io.github.homchom.recode.lifecycle.ExposedModule
 import io.github.homchom.recode.lifecycle.RModule
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 /**
@@ -70,17 +71,36 @@ fun <B, R : Any> nullaryTrial(
  *
  * @see trial
  */
-sealed interface Trial<S> {
+sealed interface Trial<T : Any, R : Any> {
     val basis: Listenable<*>
 
-    fun supplyResultsFrom(module: ExposedModule): FlowListenable<S>
+    fun supplyResultsFrom(module: ExposedModule): Flow<ResultSupplier<T, R>>
+
+    /**
+     * A functor that supplies [TrialResult] objects. This is used to hide the type information of basis events
+     * and contexts; a ResultSupplier is only concerned with the input type [T] and the result type [R].
+     *
+     * @see supply
+     */
+    fun interface ResultSupplier<T : Any, R : Any> {
+        /**
+         * @param isRequest Whether the result is being supplied to a consumer expecting a request. If
+         * the trial is a [DetectorTrial], this parameter has no effect.
+         */
+        fun TrialScope.supply(input: T?, isRequest: Boolean): TrialResult<R>?
+
+        fun supplyIn(scope: TrialScope, input: T?, isRequest: Boolean) =
+            scope.supply(input, isRequest)
+    }
 }
 
 /**
  * A [Trial] that supplies to [Detector] events.
  */
-sealed interface DetectorTrial<T : Any, R : Any> : Trial<DetectorTrial.ResultSupplier<T, R>> {
+sealed interface DetectorTrial<T : Any, R : Any> : Trial<T, R> {
     /**
+     * A functor that runs [DetectorTrial] tests to yield a [TrialResult].
+     *
      * @see runTests
      */
     fun interface Tester<T : Any, B, R : Any> {
@@ -90,7 +110,7 @@ sealed interface DetectorTrial<T : Any, R : Any> : Trial<DetectorTrial.ResultSup
     }
 
     /**
-     * @see runTests
+     * A [Tester] with no input.
      */
     fun interface NullaryTester<B, R : Any> {
         fun TrialScope.runTests(baseContext: B): TrialResult<R>?
@@ -101,15 +121,6 @@ sealed interface DetectorTrial<T : Any, R : Any> : Trial<DetectorTrial.ResultSup
         @Suppress("RemoveRedundantQualifierName")
         fun toUnary() = DetectorTrial.Tester<Unit, B, R> { _, baseContext -> runTests(baseContext) }
     }
-
-    /**
-     * @see supply
-     */
-    fun interface ResultSupplier<T : Any, R : Any> {
-        fun TrialScope.supply(input: T?): TrialResult<R>?
-
-        fun supplyIn(scope: TrialScope, input: T?) = scope.supply(input)
-    }
 }
 
 /**
@@ -118,10 +129,12 @@ sealed interface DetectorTrial<T : Any, R : Any> : Trial<DetectorTrial.ResultSup
  * @property start The executor function that starts the request. Note that [Requester.activeRequests] is
  * incremented *before* [start] is invoked.
  */
-sealed interface RequesterTrial<T : Any, R : Any> : Trial<RequesterTrial.ResultSupplier<T, R>> {
+sealed interface RequesterTrial<T : Any, R : Any> : Trial<T, R> {
     val start: suspend (input: T) -> R?
 
     /**
+     * A functor that runs [RequesterTrial] tests to yield a [TrialResult].
+     *
      * @see runTests
      */
     fun interface Tester<T : Any, B, R : Any> {
@@ -132,7 +145,7 @@ sealed interface RequesterTrial<T : Any, R : Any> : Trial<RequesterTrial.ResultS
     }
 
     /**
-     * @see runTests
+     * A [Tester] with no input.
      */
     fun interface NullaryTester<B, R : Any> {
         fun TrialScope.runTests(baseContext: B, isRequest: Boolean): TrialResult<R>?
@@ -145,16 +158,6 @@ sealed interface RequesterTrial<T : Any, R : Any> : Trial<RequesterTrial.ResultS
             runTests(baseContext, isRequest)
         }
     }
-
-    /**
-     * @see supply
-     */
-    fun interface ResultSupplier<T : Any, R : Any> {
-        fun TrialScope.supply(input: T?, isRequest: Boolean): TrialResult<R>?
-
-        fun supplyIn(scope: TrialScope, input: T?, isRequest: Boolean) =
-            scope.supply(input, isRequest)
-    }
 }
 
 private class BasedDetectorTrial<T : Any, B, R : Any>(
@@ -162,11 +165,11 @@ private class BasedDetectorTrial<T : Any, B, R : Any>(
     private val tests: DetectorTrial.Tester<T, B, R>
 ) : DetectorTrial<T, R> {
     override fun supplyResultsFrom(module: ExposedModule) =
-        FlowListenable(basis.getNotificationsFrom(module).map { baseContext ->
-            DetectorTrial.ResultSupplier<T, R> { input ->
+        basis.getNotificationsFrom(module).map { baseContext ->
+            Trial.ResultSupplier<T, R> { input, _ ->
                 tests.runTestsIn(this, input, baseContext)
             }
-        })
+        }
 }
 
 private class BasedRequesterTrial<T : Any, B, R : Any>(
@@ -175,9 +178,9 @@ private class BasedRequesterTrial<T : Any, B, R : Any>(
     private val tests: RequesterTrial.Tester<T, B, R>
 ): RequesterTrial<T, R> {
     override fun supplyResultsFrom(module: ExposedModule) =
-        FlowListenable(basis.getNotificationsFrom(module).map { baseContext ->
-            RequesterTrial.ResultSupplier<T, R> { input, isRequest ->
+        basis.getNotificationsFrom(module).map { baseContext ->
+            Trial.ResultSupplier<T, R> { input, isRequest ->
                 tests.runTestsIn(this, input, baseContext, isRequest)
             }
-        })
+        }
 }

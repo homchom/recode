@@ -8,6 +8,9 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ClosedSendChannelException
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.produceIn
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -15,40 +18,35 @@ import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.Duration
 
 /**
- * Creates a [DetectorModule] that runs via one or more [trials].
+ * Creates a [DetectorModule] that runs via one or more trials.
  *
  * @see DetectorTrial
  */
 fun <T : Any, R : Any> detector(
-    vararg trials: DetectorTrial<T, R>,
+    primaryTrial: DetectorTrial<T, R>,
+    vararg secondaryTrials: DetectorTrial<T, R>,
     timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION
 ): DetectorModule<T, R> {
-    val detail = TrialDetector(trials.toList(), timeoutDuration)
+    val detail = TrialDetector(listOf(primaryTrial, *secondaryTrials), timeoutDuration)
     return SimpleDetectorModule(detail, module(detail))
 }
 
 /**
- * Creates a [RequesterModule] that runs via one or more [trials].
- *
- * @param debugName A short description of what the requester services. For example,
- * [io.github.homchom.recode.server.ChatLocalRequester] has the debug name "/chat local".
+ * Creates a [RequesterModule] that runs via one or more trials.
  *
  * @see RequesterTrial
  */
 fun <T : Any, R : Any> requester(
-    debugName: String,
-    vararg trials: RequesterTrial<T, R>,
+    primaryTrial: RequesterTrial<T, R>,
+    vararg secondaryTrials: DetectorTrial<T, R>,
     timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION
 ): RequesterModule<T, R> {
-    val detail = TrialRequester(debugName, trials.toList(), timeoutDuration)
+    val detail = TrialRequester(primaryTrial, secondaryTrials, timeoutDuration)
     return SimpleRequesterModule(detail, module(detail))
 }
 
-@OptIn(DelicateCoroutinesApi::class)
-private val detectorThreadContext = newSingleThreadContext("recode detector thread")
-
-private sealed class DetectorDetail<T : Any, R : Any, S> : Detector<T, R>, ModuleDetail {
-    protected abstract val trials: List<Trial<S>>
+private sealed class DetectorDetail<T : Any, R : Any> : Detector<T, R>, ModuleDetail {
+    protected abstract val trials: List<Trial<T, R>>
 
     private val event = createEvent<R, R> { it }
 
@@ -63,55 +61,53 @@ private sealed class DetectorDetail<T : Any, R : Any, S> : Detector<T, R>, Modul
 
     @OptIn(DelicateCoroutinesApi::class)
     protected fun onEnableImpl(module: ExposedModule) {
-        for (trial in trials) trial.supplyResultsFrom(module).listenEachFrom(module) listener@{ supplier ->
-            var successful = false
+        for (trial in trials) module.launch {
+            trial.supplyResultsFrom(module).collect { supplier ->
+                val trialJob = Job(module.coroutineContext.job)
+                if (entries.isEmpty()) module.considerEntry(null, supplier, trialJob)
 
-            suspend fun considerEntry(entry: TrialEntry<T, R>?) {
-                val coroutineScope = CoroutineScope(module.coroutineContext + Job())
-                val result = module.trialScope(coroutineScope) { runTests(supplier, entry) }
-
-                // TODO: bad but temporary
-                suspend fun sendIfOpen(element: R?) {
-                    try {
-                        entry?.responses?.send(element)
-                    } catch (e: ClosedSendChannelException) {
-                        logError("Trial response channel closed")
+                val iterator = entries.iterator()
+                for (entry in iterator) {
+                    if (entry.responses.isClosedForSend) {
+                        iterator.remove()
+                        continue
                     }
-                }
-
-                if (result == null) {
-                    sendIfOpen(null)
-                    coroutineScope.cancel("No trial job")
-                    return
-                }
-
-                module.launch {
-                    val response = result.await()
-                    val run = responseMutex.withLock {
-                        if (!successful) sendIfOpen(response)
-                        val set = !successful && response != null
-                        if (set) successful = true
-                        set
-                    }
-                    if (run) withContext(Dispatchers.Default) { event.run(response!!) }
-                    coroutineScope.cancel("Trial job completed")
+                    module.considerEntry(entry, supplier, trialJob)
                 }
             }
+        }
+    }
 
-            if (entries.isEmpty()) {
-                considerEntry(null)
-                return@listener
+    fun CoroutineModule.considerEntry(
+        entry: TrialEntry<T, R>?,
+        supplier: Trial.ResultSupplier<T, R>,
+        trialJob: Job,
+    ) {
+        val trialJobScope = CoroutineScope(coroutineContext + Job(trialJob))
+        val result = trialScope(trialJobScope) {
+            supplier.supplyIn(this, entry?.input, entry?.isRequest ?: false)
+        }
+        val entryJob = launch {
+            if (result == null) {
+                entry.sendIfOpen(null)
+                return@launch
             }
+            val awaited = result.await()
+            responseMutex.withLock {
+                yield()
+                entry.sendIfOpen(awaited)
+            }
+            awaited?.let { event.run(it) }
+        }
+        entryJob.invokeOnCompletion { trialJob.cancel("TrialEntry consideration completed") }
+    }
 
-            val iterator = entries.iterator()
-            for (entry in iterator) {
-                if (entry.responses.isClosedForSend) {
-                    iterator.remove()
-                    continue
-                }
-                if (entry.basis != trial.basis) continue
-                considerEntry(entry)
-            }
+    // TODO: bad but temporary
+    private suspend fun TrialEntry<T, R>?.sendIfOpen(element: R?) {
+        try {
+            this?.responses?.send(element)
+        } catch (e: ClosedSendChannelException) {
+            logError("Trial response channel closed")
         }
     }
 
@@ -119,101 +115,61 @@ private sealed class DetectorDetail<T : Any, R : Any, S> : Detector<T, R>, Modul
     override fun ExposedModule.onDisable() {}
     override fun children() = emptyModuleList()
 
-    @ExperimentalCoroutinesApi
-    override suspend fun detectFrom(module: RModule, input: T?, basis: Listenable<*>?) =
-        addDetectAndAwait(input, basis) { block ->
-            attempt(timeoutDuration, block)
-        }
+    override fun detectFrom(module: RModule, input: T?) = responseFlow(input, false)
 
-    @ExperimentalCoroutinesApi
-    override suspend fun checkNextFrom(module: RModule, input: T?, basis: Listenable<*>?, attempts: UInt) =
-        addDetectAndAwait(input, basis) { block ->
-            attempt(attempts) { block() }
-        }
-
-    private suspend inline fun addDetectAndAwait(
-        input: T?,
-        basis: Listenable<*>?,
-        attemptFunc: (block: suspend () -> R?) -> R?
-    ): R? {
-        return addAndAwait(input, basis ?: trials[0].basis, false, attemptFunc)
-    }
-
-    protected suspend inline fun addAndAwait(
-        input: T?,
-        basis: Listenable<*>,
-        isRequest: Boolean,
-        attemptFunc: (suspend () -> R?) -> R?
-    ): R? {
+    protected fun responseFlow(input: T?, isRequest: Boolean) = flow {
         val responses = Channel<R?>()
-        entries += TrialEntry(isRequest, input, basis, responses)
-        val final = attemptFunc {
-            withTimeoutOrNull(timeoutDuration) { responses.receive() }
+        try {
+            entries += TrialEntry(isRequest, input, responses)
+            while (currentCoroutineContext().isActive) {
+                val response = withTimeoutOrNull(timeoutDuration) { responses.receive() }
+                emit(response)
+            }
+        } finally {
+            responses.close()
         }
-        responses.close()
-        return final
     }
-
-    protected abstract fun TrialScope.runTests(supplier: S, entry: TrialEntry<T, *>?): TrialResult<R>?
 }
 
 private data class TrialEntry<T : Any, R : Any>(
     val isRequest: Boolean,
     val input: T?,
-    val basis: Listenable<*>,
     val responses: Channel<R?>
 )
 
 private class TrialDetector<T : Any, R : Any>(
     override val trials: List<DetectorTrial<T, R>>,
     override val timeoutDuration: Duration
-) : DetectorDetail<T, R, DetectorTrial.ResultSupplier<T, R>>() {
-    override fun TrialScope.runTests(
-        supplier: DetectorTrial.ResultSupplier<T, R>,
-        entry: TrialEntry<T, *>?
-    ): TrialResult<R>? {
-        return supplier.supplyIn(this, entry?.input)
-    }
-}
+) : DetectorDetail<T, R>()
 
 private class TrialRequester<T : Any, R : Any>(
-    private val debugName: String,
-    override val trials: List<RequesterTrial<T, R>>,
+    primaryTrial: RequesterTrial<T, R>,
+    secondaryTrials: Array<out DetectorTrial<T, R>>,
     override val timeoutDuration: Duration
-) : DetectorDetail<T, R, RequesterTrial.ResultSupplier<T, R>>(), Requester<T, R> {
-    override val activeRequests get() = _activeRequests.get().toUInt()
+) : DetectorDetail<T, R>(), Requester<T, R> {
+    override val trials = listOf(primaryTrial, *secondaryTrials)
+    private val start = primaryTrial.start
+
+    override val activeRequests get() = _activeRequests.get()
 
     private val _activeRequests = AtomicInteger(0)
-
-    init {
-        require(trials.isNotEmpty())
-    }
 
     override fun ExposedModule.onEnable() {
         onEnableImpl(this)
         _activeRequests.set(0)
     }
 
-    override fun TrialScope.runTests(
-        supplier: RequesterTrial.ResultSupplier<T, R>,
-        entry: TrialEntry<T, *>?
-    ): TrialResult<R>? {
-        return supplier.supplyIn(this, entry?.input, entry?.isRequest ?: false)
-    }
+    override suspend fun requestFrom(module: RModule, input: T) = coroutineScope {
+        val detectChannel = responseFlow(input, true)
+            .filterNotNull()
+            .produceIn(this)
 
-    override suspend fun requestFrom(module: RModule, input: T): R {
         _activeRequests.incrementAndGet()
-        return try {
-            val response = addAndAwait(input, trials[0].basis, true) { block ->
-                var started = false
-                attempt(timeoutDuration) {
-                    if (started) block() else {
-                        started = true
-                        trials[0].start(input) ?: block()
-                    }
-                }
-            }
-            response ?: throw RequestTrialException(debugName, input)
+        try {
+            val response = start(input) ?: attempt(timeoutDuration) { detectChannel.receive() }
+                ?: throw RequestTimeoutException(input)
+            coroutineContext.cancelChildren()
+            response
         } finally {
             _activeRequests.decrementAndGet()
         }
@@ -221,7 +177,7 @@ private class TrialRequester<T : Any, R : Any>(
 }
 
 private open class SimpleDetectorModule<T : Any, R : Any>(
-    private val detail: DetectorDetail<T, R, *>,
+    private val detail: DetectorDetail<T, R>,
     module: RModule
 ) : DetectorModule<T, R>, RModule by module {
     override val timeoutDuration get() = detail.timeoutDuration
@@ -232,16 +188,9 @@ private open class SimpleDetectorModule<T : Any, R : Any>(
         return detail.getNotificationsFrom(module)
     }
 
-    @ExperimentalCoroutinesApi
-    override suspend fun checkNextFrom(module: RModule, input: T?, basis: Listenable<*>?, attempts: UInt): R? {
+    override fun detectFrom(module: RModule, input: T?): Flow<R?> {
         module.depend(this)
-        return detail.checkNextFrom(module, input, basis, attempts)
-    }
-
-    @ExperimentalCoroutinesApi
-    override suspend fun detectFrom(module: RModule, input: T?, basis: Listenable<*>?): R? {
-        module.depend(this)
-        return detail.detectFrom(module, input, basis)
+        return detail.detectFrom(module, input)
     }
 }
 
@@ -256,7 +205,3 @@ private class SimpleRequesterModule<T : Any, R : Any>(
         return detail.requestFrom(module, input)
     }
 }
-
-class RequestTrialException(name: String, input: Any?) : IllegalStateException(
-    "Request trial failed for $name requester with input $input"
-)

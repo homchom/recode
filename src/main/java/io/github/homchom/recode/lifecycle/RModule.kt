@@ -1,9 +1,12 @@
 package io.github.homchom.recode.lifecycle
 
-import io.github.homchom.recode.event.*
+import io.github.homchom.recode.event.Detector
+import io.github.homchom.recode.event.GroupListenable
+import io.github.homchom.recode.event.Listenable
+import io.github.homchom.recode.event.Requester
+import io.github.homchom.recode.util.KeyHashable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -15,7 +18,7 @@ import kotlinx.coroutines.flow.Flow
  * @see module
  * @see strongModule
  */
-interface RModule {
+interface RModule : KeyHashable {
     val children: Set<RModule>
 
     val isLoaded: Boolean
@@ -28,21 +31,7 @@ interface RModule {
         if (module !in children) module.addParent(this)
     }
 
-    override operator fun equals(other: Any?): Boolean
-    override fun hashCode(): Int
-
-    @ExperimentalCoroutinesApi
-    suspend fun <T : Any, R : Any> Detector<T, R>.detect(input: T?, basis: Listenable<*>? = null) =
-        detectFrom(this@RModule, input, basis)
-
-    @ExperimentalCoroutinesApi
-    suspend fun <T : Any, R : Any> Detector<T, R>.checkNext(
-        input: T?,
-        basis: Listenable<*>? = null,
-        attempts: UInt = 1u
-    ): R? {
-        return checkNextFrom(this@RModule, input, basis, attempts)
-    }
+    fun <T : Any, R : Any> Detector<T, R>.detect(input: T?) = detectFrom(this@RModule, input)
 
     suspend fun <T : Any, R : Any> Requester<T, R>.request(input: T) =
         requestFrom(this@RModule, input)
@@ -57,14 +46,13 @@ interface RModule {
  * An [RModule] with a [CoroutineScope].
  */
 interface CoroutineModule : RModule, CoroutineScope {
+    val <T> Listenable<T>.notifications get() = getNotificationsFrom(this@CoroutineModule)
+
     fun <T> Listenable<T>.listen(block: Flow<T>.() -> Flow<T>) =
         listenFrom(this@CoroutineModule, block)
 
     fun <T> Listenable<T>.listenEach(block: suspend (T) -> Unit) =
         listenEachFrom(this@CoroutineModule, block)
-
-    fun <T> StateListenable<T>.replayAndListenEach(block: suspend (T) -> Unit) =
-        replayAndListenEachFrom(this@CoroutineModule, block)
 }
 
 /**
