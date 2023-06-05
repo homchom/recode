@@ -1,9 +1,9 @@
 package io.github.homchom.recode.lifecycle
 
+import io.github.homchom.recode.MinecraftDispatcher
 import io.github.homchom.recode.util.collections.ImmutableList
 import io.github.homchom.recode.util.collections.immutable
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 
@@ -53,7 +53,7 @@ private class UsageModule(private val details: ImmutableList<ModuleDetail>) : Ex
 
     override val coroutineContext get() = coroutineScope.coroutineContext
 
-    private fun newCoroutineScope() = CoroutineScope(Dispatchers.Default + SupervisorJob())
+    private fun newCoroutineScope() = CoroutineScope(MinecraftDispatcher + SupervisorJob())
 
     @MutatesModuleState
     override fun load() {

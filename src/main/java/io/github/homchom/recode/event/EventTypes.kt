@@ -1,8 +1,8 @@
 package io.github.homchom.recode.event
 
 import io.github.homchom.recode.lifecycle.RModule
+import io.github.homchom.recode.runOnMinecraftThread
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.runBlocking
 import net.fabricmc.fabric.api.event.Event
 import kotlin.time.Duration
 
@@ -20,7 +20,7 @@ interface CustomEvent<T, R : Any> : ResultListenable<T, R?> {
      *
      * @see run
      */
-    fun runBlocking(context: T) = runBlocking { run(context) }
+    fun runBlocking(context: T) = runOnMinecraftThread { run(context) }
 }
 
 /**
@@ -38,7 +38,7 @@ interface BufferedCustomEvent<T, R, I> : ResultListenable<T, R?> {
      *
      * @see run
      */
-    fun runBlocking(input: I) = runBlocking { run(input) }
+    fun runBlocking(input: I) = runOnMinecraftThread { run(input) }
 
     fun stabilize()
 }

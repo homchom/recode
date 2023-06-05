@@ -1,7 +1,6 @@
 package io.github.homchom.recode.render
 
 import com.mojang.blaze3d.systems.RenderSystem
-import io.github.homchom.recode.MinecraftDispatcher
 import io.github.homchom.recode.event.*
 import io.github.homchom.recode.game.ChunkPos3D
 import io.github.homchom.recode.game.ticks
@@ -9,7 +8,6 @@ import io.github.homchom.recode.mc
 import io.github.homchom.recode.util.AtomicMixedInt
 import io.github.homchom.recode.util.Case
 import io.github.homchom.recode.util.collections.mapToArray
-import kotlinx.coroutines.withContext
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents.BeforeBlockOutline
@@ -58,9 +56,7 @@ object OutlineBlockEntitiesEvent :
                 BeforeOutlineBlockEvent.listenEach { context ->
                     val processor = context.worldRenderContext.worldRenderer() as OutlineProcessor
                     if (processor.needsOutlineProcessing()) {
-                        withContext(MinecraftDispatcher) {
-                            processor.processOutlines(mc.frameTime)
-                        }
+                        processor.processOutlines(mc.frameTime)
                     }
                 }
             }

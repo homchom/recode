@@ -33,7 +33,7 @@ class TrialResult<T : Any> private constructor(private val deferred: Deferred<T?
     constructor(instantValue: T?) : this(CompletableDeferred(instantValue))
 
     constructor(asyncBlock: suspend AsyncTrialScope.() -> T?, module: RModule, scope: CoroutineScope) : this(
-        scope.async(Dispatchers.IO) {
+        scope.async {
             nullable {
                 coroutineScope {
                     val trialScope = ConcreteAsyncTrialScope(
