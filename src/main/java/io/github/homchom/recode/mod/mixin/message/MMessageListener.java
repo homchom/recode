@@ -34,7 +34,7 @@ public class MMessageListener {
             // TODO: remove after new message listener is 100% complete
             new LegacyMessage(packet, ci);
             var context = new SimpleValidated<>(packet.content());
-            if (!ReceiveChatMessageEvent.INSTANCE.runBlocking(context)) {
+            if (!ReceiveChatMessageEvent.INSTANCE.run(context)) {
                 ci.cancel();
             }
             try {

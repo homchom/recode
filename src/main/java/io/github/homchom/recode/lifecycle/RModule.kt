@@ -51,7 +51,7 @@ interface CoroutineModule : RModule, CoroutineScope {
     fun <T> Listenable<T>.listen(block: Flow<T>.() -> Flow<T>) =
         listenFrom(this@CoroutineModule, block)
 
-    fun <T> Listenable<T>.listenEach(block: suspend (T) -> Unit) =
+    fun <T> Listenable<T>.listenEach(block: (T) -> Unit) =
         listenEachFrom(this@CoroutineModule, block)
 }
 

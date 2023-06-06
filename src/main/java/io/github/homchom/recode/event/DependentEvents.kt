@@ -63,7 +63,7 @@ class DependentEvent<T, R : Any>(
     override fun getNotificationsFrom(module: RModule) =
         delegate.getNotificationsDependent(module, dependency)
 
-    override suspend fun run(context: T) = delegate.run(context)
+    override fun run(context: T) = delegate.run(context)
 }
 
 /**
@@ -79,7 +79,7 @@ class DependentBufferedEvent<T, R : Any, I>(
     override fun getNotificationsFrom(module: RModule) =
         delegate.getNotificationsDependent(module, dependency)
 
-    override suspend fun run(input: I) = delegate.run(input)
+    override fun run(input: I) = delegate.run(input)
 
     override fun stabilize() = delegate.stabilize()
 }

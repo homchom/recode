@@ -1,4 +1,4 @@
-@file:JvmName("Constants")
+@file:JvmName("ModConstants")
 
 package io.github.homchom.recode
 

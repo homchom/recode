@@ -1,3 +1,5 @@
+@file:JvmName("AsyncCollections")
+
 package io.github.homchom.recode.util.collections
 
 import java.util.*

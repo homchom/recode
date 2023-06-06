@@ -1,7 +1,7 @@
 package io.github.homchom.recode.event
 
+import io.github.homchom.recode.RecodeDispatcher
 import io.github.homchom.recode.lifecycle.RModule
-import io.github.homchom.recode.runOnMinecraftThread
 import kotlinx.coroutines.flow.Flow
 import net.fabricmc.fabric.api.event.Event
 import kotlin.time.Duration
@@ -13,14 +13,12 @@ typealias EventInvoker<T> = (context: T) -> Unit
  * the most recent of which is stored in [prevResult].
  */
 interface CustomEvent<T, R : Any> : ResultListenable<T, R?> {
-    suspend fun run(context: T): R
-
     /**
-     * Runs the event by blocking the current thread.
+     * @throws IllegalStateException if called from any thread other than Minecraft's main thread
      *
-     * @see run
+     * @see RecodeDispatcher
      */
-    fun runBlocking(context: T) = runOnMinecraftThread { run(context) }
+    fun run(context: T): R
 }
 
 /**
@@ -31,14 +29,12 @@ interface CustomEvent<T, R : Any> : ResultListenable<T, R?> {
  * @param I The event's input type, which is mapped to [T] only when needed.
  */
 interface BufferedCustomEvent<T, R, I> : ResultListenable<T, R?> {
-    suspend fun run(input: I): R
-
     /**
-     * Runs the event by blocking the current thread.
+     * @throws IllegalStateException if called from any thread other than Minecraft's main thread
      *
-     * @see run
+     * @see RecodeDispatcher
      */
-    fun runBlocking(input: I) = runOnMinecraftThread { run(input) }
+    fun run(input: I): R
 
     fun stabilize()
 }

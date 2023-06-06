@@ -1,11 +1,13 @@
 package io.github.homchom.recode.event
 
 import com.google.common.cache.CacheBuilder
+import io.github.homchom.recode.RecodeDispatcher
 import io.github.homchom.recode.lifecycle.CoroutineModule
 import io.github.homchom.recode.lifecycle.RModule
 import io.github.homchom.recode.lifecycle.exposedModule
-import io.github.homchom.recode.util.coroutines.RendezvousFlow
+import io.github.homchom.recode.runOnMinecraftThread
 import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import net.fabricmc.fabric.api.event.Event
 import kotlin.time.Duration
@@ -24,7 +26,9 @@ fun <T, R : Any> createEvent(resultCapture: (T) -> R): CustomEvent<T, R> = FlowE
 fun <T> createEvent() = createEvent<T, Unit> {}
 
 /**
- * Creates a [BufferedCustomEvent] that runs asynchronously and caches the result on [interval].
+ * Creates a [BufferedCustomEvent] that runs asynchronously and caches the result. [BufferedCustomEvent.stabilize]
+ * should be called once during each critical section of this event's execution; if this is done, the result will
+ * be cached roughly on [stableInterval].
  *
  * @param keySelector A function that transforms [I] into a hashable key type [K] for the buffer.
  * @param contextGenerator A function that transforms [I] into the context type [T] when needed.
@@ -32,12 +36,13 @@ fun <T> createEvent() = createEvent<T, Unit> {}
  */
 fun <T, R : Any, I, K : Any> createBufferedEvent(
     resultCapture: (T) -> R,
-    interval: Duration,
+    stableInterval: Duration,
     keySelector: (I) -> K,
     contextGenerator: (I) -> T,
     cacheDuration: Duration = 1.seconds
 ): BufferedCustomEvent<T, R, I> {
-    return BufferedFlowEvent(createEvent(resultCapture), interval, keySelector, contextGenerator, cacheDuration)
+    val delegate = createEvent(resultCapture)
+    return BufferedFlowEvent(delegate, stableInterval, keySelector, contextGenerator, cacheDuration)
 }
 
 /**
@@ -52,7 +57,7 @@ fun <T, L> wrapFabricEvent(
 }
 
 private class FlowEvent<T, R : Any>(private val resultCapture: (T) -> R) : CustomEvent<T, R> {
-    private val flow = RendezvousFlow<T>(
+    private val flow = MutableSharedFlow<T>(
         extraBufferCapacity = 1,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
@@ -62,15 +67,16 @@ private class FlowEvent<T, R : Any>(private val resultCapture: (T) -> R) : Custo
 
     override fun getNotificationsFrom(module: RModule) = flow
 
-    override suspend fun run(context: T): R {
-        flow.emit(context)
-        return resultCapture(context).also { prevResult = it }
+    override fun run(context: T) = runOnMinecraftThread {
+        check(flow.tryEmit(context)) { "FlowEvent emitters should not suspend" }
+        RecodeDispatcher.expedite() // allow for validation and other state mutation
+        resultCapture(context).also { prevResult = it }
     }
 }
 
 private class BufferedFlowEvent<T, R : Any, I, K : Any>(
     delegate: CustomEvent<T, R>,
-    interval: Duration,
+    stableInterval: Duration,
     private val keySelector: (I) -> K,
     private val contextGenerator: (I) -> T,
     cacheDuration: Duration = 1.seconds,
@@ -95,8 +101,8 @@ private class BufferedFlowEvent<T, R : Any, I, K : Any>(
         fun stamp() {
             val now = System.currentTimeMillis()
             if (++passIndex == passes) {
-                val elapsed = (now - prevStamp).toInt()
-                passes = interval.toInt(DurationUnit.MILLISECONDS) / elapsed
+                val elapsed = (now - prevStamp).toInt().coerceAtLeast(1)
+                passes = stableInterval.toInt(DurationUnit.MILLISECONDS) / elapsed
                 passIndex = 0
             }
             runIndex = passIndex
@@ -109,7 +115,7 @@ private class BufferedFlowEvent<T, R : Any, I, K : Any>(
 
     override fun getNotificationsFrom(module: RModule) = delegate.getNotificationsFrom(module)
 
-    override suspend fun run(input: I): R {
+    override fun run(input: I): R {
         val key = keySelector(input)
         val bufferResult = buffer.getIfPresent(key)
         val result = if (bufferResult == null) {
@@ -139,7 +145,7 @@ private class EventWrapper<T, L>(
     override val invoker: L get() = fabricEvent.invoker()
 
     init {
-        fabricEvent.register(transform(async::runBlocking))
+        fabricEvent.register(transform(async::run))
     }
 
     override fun getNotificationsFrom(module: RModule) = async.getNotificationsFrom(module)

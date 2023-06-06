@@ -14,8 +14,13 @@ typealias StateListenable<T> = ResultListenable<T, T>
  * Something that can be listened to. Listenable objects come in two types: *events*, which are run
  * explicitly, and *detectors*, which are run algorithmically (via a [Trial]) based on another Listenable.
  *
- * @param T The context type of each invocation. Context includes return values and can therefore be mutated.
- * These types are **not** necessarily thread-safe, so be careful when mutating context concurrently.
+ * Listenable is based on the [Flow] API, but the standard [listenEachFrom] method does not allow for
+ * suspension. When working with [getNotificationsFrom] and the underlying Flow, collectors generally should
+ * not suspend because Listenable implementations should be conflated.
+ *
+ * @param T The context type of each invocation. Context includes return values and can therefore be mutated
+ * (before the first suspension point). These types are **not** usually thread-safe, so be careful when mutating
+ * context concurrently.
  *
  * @see CustomEvent
  * @see WrappedEvent
@@ -43,7 +48,7 @@ interface Listenable<T> {
      * @see listenFrom
      * @see getNotificationsFrom
      */
-    fun listenEachFrom(module: CoroutineModule, action: suspend (T) -> Unit) =
+    fun listenEachFrom(module: CoroutineModule, action: (T) -> Unit) =
         listenFrom(module) { onEach(action) }
 
     @Deprecated("Only for use in legacy Java code", ReplaceWith("TODO()"))
@@ -102,12 +107,6 @@ fun <T> merge(vararg events: Listenable<out T>, module: ExposedModule) = events.
  */
 fun <T> List<Listenable<out T>>.merge(module: ExposedModule) =
     map { it.getNotificationsFrom(module) }.merge().asListenable()
-
-/**
- * @see merge
- */
-fun <T> Listenable<out T>.mergeWith(vararg events: Listenable<out T>, module: ExposedModule) =
-    merge(this, *events, module = module)
 
 /**
  * A group of [Listenable] objects with a combined notification flow.

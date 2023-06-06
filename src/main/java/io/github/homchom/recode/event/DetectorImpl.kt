@@ -3,7 +3,6 @@ package io.github.homchom.recode.event
 import io.github.homchom.recode.DEFAULT_TIMEOUT_DURATION
 import io.github.homchom.recode.lifecycle.*
 import io.github.homchom.recode.logError
-import io.github.homchom.recode.util.attempt
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ClosedSendChannelException
@@ -166,7 +165,8 @@ private class TrialRequester<T : Any, R : Any>(
 
         _activeRequests.incrementAndGet()
         try {
-            val response = start(input) ?: attempt(timeoutDuration) { detectChannel.receive() }
+            val response = start(input)
+                ?: withTimeoutOrNull(timeoutDuration) { detectChannel.receive() }
                 ?: throw RequestTimeoutException(input)
             coroutineContext.cancelChildren()
             response

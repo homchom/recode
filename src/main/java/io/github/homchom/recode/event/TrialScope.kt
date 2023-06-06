@@ -4,7 +4,6 @@ import io.github.homchom.recode.DEFAULT_TIMEOUT_DURATION
 import io.github.homchom.recode.lifecycle.CoroutineModule
 import io.github.homchom.recode.lifecycle.RModule
 import io.github.homchom.recode.util.NullableScope
-import io.github.homchom.recode.util.attempt
 import io.github.homchom.recode.util.nullable
 import io.github.homchom.recode.util.unitOrNull
 import kotlinx.coroutines.*
@@ -173,7 +172,7 @@ sealed class AsyncTrialScope(
         crossinline test: (C) -> T?
     ): TestResult<T> {
         val result = withTimeoutOrNull(timeoutDuration) {
-            attempt(attempts) { test(channel.receive()) }
+            (1u..attempts).firstNotNullOfOrNull { test(channel.receive()) }
         }
         for (rule in rules) rule()
         return TestResult(result)
@@ -186,7 +185,7 @@ sealed class AsyncTrialScope(
      * @see TrialScope.enforce
      */
     inline fun <C, T : Any> enforce(channel: ReceiveChannel<C>, crossinline test: (C) -> T?) {
-        ruleScope.launch {
+        ruleScope.launch(Dispatchers.IO) {
             channel.consumeEach { test(it)!! }
         }
     }

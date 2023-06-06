@@ -45,7 +45,7 @@ object OutlineBlockEntitiesEvent :
                     .filter { it.outlineColor.get() != null }
                     .associate { it.blockEntity.blockPos to it.outlineColor.get()!! }
             },
-            interval = 3.ticks,
+            stableInterval = 3.ticks,
             keySelector = { Case(it.chunkPos) },
             contextGenerator = { input ->
                 input.blockEntities.mapToArray { BlockEntityOutlineContext(it) }

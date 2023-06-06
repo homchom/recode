@@ -56,9 +56,9 @@ public abstract class MLevelRenderer implements OutlineProcessor {
 	private List<BlockEntity> runBlockEntityEvents(
 			Collection<BlockEntity> blockEntities, @Nullable ChunkPos3D chunkPos) {
 		var renderList = blockEntities.stream().map(SimpleValidated::new).toList();
-		var filtered = RenderBlockEntitiesEvent.INSTANCE.runBlocking(renderList);
+		var filtered = RenderBlockEntitiesEvent.INSTANCE.run(renderList);
 		var outlineInput = new BlockEntityOutlineContext.Input(blockEntities, chunkPos);
-		blockEntityOutlineMap.putAll(OutlineBlockEntitiesEvent.INSTANCE.runBlocking(outlineInput));
+		blockEntityOutlineMap.putAll(OutlineBlockEntitiesEvent.INSTANCE.run(outlineInput));
 		return filtered;
 	}
 

@@ -1,6 +1,6 @@
 package io.github.homchom.recode.mod.events.impl;
 
-import io.github.homchom.recode.Constants;
+import io.github.homchom.recode.ModConstants;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.sys.renderer.BlendableTexturedButtonWidget;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -34,7 +34,7 @@ public class LegacyAfterScreenInitEvent {
 	}
 
 	private void addDfButton(Minecraft mc, Screen screen, List<AbstractWidget> buttons, int spacing) {
-		final ResourceLocation icon = new ResourceLocation(Constants.MOD_ID + ":textures/ui/df.png");
+		final ResourceLocation icon = new ResourceLocation(ModConstants.MOD_ID + ":textures/ui/df.png");
 
 		int index = -1;
 		int y = screen.height / 4 + spacing;

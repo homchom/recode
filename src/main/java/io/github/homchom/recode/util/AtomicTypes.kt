@@ -1,4 +1,4 @@
-package io.github.homchom.recode.util.coroutines
+package io.github.homchom.recode.util
 
 import java.util.concurrent.atomic.AtomicBoolean
 

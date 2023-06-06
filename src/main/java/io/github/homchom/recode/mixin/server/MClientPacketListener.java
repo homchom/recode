@@ -23,17 +23,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MClientPacketListener {
 	@Inject(method = "handleMovePlayer", at = @At("TAIL"))
 	public void handleTeleportEvent(ClientboundPlayerPositionPacket packet, CallbackInfo ci) {
-		TeleportEvent.INSTANCE.runBlocking(packet);
+		TeleportEvent.INSTANCE.run(packet);
 	}
 
 	@Inject(method = "handleSetScore", at = @At("TAIL"))
 	public void handleUpdateScoreboardScoreEvent(ClientboundSetScorePacket packet, CallbackInfo ci) {
-		UpdateScoreboardScoreEvent.INSTANCE.runBlocking(packet);
+		UpdateScoreboardScoreEvent.INSTANCE.run(packet);
 	}
 
 	@Inject(method = "handleRespawn", at = @At("TAIL"))
 	public void handleRespawnEvent(ClientboundRespawnPacket packet, CallbackInfo ci) {
-		RespawnEvent.INSTANCE.runBlocking(packet);
+		RespawnEvent.INSTANCE.run(packet);
 	}
 
 	@Inject(method = "handleContainerSetSlot", at = @At("TAIL"))
@@ -54,7 +54,7 @@ public abstract class MClientPacketListener {
 		if (packet instanceof ServerboundChatCommandPacket commandPacket) {
 			// TODO: should this not be a validated event?
 			var context = new SimpleValidated<>(commandPacket.command());
-			if (SendCommandEvent.INSTANCE.runBlocking(context)) {
+			if (SendCommandEvent.INSTANCE.run(context)) {
 				instance.send(packet);
 			}
 		}

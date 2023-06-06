@@ -1,6 +1,6 @@
 package io.github.homchom.recode.sys.file;
 
-import io.github.homchom.recode.Constants;
+import io.github.homchom.recode.ModConstants;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
@@ -28,7 +28,7 @@ public class ExternalFileBuilder {
     }
 
     private Path getMainDir() throws IOException {
-        Path path = FabricLoader.getInstance().getGameDir().resolve(Constants.MOD_NAME);
+        Path path = FabricLoader.getInstance().getGameDir().resolve(ModConstants.MOD_NAME);
         if (!Files.isDirectory(path)) Files.createDirectory(path);
         return path;
     }
