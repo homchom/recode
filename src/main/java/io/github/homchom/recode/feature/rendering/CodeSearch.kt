@@ -15,12 +15,13 @@ val FCodeSearch = feature("Code Search") {
     onEnable {
         OutlineBlockEntitiesEvent.listenEach { context ->
             if (currentDFState.isInMode(PlotMode.Dev)) {
-                for ((blockEntity, outlineColor) in context) {
+                for (element in context) {
+                    val blockEntity = element.blockEntity
                     if (blockEntity is SignBlockEntity && CodeSearcher.isSignMatch(blockEntity)) {
                         val distance = sqrt(blockEntity.getBlockPos().distSqr(mc.cameraEntity!!.blockPosition()))
                         // TODO: test if alpha actually makes a difference
                         val alpha = (distance.coerceIn(1.0, 15.0) * 17).toInt()
-                        outlineColor.set(rgba(255, 255, 255, alpha))
+                        element.outlineColor = rgba(255, 255, 255, alpha)
                     }
                 }
             }

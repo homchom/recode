@@ -1,6 +1,5 @@
 package io.github.homchom.recode.event
 
-import io.github.homchom.recode.util.AtomicMixedInt
 import io.github.homchom.recode.util.MixedInt
 
 typealias SimpleValidatedEvent<T> = CustomEvent<SimpleValidated<T>, Boolean>
@@ -15,20 +14,19 @@ fun <T> createValidatedEvent() = createEvent<SimpleValidated<T>, Boolean> { it.i
  * A type that is validated by a [Listenable], mutating and returning [validity].
  */
 interface Validated {
-    // TODO: revisit (kotlinx.atomicfu? should this even be atomic, as opposed to some other solution?)
     /**
      * The validity of this context, where positive values represent "valid".
      */
-    val validity: AtomicMixedInt
+    var validity: MixedInt
 
-    val isValid get() = validity.get() > 0
+    val isValid get() = validity > 0
 
     fun validate(weight: MixedInt) {
-        validity.updateAndGet { it + weight }
+        validity += weight
     }
 
     fun invalidate(weight: MixedInt) {
-        validity.updateAndGet { it - weight }
+        validity -= weight
     }
 
     fun validate() = validate(MixedInt(1))
@@ -40,7 +38,7 @@ interface Validated {
  */
 data class SimpleValidated<T> @JvmOverloads constructor(
     val value: T,
-    override val validity: AtomicMixedInt = AtomicMixedInt(1)
+    override var validity: MixedInt = MixedInt(1)
 ) : Validated {
     operator fun invoke() = value
 }

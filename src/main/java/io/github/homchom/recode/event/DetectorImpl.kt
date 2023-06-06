@@ -10,8 +10,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.produceIn
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.Duration
@@ -50,7 +48,6 @@ private sealed class DetectorDetail<T : Any, R : Any> : Detector<T, R>, ModuleDe
     private val event = createEvent<R, R> { it }
 
     private val entries = ConcurrentLinkedQueue<TrialEntry<T, R>>()
-    private val responseMutex = Mutex()
 
     override val prevResult: R? get() = event.prevResult
 
@@ -92,10 +89,8 @@ private sealed class DetectorDetail<T : Any, R : Any> : Detector<T, R>, ModuleDe
                 return@launch
             }
             val awaited = result.await()
-            responseMutex.withLock {
-                yield()
-                entry.sendIfOpen(awaited)
-            }
+            yield()
+            entry.sendIfOpen(awaited)
             awaited?.let { event.run(it) }
         }
         entryJob.invokeOnCompletion { trialJob.cancel("TrialEntry consideration completed") }

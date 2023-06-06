@@ -5,8 +5,8 @@ import io.github.homchom.recode.event.*
 import io.github.homchom.recode.game.ChunkPos3D
 import io.github.homchom.recode.game.ticks
 import io.github.homchom.recode.mc
-import io.github.homchom.recode.util.AtomicMixedInt
 import io.github.homchom.recode.util.Case
+import io.github.homchom.recode.util.MixedInt
 import io.github.homchom.recode.util.collections.mapToArray
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
@@ -14,7 +14,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents.BeforeBlock
 import net.minecraft.core.BlockPos
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.phys.HitResult
-import java.util.concurrent.atomic.AtomicReference
 
 object BeforeOutlineBlockEvent :
     WrappedEvent<BlockOutlineContext, BeforeBlockOutline> by
@@ -30,7 +29,7 @@ object BeforeOutlineBlockEvent :
 data class BlockOutlineContext(
     val worldRenderContext: WorldRenderContext,
     val hitResult: HitResult?,
-    override val validity: AtomicMixedInt = AtomicMixedInt(1)
+    override var validity: MixedInt = MixedInt(1)
 ) : Validated
 
 object RenderBlockEntitiesEvent :
@@ -42,8 +41,8 @@ object OutlineBlockEntitiesEvent :
         createBufferedEvent(
             resultCapture = { context ->
                 context
-                    .filter { it.outlineColor.get() != null }
-                    .associate { it.blockEntity.blockPos to it.outlineColor.get()!! }
+                    .filter { it.outlineColor != null }
+                    .associate { it.blockEntity.blockPos to it.outlineColor!! }
             },
             stableInterval = 3.ticks,
             keySelector = { Case(it.chunkPos) },
@@ -65,7 +64,7 @@ object OutlineBlockEntitiesEvent :
 
 data class BlockEntityOutlineContext @JvmOverloads constructor(
     val blockEntity: BlockEntity,
-    var outlineColor: AtomicReference<RGBAColor?> = AtomicReference(null)
+    var outlineColor: RGBAColor? = null
 ) {
     data class Input(val blockEntities: Collection<BlockEntity>, val chunkPos: ChunkPos3D?)
 }

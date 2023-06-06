@@ -1,9 +1,5 @@
 package io.github.homchom.recode.util
 
-import java.util.concurrent.atomic.AtomicReference
-
-typealias AtomicMixedInt = AtomicReference<MixedInt>
-
 /**
  * Returns the greatest common factor of [a] and [b] using the
  * [Euclidean algorithm](https://en.wikipedia.org/wiki/Euclidean_algorithm).
@@ -25,10 +21,6 @@ fun improperMixedInt(whole: Int, numerator: Int, denominator: Int): MixedInt {
         denominator / gcf
     )
 }
-
-@Suppress("FunctionName")
-fun AtomicMixedInt(whole: Int, numerator: Int = 0, denominator: Int = 1) =
-    AtomicReference(MixedInt(whole, numerator, denominator))
 
 /**
  * A [mixed number](https://en.wikipeedia.org/wiki/Fraction#Forms_of_fractions) with [Int] components.
