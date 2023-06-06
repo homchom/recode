@@ -121,7 +121,7 @@ private class BufferedFlowEvent<T, R : Any, I, K : Any>(
         val result = if (bufferResult == null) {
             delegate.run(contextGenerator(input)).also { buffer.put(key, it) }
         } else {
-            if (++stabilizer.runIndex == stabilizer.passes) {
+            if (++stabilizer.runIndex >= stabilizer.passes) {
                 module.launch {
                     buffer.put(key, delegate.run(contextGenerator(input)))
                 }
