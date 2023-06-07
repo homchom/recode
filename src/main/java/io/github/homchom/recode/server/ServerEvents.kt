@@ -38,10 +38,10 @@ object JoinDFDetector :
         requireTrue(ipMatchesDF)
 
         // 6 potential messages: new player, alert 1, chat, welcome, alert 2, patch
-        val messages = ReceiveChatMessageEvent.next(6)
-        val tipMessage = TipMessage.detect(null).next()
+        val messages = ReceiveChatMessageEvent.add()
+        val tipMessage = TipMessage.detect(null).add()
 
-        val disconnect = DisconnectFromServerEvent.next()
+        val disconnect = DisconnectFromServerEvent.add()
         suspending {
             failOn(disconnect)
 

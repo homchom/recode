@@ -13,7 +13,8 @@ import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.produceIn
-import kotlinx.coroutines.flow.take
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.time.Duration
 
 /**
@@ -42,6 +43,7 @@ class TrialResult<T : Any> private constructor(private val deferred: Deferred<T?
                         this@coroutineScope
                     )
                     val result = try {
+                        yield()
                         trialScope.asyncBlock() ?: fail()
                     } catch (e: RequestTimeoutException) {
                         fail()
@@ -72,33 +74,16 @@ sealed interface TrialScope : CoroutineModule {
     val rules: List<() -> Unit>
 
     /**
-     * Transfers [amount] of this Listenable object's notifications eagerly into a
-     * [kotlinx.coroutines.channels.Channel].
-     *
-     * @see produceIn
-     * @see AsyncTrialScope.test
+     * Transfers this Listenable object's notifications eagerly into a [kotlinx.coroutines.channels.Channel].
+     * allowing it to be used by the Trial.
      */
-    fun <T> Listenable<T>.next(amount: Int = 1): ReceiveChannel<T>
-
-    /**
-     * Transfers this Listenable object's notifications eagerly into a
-     * [kotlinx.coroutines.channels.Channel] without limit.
-     *
-     * @see next
-     */
-    fun <T> Listenable<T>.channel() = next(Int.MAX_VALUE)
+    fun <T> Listenable<T>.add(): ReceiveChannel<T>
 
     /**
      * @see asListenable
-     * @see Listenable.next
+     * @see Listenable.add
      */
-    fun <T> Flow<T>.next(amount: Int = 1) = asListenable().next(amount)
-
-    /**
-     * @see asListenable
-     * @see Listenable.channel
-     */
-    fun <T> Flow<T>.channel() = asListenable().channel()
+    fun <T> Flow<T>.add() = asListenable().add()
 
     /**
      * Enforces [block] by adding it to [rules].
@@ -147,7 +132,7 @@ sealed interface TrialScope : CoroutineModule {
 }
 
 /**
- * A [TrialScope] with suspending DSL functions, mainly [next] and [test].
+ * A [TrialScope] with suspending DSL functions, mainly [add] and [test].
  */
 sealed class AsyncTrialScope(
     module: RModule,
@@ -162,7 +147,7 @@ sealed class AsyncTrialScope(
      * @throws kotlinx.coroutines.channels.ClosedReceiveChannelException
      * if [channel] closes while still attempting.
      *
-     * @see next
+     * @see add
      * @see TestResult
      */
     suspend inline fun <C, T : Any> test(
@@ -179,13 +164,17 @@ sealed class AsyncTrialScope(
     }
 
     /**
-     * Enforces [test] on the remaining elements of [channel], consuming the channel and failing the trial
-     * on a failed test.
+     * Asynchronously enforces [test] on the remaining elements of [channel], consuming the channel and failing
+     * the trial on a failed test.
      *
      * @see TrialScope.enforce
      */
-    inline fun <C, T : Any> enforce(channel: ReceiveChannel<C>, crossinline test: (C) -> T?) {
-        ruleScope.launch(Dispatchers.IO) {
+    inline fun <C, T : Any> enforce(
+        channel: ReceiveChannel<C>,
+        coroutineContext: CoroutineContext = EmptyCoroutineContext,
+        crossinline test: (C) -> T?
+    ) {
+        ruleScope.launch(coroutineContext, CoroutineStart.UNDISPATCHED) {
             channel.consumeEach { test(it)!! }
         }
     }
@@ -195,7 +184,7 @@ sealed class AsyncTrialScope(
      *
      * @see enforce
      */
-    fun <C> failOn(channel: ReceiveChannel<C>) = enforce(channel) { null }
+    fun <C> failOn(channel: ReceiveChannel<C>) = enforce(channel, Dispatchers.Default) { null }
 
     /**
      * Tests [test] on the first [attempts] values of [channel] until a true result is returned.
@@ -251,10 +240,9 @@ private class EnforcerTrialScope(
 
     private val _rules = mutableListOf<() -> Unit>()
 
-    override fun <T> Listenable<T>.next(amount: Int) = notifications
-        .take(amount)
-        .buffer(amount)
-        .produceIn(coroutineScope)
+    override fun <T> Listenable<T>.add() = notifications
+        .buffer(Channel.UNLIMITED)
+        .produceIn(CoroutineScope(coroutineScope.coroutineContext + Dispatchers.Default))
 
     override fun enforce(block: () -> Unit) {
         block()

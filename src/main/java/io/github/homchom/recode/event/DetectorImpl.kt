@@ -2,10 +2,9 @@ package io.github.homchom.recode.event
 
 import io.github.homchom.recode.DEFAULT_TIMEOUT_DURATION
 import io.github.homchom.recode.lifecycle.*
-import io.github.homchom.recode.logError
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.ClosedSendChannelException
+import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flow
@@ -85,24 +84,15 @@ private sealed class DetectorDetail<T : Any, R : Any> : Detector<T, R>, ModuleDe
         }
         val entryJob = launch {
             if (result == null) {
-                entry.sendIfOpen(null)
+                entry?.responses?.send(null)
                 return@launch
             }
             val awaited = result.await()
             yield()
-            entry.sendIfOpen(awaited)
+            entry?.responses?.send(awaited)
             awaited?.let { event.run(it) }
         }
         entryJob.invokeOnCompletion { trialJob.cancel("TrialEntry consideration completed") }
-    }
-
-    // TODO: bad but temporary
-    private suspend fun TrialEntry<T, R>?.sendIfOpen(element: R?) {
-        try {
-            this?.responses?.send(element)
-        } catch (e: ClosedSendChannelException) {
-            logError("Trial response channel closed")
-        }
     }
 
     override fun ExposedModule.onLoad() {}
@@ -128,7 +118,7 @@ private sealed class DetectorDetail<T : Any, R : Any> : Detector<T, R>, ModuleDe
 private data class TrialEntry<T : Any, R : Any>(
     val isRequest: Boolean,
     val input: T?,
-    val responses: Channel<R?>
+    val responses: SendChannel<R?>
 )
 
 private class TrialDetector<T : Any, R : Any>(
@@ -153,7 +143,7 @@ private class TrialRequester<T : Any, R : Any>(
         _activeRequests.set(0)
     }
 
-    override suspend fun requestFrom(module: RModule, input: T) = coroutineScope {
+    override suspend fun requestFrom(module: RModule, input: T) = withContext(NonCancellable) {
         val detectChannel = responseFlow(input, true)
             .filterNotNull()
             .produceIn(this)

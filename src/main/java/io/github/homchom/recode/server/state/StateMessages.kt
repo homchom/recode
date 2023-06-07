@@ -14,7 +14,7 @@ import org.intellij.lang.annotations.RegExp
 data class LocateMessage(val username: String, val state: LocateState) {
     companion object : Requester<HideableStateRequest, LocateMessage> by requester(trial(
         ReceiveChatMessageEvent,
-        start = { request -> sendCommand("locate ${request.username}") },
+        start = { request -> println("sending locate"); sendCommand("locate ${request.username}") },
         tests = { request, context, _ ->
             val message = context.value
             val values = LocateMessage.regex(request?.username)
@@ -33,7 +33,7 @@ data class LocateMessage(val username: String, val state: LocateState) {
                 LocateState.OnPlot(node, Plot(plotName, owner, plotID), mode, status)
             }
             if (request?.hideMessage == true) context.invalidate()
-            instant(LocateMessage(player, state))
+            instant(LocateMessage(player, state)).also { println("end locate trial") }
         }
     )) {
         private val regex = cachedRegexBuilder<String> { username ->
@@ -88,7 +88,7 @@ data class TipMessage(val player: String, val canTip: Boolean) {
         ReceiveChatMessageEvent,
         tests = { (message) ->
             val player = TipMessage.mainRegex.matchEntireUnstyled(message)!!.groupValues[1]
-            val subsequent = ReceiveChatMessageEvent.next(3)
+            val subsequent = ReceiveChatMessageEvent.add()
 
             suspending {
                 val canTip = async {
