@@ -79,10 +79,10 @@ private sealed class DetectorDetail<T : Any, R : Any> : Detector<T, R>, ModuleDe
         trialJob: Job,
     ) {
         val entryScope = CoroutineScope(coroutineContext + Job(trialJob))
+        val result = trialScope(entryScope) {
+            supplier.supplyIn(this, entry?.input, entry?.isRequest ?: false)
+        }
         val entryJob = entryScope.launch {
-            val result = trialScope(entryScope) {
-                supplier.supplyIn(this, entry?.input, entry?.isRequest ?: false)
-            }
             if (result == null) {
                 entry?.responses?.send(null)
                 return@launch
@@ -148,7 +148,7 @@ private class TrialRequester<T : Any, R : Any>(
         _activeRequests.set(0)
     }
 
-    override suspend fun requestFrom(module: RModule, input: T) = withContext(NonCancellable) {
+    override suspend fun requestFrom(module: RModule, input: T) = coroutineScope {
         val detectChannel = responseFlow(input, true)
             .filterNotNull()
             .produceIn(this)
