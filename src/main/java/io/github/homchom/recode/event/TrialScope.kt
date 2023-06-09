@@ -165,11 +165,12 @@ sealed class AsyncTrialScope(
 
     /**
      * Asynchronously enforces [test] on the remaining elements of [channel], consuming the channel and failing
-     * the trial on a failed test.
+     * the trial on a failed test. Also yields (suspends) for one iteration of Minecraft's event loop so [channel]
+     * is up-to-date.
      *
      * @see TrialScope.enforce
      */
-    inline fun <C, T : Any> enforce(
+    suspend inline fun <C, T : Any> enforce(
         channel: ReceiveChannel<C>,
         coroutineContext: CoroutineContext = EmptyCoroutineContext,
         crossinline test: (C) -> T?
@@ -177,6 +178,7 @@ sealed class AsyncTrialScope(
         ruleScope.launch(coroutineContext, CoroutineStart.UNDISPATCHED) {
             channel.consumeEach { test(it)!! }
         }
+        yield()
     }
 
     /**
@@ -184,7 +186,7 @@ sealed class AsyncTrialScope(
      *
      * @see enforce
      */
-    fun <C> failOn(channel: ReceiveChannel<C>) = enforce(channel, Dispatchers.Default) { null }
+    suspend fun <C> failOn(channel: ReceiveChannel<C>) = enforce(channel, Dispatchers.Default) { null }
 
     /**
      * Tests [test] on the first [attempts] values of [channel] until a true result is returned.
@@ -206,7 +208,7 @@ sealed class AsyncTrialScope(
     /**
      * @see failOn
      */
-    inline fun <C> enforceBoolean(channel: Channel<C>, crossinline test: (C) -> Boolean) {
+    suspend inline fun <C> enforceBoolean(channel: Channel<C>, crossinline test: (C) -> Boolean) {
         enforce(channel) { test(it).unitOrNull() }
     }
 
@@ -215,12 +217,7 @@ sealed class AsyncTrialScope(
      * prepend it with [unaryPlus].
      */
     @JvmInline
-    value class TestResult<T : Any>(val value: T?) {
-        /**
-         * Unboxes the result, returning [value].
-         */
-        operator fun invoke() = value
-    }
+    value class TestResult<T : Any>(val value: T?)
 
     /**
      * Returns a non-null [TestResult.value] or fails the trial.

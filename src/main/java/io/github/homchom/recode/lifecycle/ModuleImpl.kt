@@ -53,7 +53,7 @@ private class UsageModule(private val details: ImmutableList<ModuleDetail>) : Ex
 
     override val coroutineContext get() = coroutineScope.coroutineContext
 
-    private fun newCoroutineScope() = CoroutineScope(RecodeDispatcher + SupervisorJob())
+    private fun newCoroutineScope() = CoroutineScope(RecodeDispatcher() + SupervisorJob())
 
     @MutatesModuleState
     override fun load() {

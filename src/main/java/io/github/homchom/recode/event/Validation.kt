@@ -1,5 +1,6 @@
 package io.github.homchom.recode.event
 
+import io.github.homchom.recode.util.InvokableWrapper
 import io.github.homchom.recode.util.MixedInt
 
 typealias SimpleValidatedEvent<T> = CustomEvent<SimpleValidated<T>, Boolean>
@@ -37,11 +38,9 @@ interface Validated {
  * @see createValidatedEvent
  */
 data class SimpleValidated<T> @JvmOverloads constructor(
-    val value: T,
+    override val value: T,
     override var validity: MixedInt = MixedInt(1)
-) : Validated {
-    operator fun invoke() = value
-}
+) : Validated, InvokableWrapper<T>
 
 fun <T> Iterable<SimpleValidated<T>>.mapValid() = mapNotNull { if (it.isValid) it.value else null }
 

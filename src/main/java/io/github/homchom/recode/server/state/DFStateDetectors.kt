@@ -4,7 +4,6 @@
 package io.github.homchom.recode.server.state
 
 import io.github.homchom.recode.event.*
-import io.github.homchom.recode.game.RespawnEvent
 import io.github.homchom.recode.game.TeleportEvent
 import io.github.homchom.recode.lifecycle.RModule
 import io.github.homchom.recode.lifecycle.exposedModule
@@ -55,11 +54,10 @@ object DFStateDetectors : StateListenable<Case<DFState?>>, RModule by stateModul
                 .let(::nodeByName)
             requireTrue(currentDFState !is SpawnState || node != currentDFState!!.node)
 
-            val nodeSwitch = RespawnEvent.add()
             val extraTeleport = TeleportEvent.add()
             suspending {
-                failOn(nodeSwitch)
-                test(extraTeleport) {} // the player is teleported once extra, so test for that
+                // the player is teleported multiple times, so only detect the last one
+                failOn(extraTeleport)
 
                 val locateState = locate()
                 requireTrue(locateState is SpawnState)

@@ -78,21 +78,26 @@ private sealed class DetectorDetail<T : Any, R : Any> : Detector<T, R>, ModuleDe
         supplier: Trial.ResultSupplier<T, R>,
         trialJob: Job,
     ) {
-        val trialJobScope = CoroutineScope(coroutineContext + Job(trialJob))
-        val result = trialScope(trialJobScope) {
-            supplier.supplyIn(this, entry?.input, entry?.isRequest ?: false)
-        }
-        val entryJob = launch {
+        val entryScope = CoroutineScope(coroutineContext + Job(trialJob))
+        val entryJob = entryScope.launch {
+            val result = trialScope(entryScope) {
+                supplier.supplyIn(this, entry?.input, entry?.isRequest ?: false)
+            }
             if (result == null) {
                 entry?.responses?.send(null)
                 return@launch
             }
+
             val awaited = result.await()
             yield()
             entry?.responses?.send(awaited)
-            awaited?.let { event.run(it) }
+
+            if (awaited != null) {
+                event.run(awaited)
+                trialJob.cancel("Trial produced non-null response")
+            }
         }
-        entryJob.invokeOnCompletion { trialJob.cancel("TrialEntry consideration completed") }
+        entryJob.invokeOnCompletion { entryScope.cancel("TrialEntry consideration completed") }
     }
 
     override fun ExposedModule.onLoad() {}
