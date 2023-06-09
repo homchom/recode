@@ -38,9 +38,8 @@ class TrialResult<T : Any> private constructor(private val deferred: Deferred<T?
                 coroutineScope {
                     val trialScope = ConcreteAsyncTrialScope(
                         module,
-                        scope,
-                        this@nullable,
-                        this@coroutineScope
+                        this,
+                        this@nullable
                     )
                     val result = try {
                         yield()
@@ -139,8 +138,6 @@ sealed class AsyncTrialScope(
     coroutineScope: CoroutineScope,
     nullableScope: NullableScope
 ) : TrialScope by EnforcerTrialScope(module, coroutineScope, nullableScope) {
-    abstract val ruleScope: CoroutineScope
-
     /**
      * Tests [test] on the first [attempts] values of [channel] until a non-null result is returned.
      *
@@ -175,7 +172,7 @@ sealed class AsyncTrialScope(
         coroutineContext: CoroutineContext = EmptyCoroutineContext,
         crossinline test: (C) -> T?
     ) {
-        ruleScope.launch(coroutineContext, CoroutineStart.UNDISPATCHED) {
+        launch(coroutineContext, CoroutineStart.UNDISPATCHED) {
             channel.consumeEach { test(it)!! }
         }
         yield()
@@ -255,6 +252,5 @@ private class EnforcerTrialScope(
 private class ConcreteAsyncTrialScope(
     module: RModule,
     coroutineScope: CoroutineScope,
-    nullableScope: NullableScope,
-    override val ruleScope: CoroutineScope
+    nullableScope: NullableScope
 ) : AsyncTrialScope(module, coroutineScope, nullableScope)
