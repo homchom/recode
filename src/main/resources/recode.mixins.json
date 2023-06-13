@@ -8,7 +8,8 @@
     "render.MBlockEntityRenderDispatcher",
     "render.MGui",
     "render.MLevelRenderer",
-    "server.MClientPacketListener"
+    "server.MClientPacketListener",
+    "server.MJoinMultiplayerScreen"
   ],
   "server": [],
   "injectors": {

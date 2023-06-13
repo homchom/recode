@@ -2,6 +2,13 @@
     "recode.name": "recode",
     "recode.title": "Recode",
 
+    "recode.command.require_creative_mode": "You must be in creative mode to use this command!",
+    "recode.command.require_dev_mode": "You must be in dev mode to use this command!",
+
+    "recode.template_search.cleared": "Search Cleared!",
+    "recode.template_search.invalid": "Invalid Action '%s'.",
+    "recode.template_search.begin_search": "Results of '%s'",
+
     "config.recode.title": "Recode",
 
     "config.recode.category.features": "Features",
@@ -295,13 +302,6 @@
     "config.recode.option.mod_chat.sound.tooltip": "Sound for chat matching the Mod Chat filter.",
     "config.recode.option.admin_chat.sound.tooltip": "Sound for chat matching the Admin Chat filter.",
 
-    "recode.command.require_creative_mode": "You must be in creative mode to use this command!",
-    "recode.command.require_dev_mode": "You must be in dev mode to use this command!",
-
-    "recode.template_search.cleared": "Search Cleared!",
-    "recode.template_search.invalid": "Invalid Action '%s'.",
-    "recode.template_search.begin_search": "Results of '%s'",
-
     "key.category.recode": "Recode",
 
     "key.recode.spawn": "Spawn",
@@ -334,5 +334,8 @@
 
     "key.recode.support_chat": "[Support] Send Message to /sb",
     "key.recode.mod_chat": "[Mod] Send Message to /mb",
-    "key.recode.admin_chat": "[Admin] Send Message to /ab"
+    "key.recode.admin_chat": "[Admin] Send Message to /ab",
+
+    "multiplayer.recode.unofficial_address.toast": "The server address you used to connect to DiamondFire is unofficially hosted by a third party. For security reasons, we have replaced it with the official address.",
+    "multiplayer.recode.unofficial_address.toast.title": "Unofficial Address Detected"
 }
