@@ -2,9 +2,9 @@ package io.github.homchom.recode.mod.mixin.message;
 
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.social.chat.ConversationTimer;
-import io.github.homchom.recode.server.state.DF;
-import io.github.homchom.recode.server.state.DFState;
-import io.github.homchom.recode.server.state.PlotMode;
+import io.github.homchom.recode.multiplayer.state.DF;
+import io.github.homchom.recode.multiplayer.state.DFState;
+import io.github.homchom.recode.multiplayer.state.PlotMode;
 import io.github.homchom.recode.sys.player.chat.ChatType;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
 import net.minecraft.client.Minecraft;

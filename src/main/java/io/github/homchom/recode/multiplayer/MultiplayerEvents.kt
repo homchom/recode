@@ -1,8 +1,8 @@
-package io.github.homchom.recode.server
+package io.github.homchom.recode.multiplayer
 
 import io.github.homchom.recode.event.*
 import io.github.homchom.recode.mc
-import io.github.homchom.recode.server.state.*
+import io.github.homchom.recode.multiplayer.state.*
 import io.github.homchom.recode.ui.matchEntireUnstyled
 import io.github.homchom.recode.ui.matchesUnstyled
 import kotlinx.coroutines.async

@@ -1,4 +1,4 @@
-package io.github.homchom.recode.server
+package io.github.homchom.recode.multiplayer
 
 import io.github.homchom.recode.event.nullaryToggleRequesterGroup
 import io.github.homchom.recode.event.nullaryTrial

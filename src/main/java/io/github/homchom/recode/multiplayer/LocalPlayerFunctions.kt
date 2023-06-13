@@ -1,4 +1,4 @@
-package io.github.homchom.recode.server
+package io.github.homchom.recode.multiplayer
 
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.ui.literalText

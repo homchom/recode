@@ -2,9 +2,9 @@ package io.github.homchom.recode.mod.features;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.homchom.recode.LegacyRecode;
-import io.github.homchom.recode.server.state.DF;
-import io.github.homchom.recode.server.state.DFState;
-import io.github.homchom.recode.server.state.PlayState;
+import io.github.homchom.recode.multiplayer.state.DF;
+import io.github.homchom.recode.multiplayer.state.DFState;
+import io.github.homchom.recode.multiplayer.state.PlayState;
 import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.util.BasicTypeExtensions;
 import net.minecraft.ChatFormatting;

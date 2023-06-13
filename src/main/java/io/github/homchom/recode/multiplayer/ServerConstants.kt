@@ -1,6 +1,6 @@
 @file:JvmName("ServerConstants")
 
-package io.github.homchom.recode.server
+package io.github.homchom.recode.multiplayer
 
 import org.intellij.lang.annotations.RegExp
 

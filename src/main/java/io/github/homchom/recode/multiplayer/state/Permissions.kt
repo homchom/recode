@@ -1,4 +1,4 @@
-package io.github.homchom.recode.server.state
+package io.github.homchom.recode.multiplayer.state
 
 import io.github.homchom.recode.util.collections.ImmutableSet
 

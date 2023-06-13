@@ -1,6 +1,6 @@
-package io.github.homchom.recode.server.state
+package io.github.homchom.recode.multiplayer.state
 
-import io.github.homchom.recode.server.DIAMOND_CHAR
+import io.github.homchom.recode.multiplayer.DIAMOND_CHAR
 
 sealed interface Rank {
     val displayName: String

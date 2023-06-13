@@ -5,11 +5,11 @@ import io.github.homchom.recode.feature.FeatureModule
 import io.github.homchom.recode.feature.feature
 import io.github.homchom.recode.lifecycle.ExposedModule
 import io.github.homchom.recode.mod.config.Config
-import io.github.homchom.recode.server.*
-import io.github.homchom.recode.server.state.DFStateDetectors
-import io.github.homchom.recode.server.state.DonorRank
-import io.github.homchom.recode.server.state.PlayState
-import io.github.homchom.recode.server.state.PlotMode
+import io.github.homchom.recode.multiplayer.*
+import io.github.homchom.recode.multiplayer.state.DFStateDetectors
+import io.github.homchom.recode.multiplayer.state.DonorRank
+import io.github.homchom.recode.multiplayer.state.PlayState
+import io.github.homchom.recode.multiplayer.state.PlotMode
 import kotlinx.coroutines.launch
 
 // TODO: combine into one module per event after config is figured out

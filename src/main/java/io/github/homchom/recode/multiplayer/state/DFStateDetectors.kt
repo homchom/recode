@@ -1,17 +1,17 @@
 @file:JvmName("DF")
 @file:JvmMultifileClass
 
-package io.github.homchom.recode.server.state
+package io.github.homchom.recode.multiplayer.state
 
 import io.github.homchom.recode.event.*
 import io.github.homchom.recode.game.TeleportEvent
 import io.github.homchom.recode.lifecycle.RModule
 import io.github.homchom.recode.lifecycle.exposedModule
 import io.github.homchom.recode.mc
-import io.github.homchom.recode.server.DisconnectFromServerEvent
-import io.github.homchom.recode.server.JoinDFDetector
-import io.github.homchom.recode.server.ReceiveChatMessageEvent
-import io.github.homchom.recode.server.username
+import io.github.homchom.recode.multiplayer.DisconnectFromServerEvent
+import io.github.homchom.recode.multiplayer.JoinDFDetector
+import io.github.homchom.recode.multiplayer.ReceiveChatMessageEvent
+import io.github.homchom.recode.multiplayer.username
 import io.github.homchom.recode.ui.unstyle
 import io.github.homchom.recode.util.Case
 import io.github.homchom.recode.util.collections.immutable

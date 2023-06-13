@@ -1,12 +1,12 @@
 @file:JvmName("DF")
 @file:JvmMultifileClass
 
-package io.github.homchom.recode.server.state
+package io.github.homchom.recode.multiplayer.state
 
 import io.github.homchom.recode.mc
-import io.github.homchom.recode.server.GREEN_ARROW_CHAR
-import io.github.homchom.recode.server.PLOT_NAME_PATTERN
-import io.github.homchom.recode.server.USERNAME_PATTERN
+import io.github.homchom.recode.multiplayer.GREEN_ARROW_CHAR
+import io.github.homchom.recode.multiplayer.PLOT_NAME_PATTERN
+import io.github.homchom.recode.multiplayer.USERNAME_PATTERN
 import io.github.homchom.recode.ui.equalsUnstyled
 import io.github.homchom.recode.ui.matchesUnstyled
 import io.github.homchom.recode.util.*
