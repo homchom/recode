@@ -1,4 +1,4 @@
-package io.github.homchom.recode.mixin.server;
+package io.github.homchom.recode.mixin.multiplayer;
 
 import io.github.homchom.recode.event.SimpleValidated;
 import io.github.homchom.recode.game.RespawnEvent;

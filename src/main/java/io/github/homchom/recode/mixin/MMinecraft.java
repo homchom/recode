@@ -19,7 +19,7 @@ public abstract class MMinecraft {
     }
 
     @Inject(method = "stop", at = @At("HEAD"))
-    public void quit(CallbackInfo ci) {
+    public void runRecodeQuitEvent(CallbackInfo ci) {
         QuitGameEvent.INSTANCE.run(Unit.INSTANCE);
     }
 }

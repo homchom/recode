@@ -5,11 +5,11 @@
   "mixins": [],
   "client": [
     "MMinecraft",
+    "multiplayer.MClientPacketListener",
+    "multiplayer.MJoinMultiplayerScreen",
     "render.MBlockEntityRenderDispatcher",
     "render.MGui",
-    "render.MLevelRenderer",
-    "server.MClientPacketListener",
-    "server.MJoinMultiplayerScreen"
+    "render.MLevelRenderer"
   ],
   "server": [],
   "injectors": {

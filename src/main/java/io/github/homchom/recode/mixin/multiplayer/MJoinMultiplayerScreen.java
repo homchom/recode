@@ -1,4 +1,4 @@
-package io.github.homchom.recode.mixin.server;
+package io.github.homchom.recode.mixin.multiplayer;
 
 import io.github.homchom.recode.multiplayer.ServerConstants;
 import net.minecraft.client.Minecraft;
