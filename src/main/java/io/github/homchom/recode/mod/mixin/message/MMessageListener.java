@@ -7,6 +7,7 @@ import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.LagslayerHUD;
 import io.github.homchom.recode.mod.features.social.chat.message.LegacyMessage;
 import io.github.homchom.recode.multiplayer.ReceiveChatMessageEvent;
+import io.github.homchom.recode.multiplayer.state.DF;
 import io.github.homchom.recode.sys.player.DFInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -29,14 +30,16 @@ public class MMessageListener {
 
     @Inject(method = "handleSystemChat", at = @At("HEAD"), cancellable = true)
     private void handleChat(ClientboundSystemChatPacket packet, CallbackInfo ci) {
-        if (DFInfo.isOnDF() && RenderSystem.isOnRenderThread()) {
+        if (DF.isOnDF() && RenderSystem.isOnRenderThread()) {
             // temporary, to preserve non-migrated side effects (like message grabbing)
             // TODO: remove after new message listener is 100% complete
             new LegacyMessage(packet, ci);
             var context = new SimpleValidated<>(packet.content());
+            System.out.println("before ReceiveChatMessageEvent: " + packet.content());
             if (!ReceiveChatMessageEvent.INSTANCE.run(context)) {
+                System.out.println("after ReceiveChatMessageEvent (cancelled)");
                 ci.cancel();
-            }
+            } else System.out.println("after ReceiveChatMessageEvent");
             try {
                 this.updateVersion(packet.content());
             } catch (Exception e) {

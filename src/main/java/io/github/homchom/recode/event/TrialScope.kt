@@ -35,20 +35,20 @@ class TrialResult<T : Any> private constructor(private val deferred: Deferred<T?
     constructor(asyncBlock: suspend AsyncTrialScope.() -> T?, module: RModule, scope: CoroutineScope) : this(
         scope.async {
             nullable {
-                coroutineScope {
-                    val trialScope = ConcreteAsyncTrialScope(
-                        module,
-                        this,
-                        this@nullable
-                    )
-                    val result = try {
+                try {
+                    coroutineScope {
+                        val trialScope = ConcreteAsyncTrialScope(
+                            module,
+                            this,
+                            this@nullable
+                        )
                         yield()
-                        trialScope.asyncBlock() ?: fail()
-                    } catch (e: RequestTimeoutException) {
-                        fail()
+                        val result = trialScope.asyncBlock() ?: fail()
+                        coroutineContext.cancelChildren()
+                        result
                     }
-                    coroutineContext.cancelChildren()
-                    result
+                } catch (e: RequestTimeoutException) {
+                    fail()
                 }
             }
         }

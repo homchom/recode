@@ -1,7 +1,5 @@
 package io.github.homchom.recode.sys.player;
 
-import io.github.homchom.recode.LegacyRecode;
-
 public class DFInfo {
     public static String patchId = "5.3";
 
@@ -30,12 +28,5 @@ public class DFInfo {
             }
         }
         return !oldNumberFound;
-    }
-
-    @Deprecated
-    // use isOnDF in DFState (DF.isOnDF()) instead
-    public static boolean isOnDF() {
-        if (LegacyRecode.MC.getCurrentServer() == null) return false;
-        return LegacyRecode.MC.getCurrentServer().ip.contains("mcdiamondfire.com");
     }
 }

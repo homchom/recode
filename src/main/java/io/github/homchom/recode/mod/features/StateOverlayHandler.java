@@ -5,7 +5,6 @@ import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.multiplayer.state.DF;
 import io.github.homchom.recode.multiplayer.state.DFState;
 import io.github.homchom.recode.multiplayer.state.PlayState;
-import io.github.homchom.recode.sys.player.DFInfo;
 import io.github.homchom.recode.util.BasicTypeExtensions;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
@@ -21,7 +20,7 @@ public class StateOverlayHandler {
     }
 
     public static void drawStateOverlay(Font tr, PoseStack stack) {
-        if (DFInfo.isOnDF()) {
+        if (DF.isOnDF()) {
             if (state != null) {
                 if (state instanceof PlayState playState) {
                     drawTextRight(Component.literal(playState.getPlot().getName() + " by " + playState.getPlot().getOwner()).withStyle(style -> style.withColor(TextColor.fromLegacyFormat(ChatFormatting.GOLD))).getVisualOrderText(), 2, tr, stack);
