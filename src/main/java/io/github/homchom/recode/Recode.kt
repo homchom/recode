@@ -24,7 +24,6 @@ import io.github.homchom.recode.sys.hypercube.codeaction.ActionDump
 import io.github.homchom.recode.sys.hypercube.templates.TemplateStorageHandler
 import io.github.homchom.recode.sys.networking.websocket.SocketHandler
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.launch
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.Minecraft
@@ -60,11 +59,6 @@ val RecodeMod = entrypointModule {
         LegacyRecode.onInitialize()
 
         logInfo("Initialized successfully!")
-    }
-
-    onEnable {
-        println("requesting nothing >:)")
-        launch { NothingRequester.request() }
     }
 
     // on Minecraft close
