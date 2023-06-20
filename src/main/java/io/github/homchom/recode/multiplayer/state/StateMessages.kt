@@ -72,7 +72,7 @@ data class ProfileMessage(val username: String, val ranks: Set<Rank>) {
         }
     )) {
         private val regex = cachedRegexBuilder<String> { username ->
-            @Language("regexp") val player = """Profile of ${usernamePattern(username)}(?:\(.+?\))?\n"""
+            @Language("regexp") val player = """Profile of ${usernamePattern(username)}(?: \(.+?\))?\n"""
             @Language("regexp") val ranks = bullet("""Ranks: (?<ranks>.+?)""")
 
             Regex(""" {39}\n$player$ranks\n(?s).* {39}""")
