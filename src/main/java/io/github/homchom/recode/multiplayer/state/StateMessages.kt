@@ -72,13 +72,10 @@ data class ProfileMessage(val username: String, val ranks: Set<Rank>) {
         }
     )) {
         private val regex = cachedRegexBuilder<String> { username ->
-            @Language("regexp") val player = """Profile of ${usernamePattern(username)}\n"""
+            @Language("regexp") val player = """Profile of ${usernamePattern(username)}(?:\(.+?\))?\n"""
             @Language("regexp") val ranks = bullet("""Ranks: (?<ranks>.+?)""")
-            @Language("regexp") val badges = bullet("""Badges: .+?""")
-            @Language("regexp") val joined = bullet("""Joined: .+?""")
-            @Language("regexp") val about = optionalBullet("""About: .+?""")
 
-            Regex(""" {39}\n$player$ranks$badges$joined$about\n {39}""")
+            Regex(""" {39}\n$player$ranks\n(?s).* {39}""")
         }
     }
 }
@@ -90,7 +87,7 @@ data class TipMessage(val player: String, val canTip: Boolean) {
             val player = TipMessage.mainRegex.matchEntireUnstyled(message)!!.groupValues[1]
             val subsequent = ReceiveChatMessageEvent.add()
 
-            suspending {
+            async {
                 val canTip = async {
                     val result = testBoolean(subsequent) { (text) ->
                         TipMessage.commandRegex.matchesUnstyled(text)

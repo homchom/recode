@@ -55,7 +55,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>>, RModule by stateModul
             requireTrue(currentDFState !is SpawnState || node != currentDFState!!.node)
 
             val extraTeleport = TeleportEvent.add()
-            suspending {
+            async {
                 // the player is teleported multiple times, so only detect the last one
                 failOn(extraTeleport)
 
@@ -65,7 +65,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>>, RModule by stateModul
             }
         },
         nullaryTrial(JoinDFDetector) { info ->
-            suspending {
+            async {
                 val permissions = stateModule.async {
                     val request = HideableStateRequest(mc.player!!.username, true)
                     val message = ProfileMessage.request(request)
@@ -79,7 +79,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>>, RModule by stateModul
 
     val ChangeMode = group.add(detector(nullaryTrial(ReceiveChatMessageEvent) { (message) ->
         enforce { requireTrue(isOnDF) }
-        suspending {
+        async {
             PlotMode.match(message)?.encase { match ->
                 val state = currentDFState!!.withState(locate()) as? DFState.OnPlot
                 if (state?.mode != match.matcher) fail()
@@ -95,7 +95,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>>, RModule by stateModul
     override val prevResult get() = event.prevResult
     override fun getNotificationsFrom(module: RModule) = event.getNotificationsFrom(module)
 
-    private suspend fun AsyncTrialScope.locate() =
+    private suspend fun TrialScope.locate() =
         mc.player?.run {
             val message = LocateMessage.request(HideableStateRequest(username, true))
             message.state

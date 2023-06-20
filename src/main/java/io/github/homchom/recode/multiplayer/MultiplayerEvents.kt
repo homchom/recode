@@ -42,7 +42,7 @@ object JoinDFDetector :
         val tipMessage = TipMessage.detect(null).add()
 
         val disconnect = DisconnectFromServerEvent.add()
-        suspending {
+        async {
             failOn(disconnect)
 
             +testBoolean(messages, 4u) { (text) ->

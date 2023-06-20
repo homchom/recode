@@ -78,8 +78,7 @@ interface Requester<T : Any, R : Any> : Detector<T, R> {
      * Makes a request and detects the first non-null result.
      *
      * @throws RequestTimeoutException if a non-null result is not detected in time
-     * (as specified by [timeoutDuration]). Note: This exception is caught by the constructor of [TrialResult]
-     * and treated as a failure.
+     * (as specified by [timeoutDuration]).
      *
      * @see detectFrom
      */

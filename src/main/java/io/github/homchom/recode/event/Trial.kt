@@ -2,8 +2,11 @@ package io.github.homchom.recode.event
 
 import io.github.homchom.recode.lifecycle.ExposedModule
 import io.github.homchom.recode.lifecycle.RModule
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+
+typealias TrialResult<R> = Deferred<R?>?
 
 /**
  * Creates a [DetectorTrial] with the given [basis] and [tests].
@@ -87,7 +90,7 @@ sealed interface Trial<T : Any, R : Any> {
          * @param isRequest Whether the result is being supplied to a consumer expecting a request. If
          * the trial is a [DetectorTrial], this parameter has no effect.
          */
-        fun TrialScope.supply(input: T?, isRequest: Boolean): TrialResult<R>?
+        fun TrialScope.supply(input: T?, isRequest: Boolean): TrialResult<R>
 
         fun supplyIn(scope: TrialScope, input: T?, isRequest: Boolean) =
             scope.supply(input, isRequest)
@@ -104,7 +107,7 @@ sealed interface DetectorTrial<T : Any, R : Any> : Trial<T, R> {
      * @see runTests
      */
     fun interface Tester<T : Any, B, R : Any> {
-        fun TrialScope.runTests(input: T?, baseContext: B): TrialResult<R>?
+        fun TrialScope.runTests(input: T?, baseContext: B): TrialResult<R>
 
         fun runTestsIn(scope: TrialScope, input: T?, baseContext: B) = scope.runTests(input, baseContext)
     }
@@ -113,7 +116,7 @@ sealed interface DetectorTrial<T : Any, R : Any> : Trial<T, R> {
      * A [Tester] with no input.
      */
     fun interface NullaryTester<B, R : Any> {
-        fun TrialScope.runTests(baseContext: B): TrialResult<R>?
+        fun TrialScope.runTests(baseContext: B): TrialResult<R>
 
         /**
          * Converts this NullaryTester to a unary [Tester].
@@ -138,7 +141,7 @@ sealed interface RequesterTrial<T : Any, R : Any> : Trial<T, R> {
      * @see runTests
      */
     fun interface Tester<T : Any, B, R : Any> {
-        fun TrialScope.runTests(input: T?, baseContext: B, isRequest: Boolean): TrialResult<R>?
+        fun TrialScope.runTests(input: T?, baseContext: B, isRequest: Boolean): TrialResult<R>
 
         fun runTestsIn(scope: TrialScope, input: T?, baseContext: B, isRequest: Boolean) =
             scope.runTests(input, baseContext, isRequest)
@@ -148,7 +151,7 @@ sealed interface RequesterTrial<T : Any, R : Any> : Trial<T, R> {
      * A [Tester] with no input.
      */
     fun interface NullaryTester<B, R : Any> {
-        fun TrialScope.runTests(baseContext: B, isRequest: Boolean): TrialResult<R>?
+        fun TrialScope.runTests(baseContext: B, isRequest: Boolean): TrialResult<R>
 
         /**
          * Converts this NullaryTester to a unary [Tester].

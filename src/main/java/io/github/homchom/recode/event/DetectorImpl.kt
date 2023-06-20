@@ -2,6 +2,7 @@ package io.github.homchom.recode.event
 
 import io.github.homchom.recode.DEFAULT_TIMEOUT_DURATION
 import io.github.homchom.recode.lifecycle.*
+import io.github.homchom.recode.util.nullable
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.SendChannel
@@ -14,9 +15,10 @@ import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.Duration
 
 /**
- * Creates a [DetectorModule] that runs via one or more trials.
+ * Creates a [DetectorModule] that runs via one or more [DetectorTrial] objects.
  *
- * @see DetectorTrial
+ * Note that this implementation catches [RequestTimeoutException] with suspending trial results for convenience;
+ * such cases are treated as trial failures.
  */
 fun <T : Any, R : Any> detector(
     primaryTrial: DetectorTrial<T, R>,
@@ -28,9 +30,10 @@ fun <T : Any, R : Any> detector(
 }
 
 /**
- * Creates a [RequesterModule] that runs via one or more trials.
+ * Creates a [RequesterModule] that runs via one or more [RequesterTrial] objects.
  *
- * @see RequesterTrial
+ * Note that this implementation catches [RequestTimeoutException] with suspending trial results for convenience;
+ * such cases are treated as trial failures.
  */
 fun <T : Any, R : Any> requester(
     primaryTrial: RequesterTrial<T, R>,
@@ -73,14 +76,16 @@ private sealed class DetectorDetail<T : Any, R : Any> : Detector<T, R>, ModuleDe
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     fun CoroutineModule.considerEntry(
         entry: TrialEntry<T, R>?,
         supplier: Trial.ResultSupplier<T, R>,
         trialJob: Job,
     ) {
         val entryScope = CoroutineScope(coroutineContext + Job(trialJob))
-        val result = trialScope(entryScope) {
-            supplier.supplyIn(this, entry?.input, entry?.isRequest ?: false)
+        val result = nullable {
+            val trialScope = TrialScope(this@considerEntry, this@nullable, entryScope)
+            supplier.supplyIn(trialScope, entry?.input, entry?.isRequest ?: false)
         }
         val entryJob = entryScope.launch {
             if (result == null) {
@@ -88,7 +93,11 @@ private sealed class DetectorDetail<T : Any, R : Any> : Detector<T, R>, ModuleDe
                 return@launch
             }
 
-            val awaited = result.await()
+            val awaited = try {
+                result.await()
+            } catch (e: RequestTimeoutException) {
+                null
+            }
             yield()
             entry?.responses?.send(awaited)
 

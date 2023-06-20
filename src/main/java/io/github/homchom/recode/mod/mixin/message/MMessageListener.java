@@ -1,6 +1,5 @@
 package io.github.homchom.recode.mod.mixin.message;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.event.SimpleValidated;
 import io.github.homchom.recode.mod.config.Config;
@@ -30,12 +29,16 @@ public class MMessageListener {
 
     @Inject(method = "handleSystemChat", at = @At("HEAD"), cancellable = true)
     private void handleChat(ClientboundSystemChatPacket packet, CallbackInfo ci) {
-        if (DF.isOnDF() && RenderSystem.isOnRenderThread()) {
+        // this method is also called on an IO thread
+        if (!Minecraft.getInstance().isSameThread()) return;
+
+        var context = new SimpleValidated<>(packet.content());
+        if (!ReceiveChatMessageEvent.INSTANCE.run(context)) ci.cancel();
+
+        if (DF.isOnDF()) {
             // temporary, to preserve non-migrated side effects (like message grabbing)
             // TODO: remove after new message listener is 100% complete
             new LegacyMessage(packet, ci);
-            var context = new SimpleValidated<>(packet.content());
-            if (!ReceiveChatMessageEvent.INSTANCE.run(context)) ci.cancel();
 
             try {
                 this.updateVersion(packet.content());
