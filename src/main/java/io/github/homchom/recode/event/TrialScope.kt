@@ -5,6 +5,7 @@ import io.github.homchom.recode.lifecycle.CoroutineModule
 import io.github.homchom.recode.lifecycle.RModule
 import io.github.homchom.recode.util.NullableScope
 import io.github.homchom.recode.util.collections.immutable
+import io.github.homchom.recode.util.nullable
 import io.github.homchom.recode.util.unitOrNull
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -16,6 +17,30 @@ import kotlinx.coroutines.flow.produceIn
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.time.Duration
+
+/**
+ * A wrapper for a [Deferred] [Trial] result.
+ */
+class TrialResult<T : Any> private constructor(private val deferred: Deferred<T?>) : Deferred<T?> by deferred {
+    constructor(instantValue: T?) : this(CompletableDeferred(instantValue))
+
+    @OptIn(DelicateCoroutinesApi::class)
+    constructor(asyncBlock: suspend TrialScope.() -> T?, module: RModule, scope: CoroutineScope) : this(
+        scope.async {
+            nullable {
+                coroutineScope {
+                    val trialScope = TrialScope(
+                        module,
+                        this@nullable,
+                        this
+                    )
+                    yield()
+                    trialScope.asyncBlock().also { coroutineContext.cancelChildren() }
+                }
+            }
+        }
+    )
+}
 
 /**
  * A [CoroutineScope] and [NullableScope] that a [Trial] executes in.
@@ -115,7 +140,7 @@ class TrialScope @DelicateCoroutinesApi constructor(
         launch(coroutineContext, CoroutineStart.UNDISPATCHED) {
             channel.consumeEach { test(it)!! }
         }
-        yield()
+        yield() // fast-fail
     }
 
     /**
@@ -169,11 +194,14 @@ class TrialScope @DelicateCoroutinesApi constructor(
     fun fail(): Nothing = nullableScope.fail()
 
     /**
-     * Returns an instant [Deferred] trial result with [value]. Use this when a trial does not end asynchronously.
-     *
-     * @see CompletableDeferred
+     * Returns an instant [TrialResult] with [value]. Use this when a trial does not end asynchronously.
      */
-    fun <R : Any> instant(value: R?) = CompletableDeferred(value)
+    fun <R : Any> instant(value: R?) = TrialResult(value)
+
+    /**
+     * Returns the asynchronous [TrialResult] of [block] ran in its own [TrialScope].
+     */
+    fun <R : Any> suspending(block: suspend TrialScope.() -> R?) = TrialResult(block, module, coroutineScope)
 
     /**
      * A shorthand for `unitOrNull().let(::instant)`.

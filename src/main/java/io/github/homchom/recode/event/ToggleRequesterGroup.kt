@@ -2,7 +2,6 @@ package io.github.homchom.recode.event
 
 import io.github.homchom.recode.DEFAULT_TIMEOUT_DURATION
 import io.github.homchom.recode.util.getAndInvert
-import kotlinx.coroutines.async
 import kotlinx.coroutines.selects.select
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.time.Duration
@@ -86,7 +85,7 @@ private class ShortCircuitToggle<T : Any, B>(
             tests = { input, baseContext, isRequest ->
                 val enabledResult = enabledTests.runTestsIn(this, input, baseContext, isRequest)
                 val disabledResult = disabledTests.runTestsIn(this, input, baseContext, isRequest)
-                async {
+                suspending {
                     when {
                         enabledResult == null -> disabledResult?.await()
                         disabledResult == null -> enabledResult.await()
@@ -112,7 +111,7 @@ private class ShortCircuitToggle<T : Any, B>(
             },
             tests = { input, baseContext, isRequest ->
                 val result = enabledTests.runTestsIn(this, input, baseContext, isRequest)
-                async { result?.await() }
+                suspending { result?.await() }
             }
         ),
         timeoutDuration = timeoutDuration
@@ -129,7 +128,7 @@ private class ShortCircuitToggle<T : Any, B>(
             },
             tests = { input, baseContext, isRequest ->
                 val result = disabledTests.runTestsIn(this, input, baseContext, isRequest)
-                async { result?.await() }
+                suspending { result?.await() }
             }
         ),
         timeoutDuration = timeoutDuration

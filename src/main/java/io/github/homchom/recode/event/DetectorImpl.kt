@@ -1,6 +1,7 @@
 package io.github.homchom.recode.event
 
 import io.github.homchom.recode.DEFAULT_TIMEOUT_DURATION
+import io.github.homchom.recode.RecodeDispatcher
 import io.github.homchom.recode.lifecycle.*
 import io.github.homchom.recode.util.nullable
 import kotlinx.coroutines.*
@@ -87,9 +88,9 @@ private sealed class DetectorDetail<T : Any, R : Any> : Detector<T, R>, ModuleDe
             val trialScope = TrialScope(this@considerEntry, this@nullable, entryScope)
             supplier.supplyIn(trialScope, entry?.input, entry?.isRequest ?: false)
         }
-        val entryJob = entryScope.launch {
+        val entryJob = entryScope.launch(start = CoroutineStart.UNDISPATCHED) {
             if (result == null) {
-                entry?.responses?.send(null)
+                entry?.responses?.trySend(null)
                 return@launch
             }
 
@@ -99,7 +100,7 @@ private sealed class DetectorDetail<T : Any, R : Any> : Detector<T, R>, ModuleDe
                 null
             }
             yield()
-            entry?.responses?.send(awaited)
+            entry?.responses?.trySend(awaited)
 
             if (awaited != null) {
                 event.run(awaited)
@@ -116,15 +117,21 @@ private sealed class DetectorDetail<T : Any, R : Any> : Detector<T, R>, ModuleDe
     override fun detectFrom(module: RModule, input: T?) = responseFlow(input, false)
 
     protected fun responseFlow(input: T?, isRequest: Boolean) = flow {
-        val responses = Channel<R?>()
-        try {
-            entries += TrialEntry(isRequest, input, responses)
-            while (currentCoroutineContext().isActive) {
-                val response = withTimeoutOrNull(timeoutDuration) { responses.receive() }
-                emit(response)
+        coroutineScope {
+            val responses = Channel<R?>(Channel.UNLIMITED)
+            try {
+                // add entry after all current detection loops
+                launch(RecodeDispatcher()) {
+                    yield()
+                    entries += TrialEntry(isRequest, input, responses)
+                }
+                while (isActive) {
+                    val response = withTimeoutOrNull(timeoutDuration) { responses.receive() }
+                    emit(response)
+                }
+            } finally {
+                responses.close()
             }
-        } finally {
-            responses.close()
         }
     }
 }
@@ -157,7 +164,7 @@ private class TrialRequester<T : Any, R : Any>(
         _activeRequests.set(0)
     }
 
-    override suspend fun requestFrom(module: RModule, input: T) = coroutineScope {
+    override suspend fun requestFrom(module: RModule, input: T) = withContext(NonCancellable) {
         val detectChannel = responseFlow(input, true)
             .filterNotNull()
             .produceIn(this)

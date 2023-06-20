@@ -87,7 +87,7 @@ data class TipMessage(val player: String, val canTip: Boolean) {
             val player = TipMessage.mainRegex.matchEntireUnstyled(message)!!.groupValues[1]
             val subsequent = ReceiveChatMessageEvent.add()
 
-            async {
+            suspending {
                 val canTip = async {
                     val result = testBoolean(subsequent) { (text) ->
                         TipMessage.commandRegex.matchesUnstyled(text)
