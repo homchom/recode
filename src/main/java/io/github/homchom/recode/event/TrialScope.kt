@@ -47,7 +47,7 @@ class TrialResult<T : Any> private constructor(private val deferred: Deferred<T?
  *
  * A trial is a test containing one or more suspension points on events; they are useful for detecting an
  * occurrence that happens in complex steps. TrialScope includes corresponding DSL functions such as [requireTrue],
- * [add] and [test].
+ * [add], and [test].
  *
  * @see trial
  */
@@ -66,6 +66,11 @@ class TrialScope @DelicateCoroutinesApi constructor(
     private val _rules = mutableListOf<() -> Unit>()
 
     override val coroutineContext get() = coroutineScope.coroutineContext
+
+    /**
+     * An alias for [UInt.MAX_VALUE], used when a test should run as long as possible (in an awaiting fashion).
+     */
+    inline val unlimited get() = UInt.MAX_VALUE
 
     /**
      * Transfers this Listenable object's notifications eagerly into a [kotlinx.coroutines.channels.Channel].
@@ -116,7 +121,7 @@ class TrialScope @DelicateCoroutinesApi constructor(
         channel: ReceiveChannel<C>,
         attempts: UInt = 1u,
         timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION,
-        crossinline test: (C) -> T?
+        crossinline test: suspend (C) -> T?
     ): TestResult<T> {
         val result = withTimeoutOrNull(timeoutDuration) {
             (1u..attempts).firstNotNullOfOrNull { test(channel.receive()) }
@@ -179,7 +184,9 @@ class TrialScope @DelicateCoroutinesApi constructor(
      * prepend it with [unaryPlus].
      */
     @JvmInline
-    value class TestResult<T : Any>(val value: T?)
+    value class TestResult<T : Any>(val value: T?) {
+        val passed get() = value != null
+    }
 
     /**
      * Returns a non-null [TestResult.value] or fails the trial.

@@ -89,10 +89,9 @@ data class TipMessage(val player: String, val canTip: Boolean) {
 
             suspending {
                 val canTip = async {
-                    val result = testBoolean(subsequent) { (text) ->
+                    testBoolean(subsequent) { (text) ->
                         TipMessage.commandRegex.matchesUnstyled(text)
-                    }
-                    result.value != null
+                    }.passed
                 }
                 +testBoolean(subsequent, 2u) { (text) ->
                     TipMessage.timeRegex.matchesUnstyled(text)

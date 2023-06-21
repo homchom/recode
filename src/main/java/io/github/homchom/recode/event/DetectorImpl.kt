@@ -88,7 +88,7 @@ private sealed class DetectorDetail<T : Any, R : Any> : Detector<T, R>, ModuleDe
             val trialScope = TrialScope(this@considerEntry, this@nullable, entryScope)
             supplier.supplyIn(trialScope, entry?.input, entry?.isRequest ?: false)
         }
-        val entryJob = entryScope.launch(start = CoroutineStart.UNDISPATCHED) {
+        val entryJob = entryScope.launch {
             if (result == null) {
                 entry?.responses?.trySend(null)
                 return@launch

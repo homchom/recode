@@ -4,7 +4,6 @@ import io.github.homchom.recode.event.*
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.multiplayer.state.*
 import io.github.homchom.recode.ui.matchEntireUnstyled
-import io.github.homchom.recode.ui.matchesUnstyled
 import kotlinx.coroutines.async
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.Disconnect
@@ -29,7 +28,6 @@ object DisconnectFromServerEvent :
 data class ServerJoinContext(val handler: ClientPacketListener, val sender: PacketSender, val client: Minecraft)
 data class ServerDisconnectContext(val handler: ClientPacketListener, val client: Minecraft)
 
-private val welcomeRegex = Regex("""$DIAMOND_CHAR Welcome (?:back )?to DiamondFire! $DIAMOND_CHAR""")
 private val patchRegex = Regex("""Current patch: (.+). See the patch notes with /patch!""")
 
 object JoinDFDetector :
@@ -37,7 +35,6 @@ object JoinDFDetector :
         requireFalse(isOnDF) // if already on DF, this is a node switch and should not be tested
         requireTrue(ipMatchesDF)
 
-        // 6 potential messages: new player, alert 1, chat, welcome, alert 2, patch
         val messages = ReceiveChatMessageEvent.add()
         val tipMessage = TipMessage.detect(null).add()
 
@@ -45,14 +42,14 @@ object JoinDFDetector :
         suspending {
             failOn(disconnect)
 
-            +testBoolean(messages, 4u) { (text) ->
-                welcomeRegex.matchesUnstyled(text)
-            }
-            val patch = +test(messages, 2u) { (text) ->
+            val patch = +test(messages, unlimited) { (text) ->
+                tipMessage.receive()
                 patchRegex.matchEntireUnstyled(text)?.groupValues?.get(1)
             }
 
-            val canTip = async { tipMessage.receive()?.canTip ?: false }
+            val canTip = async {
+                testBoolean(tipMessage) { it?.canTip ?: false }.passed
+            }
             val request = HideableStateRequest(mc.player!!.username, true)
             val message = LocateMessage.request(request)
 
