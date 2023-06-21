@@ -14,7 +14,11 @@ import net.minecraft.world.effect.MobEffects
 val ChatLocalRequester = requester(nullaryTrial(
     ReceiveChatMessageEvent,
     start = { sendCommand("chat local") },
-    tests = { (text), _ -> text.equalsUnstyled("Your chat is now set to LOCAL").instantUnitOrNull() }
+    tests = { (text), _ ->
+        val message = "$GREEN_ARROW_CHAR Chat is now set to Local. You will only see messages from players on " +
+                "your plot. Use /chat to change it again."
+        text.equalsUnstyled(message).instantUnitOrNull()
+    }
 ))
 
 private val timeRegex = cachedRegexBuilder<Long> { time ->

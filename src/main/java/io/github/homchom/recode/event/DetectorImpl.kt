@@ -17,9 +17,6 @@ import kotlin.time.Duration
 
 /**
  * Creates a [DetectorModule] that runs via one or more [DetectorTrial] objects.
- *
- * Note that this implementation catches [RequestTimeoutException] with suspending trial results for convenience;
- * such cases are treated as trial failures.
  */
 fun <T : Any, R : Any> detector(
     primaryTrial: DetectorTrial<T, R>,
@@ -32,9 +29,6 @@ fun <T : Any, R : Any> detector(
 
 /**
  * Creates a [RequesterModule] that runs via one or more [RequesterTrial] objects.
- *
- * Note that this implementation catches [RequestTimeoutException] with suspending trial results for convenience;
- * such cases are treated as trial failures.
  */
 fun <T : Any, R : Any> requester(
     primaryTrial: RequesterTrial<T, R>,
@@ -94,14 +88,9 @@ private sealed class DetectorDetail<T : Any, R : Any> : Detector<T, R>, ModuleDe
                 return@launch
             }
 
-            val awaited = try {
-                result.await()
-            } catch (e: RequestTimeoutException) {
-                null
-            }
+            val awaited = result.await()
             yield()
             entry?.responses?.trySend(awaited)
-
             if (awaited != null) {
                 event.run(awaited)
                 trialJob.cancel("Trial produced non-null response")
