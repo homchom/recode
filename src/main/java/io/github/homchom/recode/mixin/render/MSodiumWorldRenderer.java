@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 // makes code search compatible with Sodium
-@Mixin(SodiumWorldRenderer.class)
+@Mixin(value = SodiumWorldRenderer.class, remap = false)
 public abstract class MSodiumWorldRenderer {
     @Shadow @Final private Set<BlockEntity> globalBlockEntities;
 
