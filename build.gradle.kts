@@ -1,5 +1,6 @@
 import Build_gradle.DependencyMod
 import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
+import org.intellij.lang.annotations.RegExp
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -24,11 +25,23 @@ val fabricVersion: String by project
 val requiredDependencyMods = dependencyModsOfType("required")
 val optionalDependencyMods = dependencyModsOfType("optional")
 
+val metadataPattern @RegExp get() = """\+([\d.]+?)$"""
+
 base {
     archivesName.set(modName)
 }
 
 repositories {
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Modrinth"
+                url = uri("https://api.modrinth.com/maven")
+            }
+        }
+        filter { includeGroup("maven.modrinth") }
+    }
+
     maven {
         name = "CottonMC"
         url = uri("https://server.bbkr.space/artifactory/libs-release")
@@ -44,7 +57,7 @@ repositories {
 
 val shade: Configuration by configurations.creating {
     isCanBeResolved = true
-    // Exclude slf4j because it is already provided by Minecraft
+    // exclude slf4j because it is already provided by Minecraft TODO: can this workaround be removed now?
     exclude(group = "org.slf4j")
 }
 
@@ -106,7 +119,7 @@ tasks {
 
         // Evaluate fabric_mod_json_template.txt as a Groovy template
         filesMatching("fabric_mod_json_template.txt") {
-            val metadataRegex = Regex("""\+[\d.]+$""")
+            val metadataRegex = Regex(metadataPattern)
             expand(
                 *exposedProperties,
                 "metadataRegex" to metadataRegex.toPattern(),
@@ -125,14 +138,14 @@ tasks {
 
     val relocate by registering(ConfigureShadowRelocation::class) {
         target = shadowJar.get()
-        // Repackage shaded dependencies
+        // repackage shaded dependencies
         prefix = "$mavenGroup.recode.shaded"
     }
 
     shadowJar {
         dependsOn(relocate)
         configurations = listOf(shade)
-        // Output shaded jar in the correct destination to be used by remapJar
+        // output shaded jar in the correct destination to be used by remapJar
         destinationDirectory.set(file("build/devlibs"))
         archiveClassifier.set("dev")
 
@@ -140,7 +153,7 @@ tasks {
     }
 
     remapJar {
-        // Use the shaded jar with remapJar, since jar is disabled
+        // use the shaded jar with remapJar, since jar is disabled
         inputFile.value(shadowJar.get().archiveFile)
     }
 }
@@ -168,8 +181,9 @@ modrinth {
     uploadFile.set(tasks.remapJar.get())
     gameVersions.addAll(minecraftVersion)
     dependencies {
-        val fabricModrinthVersion: String by project
-        required.version(fabricModrinthVersion)
+        val versionRegex = Regex("""(.+)$metadataPattern""")
+        val (version, metadata) = versionRegex.matchEntire(fabricVersion)!!.destructured
+        required.version("mc$metadata-$version")
     }
 
     // TODO: use something other than readText?

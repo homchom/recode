@@ -9,7 +9,8 @@
     "multiplayer.MJoinMultiplayerScreen",
     "render.MBlockEntityRenderDispatcher",
     "render.MGui",
-    "render.MLevelRenderer"
+    "render.MLevelRenderer",
+    "render.MSodiumWorldRenderer"
   ],
   "server": [],
   "injectors": {

@@ -53,10 +53,8 @@ object OutlineBlockEntitiesEvent :
         {
             onEnable {
                 BeforeOutlineBlockEvent.listenEach { context ->
-                    val processor = context.worldRenderContext.worldRenderer() as OutlineProcessor
-                    if (processor.needsOutlineProcessing()) {
-                        processor.processOutlines(mc.frameTime)
-                    }
+                    val processor = context.worldRenderContext.worldRenderer() as RecodeLevelRenderer
+                    processor.processOutlines(mc.frameTime)
                 }
             }
         }
@@ -69,8 +67,23 @@ data class BlockEntityOutlineContext @JvmOverloads constructor(
     data class Input(val blockEntities: Collection<BlockEntity>, val chunkPos: ChunkPos3D?)
 }
 
-interface OutlineProcessor {
-    fun needsOutlineProcessing(): Boolean
-    fun processOutlines(partialTick: Float)
+/**
+ * An [net.minecraft.client.renderer.LevelRenderer] that is augmented by recode.
+ */
+interface RecodeLevelRenderer {
+    /**
+     * @returns A filtered list of block entities that should still be rendered.
+     */
+    fun runBlockEntityEvents(blockEntities: Collection<BlockEntity>, chunkPos: ChunkPos3D?): List<BlockEntity>
+
+    /**
+     * Gets and returns the [RGBAColor] of [blockEntity]'s outline (as determined by [runBlockEntityEvents]),
+     * or null if it will not be outlined.
+     */
     fun getBlockEntityOutlineColor(blockEntity: BlockEntity): RGBAColor?
+
+    /**
+     * Processes all unprocessed entity and block entity outlines.
+     */
+    fun processOutlines(partialTick: Float)
 }
