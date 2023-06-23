@@ -7,7 +7,7 @@ For Minecraft 1.19.4, Fabric API 0.78.0 or newer
 - The LagSlayer overlay now has a shadow (#33)
 - Improvements to Side Chat
 - The mod is now more lenient with Cloth Config compatibility
-- Removed Partner Bracket and Quick Var Scope (as they were added to DF in the new patch)
+- Removed Partner Bracket and Quick Var Scope (as they were added to DF in Patch 5.7)
 - The mod now raises a warning when used with Optifabric (Optifine is not supported)
 
 ### Fixes
@@ -22,6 +22,6 @@ For Minecraft 1.19.4, Fabric API 0.78.0 or newer
 - The current Options menu can clip the edge of the screen on large GUI scales
 
 ### Technical
-- Updated to Kotlin 1.8.0
+- Updated to Kotlin 1.8.20
 - `/locate` is no longer sent by the client every 5 seconds
 - A million other internal changes/improvements (unsure about something you see? ask!)
