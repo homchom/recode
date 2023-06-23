@@ -1,6 +1,5 @@
 import Build_gradle.DependencyMod
 import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
-import org.intellij.lang.annotations.RegExp
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -24,8 +23,6 @@ val fabricVersion: String by project
 
 val requiredDependencyMods = dependencyModsOfType("required")
 val optionalDependencyMods = dependencyModsOfType("optional")
-
-val metadataPattern @RegExp get() = """\+([\d.]+?)$"""
 
 base {
     archivesName.set(modName)
@@ -119,7 +116,7 @@ tasks {
 
         // Evaluate fabric_mod_json_template.txt as a Groovy template
         filesMatching("fabric_mod_json_template.txt") {
-            val metadataRegex = Regex(metadataPattern)
+            val metadataRegex = Regex("""\+[\d.]+?$""")
             expand(
                 *exposedProperties,
                 "metadataRegex" to metadataRegex.toPattern(),
@@ -181,9 +178,8 @@ modrinth {
     uploadFile.set(tasks.remapJar.get())
     gameVersions.addAll(minecraftVersion)
     dependencies {
-        val versionRegex = Regex("""(.+)$metadataPattern""")
-        val (version, metadata) = versionRegex.matchEntire(fabricVersion)!!.destructured
-        required.version("mc$metadata-$version")
+        val fabricModrinthVersion: String by project
+        required.version(fabricModrinthVersion)
     }
 
     // TODO: use something other than readText?
