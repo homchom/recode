@@ -19,7 +19,6 @@ DiamondFire is a Minecraft server where you can create your own minigames with c
 
 - Utility commands to supercharge your code, such as importing Note Block Studio files as Code Templates
 - Automation of frequently used commands, such as `/resetcompact` and `/chat local`
-- Discord Rich Presence support
 - DiamondFire-specific keybinds
 - The ability to hide messages you don't want
 - Additional HUDs, such as the LagSlayer HUD to keep your action bar free
