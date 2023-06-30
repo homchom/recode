@@ -14,7 +14,6 @@ import io.github.homchom.recode.sys.renderer.widgets.CColorPicker;
 import io.github.homchom.recode.sys.renderer.widgets.CColorPreset;
 import io.github.homchom.recode.sys.renderer.widgets.CColoredRectangle;
 import io.github.homchom.recode.sys.renderer.widgets.CText;
-import io.github.homchom.recode.sys.util.StringUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
@@ -49,7 +48,10 @@ public class ColorsMenu extends LightweightGuiDescription implements IMenu {
 
             copyButton = new WButton(Component.literal("Copy")).setOnClick(() -> {
                 Color color = colorPicker.getColor();
-                StringUtil.copyToClipboard(MinecraftColors.hexToMc(String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue())).replaceAll("§", "&"));
+                var formatted = String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue());
+                var copy = MinecraftColors.hexToMc(formatted).replaceAll("§", "&");
+                Minecraft.getInstance().keyboardHandler.setClipboard(copy);
+
                 ColorUtil.recentColors.remove(color);
                 ColorUtil.recentColors.add(0, color);
                 ColorUtil.recentColors = new ArrayList<>(ColorUtil.recentColors.subList(0, Mth.clamp(25, 0, ColorUtil.recentColors.size())));

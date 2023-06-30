@@ -6,17 +6,25 @@ import io.github.homchom.recode.lifecycle.GlobalModule
 import io.github.homchom.recode.lifecycle.RModule
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
 import java.util.function.Consumer
 
-typealias StateListenable<T> = ResultListenable<T, T>
+/**
+ * @see ResultListenable
+ */
+typealias StateListenable<T> = ResultListenable<T, T?>
 
 /**
  * Something that can be listened to. Listenable objects come in two types: *events*, which are run
  * explicitly, and *detectors*, which are run algorithmically (via a [Trial]) based on another Listenable.
  *
- * @param T The context type of each invocation. Context includes return values and can therefore be mutated.
- * These types are **not** necessarily thread-safe, so be careful when mutating context concurrently.
+ * Listenable is based on the [Flow] API, but the standard [listenEachFrom] method does not allow for
+ * suspension. When working with [getNotificationsFrom] and the underlying Flow, collectors generally should
+ * not suspend because Listenable implementations should be conflated.
+ *
+ * @param T The context type of each invocation. Context includes return values and can therefore be mutated
+ * (before the first suspension point). These types are **not** usually thread-safe, so be careful when mutating
+ * context concurrently.
  *
  * @see CustomEvent
  * @see WrappedEvent
@@ -44,7 +52,7 @@ interface Listenable<T> {
      * @see listenFrom
      * @see getNotificationsFrom
      */
-    fun listenEachFrom(module: CoroutineModule, action: suspend (T) -> Unit) =
+    fun listenEachFrom(module: CoroutineModule, action: (T) -> Unit) =
         listenFrom(module) { onEach(action) }
 
     @Deprecated("Only for use in legacy Java code", ReplaceWith("TODO()"))
@@ -55,25 +63,15 @@ interface Listenable<T> {
 /**
  * A [Listenable] with a result of type [R].
  *
- * @property prevResult
+ * @property prevResult The result of the previous invocation. For all implementations, it is invariant for this to
+ * not update until at least the first suspension point.
  */
 interface ResultListenable<T, R> : Listenable<T> {
     val prevResult: R
 }
 
 /**
- * Adds a listener, additionally running [action] initially with [ResultListenable.prevResult].
- *
- * @see Listenable.listenEachFrom
- */
-fun <T> StateListenable<T>.replayAndListenEachFrom(module: CoroutineModule, action: suspend (T) -> Unit) =
-    module.launch {
-        action(prevResult)
-        getNotificationsFrom(module).onEach(action)
-    }
-
-/**
- * A wrapper for a [Flow] into a [Listenable].
+ * A wrapper for a [Flow] into a [Listenable] object.
  */
 @JvmInline
 value class FlowListenable<T>(private val notifications: Flow<T>) : Listenable<T> {
@@ -81,24 +79,9 @@ value class FlowListenable<T>(private val notifications: Flow<T>) : Listenable<T
 }
 
 /**
- * A wrapper for a [StateFlow] into a [StateListenable].
- */
-@JvmInline
-value class StateFlowListenable<T>(private val notifications: StateFlow<T>) : StateListenable<T> {
-    override val prevResult get() = notifications.value
-
-    override fun getNotificationsFrom(module: RModule) = notifications
-}
-
-/**
  * Wraps this [Flow] into a [Listenable].
  */
 fun <T> Flow<T>.asListenable() = FlowListenable(this)
-
-/**
- * Wraps this [StateFlow] into a [StateListenable].
- */
-fun <T> StateFlow<T>.asStateListenable() = StateFlowListenable(this)
 
 /**
  * @param module The module accessing the events.
@@ -116,26 +99,26 @@ fun <T> List<Listenable<out T>>.merge(module: ExposedModule) =
     map { it.getNotificationsFrom(module) }.merge().asListenable()
 
 /**
- * @see merge
- */
-fun <T> Listenable<out T>.mergeWith(vararg events: Listenable<out T>, module: ExposedModule) =
-    merge(this, *events, module = module)
-
-/**
  * A group of [Listenable] objects with a combined notification flow.
  *
  * @param flattenMethod The flattening method to use for the combined flow.
  *
  * @see merge
  */
-class GroupListenable<T>(
+class GroupListenable<T : Any>(
     private val flattenMethod: (List<Flow<T>>) -> Flow<T> = { it.merge() }
-) : Listenable<T> {
+) : StateListenable<T> {
+    override var prevResult: T? = null
+        private set
+
     private var notifications = emptyFlow<T>()
         get() {
             if (update) {
                 update = false
-                field = flattenMethod(flows)
+                field = flattenMethod(flows).onEach {
+                    yield()
+                    prevResult = it
+                }
             }
             return field
         }

@@ -3,7 +3,7 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocatio
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.8.0"
+    kotlin("jvm") version "1.8.21"
     id("fabric-loom") version "0.12-SNAPSHOT"
     id("com.modrinth.minotaur") version "2.+"
     id("com.github.johnrengelman.shadow") version "7.1.2"
@@ -29,6 +29,16 @@ base {
 }
 
 repositories {
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Modrinth"
+                url = uri("https://api.modrinth.com/maven")
+            }
+        }
+        filter { includeGroup("maven.modrinth") }
+    }
+
     maven {
         name = "CottonMC"
         url = uri("https://server.bbkr.space/artifactory/libs-release")
@@ -44,7 +54,7 @@ repositories {
 
 val shade: Configuration by configurations.creating {
     isCanBeResolved = true
-    // Exclude slf4j because it is already provided by Minecraft
+    // exclude slf4j because it is already provided by Minecraft TODO: can this workaround be removed now?
     exclude(group = "org.slf4j")
 }
 
@@ -56,8 +66,8 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:$loaderDevVersion")
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
 
-    shadeApi(kotlin("stdlib", "1.8.0"))
-    shadeApi("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+    shadeApi(kotlin("stdlib", "1.8.21"))
+    shadeApi("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
 
     // Declare mod dependencies listed in gradle.properties
     for (mod in requiredDependencyMods) includeModImpl("${mod.artifact}:${mod.version}")
@@ -106,7 +116,7 @@ tasks {
 
         // Evaluate fabric_mod_json_template.txt as a Groovy template
         filesMatching("fabric_mod_json_template.txt") {
-            val metadataRegex = Regex("""\+[\d.]+$""")
+            val metadataRegex = Regex("""\+[\d.]+?$""")
             expand(
                 *exposedProperties,
                 "metadataRegex" to metadataRegex.toPattern(),
@@ -125,14 +135,14 @@ tasks {
 
     val relocate by registering(ConfigureShadowRelocation::class) {
         target = shadowJar.get()
-        // Repackage shaded dependencies
+        // repackage shaded dependencies
         prefix = "$mavenGroup.recode.shaded"
     }
 
     shadowJar {
         dependsOn(relocate)
         configurations = listOf(shade)
-        // Output shaded jar in the correct destination to be used by remapJar
+        // output shaded jar in the correct destination to be used by remapJar
         destinationDirectory.set(file("build/devlibs"))
         archiveClassifier.set("dev")
 
@@ -140,7 +150,7 @@ tasks {
     }
 
     remapJar {
-        // Use the shaded jar with remapJar, since jar is disabled
+        // use the shaded jar with remapJar, since jar is disabled
         inputFile.value(shadowJar.get().archiveFile)
     }
 }

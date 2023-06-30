@@ -1,7 +1,7 @@
 package io.github.homchom.recode.event
 
 import io.github.homchom.recode.lifecycle.RModule
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.flow.Flow
 import net.fabricmc.fabric.api.event.Event
 import kotlin.time.Duration
 
@@ -12,14 +12,7 @@ typealias EventInvoker<T> = (context: T) -> Unit
  * the most recent of which is stored in [prevResult].
  */
 interface CustomEvent<T, R : Any> : ResultListenable<T, R?> {
-    suspend fun run(context: T): R
-
-    /**
-     * Runs the event by blocking the current thread.
-     *
-     * @see run
-     */
-    fun runBlocking(context: T) = runBlocking { run(context) }
+    fun run(context: T): R
 }
 
 /**
@@ -30,14 +23,7 @@ interface CustomEvent<T, R : Any> : ResultListenable<T, R?> {
  * @param I The event's input type, which is mapped to [T] only when needed.
  */
 interface BufferedCustomEvent<T, R, I> : ResultListenable<T, R?> {
-    suspend fun run(input: I): R
-
-    /**
-     * Runs the event by blocking the current thread.
-     *
-     * @see run
-     */
-    fun runBlocking(input: I) = runBlocking { run(input) }
+    fun run(input: I): R
 
     fun stabilize()
 }
@@ -59,22 +45,13 @@ interface WrappedEvent<T, L> : Listenable<T> {
  *
  * @property timeoutDuration The maximum duration used in detection functions.
  */
-interface Detector<T : Any, R : Any> : ResultListenable<R, R?> {
+interface Detector<T : Any, R : Any> : StateListenable<R> {
     val timeoutDuration: Duration
 
     /**
-     * Listens for [basis] invocations from [module] until a match is found.
-     *
-     * @returns The event result, or null if one could not be found in time.
+     * Listens for basis invocations from [module] and returns a [Flow] of results.
      */
-    suspend fun detectFrom(module: RModule, input: T?, basis: Listenable<*>? = null): R?
-
-    /**
-     * Listens to the next [basis] invocation from [module] and returns a potential match.
-     *
-     * @returns The event result, or null if there was not a match.
-     */
-    suspend fun checkNextFrom(module: RModule, input: T?, basis: Listenable<*>? = null, attempts: UInt = 1u): R?
+    fun detectFrom(module: RModule, input: T?): Flow<R?>
 }
 
 /**
@@ -82,7 +59,15 @@ interface Detector<T : Any, R : Any> : ResultListenable<R, R?> {
  */
 interface Requester<T : Any, R : Any> : Detector<T, R> {
     /**
-     * Makes a request and detects the result.
+     * The number of active, non-failed requests awaiting a result.
+     */
+    val activeRequests: Int
+
+    /**
+     * Makes a request and detects the first non-null result.
+     *
+     * @throws RequestTimeoutException if a non-null result is not detected in time
+     * (as specified by [timeoutDuration]).
      *
      * @see detectFrom
      */
@@ -99,4 +84,6 @@ interface DetectorModule<T : Any, R : Any> : Detector<T, R>, RModule
  * @see Requester
  * @see RModule
  */
-interface RequesterModule<T : Any, R : Any> : Requester<T, R>, RModule
+interface RequesterModule<T : Any, R : Any> : DetectorModule<T, R>, Requester<T, R>
+
+class RequestTimeoutException(val input: Any?) : IllegalStateException("Request with input $input timed out")

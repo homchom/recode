@@ -6,8 +6,8 @@ import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.LagslayerHUD;
 import io.github.homchom.recode.mod.features.StateOverlayHandler;
 import io.github.homchom.recode.mod.features.commands.CodeSearcher;
-import io.github.homchom.recode.server.DF;
-import io.github.homchom.recode.server.PlotMode;
+import io.github.homchom.recode.multiplayer.state.DFGlobals;
+import io.github.homchom.recode.multiplayer.state.PlotMode;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Gui;
@@ -26,7 +26,7 @@ public class MInGameHUD {
         Minecraft mc = LegacyRecode.MC;
         Font tr = mc.font;
         
-        if (CodeSearcher.searchType != null && CodeSearcher.searchValue != null && DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev)) {
+        if (CodeSearcher.searchType != null && CodeSearcher.searchValue != null && DFGlobals.isInMode(DFGlobals.getCurrentDFState(), PlotMode.Dev)) {
             tr.draw(stack, Component.literal("Searching for usages of " +
                     CodeSearcher.searchType.getSignText().get(0) + ": " + CodeSearcher.searchValue
             ), 4, 4, 0xffffff);

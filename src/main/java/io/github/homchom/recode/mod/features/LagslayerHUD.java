@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.homchom.recode.LegacyRecode;
-import io.github.homchom.recode.server.DFStateDetectors;
+import io.github.homchom.recode.multiplayer.state.DFStateDetectors;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -21,7 +21,7 @@ public class LagslayerHUD {
     private static long lastUpdate;
 
     public LagslayerHUD() {
-        DFStateDetectors.INSTANCE.getEnterSpawn().register((packet) -> lagSlayerEnabled = false);
+        DFStateDetectors.INSTANCE.getEnterSpawn().register(packet -> lagSlayerEnabled = false);
     }
 
     public static void updateCPU(ClientboundSetActionBarTextPacket packet) {

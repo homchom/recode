@@ -61,9 +61,8 @@ public class CommandHandler {
                 new SendTemplateCommand(),
                 new PJoinCommand(),
                 new SchemCommand(),
-                new RelativeLocCommand(),
                 new NBSSearchCommand(),
-                new CodeVaultCommand(),
+                //new CodeVaultCommand(),
                 new ImportFileCommand()
             );
         }

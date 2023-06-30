@@ -8,9 +8,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 
-import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -105,12 +102,6 @@ public class StringUtil {
         }
 
         return out.toString();
-    }
-
-    public static void copyToClipboard(String contents){
-        StringSelection stringSelection = new StringSelection(contents);
-        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        clipboard.setContents(stringSelection, null);
     }
 
     public static String[] toStringArray(JsonArray array) {

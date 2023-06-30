@@ -23,8 +23,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.*;
 
-@Mixin(LevelRenderer.class)
-public abstract class MLevelRenderer implements OutlineProcessor {
+@Mixin(value = LevelRenderer.class)
+public abstract class MLevelRenderer implements RecodeLevelRenderer {
 	private static final String popPushMethod =
 			"Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V";
 
@@ -38,8 +38,9 @@ public abstract class MLevelRenderer implements OutlineProcessor {
 			target = "Lnet/minecraft/client/renderer/LevelRenderer;globalBlockEntities:Ljava/util/Set;",
 			ordinal = 1
 	))
-	public Set<BlockEntity> interceptGlobalBlockEntities(LevelRenderer instance) {
+	public Set<BlockEntity> interceptGlobalBlockEntitiesForRecode(LevelRenderer instance) {
 		if (globalBlockEntities.isEmpty()) return globalBlockEntities;
+
 		return Set.copyOf(runBlockEntityEvents(globalBlockEntities, null));
 	}
 
@@ -49,27 +50,27 @@ public abstract class MLevelRenderer implements OutlineProcessor {
 	public List<BlockEntity> interceptChunkBlockEntities(ChunkRenderDispatcher.CompiledChunk chunk) {
 		var blockEntities = chunk.getRenderableBlockEntities();
 		if (blockEntities.isEmpty()) return blockEntities;
+
 		var chunkPos = new ChunkPos3D(blockEntities.get(0).getBlockPos());
 		return runBlockEntityEvents(blockEntities, chunkPos);
 	}
 
-	private List<BlockEntity> runBlockEntityEvents(
-			Collection<BlockEntity> blockEntities, @Nullable ChunkPos3D chunkPos) {
-		var renderList = blockEntities.stream().map(SimpleValidated::new).toList();
-		var filtered = RenderBlockEntitiesEvent.INSTANCE.runBlocking(renderList);
+	@Override
+	public @NotNull List<BlockEntity> runBlockEntityEvents(
+			Collection<? extends BlockEntity> blockEntities, ChunkPos3D chunkPos
+	) {
+		List<SimpleValidated<BlockEntity>> renderList = new ArrayList<>();
+		for (var blockEntity : blockEntities) renderList.add(new SimpleValidated<>(blockEntity));
+		var filtered = RenderBlockEntitiesEvent.INSTANCE.run(renderList);
 		var outlineInput = new BlockEntityOutlineContext.Input(blockEntities, chunkPos);
-		blockEntityOutlineMap.putAll(OutlineBlockEntitiesEvent.INSTANCE.runBlocking(outlineInput));
+		blockEntityOutlineMap.putAll(OutlineBlockEntitiesEvent.INSTANCE.run(outlineInput));
 		return filtered;
 	}
 
 	@Override
-	public boolean needsOutlineProcessing() {
-		return entityEffect != null && !processedOutlines && !blockEntityOutlineMap.isEmpty();
-	}
-
-	@Override
 	public void processOutlines(float partialTick) {
-		Objects.requireNonNull(entityEffect).process(partialTick);
+		if (entityEffect == null || processedOutlines || blockEntityOutlineMap.isEmpty()) return;
+		entityEffect.process(partialTick);
 		processedOutlines = true;
 		Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
 	}

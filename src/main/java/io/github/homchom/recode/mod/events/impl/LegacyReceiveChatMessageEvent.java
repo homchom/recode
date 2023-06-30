@@ -2,9 +2,9 @@ package io.github.homchom.recode.mod.events.impl;
 
 import io.github.homchom.recode.event.SimpleValidated;
 import io.github.homchom.recode.mod.config.Config;
-import io.github.homchom.recode.server.DF;
-import io.github.homchom.recode.server.PlotMode;
-import io.github.homchom.recode.server.ReceiveChatMessageEvent;
+import io.github.homchom.recode.multiplayer.ReceiveChatMessageEvent;
+import io.github.homchom.recode.multiplayer.state.DFGlobals;
+import io.github.homchom.recode.multiplayer.state.PlotMode;
 import io.github.homchom.recode.sys.player.chat.ChatType;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
 import io.github.homchom.recode.sys.util.TextUtil;
@@ -52,9 +52,9 @@ public class LegacyReceiveChatMessageEvent {
                     }
                     id = id.replaceAll("[\\[\\]\n]", "");
 
-                    String cmd = "/join " + id;
+                    String cmd = "join " + id;
 
-                    if (cmd.matches("/join \\d+")) {
+                    if (cmd.matches("join \\d+")) {
                         mc.player.connection.sendUnsignedCommand(cmd);
                     } else {
                         ChatUtil.sendMessage("Error while trying to join the plot.", ChatType.FAIL);
@@ -69,7 +69,7 @@ public class LegacyReceiveChatMessageEvent {
         // highlight name
         if (Config.getBoolean("highlight")) {
             String highlightMatcher = Config.getString("highlightMatcher").replaceAll("\\{name}", mc.player.getName().getString());
-            if (DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev) && (msgWithoutColor.matches("^[^0-z]+.*[a-zA-Z]+: .*")
+            if (DFGlobals.isInMode(DFGlobals.getCurrentDFState(), PlotMode.Dev) && (msgWithoutColor.matches("^[^0-z]+.*[a-zA-Z]+: .*")
                     || msgWithoutColor.matches("^.*[a-zA-Z]+: .*"))) {
                 if ((!msgWithoutColor.matches("^.*" + highlightMatcher + ": .*")) || Config.getBoolean("highlightIgnoreSender")) {
                     if (msgWithoutColor.contains(highlightMatcher)) {
@@ -136,7 +136,7 @@ public class LegacyReceiveChatMessageEvent {
             cancel = true;
         }
 
-        if (DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev)) {
+        if (DFGlobals.isInMode(DFGlobals.getCurrentDFState(), PlotMode.Dev)) {
             // hide var scope messages
             if (Config.getBoolean("hideVarScopeMessages") && msgToString.startsWith("Scope set to ")) {
                 cancel = true;

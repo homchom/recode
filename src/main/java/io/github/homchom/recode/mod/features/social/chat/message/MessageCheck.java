@@ -9,13 +9,8 @@ public abstract class MessageCheck {
     // Define message checks here
     private static final MessageCheck[] checks = new MessageCheck[]{
             // General
-            //new LocateCheck(),
             new DirectMessageCheck(),
             new PlotAdCheck(),
-
-            // LagSlayer
-            new LagslayerStartCheck(),
-            new LagslayerStopCheck(),
 
             // Support
             new SupportCheck(),

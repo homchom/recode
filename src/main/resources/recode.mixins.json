@@ -4,11 +4,13 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [],
   "client": [
-    "MClientMain",
+    "MMinecraft",
+    "multiplayer.MClientPacketListener",
+    "multiplayer.MJoinMultiplayerScreen",
     "render.MBlockEntityRenderDispatcher",
     "render.MGui",
     "render.MLevelRenderer",
-    "server.MClientPacketListener"
+    "render.MSodiumWorldRenderer"
   ],
   "server": [],
   "injectors": {

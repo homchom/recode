@@ -4,8 +4,8 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
-import io.github.homchom.recode.server.DF;
-import io.github.homchom.recode.server.PlotMode;
+import io.github.homchom.recode.multiplayer.state.DFGlobals;
+import io.github.homchom.recode.multiplayer.state.PlotMode;
 import io.github.homchom.recode.sys.player.chat.ChatType;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
 import io.github.homchom.recode.sys.player.chat.color.HSLColor;
@@ -113,7 +113,7 @@ public class GradientCommand extends Command {
                                             ChatUtil.sendMessage("Copied text!", ChatType.SUCCESS);
                                             mc.player.displayClientMessage(base, false);
 
-                                            if (DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev)) {
+                                            if (DFGlobals.isInMode(DFGlobals.getCurrentDFState(), PlotMode.Dev)) {
                                                 mc.player.connection.sendUnsignedCommand("txt " + sb);
                                             }
 

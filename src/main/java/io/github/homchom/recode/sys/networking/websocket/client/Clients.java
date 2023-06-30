@@ -12,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.item.ItemStack;
 
 @Environment(EnvType.CLIENT)
 public class Clients {
@@ -38,9 +39,12 @@ public class Clients {
             }
 
             if (player.isCreative()) {
-                ItemUtil.giveCreativeItem(item.getItem(itemData), true);
-                ToasterUtil.sendToaster("Received Item!", source, SystemToast.SystemToastIds.NARRATOR_TOGGLE);
-                player.playSound(SoundEvents.ITEM_PICKUP, 200, 1);
+                final ItemStack itemStack = item.getItem(itemData);
+                Minecraft.getInstance().submit(() -> {
+                    ItemUtil.giveCreativeItem(itemStack, true);
+                    ToasterUtil.sendToaster("Received Item!", source, SystemToast.SystemToastIds.NARRATOR_TOGGLE);
+                    player.playSound(SoundEvents.ITEM_PICKUP, 200, 1);
+                });
                 result.addProperty("status", "success");
             } else {
                 throw new Exception("Player is not in creative!");

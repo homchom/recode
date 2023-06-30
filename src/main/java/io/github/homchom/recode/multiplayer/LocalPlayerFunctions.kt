@@ -1,4 +1,4 @@
-package io.github.homchom.recode.server
+package io.github.homchom.recode.multiplayer
 
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.ui.literalText
@@ -24,3 +24,5 @@ fun sendCommand(command: String) = asPlayer { connection.sendUnsignedCommand(com
 
 private inline fun <R> asPlayer(block: LocalPlayer.() -> R) = mc.player?.block()
     ?: error("There is no current player to send a command as")
+
+val LocalPlayer.isFlightEnabled get() = abilities.mayfly

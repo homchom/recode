@@ -1,13 +1,7 @@
 package io.github.homchom.recode.lifecycle
 
-import io.github.homchom.recode.event.WrappedEvent
-import io.github.homchom.recode.event.wrapFabricEvent
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents.ClientStopping
-import net.minecraft.client.Minecraft
+import io.github.homchom.recode.event.CustomEvent
+import io.github.homchom.recode.event.createEvent
 
-object ClientStopEvent :
-    WrappedEvent<Minecraft, ClientStopping> by
-        wrapFabricEvent(ClientLifecycleEvents.CLIENT_STOPPING, { listener ->
-            ClientStopping { listener(it) }
-        })
+object QuitGameEvent :
+    CustomEvent<Unit, Unit> by createEvent()

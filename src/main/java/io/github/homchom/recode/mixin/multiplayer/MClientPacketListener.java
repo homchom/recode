@@ -1,17 +1,19 @@
-package io.github.homchom.recode.mixin.server;
+package io.github.homchom.recode.mixin.multiplayer;
 
 import io.github.homchom.recode.event.SimpleValidated;
-import io.github.homchom.recode.game.ItemSlotUpdateEvent;
-import io.github.homchom.recode.server.SendCommandEvent;
-import io.github.homchom.recode.server.ServerTrust;
+import io.github.homchom.recode.game.RespawnEvent;
+import io.github.homchom.recode.game.TeleportEvent;
+import io.github.homchom.recode.game.UpdateScoreboardScoreEvent;
+import io.github.homchom.recode.multiplayer.SendCommandEvent;
+import io.github.homchom.recode.multiplayer.ServerStatus;
 import io.github.homchom.recode.sys.hypercube.templates.TemplateStorageHandler;
 import io.github.homchom.recode.sys.hypercube.templates.TemplateUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastComponent;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
-import net.minecraft.network.protocol.game.ServerboundChatCommandPacket;
+import net.minecraft.network.protocol.game.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -20,15 +22,30 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPacketListener.class)
 public abstract class MClientPacketListener {
+	@Inject(method = "handleMovePlayer", at = @At("TAIL"))
+	public void handleTeleportEvent(ClientboundPlayerPositionPacket packet, CallbackInfo ci) {
+		TeleportEvent.INSTANCE.run(packet);
+	}
+
+	@Inject(method = "handleSetScore", at = @At("TAIL"))
+	public void handleUpdateScoreboardScoreEvent(ClientboundSetScorePacket packet, CallbackInfo ci) {
+		UpdateScoreboardScoreEvent.INSTANCE.run(packet);
+	}
+
+	@Inject(method = "handleRespawn", at = @At("TAIL"))
+	public void handleRespawnEvent(ClientboundRespawnPacket packet, CallbackInfo ci) {
+		RespawnEvent.INSTANCE.run(packet);
+	}
+
 	@Inject(method = "handleContainerSetSlot", at = @At("TAIL"))
 	public void handleItemSlotUpdateEvent(ClientboundContainerSetSlotPacket packet, CallbackInfo ci) {
+		// TODO: move
 		if (packet.getContainerId() == 0) {
 			var stack = packet.getItem();
 			if (TemplateUtil.isTemplate(stack)) {
 				TemplateStorageHandler.addTemplate(stack);
 			}
 		}
-		ItemSlotUpdateEvent.INSTANCE.runBlocking(packet);
 	}
 
 	@Redirect(method = "sendCommand", at = @At(value = "INVOKE",
@@ -38,7 +55,7 @@ public abstract class MClientPacketListener {
 		if (packet instanceof ServerboundChatCommandPacket commandPacket) {
 			// TODO: should this not be a validated event?
 			var context = new SimpleValidated<>(commandPacket.command());
-			if (SendCommandEvent.INSTANCE.runBlocking(context)) {
+			if (SendCommandEvent.INSTANCE.run(context)) {
 				instance.send(packet);
 			}
 		}
@@ -54,6 +71,8 @@ public abstract class MClientPacketListener {
 	@Redirect(method = "handleServerData", at = @At(value = "INVOKE", target =
 		"Lnet/minecraft/client/gui/components/toasts/ToastComponent;addToast(Lnet/minecraft/client/gui/components/toasts/Toast;)V"))
 	public void hideSecureChatToastIfTrusted(ToastComponent instance, Toast toast) {
-		if (!ServerTrust.isServerTrusted()) instance.addToast(toast);
+		if (!ServerStatus.isTrusted(Minecraft.getInstance().getCurrentServer())) {
+			instance.addToast(toast);
+		}
 	}
 }

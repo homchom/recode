@@ -1,119 +1,142 @@
 package io.github.homchom.recode.lifecycle
 
 import io.github.homchom.recode.event.*
+import io.github.homchom.recode.util.KeyHashable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 
+typealias ModuleAction = ExposedModule.() -> Unit
+
 /**
  * A group of code with dependencies ("children") and that can be loaded, enabled, and disabled.
  *
- * All modules are either **weak**, meaning they load and unload as needed based on its parents,
- * or **strong**, meaning they remain active even if no parents are enabled.
+ * Modules can also [extend] and [depend] on other modules; when all of a module's "parents" are disabled,
+ * it disables as well.
  *
  * @see module
- * @see strongModule
  */
-interface RModule {
+// TODO: revisit extend-depend scheme and safety (and replace children property with parents)
+// TODO: figure out replacement for strong modules
+interface RModule : KeyHashable {
     val children: Set<RModule>
 
-    val isLoaded: Boolean
+    val hasBeenLoaded: Boolean
     val isEnabled: Boolean
 
-    fun addParent(module: RModule)
+    @ModuleUnsafe
     fun addChild(module: ExposedModule)
 
-    fun depend(module: RModule) {
-        if (module !in children) module.addParent(this)
+    /**
+     * Adds [parents] as parents of the module.
+     */
+    fun extend(vararg parents: RModule)
+
+    /**
+     * Adds [children] as children of the module.
+     */
+    fun depend(vararg children: RModule) {
+        for (child in children) child.extend(this)
     }
 
-    override operator fun equals(other: Any?): Boolean
-    override fun hashCode(): Int
+    fun <T : Any, R : Any> Detector<T, R>.detect(input: T?) = detectFrom(this@RModule, input)
 
-    suspend fun <T : Any, R : Any> Detector<T, R>.detect(input: T?, basis: Listenable<*>? = null) =
-        detectFrom(this@RModule, input, basis)
-
-    suspend fun <T : Any, R : Any> Detector<T, R>.checkNext(
-        input: T?,
-        basis: Listenable<*>? = null,
-        attempts: UInt = 1u
-    ): R? {
-        return checkNextFrom(this@RModule, input, basis, attempts)
-    }
-
+    /**
+     * @throws RequestTimeoutException
+     */
     suspend fun <T : Any, R : Any> Requester<T, R>.request(input: T) =
         requestFrom(this@RModule, input)
 
-    fun <T, S : Listenable<out T>> GroupListenable<T>.add(event: S) =
-        addFrom(this@RModule, event)
-
+    /**
+     * @throws RequestTimeoutException
+     */
     suspend fun <R : Any> Requester<Unit, R>.request() = request(Unit)
+
+    fun <T : Any, S : Listenable<out T>> GroupListenable<T>.add(event: S) =
+        addFrom(this@RModule, event)
 }
 
 /**
  * An [RModule] with a [CoroutineScope].
  */
 interface CoroutineModule : RModule, CoroutineScope {
+    val <T> Listenable<T>.notifications get() = getNotificationsFrom(this@CoroutineModule)
+
     fun <T> Listenable<T>.listen(block: Flow<T>.() -> Flow<T>) =
         listenFrom(this@CoroutineModule, block)
 
-    fun <T> Listenable<T>.listenEach(block: suspend (T) -> Unit) =
+    fun <T> Listenable<T>.listenEach(block: (T) -> Unit) =
         listenEachFrom(this@CoroutineModule, block)
-
-    fun <T> StateListenable<T>.replayAndListenEach(block: suspend (T) -> Unit) =
-        replayAndListenEachFrom(this@CoroutineModule, block)
 }
 
 /**
  * A [CoroutineModule] that can listen for [Listenable] notifications, with exposed functions
- * for mutating active state. This should be used when creating module subtypes, not when creating
- * top-level modules directly.
+ * for mutating and decorating the module. This should be not be used to create top-level modules directly.
+ *
+ * @see ModuleDetail
  */
 interface ExposedModule : CoroutineModule {
-    @MutatesModuleState
+    /**
+     * Loads the module for the first time. If the module has already been loaded, this function has no effect.
+     */
     fun load()
 
-    @MutatesModuleState
-    fun tryLoad() {
-        if (!isLoaded) load()
-    }
-
-    @MutatesModuleState
+    /**
+     * Enables the module if it is disabled. If the module has not been loaded, [load] is also called.
+     */
     fun enable()
 
-    @MutatesModuleState
+    /**
+     * Disables the module if it is enabled.
+     */
     fun disable()
+
+    /**
+     * Registers [action] to be invoked when the module loads.
+     */
+    fun onLoad(action: ModuleAction)
+
+    /**
+     * Registers [action] to be invoked when the module enables.
+     */
+    fun onEnable(action: ModuleAction)
+
+    /**
+     * Registers [action] to be invoked when the module disables.
+     */
+    fun onDisable(action: ModuleAction)
 
     /**
      * Tells this module that [module] is currently using it.
      */
-    @MutatesModuleState
+    @ModuleUnsafe
     fun addUsage(module: ExposedModule)
 
     /**
      * Tells this module that [module] is not currently using it.
      */
-    @MutatesModuleState
+    @ModuleUnsafe
     fun removeUsage(module: ExposedModule)
 }
 
 /**
- * An [ExposedModule] that is always enabled. Don't use inside another module, and prefer using more localized
+ * An [CoroutineModule] that is always enabled. Don't use inside another module, and prefer using more localized
  * modules with properly confined coroutine scopes.
  *
  * @see kotlinx.coroutines.CoroutineScope
  */
-@OptIn(MutatesModuleState::class)
 @DelicateCoroutinesApi
-object GlobalModule : ExposedModule by strongExposedModule() {
-    init {
-        enable()
-    }
+val GlobalModule: CoroutineModule get() = GlobalExposedModule
+
+private object GlobalExposedModule : ExposedModule by module(ModuleDetail.Exposed) {
+    init { enable() }
+
+    override fun toString() = "GlobalModule"
 }
 
 /**
  * An opt-in annotation denoting that something mutates global active state of an [ExposedModule].
  */
-@RequiresOptIn("This mutates global active state of a module and should only be " +
+@RequiresOptIn("This unsafely mutates global active state of a module and should only be " +
         "used by RModule implementations, with caution")
-annotation class MutatesModuleState
+annotation class ModuleUnsafe

@@ -7,7 +7,8 @@ import com.google.gson.GsonBuilder
 import io.github.homchom.recode.feature.AutomationFeatureGroup
 import io.github.homchom.recode.feature.RenderingFeatureGroup
 import io.github.homchom.recode.feature.SocialFeatureGroup
-import io.github.homchom.recode.lifecycle.entrypointModule
+import io.github.homchom.recode.lifecycle.EntrypointDetail
+import io.github.homchom.recode.lifecycle.module
 import io.github.homchom.recode.mod.commands.CommandHandler
 import io.github.homchom.recode.mod.config.Config
 import io.github.homchom.recode.mod.config.internal.ConfigFile
@@ -39,11 +40,11 @@ val trimmedModVersion by lazy {
     modVersion.replace(Regex("""\+[\d.]+$"""), "")
 }
 
-val RecodeMod = entrypointModule {
+val RecodeMod = module(EntrypointDetail) {
     // TODO: move feature groups to a config module
     depend(AutomationFeatureGroup, SocialFeatureGroup, RenderingFeatureGroup)
 
-    // On mod initialize
+    // on mod initialize
     onLoad {
         logInfo("Initializing...")
 
@@ -57,7 +58,7 @@ val RecodeMod = entrypointModule {
         logInfo("Initialized successfully!")
     }
 
-    // On Minecraft close
+    // on Minecraft close
     onDisable {
         logInfo("Closing...")
 

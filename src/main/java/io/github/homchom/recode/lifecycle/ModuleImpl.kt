@@ -1,126 +1,114 @@
 package io.github.homchom.recode.lifecycle
 
-import io.github.homchom.recode.util.collections.ImmutableList
-import io.github.homchom.recode.util.collections.immutable
+import io.github.homchom.recode.RecodeDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 
-fun exposedModule(vararg details: ModuleDetail): ExposedModule =
-    createModule(details) { WeakModule(UsageModule(it)) }
-
-fun strongExposedModule(vararg details: ModuleDetail): ExposedModule =
-    createModule(details) { UsageModule(it) }
+/**
+ * Builds an [RModule] of flavor [flavor].
+ *
+ * @see ModuleBuilder
+ * @see ModuleFlavor
+ */
+fun <T : RModule> module(flavor: ModuleFlavor<T>) = flavor.applyTo(WeakModule())
 
 /**
- * Builds a *weak* [ExposedModule].
+ * Builds an [RModule] of flavor [flavor] with [builder].
+ *
+ * @see ModuleBuilder
+ * @see ModuleFlavor
  */
-inline fun exposedModule(vararg details: ModuleDetail, builder: ModuleBuilderScope) =
-    exposedModule(*details, ModuleBuilder(builder))
+fun <T : RModule> module(flavor: ModuleFlavor<T>, builder: ModuleBuilder) = module(builder + flavor)
 
-/**
- * Builds a *strong* [ExposedModule].
- */
-inline fun strongExposedModule(vararg details: ModuleDetail, builder: ModuleBuilderScope) =
-    strongExposedModule(*details, ModuleBuilder(builder))
-
-private inline fun createModule(
-    details: Array<out ModuleDetail>,
-    constructor: (ImmutableList<ModuleDetail>) -> ExposedModule
-): ExposedModule {
-    val detailList = details.toList().immutable()
-    return constructor(detailList).apply {
-        for (detail in detailList) {
-            for (child in detail.children()) depend(child)
-        }
-    }
-}
-
-private class UsageModule(private val details: ImmutableList<ModuleDetail>) : ExposedModule {
-    override var isLoaded = false
+private class WeakModule : ExposedModule {
+    override var hasBeenLoaded = false
         private set
     override var isEnabled = false
         private set
 
-    override val children get() = _children.immutable()
+    private val loadActions = mutableListOf<ModuleAction>()
+    private val enableActions = mutableListOf<ModuleAction>()
+    private val disableActions = mutableListOf<ModuleAction>()
+
+    override val children get() = _children.toSet()
     private val _children = mutableSetOf<ExposedModule>()
 
     val usages: Set<RModule> get() = _usages
     private val _usages = mutableSetOf<RModule>()
 
-    private var coroutineScope = newCoroutineScope()
+    private var coroutineScope: CoroutineScope? = null
 
-    override val coroutineContext get() = coroutineScope.coroutineContext
+    override val coroutineContext get() = coroutineScope?.coroutineContext
+        ?: error("Module is disabled")
 
-    private fun newCoroutineScope() = CoroutineScope(Dispatchers.Default + SupervisorJob())
+    private fun newCoroutineScope() = CoroutineScope(RecodeDispatcher() + SupervisorJob())
 
-    @MutatesModuleState
     override fun load() {
-        errorIf(isLoaded) { "is loaded" }
-        isLoaded = true
-        forEachDetail { onLoad() }
+        if (hasBeenLoaded) return
+        hasBeenLoaded = true
+        for (action in loadActions) action()
     }
 
-    @MutatesModuleState
+    @OptIn(ModuleUnsafe::class)
     override fun enable() {
-        errorIf(isEnabled) { "is enabled" }
-        tryLoad()
+        if (isEnabled) return
+        load()
         for (child in children) child.addUsage(this)
-        isEnabled = true
-        forEachDetail { onEnable() }
-    }
-
-    @MutatesModuleState
-    override fun disable() {
-        errorIf(!isEnabled) { "is disabled" }
-        for (child in children) child.removeUsage(this)
-        coroutineScope.cancel()
         coroutineScope = newCoroutineScope()
-        isEnabled = false
-        forEachDetail { onDisable() }
+        isEnabled = true
+        for (action in enableActions) action()
     }
 
-    private inline fun errorIf(value: Boolean, errorWord: () -> String) =
-        check(!value) { "This module already ${errorWord()}" }
+    @OptIn(ModuleUnsafe::class)
+    override fun disable() {
+        if (!isEnabled) return
+        for (child in children) child.removeUsage(this)
+        coroutineScope!!.cancel("Module disabled")
+        coroutineScope = null
+        isEnabled = false
+        for (action in disableActions) action()
+    }
 
-    @OptIn(MutatesModuleState::class)
+    override fun onLoad(action: ModuleAction) {
+        loadActions += action
+    }
+
+    override fun onEnable(action: ModuleAction) {
+        enableActions += action
+    }
+
+    override fun onDisable(action: ModuleAction) {
+        disableActions += action
+    }
+
+    @OptIn(ModuleUnsafe::class)
     override fun addChild(module: ExposedModule) {
-        errorIf(module in children) { "has this child" }
+        check(module !in children) { "Module already has this child" }
         _children += module
         if (isEnabled) module.addUsage(this)
     }
 
-    @Suppress("RedundantOverride")
     override fun equals(other: Any?) = super.equals(other)
 
-    @Suppress("RedundantOverride")
     override fun hashCode() = super.hashCode()
 
-    override fun addParent(module: RModule) {
-        module.addChild(this)
+    @OptIn(ModuleUnsafe::class)
+    override fun extend(vararg parents: RModule) {
+        for (parent in parents) {
+            if (this !in parent.children) parent.addChild(this)
+        }
     }
 
-    @MutatesModuleState
+    @ModuleUnsafe
     override fun addUsage(module: ExposedModule) {
         if (!isEnabled) enable()
         _usages += module
     }
 
-    @MutatesModuleState
+    @ModuleUnsafe
     override fun removeUsage(module: ExposedModule) {
         _usages -= module
-    }
-
-    private inline fun forEachDetail(block: (ModuleDetail).() -> Unit) {
-        for (detail in details) detail.block()
-    }
-}
-
-private class WeakModule(private val impl: UsageModule) : ExposedModule by impl {
-    @MutatesModuleState
-    override fun removeUsage(module: ExposedModule) {
-        impl.removeUsage(module)
-        if (impl.usages.isEmpty()) disable()
+        if (usages.isEmpty()) disable()
     }
 }

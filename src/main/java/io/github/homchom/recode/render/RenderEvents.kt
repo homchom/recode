@@ -5,17 +5,15 @@ import io.github.homchom.recode.event.*
 import io.github.homchom.recode.game.ChunkPos3D
 import io.github.homchom.recode.game.ticks
 import io.github.homchom.recode.mc
-import io.github.homchom.recode.util.AtomicMixedInt
 import io.github.homchom.recode.util.Case
+import io.github.homchom.recode.util.MixedInt
 import io.github.homchom.recode.util.collections.mapToArray
-import kotlinx.coroutines.withContext
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents.BeforeBlockOutline
 import net.minecraft.core.BlockPos
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.phys.HitResult
-import java.util.concurrent.atomic.AtomicReference
 
 object BeforeOutlineBlockEvent :
     WrappedEvent<BlockOutlineContext, BeforeBlockOutline> by
@@ -31,7 +29,7 @@ object BeforeOutlineBlockEvent :
 data class BlockOutlineContext(
     val worldRenderContext: WorldRenderContext,
     val hitResult: HitResult?,
-    override val validity: AtomicMixedInt = AtomicMixedInt(1)
+    override var validity: MixedInt = MixedInt(1)
 ) : Validated
 
 object RenderBlockEntitiesEvent :
@@ -43,10 +41,10 @@ object OutlineBlockEntitiesEvent :
         createBufferedEvent(
             resultCapture = { context ->
                 context
-                    .filter { it.outlineColor.get() != null }
-                    .associate { it.blockEntity.blockPos to it.outlineColor.get()!! }
+                    .filter { it.outlineColor != null }
+                    .associate { it.blockEntity.blockPos to it.outlineColor!! }
             },
-            interval = 3.ticks,
+            stableInterval = 3.ticks,
             keySelector = { Case(it.chunkPos) },
             contextGenerator = { input ->
                 input.blockEntities.mapToArray { BlockEntityOutlineContext(it) }
@@ -55,12 +53,8 @@ object OutlineBlockEntitiesEvent :
         {
             onEnable {
                 BeforeOutlineBlockEvent.listenEach { context ->
-                    val processor = context.worldRenderContext.worldRenderer() as OutlineProcessor
-                    if (processor.needsOutlineProcessing()) {
-                        withContext(RenderThreadContext) {
-                            processor.processOutlines(mc.frameTime)
-                        }
-                    }
+                    val processor = context.worldRenderContext.worldRenderer() as RecodeLevelRenderer
+                    processor.processOutlines(mc.frameTime)
                 }
             }
         }
@@ -68,13 +62,28 @@ object OutlineBlockEntitiesEvent :
 
 data class BlockEntityOutlineContext @JvmOverloads constructor(
     val blockEntity: BlockEntity,
-    var outlineColor: AtomicReference<RGBAColor?> = AtomicReference(null)
+    var outlineColor: RGBAColor? = null
 ) {
     data class Input(val blockEntities: Collection<BlockEntity>, val chunkPos: ChunkPos3D?)
 }
 
-interface OutlineProcessor {
-    fun needsOutlineProcessing(): Boolean
-    fun processOutlines(partialTick: Float)
+/**
+ * An [net.minecraft.client.renderer.LevelRenderer] that is augmented by recode.
+ */
+interface RecodeLevelRenderer {
+    /**
+     * @returns A filtered list of block entities that should still be rendered.
+     */
+    fun runBlockEntityEvents(blockEntities: Collection<BlockEntity>, chunkPos: ChunkPos3D?): List<BlockEntity>
+
+    /**
+     * Gets and returns the [RGBAColor] of [blockEntity]'s outline (as determined by [runBlockEntityEvents]),
+     * or `null` if it will not be outlined.
+     */
     fun getBlockEntityOutlineColor(blockEntity: BlockEntity): RGBAColor?
+
+    /**
+     * Processes all unprocessed entity and block entity outlines.
+     */
+    fun processOutlines(partialTick: Float)
 }

@@ -71,7 +71,7 @@ public class ColorCommand extends Command {
             + "\n"
             + "Copies the specified color in DiamondFire hex color format.\n"
             + "The max number is [green]256[reset] for RGB colors, and [green]360[reset] for HSB colors.\n"
-            + "[yellow]Example[reset]: /color 255 0 0 -> &x&f&f&0&0&0&0";
+            + "[yellow]Example[reset]: /color rgb 255 0 0 -> &x&f&f&0&0&0&0";
     }
 
     @Override
