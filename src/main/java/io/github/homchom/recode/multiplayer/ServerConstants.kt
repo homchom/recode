@@ -11,8 +11,9 @@ const val SERVER_ADDRESS = "mcdiamondfire.com"
 @RegExp const val BOOSTER_ARROW_PATTERN = """⏵⏵⏵?"""
 
 const val DIAMOND_CHAR = '◆'
-const val GREEN_ARROW_CHAR = '»'
+const val MAIN_ARROW_CHAR = '»'
 const val RIGHT_ARROW_CHAR = '→'
+const val SUPPORT_ARROW_CHAR = '▶'
 
 const val TOKEN_NOTCH_CHAR = '□'
 

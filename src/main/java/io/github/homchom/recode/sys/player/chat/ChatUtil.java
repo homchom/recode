@@ -2,7 +2,7 @@ package io.github.homchom.recode.sys.player.chat;
 
 import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.Config;
-import io.github.homchom.recode.multiplayer.state.DF;
+import io.github.homchom.recode.multiplayer.state.DFGlobals;
 import io.github.homchom.recode.sys.player.chat.color.MinecraftColors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -95,7 +95,7 @@ public class ChatUtil {
      */
     public static boolean verifyMessage(Component component) {
         List<Component> siblings = component.getSiblings();
-        if (!DF.isOnDF()) return false;
+        if (!DFGlobals.isOnDF()) return false;
         if (siblings.size() == 0) return false;
         String str = siblings.get(0).getStyle().toString();
 

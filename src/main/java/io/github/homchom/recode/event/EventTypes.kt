@@ -1,6 +1,5 @@
 package io.github.homchom.recode.event
 
-import io.github.homchom.recode.RecodeDispatcher
 import io.github.homchom.recode.lifecycle.RModule
 import kotlinx.coroutines.flow.Flow
 import net.fabricmc.fabric.api.event.Event
@@ -13,11 +12,6 @@ typealias EventInvoker<T> = (context: T) -> Unit
  * the most recent of which is stored in [prevResult].
  */
 interface CustomEvent<T, R : Any> : ResultListenable<T, R?> {
-    /**
-     * @throws IllegalStateException if called from any thread other than Minecraft's main thread
-     *
-     * @see RecodeDispatcher
-     */
     fun run(context: T): R
 }
 
@@ -29,11 +23,6 @@ interface CustomEvent<T, R : Any> : ResultListenable<T, R?> {
  * @param I The event's input type, which is mapped to [T] only when needed.
  */
 interface BufferedCustomEvent<T, R, I> : ResultListenable<T, R?> {
-    /**
-     * @throws IllegalStateException if called from any thread other than Minecraft's main thread
-     *
-     * @see RecodeDispatcher
-     */
     fun run(input: I): R
 
     fun stabilize()
@@ -56,7 +45,7 @@ interface WrappedEvent<T, L> : Listenable<T> {
  *
  * @property timeoutDuration The maximum duration used in detection functions.
  */
-interface Detector<T : Any, R : Any> : ResultListenable<R, R?> {
+interface Detector<T : Any, R : Any> : StateListenable<R> {
     val timeoutDuration: Duration
 
     /**
@@ -95,6 +84,6 @@ interface DetectorModule<T : Any, R : Any> : Detector<T, R>, RModule
  * @see Requester
  * @see RModule
  */
-interface RequesterModule<T : Any, R : Any> : Requester<T, R>, RModule
+interface RequesterModule<T : Any, R : Any> : DetectorModule<T, R>, Requester<T, R>
 
-class RequestTimeoutException(val input: Any?) : IllegalStateException()
+class RequestTimeoutException(val input: Any?) : IllegalStateException("Request with input $input timed out")

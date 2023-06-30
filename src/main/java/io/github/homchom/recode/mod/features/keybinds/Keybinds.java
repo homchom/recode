@@ -4,7 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.commands.CodeSearcher;
-import io.github.homchom.recode.multiplayer.state.DF;
+import io.github.homchom.recode.multiplayer.state.DFGlobals;
 import io.github.homchom.recode.multiplayer.state.PlotMode;
 import io.github.homchom.recode.sys.sidedchat.ChatShortcut;
 import net.fabricmc.api.ClientModInitializer;
@@ -126,12 +126,12 @@ public class Keybinds implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             // toggle play dev
             while (toggle_play_dev.consumeClick()) {
-                sendCommand(DF.isInMode(DF.getCurrentDFState(), PlotMode.Play) ? "dev" : "play");
+                sendCommand(DFGlobals.isInMode(DFGlobals.getCurrentDFState(), PlotMode.Play) ? "dev" : "play");
             }
 
             // toggle play build
             while (toggle_play_build.consumeClick()) {
-                sendCommand(DF.isInMode(DF.getCurrentDFState(), PlotMode.Play) ? "build" : "play");
+                sendCommand(DFGlobals.isInMode(DFGlobals.getCurrentDFState(), PlotMode.Play) ? "build" : "play");
             }
 
             // spawn
@@ -195,7 +195,7 @@ public class Keybinds implements ClientModInitializer {
 
             // search
             while (searchFunction.consumeClick()) {
-                if (DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev)) {
+                if (DFGlobals.isInMode(DFGlobals.getCurrentDFState(), PlotMode.Dev)) {
                     var hitLocation = mc.hitResult.getLocation().toVector3f();
                     var blockPos = new BlockPos((int) hitLocation.x, (int) hitLocation.y, (int) hitLocation.z);
                     BlockEntity blockEntity = mc.level.getBlockEntity(blockPos);

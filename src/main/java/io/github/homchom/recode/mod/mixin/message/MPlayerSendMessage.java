@@ -2,7 +2,7 @@ package io.github.homchom.recode.mod.mixin.message;
 
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.social.chat.ConversationTimer;
-import io.github.homchom.recode.multiplayer.state.DF;
+import io.github.homchom.recode.multiplayer.state.DFGlobals;
 import io.github.homchom.recode.multiplayer.state.DFState;
 import io.github.homchom.recode.multiplayer.state.PlotMode;
 import io.github.homchom.recode.sys.player.chat.ChatType;
@@ -30,7 +30,7 @@ public class MPlayerSendMessage {
                     CompoundTag tag = mainHand.getTag();
                     CompoundTag publicBukkitValues = tag.getCompound("PublicBukkitValues");
                     if (!tag.contains("PublicBukkitValues") || !publicBukkitValues.contains("hypercube:varitem")) {
-                        if (!(DF.getCurrentDFState() instanceof DFState.AtSpawn) || !mainHand.getHoverName().getString().equals("◇ Game Menu ◇"))
+                        if (!(DFGlobals.getCurrentDFState() instanceof DFState.AtSpawn) || !mainHand.getHoverName().getString().equals("◇ Game Menu ◇"))
                             conversationMessage(string, ci);
                     }
                 } else conversationMessage(string, ci);
@@ -56,7 +56,7 @@ public class MPlayerSendMessage {
     }
 
     private void conversationMessage(String message, CallbackInfo ci) {
-        if (Config.getBoolean("automsg") && ConversationTimer.currentConversation != null && (!DF.isInMode(DF.getCurrentDFState(), PlotMode.Play) || !message.startsWith("@"))) {
+        if (Config.getBoolean("automsg") && ConversationTimer.currentConversation != null && (!DFGlobals.isInMode(DFGlobals.getCurrentDFState(), PlotMode.Play) || !message.startsWith("@"))) {
             ci.cancel();
             ConversationTimer.conversationUpdateTime = String.valueOf(System.currentTimeMillis());
             minecraftClient.player.connection.sendUnsignedCommand("msg " + ConversationTimer.currentConversation + " " + message);

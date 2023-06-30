@@ -1,10 +1,8 @@
 package io.github.homchom.recode.multiplayer.state
 
-import io.github.homchom.recode.util.collections.ImmutableSet
+class PermissionGroup(ranks: Iterable<Rank>) {
+    val ranks = ranks.toSet()
 
-data class PermissionGroup(
-    val ranks: ImmutableSet<Rank>
-) {
     inline operator fun <reified P> contains(rankPermission: P) where P : Rank, P : Comparable<P> =
         ranks.any { it is P && it >= rankPermission }
 }

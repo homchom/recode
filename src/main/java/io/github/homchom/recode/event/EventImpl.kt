@@ -2,9 +2,9 @@ package io.github.homchom.recode.event
 
 import com.google.common.cache.CacheBuilder
 import io.github.homchom.recode.RecodeDispatcher
-import io.github.homchom.recode.lifecycle.CoroutineModule
+import io.github.homchom.recode.lifecycle.ModuleDetail
 import io.github.homchom.recode.lifecycle.RModule
-import io.github.homchom.recode.lifecycle.exposedModule
+import io.github.homchom.recode.lifecycle.module
 import io.github.homchom.recode.runOnMinecraftThread
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -79,9 +79,9 @@ private class BufferedFlowEvent<T, R : Any, I, K : Any>(
     stableInterval: Duration,
     private val keySelector: (I) -> K,
     private val contextGenerator: (I) -> T,
-    cacheDuration: Duration = 1.seconds,
-    private val module: CoroutineModule = exposedModule()
+    cacheDuration: Duration = 1.seconds
 ) : BufferedCustomEvent<T, R, I> {
+    private val module = module(ModuleDetail.Exposed)
     private val delegate = DependentEvent(delegate, module)
 
     // TODO: use Caffeine (official successor) or other alternative?

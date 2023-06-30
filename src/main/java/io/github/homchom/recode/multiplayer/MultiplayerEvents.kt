@@ -28,12 +28,12 @@ object DisconnectFromServerEvent :
 data class ServerJoinContext(val handler: ClientPacketListener, val sender: PacketSender, val client: Minecraft)
 data class ServerDisconnectContext(val handler: ClientPacketListener, val client: Minecraft)
 
-private val patchRegex = Regex("""Current patch: (.+). See the patch notes with /patch!""")
+private val patchRegex = Regex("""Current patch: (.+)\. See the patch notes with /patch!""")
 
 object JoinDFDetector :
     Detector<Unit, JoinDFInfo> by detector(nullaryTrial(JoinServerEvent) {
         requireFalse(isOnDF) // if already on DF, this is a node switch and should not be tested
-        requireTrue(ipMatchesDF)
+        requireTrue(mc.currentServer.ipMatchesDF)
 
         val messages = ReceiveChatMessageEvent.add()
         val tipMessage = TipMessage.detect(null).add()
@@ -50,7 +50,7 @@ object JoinDFDetector :
             val canTip = async {
                 testBoolean(tipMessage) { it?.canTip ?: false }.passed
             }
-            val request = HideableStateRequest(mc.player!!.username, true)
+            val request = UserStateRequest(mc.player!!.username, true)
             val message = LocateMessage.request(request)
 
             JoinDFInfo(message.state.node, patch, canTip.await())

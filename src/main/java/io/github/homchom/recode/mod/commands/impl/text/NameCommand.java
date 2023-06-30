@@ -7,7 +7,7 @@ import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
 import io.github.homchom.recode.mod.commands.arguments.types.PlayerArgumentType;
-import io.github.homchom.recode.multiplayer.state.DF;
+import io.github.homchom.recode.multiplayer.state.DFGlobals;
 import io.github.homchom.recode.multiplayer.state.PlotMode;
 import io.github.homchom.recode.sys.player.chat.ChatType;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
@@ -50,7 +50,7 @@ public class NameCommand extends Command {
                                             ).withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, fullName)));
                                     this.sendMessage(mc, text);
 
-                                    if (DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev)) {
+                                    if (DFGlobals.isInMode(DFGlobals.getCurrentDFState(), PlotMode.Dev)) {
                                         this.sendCommand(mc, "txt " + fullName);
                                     }
                                 } catch (IOException e) {

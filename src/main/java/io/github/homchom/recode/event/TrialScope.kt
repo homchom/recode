@@ -4,7 +4,6 @@ import io.github.homchom.recode.DEFAULT_TIMEOUT_DURATION
 import io.github.homchom.recode.lifecycle.CoroutineModule
 import io.github.homchom.recode.lifecycle.RModule
 import io.github.homchom.recode.util.NullableScope
-import io.github.homchom.recode.util.collections.immutable
 import io.github.homchom.recode.util.nullable
 import io.github.homchom.recode.util.unitOrNull
 import kotlinx.coroutines.*
@@ -61,7 +60,7 @@ class TrialScope @DelicateCoroutinesApi constructor(
      *
      * @see test
      */
-    val rules get() = _rules.immutable()
+    val rules: List<() -> Unit> get() = _rules
 
     private val _rules = mutableListOf<() -> Unit>()
 
@@ -78,7 +77,7 @@ class TrialScope @DelicateCoroutinesApi constructor(
      */
     fun <T> Listenable<T>.add() = notifications
         .buffer(Channel.UNLIMITED)
-        .produceIn(CoroutineScope(coroutineScope.coroutineContext + Dispatchers.Default))
+        .produceIn(coroutineScope)
 
     /**
      * @see asListenable
@@ -175,7 +174,7 @@ class TrialScope @DelicateCoroutinesApi constructor(
     /**
      * @see failOn
      */
-    suspend inline fun <C> enforceBoolean(channel: Channel<C>, crossinline test: (C) -> Boolean) {
+    suspend inline fun <C> enforceBoolean(channel: ReceiveChannel<C>, crossinline test: (C) -> Boolean) {
         enforce(channel) { test(it).unitOrNull() }
     }
 

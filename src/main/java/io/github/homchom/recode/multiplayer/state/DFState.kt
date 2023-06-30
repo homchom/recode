@@ -1,53 +1,65 @@
-@file:JvmName("DF")
+@file:JvmName("DFGlobals")
 @file:JvmMultifileClass
 
 package io.github.homchom.recode.multiplayer.state
 
 import io.github.homchom.recode.mc
-import io.github.homchom.recode.multiplayer.GREEN_ARROW_CHAR
-import io.github.homchom.recode.multiplayer.PLOT_NAME_PATTERN
-import io.github.homchom.recode.multiplayer.USERNAME_PATTERN
+import io.github.homchom.recode.multiplayer.*
 import io.github.homchom.recode.ui.equalsUnstyled
 import io.github.homchom.recode.ui.matchesUnstyled
-import io.github.homchom.recode.util.*
-import kotlinx.coroutines.CompletableDeferred
+import io.github.homchom.recode.util.GroupMatcher
+import io.github.homchom.recode.util.Matcher
+import io.github.homchom.recode.util.enumMatcher
+import io.github.homchom.recode.util.unitOrNull
 import kotlinx.coroutines.Deferred
+import net.minecraft.client.multiplayer.ServerData
 import net.minecraft.network.chat.Component
 
-val ipMatchesDF get() = mc.currentServer?.ip?.matches(dfIPRegex) ?: false
+val ServerData?.ipMatchesDF get(): Boolean {
+    val regex = Regex("""(?:\w+\.)?mcdiamondfire\.com(?::\d+)?""")
+    return this?.ip?.matches(regex) ?: false
+}
 
-private val dfIPRegex = Regex("""(?:\w+\.)?mcdiamondfire\.com(?::\d+)?""")
+sealed class DFState : LocateState {
+    abstract val permissions: Deferred<PermissionGroup>
 
-sealed interface DFState : LocateState {
-    val permissions: Deferred<PermissionGroup>
-
-    // TODO: implement this (how should we handle supportee vs support?)
-    //val isInSession: Boolean
+    abstract val session: SupportSession?
 
     /**
      * The player's current permissions, suspending if permissions have not yet been initially detected.
      */
     suspend fun permissions() = permissions.await()
 
-    suspend fun withState(state: LocateState) = when (state) {
-        is SpawnState -> AtSpawn(state.node, permissions, /*isInSession*/)
-        is PlayState -> OnPlot(state, permissions(), /*isInSession*/)
+    fun withState(state: LocateState) = when (state) {
+        is SpawnState -> AtSpawn(state.node, permissions, session)
+        is PlayState -> OnPlot(state, permissions, session)
     }
 
-    class AtSpawn(
+    abstract fun withSession(session: SupportSession?): DFState
+
+    data class AtSpawn(
         override val node: Node,
         override val permissions: Deferred<PermissionGroup>,
-        /*override val isInSession: Boolean*/
-    ) : DFState, SpawnState {
-        override suspend fun permissions() = permissions.await()
+        override val session: SupportSession?
+    ) : DFState(), SpawnState {
+        override fun withSession(session: SupportSession?) = copy(session = session)
     }
 
-    class OnPlot(
-        state: PlayState,
-        permissions: PermissionGroup,
-        /*override val isInSession: Boolean*/
-    ) : DFState, PlayState by state {
-        override val permissions = CompletableDeferred(permissions)
+    data class OnPlot(
+        override val node: Node,
+        override val mode: PlotMode,
+        override val plot: Plot,
+        override val status: String?,
+        override val permissions: Deferred<PermissionGroup>,
+        override val session: SupportSession?
+    ) : DFState(), PlayState {
+        constructor(
+            state: PlayState,
+            permissions: Deferred<PermissionGroup>,
+            session: SupportSession?
+        ) : this(state.node, state.mode, state.plot, state.status, permissions, session)
+
+        override fun withSession(session: SupportSession?) = copy(session = session)
     }
 }
 
@@ -58,7 +70,7 @@ value class Node(private val id: String) {
     val displayName get() = when {
         id.startsWith("node") -> "Node ${id.drop(4)}"
         id == "beta" -> "Node Beta"
-        else -> id.capitalize()
+        else -> id.replaceFirstChar(Char::titlecase)
     }
 
     override fun toString() = displayName
@@ -66,11 +78,9 @@ value class Node(private val id: String) {
 
 fun nodeByName(name: String): Node {
     val node = name.removePrefix("Node ")
-    val id = node.toIntOrNull()?.run { "node$node" } ?: node.uncapitalize()
+    val id = node.toIntOrNull()?.run { "node$node" } ?: node.replaceFirstChar(Char::lowercase)
     return Node(id)
 }
-
-//fun nodeOf(id: String) = Node.values().singleOrNull { it.id == id } ?: Node.UNKNOWN
 
 data class Plot(
     val name: String,
@@ -79,7 +89,7 @@ data class Plot(
 )
 
 private val playModeRegex =
-    Regex("""$GREEN_ARROW_CHAR Joined game: $PLOT_NAME_PATTERN by $USERNAME_PATTERN.""")
+    Regex("""$MAIN_ARROW_CHAR Joined game: $PLOT_NAME_PATTERN by $USERNAME_PATTERN\.""")
 
 enum class PlotMode(val descriptor: String) : Matcher<Component, Unit> {
     Play("playing") {
@@ -88,14 +98,16 @@ enum class PlotMode(val descriptor: String) : Matcher<Component, Unit> {
     },
     Build("building") {
         override fun match(input: Component) =
-            input.equalsUnstyled("$GREEN_ARROW_CHAR You are now in build mode.").unitOrNull()
+            input.equalsUnstyled("$MAIN_ARROW_CHAR You are now in build mode.").unitOrNull()
     },
     Dev("coding") {
         override fun match(input: Component) =
-            input.equalsUnstyled("$GREEN_ARROW_CHAR You are now in dev mode.").unitOrNull()
+            input.equalsUnstyled("$MAIN_ARROW_CHAR You are now in dev mode.").unitOrNull()
     };
 
     val id get() = name.lowercase()
+
+    val capitalizedDescriptor get() = descriptor.replaceFirstChar(Char::titlecase)
 
     companion object : GroupMatcher<Component, Unit, PlotMode> by enumMatcher()
 }
@@ -104,6 +116,23 @@ fun plotModeByDescriptor(descriptor: String) =
     PlotMode.values().single { it.descriptor == descriptor }
 fun plotModeByDescriptorOrNull(descriptor: String) =
     PlotMode.values().singleOrNull { it.descriptor == descriptor }
+
+enum class SupportSession : Matcher<Component, Unit> {
+    Requested {
+        override fun match(input: Component) = input.equalsUnstyled(
+            "You have requested code support.\nIf you wish to leave the queue, use /support cancel."
+        ).unitOrNull()
+    },
+    Helping {
+        override fun match(input: Component): Unit? {
+            val regex = Regex("\\[SUPPORT] ${mc.player!!.username} entered a session with " +
+                    "$USERNAME_PATTERN\\. $SUPPORT_ARROW_CHAR Queue cleared!")
+            return regex.matchesUnstyled(input).unitOrNull()
+        }
+    };
+
+    companion object : GroupMatcher<Component, Unit, SupportSession> by enumMatcher()
+}
 
 sealed interface LocateState {
     val node: Node
@@ -118,7 +147,7 @@ sealed interface LocateState {
     ) : PlayState
 }
 
-@Deprecated("Only used for legacyState", ReplaceWith("node.displayName"))
+@Deprecated("Only used for legacy state", ReplaceWith("node.displayName"))
 val LocateState.nodeDisplayName @JvmName("getNodeDisplayName") get() = node.displayName
 
 sealed interface SpawnState : LocateState

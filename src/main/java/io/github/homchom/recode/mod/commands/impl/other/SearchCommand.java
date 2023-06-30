@@ -6,7 +6,7 @@ import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
 import io.github.homchom.recode.mod.commands.arguments.types.ChoiceArgumentType;
 import io.github.homchom.recode.mod.features.commands.CodeSearcher;
-import io.github.homchom.recode.multiplayer.state.DF;
+import io.github.homchom.recode.multiplayer.state.DFGlobals;
 import io.github.homchom.recode.multiplayer.state.PlotMode;
 import io.github.homchom.recode.sys.hypercube.codeaction.Action;
 import io.github.homchom.recode.sys.hypercube.codeaction.ActionDump;
@@ -83,7 +83,7 @@ public class SearchCommand extends Command {
 										String actionArgument = ctx.getArgument("action", String.class);
 										String codeblockArgument = ctx.getArgument("codeblock", String.class);
 										CodeSearcher.SearchType searchType = CodeSearcher.SearchType.valueOf(codeblockArgument.toUpperCase());
-										if (DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev)) {
+										if (DFGlobals.isInMode(DFGlobals.getCurrentDFState(), PlotMode.Dev)) {
 											CodeSearcher.beginSearch(searchType, actionArgument);
 										} else {
 											ChatUtil.sendMessage(new TranslatableContents("recode.command.require_dev_mode", null, new String[]{ctx.getArgument("action", String.class)})

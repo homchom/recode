@@ -5,9 +5,10 @@ import io.github.homchom.recode.game.RespawnEvent;
 import io.github.homchom.recode.game.TeleportEvent;
 import io.github.homchom.recode.game.UpdateScoreboardScoreEvent;
 import io.github.homchom.recode.multiplayer.SendCommandEvent;
-import io.github.homchom.recode.multiplayer.ServerTrust;
+import io.github.homchom.recode.multiplayer.ServerStatus;
 import io.github.homchom.recode.sys.hypercube.templates.TemplateStorageHandler;
 import io.github.homchom.recode.sys.hypercube.templates.TemplateUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastComponent;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -70,6 +71,8 @@ public abstract class MClientPacketListener {
 	@Redirect(method = "handleServerData", at = @At(value = "INVOKE", target =
 		"Lnet/minecraft/client/gui/components/toasts/ToastComponent;addToast(Lnet/minecraft/client/gui/components/toasts/Toast;)V"))
 	public void hideSecureChatToastIfTrusted(ToastComponent instance, Toast toast) {
-		if (!ServerTrust.isServerTrusted()) instance.addToast(toast);
+		if (!ServerStatus.isTrusted(Minecraft.getInstance().getCurrentServer())) {
+			instance.addToast(toast);
+		}
 	}
 }

@@ -1,7 +1,6 @@
 package io.github.homchom.recode.feature
 
 import io.github.homchom.recode.lifecycle.*
-import io.github.homchom.recode.util.collections.immutable
 
 // TODO: finish and document these
 
@@ -10,67 +9,39 @@ sealed interface Configurable : RModule {
 }
 
 /**
- * Builds a [FeatureModule] with [details] and [builder].
+ * Builds a simple [Feature] with [builder].
+ *
+ * This is provided as a convenience function; for more complex feature modules, use the more generic
+ * [io.github.homchom.recode.lifecycle.module] function.
  */
-inline fun feature(name: String, vararg details: ModuleDetail, builder: ModuleBuilderScope): FeatureModule =
-    SimpleFeatureModule(name, strongExposedModule(*details, builder = builder))
+fun feature(name: String, builder: ModuleBuilder) = module(featureDetail(name), builder)
 
-/**
- * Builds a [FeatureModule] with [details].
- */
-fun feature(name: String, vararg details: ModuleDetail): FeatureModule =
-    SimpleFeatureModule(name, strongExposedModule(*details))
-
-/**
- * Builds a [FeatureGroupModule].
- */
-fun featureGroup(name: String, vararg features: FeatureModule): FeatureGroupModule =
-    FeatureGroup(*features, name = name).let { SimpleFeatureGroupModule(name, it, module(it)) }
-
-interface FeatureModule : Configurable, ExposedModule
-
-sealed interface FeatureGroupModule : Configurable {
-    val features: List<FeatureModule>
-}
-
-@OptIn(MutatesModuleState::class)
-class FeatureGroup(vararg features: FeatureModule, private val name: String) : ModuleDetail {
-    val features = features.immutable()
-
-    override fun children() = emptyModuleList()
-
-    override fun ExposedModule.onLoad() {
-        forEachFeature { addParent(it) }
-    }
-
-    override fun ExposedModule.onEnable() {
-        forEachFeature { it.enable() }
-    }
-
-    override fun ExposedModule.onDisable() {
-        forEachFeature { it.disable() }
-    }
-
-    private inline fun forEachFeature(block: (FeatureModule) -> Unit) {
-        for (feature in features) block(feature)
-    }
-}
-
-/**
- * A simple [FeatureModule] that delegates to an [ExposedModule].
- */
-class SimpleFeatureModule(
+class Feature(
     override val name: String,
     moduleDelegate: ExposedModule
-) : FeatureModule, ExposedModule by moduleDelegate
+) : Configurable, ExposedModule by moduleDelegate
 
-/**
- * A simple [FeatureGroupModule] that delegates to an [ExposedModule].
- */
-class SimpleFeatureGroupModule(
+class FeatureGroup(
     override val name: String,
-    detail: FeatureGroup,
+    val features: List<Feature>,
     moduleDelegate: RModule
-) : FeatureGroupModule, RModule by moduleDelegate {
-    override val features by detail::features
-}
+) : Configurable, RModule by moduleDelegate
+
+fun featureDetail(name: String) = ModuleDetail<ExposedModule, Feature> { Feature(name, it) }
+
+fun featureGroupDetail(name: String, vararg features: Feature) =
+    ModuleDetail<ExposedModule, FeatureGroup> { module ->
+        module.onLoad {
+            for (feature in features) feature.depend(module)
+        }
+
+        module.onEnable {
+            for (feature in features) feature.enable()
+        }
+
+        module.onDisable {
+            for (feature in features) feature.disable()
+        }
+
+        FeatureGroup(name, features.toList(), module)
+    }

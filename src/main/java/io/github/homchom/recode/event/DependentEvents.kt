@@ -1,28 +1,30 @@
 package io.github.homchom.recode.event
 
-import io.github.homchom.recode.lifecycle.ModuleBuilderScope
+import io.github.homchom.recode.lifecycle.ModuleBuilder
 import io.github.homchom.recode.lifecycle.RModule
 import io.github.homchom.recode.lifecycle.module
 import kotlinx.coroutines.flow.Flow
 
-inline fun <T> DependentListenable(delegate: Listenable<T>, dependencyBuilder: ModuleBuilderScope) =
-    DependentListenable(delegate, module(builder = dependencyBuilder))
+// TODO: rework post-flavors
 
-inline fun <T, R> DependentResultListenable(
+fun <T> DependentListenable(delegate: Listenable<T>, dependencyBuilder: ModuleBuilder) =
+    DependentListenable(delegate, module(dependencyBuilder))
+
+fun <T, R> DependentResultListenable(
     delegate: ResultListenable<T, R>,
-    dependencyBuilder: ModuleBuilderScope
+    dependencyBuilder: ModuleBuilder
 ): DependentResultListenable<T, R> {
-    return DependentResultListenable(delegate, module(builder = dependencyBuilder))
+    return DependentResultListenable(delegate, module(dependencyBuilder))
 }
 
-inline fun <T, R : Any> DependentEvent(delegate: CustomEvent<T, R>, dependencyBuilder: ModuleBuilderScope) =
-    DependentEvent(delegate, module(builder = dependencyBuilder))
+fun <T, R : Any> DependentEvent(delegate: CustomEvent<T, R>, dependencyBuilder: ModuleBuilder) =
+    DependentEvent(delegate, module(dependencyBuilder))
 
-inline fun <T, R : Any, I> DependentBufferedEvent(
+fun <T, R : Any, I> DependentBufferedEvent(
     delegate: BufferedCustomEvent<T, R, I>,
-    dependencyBuilder: ModuleBuilderScope
+    dependencyBuilder: ModuleBuilder
 ): DependentBufferedEvent<T, R, I> {
-    return DependentBufferedEvent(delegate, module(builder = dependencyBuilder))
+    return DependentBufferedEvent(delegate, module(dependencyBuilder))
 }
 
 /**

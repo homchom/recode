@@ -78,7 +78,7 @@ interface RecodeLevelRenderer {
 
     /**
      * Gets and returns the [RGBAColor] of [blockEntity]'s outline (as determined by [runBlockEntityEvents]),
-     * or null if it will not be outlined.
+     * or `null` if it will not be outlined.
      */
     fun getBlockEntityOutlineColor(blockEntity: BlockEntity): RGBAColor?
 

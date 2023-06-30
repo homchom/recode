@@ -7,8 +7,8 @@ import com.google.gson.GsonBuilder
 import io.github.homchom.recode.feature.AutomationFeatureGroup
 import io.github.homchom.recode.feature.RenderingFeatureGroup
 import io.github.homchom.recode.feature.SocialFeatureGroup
-import io.github.homchom.recode.lifecycle.GlobalModule
-import io.github.homchom.recode.lifecycle.entrypointModule
+import io.github.homchom.recode.lifecycle.EntrypointDetail
+import io.github.homchom.recode.lifecycle.module
 import io.github.homchom.recode.mod.commands.CommandHandler
 import io.github.homchom.recode.mod.config.Config
 import io.github.homchom.recode.mod.config.internal.ConfigFile
@@ -23,7 +23,6 @@ import io.github.homchom.recode.mod.events.LegacyEventHandler
 import io.github.homchom.recode.sys.hypercube.codeaction.ActionDump
 import io.github.homchom.recode.sys.hypercube.templates.TemplateStorageHandler
 import io.github.homchom.recode.sys.networking.websocket.SocketHandler
-import kotlinx.coroutines.DelicateCoroutinesApi
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.Minecraft
@@ -41,11 +40,9 @@ val trimmedModVersion by lazy {
     modVersion.replace(Regex("""\+[\d.]+$"""), "")
 }
 
-@OptIn(DelicateCoroutinesApi::class)
-val RecodeMod = entrypointModule {
+val RecodeMod = module(EntrypointDetail) {
     // TODO: move feature groups to a config module
     depend(AutomationFeatureGroup, SocialFeatureGroup, RenderingFeatureGroup)
-    depend(GlobalModule)
 
     // on mod initialize
     onLoad {

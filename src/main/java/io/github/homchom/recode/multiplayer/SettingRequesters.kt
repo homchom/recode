@@ -6,27 +6,28 @@ import io.github.homchom.recode.event.requester
 import io.github.homchom.recode.event.trial
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.mod.features.LagslayerHUD
+import io.github.homchom.recode.multiplayer.state.DFStateDetectors
 import io.github.homchom.recode.ui.equalsUnstyled
 import io.github.homchom.recode.ui.matchesUnstyled
 import io.github.homchom.recode.util.cachedRegexBuilder
 import net.minecraft.world.effect.MobEffects
 
-val ChatLocalRequester = requester(nullaryTrial(
+val ChatLocalRequester = requester(DFStateDetectors.ChangeMode, nullaryTrial(
     ReceiveChatMessageEvent,
     start = { sendCommand("chat local") },
     tests = { (text), _ ->
-        val message = "$GREEN_ARROW_CHAR Chat is now set to Local. You will only see messages from players on " +
+        val message = "$MAIN_ARROW_CHAR Chat is now set to Local. You will only see messages from players on " +
                 "your plot. Use /chat to change it again."
         text.equalsUnstyled(message).instantUnitOrNull()
     }
 ))
 
 private val timeRegex = cachedRegexBuilder<Long> { time ->
-    Regex("""$GREEN_ARROW_CHAR Set your player time to ${time ?: "[0-9+]"}.""")
+    Regex("""$MAIN_ARROW_CHAR Set your player time to ${time ?: "[0-9+]"}\.""")
 }
 
 // TODO: support time keywords through command suggestions, not enum
-val ClientTimeRequester = requester(trial(
+val ClientTimeRequester = requester(DFStateDetectors.ChangeMode, trial(
     ReceiveChatMessageEvent,
     start = { time: Long -> sendCommand("time $time") },
     tests = { time, (text), _ ->
@@ -36,14 +37,15 @@ val ClientTimeRequester = requester(trial(
 
 // TODO: support time keywords through command suggestions, not enum
 val FlightRequesters = nullaryToggleRequesterGroup(
+    DFStateDetectors,
     ReceiveChatMessageEvent,
     start = { sendCommand("fly") },
     enabledPredicate = { mc.player!!.isFlightEnabled },
     enabledTests = { (text), _ ->
-        text.equalsUnstyled("$GREEN_ARROW_CHAR Flight enabled.").instantUnitOrNull()
+        text.equalsUnstyled("$MAIN_ARROW_CHAR Flight enabled.").instantUnitOrNull()
     },
     disabledTests = { (text), _ ->
-        text.equalsUnstyled("$GREEN_ARROW_CHAR Flight disabled.").instantUnitOrNull()
+        text.equalsUnstyled("$MAIN_ARROW_CHAR Flight disabled.").instantUnitOrNull()
     }
 )
 
@@ -54,6 +56,7 @@ private val lsDisabledRegex =
 
 // TODO: improve enabledPredicate once arbitrary requesters are able to be invalidated
 val LagSlayerRequesters = nullaryToggleRequesterGroup(
+    DFStateDetectors.ChangeMode,
     ReceiveChatMessageEvent,
     start = { sendCommand("lagslayer") },
     enabledPredicate = { LagslayerHUD.lagSlayerEnabled },
@@ -62,13 +65,14 @@ val LagSlayerRequesters = nullaryToggleRequesterGroup(
 )
 
 val NightVisionRequesters = nullaryToggleRequesterGroup(
+    DFStateDetectors.ChangeMode,
     ReceiveChatMessageEvent,
     start = { sendCommand("nightvis") },
     enabledPredicate = { mc.player!!.hasEffect(MobEffects.NIGHT_VISION) },
     enabledTests = { (text), _ ->
-        text.equalsUnstyled("$GREEN_ARROW_CHAR Enabled night vision.").instantUnitOrNull()
+        text.equalsUnstyled("$MAIN_ARROW_CHAR Enabled night vision.").instantUnitOrNull()
     },
     disabledTests = { (text), _ ->
-        text.equalsUnstyled("$GREEN_ARROW_CHAR Disabled night vision.").instantUnitOrNull()
+        text.equalsUnstyled("$MAIN_ARROW_CHAR Disabled night vision.").instantUnitOrNull()
     }
 )
