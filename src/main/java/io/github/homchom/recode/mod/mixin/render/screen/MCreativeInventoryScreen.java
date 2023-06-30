@@ -3,7 +3,7 @@ package io.github.homchom.recode.mod.mixin.render.screen;
 import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.config.internal.DestroyItemResetType;
-import io.github.homchom.recode.multiplayer.state.DFGlobals;
+import io.github.homchom.recode.multiplayer.state.DF;
 import io.github.homchom.recode.multiplayer.state.PlotMode;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.world.inventory.ClickType;
@@ -22,7 +22,7 @@ public class MCreativeInventoryScreen {
     @Inject(method = "slotClicked", at = @At("HEAD"), cancellable = true)
     public void slotClicked(Slot slot, int invSlot, int clickData, ClickType actionType, CallbackInfo ci) {
         DestroyItemResetType resetType = Config.getEnum("destroyItemReset", DestroyItemResetType.class);
-        if (resetType != DestroyItemResetType.OFF && DFGlobals.isInMode(DFGlobals.getCurrentDFState(), PlotMode.Dev)
+        if (resetType != DestroyItemResetType.OFF && DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev)
                 && actionType == ClickType.QUICK_MOVE && slot == this.destroyItemSlot) {
             LegacyRecode.MC.setScreen(null);
             String cmd = "";

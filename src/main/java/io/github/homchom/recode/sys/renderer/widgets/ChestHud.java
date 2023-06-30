@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.Config;
-import io.github.homchom.recode.multiplayer.state.DFGlobals;
+import io.github.homchom.recode.multiplayer.state.DF;
 import io.github.homchom.recode.multiplayer.state.PlotMode;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.Minecraft;
@@ -34,7 +34,7 @@ public class ChestHud {
 
 
     private static void afterContainerRender(Screen screen, PoseStack matrices, int mouseX, int mouseY, float tickDelta) {
-        if (DFGlobals.isInMode(DFGlobals.getCurrentDFState(), PlotMode.Dev) && Config.getBoolean("chestToolTip")) {
+        if (DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev) && Config.getBoolean("chestToolTip")) {
             if (Config.getBoolean("chestToolTipType")) {
                 ItemStack item = LegacyRecode.MC.player.getInventory().getItem(17);
 

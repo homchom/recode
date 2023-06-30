@@ -1,4 +1,4 @@
-@file:JvmName("DFGlobals")
+@file:JvmName("DF")
 @file:JvmMultifileClass
 
 package io.github.homchom.recode.multiplayer.state
