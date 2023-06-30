@@ -8,13 +8,13 @@ import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WButton;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.github.cottonmc.cotton.gui.widget.WTextField;
-import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.sys.networking.WebUtil;
 import io.github.homchom.recode.sys.player.chat.ChatType;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
 import io.github.homchom.recode.sys.renderer.IMenu;
 import io.github.homchom.recode.sys.renderer.widgets.ItemScrollablePanel;
 import net.fabricmc.fabric.api.util.TriState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
@@ -187,6 +187,6 @@ public class CodeVaultMenu extends LightweightGuiDescription implements IMenu {
                 err.printStackTrace();
             }
         }
-        LegacyRecode.MC.submit(this::update);
+        Minecraft.getInstance().execute(this::update);
     }
 }

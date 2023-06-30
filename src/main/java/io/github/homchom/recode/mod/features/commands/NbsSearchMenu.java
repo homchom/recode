@@ -64,7 +64,7 @@ public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
 
     @Override
     public void open(String... args) throws CommandSyntaxException {
-        Minecraft mc = LegacyRecode.MC;
+        Minecraft mc = Minecraft.getInstance();
         WPlainPanel root = new WPlainPanel();
         root.setInsets(Insets.ROOT_PANEL);
         root.setSize(300, 240);
@@ -169,7 +169,7 @@ public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
                                         int[] index = {0};
                                         ScheduledExecutorService scheduler = Executors
                                             .newScheduledThreadPool(1);
-                                        scheduler.scheduleAtFixedRate(() -> LegacyRecode.MC.submit(() -> { //apparently playing sounds non-sync can crash the game
+                                        scheduler.scheduleAtFixedRate(() -> Minecraft.getInstance().submit(() -> { //apparently playing sounds non-sync can crash the game
                                             if (previewId != id
                                                 || mc.screen == null) {
                                                 scheduler.shutdown();

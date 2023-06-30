@@ -1,6 +1,7 @@
 package io.github.homchom.recode.mod.mixin.render;
 
 import io.github.homchom.recode.LegacyRecode;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -35,7 +36,7 @@ public class MChestBlock {
                 try {
                   Thread.sleep(1000);
                 } catch (Exception ignored) {}
-                if (!(LegacyRecode.MC.screen instanceof ContainerScreen)) {
+                if (!(Minecraft.getInstance().screen instanceof ContainerScreen)) {
                     LegacyRecode.signText = new String[0];
                 }
             });

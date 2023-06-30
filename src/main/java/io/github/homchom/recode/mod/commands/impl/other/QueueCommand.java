@@ -42,7 +42,7 @@ public class QueueCommand extends Command {
                             }
                         }
 
-                        LegacyRecode.MC.player.playSound(SoundEvents.UI_TOAST_IN, 2F, 1F);
+                        Minecraft.getInstance().player.playSound(SoundEvents.UI_TOAST_IN, 2F, 1F);
 
                         // Temporary: Show in chat instead of menu
                         ChatUtil.sendMessage(

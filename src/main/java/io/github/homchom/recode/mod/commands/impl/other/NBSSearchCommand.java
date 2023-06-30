@@ -21,7 +21,7 @@ public class NBSSearchCommand extends Command {
         cd.register(literal("nbssearch")
             .then(argument("query", StringArgumentType.greedyString())
                 .executes(ctx -> {
-                    if (!LegacyRecode.MC.player.isCreative()) {
+                    if (!Minecraft.getInstance().player.isCreative()) {
                         ChatUtil.sendMessage("You need to be in creative mode for this command to work!", ChatType.FAIL);
                         return -1;
                     }

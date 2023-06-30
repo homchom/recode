@@ -2,10 +2,10 @@ package io.github.homchom.recode.mod.mixin.inventory;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Key;
-import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.features.keybinds.Keybinds;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -44,7 +44,7 @@ public abstract class MItemStack {
 
             if (keycode == -1) return;
 
-            if (InputConstants.isKeyDown(LegacyRecode.MC.getWindow().getWindow(),keycode)) {
+            if (InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(),keycode)) {
                 List<Component> t = cir.getReturnValue();
 
                 CompoundTag tags = getTagElement("PublicBukkitValues");

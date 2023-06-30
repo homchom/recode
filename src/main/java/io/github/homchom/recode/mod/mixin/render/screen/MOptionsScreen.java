@@ -1,7 +1,7 @@
 package io.github.homchom.recode.mod.mixin.render.screen;
 
-import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.menu.ConfigScreen;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.layouts.LayoutElement;
@@ -32,7 +32,7 @@ public class MOptionsScreen extends Screen {
     ) {
         var button = Button.builder(
                 Component.literal("Recode"),
-                buttonWidget -> LegacyRecode.MC.setScreen(ConfigScreen.getScreen(LegacyRecode.MC.screen))
+                buttonWidget -> Minecraft.getInstance().setScreen(ConfigScreen.getScreen(Minecraft.getInstance().screen))
         );
         instance.addChild(button.build());
         return instance.addChild(layoutElement, i, layoutSettings);

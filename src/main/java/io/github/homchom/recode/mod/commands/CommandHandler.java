@@ -1,7 +1,6 @@
 package io.github.homchom.recode.mod.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.commands.impl.image.ImageHologramCommand;
 import io.github.homchom.recode.mod.commands.impl.image.ImageParticleCommand;
 import io.github.homchom.recode.mod.commands.impl.item.*;
@@ -11,6 +10,7 @@ import io.github.homchom.recode.mod.commands.impl.other.*;
 import io.github.homchom.recode.mod.commands.impl.text.*;
 import io.github.homchom.recode.mod.config.Config;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandBuildContext;
 
 import java.util.ArrayList;
@@ -69,7 +69,7 @@ public class CommandHandler {
     }
 
     public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext context, Command cmd) {
-        cmd.register(LegacyRecode.MC, dispatcher, context);
+        cmd.register(Minecraft.getInstance(), dispatcher, context);
         cmds.add(cmd);
     }
 

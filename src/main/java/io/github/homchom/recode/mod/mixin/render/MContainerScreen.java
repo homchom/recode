@@ -10,6 +10,7 @@ import io.github.homchom.recode.sys.hypercube.codeaction.ActionDump;
 import io.github.homchom.recode.sys.hypercube.codeaction.Argument;
 import io.github.homchom.recode.sys.hypercube.codeaction.DisplayItem;
 import io.github.homchom.recode.sys.util.TextUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.nbt.CompoundTag;
@@ -262,7 +263,7 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
         int y = 0;
         for (String line : errors) {
             Component text = TextUtil.colorCodesToTextComponent(line);
-            LegacyRecode.MC.font.draw(matrices, text, LegacyRecode.MC.screen.width - font.width(text) - 10, 10 + y, 0xffffff);
+            Minecraft.getInstance().font.draw(matrices, text, Minecraft.getInstance().screen.width - font.width(text) - 10, 10 + y, 0xffffff);
             y += 10;
         }
     }
@@ -397,11 +398,11 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
     private void showDesc(Action a, PoseStack matrices) {
         DisplayItem icon = a.getIcon();
 
-        List<Component> desc = icon.toItemStack().getTooltipLines(LegacyRecode.MC.player, Default.NORMAL);
+        List<Component> desc = icon.toItemStack().getTooltipLines(Minecraft.getInstance().player, Default.NORMAL);
 
         int y = 0;
         for (Component line : desc) {
-            LegacyRecode.MC.font.draw(matrices, line, 10, 10 + y, 0xffffff);
+            Minecraft.getInstance().font.draw(matrices, line, 10, 10 + y, 0xffffff);
             y += 10;
         }
     }

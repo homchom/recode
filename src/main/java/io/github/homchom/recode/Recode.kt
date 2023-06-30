@@ -1,5 +1,3 @@
-@file:JvmName("Recode")
-
 package io.github.homchom.recode
 
 import com.google.gson.Gson
@@ -8,6 +6,7 @@ import io.github.homchom.recode.feature.AutomationFeatureGroup
 import io.github.homchom.recode.feature.RenderingFeatureGroup
 import io.github.homchom.recode.feature.SocialFeatureGroup
 import io.github.homchom.recode.lifecycle.EntrypointDetail
+import io.github.homchom.recode.lifecycle.ModuleUnsafe
 import io.github.homchom.recode.lifecycle.module
 import io.github.homchom.recode.mod.commands.CommandHandler
 import io.github.homchom.recode.mod.config.Config
@@ -25,31 +24,25 @@ import io.github.homchom.recode.sys.hypercube.templates.TemplateStorageHandler
 import io.github.homchom.recode.sys.networking.websocket.SocketHandler
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.loader.api.FabricLoader
-import net.minecraft.client.Minecraft
+import net.fabricmc.loader.api.ModContainer
+import net.fabricmc.loader.api.metadata.ModMetadata
+import net.fabricmc.loader.api.metadata.ModOrigin
 import org.slf4j.LoggerFactory
+import java.nio.file.Path
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import kotlin.random.Random
 
 private val logger = LoggerFactory.getLogger(MOD_ID)
 
-lateinit var modVersion: String
-    private set
-
-val trimmedModVersion by lazy {
-    modVersion.replace(Regex("""\+[\d.]+$"""), "")
-}
-
-val RecodeMod = module(EntrypointDetail) {
+private val recodeModule = module(EntrypointDetail) {
     // TODO: move feature groups to a config module
     depend(AutomationFeatureGroup, SocialFeatureGroup, RenderingFeatureGroup)
 
     // on mod initialize
     onLoad {
         logInfo("Initializing...")
-
-        modVersion = FabricLoader.getInstance().getModContainer(MOD_ID).get()
-            .metadata.version.friendlyString
 
         System.setProperty("java.awt.headless", "false")
 
@@ -75,11 +68,38 @@ val RecodeMod = module(EntrypointDetail) {
     }
 }
 
+object Recode : ModContainer {
+    val version: String get() = metadata.version.friendlyString
+
+    @Deprecated(
+        "Use kotlin.random.Random instead",
+        ReplaceWith("Random", "kotlin.random.Random")
+    )
+    val random get() = Random
+
+    private val container by lazy { FabricLoader.getInstance().getModContainer(MOD_ID).get() }
+
+    /**
+     * Initializes recode. This should only be called once, from an entrypoint.
+     */
+    @ModuleUnsafe
+    fun initialize() = recodeModule.enable()
+
+    override fun getMetadata(): ModMetadata = container.metadata
+    override fun getRootPaths(): List<Path> = container.rootPaths
+    override fun getOrigin(): ModOrigin = container.origin
+    override fun getContainingMod(): Optional<ModContainer> = container.containingMod
+    override fun getContainedMods(): Collection<ModContainer> = container.containedMods
+
+    @Deprecated("Use getRootPaths instead")
+    override fun getRootPath(): Path = container.rootPath
+
+    @Deprecated("Use getRootPaths instead")
+    override fun getPath(file: String?): Path = container.getPath(file)
+}
+
 @Deprecated("Use top-level or Kotlin equivalents")
 object LegacyRecode {
-    @JvmField
-    val RANDOM = Random()
-
     @JvmField
     val GSON: Gson = GsonBuilder()
         .registerTypeAdapter(ConfigInstruction::class.java, ConfigSerializer())
@@ -95,9 +115,6 @@ object LegacyRecode {
         .registerTypeAdapter(SoundSetting::class.java, SoundSerializer())
         .setPrettyPrinting()
         .create()
-
-    @JvmField
-    val MC: Minecraft = Minecraft.getInstance()
 
     @JvmField
     val executor: ExecutorService = Executors.newCachedThreadPool()

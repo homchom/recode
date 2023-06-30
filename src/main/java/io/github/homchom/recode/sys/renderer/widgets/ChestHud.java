@@ -36,14 +36,14 @@ public class ChestHud {
     private static void afterContainerRender(Screen screen, PoseStack matrices, int mouseX, int mouseY, float tickDelta) {
         if (DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev) && Config.getBoolean("chestToolTip")) {
             if (Config.getBoolean("chestToolTipType")) {
-                ItemStack item = LegacyRecode.MC.player.getInventory().getItem(17);
+                ItemStack item = Minecraft.getInstance().player.getInventory().getItem(17);
 
                 int i = ((screen.width) / 2) + 85;
                 int j = (screen.height) / 2 - 68;
 
                 // check if block in dev area later.
-                if (LegacyRecode.MC.getWindow().getGuiScaledWidth() >= 600) {
-                    List<Component> lines = item.getTooltipLines(LegacyRecode.MC.player, TooltipFlag.Default.NORMAL);
+                if (Minecraft.getInstance().getWindow().getGuiScaledWidth() >= 600) {
+                    List<Component> lines = item.getTooltipLines(Minecraft.getInstance().player, TooltipFlag.Default.NORMAL);
                     GL11.glTranslatef(0f, 0f, -1f);
                     screen.renderTooltip(matrices, Lists.transform(lines, Component::getVisualOrderText), i, j);
                     GL11.glTranslatef(0f, 0f, 1f);
@@ -51,7 +51,7 @@ public class ChestHud {
 
             } else {
                 ChestMenu handler = ((ContainerScreen) screen).getMenu();
-                Minecraft mc = LegacyRecode.MC;
+                Minecraft mc = Minecraft.getInstance();
                 LocalPlayer player = mc.player;
 
                 Container inventory = player.getInventory();

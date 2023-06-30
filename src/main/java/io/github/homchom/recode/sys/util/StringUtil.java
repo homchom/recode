@@ -1,7 +1,7 @@
 package io.github.homchom.recode.sys.util;
 
 import com.google.gson.JsonArray;
-import io.github.homchom.recode.LegacyRecode;
+import io.github.homchom.recode.Recode;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -48,8 +48,9 @@ public class StringUtil {
     }
 
     public static String genDummyIntArray() {
-        return "[I;" + LegacyRecode.RANDOM.nextInt() + "," + LegacyRecode.RANDOM.nextInt() + ","
-                + LegacyRecode.RANDOM.nextInt() + "," + LegacyRecode.RANDOM.nextInt() + "]";
+        var random = Recode.INSTANCE.getRandom();
+        return "[I;" + random.nextInt() + "," + random.nextInt() + ","
+                + random.nextInt() + "," + random.nextInt() + "]";
     }
 
     public static String textToString(Component txt) {

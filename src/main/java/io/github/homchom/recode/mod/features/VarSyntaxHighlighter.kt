@@ -1,8 +1,8 @@
 package io.github.homchom.recode.mod.features
 
 import com.google.gson.JsonParser
-import io.github.homchom.recode.LegacyRecode
 import io.github.homchom.recode.logError
+import io.github.homchom.recode.mc
 import io.github.homchom.recode.multiplayer.CommandAliasGroup
 import io.github.homchom.recode.sys.util.TextUtil
 import io.github.homchom.recode.util.collections.verticalFlatten
@@ -43,7 +43,7 @@ object VarSyntaxHighlighter {
     @JvmStatic
     fun highlight(msg: String): Component? {
         var mutableMsg = msg
-        val item = LegacyRecode.MC.player!!.mainHandItem
+        val item = mc.player!!.mainHandItem
         var type = ""
         try {
             if (item.item !== Items.AIR) {

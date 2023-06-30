@@ -33,7 +33,7 @@ public class MChatScreen {
     private void render(PoseStack poseStack, int mouseX, int mouseY, float delta,
         CallbackInfo ci) {
         if (Config.getBoolean("highlightVarSyntax")) {
-            Minecraft mc = LegacyRecode.MC;
+            Minecraft mc = Minecraft.getInstance();
 
             String text = input.getValue();
 

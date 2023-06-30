@@ -61,7 +61,7 @@ public class MScreen {
                             gameProfile = NbtUtils.readGameProfile(compoundTag.getCompound("SkullOwner"));
                         }
 
-                        Minecraft mc = LegacyRecode.MC;
+                        Minecraft mc = Minecraft.getInstance();
 
                         Map<Type, MinecraftProfileTexture> textures = mc.getSkinManager().getInsecureSkinInformation(gameProfile);
                         if (textures.containsKey(Type.SKIN)) {

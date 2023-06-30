@@ -1,10 +1,10 @@
 package io.github.homchom.recode.mod.mixin.render.screen;
 
-import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.config.internal.DestroyItemResetType;
 import io.github.homchom.recode.multiplayer.state.DF;
 import io.github.homchom.recode.multiplayer.state.PlotMode;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
@@ -24,7 +24,7 @@ public class MCreativeInventoryScreen {
         DestroyItemResetType resetType = Config.getEnum("destroyItemReset", DestroyItemResetType.class);
         if (resetType != DestroyItemResetType.OFF && DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev)
                 && actionType == ClickType.QUICK_MOVE && slot == this.destroyItemSlot) {
-            LegacyRecode.MC.setScreen(null);
+            Minecraft.getInstance().setScreen(null);
             String cmd = "";
             switch (resetType) {
                 case STANDARD:
@@ -34,7 +34,7 @@ public class MCreativeInventoryScreen {
                     cmd = "rc";
                     break;
             }
-            LegacyRecode.MC.player.connection.sendUnsignedCommand(cmd);
+            Minecraft.getInstance().player.connection.sendUnsignedCommand(cmd);
             ci.cancel();
         }
     }

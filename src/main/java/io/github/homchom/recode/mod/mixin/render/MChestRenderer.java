@@ -1,8 +1,8 @@
 package io.github.homchom.recode.mod.mixin.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.Config;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.ChestRenderer;
@@ -24,7 +24,7 @@ public abstract class MChestRenderer<T extends BlockEntity & LidBlockEntity> imp
             ci.cancel();
 
             BlockState state = Blocks.BARREL.defaultBlockState();
-            LegacyRecode.MC.getBlockRenderer().renderSingleBlock(state, poseStack, multiBufferSource, light, overlay);
+            Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, poseStack, multiBufferSource, light, overlay);
         }
     }
 }

@@ -1,9 +1,9 @@
 package io.github.homchom.recode.sys.hypercube.templates;
 
-import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.sys.player.chat.ChatType;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
 import io.github.homchom.recode.sys.util.ItemUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.Item;
@@ -50,7 +50,7 @@ public class Templates {
     }
 
     public static void giveUserTemplate(ItemStack stack, String name, String codeData) {
-        giveRawTemplate(stack, name, LegacyRecode.MC.player.getName().getString(), codeData);
+        giveRawTemplate(stack, name, Minecraft.getInstance().player.getName().getString(), codeData);
     }
 
     public static void giveRawTemplate(ItemStack stack, String name, String author, String codeData) {

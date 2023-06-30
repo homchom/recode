@@ -94,7 +94,7 @@ public class MHeldItemTooltip {
 
             if (Config.getBoolean("highlightVarSyntax")) {
                 try {
-                    ItemStack item = LegacyRecode.MC.player.getMainHandItem();
+                    ItemStack item = Minecraft.getInstance().player.getMainHandItem();
 
                     if (item.getItem() != Items.AIR) {
                         CompoundTag vals = item.getOrCreateTagElement("PublicBukkitValues");

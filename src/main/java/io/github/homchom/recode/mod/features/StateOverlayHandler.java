@@ -1,11 +1,11 @@
 package io.github.homchom.recode.mod.features;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.multiplayer.state.DF;
 import io.github.homchom.recode.multiplayer.state.DFState;
 import io.github.homchom.recode.multiplayer.state.PlayState;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextColor;
@@ -35,7 +35,7 @@ public class StateOverlayHandler {
     }
 
     private static void drawTextRight(FormattedCharSequence text, int y, Font tr, PoseStack stack) {
-        int x = LegacyRecode.MC.getWindow().getGuiScaledWidth() - tr.width(text) - 4;
+        int x = Minecraft.getInstance().getWindow().getGuiScaledWidth() - tr.width(text) - 4;
         tr.drawShadow(stack, text, x, y, 0xffffff);
     }
 

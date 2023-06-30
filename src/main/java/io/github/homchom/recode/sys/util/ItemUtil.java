@@ -21,7 +21,7 @@ import java.util.List;
 
 public class ItemUtil {
     public static void giveCreativeItem(ItemStack item, boolean preferHand) {
-        Minecraft mc = LegacyRecode.MC;
+        Minecraft mc = Minecraft.getInstance();
         NonNullList<ItemStack> inv = mc.player.getInventory().items;
 
         if (preferHand) {
@@ -58,7 +58,7 @@ public class ItemUtil {
      * @param itemStack The item stack to replace it with
      */
     public static void setContainerItem(int slot, ItemStack itemStack) {
-        Minecraft mc = LegacyRecode.MC;
+        Minecraft mc = Minecraft.getInstance();
 
         // this method kinda doesnt work in survival mode so let's throw an exception if this happens.
         if (!mc.player.isCreative()) {
@@ -67,14 +67,14 @@ public class ItemUtil {
 
         // replace the 8th slot with the item we want to set.
         ItemStack replacedItem = mc.player.getInventory().getItem(7);
-        LegacyRecode.MC.gameMode.handleCreativeModeItemAdd(itemStack, 43);
+        Minecraft.getInstance().gameMode.handleCreativeModeItemAdd(itemStack, 43);
         mc.player.getInventory().setItem(7, itemStack);
 
         // simulates pressing the 8 key on the slot we want to change.
-        LegacyRecode.MC.gameMode.handleInventoryMouseClick(mc.player.containerMenu.containerId, slot, 7, ClickType.SWAP, LegacyRecode.MC.player);
+        Minecraft.getInstance().gameMode.handleInventoryMouseClick(mc.player.containerMenu.containerId, slot, 7, ClickType.SWAP, Minecraft.getInstance().player);
 
         // change the 8th slot back to what it was before.
-        LegacyRecode.MC.gameMode.handleCreativeModeItemAdd(replacedItem, 43);
+        Minecraft.getInstance().gameMode.handleCreativeModeItemAdd(replacedItem, 43);
         mc.player.getInventory().setItem(7, replacedItem);
     }
 

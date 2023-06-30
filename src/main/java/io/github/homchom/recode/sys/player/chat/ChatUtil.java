@@ -30,7 +30,7 @@ public class ChatUtil {
 
     public static void playSound(SoundEvent sound, float pitch, float volume) {
         if (sound != null) {
-            LegacyRecode.MC.player.playSound(sound, volume, pitch);
+            Minecraft.getInstance().player.playSound(sound, volume, pitch);
         }
     }
 
@@ -64,7 +64,7 @@ public class ChatUtil {
     }
 
     public static void sendMessage(MutableComponent text, @Nullable ChatType chatType) {
-        LocalPlayer player = LegacyRecode.MC.player;
+        LocalPlayer player = Minecraft.getInstance().player;
         if (player == null) {
             return;
         }

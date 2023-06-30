@@ -28,7 +28,7 @@ public class ItemEditorMenu extends LightweightGuiDescription implements IMenu {
 
     @Override
     public void open(String... args) {
-        Minecraft mc = LegacyRecode.MC;
+        Minecraft mc = Minecraft.getInstance();
         final ItemStack[] item = {itemStack.copy()};
         WGridPanel root = new WGridPanel(1);
         root.setSize(256, 240);

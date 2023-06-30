@@ -27,7 +27,7 @@ public class RecodeUI extends LightweightGuiDescription implements IMenu {
         root.add(cImage, 46, 0);
 
         root.add(new WLabel(Component.literal("recode")), (220 - Minecraft.getInstance().font.width("recode")) / 2, 110);
-        root.add(new WLabel(Component.literal("v" + Recode.getModVersion())), (220 - Minecraft.getInstance().font.width("v" + Recode.getModVersion())) / 2, 120);
+        root.add(new WLabel(Component.literal("v" + Recode.INSTANCE.getVersion())), (220 - Minecraft.getInstance().font.width("v" + Recode.INSTANCE.getVersion())) / 2, 120);
 
         addButtons(root);
         setRootPanel(root);

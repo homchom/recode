@@ -23,7 +23,7 @@ public class MInGameHUD {
     private void renderEffects(PoseStack stack, CallbackInfo ci) {
         LagslayerHUD.onRender(stack);
 
-        Minecraft mc = LegacyRecode.MC;
+        Minecraft mc = Minecraft.getInstance();
         Font tr = mc.font;
         
         if (CodeSearcher.searchType != null && CodeSearcher.searchValue != null && DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev)) {
