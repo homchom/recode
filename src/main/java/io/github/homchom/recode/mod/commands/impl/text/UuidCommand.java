@@ -23,6 +23,7 @@ import org.apache.commons.io.IOUtils;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 public class UuidCommand extends Command {
 
@@ -33,43 +34,56 @@ public class UuidCommand extends Command {
                         .executes(ctx -> {
                             LegacyRecode.executor.submit(() -> {
                                 String username = ctx.getArgument("username", String.class);
-                                String url = "https://api.mojang.com/users/profiles/minecraft/" + username;
-                                try {
-                                    String UUIDJson = IOUtils
-                                            .toString(new URL(url), StandardCharsets.UTF_8);
-                                    if (UUIDJson.isEmpty()) {
-                                        ChatUtil.sendMessage("Player was not found!", ChatType.FAIL);
-                                        return;
-                                    }
-                                    JsonObject json = JsonParser.parseString(UUIDJson).getAsJsonObject();
-                                    String uuid = json.get("id").getAsString();
-                                    String fullUUID = StringUtil.fromTrimmed(uuid);
-
-                                    Component text = Component.literal("§eUUID of §6" + username + " §eis §b" + fullUUID + "§e!")
-                                            .withStyle(s -> s.withHoverEvent(
-                                                    new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal("§eClick to copy to clipboard."))
-                                            ).withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, fullUUID)));
-                                    this.sendMessage(mc, text);
-
-                                    if (DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev)) {
-                                        this.sendCommand(mc, "txt " + fullUUID);
-                                    }
-                                } catch (IOException e) {
-                                    ChatUtil.sendMessage("§cUser §6" + username + "§c was not found.");
-                                    e.printStackTrace();
-                                }
+                                runUuid(mc, username);
                             });
                             return 1;
                         })
                 )
+                .executes(ctx -> {
+                    String username = Objects.requireNonNull(mc.player).getGameProfile().getName();
+                    runUuid(mc, username);
+                    return 1;
+                })
         );
+    }
+
+    private void runUuid(Minecraft mc, String username){
+        String url = "https://api.mojang.com/users/profiles/minecraft/" + username;
+        try {
+            String UUIDJson = IOUtils
+                    .toString(new URL(url), StandardCharsets.UTF_8);
+            if (UUIDJson.isEmpty()) {
+                ChatUtil.sendMessage("Player was not found!", ChatType.FAIL);
+                return;
+            }
+            JsonObject json = JsonParser.parseString(UUIDJson).getAsJsonObject();
+            String uuid = json.get("id").getAsString();
+            String fullUUID = StringUtil.fromTrimmed(uuid);
+
+            String localUsername = Objects.requireNonNull(mc.player).getGameProfile().getName();
+            String message;
+            if(localUsername.equals(username)) message = "§eYour UUID is §b" + fullUUID + "§e!";
+             else message = "§eUUID of §6" + username + " §eis §b" + fullUUID + "§e!";
+
+            Component text = Component.literal(message)
+                    .withStyle(s -> s.withHoverEvent(
+                            new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal("§eClick to copy to clipboard."))
+                    ).withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, fullUUID)));
+            this.sendMessage(mc, text);
+            if (DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev)) {
+                this.sendCommand(mc, "txt " + fullUUID);
+            }
+        } catch (IOException e) {
+            ChatUtil.sendMessage("§cUser §6" + username + "§c was not found.");
+            e.printStackTrace();
+        }
     }
 
     @Override
     public String getDescription() {
-        return "[blue]/uuid <username>[reset]\n"
-            + "\n"
-            + "Copies the uuid of the player to your clipboard and if you're in dev mode also gives you the uuid as a text item.";
+        return "[blue]/uuid [username][reset]\n"
+                + "\n"
+                + "Copies the uuid of the player to your clipboard and if you're in dev mode also gives you the uuid as a text item. If no player is specified it will default to your name.";
     }
 
     @Override
