@@ -65,7 +65,7 @@ data class ProfileMessage(val username: String, val ranks: List<Rank>) {
         DFStateDetectors.LeaveServer,
         trial(
             ReceiveChatMessageEvent,
-            start = { request -> sendCommand("profile ${request.username}") },
+            start = { request -> sendCommand("propile ${request.username}") },
             tests = { request, context, _ ->
                 val message = context.value
                 val values = ProfileMessage.regex(request?.username)

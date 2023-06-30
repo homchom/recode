@@ -14,7 +14,6 @@ import kotlin.time.Duration
 
 /**
  * Creates a [DetectorModule] that runs via one or more [DetectorTrial] objects.
- *
  */
 fun <T : Any, R : Any> detector(
     primaryTrial: DetectorTrial<T, R>,
@@ -152,25 +151,23 @@ private class TrialRequester<T : Any, R : Any>(
     private val _activeRequests = AtomicInteger(0)
 
     override suspend fun requestFrom(module: RModule, input: T) = withContext(NonCancellable) {
-        coroutineScope {
-            lifecycle.getNotificationsFrom(module)
-                .onEach { cancel("Requester lifecycle ended during a request") }
-                .launchIn(this)
+        lifecycle.getNotificationsFrom(module)
+            .onEach { cancel("Requester lifecycle ended during a request") }
+            .launchIn(this)
 
-            val detectChannel = responseFlow(input, true)
-                .filterNotNull()
-                .produceIn(this)
+        val detectChannel = responseFlow(input, true)
+            .filterNotNull()
+            .produceIn(this)
 
-            _activeRequests.incrementAndGet()
-            try {
-                val response = start(input)
-                    ?: withTimeoutOrNull(timeoutDuration) { detectChannel.receive() }
-                    ?: throw RequestTimeoutException(input)
-                coroutineContext.cancelChildren()
-                response
-            } finally {
-                _activeRequests.decrementAndGet()
-            }
+        _activeRequests.incrementAndGet()
+        try {
+            val response = start(input)
+                ?: withTimeoutOrNull(timeoutDuration) { detectChannel.receive() }
+                ?: throw RequestTimeoutException(input)
+            coroutineContext.cancelChildren()
+            response
+        } finally {
+            _activeRequests.decrementAndGet()
         }
     }
 
