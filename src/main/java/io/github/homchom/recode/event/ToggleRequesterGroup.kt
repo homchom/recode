@@ -11,7 +11,8 @@ import kotlin.time.Duration
 /**
  * Creates a [ToggleRequesterGroup] with the given [start] and conditional tests for current state.
  *
- * @param enabledPredicate Should return true if the state is enabled.
+ * @param enabledPredicate Should return true if the state is enabled. If `null`,
+ * [ToggleRequesterGroup.state] is used as a fallback.
  * @param enabledTests Tests to run when enabled.
  * @param disabledTests Tests to run when disabled. The success of these tests
  * must be mutually exclusive with that of [enabledTests].
@@ -23,7 +24,7 @@ fun <T : Any, B> toggleRequesterGroup(
     basis: Listenable<B>,
     start: suspend (input: T?) -> Unit,
     timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION,
-    enabledPredicate: () -> Boolean,
+    enabledPredicate: (() -> Boolean)?,
     enabledTests: RequesterTrial.Tester<T, B, Unit>,
     disabledTests: RequesterTrial.Tester<T, B, Unit>
 ) : ToggleRequesterGroup<T> {
@@ -40,7 +41,7 @@ inline fun <B> nullaryToggleRequesterGroup(
     basis: Listenable<B>,
     crossinline start: suspend () -> Unit,
     timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION,
-    noinline enabledPredicate: () -> Boolean,
+    noinline enabledPredicate: (() -> Boolean)?,
     enabledTests: RequesterTrial.NullaryTester<B, Unit>,
     disabledTests: RequesterTrial.NullaryTester<B, Unit>
 ) : ToggleRequesterGroup<Unit> {
@@ -54,6 +55,14 @@ inline fun <B> nullaryToggleRequesterGroup(
  * A group of [Requester] objects for a toggleable state.
  */
 sealed interface ToggleRequesterGroup<T : Any> {
+    /**
+     * The current toggle state (true if the state is enabled).
+     *
+     * While requests are active: this property attempts to remain up-to-date, but note that desync may occur if
+     * the state changes through non-detectable means simultaneously.
+     */
+    val state: Boolean
+
     val toggle: RequesterModule<T, Unit>
     val enable: RequesterModule<T, Unit>
     val disable: RequesterModule<T, Unit>
@@ -64,13 +73,18 @@ private class ShortCircuitToggle<T : Any, B>(
     basis: Listenable<B>,
     start: suspend (input: T?) -> Unit,
     timeoutDuration: Duration,
-    private val enabledPredicate: () -> Boolean,
+    private val enabledPredicate: (() -> Boolean)?,
     enabledTests: RequesterTrial.Tester<T, B, Unit>,
     disabledTests: RequesterTrial.Tester<T, B, Unit>
 ) : ToggleRequesterGroup<T> {
-    private val futureState = AtomicBoolean(false) // valid iff shouldPredict
+    override val state get() =
+        if (shouldPredict || enabledPredicate == null) {
+            futureState.get()
+        } else {
+            enabledPredicate.invoke()
+        }
 
-    private val predictedState get() = if (shouldPredict) futureState.get() else enabledPredicate()
+    private val futureState = AtomicBoolean(false)
 
     private val shouldPredict: Boolean get() =
         toggle.activeRequests > 1 || enable.activeRequests > 1 || disable.activeRequests > 1
@@ -79,10 +93,10 @@ private class ShortCircuitToggle<T : Any, B>(
         trial(basis,
             start = { input: T? ->
                 start(input)
-                if (shouldPredict) {
+                if (shouldPredict || enabledPredicate == null) {
                     futureState.getAndInvert()
                 } else {
-                    futureState.set(!enabledPredicate())
+                    futureState.set(!enabledPredicate.invoke())
                 }
             },
             tests = { input, baseContext, isRequest ->
@@ -106,7 +120,7 @@ private class ShortCircuitToggle<T : Any, B>(
     override val enable = requester(lifecycle,
         shortCircuitTrial(basis,
             start = { input: T? ->
-                if (predictedState) Unit else {
+                if (state) Unit else {
                     start(input)
                     futureState.set(true)
                     null
@@ -123,7 +137,7 @@ private class ShortCircuitToggle<T : Any, B>(
     override val disable = requester(lifecycle,
         shortCircuitTrial(basis,
             start = { input: T? ->
-                if (predictedState) {
+                if (state) {
                     start(input)
                     futureState.set(false)
                     null
