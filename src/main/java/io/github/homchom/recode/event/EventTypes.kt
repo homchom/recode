@@ -66,7 +66,7 @@ interface Requester<T : Any, R : Any> : Detector<T, R> {
     /**
      * Makes a request and detects the first non-null result.
      *
-     * @throws RequestTimeoutException if a non-null result is not detected in time
+     * @throws kotlinx.coroutines.TimeoutCancellationException if a non-null result is not detected in time
      * (as specified by [timeoutDuration]).
      *
      * @see detectFrom
@@ -85,5 +85,3 @@ interface DetectorModule<T : Any, R : Any> : Detector<T, R>, RModule
  * @see RModule
  */
 interface RequesterModule<T : Any, R : Any> : DetectorModule<T, R>, Requester<T, R>
-
-class RequestTimeoutException(val input: Any?) : IllegalStateException("Request with input $input timed out")

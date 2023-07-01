@@ -15,9 +15,10 @@ typealias TextScope = TextBuilder.() -> Unit
 inline fun text(style: Style = Style.EMPTY, builder: TextScope) =
     TextBuilder(style).apply(builder).text
 
-fun literalText(literal: String): Component = Component.literal(literal)
+fun literalText(string: String): Component = Component.literal(string)
+fun translateText(key: String, vararg args: Any): Component = Component.translatable(key, args)
 
-@Suppress("PropertyName", "unused")
+@Suppress("unused")
 class TextBuilder(style: Style = Style.EMPTY) {
     val text: Component get() = _text
     private val _text = Component.empty().withStyle(style)
@@ -56,8 +57,8 @@ class TextBuilder(style: Style = Style.EMPTY) {
 
     inline fun appendBlock(style: Style, scope: TextScope) = append(text(style, scope))
 
-    fun translate(key: String, vararg args: Any) = append(Component.translatable(key, args))
-    fun literal(string: String) = append(Component.literal(string))
+    fun translate(key: String, vararg args: Any) = append(translateText(key, *args))
+    fun literal(string: String) = append(literalText(string))
     fun keybind(key: String) = append(Component.keybind(key))
 
     inline fun ChatFormatting.invoke(scope: TextScope) =

@@ -1,6 +1,9 @@
 package io.github.homchom.recode.lifecycle
 
-import io.github.homchom.recode.event.*
+import io.github.homchom.recode.event.Detector
+import io.github.homchom.recode.event.GroupListenable
+import io.github.homchom.recode.event.Listenable
+import io.github.homchom.recode.event.Requester
 import io.github.homchom.recode.util.KeyHashable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -42,13 +45,13 @@ interface RModule : KeyHashable {
     fun <T : Any, R : Any> Detector<T, R>.detect(input: T?) = detectFrom(this@RModule, input)
 
     /**
-     * @throws RequestTimeoutException
+     * @throws kotlinx.coroutines.TimeoutCancellationException
      */
     suspend fun <T : Any, R : Any> Requester<T, R>.request(input: T) =
         requestFrom(this@RModule, input)
 
     /**
-     * @throws RequestTimeoutException
+     * @throws kotlinx.coroutines.TimeoutCancellationException
      */
     suspend fun <R : Any> Requester<Unit, R>.request() = request(Unit)
 

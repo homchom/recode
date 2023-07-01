@@ -9,7 +9,7 @@ import io.github.homchom.recode.mod.features.LagslayerHUD
 import io.github.homchom.recode.multiplayer.state.DFStateDetectors
 import io.github.homchom.recode.ui.equalsUnstyled
 import io.github.homchom.recode.ui.matchesUnstyled
-import io.github.homchom.recode.util.cachedRegexBuilder
+import io.github.homchom.recode.util.cachedRegex
 import net.minecraft.world.effect.MobEffects
 
 val ChatLocalRequester = requester(DFStateDetectors.ChangeMode, nullaryTrial(
@@ -22,7 +22,7 @@ val ChatLocalRequester = requester(DFStateDetectors.ChangeMode, nullaryTrial(
     }
 ))
 
-private val timeRegex = cachedRegexBuilder<Long> { time ->
+private val timeRegex = cachedRegex<Long> { time ->
     Regex("""$MAIN_ARROW_CHAR Set your player time to ${time ?: "[0-9+]"}\.""")
 }
 

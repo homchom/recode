@@ -1,6 +1,7 @@
 package io.github.homchom.recode.mixin.multiplayer;
 
 import io.github.homchom.recode.multiplayer.ServerConstants;
+import io.github.homchom.recode.ui.Toasts;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
@@ -35,13 +36,12 @@ public abstract class MJoinMultiplayerScreen {
 
         if (!matcher.matches()) return;
 
-        var mc = Minecraft.getInstance();
-        var toast = SystemToast.multiline(mc,
-                SystemToast.SystemToastIds.UNSECURE_SERVER_WARNING,
+        Toasts.sendSystemToast(
+                Minecraft.getInstance(),
                 Component.translatable("multiplayer.recode.unofficial_address.toast.title"),
-                Component.translatable("multiplayer.recode.unofficial_address.toast")
+                Component.translatable("multiplayer.recode.unofficial_address.toast"),
+                SystemToast.SystemToastIds.UNSECURE_SERVER_WARNING
         );
-        mc.getToasts().addToast(toast);
 
         var prefix = matcher.group("prefix");
         if (prefix == null) prefix = "";

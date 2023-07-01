@@ -3,6 +3,10 @@ package io.github.homchom.recode.event
 import io.github.homchom.recode.DEFAULT_TIMEOUT_DURATION
 import io.github.homchom.recode.RecodeDispatcher
 import io.github.homchom.recode.lifecycle.*
+import io.github.homchom.recode.logError
+import io.github.homchom.recode.mc
+import io.github.homchom.recode.ui.sendSystemToast
+import io.github.homchom.recode.ui.translateText
 import io.github.homchom.recode.util.nullable
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -161,11 +165,16 @@ private class TrialRequester<T : Any, R : Any>(
 
         _activeRequests.incrementAndGet()
         try {
-            val response = start(input)
-                ?: withTimeoutOrNull(timeoutDuration) { detectChannel.receive() }
-                ?: throw RequestTimeoutException(input)
+            val response = start(input) ?: withTimeout(timeoutDuration) { detectChannel.receive() }
             coroutineContext.cancelChildren()
             response
+        } catch (timeout: TimeoutCancellationException) {
+            mc.sendSystemToast(
+                translateText("multiplayer.recode.request_timeout.toast.title"),
+                translateText("multiplayer.recode.request_timeout.toast")
+            )
+            logError("Request with input $input timed out after $timeoutDuration")
+            throw timeout
         } finally {
             _activeRequests.decrementAndGet()
         }

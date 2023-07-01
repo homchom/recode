@@ -7,7 +7,7 @@ import io.github.homchom.recode.ui.equalsUnstyled
 import io.github.homchom.recode.ui.matchEntireUnstyled
 import io.github.homchom.recode.ui.matchesUnstyled
 import io.github.homchom.recode.util.Case
-import io.github.homchom.recode.util.cachedRegexBuilder
+import io.github.homchom.recode.util.cachedRegex
 import io.github.homchom.recode.util.namedGroupValues
 import kotlinx.coroutines.async
 import org.intellij.lang.annotations.Language
@@ -45,7 +45,7 @@ data class LocateMessage(val username: String, val state: LocateState) {
             }
         )
     ) {
-        private val regex = cachedRegexBuilder<String> { username ->
+        private val regex = cachedRegex<String> { username ->
             @Language("regexp") val player = """(?:You are|${usernamePattern(username)} is) currently"""
             @Language("regexp") val mode = """(?<mode>playing|building|coding) on:\n"""
             @Language("regexp") val plot =
@@ -83,7 +83,7 @@ data class ProfileMessage(val username: String, val ranks: List<Rank>) {
             }
         )
     ) {
-        private val regex = cachedRegexBuilder<String> { username ->
+        private val regex = cachedRegex<String> { username ->
             @Language("regexp") val player = """Profile of ${usernamePattern(username)} (?:\(.+?\))?\n"""
             @Language("regexp") val ranks = bullet("""Ranks: (?<ranks>.*?)""")
 
