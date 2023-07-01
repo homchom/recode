@@ -5,6 +5,7 @@ import io.github.homchom.recode.event.nullaryTrial
 import io.github.homchom.recode.event.requester
 import io.github.homchom.recode.event.trial
 import io.github.homchom.recode.mc
+import io.github.homchom.recode.mod.features.LagslayerHUD
 import io.github.homchom.recode.multiplayer.state.DFStateDetectors
 import io.github.homchom.recode.ui.equalsUnstyled
 import io.github.homchom.recode.ui.matchesUnstyled
@@ -53,11 +54,12 @@ private val lsEnabledRegex =
 private val lsDisabledRegex =
     Regex("""$LAGSLAYER_PATTERN Stopped monitoring plot (\d+)\.""")
 
+// TODO: improve enabledPredicate once arbitrary requesters are able to be invalidated
 val LagSlayerRequesters = nullaryToggleRequesterGroup(
     DFStateDetectors.ChangeMode,
     ReceiveChatMessageEvent,
     start = { sendCommand("lagslayer") },
-    enabledPredicate = null,
+    enabledPredicate = { LagslayerHUD.lagSlayerEnabled },
     enabledTests = { (text), _ -> lsEnabledRegex.matchesUnstyled(text).instantUnitOrNull() },
     disabledTests = { (text), _ -> lsDisabledRegex.matchesUnstyled(text).instantUnitOrNull() }
 )
