@@ -1,4 +1,4 @@
-package io.github.homchom.recode.feature.rendering
+package io.github.homchom.recode.feature.visual
 
 import io.github.homchom.recode.feature.feature
 import io.github.homchom.recode.mc

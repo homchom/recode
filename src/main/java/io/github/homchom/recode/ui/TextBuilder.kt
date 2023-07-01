@@ -1,6 +1,7 @@
 package io.github.homchom.recode.ui
 
 import io.github.homchom.recode.render.IntegralColor
+import io.github.homchom.recode.render.toColor
 import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.ClickEvent
 import net.minecraft.network.chat.Component
@@ -66,6 +67,8 @@ class TextBuilder(style: Style = Style.EMPTY) {
 
     inline fun color(color: IntegralColor, scope: TextScope) =
         appendBlock(Style.EMPTY.withColor(color.toInt()), scope)
+
+    inline fun color(hex: Int, scope: TextScope) = color(hex.toColor(), scope)
 
     inline fun bold(scope: TextScope) =
         appendBlock(Style.EMPTY.withBold(true), scope)

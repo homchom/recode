@@ -3,8 +3,8 @@ package io.github.homchom.recode
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import io.github.homchom.recode.feature.AutomationFeatureGroup
-import io.github.homchom.recode.feature.RenderingFeatureGroup
 import io.github.homchom.recode.feature.SocialFeatureGroup
+import io.github.homchom.recode.feature.VisualFeatureGroup
 import io.github.homchom.recode.lifecycle.EntrypointDetail
 import io.github.homchom.recode.lifecycle.ModuleUnsafe
 import io.github.homchom.recode.lifecycle.module
@@ -38,7 +38,7 @@ private val logger = LoggerFactory.getLogger(MOD_ID)
 
 private val recodeModule = module(EntrypointDetail) {
     // TODO: move feature groups to a config module
-    depend(AutomationFeatureGroup, SocialFeatureGroup, RenderingFeatureGroup)
+    depend(AutomationFeatureGroup, SocialFeatureGroup, VisualFeatureGroup)
 
     // on mod initialize
     onLoad {
@@ -92,9 +92,11 @@ object Recode : ModContainer {
     override fun getContainedMods(): Collection<ModContainer> = container.containedMods
 
     @Deprecated("Use getRootPaths instead")
+    @Suppress("Deprecation")
     override fun getRootPath(): Path = container.rootPath
 
     @Deprecated("Use getRootPaths instead")
+    @Suppress("Deprecation")
     override fun getPath(file: String?): Path = container.getPath(file)
 }
 

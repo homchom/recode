@@ -5,6 +5,11 @@ package io.github.homchom.recode.render
 fun rgb(red: Int, green: Int, blue: Int) = RGBColor(red, green, blue)
 fun rgba(red: Int, green: Int, blue: Int, alpha: Int = 255) = RGBAColor(red, green, blue, alpha)
 
+/**
+ * Converts this [Int] into a [HexColor].
+ */
+fun Int.toColor() = HexColor(this)
+
 sealed interface IntegralColor {
     fun toInt(): Int
 }
@@ -29,3 +34,7 @@ data class RGBAColor(
     override val blue: Int,
     val alpha: Int
 ) : RGBIntegralColor
+
+data class HexColor(val hex: Int) : IntegralColor {
+    override fun toInt() = hex
+}
