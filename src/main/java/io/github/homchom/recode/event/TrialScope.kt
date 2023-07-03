@@ -13,6 +13,8 @@ import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.produceIn
+import java.util.*
+import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.time.Duration
@@ -72,18 +74,38 @@ class TrialScope @DelicateCoroutinesApi constructor(
     inline val unlimited get() = UInt.MAX_VALUE
 
     /**
-     * Transfers this Listenable object's notifications eagerly into a [kotlinx.coroutines.channels.Channel].
-     * allowing it to be used by the Trial.
+     * Transfers this context flow eagerly into a [kotlinx.coroutines.channels.Channel], allowing it to be used
+     * by the Trial in a suspending manner.
      */
-    fun <T> Listenable<T>.add() = notifications
-        .buffer(Channel.UNLIMITED)
-        .produceIn(coroutineScope)
+    fun <T> Flow<T>.add() = buffer(Channel.UNLIMITED).produceIn(coroutineScope)
 
     /**
-     * @see asListenable
-     * @see Listenable.add
+     * Transfers this context flow eagerly into a concurrent [Queue], allowing it to be used by the Trial if
+     * present when needed.
+     *
+     * Note that, due to concurrent collection design, this function requires [T] be non-nullable. If a flow
+     * with nullable context is desired for use, map it into a flow of [io.github.homchom.recode.util.Case]
+     * objects before calling.
      */
-    fun <T> Flow<T>.add() = asListenable().add()
+    fun <T : Any> Flow<T>.addOptional(): Queue<T> {
+        val queue = ConcurrentLinkedQueue<T>()
+        coroutineScope.launch {
+            collect { queue += it }
+        }
+        return queue
+    }
+
+    /**
+     * @see notifications
+     * @see Flow.add
+     */
+    fun <T> Listenable<T>.add() = notifications.add()
+
+    /**
+     * @see notifications
+     * @see Flow.add
+     */
+    fun <T : Any> Listenable<T>.addOptional() = notifications.addOptional()
 
     /**
      * Enforces [rule] by adding it to [rules].

@@ -4,6 +4,6 @@ import io.github.homchom.recode.lifecycle.module
 
 //import io.github.homchom.recode.feature.social.FDiscordIntegration
 
-val SocialFeatureGroup = module(featureGroupDetail("Social",
+val SocialFeatureGroup = module(featureGroup("Social",
     //FDiscordIntegration
 ))

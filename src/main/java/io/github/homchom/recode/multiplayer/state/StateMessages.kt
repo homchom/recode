@@ -9,7 +9,7 @@ import io.github.homchom.recode.ui.matchesUnstyled
 import io.github.homchom.recode.util.Case
 import io.github.homchom.recode.util.cachedRegex
 import io.github.homchom.recode.util.namedGroupValues
-import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import org.intellij.lang.annotations.Language
 import org.intellij.lang.annotations.RegExp
 import kotlin.time.Duration
@@ -100,15 +100,15 @@ data class TipMessage(val player: String, val canTip: Boolean) {
             val subsequent = ReceiveChatMessageEvent.add()
 
             suspending {
-                val canTip = async {
-                    testBoolean(subsequent) { (text) ->
-                        TipMessage.commandRegex.matchesUnstyled(text)
-                    }.passed
+                launch {
+                    +testBoolean(subsequent, 2u) { (text) ->
+                        TipMessage.timeRegex.matchesUnstyled(text)
+                    }
                 }
-                +testBoolean(subsequent, 2u) { (text) ->
-                    TipMessage.timeRegex.matchesUnstyled(text)
-                }
-                TipMessage(player, canTip.await())
+                val canTip = testBoolean(subsequent) { (text) ->
+                    TipMessage.commandRegex.matchesUnstyled(text)
+                }.passed
+                TipMessage(player, canTip)
             }
         }
     )) {
@@ -127,19 +127,25 @@ object SupportTimeRequester : Requester<Boolean, Case<Duration?>> by requester(
     trial(
         ReceiveChatMessageEvent,
         start = { sendCommand("support time") },
-        tests = tests@{ hideMessage, context, _ ->
-            if (context.value.equalsUnstyled("Error: You are not in a session.")) {
+        tests = tests@{ hideMessage, message, _ ->
+            println("aa")
+            if (message.value.equalsUnstyled("Error: You are not in a session.")) {
                 return@tests instant(Case.ofNull)
             }
+            println("bb")
 
             val regex = Regex("""Current session time: (\d?\d):(\d\d):(\d\d)""")
-            val match = regex.matchEntireUnstyled(context.value)!!
+            val match = regex.matchEntireUnstyled(message.value)!!
+            println("cc")
 
             val hours = match.groupValues[1].toIntOrNull()?.hours ?: fail()
+            println("dd")
             val minutes = match.groupValues[2].toIntOrNull()?.minutes ?: fail()
+            println("ee")
             val seconds = match.groupValues[3].toIntOrNull()?.seconds ?: fail()
+            println("ff")
 
-            if (hideMessage == true) context.invalidate()
+            if (hideMessage == true) message.invalidate()
             instant(Case(hours + minutes + seconds))
         }
     )

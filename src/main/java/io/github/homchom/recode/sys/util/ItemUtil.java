@@ -2,7 +2,6 @@ package io.github.homchom.recode.sys.util;
 
 import com.google.gson.JsonParser;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import io.github.homchom.recode.LegacyRecode;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;

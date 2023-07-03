@@ -2,7 +2,6 @@ package io.github.homchom.recode.mod.commands.impl.item.template;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.sys.networking.websocket.SocketHandler;
 import io.github.homchom.recode.sys.player.chat.ChatType;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;

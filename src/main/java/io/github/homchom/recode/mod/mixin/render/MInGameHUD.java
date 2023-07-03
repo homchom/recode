@@ -1,7 +1,6 @@
 package io.github.homchom.recode.mod.mixin.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.LagslayerHUD;
 import io.github.homchom.recode.mod.features.StateOverlayHandler;

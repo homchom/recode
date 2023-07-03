@@ -6,7 +6,6 @@ package io.github.homchom.recode.multiplayer.state
 import io.github.homchom.recode.event.*
 import io.github.homchom.recode.game.TeleportEvent
 import io.github.homchom.recode.lifecycle.GlobalModule
-import io.github.homchom.recode.lifecycle.ModuleDetail
 import io.github.homchom.recode.lifecycle.RModule
 import io.github.homchom.recode.lifecycle.module
 import io.github.homchom.recode.mc
@@ -20,17 +19,18 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.async
 import kotlin.time.Duration
 
-val currentDFState get() = DFStateDetectors.prevResult?.content
+/**
+ * The current [DFState].
+ *
+ * This updates after all [DFStateDetectors], so it can be used as the "old" state in listeners. New states are
+ * always passed as context to the detectors.
+ */
+val currentDFState get() = DFStateDetectors.previous.value?.content
 
 val isOnDF get() = currentDFState != null
 
-@OptIn(DelicateCoroutinesApi::class)
-private val stateModule = module(ModuleDetail.Exposed) {
-    extend(GlobalModule)
-}
-
 // TODO: enable and disable JoinDFDetector and make this a child
-object DFStateDetectors : StateListenable<Case<DFState?>>, RModule by stateModule {
+object DFStateDetectors : StateListenable<Case<DFState?>> {
     private val group = GroupListenable<Case<DFState?>>()
 
     private val scoreboardNodeRegex = Regex("""(?<node>.+) - .+""")
@@ -62,7 +62,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>>, RModule by stateModul
         },
         nullaryTrial(JoinDFDetector) { info ->
             suspending {
-                val permissions = stateModule.async {
+                val permissions = module.async {
                     val request = UserStateRequest(mc.player!!.username, true)
                     val message = ProfileMessage.request(request)
                     PermissionGroup(message.ranks)
@@ -94,7 +94,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>>, RModule by stateModul
         suspending {
             enforce(subsequent) { (text) -> SupportSession.match(text) == null }
 
-            val regex = Regex("""You have entered a session with $USERNAME_PATTERN.""")
+            val regex = Regex("""You have entered a session with $USERNAME_PATTERN\.""")
             // this is safe because of the previous enforce call; only one can run at a time
             testBoolean(subsequent, unlimited, Duration.INFINITE) { (text) ->
                 regex.matchesUnstyled(text)
@@ -109,18 +109,19 @@ object DFStateDetectors : StateListenable<Case<DFState?>>, RModule by stateModul
         enforce { requireTrue(isOnDF) }
         requireTrue(state?.session != null) // prevents recursion
 
-        suspending {
-            requireTrue(SupportTimeRequester.request(true).content == null)
-            Case(currentDFState!!.withSession(null))
-        }
+        // TODO: how to detect this better?
+        instant(Case(currentDFState!!.withSession(null)))
     }))
 
     val LeaveServer = group.add(detector(
         nullaryTrial(DisconnectFromServerEvent) { instant(Case.ofNull) }
     ))
 
-    override val prevResult get() = group.prevResult
-    override fun getNotificationsFrom(module: RModule) = group.getNotificationsFrom(module)
+    @OptIn(DelicateCoroutinesApi::class)
+    private val module = module(group) { extend(GlobalModule) }
+
+    override val previous get() = module.previous
+    override fun getNotificationsFrom(module: RModule) = this.module.getNotificationsFrom(module)
 
     private suspend fun TrialScope.locate() =
         mc.player?.run {

@@ -8,6 +8,7 @@ import io.github.homchom.recode.lifecycle.module
 import io.github.homchom.recode.runOnMinecraftThread
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import net.fabricmc.fabric.api.event.Event
 import kotlin.time.Duration
@@ -62,15 +63,14 @@ private class FlowEvent<T, R : Any>(private val resultCapture: (T) -> R) : Custo
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
 
-    override var prevResult: R? = null
-        private set
+    override val previous = MutableStateFlow<R?>(null)
 
     override fun getNotificationsFrom(module: RModule) = flow
 
     override fun run(context: T) = runOnMinecraftThread {
-        check(flow.tryEmit(context)) { "FlowEvent emitters should not suspend" }
+        flow.checkEmit(context)
         RecodeDispatcher.expedite() // allow for validation and other state mutation
-        resultCapture(context).also { prevResult = it }
+        resultCapture(context).also { previous.checkEmit(it) }
     }
 }
 
@@ -110,8 +110,7 @@ private class BufferedFlowEvent<T, R : Any, I, K : Any>(
         }
     }
 
-    override var prevResult: R? = null
-        private set
+    override val previous = MutableStateFlow<R?>(null)
 
     override fun getNotificationsFrom(module: RModule) = delegate.getNotificationsFrom(module)
 
@@ -129,12 +128,15 @@ private class BufferedFlowEvent<T, R : Any, I, K : Any>(
             }
             bufferResult
         }
-        prevResult = result
+        previous.checkEmit(result)
         return result
     }
 
     override fun stabilize() = stabilizer.stamp()
 }
+
+private fun <E> MutableSharedFlow<E>.checkEmit(value: E) =
+    check(tryEmit(value)) { "FlowEvent collectors should not suspend" }
 
 private class EventWrapper<T, L>(
     private val fabricEvent: Event<L>,

@@ -46,7 +46,7 @@ class DependentResultListenable<T, R>(
     private val delegate: ResultListenable<T, R>,
     private val dependency: RModule
 ) : ResultListenable<T, R> {
-    override val prevResult get() = delegate.prevResult
+    override val previous get() = delegate.previous
 
     override fun getNotificationsFrom(module: RModule) =
         delegate.getNotificationsDependent(module, dependency)
@@ -60,7 +60,7 @@ class DependentEvent<T, R : Any>(
     private val delegate: CustomEvent<T, R>,
     private val dependency: RModule
 ) : CustomEvent<T, R> {
-    override val prevResult get() = delegate.prevResult
+    override val previous get() = delegate.previous
 
     override fun getNotificationsFrom(module: RModule) =
         delegate.getNotificationsDependent(module, dependency)
@@ -76,7 +76,7 @@ class DependentBufferedEvent<T, R : Any, I>(
     private val delegate: BufferedCustomEvent<T, R, I>,
     private val dependency: RModule
 ) : BufferedCustomEvent<T, R, I> {
-    override val prevResult get() = delegate.prevResult
+    override val previous get() = delegate.previous
 
     override fun getNotificationsFrom(module: RModule) =
         delegate.getNotificationsDependent(module, dependency)

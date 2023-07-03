@@ -19,6 +19,7 @@ import io.github.homchom.recode.mod.config.structure.ConfigManager
 import io.github.homchom.recode.mod.config.types.*
 import io.github.homchom.recode.mod.config.types.list.StringListSetting
 import io.github.homchom.recode.mod.events.LegacyEventHandler
+import io.github.homchom.recode.multiplayer.state.SupportTimeRequester
 import io.github.homchom.recode.sys.hypercube.codeaction.ActionDump
 import io.github.homchom.recode.sys.hypercube.templates.TemplateStorageHandler
 import io.github.homchom.recode.sys.networking.websocket.SocketHandler
@@ -49,6 +50,10 @@ private val recodeModule = module(EntrypointDetail) {
         LegacyRecode.onInitialize()
 
         logInfo("Initialized successfully!")
+    }
+
+    onEnable {
+        SupportTimeRequester.listenEach { println("found support time") }
     }
 
     // on Minecraft close

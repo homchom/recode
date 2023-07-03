@@ -9,7 +9,7 @@ typealias EventInvoker<T> = (context: T) -> Unit
 
 /**
  * A custom (unbuffered) [ResultListenable] event that can be [run]. Event contexts are transformed into results,
- * the most recent of which is stored in [prevResult].
+ * the most recent of which is stored in [previous].
  */
 interface CustomEvent<T, R : Any> : ResultListenable<T, R?> {
     fun run(context: T): R
@@ -18,7 +18,7 @@ interface CustomEvent<T, R : Any> : ResultListenable<T, R?> {
 /**
  * A custom, buffered [ResultListenable] event that can be [run]. Event contexts are supplied and transformed
  * into results; the event runs asynchronously and caches the result on some interval, and the most recent result
- * is stored in [prevResult].
+ * is stored in [previous].
  *
  * @param I The event's input type, which is mapped to [T] only when needed.
  */

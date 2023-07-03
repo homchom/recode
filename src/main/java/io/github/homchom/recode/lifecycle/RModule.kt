@@ -1,7 +1,6 @@
 package io.github.homchom.recode.lifecycle
 
 import io.github.homchom.recode.event.Detector
-import io.github.homchom.recode.event.GroupListenable
 import io.github.homchom.recode.event.Listenable
 import io.github.homchom.recode.event.Requester
 import io.github.homchom.recode.util.KeyHashable
@@ -28,7 +27,7 @@ interface RModule : KeyHashable {
     val isEnabled: Boolean
 
     @ModuleUnsafe
-    fun addChild(module: ExposedModule)
+    fun addChild(child: ExposedModule)
 
     /**
      * Adds [parents] as parents of the module.
@@ -54,9 +53,6 @@ interface RModule : KeyHashable {
      * @throws kotlinx.coroutines.TimeoutCancellationException
      */
     suspend fun <R : Any> Requester<Unit, R>.request() = request(Unit)
-
-    fun <T : Any, S : Listenable<out T>> GroupListenable<T>.add(event: S) =
-        addFrom(this@RModule, event)
 }
 
 /**

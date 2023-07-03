@@ -1,6 +1,5 @@
 package io.github.homchom.recode.event
 
-import io.github.homchom.recode.lifecycle.ExposedModule
 import io.github.homchom.recode.lifecycle.RModule
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -74,7 +73,7 @@ fun <B, R : Any> nullaryTrial(
 sealed interface Trial<T : Any, R : Any> {
     val basis: Listenable<*>
 
-    fun supplyResultsFrom(module: ExposedModule): Flow<ResultSupplier<T, R>>
+    fun supplyResultsFrom(module: RModule): Flow<ResultSupplier<T, R>>
 
     /**
      * A functor that supplies [TrialResult] objects. This is used to hide the type information of basis events
@@ -164,7 +163,7 @@ private class BasedDetectorTrial<T : Any, B, R : Any>(
     override val basis: Listenable<B>,
     private val tests: DetectorTrial.Tester<T, B, R>
 ) : DetectorTrial<T, R> {
-    override fun supplyResultsFrom(module: ExposedModule) =
+    override fun supplyResultsFrom(module: RModule) =
         basis.getNotificationsFrom(module).map { baseContext ->
             Trial.ResultSupplier<T, R> { input, _ ->
                 tests.runTestsIn(this, input, baseContext)
@@ -177,7 +176,7 @@ private class BasedRequesterTrial<T : Any, B, R : Any>(
     override val start: suspend (input: T) -> R?,
     private val tests: RequesterTrial.Tester<T, B, R>
 ): RequesterTrial<T, R> {
-    override fun supplyResultsFrom(module: ExposedModule) =
+    override fun supplyResultsFrom(module: RModule) =
         basis.getNotificationsFrom(module).map { baseContext ->
             Trial.ResultSupplier<T, R> { input, isRequest ->
                 tests.runTestsIn(this, input, baseContext, isRequest)

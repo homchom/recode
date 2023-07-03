@@ -1,12 +1,8 @@
 package io.github.homchom.recode.event
 
-import io.github.homchom.recode.lifecycle.CoroutineModule
-import io.github.homchom.recode.lifecycle.ExposedModule
-import io.github.homchom.recode.lifecycle.GlobalModule
-import io.github.homchom.recode.lifecycle.RModule
+import io.github.homchom.recode.lifecycle.*
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.yield
 import java.util.function.Consumer
 
 /**
@@ -63,11 +59,10 @@ interface Listenable<T> {
 /**
  * A [Listenable] with a result of type [R].
  *
- * @property prevResult The result of the previous invocation. For all implementations, it is invariant for this to
- * not update until at least the first suspension point.
+ * @property previous A [StateFlow] of the previous invocations' results.
  */
 interface ResultListenable<T, R> : Listenable<T> {
-    val prevResult: R
+    val previous: StateFlow<R>
 }
 
 /**
@@ -99,37 +94,30 @@ fun <T> List<Listenable<out T>>.merge(module: ExposedModule) =
     map { it.getNotificationsFrom(module) }.merge().asListenable()
 
 /**
- * A group of [Listenable] objects with a combined notification flow.
+ * A [ModuleDetail] for a group of [StateListenable] objects with a combined notification flow. Events are
+ * added with the [add] function. When done, use the detail in a module builder such as [module]; subsequent
+ * calls to [add] will not affect the module.
  *
- * @param flattenMethod The flattening method to use for the combined flow.
+ * This class is `open`, with one `open` member: [flatten], the flattening method used to combine context
+ * and result flows. Defaults to [merge].
  *
- * @see merge
+ * @see add
  */
-class GroupListenable<T : Any>(
-    private val flattenMethod: (List<Flow<T>>) -> Flow<T> = { it.merge() }
-) : StateListenable<T> {
-    override var prevResult: T? = null
-        private set
+open class GroupListenable<T : Any> : ModuleDetail<ExposedModule, GroupListenable.Module<T>> {
+    private val events = mutableListOf<StateListenable<out T>>()
 
-    private var notifications = emptyFlow<T>()
-        get() {
-            if (update) {
-                update = false
-                field = flattenMethod(flows).onEach {
-                    yield()
-                    prevResult = it
-                }
-            }
-            return field
+    fun <S : StateListenable<out T>> add(event: S) = event.also { events += it }
+
+    open fun <S> flatten(flows: List<Flow<S>>) = flows.merge()
+
+    override fun applyTo(module: ExposedModule): Module<T> =
+        object : Module<T>, ExposedModule by module {
+            private val notifications = flatten(events.map { it.getNotificationsFrom(module) })
+            override val previous = flatten(events.map { it.previous })
+                .stateIn(module, SharingStarted.Eagerly, null)
+
+            override fun getNotificationsFrom(module: RModule) = notifications
         }
 
-    private val flows = mutableListOf<Flow<T>>()
-    private var update = false
-
-    override fun getNotificationsFrom(module: RModule) = notifications
-
-    fun <S : Listenable<out T>> addFrom(module: RModule, event: S) = event.also {
-        flows.add(it.getNotificationsFrom(module))
-        update = true
-    }
+    interface Module<T : Any> : StateListenable<T>, ExposedModule
 }

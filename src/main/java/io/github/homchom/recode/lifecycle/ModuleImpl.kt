@@ -83,10 +83,10 @@ private class WeakModule : ExposedModule {
     }
 
     @OptIn(ModuleUnsafe::class)
-    override fun addChild(module: ExposedModule) {
-        check(module !in children) { "Module already has this child" }
-        _children += module
-        if (isEnabled) module.addUsage(this)
+    override fun addChild(child: ExposedModule) {
+        check(child !in children) { "Module already has this child" }
+        _children += child
+        if (isEnabled) child.addUsage(this)
     }
 
     override fun equals(other: Any?) = super.equals(other)

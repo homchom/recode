@@ -2,7 +2,6 @@ package io.github.homchom.recode.mod.commands.impl.other;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.features.commands.NbsSearchMenu;
 import io.github.homchom.recode.sys.player.chat.ChatType;

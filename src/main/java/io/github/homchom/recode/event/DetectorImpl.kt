@@ -18,17 +18,23 @@ import kotlin.time.Duration
 
 /**
  * Creates a [DetectorModule] that runs via one or more [DetectorTrial] objects.
+ *
+ * This is provided as a convenience function; for more complex DetectorModules, use the more generic
+ * [io.github.homchom.recode.lifecycle.module] function and [detectorDetail].
  */
 fun <T : Any, R : Any> detector(
     primaryTrial: DetectorTrial<T, R>,
     vararg secondaryTrials: DetectorTrial<T, R>,
     timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION
 ): DetectorModule<T, R> {
-    return module(TrialDetector(listOf(primaryTrial, *secondaryTrials), timeoutDuration))
+    return module(detectorDetail(primaryTrial, *secondaryTrials, timeoutDuration = timeoutDuration))
 }
 
 /**
  * Creates a [RequesterModule] that runs via one or more [RequesterTrial] objects.
+ *
+ * This is provided as a convenience function; for more complex RequesterModules, use the more generic
+ * [io.github.homchom.recode.lifecycle.module] function and [requesterDetail].
  *
  * @param lifecycle The [Listenable] object that defines the requester's lifecycle. If the event is run during
  * a request, the request is cancelled.
@@ -39,7 +45,34 @@ fun <T : Any, R : Any> requester(
     vararg secondaryTrials: DetectorTrial<T, R>,
     timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION
 ): RequesterModule<T, R> {
-    return module(TrialRequester(lifecycle, primaryTrial, secondaryTrials, timeoutDuration))
+    return module(requesterDetail(lifecycle, primaryTrial, *secondaryTrials, timeoutDuration = timeoutDuration))
+}
+
+/**
+ * Creates a [ModuleDetail] for a standard [Detector] implementation.
+ *
+ * @see detector
+ */
+fun <T : Any, R : Any> detectorDetail(
+    primaryTrial: DetectorTrial<T, R>,
+    vararg secondaryTrials: DetectorTrial<T, R>,
+    timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION
+): ModuleDetail<ExposedModule, DetectorModule<T, R>> {
+    return TrialDetector(listOf(primaryTrial, *secondaryTrials), timeoutDuration)
+}
+
+/**
+ * Creates a [ModuleDetail] for a standard [Requester] implementation.
+ *
+ * @see requester
+ */
+fun <T : Any, R : Any> requesterDetail(
+    lifecycle: Listenable<*>,
+    primaryTrial: RequesterTrial<T, R>,
+    vararg secondaryTrials: DetectorTrial<T, R>,
+    timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION
+): ModuleDetail<ExposedModule, RequesterModule<T, R>> {
+    return TrialRequester(lifecycle, primaryTrial, secondaryTrials, timeoutDuration)
 }
 
 private sealed class DetectorDetail<T : Any, R : Any, M : DetectorModule<T, R>> :
@@ -51,7 +84,7 @@ private sealed class DetectorDetail<T : Any, R : Any, M : DetectorModule<T, R>> 
 
     private val entries = ConcurrentLinkedQueue<TrialEntry<T, R>>()
 
-    override val prevResult get() = event.prevResult
+    override val previous get() = event.previous
 
     override fun getNotificationsFrom(module: RModule) = event.getNotificationsFrom(module)
 
@@ -78,7 +111,7 @@ private sealed class DetectorDetail<T : Any, R : Any, M : DetectorModule<T, R>> 
         module.onEnable {
             for (trial in trials) module.launch {
                 trial.supplyResultsFrom(module).collect { supplier ->
-                    val trialJob = Job(module.coroutineContext.job)
+                    val trialJob = Job(coroutineContext.job)
                     if (entries.isEmpty()) module.considerEntry(null, supplier, trialJob)
 
                     val iterator = entries.iterator()
@@ -193,7 +226,7 @@ private open class SimpleDetectorModule<T : Any, R : Any>(
     module: RModule
 ) : DetectorModule<T, R>, RModule by module {
     override val timeoutDuration get() = detail.timeoutDuration
-    override val prevResult get() = detail.prevResult
+    override val previous get() = detail.previous
 
     override fun getNotificationsFrom(module: RModule): Flow<R> {
         module.depend(this)

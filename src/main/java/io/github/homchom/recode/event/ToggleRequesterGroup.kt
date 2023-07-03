@@ -1,139 +1,74 @@
 package io.github.homchom.recode.event
 
-import io.github.homchom.recode.DEFAULT_TIMEOUT_DURATION
-import io.github.homchom.recode.util.getAndInvert
-import kotlinx.coroutines.selects.select
-import java.util.concurrent.atomic.AtomicBoolean
-import kotlin.time.Duration
-
-// TODO: convert into ModuleFlavor
+import io.github.homchom.recode.util.unitOrNull
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.mapNotNull
 
 /**
- * Creates a [ToggleRequesterGroup] with the given [start] and conditional tests for current state.
+ * Creates a [ToggleRequesterGroup] with the given [trial] for toggling.
  *
- * @param enabledPredicate Should return true if the state is enabled.
- * @param enabledTests Tests to run when enabled.
- * @param disabledTests Tests to run when disabled. The success of these tests
- * must be mutually exclusive with that of [enabledTests].
+ * The returned toggle is *naive*, meaning it assumes the request will yield the desired state and, if not,
+ * runs the request again. Prefer explicit toggle requests without false positives when possible.
  *
- * @see RequesterTrial
+ * This function should usually be given a trial with a [Validated] basis that can invalidate when the state
+ * is undesired (e.g. to avoid duplicate chat messages).
+ *
+ * @param trial Should yield a true result if the state is enabled, and false if it is disabled.
+ *
+ * @see requester
  */
-fun <T : Any, B> toggleRequesterGroup(
+fun <T : Any> toggleRequesterGroup(
     lifecycle: Listenable<*>,
-    basis: Listenable<B>,
-    start: suspend (input: T?) -> Unit,
-    timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION,
-    enabledPredicate: () -> Boolean,
-    enabledTests: RequesterTrial.Tester<T, B, Unit>,
-    disabledTests: RequesterTrial.Tester<T, B, Unit>
-) : ToggleRequesterGroup<T> {
-    return ShortCircuitToggle(lifecycle, basis, start, timeoutDuration,
-        enabledPredicate, enabledTests, disabledTests)
+    trial: RequesterTrial<ToggleRequesterGroup.Input<T>, Boolean>
+): ToggleRequesterGroup<T> {
+    return NaiveToggle(lifecycle, trial)
 }
 
 /**
- * @see toggleRequesterGroup
- * @see RequesterTrial.NullaryTester
- */
-inline fun <B> nullaryToggleRequesterGroup(
-    lifecycle: Listenable<*>,
-    basis: Listenable<B>,
-    crossinline start: suspend () -> Unit,
-    timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION,
-    noinline enabledPredicate: () -> Boolean,
-    enabledTests: RequesterTrial.NullaryTester<B, Unit>,
-    disabledTests: RequesterTrial.NullaryTester<B, Unit>
-) : ToggleRequesterGroup<Unit> {
-    return toggleRequesterGroup(lifecycle, basis, { start() }, timeoutDuration, enabledPredicate,
-        enabledTests = enabledTests.toUnary(),
-        disabledTests = disabledTests.toUnary()
-    )
-}
-
-/**
- * A group of [Requester] objects for a toggleable state.
+ * A specialized group of [Requester] objects for a toggleable state.
  */
 sealed interface ToggleRequesterGroup<T : Any> {
     val toggle: RequesterModule<T, Unit>
     val enable: RequesterModule<T, Unit>
     val disable: RequesterModule<T, Unit>
+
+    data class Input<T : Any>(val value: T, val shouldBeEnabled: Boolean?)
 }
 
-private class ShortCircuitToggle<T : Any, B>(
+private class NaiveToggle<T : Any>(
     lifecycle: Listenable<*>,
-    basis: Listenable<B>,
-    start: suspend (input: T?) -> Unit,
-    timeoutDuration: Duration,
-    private val enabledPredicate: () -> Boolean,
-    enabledTests: RequesterTrial.Tester<T, B, Unit>,
-    disabledTests: RequesterTrial.Tester<T, B, Unit>
+    private val trial: RequesterTrial<ToggleRequesterGroup.Input<T>, Boolean>,
 ) : ToggleRequesterGroup<T> {
-    private val futureState = AtomicBoolean(false) // valid iff shouldPredict
+    override val toggle: RequesterModule<T, Unit> =
+        requester(lifecycle, naiveTrial(null, ::toggle))
 
-    private val predictedState get() = if (shouldPredict) futureState.get() else enabledPredicate()
+    override val enable: RequesterModule<T, Unit> =
+        requester(lifecycle, naiveTrial(true, ::enable))
 
-    private val shouldPredict: Boolean get() =
-        toggle.activeRequests > 1 || enable.activeRequests > 1 || disable.activeRequests > 1
+    override val disable: RequesterModule<T, Unit> =
+        requester(lifecycle, naiveTrial(false, ::disable))
 
-    override val toggle = requester(lifecycle,
-        trial(basis,
-            start = { input: T? ->
-                start(input)
-                if (shouldPredict) {
-                    futureState.getAndInvert()
-                } else {
-                    futureState.set(!enabledPredicate())
-                }
+    private inline fun naiveTrial(
+        desiredState: Boolean?,
+        crossinline requester: () -> Requester<T, Unit>
+    ): RequesterTrial<T, Unit> {
+        return trial(
+            trial.basis,
+            start = { input: T ->
+                val isDesired = trial.start(input.wrap(desiredState)) == desiredState
+                isDesired.unitOrNull()
             },
-            tests = { input, baseContext, isRequest ->
-                val enabledResult = enabledTests.runTestsIn(this, input, baseContext, isRequest)
-                val disabledResult = disabledTests.runTestsIn(this, input, baseContext, isRequest)
+            tests = { input, _, isRequest ->
+                val results = trial.supplyResultsFrom(this)
                 suspending {
-                    when {
-                        enabledResult == null -> disabledResult?.await()
-                        disabledResult == null -> enabledResult.await()
-                        else -> select {
-                            enabledResult.onAwait { it }
-                            disabledResult.onAwait { it }
-                        }
-                    }
+                    val state = results
+                        .mapNotNull { it.supplyIn(this, input?.wrap(desiredState), isRequest)?.await() }
+                        .first()
+                    if (state != desiredState && isRequest) requester().requestFrom(this, input!!)
                 }
             }
-        ),
-        timeoutDuration = timeoutDuration
-    )
+        )
+    }
 
-    override val enable = requester(lifecycle,
-        shortCircuitTrial(basis,
-            start = { input: T? ->
-                if (predictedState) Unit else {
-                    start(input)
-                    futureState.set(true)
-                    null
-                }
-            },
-            tests = { input, baseContext, isRequest ->
-                val result = enabledTests.runTestsIn(this, input, baseContext, isRequest)
-                suspending { result?.await() }
-            }
-        ),
-        timeoutDuration = timeoutDuration
-    )
-
-    override val disable = requester(lifecycle,
-        shortCircuitTrial(basis,
-            start = { input: T? ->
-                if (predictedState) {
-                    start(input)
-                    futureState.set(false)
-                    null
-                } else Unit
-            },
-            tests = { input, baseContext, isRequest ->
-                val result = disabledTests.runTestsIn(this, input, baseContext, isRequest)
-                suspending { result?.await() }
-            }
-        ),
-        timeoutDuration = timeoutDuration
-    )
+    fun T.wrap(desiredState: Boolean?) = ToggleRequesterGroup.Input(this, desiredState)
 }

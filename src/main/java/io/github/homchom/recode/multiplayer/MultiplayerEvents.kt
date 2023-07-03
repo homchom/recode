@@ -4,7 +4,8 @@ import io.github.homchom.recode.event.*
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.multiplayer.state.*
 import io.github.homchom.recode.ui.matchEntireUnstyled
-import kotlinx.coroutines.async
+import io.github.homchom.recode.util.Case
+import kotlinx.coroutines.flow.map
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.Disconnect
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.Join
@@ -36,24 +37,21 @@ object JoinDFDetector :
         requireTrue(mc.currentServer.ipMatchesDF)
 
         val messages = ReceiveChatMessageEvent.add()
-        val tipMessage = TipMessage.detect(null).add()
+        val tipMessage = TipMessage.detect(null).map(::Case).addOptional()
 
         val disconnect = DisconnectFromServerEvent.add()
         suspending {
             failOn(disconnect)
 
             val patch = +test(messages, unlimited) { (text) ->
-                tipMessage.receive()
                 patchRegex.matchEntireUnstyled(text)?.groupValues?.get(1)
             }
 
-            val canTip = async {
-                testBoolean(tipMessage) { it?.canTip ?: false }.passed
-            }
             val request = UserStateRequest(mc.player!!.username, true)
-            val message = LocateMessage.request(request)
+            val node = LocateMessage.request(request).state.node
 
-            JoinDFInfo(message.state.node, patch, canTip.await())
+            val canTip = tipMessage.any { (message) -> message?.canTip ?: false }
+            JoinDFInfo(node, patch, canTip)
         }
     })
 
