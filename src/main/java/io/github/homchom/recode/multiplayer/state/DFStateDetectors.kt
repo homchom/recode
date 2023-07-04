@@ -91,8 +91,9 @@ object DFStateDetectors : StateListenable<Case<DFState?>> {
         val session = SupportSession.match(message)!!.matcher
 
         val subsequent = ReceiveChatMessageEvent.add()
+        val enforceChannel = ReceiveChatMessageEvent.add()
         suspending {
-            enforce(subsequent) { (text) -> SupportSession.match(text) == null }
+            enforce(enforceChannel) { (text) -> SupportSession.match(text) == null }
 
             val regex = Regex("""You have entered a session with $USERNAME_PATTERN\.""")
             // this is safe because of the previous enforce call; only one can run at a time
@@ -105,11 +106,14 @@ object DFStateDetectors : StateListenable<Case<DFState?>> {
         }
     }))
 
-    val LeaveSession = group.add(detector(nullaryTrial(DFStateDetectors) { (state) ->
+    val LeaveSession = group.add(detector(nullaryTrial(ReceiveChatMessageEvent) { (message) ->
         enforce { requireTrue(isOnDF) }
-        requireTrue(state?.session != null) // prevents recursion
 
-        // TODO: how to detect this better?
+        requireTrue(currentDFState!!.session != null)
+
+        // TODO: is there a better way to do this with fewer false positives?
+        val regex = Regex("""Your session with $USERNAME_PATTERN has ended\.""")
+        requireTrue(regex.matchesUnstyled(message))
         instant(Case(currentDFState!!.withSession(null)))
     }))
 
@@ -121,6 +125,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>> {
     private val module = module(group) { extend(GlobalModule) }
 
     override val previous get() = module.previous
+
     override fun getNotificationsFrom(module: RModule) = this.module.getNotificationsFrom(module)
 
     private suspend fun TrialScope.locate() =

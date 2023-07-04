@@ -1,8 +1,11 @@
 package io.github.homchom.recode.event
 
+import io.github.homchom.recode.lifecycle.ExposedModule
+import io.github.homchom.recode.lifecycle.ModuleDetail
+import io.github.homchom.recode.lifecycle.module
 import io.github.homchom.recode.util.unitOrNull
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 /**
  * Creates a [ToggleRequesterGroup] with the given [trial] for toggling.
@@ -36,39 +39,46 @@ sealed interface ToggleRequesterGroup<T : Any> {
 }
 
 private class NaiveToggle<T : Any>(
-    lifecycle: Listenable<*>,
+    private val lifecycle: Listenable<*>,
     private val trial: RequesterTrial<ToggleRequesterGroup.Input<T>, Boolean>,
 ) : ToggleRequesterGroup<T> {
     override val toggle: RequesterModule<T, Unit> =
-        requester(lifecycle, naiveTrial(null, ::toggle))
+        module(naiveRequesterDetail(null, ::toggle))
 
     override val enable: RequesterModule<T, Unit> =
-        requester(lifecycle, naiveTrial(true, ::enable))
+        module(naiveRequesterDetail(true, ::enable))
 
     override val disable: RequesterModule<T, Unit> =
-        requester(lifecycle, naiveTrial(false, ::disable))
+        module(naiveRequesterDetail(false, ::disable))
 
-    private inline fun naiveTrial(
-        desiredState: Boolean?,
-        crossinline requester: () -> Requester<T, Unit>
-    ): RequesterTrial<T, Unit> {
-        return trial(
-            trial.basis,
-            start = { input: T ->
-                val isDesired = trial.start(input.wrap(desiredState)) == desiredState
-                isDesired.unitOrNull()
-            },
-            tests = { input, _, isRequest ->
-                val results = trial.supplyResultsFrom(this)
-                suspending {
-                    val state = results
-                        .mapNotNull { it.supplyIn(this, input?.wrap(desiredState), isRequest)?.await() }
-                        .first()
-                    if (state != desiredState && isRequest) requester().requestFrom(this, input!!)
-                }
-            }
-        )
+    private val retryModule = module(ModuleDetail.Exposed) {
+        extend(toggle, enable, disable)
     }
+
+    private fun naiveRequesterDetail(desiredState: Boolean?, requester: () -> Requester<T, Unit>) =
+        ModuleDetail<ExposedModule, RequesterModule<T, Unit>> { module ->
+            val delegate = requesterDetail(lifecycle, trial(
+                trial.supplyResultsFrom(module).asListenable(),
+                start = { input: T ->
+                    val isDesired = trial.start(input.wrap(desiredState)) == desiredState
+                    isDesired.unitOrNull()
+                },
+                tests = { input, supplier, isRequest ->
+                    suspending {
+                        val state = supplier
+                            .supplyIn(this, input?.wrap(desiredState), isRequest)
+                            ?.await()
+                        if (state != desiredState && isRequest) {
+                            retryModule.launch(Dispatchers.Default) {
+                                requester().requestFrom(this@suspending, input!!)
+                            }
+                        }
+                    }
+                }
+            ))
+
+            delegate.applyTo(module)
+        }
 
     fun T.wrap(desiredState: Boolean?) = ToggleRequesterGroup.Input(this, desiredState)
 }
