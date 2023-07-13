@@ -27,14 +27,15 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import java.net.URL;
 
 @Mixin(AbstractContainerScreen.class)
-public class MAbstractContainerScreen {
+public abstract class MAbstractContainerScreen {
     private final HashMap<String, ResourceLocation> cache = new HashMap<>();
 
+    // TODO: improve
     @Inject(method = "renderTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderTooltip(Lnet/minecraft/client/gui/Font;Ljava/util/List;Ljava/util/Optional;II)V"), locals = LocalCapture.CAPTURE_FAILHARD)
     private void renderTooltip(GuiGraphics guiGraphics, int i, int j, CallbackInfo ci, ItemStack stack) {
         try {
