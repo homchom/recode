@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.cottonmc.cotton.gui.client.LibGui;
 import io.github.cottonmc.cotton.gui.widget.WWidget;
 import io.github.homchom.recode.sys.renderer.RenderUtil;
+import net.minecraft.client.gui.GuiGraphics;
 
 import java.awt.*;
 
@@ -18,8 +19,8 @@ public class CColoredRectangle extends WWidget {
     }
 
     @Override
-    public void paint(PoseStack matrices, int x, int y, int mouseX, int mouseY) {
-        RenderUtil.drawRect(matrices, x, y, x+this.width, y+this.height, LibGui.isDarkMode() ? this.darkmodeColor : this.color);
+    public void paint(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
+        RenderUtil.drawRect(guiGraphics, x, y, x+this.width, y+this.height, LibGui.isDarkMode() ? this.darkmodeColor : this.color);
     }
 
     @Override

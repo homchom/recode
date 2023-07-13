@@ -11,6 +11,7 @@ import io.github.homchom.recode.sys.util.TextUtil;
 import net.minecraft.client.GuiMessage;
 import net.minecraft.client.GuiMessageTag;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ChatComponent;
 import net.minecraft.client.gui.components.ComponentRenderUtils;
 import net.minecraft.client.multiplayer.chat.ChatListener;
@@ -70,14 +71,15 @@ public abstract class MSideChatHUD implements SideChatComponent {
     @Shadow
     public abstract int getWidth();
 
-    @Shadow public abstract void render(PoseStack poseStack, int i, int j, int k);
+    @Shadow public abstract void render(GuiGraphics guiGraphics, int i, int j, int k);
 
     @Override
-    public void renderSide(@NotNull PoseStack poseStack, int tickDelta, int mouseX, int mouseY) {
+    public void renderSide(@NotNull GuiGraphics guiGraphics, int tickDelta, int mouseX, int mouseY) {
         renderingSideChat = true;
+        PoseStack poseStack = guiGraphics.pose();
         poseStack.pushPose();
         poseStack.translate(getSideChatStartX(), 0, 0);
-        render(poseStack, tickDelta, mouseX, mouseY);
+        render(guiGraphics, tickDelta, mouseX, mouseY);
         poseStack.popPose();
         renderingSideChat = false;
     }
@@ -85,7 +87,7 @@ public abstract class MSideChatHUD implements SideChatComponent {
     // TODO: improve render mixin functions further
 
     @Inject(method = "render", at = @At("HEAD"))
-    private void copyForStacking(PoseStack poseStack, int tickDelta, int mouseX, int mouseY, CallbackInfo ci) {
+    private void copyForStacking(GuiGraphics guiGraphics, int tickDelta, int mouseX, int mouseY, CallbackInfo ci) {
         if (Config.getBoolean("stackDuplicateMsgs")) {
             messagesCopy = new ArrayList<>();
             messagesCopy.addAll(messagesToRender());
@@ -112,7 +114,7 @@ public abstract class MSideChatHUD implements SideChatComponent {
     }
 
     @Inject(method = "render", at = @At("TAIL"))
-    private void restoreFromStacking(PoseStack poseStack, int tickDelta, int mouseX, int mouseY, CallbackInfo ci) {
+    private void restoreFromStacking(GuiGraphics guiGraphics, int tickDelta, int mouseX, int mouseY, CallbackInfo ci) {
         if (Config.getBoolean("stackDuplicateMsgs")) {
             messagesToRender().clear();
             messagesToRender().addAll(messagesCopy);

@@ -5,6 +5,7 @@ import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.VarSyntaxHighlighter;
 import io.github.homchom.recode.sys.sidedchat.ChatShortcut;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.CommandSuggestions;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.ChatScreen;
@@ -29,8 +30,7 @@ public class MChatScreen {
     @Shadow private CommandSuggestions commandSuggestions;
 
     @Inject(method = "render", at = @At("TAIL"))
-    private void render(PoseStack poseStack, int mouseX, int mouseY, float delta,
-        CallbackInfo ci) {
+    private void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         if (Config.getBoolean("highlightVarSyntax")) {
             Minecraft mc = Minecraft.getInstance();
 
@@ -59,13 +59,12 @@ public class MChatScreen {
             Component formatted = VarSyntaxHighlighter.highlight(text);
 
             if (formatted != null) {
-                mc.font.drawShadow(poseStack, formatted, 4, mc.screen.height - 25,
-                    0xffffff);
+                guiGraphics.drawString(mc.font, formatted, 4, mc.screen.height - 25, 0xffffff, true);
             }
         }
     }
 
-    @ModifyArg(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/ChatScreen;fill(Lcom/mojang/blaze3d/vertex/PoseStack;IIIII)V"), index = 5)
+    @ModifyArg(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;fill(IIIII)V"), index = 4)
     private int getTextboxColor(int defaultColour) {
         ChatShortcut currentChatShortcut = ChatShortcut.getCurrentChatShortcut();
 

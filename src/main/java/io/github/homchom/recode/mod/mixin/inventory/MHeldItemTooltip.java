@@ -11,6 +11,7 @@ import io.github.homchom.recode.sys.util.TextUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -43,7 +44,7 @@ public class MHeldItemTooltip {
     private JsonObject varItemNbt;
 
     @Inject(method = "renderSelectedItemName", at = @At("HEAD"), cancellable = true)
-    public void renderSelectedItemName(PoseStack matrices, CallbackInfo callbackInfo) {
+    public void renderSelectedItemName(GuiGraphics guiGraphics, CallbackInfo callbackInfo) {
         try {
             if (Config.getBoolean("variableScopeView")) {
                 ItemStack itemStack = mc.player.getMainHandItem();
@@ -84,10 +85,8 @@ public class MHeldItemTooltip {
                         scope.getVisualOrderText())) / 2;
                     int y2 = mc.getWindow().getGuiScaledHeight() - 35;
 
-                    mc.font.drawShadow(matrices, Component.literal(name), (float) x1,
-                        (float) y1, 16777215);
-                    mc.font.drawShadow(matrices, scope, (float) x2, (float) y2,
-                        16777215);
+                    guiGraphics.drawString(mc.font, Component.literal(name), x1, y1, 0xffffff, true);
+                    guiGraphics.drawString(mc.font, scope, x2, y2, 0xffffff, true);
                 }
             }
 
@@ -136,19 +135,11 @@ public class MHeldItemTooltip {
                                                 - mc.font.width(
                                                 formatted)) / 2;
 
-                                        mc.font.drawShadow(matrices, formatted,
-                                            (float) x1,
-                                            (float) y1, 16777215);
-
+                                        guiGraphics.drawString(mc.font, formatted, x1, y1, 0xffffff);
                                     } else {
-                                        mc.font.drawShadow(matrices, item.getHoverName(),
-                                            (float) x1,
-                                            (float) y1, 16777215);
-
+                                        guiGraphics.drawString(mc.font, item.getHoverName(), x1, y1, 0xffffff);
                                         if (!type.equals("var")) y2 += 20;
-
-                                        mc.font.drawShadow(matrices, formatted, x2, y2,
-                                            0xffffff);
+                                        guiGraphics.drawString(mc.font, formatted, x2, y2, 0xffffff);
                                     }
                                 }
                             }

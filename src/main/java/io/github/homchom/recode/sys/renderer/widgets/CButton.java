@@ -6,13 +6,14 @@ import io.github.cottonmc.cotton.gui.client.ScreenDrawing;
 import io.github.cottonmc.cotton.gui.widget.WButton;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.GuiGraphics;
 
 public class CButton extends WButton {
 
     //paint method copied from wbutton and modified
     @Environment(EnvType.CLIENT)
     @Override
-    public void paint(PoseStack matrices, int x, int y, int mouseX, int mouseY) {
+    public void paint(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
         boolean hovered = (mouseX >= 0 && mouseY >= 0 && mouseX < getWidth()
             && mouseY < getHeight());
         int color = 0;
@@ -27,9 +28,9 @@ public class CButton extends WButton {
 
         if (getLabel() != null) {
 
-            ScreenDrawing.coloredRect(matrices, x,y+3, width, height, color);
+            ScreenDrawing.coloredRect(guiGraphics, x,y+3, width, height, color);
 
-            ScreenDrawing.drawString(matrices, getLabel().getVisualOrderText(), alignment, x,
+            ScreenDrawing.drawString(guiGraphics, getLabel().getVisualOrderText(), alignment, x,
                 y + ((20 - 8) / 2), width, tcolor);
         }
     }
