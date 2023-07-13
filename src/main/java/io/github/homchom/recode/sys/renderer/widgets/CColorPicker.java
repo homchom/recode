@@ -7,6 +7,7 @@ import io.github.homchom.recode.mod.features.commands.ColorsMenu;
 import io.github.homchom.recode.sys.player.chat.color.ColorUtil;
 import io.github.homchom.recode.sys.player.chat.color.HSBColor;
 import io.github.homchom.recode.sys.renderer.RenderUtil;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.util.Mth;
 
 import java.awt.*;
@@ -28,7 +29,7 @@ public class CColorPicker extends WWidget {
     }
 
     @Override
-    public void paint(PoseStack matrixStack, int x, int y, int mouseX, int mouseY) {
+    public void paint(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
         float wheelwidth = 100f*scale;
         float wheelheight = 100f*scale;
         float hueSliderOffset = 110f*scale;
@@ -49,11 +50,12 @@ public class CColorPicker extends WWidget {
             }
             Color color1 = Color.getHSBColor(pickedColor.getHue(), i / wheelwidth, 1f);
             Color color2 = Color.black;
-            RenderUtil.drawGradientRect(matrixStack, x + i, y, x + i + 1, (int) (y + 1 + wheelheight), color1, color2, 0);
+            PoseStack matrixStack = guiGraphics.pose();
+            RenderUtil.drawGradientRect(guiGraphics, x + i, y, x + i + 1, (int) (y + 1 + wheelheight), color1, color2, 0);
             Color crossColor = Color.getHSBColor(pickedColor.getHue(), 0f, 1 - pickedColor.getBrightness());
             matrixStack.translate(0, 0, 1);
-            RenderUtil.drawRect(matrixStack, (int) (x + (pickedColor.getSaturation() * wheelheight) - 2), (int) (y + ((1 - pickedColor.getBrightness()) * wheelwidth)), (int) (x + (pickedColor.getSaturation() * wheelheight) + 3), (int) (y + ((1 - pickedColor.getBrightness()) * wheelwidth) + 1), crossColor);
-            RenderUtil.drawRect(matrixStack, (int) (x + (pickedColor.getSaturation() * wheelheight)), (int) (y + ((1 - pickedColor.getBrightness()) * wheelwidth) - 2), (int) (x + (pickedColor.getSaturation() * wheelheight) + 1), (int) (y + ((1 - pickedColor.getBrightness()) * wheelwidth) + 3), crossColor);
+            RenderUtil.drawRect(guiGraphics, (int) (x + (pickedColor.getSaturation() * wheelheight) - 2), (int) (y + ((1 - pickedColor.getBrightness()) * wheelwidth)), (int) (x + (pickedColor.getSaturation() * wheelheight) + 3), (int) (y + ((1 - pickedColor.getBrightness()) * wheelwidth) + 1), crossColor);
+            RenderUtil.drawRect(guiGraphics, (int) (x + (pickedColor.getSaturation() * wheelheight)), (int) (y + ((1 - pickedColor.getBrightness()) * wheelwidth) - 2), (int) (x + (pickedColor.getSaturation() * wheelheight) + 1), (int) (y + ((1 - pickedColor.getBrightness()) * wheelwidth) + 3), crossColor);
             matrixStack.translate(0, 0, -1);
         }
 
@@ -63,9 +65,9 @@ public class CColorPicker extends WWidget {
                     pickedColor.setHue(Mth.clamp((mouseY - y) / wheelheight, 0f, 1f));
                 }
             }
-            RenderUtil.drawRect(matrixStack, (int) (x + hueSliderOffset), y + i, (int) (x + hueSliderOffset + hueSliderWidth), y + i+1, Color.getHSBColor(i / wheelheight, 1f, 1f));
+            RenderUtil.drawRect(guiGraphics, (int) (x + hueSliderOffset), y + i, (int) (x + hueSliderOffset + hueSliderWidth), y + i+1, Color.getHSBColor(i / wheelheight, 1f, 1f));
             if (pickedColor.getHue() == i / wheelheight) {
-                RenderUtil.drawRect(matrixStack, (int) (x + hueSliderOffset - 1), y + i, (int) (x + hueSliderOffset + hueSliderWidth + 1), y + i + 1, Color.WHITE);
+                RenderUtil.drawRect(guiGraphics, (int) (x + hueSliderOffset - 1), y + i, (int) (x + hueSliderOffset + hueSliderWidth + 1), y + i + 1, Color.WHITE);
             }
         }
     }

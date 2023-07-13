@@ -27,10 +27,10 @@ public class MChestBlock {
         if (be instanceof SignBlockEntity) {
             SignBlockEntity sign = (SignBlockEntity) be;
             LegacyRecode.signText = new String[]{
-                sign.getMessage(0, false).getString(),
-                sign.getMessage(1, false).getString(),
-                sign.getMessage(2, false).getString(),
-                sign.getMessage(3, false).getString()
+                sign.getText(true).getMessage(0, false).getString(),
+                sign.getText(true).getMessage(1, false).getString(),
+                sign.getText(true).getMessage(2, false).getString(),
+                sign.getText(true).getMessage(3, false).getString()
             };
             LegacyRecode.executor.submit(() -> {
                 try {

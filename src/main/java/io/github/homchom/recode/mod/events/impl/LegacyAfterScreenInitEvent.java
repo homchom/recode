@@ -51,7 +51,7 @@ public class LegacyAfterScreenInitEvent {
 					(button) -> {
 						String address = "mcdiamondfire.com:25565";
 						ServerData serverInfo = new ServerData("DF", address, false);
-						ConnectScreen.startConnecting(screen, mc, ServerAddress.parseString(address), serverInfo);
+						ConnectScreen.startConnecting(screen, mc, ServerAddress.parseString(address), serverInfo, false);
 					}));
 		}
 	}

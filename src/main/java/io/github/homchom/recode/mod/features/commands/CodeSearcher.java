@@ -17,8 +17,8 @@ public class CodeSearcher {
             return false;
         }
 
-        return searchType.getSignText().contains(blockEntity.getMessage(0, false).getString().trim()) &&
-                searchValue.trim().equals(blockEntity.getMessage(1, false).getString().trim());
+        return searchType.getSignText().contains(blockEntity.getText(true).getMessage(0, false).getString().trim()) &&
+                searchValue.trim().equals(blockEntity.getText(true).getMessage(1, false).getString().trim());
     }
 
     public static void beginSearch(SearchType searchType, String searchValue) {
@@ -28,8 +28,8 @@ public class CodeSearcher {
     }
 
     public static void beginSearch(SignBlockEntity signBlockEntity) {
-        SearchType searchType = SearchType.getType(signBlockEntity.getMessage(0, false).getString());
-        String searchValue = signBlockEntity.getMessage(1, false).getString();
+        SearchType searchType = SearchType.getType(signBlockEntity.getText(true).getMessage(0, false).getString());
+        String searchValue = signBlockEntity.getText(true).getMessage(1, false).getString();
 
         if (searchType == null || searchValue.length() == 0) {
             clearSearch();
