@@ -64,18 +64,17 @@ public class MChatScreen {
         }
     }
 
-    // FIXME: I don't understand what this is supposed to do.
-//    @ModifyArg(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/ChatScreen;fill(Lcom/mojang/blaze3d/vertex/PoseStack;IIIII)V"), index = 5)
-//    private int getTextboxColor(int defaultColour) {
-//        ChatShortcut currentChatShortcut = ChatShortcut.getCurrentChatShortcut();
-//
-//        // if there is one active - use it
-//        if (currentChatShortcut != null) {
-//            return currentChatShortcut.getColor().getRGB();
-//        }
-//        // else use the default minecraft option
-//        else return defaultColour;
-//    }
+    @ModifyArg(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;fill(IIIII)V"), index = 4)
+    private int getTextboxColor(int defaultColour) {
+        ChatShortcut currentChatShortcut = ChatShortcut.getCurrentChatShortcut();
+
+        // if there is one active - use it
+        if (currentChatShortcut != null) {
+            return currentChatShortcut.getColor().getRGB();
+        }
+        // else use the default minecraft option
+        else return defaultColour;
+    }
 
     @ModifyArg(method = "keyPressed", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/ChatScreen;handleChatInput(Ljava/lang/String;Z)Z"), index = 0)
     private String insertPrefix(String interceptedMessage) {
