@@ -177,8 +177,7 @@ modrinth {
     uploadFile.set(tasks.remapJar.get())
     gameVersions.addAll(minecraftVersion)
     dependencies {
-        val fabricModrinthVersion: String by project
-        required.version(fabricModrinthVersion)
+        required.version("fabric-api", fabricVersion)
     }
 
     // TODO: use something other than readText?
