@@ -21,10 +21,11 @@ import kotlinx.coroutines.launch
  * @see requester
  */
 fun <T : Any> toggleRequesterGroup(
+    name: String,
     lifecycle: Listenable<*>,
     trial: RequesterTrial<ToggleRequesterGroup.Input<T>, Boolean>
 ): ToggleRequesterGroup<T> {
-    return NaiveToggle(lifecycle, trial)
+    return NaiveToggle(name, lifecycle, trial)
 }
 
 /**
@@ -39,46 +40,48 @@ sealed interface ToggleRequesterGroup<T : Any> {
 }
 
 private class NaiveToggle<T : Any>(
-    private val lifecycle: Listenable<*>,
-    private val trial: RequesterTrial<ToggleRequesterGroup.Input<T>, Boolean>,
+    name: String,
+    lifecycle: Listenable<*>,
+    trial: RequesterTrial<ToggleRequesterGroup.Input<T>, Boolean>
 ) : ToggleRequesterGroup<T> {
-    override val toggle: RequesterModule<T, Unit> =
-        module(naiveRequesterDetail(null, ::toggle))
+    override val toggle: RequesterModule<T, Unit>
+    override val enable: RequesterModule<T, Unit>
+    override val disable: RequesterModule<T, Unit>
 
-    override val enable: RequesterModule<T, Unit> =
-        module(naiveRequesterDetail(true, ::enable))
+    init {
+        fun detail(desiredState: Boolean?, requester: () -> Requester<T, Unit>) =
+            ModuleDetail<ExposedModule, RequesterModule<T, Unit>> { module ->
+                val delegate = requesterDetail(name, lifecycle, trial(
+                    trial.supplyResultsFrom(module).asListenable(),
+                    start = { input: T ->
+                        val isDesired = trial.start(input.wrap(desiredState)) == desiredState
+                        isDesired.unitOrNull()
+                    },
+                    tests = { input, supplier, isRequest ->
+                        suspending {
+                            val state = supplier
+                                .supplyIn(this, input?.wrap(desiredState), isRequest)
+                                ?.await()
+                            if (state != desiredState && isRequest) {
+                                retryModule.launch(Dispatchers.Default) {
+                                    requester().requestFrom(this@suspending, input!!)
+                                }
+                            }
+                        }
+                    }
+                ))
 
-    override val disable: RequesterModule<T, Unit> =
-        module(naiveRequesterDetail(false, ::disable))
+                delegate.applyTo(module)
+            }
+
+        toggle = module(detail(null, ::toggle))
+        enable = module(detail(true, ::enable))
+        disable = module(detail(false, ::disable))
+    }
 
     private val retryModule = module(ModuleDetail.Exposed) {
         extend(toggle, enable, disable)
     }
-
-    private fun naiveRequesterDetail(desiredState: Boolean?, requester: () -> Requester<T, Unit>) =
-        ModuleDetail<ExposedModule, RequesterModule<T, Unit>> { module ->
-            val delegate = requesterDetail(lifecycle, trial(
-                trial.supplyResultsFrom(module).asListenable(),
-                start = { input: T ->
-                    val isDesired = trial.start(input.wrap(desiredState)) == desiredState
-                    isDesired.unitOrNull()
-                },
-                tests = { input, supplier, isRequest ->
-                    suspending {
-                        val state = supplier
-                            .supplyIn(this, input?.wrap(desiredState), isRequest)
-                            ?.await()
-                        if (state != desiredState && isRequest) {
-                            retryModule.launch(Dispatchers.Default) {
-                                requester().requestFrom(this@suspending, input!!)
-                            }
-                        }
-                    }
-                }
-            ))
-
-            delegate.applyTo(module)
-        }
 
     fun T.wrap(desiredState: Boolean?) = ToggleRequesterGroup.Input(this, desiredState)
 }

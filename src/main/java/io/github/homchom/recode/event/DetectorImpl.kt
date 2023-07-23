@@ -1,10 +1,7 @@
 package io.github.homchom.recode.event
 
-import io.github.homchom.recode.DEFAULT_TIMEOUT_DURATION
-import io.github.homchom.recode.RecodeDispatcher
+import io.github.homchom.recode.*
 import io.github.homchom.recode.lifecycle.*
-import io.github.homchom.recode.logError
-import io.github.homchom.recode.mc
 import io.github.homchom.recode.ui.sendSystemToast
 import io.github.homchom.recode.ui.translateText
 import io.github.homchom.recode.util.nullable
@@ -12,22 +9,29 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.flow.*
+import java.util.concurrent.CancellationException
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Creates a [DetectorModule] that runs via one or more [DetectorTrial] objects.
  *
  * This is provided as a convenience function; for more complex DetectorModules, use the more generic
  * [io.github.homchom.recode.lifecycle.module] function and [detectorDetail].
+ *
+ * @param name The name of what is being detected (used for debugging purposes).
  */
 fun <T : Any, R : Any> detector(
+    name: String,
     primaryTrial: DetectorTrial<T, R>,
     vararg secondaryTrials: DetectorTrial<T, R>,
     timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION
 ): DetectorModule<T, R> {
-    return module(detectorDetail(primaryTrial, *secondaryTrials, timeoutDuration = timeoutDuration))
+    return module(
+        detectorDetail(name, primaryTrial, *secondaryTrials, timeoutDuration = timeoutDuration)
+    )
 }
 
 /**
@@ -36,16 +40,20 @@ fun <T : Any, R : Any> detector(
  * This is provided as a convenience function; for more complex RequesterModules, use the more generic
  * [io.github.homchom.recode.lifecycle.module] function and [requesterDetail].
  *
+ * @param name The name of what is being detected (used for debugging purposes).
  * @param lifecycle The [Listenable] object that defines the requester's lifecycle. If the event is run during
  * a request, the request is cancelled.
  */
 fun <T : Any, R : Any> requester(
+    name: String,
     lifecycle: Listenable<*>,
     primaryTrial: RequesterTrial<T, R>,
     vararg secondaryTrials: DetectorTrial<T, R>,
     timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION
 ): RequesterModule<T, R> {
-    return module(requesterDetail(lifecycle, primaryTrial, *secondaryTrials, timeoutDuration = timeoutDuration))
+    return module(
+        requesterDetail(name, lifecycle, primaryTrial, *secondaryTrials, timeoutDuration = timeoutDuration)
+    )
 }
 
 /**
@@ -54,11 +62,12 @@ fun <T : Any, R : Any> requester(
  * @see detector
  */
 fun <T : Any, R : Any> detectorDetail(
+    name: String,
     primaryTrial: DetectorTrial<T, R>,
     vararg secondaryTrials: DetectorTrial<T, R>,
     timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION
 ): ModuleDetail<ExposedModule, DetectorModule<T, R>> {
-    return TrialDetector(listOf(primaryTrial, *secondaryTrials), timeoutDuration)
+    return TrialDetector(name, listOf(primaryTrial, *secondaryTrials), timeoutDuration)
 }
 
 /**
@@ -67,17 +76,19 @@ fun <T : Any, R : Any> detectorDetail(
  * @see requester
  */
 fun <T : Any, R : Any> requesterDetail(
+    name: String,
     lifecycle: Listenable<*>,
     primaryTrial: RequesterTrial<T, R>,
     vararg secondaryTrials: DetectorTrial<T, R>,
     timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION
 ): ModuleDetail<ExposedModule, RequesterModule<T, R>> {
-    return TrialRequester(lifecycle, primaryTrial, secondaryTrials, timeoutDuration)
+    return TrialRequester(name, lifecycle, primaryTrial, secondaryTrials, timeoutDuration)
 }
 
 private sealed class DetectorDetail<T : Any, R : Any, M : DetectorModule<T, R>> :
     Detector<T, R>, ModuleDetail<ExposedModule, M>
 {
+    protected abstract val name: String
     protected abstract val trials: List<Trial<T, R>>
 
     private val event = createEvent<R, R> { it }
@@ -106,13 +117,15 @@ private sealed class DetectorDetail<T : Any, R : Any, M : DetectorModule<T, R>> 
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
+    @OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
     override fun applyTo(module: ExposedModule): M {
         module.onEnable {
-            for (trial in trials) module.launch {
-                trial.supplyResultsFrom(module).collect { supplier ->
-                    val trialJob = Job(coroutineContext.job)
-                    if (entries.isEmpty()) module.considerEntry(null, supplier, trialJob)
+            for (trialIndex in trials.indices) module.launch {
+                trials[trialIndex].supplyResultsFrom(module).collect { supplier ->
+                    val successContext = CompletableDeferred<R>(coroutineContext.job)
+                    if (entries.isEmpty()) {
+                        module.considerEntry(trialIndex, null, supplier, successContext)
+                    }
 
                     val iterator = entries.iterator()
                     for (entry in iterator) {
@@ -120,7 +133,15 @@ private sealed class DetectorDetail<T : Any, R : Any, M : DetectorModule<T, R>> 
                             iterator.remove()
                             continue
                         }
-                        module.considerEntry(entry, supplier, trialJob)
+                        module.considerEntry(trialIndex, entry, supplier, successContext)
+                    }
+
+                    successContext.invokeOnCompletion { exception ->
+                        if (exception == null) {
+                            val completed = successContext.getCompleted()
+                            logDebug("${this@DetectorDetail} succeeded; running with context $completed")
+                            event.run(completed)
+                        }
                     }
                 }
             }
@@ -133,15 +154,18 @@ private sealed class DetectorDetail<T : Any, R : Any, M : DetectorModule<T, R>> 
 
     @OptIn(DelicateCoroutinesApi::class)
     fun CoroutineModule.considerEntry(
+        trialIndex: Int,
         entry: TrialEntry<T, R>?,
         supplier: Trial.ResultSupplier<T, R>,
-        trialJob: Job,
+        successContext: CompletableDeferred<R>,
     ) {
-        val entryScope = CoroutineScope(coroutineContext + Job(trialJob))
+        val entryScope = CoroutineScope(coroutineContext + Job(successContext))
         val result = nullable {
             val trialScope = TrialScope(this@considerEntry, this@nullable, entryScope)
+            logDebug("trial $trialIndex started for ${debugString(entry?.input)}")
             supplier.supplyIn(trialScope, entry?.input, entry?.isRequest ?: false)
         }
+
         val entryJob = entryScope.launch {
             if (result == null) {
                 entry?.responses?.trySend(null)
@@ -149,14 +173,26 @@ private sealed class DetectorDetail<T : Any, R : Any, M : DetectorModule<T, R>> 
             }
 
             val awaited = result.await()
-            yield()
             entry?.responses?.trySend(awaited)
-            if (awaited != null) {
-                event.run(awaited)
-                trialJob.cancel("Trial produced non-null response")
-            }
+            awaited?.let(successContext::complete)
         }
-        entryJob.invokeOnCompletion { entryScope.cancel("TrialEntry consideration completed") }
+
+        entryJob.invokeOnCompletion { exception ->
+            val state = when (exception) {
+                is CancellationException -> "cancelled"
+                null -> "ended"
+                else -> "ended with exception $exception"
+            }
+            logDebug("trial $trialIndex $state for ${debugString(entry?.input)}")
+            entryScope.cancel("TrialEntry consideration completed")
+        }
+    }
+
+    override fun toString() = "$name detector"
+
+    protected fun debugString(input: T?): String {
+        val requestString = if (input == null) "default entry" else "explicit entry with input $input"
+        return "$this ($requestString)"
     }
 }
 
@@ -167,6 +203,7 @@ private data class TrialEntry<T : Any, R : Any>(
 )
 
 private class TrialDetector<T : Any, R : Any>(
+    override val name: String,
     override val trials: List<DetectorTrial<T, R>>,
     override val timeoutDuration: Duration
 ) : DetectorDetail<T, R, DetectorModule<T, R>>() {
@@ -175,6 +212,7 @@ private class TrialDetector<T : Any, R : Any>(
 }
 
 private class TrialRequester<T : Any, R : Any>(
+    override val name: String,
     private val lifecycle: Listenable<*>,
     primaryTrial: RequesterTrial<T, R>,
     secondaryTrials: Array<out DetectorTrial<T, R>>,
@@ -198,6 +236,7 @@ private class TrialRequester<T : Any, R : Any>(
 
         _activeRequests.incrementAndGet()
         try {
+            delay(25.milliseconds) // https://github.com/PaperMC/Velocity/issues/909 TODO: remove
             val response = start(input) ?: withTimeout(timeoutDuration) { detectChannel.receive() }
             coroutineContext.cancelChildren()
             response
@@ -206,7 +245,7 @@ private class TrialRequester<T : Any, R : Any>(
                 translateText("multiplayer.recode.request_timeout.toast.title"),
                 translateText("multiplayer.recode.request_timeout.toast")
             )
-            logError("Request with input $input timed out after $timeoutDuration")
+            logError("${debugString(input)} timed out after $timeoutDuration")
             throw timeout
         } finally {
             _activeRequests.decrementAndGet()
@@ -219,6 +258,8 @@ private class TrialRequester<T : Any, R : Any>(
     }
 
     override fun moduleFrom(input: ExposedModule) = SimpleRequesterModule(this, input)
+
+    override fun toString() = "$name requester"
 }
 
 private open class SimpleDetectorModule<T : Any, R : Any>(

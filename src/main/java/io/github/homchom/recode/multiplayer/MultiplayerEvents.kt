@@ -32,28 +32,29 @@ data class ServerDisconnectContext(val handler: ClientPacketListener, val client
 private val patchRegex = Regex("""Current patch: (.+)\. See the patch notes with /patch!""")
 
 object JoinDFDetector :
-    Detector<Unit, JoinDFInfo> by detector(nullaryTrial(JoinServerEvent) {
-        requireFalse(isOnDF) // if already on DF, this is a node switch and should not be tested
-        requireTrue(mc.currentServer.ipMatchesDF)
+    Detector<Unit, JoinDFInfo> by detector("DF join",
+        nullaryTrial(JoinServerEvent) {
+            requireFalse(isOnDF) // if already on DF, this is a node switch and should not be tested
+            requireTrue(mc.currentServer.ipMatchesDF)
 
-        val messages = ReceiveChatMessageEvent.add()
-        val tipMessage = TipMessage.detect(null).map(::Case).addOptional()
+            val messages = ReceiveChatMessageEvent.add()
+            val tipMessage = TipMessage.detect(null).map(::Case).addOptional()
 
-        val disconnect = DisconnectFromServerEvent.add()
-        suspending {
-            failOn(disconnect)
+            val disconnect = DisconnectFromServerEvent.add()
+            suspending {
+                failOn(disconnect)
 
-            val patch = +test(messages, unlimited) { (text) ->
-                patchRegex.matchEntireUnstyled(text)?.groupValues?.get(1)
+                val patch = +test(messages, unlimited) { (text) ->
+                    patchRegex.matchEntireUnstyled(text)?.groupValues?.get(1)
+                }
+
+                val request = UserStateRequest(mc.player!!.username, true)
+                val node = LocateMessage.request(request).state.node
+
+                val canTip = tipMessage.any { (message) -> message?.canTip ?: false }
+                JoinDFInfo(node, patch, canTip)
             }
-
-            val request = UserStateRequest(mc.player!!.username, true)
-            val node = LocateMessage.request(request).state.node
-
-            val canTip = tipMessage.any { (message) -> message?.canTip ?: false }
-            JoinDFInfo(node, patch, canTip)
-        }
-    })
+        })
 
 data class JoinDFInfo(val node: Node, val patch: String, val canTip: Boolean)
 

@@ -3,7 +3,6 @@ package io.github.homchom.recode.mod.mixin.inventory;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.VarSyntaxHighlighter;
 import io.github.homchom.recode.sys.util.ItemUtil;

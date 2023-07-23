@@ -18,6 +18,7 @@ import kotlin.time.Duration.Companion.seconds
 
 data class LocateMessage(val username: String, val state: LocateState) {
     companion object : Requester<UserStateRequest, LocateMessage> by requester(
+        "/locate",
         DFStateDetectors.LeaveServer,
         trial(
             ReceiveChatMessageEvent,
@@ -61,6 +62,7 @@ data class LocateMessage(val username: String, val state: LocateState) {
 
 data class ProfileMessage(val username: String, val ranks: List<Rank>) {
     companion object : Requester<UserStateRequest, ProfileMessage> by requester(
+        "/profile",
         DFStateDetectors.LeaveServer,
         trial(
             ReceiveChatMessageEvent,
@@ -72,7 +74,7 @@ data class ProfileMessage(val username: String, val ranks: List<Rank>) {
                     .namedGroupValues
                 val player = values["player"]
 
-                val rankMap = DonorRank.values().associateBy { it.displayName }
+                val rankMap = DonorRank.entries.associateBy { it.displayName }
                 val rankString = values["ranks"]
                 val ranks = rankString.substring(1, rankString.length - 1).split("][")
                     .mapNotNull { rankMap[it] }
@@ -92,7 +94,7 @@ data class ProfileMessage(val username: String, val ranks: List<Rank>) {
 }
 
 data class TipMessage(val player: String, val canTip: Boolean) {
-    companion object : Detector<Unit, TipMessage> by detector(nullaryTrial(
+    companion object : Detector<Unit, TipMessage> by detector("/tip", nullaryTrial(
         ReceiveChatMessageEvent,
         tests = { (message) ->
             val player = TipMessage.mainRegex.matchEntireUnstyled(message)!!.groupValues[1]
@@ -123,7 +125,8 @@ data class TipMessage(val player: String, val canTip: Boolean) {
 }
 
 object SupportTimeRequester : Requester<Boolean, Case<Duration?>> by requester(
-    DFStateDetectors.LeaveSession,
+    "/support time",
+    DFStateDetectors.EndSession,
     trial(
         ReceiveChatMessageEvent,
         start = { sendCommand("support time") },

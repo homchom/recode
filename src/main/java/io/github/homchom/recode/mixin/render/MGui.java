@@ -1,6 +1,5 @@
 package io.github.homchom.recode.mixin.render;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.homchom.recode.render.SideChatComponent;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;

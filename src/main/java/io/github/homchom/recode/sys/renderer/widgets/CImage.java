@@ -1,6 +1,5 @@
 package io.github.homchom.recode.sys.renderer.widgets;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.cottonmc.cotton.gui.client.ScreenDrawing;
 import io.github.cottonmc.cotton.gui.widget.WWidget;
 import net.minecraft.client.gui.GuiGraphics;

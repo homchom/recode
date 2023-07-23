@@ -2,7 +2,6 @@ package io.github.homchom.recode
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import io.github.homchom.recode.feature.AutomationFeatureGroup
 import io.github.homchom.recode.feature.SocialFeatureGroup
 import io.github.homchom.recode.feature.VisualFeatureGroup
 import io.github.homchom.recode.lifecycle.EntrypointDetail
@@ -28,17 +27,18 @@ import net.fabricmc.loader.api.ModContainer
 import net.fabricmc.loader.api.metadata.ModMetadata
 import net.fabricmc.loader.api.metadata.ModOrigin
 import org.slf4j.LoggerFactory
+import org.slf4j.event.Level
 import java.nio.file.Path
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import kotlin.random.Random
 
-private val logger = LoggerFactory.getLogger(MOD_ID)
+private val logger = LoggerFactory.getLogger(MOD_ID).apply { isEnabledForLevel(Level.DEBUG) }
 
 private val recodeModule = module(EntrypointDetail) {
     // TODO: move feature groups to a config module
-    depend(AutomationFeatureGroup, SocialFeatureGroup, VisualFeatureGroup)
+    depend(SocialFeatureGroup, VisualFeatureGroup)
 
     // on mod initialize
     onLoad {
@@ -155,7 +155,11 @@ fun logInfo(message: String) = logger.info("[$MOD_NAME] $message")
 
 fun logError(message: String, mentionBugReport: Boolean = false) {
     val bugString = if (mentionBugReport) {
-        " If you believe this is a bug, you can report it here: github.com/homchom/recode/issues"
+        "\nIf you believe this is a bug, you can report it here: https://github.com/homchom/recode/issues)"
     } else ""
     logger.error("[$MOD_NAME] $message$bugString")
+}
+
+fun logDebug(message: String) {
+    if (debug) logger.info("[$MOD_NAME debug] $message")
 }

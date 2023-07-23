@@ -8,7 +8,7 @@ import net.minecraft.network.chat.Component
 /**
  * @throws IllegalStateException if there is no current player
  */
-fun sendMessage(message: Component) = asPlayer { displayClientMessage(message, false) }
+fun sendMessage(message: Component) = asPlayer { sendSystemMessage(message) }
 
 /**
  * @throws IllegalStateException if there is no current player

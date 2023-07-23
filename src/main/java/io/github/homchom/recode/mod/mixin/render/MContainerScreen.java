@@ -2,7 +2,6 @@ package io.github.homchom.recode.mod.mixin.render;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.sys.hypercube.codeaction.Action;

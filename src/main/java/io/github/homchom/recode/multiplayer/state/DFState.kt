@@ -20,10 +20,10 @@ val ServerData?.ipMatchesDF get(): Boolean {
     return this?.ip?.matches(regex) ?: false
 }
 
-sealed class DFState : LocateState {
-    abstract val permissions: Deferred<PermissionGroup>
+sealed interface DFState : LocateState {
+    val permissions: Deferred<PermissionGroup>
 
-    abstract val session: SupportSession?
+    val session: SupportSession?
 
     /**
      * The player's current permissions, suspending if permissions have not yet been initially detected.
@@ -35,14 +35,17 @@ sealed class DFState : LocateState {
         is PlayState -> OnPlot(state, permissions, session)
     }
 
-    abstract fun withSession(session: SupportSession?): DFState
+    fun withSession(session: SupportSession?): DFState
 
     data class AtSpawn(
         override val node: Node,
         override val permissions: Deferred<PermissionGroup>,
         override val session: SupportSession?
-    ) : DFState(), SpawnState {
+    ) : DFState, SpawnState {
         override fun withSession(session: SupportSession?) = copy(session = session)
+
+        override fun equals(other: Any?) = super.equals(other)
+        override fun hashCode() = super.hashCode()
     }
 
     data class OnPlot(
@@ -52,7 +55,7 @@ sealed class DFState : LocateState {
         override val status: String?,
         override val permissions: Deferred<PermissionGroup>,
         override val session: SupportSession?
-    ) : DFState(), PlayState {
+    ) : DFState, PlayState {
         constructor(
             state: PlayState,
             permissions: Deferred<PermissionGroup>,
@@ -60,6 +63,9 @@ sealed class DFState : LocateState {
         ) : this(state.node, state.mode, state.plot, state.status, permissions, session)
 
         override fun withSession(session: SupportSession?) = copy(session = session)
+
+        override fun equals(other: Any?) = super.equals(other)
+        override fun hashCode() = super.hashCode()
     }
 }
 
@@ -113,9 +119,9 @@ enum class PlotMode(val descriptor: String) : Matcher<Component, Unit> {
 }
 
 fun plotModeByDescriptor(descriptor: String) =
-    PlotMode.values().single { it.descriptor == descriptor }
+    PlotMode.entries.single { it.descriptor == descriptor }
 fun plotModeByDescriptorOrNull(descriptor: String) =
-    PlotMode.values().singleOrNull { it.descriptor == descriptor }
+    PlotMode.entries.singleOrNull { it.descriptor == descriptor }
 
 enum class SupportSession : Matcher<Component, Unit> {
     Requested {

@@ -35,7 +35,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>> {
 
     private val scoreboardNodeRegex = Regex("""(?<node>.+) - .+""")
 
-    val EnterSpawn = group.add(detector(
+    val EnterSpawn = group.add(detector("spawn",
         nullaryTrial(TeleportEvent) { _ ->
             enforce { requireTrue(isOnDF) }
 
@@ -73,51 +73,57 @@ object DFStateDetectors : StateListenable<Case<DFState?>> {
         }
     ))
 
-    val ChangeMode = group.add(detector(nullaryTrial(ReceiveChatMessageEvent) { (message) ->
-        enforce { requireTrue(isOnDF) }
-        suspending {
-            PlotMode.match(message)?.encase { match ->
-                val state = currentDFState!!.withState(locate()) as? DFState.OnPlot
-                if (state?.mode != match.matcher) fail()
-                state
+    val ChangeMode = group.add(detector("mode change",
+        nullaryTrial(ReceiveChatMessageEvent) { (message) ->
+            enforce { requireTrue(isOnDF) }
+            suspending {
+                PlotMode.match(message)?.encase { match ->
+                    val state = currentDFState!!.withState(locate()) as? DFState.OnPlot
+                    if (state?.mode != match.matcher) fail()
+                    state
+                }
             }
         }
-    }))
+    ))
 
-    val EnterSession = group.add(detector(nullaryTrial(ReceiveChatMessageEvent) { (message) ->
-        enforce { requireTrue(isOnDF) }
+    val StartSession = group.add(detector("session start",
+        nullaryTrial(ReceiveChatMessageEvent) { (message) ->
+            enforce { requireTrue(isOnDF) }
 
-        requireTrue(currentDFState!!.session == null)
-        val session = SupportSession.match(message)!!.matcher
+            requireTrue(currentDFState!!.session == null)
+            val session = SupportSession.match(message)!!.matcher
 
-        val subsequent = ReceiveChatMessageEvent.add()
-        val enforceChannel = ReceiveChatMessageEvent.add()
-        suspending {
-            enforce(enforceChannel) { (text) -> SupportSession.match(text) == null }
+            val subsequent = ReceiveChatMessageEvent.add()
+            val enforceChannel = ReceiveChatMessageEvent.add()
+            suspending {
+                enforce(enforceChannel) { (text) -> SupportSession.match(text) == null }
 
-            val regex = Regex("""You have entered a session with $USERNAME_PATTERN\.""")
-            // this is safe because of the previous enforce call; only one can run at a time
-            testBoolean(subsequent, unlimited, Duration.INFINITE) { (text) ->
-                regex.matchesUnstyled(text)
+                val regex = Regex("""You have entered a session with $USERNAME_PATTERN\.""")
+                // this is safe because of the previous enforce call; only one can run at a time
+                testBoolean(subsequent, unlimited, Duration.INFINITE) { (text) ->
+                    regex.matchesUnstyled(text)
+                }
+
+                requireTrue(SupportTimeRequester.request(true).content != null)
+                Case(currentDFState!!.withSession(session))
             }
-
-            requireTrue(SupportTimeRequester.request(true).content != null)
-            Case(currentDFState!!.withSession(session))
         }
-    }))
+    ))
 
-    val LeaveSession = group.add(detector(nullaryTrial(ReceiveChatMessageEvent) { (message) ->
-        enforce { requireTrue(isOnDF) }
+    val EndSession = group.add(detector("session end",
+        nullaryTrial(ReceiveChatMessageEvent) { (message) ->
+            enforce { requireTrue(isOnDF) }
 
-        requireTrue(currentDFState!!.session != null)
+            requireTrue(currentDFState!!.session != null)
 
-        // TODO: is there a better way to do this with fewer false positives?
-        val regex = Regex("""Your session with $USERNAME_PATTERN has ended\.""")
-        requireTrue(regex.matchesUnstyled(message))
-        instant(Case(currentDFState!!.withSession(null)))
-    }))
+            // TODO: is there a better way to do this with fewer false positives?
+            val regex = Regex("""Your session with $USERNAME_PATTERN has ended\.""")
+            requireTrue(regex.matchesUnstyled(message))
+            instant(Case(currentDFState!!.withSession(null)))
+        }
+    ))
 
-    val LeaveServer = group.add(detector(
+    val LeaveServer = group.add(detector("DF leave",
         nullaryTrial(DisconnectFromServerEvent) { instant(Case.ofNull) }
     ))
 

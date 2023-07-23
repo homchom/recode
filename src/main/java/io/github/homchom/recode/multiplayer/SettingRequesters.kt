@@ -10,7 +10,7 @@ import io.github.homchom.recode.ui.matchesUnstyled
 import io.github.homchom.recode.ui.unstyledString
 import io.github.homchom.recode.util.cachedRegex
 
-val ChatLocalRequester = requester(DFStateDetectors.ChangeMode, nullaryTrial(
+val ChatLocalRequester = requester("/chat local", DFStateDetectors.ChangeMode, nullaryTrial(
     ReceiveChatMessageEvent,
     start = { sendCommand("chat local") },
     tests = { (text), _ ->
@@ -25,7 +25,7 @@ private val timeRegex = cachedRegex<Long> { time ->
 }
 
 // TODO: support time keywords through command suggestions (not enum)
-val ClientTimeRequester = requester(DFStateDetectors.ChangeMode, trial(
+val ClientTimeRequester = requester("/time", DFStateDetectors.ChangeMode, trial(
     ReceiveChatMessageEvent,
     start = { time: Long -> sendCommand("time $time") },
     tests = { time, (text), _ ->
@@ -33,7 +33,7 @@ val ClientTimeRequester = requester(DFStateDetectors.ChangeMode, trial(
     }
 ))
 
-val FlightRequesters = toggleRequesterGroup<Unit>(DFStateDetectors, trial(
+val FlightRequesters = toggleRequesterGroup<Unit>("/fly", DFStateDetectors, trial(
     basis = ReceiveChatMessageEvent,
     start = { sendCommand("fly") },
     tests = { input, message, isRequest ->
@@ -52,7 +52,7 @@ private val lsEnabledRegex =
 private val lsDisabledRegex =
     Regex("""$LAGSLAYER_PATTERN Stopped monitoring plot (\d+)\.""")
 
-val LagSlayerRequesters = toggleRequesterGroup<Unit>(DFStateDetectors.ChangeMode, trial(
+val LagSlayerRequesters = toggleRequesterGroup<Unit>("/lagslayer", DFStateDetectors.ChangeMode, trial(
     ReceiveChatMessageEvent,
     start = { sendCommand("lagslayer") },
     tests = { input, message, isRequest ->
@@ -66,7 +66,7 @@ val LagSlayerRequesters = toggleRequesterGroup<Unit>(DFStateDetectors.ChangeMode
     }
 ))
 
-val NightVisionRequesters = toggleRequesterGroup<Unit>(DFStateDetectors.ChangeMode, trial(
+val NightVisionRequesters = toggleRequesterGroup<Unit>("/nightvis", DFStateDetectors.ChangeMode, trial(
     ReceiveChatMessageEvent,
     start = { sendCommand("nightvis") },
     tests = { input, message, isRequest: Boolean ->

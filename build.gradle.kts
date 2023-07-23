@@ -1,10 +1,9 @@
-import Build_gradle.DependencyMod
 import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.8.21"
-    id("fabric-loom") version "0.12-SNAPSHOT"
+    kotlin("jvm") version "1.9.0"
+    id("fabric-loom") version "1.3-SNAPSHOT"
     id("com.modrinth.minotaur") version "2.+"
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
@@ -66,7 +65,7 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:$loaderDevVersion")
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
 
-    shadeApi(kotlin("stdlib", "1.8.21"))
+    shadeApi(kotlin("stdlib", "1.9.0"))
     shadeApi("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
 
     // Declare mod dependencies listed in gradle.properties

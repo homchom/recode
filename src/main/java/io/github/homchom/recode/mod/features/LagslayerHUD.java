@@ -3,7 +3,6 @@ package io.github.homchom.recode.mod.features;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.platform.Window;
-import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.homchom.recode.LegacyRecode;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
