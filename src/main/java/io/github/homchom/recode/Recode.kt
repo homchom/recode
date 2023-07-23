@@ -2,6 +2,7 @@ package io.github.homchom.recode
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import io.github.homchom.recode.feature.AutomationFeatureGroup
 import io.github.homchom.recode.feature.SocialFeatureGroup
 import io.github.homchom.recode.feature.VisualFeatureGroup
 import io.github.homchom.recode.lifecycle.EntrypointDetail
@@ -38,7 +39,7 @@ private val logger = LoggerFactory.getLogger(MOD_ID).apply { isEnabledForLevel(L
 
 private val recodeModule = module(EntrypointDetail) {
     // TODO: move feature groups to a config module
-    depend(SocialFeatureGroup, VisualFeatureGroup)
+    depend(AutomationFeatureGroup, SocialFeatureGroup, VisualFeatureGroup)
 
     // on mod initialize
     onLoad {
