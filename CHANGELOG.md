@@ -1,27 +1,16 @@
-For Minecraft 1.19.4, Fabric API 0.78.0 or newer
+For Minecraft 1.20.1 with Fabric API
+
+### Additions
+- Added better unicode by Electrosolt (which retextures many unicode symbols in the vanilla style) as a built-in resource pack
+- Re-added support session state detection and related features
 
 ### Changes
-- Updated to Minecraft 1.19.4
-- Automation commands no longer take multiple seconds to take effect
-- Improved block entity performance (including in codespaces)
-- The LagSlayer overlay now has a shadow (#33)
-- Improvements to Side Chat
-- The mod is now more lenient with Cloth Config compatibility
-- Removed Partner Bracket and Quick Var Scope (as they were added to DF in Patch 5.7)
-- The mod now raises a warning when used with Optifabric (Optifine is not supported)
+- Updated to Minecraft 1.20.1
+- Request timeouts (which should not happen to begin with) are now logged with a toast notification; there are no longer uncaught exceptions with them
+- Updated the DiamondFire logo texture (thanks Baconiumo)
 
 ### Fixes
-- The copy button in /colors no longer freezes the screen
-- `/locate` messages should no longer appear in chat unexpectedly on occasion
-- Messages (including chat messages and especially `/locate`-ing oneself) can no longer be hidden when they shouldn't be
-- The "Recode" button in the Options menu is now compatible with most mods
-
-### Known issues
-- Auto `/chat local` and similar automation commands run in support sessions (this will be fixed very soon! but for now you can disable the setting or just live with the bug)
-- Newer code actions still don't have lore overlays (the action dump is outdated)
-- The current Options menu can clip the edge of the screen on large GUI scales
-
-### Technical
-- Updated to Kotlin 1.8.20
-- `/locate` is no longer sent by the client every 5 seconds
-- A million other internal changes/improvements (unsure about something you see? ask!)
+- Fixed all currently known causes of request timeouts; so far they have not occured in testing :)
+- Fixed `/profile` message detection (again)
+- Fixed auto `/lagslayer`
+- Other minor state fixes
