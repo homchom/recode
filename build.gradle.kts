@@ -61,9 +61,10 @@ dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
     mappings(loom.officialMojangMappings())
 
+    val fabricDevVersion: String by project
     val loaderDevVersion: String by project
+    modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricDevVersion")
     modImplementation("net.fabricmc:fabric-loader:$loaderDevVersion")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
 
     shadeApi(kotlin("stdlib", "1.9.0"))
     shadeApi("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
@@ -100,13 +101,13 @@ tasks {
     }
 
     processResources {
-        val loaderModVersion: String by project
+        val loaderVersion: String by project
         // These properties can be used in fabric_mod_json_template.txt in Groovy template syntax
         val exposedProperties = arrayOf(
             "modName" to modName,
             "version" to version,
             "minecraftVersion" to minecraftVersion,
-            "loaderVersion" to loaderModVersion,
+            "loaderVersion" to loaderVersion,
             "fabricVersion" to fabricVersion
         )
 
