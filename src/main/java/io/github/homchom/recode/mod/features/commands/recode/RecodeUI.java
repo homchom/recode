@@ -15,14 +15,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class RecodeUI extends LightweightGuiDescription implements IMenu {
-    private static final ResourceLocation CODEUTILS_LOGO = new ResourceLocation("recode:icon.png");
+    private static final ResourceLocation RECODE_ICON = new ResourceLocation("recode:textures/ui/recode.png");
 
     @Override
     public void open(String... args) {
         WPlainPanel root = new WPlainPanel();
         root.setSize(220, 220);
 
-        CImage cImage = new CImage(CODEUTILS_LOGO);
+        CImage cImage = new CImage(RECODE_ICON);
         cImage.setSize(120, 120);
         root.add(cImage, 46, 0);
 

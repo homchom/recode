@@ -5,11 +5,9 @@ import io.github.homchom.recode.mod.features.VarSyntaxHighlighter;
 import io.github.homchom.recode.sys.sidedchat.ChatShortcut;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.CommandSuggestions;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.network.chat.Component;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -21,12 +19,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MChatScreen {
     @Shadow
     protected EditBox input;
-
-    @Shadow
-    @Final
-    private String initial;
-
-    @Shadow private CommandSuggestions commandSuggestions;
 
     @Inject(method = "render", at = @At("TAIL"))
     private void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta, CallbackInfo ci) {

@@ -79,9 +79,12 @@ public abstract class MSideChatHUD implements SideChatComponent {
         PoseStack poseStack = guiGraphics.pose();
         poseStack.pushPose();
         poseStack.translate(getSideChatStartX(), 0, 0);
-        render(guiGraphics, tickDelta, mouseX, mouseY);
-        poseStack.popPose();
-        renderingSideChat = false;
+        try {
+            render(guiGraphics, tickDelta, mouseX, mouseY);
+        } finally {
+            poseStack.popPose();
+            renderingSideChat = false;
+        }
     }
 
     // TODO: improve render mixin functions further
