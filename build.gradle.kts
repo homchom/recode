@@ -12,7 +12,7 @@ val modName: String by project
 
 val modVersion: String by project
 val minecraftVersion: String by project
-val modVersionWithMeta = "$modVersion+$minecraftVersion"
+val modVersionWithMeta get() = "$modVersion+$minecraftVersion-LATEST"
 version = modVersionWithMeta
 
 val mavenGroup: String by project
@@ -175,7 +175,9 @@ modrinth {
         versionType.set(type)
     }
 
-    uploadFile.set(tasks.remapJar.get())
+    val renamedFile = tasks.remapJar.get().rename { it.replace("-LATEST", "") }
+    uploadFile.set(renamedFile)
+
     gameVersions.addAll(minecraftVersion)
     dependencies {
         required.version("fabric-api", fabricVersion)
