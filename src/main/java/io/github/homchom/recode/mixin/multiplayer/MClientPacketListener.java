@@ -1,6 +1,5 @@
 package io.github.homchom.recode.mixin.multiplayer;
 
-import io.github.homchom.recode.RecodeKt;
 import io.github.homchom.recode.event.SimpleValidated;
 import io.github.homchom.recode.game.RespawnEvent;
 import io.github.homchom.recode.game.TeleportEvent;
@@ -25,7 +24,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MClientPacketListener {
 	@Inject(method = "handleMovePlayer", at = @At("TAIL"))
 	public void handleTeleportEvent(ClientboundPlayerPositionPacket packet, CallbackInfo ci) {
-		RecodeKt.logInfo("running TeleportEvent");
 		TeleportEvent.INSTANCE.run(packet);
 	}
 

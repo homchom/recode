@@ -25,9 +25,6 @@ import java.util.Set;
 @Mixin(ItemStack.class)
 public abstract class MItemStack {
     @Shadow
-    private CompoundTag tag;
-
-    @Shadow
     @Nullable
     public abstract CompoundTag getTagElement(String key);
 
