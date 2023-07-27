@@ -69,6 +69,8 @@ sealed interface DFState : LocateState {
     }
 }
 
+fun DFState?.isOnPlot(plot: Plot) = this is DFState.OnPlot && this.plot == plot
+
 fun DFState?.isInMode(mode: PlotMode) = this is DFState.OnPlot && this.mode == mode
 
 @JvmInline

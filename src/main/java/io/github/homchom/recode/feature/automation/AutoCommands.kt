@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 // TODO: combine into one module per event after config is figured out
 
 val FAutoChatLocal = autoCommand("chat local", DFStateDetectors) { (new) ->
-    if (new is PlayState && currentDFState !is PlayState) {
+    if (new is PlayState && !currentDFState.isOnPlot(new.plot)) {
         if (Config.getBoolean("autoChatLocal") && new.session == null) {
             launch { ChatLocalRequester.request() }
         }
