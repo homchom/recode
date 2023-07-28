@@ -29,7 +29,7 @@ public abstract class MSodiumWorldRenderer {
         if (globalBlockEntities.isEmpty()) return globalBlockEntities;
 
         var levelRenderer = (RecodeLevelRenderer) Minecraft.getInstance().levelRenderer;
-        return Set.copyOf(levelRenderer.runBlockEntityEvents(globalBlockEntities, null));
+        return Set.copyOf(levelRenderer.recode$runBlockEntityEvents(globalBlockEntities, null));
     }
 
     @Redirect(method = "renderTileEntities", at = @At(value = "INVOKE",
@@ -41,6 +41,6 @@ public abstract class MSodiumWorldRenderer {
 
         var chunkPos = new ChunkPos3D(blockEntities.stream().findFirst().get().getBlockPos());
         var levelRenderer = (RecodeLevelRenderer) Minecraft.getInstance().levelRenderer;
-        return levelRenderer.runBlockEntityEvents(blockEntities, chunkPos);
+        return levelRenderer.recode$runBlockEntityEvents(blockEntities, chunkPos);
     }
 }

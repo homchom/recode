@@ -54,7 +54,7 @@ object OutlineBlockEntitiesEvent :
             onEnable {
                 BeforeOutlineBlockEvent.listenEach { context ->
                     val processor = context.worldRenderContext.worldRenderer() as RecodeLevelRenderer
-                    processor.processOutlines(mc.frameTime)
+                    processor.`recode$processOutlines`(mc.frameTime)
                 }
             }
         }
@@ -74,16 +74,16 @@ interface RecodeLevelRenderer {
     /**
      * @returns A filtered list of block entities that should still be rendered.
      */
-    fun runBlockEntityEvents(blockEntities: Collection<BlockEntity>, chunkPos: ChunkPos3D?): List<BlockEntity>
+    fun `recode$runBlockEntityEvents`(blockEntities: Collection<BlockEntity>, chunkPos: ChunkPos3D?): List<BlockEntity>
 
     /**
-     * Gets and returns the [RGBAColor] of [blockEntity]'s outline (as determined by [runBlockEntityEvents]),
+     * Gets and returns the [RGBAColor] of [blockEntity]'s outline (as determined by [recode]),
      * or `null` if it will not be outlined.
      */
-    fun getBlockEntityOutlineColor(blockEntity: BlockEntity): RGBAColor?
+    fun `recode$getBlockEntityOutlineColor`(blockEntity: BlockEntity): RGBAColor?
 
     /**
      * Processes all unprocessed entity and block entity outlines.
      */
-    fun processOutlines(partialTick: Float)
+    fun `recode$processOutlines`(partialTick: Float)
 }

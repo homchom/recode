@@ -40,6 +40,7 @@ object VarSyntaxHighlighter {
         "%math("
     )
 
+    // TODO: decouple from mc.player (will fix timing issue)
     @JvmStatic
     fun highlight(msg: String): Component? {
         var mutableMsg = msg

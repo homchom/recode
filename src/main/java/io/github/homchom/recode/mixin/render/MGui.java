@@ -13,8 +13,8 @@ public abstract class MGui {
     @Redirect(method = "render", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/client/gui/components/ChatComponent;render(Lnet/minecraft/client/gui/GuiGraphics;III)V"
     ))
-    private void renderSideChat(ChatComponent instance, GuiGraphics guiGraphics, int tickDelta, int mouseX, int mouseY) {
-        instance.render(guiGraphics, tickDelta, mouseX, mouseY);
-        ((SideChatComponent) instance).renderSide(guiGraphics, tickDelta, mouseX, mouseY);
+    public void renderSideChat(ChatComponent chat, GuiGraphics graphics, int tickDelta, int mouseX, int mouseY) {
+        chat.render(graphics, tickDelta, mouseX, mouseY);
+        ((SideChatComponent) chat).renderSide(graphics, tickDelta, mouseX, mouseY);
     }
 }
