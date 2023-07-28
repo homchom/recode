@@ -76,7 +76,9 @@ data class ProfileMessage(val username: String, val ranks: List<Rank>) {
 
                 val rankMap = DonorRank.entries.associateBy { it.displayName }
                 val rankString = values["ranks"]
-                val ranks = rankString.substring(1, rankString.length - 1).split("][")
+                val ranks = if (rankString.isEmpty()) emptyList() else rankString
+                    .substring(1, rankString.length - 1)
+                    .split("][")
                     .mapNotNull { rankMap[it] }
 
                 if (request?.hideMessage == true) context.invalidate()
