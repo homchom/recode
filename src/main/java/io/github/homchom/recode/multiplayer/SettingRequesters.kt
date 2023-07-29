@@ -1,9 +1,9 @@
 package io.github.homchom.recode.multiplayer
 
-import io.github.homchom.recode.event.nullaryTrial
-import io.github.homchom.recode.event.requester
-import io.github.homchom.recode.event.toggleRequesterGroup
-import io.github.homchom.recode.event.trial
+import io.github.homchom.recode.event.trial.nullaryTrial
+import io.github.homchom.recode.event.trial.requester
+import io.github.homchom.recode.event.trial.toggleRequesterGroup
+import io.github.homchom.recode.event.trial.trial
 import io.github.homchom.recode.multiplayer.state.DFStateDetectors
 import io.github.homchom.recode.ui.equalsUnstyled
 import io.github.homchom.recode.ui.matchesUnstyled

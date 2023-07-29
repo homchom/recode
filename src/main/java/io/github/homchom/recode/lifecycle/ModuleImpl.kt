@@ -42,7 +42,7 @@ private class WeakModule : ExposedModule {
     override val coroutineContext get() = coroutineScope?.coroutineContext
         ?: error("Module is disabled")
 
-    private fun newCoroutineScope() = CoroutineScope(RecodeDispatcher() + SupervisorJob())
+    private fun newCoroutineScope() = CoroutineScope(RecodeDispatcher + SupervisorJob())
 
     override fun load() {
         if (hasBeenLoaded) return

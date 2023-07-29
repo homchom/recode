@@ -1,6 +1,10 @@
 package io.github.homchom.recode.multiplayer.state
 
 import io.github.homchom.recode.event.*
+import io.github.homchom.recode.event.trial.detector
+import io.github.homchom.recode.event.trial.nullaryTrial
+import io.github.homchom.recode.event.trial.requester
+import io.github.homchom.recode.event.trial.trial
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.multiplayer.*
 import io.github.homchom.recode.ui.equalsUnstyled

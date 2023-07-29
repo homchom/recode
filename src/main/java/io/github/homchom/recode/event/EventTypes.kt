@@ -1,11 +1,79 @@
 package io.github.homchom.recode.event
 
+import io.github.homchom.recode.lifecycle.CoroutineModule
+import io.github.homchom.recode.lifecycle.GlobalModule
 import io.github.homchom.recode.lifecycle.RModule
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import net.fabricmc.fabric.api.event.Event
+import java.util.function.Consumer
 import kotlin.time.Duration
 
+/**
+ * @see ResultListenable
+ */
+typealias StateListenable<T> = ResultListenable<T, T?>
+
 typealias EventInvoker<T> = (context: T) -> Unit
+
+/**
+ * Something that can be listened to. Listenable objects come in two types: *events*, which are run
+ * explicitly, and *detectors*, which are run algorithmically (via a [io.github.homchom.recode.event.trial.Trial])
+ * based on another Listenable.
+ *
+ * Listenable is based on the [Flow] API, but the standard [listenEachFrom] method does not allow for
+ * suspension. When working with [getNotificationsFrom] and the underlying Flow, collectors generally should
+ * not suspend because Listenable implementations should be conflated.
+ *
+ * @param T The context type of each invocation. Context includes return values and can therefore be mutated
+ * (before the first suspension point). These types are **not** usually thread-safe, so be careful when mutating
+ * context concurrently.
+ *
+ * @see CustomEvent
+ * @see WrappedEvent
+ * @see Detector
+ */
+interface Listenable<T> {
+    /**
+     * Gets the [Flow] of this object's notifications.
+     *
+     * @param module The module accessing the flow.
+     */
+    fun getNotificationsFrom(module: RModule): Flow<T>
+
+    /**
+     * Adds a listener, running [block] on the object's notifications.
+     *
+     * @see getNotificationsFrom
+     */
+    fun listenFrom(module: CoroutineModule, block: Flow<T>.() -> Flow<T>) =
+        getNotificationsFrom(module).block().launchIn(module)
+
+    /**
+     * Adds a listener, running [action] for each notification.
+     *
+     * @see listenFrom
+     * @see getNotificationsFrom
+     */
+    fun listenEachFrom(module: CoroutineModule, action: (T) -> Unit) =
+        listenFrom(module) { onEach(action) }
+
+    @Deprecated("Only for use in legacy Java code", ReplaceWith("TODO()"))
+    @DelicateCoroutinesApi
+    fun register(action: Consumer<T>) = listenEachFrom(GlobalModule) { action.accept(it) }
+}
+
+/**
+ * A [Listenable] with a result of type [R].
+ *
+ * @property previous A [StateFlow] of the previous invocations' results.
+ */
+interface ResultListenable<T, R> : Listenable<T> {
+    val previous: StateFlow<R>
+}
 
 /**
  * A custom (unbuffered) [ResultListenable] event that can be [run]. Event contexts are transformed into results,

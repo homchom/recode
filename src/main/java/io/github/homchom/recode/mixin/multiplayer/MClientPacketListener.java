@@ -1,9 +1,6 @@
 package io.github.homchom.recode.mixin.multiplayer;
 
 import io.github.homchom.recode.event.SimpleValidated;
-import io.github.homchom.recode.game.RespawnEvent;
-import io.github.homchom.recode.game.TeleportEvent;
-import io.github.homchom.recode.game.UpdateScoreboardScoreEvent;
 import io.github.homchom.recode.multiplayer.SendCommandEvent;
 import io.github.homchom.recode.multiplayer.ServerStatus;
 import io.github.homchom.recode.sys.hypercube.templates.TemplateStorageHandler;
@@ -13,7 +10,8 @@ import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastComponent;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.*;
+import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
+import net.minecraft.network.protocol.game.ServerboundChatCommandPacket;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -22,23 +20,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPacketListener.class)
 public abstract class MClientPacketListener {
-	@Inject(method = "handleMovePlayer", at = @At("TAIL"))
-	public void handleTeleportEvent(ClientboundPlayerPositionPacket packet, CallbackInfo ci) {
-		TeleportEvent.INSTANCE.run(packet);
-	}
-
-	@Inject(method = "handleSetScore", at = @At("TAIL"))
-	public void handleUpdateScoreboardScoreEvent(ClientboundSetScorePacket packet, CallbackInfo ci) {
-		UpdateScoreboardScoreEvent.INSTANCE.run(packet);
-	}
-
-	@Inject(method = "handleRespawn", at = @At("TAIL"))
-	public void handleRespawnEvent(ClientboundRespawnPacket packet, CallbackInfo ci) {
-		RespawnEvent.INSTANCE.run(packet);
-	}
-
 	@Inject(method = "handleContainerSetSlot", at = @At("TAIL"))
-	public void handleItemSlotUpdateEvent(ClientboundContainerSetSlotPacket packet, CallbackInfo ci) {
+	public void handleItemSlotUpdate(ClientboundContainerSetSlotPacket packet, CallbackInfo ci) {
 		// TODO: move
 		if (packet.getContainerId() == 0) {
 			var stack = packet.getItem();

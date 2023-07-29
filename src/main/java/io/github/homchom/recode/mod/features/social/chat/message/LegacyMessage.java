@@ -9,45 +9,25 @@ import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 public class LegacyMessage {
-
-    private final ClientboundSystemChatPacket packet;
     private final Component text;
     private final CallbackInfo callback;
     private final MessageType type;
 
     private MessageCheck check;
-    private boolean cancelled;
 
     public LegacyMessage(ClientboundSystemChatPacket packet, CallbackInfo ci) {
-        this.packet = packet;
         this.text = packet.content();
         this.callback = ci;
         this.type = MessageCheck.run(this);
         MessageFinalizer.run(this);
     }
 
-    public ClientboundSystemChatPacket getPacket() {
-        return packet;
-    }
-
     public Component getText() {
         return text;
     }
 
-    public CallbackInfo getCallback() {
-        return callback;
-    }
-
-    public MessageType getType() {
-        return type;
-    }
-
     public MessageCheck getCheck() {
         return check;
-    }
-
-    public boolean isCancelled() {
-        return cancelled;
     }
 
     public String getStripped() {
@@ -66,8 +46,6 @@ public class LegacyMessage {
      * Cancels this message. Also cancels the associated sound if there is any, plus cancels following messages if they are part.
      */
     public void cancel() {
-        cancelled = true;
-
         callback.cancel();
 
         if (type.hasSound()) {

@@ -6,6 +6,7 @@
   "client": [
     "MMinecraft",
     "multiplayer.MClientPacketListener",
+    "multiplayer.MConnection",
     "multiplayer.MJoinMultiplayerScreen",
     "render.MAbstractContainerScreen",
     "render.MBlockEntityRenderDispatcher",

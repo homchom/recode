@@ -1,5 +1,6 @@
-package io.github.homchom.recode.event
+package io.github.homchom.recode.event.trial
 
+import io.github.homchom.recode.event.Listenable
 import io.github.homchom.recode.lifecycle.RModule
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

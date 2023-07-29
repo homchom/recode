@@ -3,8 +3,12 @@
 
 package io.github.homchom.recode.multiplayer.state
 
-import io.github.homchom.recode.event.*
-import io.github.homchom.recode.game.TeleportEvent
+import io.github.homchom.recode.event.GroupListenable
+import io.github.homchom.recode.event.StateListenable
+import io.github.homchom.recode.event.filterIsInstance
+import io.github.homchom.recode.event.trial.TrialScope
+import io.github.homchom.recode.event.trial.detector
+import io.github.homchom.recode.event.trial.nullaryTrial
 import io.github.homchom.recode.lifecycle.GlobalModule
 import io.github.homchom.recode.lifecycle.RModule
 import io.github.homchom.recode.lifecycle.module
@@ -17,6 +21,7 @@ import io.github.homchom.recode.util.encase
 import io.github.homchom.recode.util.namedGroupValues
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.async
+import net.minecraft.network.protocol.game.ClientboundPlayerPositionPacket
 import kotlin.time.Duration
 
 /**
@@ -35,8 +40,10 @@ object DFStateDetectors : StateListenable<Case<DFState?>> {
 
     private val scoreboardNodeRegex = Regex("""(?<node>.+) - .+""")
 
+    private val teleportEvent = ReceivePacketEvent.filterIsInstance<ClientboundPlayerPositionPacket>()
+
     val EnterSpawn = group.add(detector("spawn",
-        nullaryTrial(TeleportEvent) { _ ->
+        nullaryTrial(teleportEvent) { _ ->
             enforce { requireTrue(isOnDF) }
 
             val gameMenuStack = mc.player!!.inventory.getItem(4) // middle hotbar slot
@@ -50,7 +57,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>> {
                 .let(::nodeByName)
             requireTrue(currentDFState !is SpawnState || node != currentDFState!!.node)
 
-            val extraTeleport = TeleportEvent.add()
+            val extraTeleport = teleportEvent.add()
             suspending {
                 // the player is teleported multiple times, so only detect the last one
                 failOn(extraTeleport)

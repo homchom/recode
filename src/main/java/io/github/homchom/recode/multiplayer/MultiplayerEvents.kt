@@ -1,6 +1,8 @@
 package io.github.homchom.recode.multiplayer
 
 import io.github.homchom.recode.event.*
+import io.github.homchom.recode.event.trial.detector
+import io.github.homchom.recode.event.trial.nullaryTrial
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.multiplayer.state.*
 import io.github.homchom.recode.ui.matchEntireUnstyled
@@ -13,6 +15,7 @@ import net.fabricmc.fabric.api.networking.v1.PacketSender
 import net.minecraft.client.Minecraft
 import net.minecraft.client.multiplayer.ClientPacketListener
 import net.minecraft.network.chat.Component
+import net.minecraft.network.protocol.Packet
 
 object JoinServerEvent :
     WrappedEvent<ServerJoinContext, Join> by
@@ -28,6 +31,9 @@ object DisconnectFromServerEvent :
 
 data class ServerJoinContext(val handler: ClientPacketListener, val sender: PacketSender, val client: Minecraft)
 data class ServerDisconnectContext(val handler: ClientPacketListener, val client: Minecraft)
+
+object ReceivePacketEvent :
+    CustomEvent<Packet<*>, Unit> by createEvent()
 
 private val patchRegex = Regex("""Current patch: (.+)\. See the patch notes with /patch!""")
 

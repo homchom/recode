@@ -23,21 +23,6 @@ public class MessageGrabber {
     private static Date timeout = null;
     private static final List<MessageGrabberTask> tasks = new ArrayList<>();
 
-    public static void grab(int messages, Consumer<List<Component>> consumer, MessageType filter) {
-        if (isActive()) {
-            tasks.add(new MessageGrabberTask(messages,consumer,false, filter));
-            return;
-        }
-        messagesToGrab = messages;
-        messageConsumer = consumer;
-        silent = false;
-        MessageGrabber.filter = filter;
-    }
-
-    public static void grab(int messages, Consumer<List<Component>> consumer) {
-        grab(messages,consumer,null);
-    }
-
     public static void grabSilently(int messages, int time, Consumer<List<Component>> consumer, MessageType filter) {
         if (isActive()) {
             tasks.add(new MessageGrabberTask(messages,consumer,true, filter));
@@ -50,22 +35,8 @@ public class MessageGrabber {
         MessageGrabber.filter = filter;
     }
 
-    public static void grabSilently(int messages, int timeout, Consumer<List<Component>> consumer) {
-        grabSilently(messages, timeout, consumer, null);
-    }
-
-    public static void hideNext() {
-        hide(1);
-    }
-
     public static void hide(int messages) {
         if (messages > 0) grabSilently(messages, getDefaultTimeout(), ignored -> {}, null);
-    }
-    public static void hide(int messages, MessageType filter) {
-        hide(messages, getDefaultTimeout(),filter);
-    }
-    public static void hide(int messages, int timeout, MessageType filter) {
-        if (messages > 0) grabSilently(messages, timeout, ignored -> {}, filter);
     }
 
     public static void supply(LegacyMessage msg) {
@@ -107,9 +78,5 @@ public class MessageGrabber {
 
     public static boolean isActive() {
         return messageConsumer != null;
-    }
-
-    public static boolean isSilent() {
-        return silent;
     }
 }

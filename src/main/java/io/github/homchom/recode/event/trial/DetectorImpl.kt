@@ -1,6 +1,7 @@
-package io.github.homchom.recode.event
+package io.github.homchom.recode.event.trial
 
 import io.github.homchom.recode.*
+import io.github.homchom.recode.event.*
 import io.github.homchom.recode.lifecycle.*
 import io.github.homchom.recode.ui.sendSystemToast
 import io.github.homchom.recode.ui.translateText
@@ -106,7 +107,7 @@ private sealed class DetectorDetail<T : Any, R : Any, M : DetectorModule<T, R>> 
             val responses = Channel<R?>(Channel.UNLIMITED)
             try {
                 // add entry after all current detection loops
-                launch(RecodeDispatcher()) {
+                launch(RecodeDispatcher) {
                     yield()
                     entries += TrialEntry(isRequest, input, responses)
                 }

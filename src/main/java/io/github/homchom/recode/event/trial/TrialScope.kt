@@ -1,6 +1,7 @@
-package io.github.homchom.recode.event
+package io.github.homchom.recode.event.trial
 
 import io.github.homchom.recode.DEFAULT_TIMEOUT_DURATION
+import io.github.homchom.recode.event.Listenable
 import io.github.homchom.recode.lifecycle.CoroutineModule
 import io.github.homchom.recode.lifecycle.RModule
 import io.github.homchom.recode.util.NullableScope
