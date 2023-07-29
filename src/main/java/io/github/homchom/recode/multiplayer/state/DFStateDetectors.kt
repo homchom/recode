@@ -40,7 +40,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>> {
 
     private val scoreboardNodeRegex = Regex("""(?<node>.+) - .+""")
 
-    private val teleportEvent = ReceivePacketEvent.filterIsInstance<ClientboundPlayerPositionPacket>()
+    private val teleportEvent = ReceiveGamePacketEvent.filterIsInstance<ClientboundPlayerPositionPacket>()
 
     val EnterSpawn = group.add(detector("spawn",
         nullaryTrial(teleportEvent) { _ ->

@@ -32,7 +32,7 @@ object DisconnectFromServerEvent :
 data class ServerJoinContext(val handler: ClientPacketListener, val sender: PacketSender, val client: Minecraft)
 data class ServerDisconnectContext(val handler: ClientPacketListener, val client: Minecraft)
 
-object ReceivePacketEvent :
+object ReceiveGamePacketEvent :
     CustomEvent<Packet<*>, Unit> by createEvent()
 
 private val patchRegex = Regex("""Current patch: (.+)\. See the patch notes with /patch!""")

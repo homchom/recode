@@ -1,10 +1,11 @@
 package io.github.homchom.recode.mixin.multiplayer;
 
-import io.github.homchom.recode.multiplayer.ReceivePacketEvent;
+import io.github.homchom.recode.multiplayer.ReceiveGamePacketEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.Connection;
 import net.minecraft.network.PacketListener;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -18,6 +19,8 @@ public abstract class MConnection {
             PacketListener packetListener,
             CallbackInfo ci
     ) {
-        Minecraft.getInstance().execute(() -> ReceivePacketEvent.INSTANCE.run(packet));
+        if (packetListener instanceof ClientGamePacketListener) {
+            Minecraft.getInstance().execute(() -> ReceiveGamePacketEvent.INSTANCE.run(packet));
+        }
     }
 }
