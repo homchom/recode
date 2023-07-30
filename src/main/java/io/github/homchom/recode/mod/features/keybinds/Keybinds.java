@@ -126,12 +126,12 @@ public class Keybinds implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             // toggle play dev
             while (toggle_play_dev.consumeClick()) {
-                sendCommand(DF.isInMode(DF.getCurrentDFState(), PlotMode.Play) ? "dev" : "play");
+                sendCommand(DF.isInMode(DF.getCurrentDFState(), PlotMode.Play.INSTANCE) ? "dev" : "play");
             }
 
             // toggle play build
             while (toggle_play_build.consumeClick()) {
-                sendCommand(DF.isInMode(DF.getCurrentDFState(), PlotMode.Play) ? "build" : "play");
+                sendCommand(DF.isInMode(DF.getCurrentDFState(), PlotMode.Play.INSTANCE) ? "build" : "play");
             }
 
             // spawn
@@ -195,7 +195,7 @@ public class Keybinds implements ClientModInitializer {
 
             // search
             while (searchFunction.consumeClick()) {
-                if (DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev)) {
+                if (DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev.ID)) {
                     var hitLocation = mc.hitResult.getLocation().toVector3f();
                     var blockPos = new BlockPos((int) hitLocation.x, (int) hitLocation.y, (int) hitLocation.z);
                     BlockEntity blockEntity = mc.level.getBlockEntity(blockPos);

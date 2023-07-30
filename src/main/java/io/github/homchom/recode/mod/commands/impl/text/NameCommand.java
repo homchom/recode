@@ -50,7 +50,7 @@ public class NameCommand extends Command {
                                             ).withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, fullName)));
                                     this.sendMessage(mc, text);
 
-                                    if (DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev)) {
+                                    if (DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev.ID)) {
                                         this.sendCommand(mc, "txt " + fullName);
                                     }
                                 } catch (IOException e) {

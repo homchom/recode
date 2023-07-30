@@ -25,7 +25,7 @@ public class MInGameHUD {
         Minecraft mc = Minecraft.getInstance();
         Font tr = mc.font;
         
-        if (CodeSearcher.searchType != null && CodeSearcher.searchValue != null && DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev)) {
+        if (CodeSearcher.searchType != null && CodeSearcher.searchValue != null && DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev.ID)) {
             guiGraphics.drawString(tr, Component.literal("Searching for usages of " +
                     CodeSearcher.searchType.getSignText().get(0) + ": " + CodeSearcher.searchValue
             ), 4, 4, 0xffffff);

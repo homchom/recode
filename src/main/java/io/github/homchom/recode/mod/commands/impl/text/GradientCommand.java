@@ -113,7 +113,7 @@ public class GradientCommand extends Command {
                                             ChatUtil.sendMessage("Copied text!", ChatType.SUCCESS);
                                             mc.player.displayClientMessage(base, false);
 
-                                            if (DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev)) {
+                                            if (DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev.ID)) {
                                                 mc.player.connection.sendUnsignedCommand("txt " + sb);
                                             }
 

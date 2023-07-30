@@ -56,7 +56,7 @@ public class MPlayerSendMessage {
     }
 
     private void conversationMessage(String message, CallbackInfo ci) {
-        if (Config.getBoolean("automsg") && ConversationTimer.currentConversation != null && (!DF.isInMode(DF.getCurrentDFState(), PlotMode.Play) || !message.startsWith("@"))) {
+        if (Config.getBoolean("automsg") && ConversationTimer.currentConversation != null && (!DF.isInMode(DF.getCurrentDFState(), PlotMode.Play.INSTANCE) || !message.startsWith("@"))) {
             ci.cancel();
             ConversationTimer.conversationUpdateTime = String.valueOf(System.currentTimeMillis());
             minecraftClient.player.connection.sendUnsignedCommand("msg " + ConversationTimer.currentConversation + " " + message);

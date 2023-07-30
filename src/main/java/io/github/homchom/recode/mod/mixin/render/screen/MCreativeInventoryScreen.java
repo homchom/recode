@@ -22,7 +22,7 @@ public class MCreativeInventoryScreen {
     @Inject(method = "slotClicked", at = @At("HEAD"), cancellable = true)
     public void slotClicked(Slot slot, int invSlot, int clickData, ClickType actionType, CallbackInfo ci) {
         DestroyItemResetType resetType = Config.getEnum("destroyItemReset", DestroyItemResetType.class);
-        if (resetType != DestroyItemResetType.OFF && DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev)
+        if (resetType != DestroyItemResetType.OFF && DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev.ID)
                 && actionType == ClickType.QUICK_MOVE && slot == this.destroyItemSlot) {
             Minecraft.getInstance().setScreen(null);
             String cmd = "";

@@ -70,7 +70,7 @@ public class UuidCommand extends Command {
                             new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal("§eClick to copy to clipboard."))
                     ).withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, fullUUID)));
             this.sendMessage(mc, text);
-            if (DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev)) {
+            if (DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev.ID)) {
                 this.sendCommand(mc, "txt " + fullUUID);
             }
         } catch (IOException e) {

@@ -33,7 +33,7 @@ public class ChestHud {
 
 
     private static void afterContainerRender(Screen screen, GuiGraphics guiGraphics, int mouseX, int mouseY, float tickDelta) {
-        if (DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev) && Config.getBoolean("chestToolTip")) {
+        if (DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev.ID) && Config.getBoolean("chestToolTip")) {
             if (Config.getBoolean("chestToolTipType")) {
                 ItemStack item = Minecraft.getInstance().player.getInventory().getItem(17);
 

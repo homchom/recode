@@ -83,7 +83,7 @@ public class SearchCommand extends Command {
 										String actionArgument = ctx.getArgument("action", String.class);
 										String codeblockArgument = ctx.getArgument("codeblock", String.class);
 										CodeSearcher.SearchType searchType = CodeSearcher.SearchType.valueOf(codeblockArgument.toUpperCase());
-										if (DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev)) {
+										if (DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev.ID)) {
 											CodeSearcher.beginSearch(searchType, actionArgument);
 										} else {
 											ChatUtil.sendMessage(new TranslatableContents("recode.command.require_dev_mode", null, new String[]{ctx.getArgument("action", String.class)})
