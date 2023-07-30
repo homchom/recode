@@ -12,6 +12,7 @@ import io.github.homchom.recode.multiplayer.state.ipMatchesDF
 import io.github.homchom.recode.multiplayer.state.isOnDF
 import io.github.homchom.recode.ui.matchEntireUnstyled
 import io.github.homchom.recode.util.Case
+import io.github.homchom.recode.util.regex
 import kotlinx.coroutines.flow.map
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.Disconnect
@@ -40,7 +41,11 @@ data class ServerDisconnectContext(val handler: ClientPacketListener, val client
 object ReceiveGamePacketEvent :
     CustomEvent<Packet<*>, Unit> by createEvent()
 
-private val patchRegex = Regex("""Current patch: (.+)\. See the patch notes with /patch!""")
+private val patchRegex = regex {
+    literal("Current patch: ")
+    val patch by group { any.oneOrMore() }
+    literal(". See the patch notes with /patch!")
+}
 
 object JoinDFDetector :
     Detector<Unit, JoinDFInfo> by detector("DF join",
