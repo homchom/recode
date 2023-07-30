@@ -4,6 +4,9 @@ import io.github.homchom.recode.event.*
 import io.github.homchom.recode.event.trial.detector
 import io.github.homchom.recode.event.trial.nullaryTrial
 import io.github.homchom.recode.mc
+import io.github.homchom.recode.multiplayer.event.ActiveBoosterMessage
+import io.github.homchom.recode.multiplayer.event.LocateMessage
+import io.github.homchom.recode.multiplayer.event.UserStateRequest
 import io.github.homchom.recode.multiplayer.state.*
 import io.github.homchom.recode.ui.matchEntireUnstyled
 import io.github.homchom.recode.util.Case
@@ -44,7 +47,7 @@ object JoinDFDetector :
             requireTrue(mc.currentServer.ipMatchesDF)
 
             val messages = ReceiveChatMessageEvent.add()
-            val tipMessage = TipMessage.detect(null).map(::Case).addOptional()
+            val tipMessage = ActiveBoosterMessage.detect(null).map(::Case).addOptional()
 
             val disconnect = DisconnectFromServerEvent.add()
             suspending {

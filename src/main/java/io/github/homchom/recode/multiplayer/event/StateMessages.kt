@@ -1,24 +1,16 @@
-package io.github.homchom.recode.multiplayer.state
+package io.github.homchom.recode.multiplayer.event
 
 import io.github.homchom.recode.event.*
-import io.github.homchom.recode.event.trial.detector
-import io.github.homchom.recode.event.trial.nullaryTrial
 import io.github.homchom.recode.event.trial.requester
 import io.github.homchom.recode.event.trial.trial
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.multiplayer.*
-import io.github.homchom.recode.ui.equalsUnstyled
+import io.github.homchom.recode.multiplayer.state.*
 import io.github.homchom.recode.ui.matchEntireUnstyled
-import io.github.homchom.recode.ui.matchesUnstyled
-import io.github.homchom.recode.util.Case
 import io.github.homchom.recode.util.cachedRegex
 import io.github.homchom.recode.util.namedGroupValues
 import org.intellij.lang.annotations.Language
 import org.intellij.lang.annotations.RegExp
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.hours
-import kotlin.time.Duration.Companion.minutes
-import kotlin.time.Duration.Companion.seconds
 
 data class LocateMessage(val username: String, val state: LocateState) {
     companion object : Requester<UserStateRequest, LocateMessage> by requester(
@@ -37,11 +29,12 @@ data class LocateMessage(val username: String, val state: LocateState) {
                 val state = if (values["mode"].isEmpty()) {
                     LocateState.AtSpawn(node)
                 } else {
-                    val mode = plotModeByDescriptorOrNull(values["mode"]) ?: fail()
+                    val mode = PlotMode.ID.entries.singleOrNull { it.descriptor == values["mode"] } ?: fail()
                     val plotName = values["plotName"]
                     val plotID = values["plotID"].toUIntOrNull() ?: fail()
                     val owner = values["owner"]
                     val status = values["status"].takeUnless(String::isEmpty)
+
                     LocateState.OnPlot(node, Plot(plotName, owner, plotID), mode, status)
                 }
                 if (request?.hideMessage == true) context.invalidate()
@@ -98,61 +91,6 @@ data class ProfileMessage(val username: String, val ranks: List<Rank>) {
         }
     }
 }
-
-data class TipMessage(val player: String, val canTip: Boolean) {
-    companion object : Detector<Unit, TipMessage> by detector("/tip", nullaryTrial(
-        ReceiveChatMessageEvent,
-        tests = { (message) ->
-            val player = TipMessage.mainRegex.matchEntireUnstyled(message)!!.groupValues[1]
-            val subsequent = ReceiveChatMessageEvent.add()
-
-            suspending {
-                val (first) = subsequent.receive()
-                val canTip = TipMessage.commandRegex.matchesUnstyled(first)
-
-                if (!TipMessage.timeRegex.matchesUnstyled(first)) {
-                    +testBoolean(subsequent) { (second) ->
-                        TipMessage.timeRegex.matchesUnstyled(second)
-                    }
-                }
-
-                TipMessage(player, canTip)
-            }
-        }
-    )) {
-        private val mainRegex =
-            Regex("""$BOOSTER_ARROW_PATTERN ($USERNAME_PATTERN) is using a \d+x booster\.""")
-        private val commandRegex =
-            Regex("""$BOOSTER_ARROW_PATTERN Use /tip to show your appreciation """ +
-                    """and receive a $TOKEN_NOTCH_CHAR token notch!""")
-        private val timeRegex =
-            Regex("""$BOOSTER_ARROW_PATTERN The booster wears off in \d+ (?:day|hour|minute|second)s?\.""")
-    }
-}
-
-object SupportTimeRequester : Requester<Boolean, Case<Duration?>> by requester(
-    "/support time",
-    DFStateDetectors.EndSession,
-    trial(
-        ReceiveChatMessageEvent,
-        start = { sendCommand("support time") },
-        tests = tests@{ hideMessage, message, _ ->
-            if (message.value.equalsUnstyled("Error: You are not in a session.")) {
-                return@tests instant(Case.ofNull)
-            }
-
-            val regex = Regex("""Current session time: (\d?\d):(\d\d):(\d\d)""")
-            val match = regex.matchEntireUnstyled(message.value)!!
-
-            val hours = match.groupValues[1].toIntOrNull()?.hours ?: fail()
-            val minutes = match.groupValues[2].toIntOrNull()?.minutes ?: fail()
-            val seconds = match.groupValues[3].toIntOrNull()?.seconds ?: fail()
-
-            if (hideMessage == true) message.invalidate()
-            instant(Case(hours + minutes + seconds))
-        }
-    )
-)
 
 // TODO: is there a clean way to make *any* requester invalidatable if its basis is validated? (if so, unneeded)
 data class UserStateRequest(val username: String, val hideMessage: Boolean = false)

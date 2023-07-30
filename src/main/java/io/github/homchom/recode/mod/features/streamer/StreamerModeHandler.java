@@ -2,7 +2,6 @@ package io.github.homchom.recode.mod.features.streamer;
 
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.multiplayer.state.DFState;
-import io.github.homchom.recode.multiplayer.state.PlayState;
 import io.github.homchom.recode.multiplayer.state.PlotMode;
 import io.github.homchom.recode.sys.player.chat.MessageGrabber;
 import net.minecraft.client.Minecraft;
@@ -98,8 +97,8 @@ public class StreamerModeHandler {
 
         // If the state is changed to mode play, run "/chat local"
         // Note: May trigger simultaneously with StreamerHandler#handleServerJoin, but this is not a problem
-        if (autoChatLocal() && newState instanceof PlayState playState &&
-                playState.getMode().equals(PlotMode.Play)) {
+        if (autoChatLocal() && newState instanceof DFState.OnPlot playState &&
+                playState.getMode().equals(PlotMode.Play.INSTANCE)) {
             Minecraft.getInstance().player.connection.sendUnsignedCommand("c l");
             MessageGrabber.hide(1);
         }

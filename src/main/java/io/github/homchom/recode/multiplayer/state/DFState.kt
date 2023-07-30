@@ -7,22 +7,24 @@ import io.github.homchom.recode.mc
 import io.github.homchom.recode.multiplayer.*
 import io.github.homchom.recode.ui.equalsUnstyled
 import io.github.homchom.recode.ui.matchesUnstyled
-import io.github.homchom.recode.util.GroupMatcher
-import io.github.homchom.recode.util.Matcher
-import io.github.homchom.recode.util.enumMatcher
-import io.github.homchom.recode.util.unitOrNull
+import io.github.homchom.recode.util.*
 import kotlinx.coroutines.Deferred
 import net.minecraft.client.multiplayer.ServerData
+import net.minecraft.core.BlockPos
+import net.minecraft.core.Direction
 import net.minecraft.network.chat.Component
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.level.block.Blocks
 
 val ServerData?.ipMatchesDF get(): Boolean {
     val regex = Regex("""(?:\w+\.)?mcdiamondfire\.com(?::\d+)?""")
     return this?.ip?.matches(regex) ?: false
 }
 
-sealed interface DFState : LocateState {
+sealed interface DFState {
     val permissions: Deferred<PermissionGroup>
 
+    val node: Node
     val session: SupportSession?
 
     /**
@@ -30,9 +32,34 @@ sealed interface DFState : LocateState {
      */
     suspend fun permissions() = permissions.await()
 
+    /**
+     * Returns a new [DFState] derived from this one and [state], including calculated [PlotMode] state.
+     */
     fun withState(state: LocateState) = when (state) {
-        is SpawnState -> AtSpawn(state.node, permissions, session)
-        is PlayState -> OnPlot(state, permissions, session)
+        is LocateState.AtSpawn -> AtSpawn(state.node, permissions, session)
+        is LocateState.OnPlot -> {
+            val mode = when (state.mode) {
+                PlotMode.Play -> PlotMode.Play
+
+                PlotMode.Build -> PlotMode.Build
+
+                PlotMode.Dev.ID -> mc.player!!.let { player ->
+                    val devPos = player.blockPosition().mutable()
+                    // search for dirt, not grass, because some plots have custom grounds
+                    do {
+                        devPos.move(Direction.DOWN)
+                    } while (mc.level!!.getBlockState(devPos).block != Blocks.DIRT)
+
+                    val buildCorner = devPos.move(-10, 1, -10).immutable()
+
+                    val referenceBookCopy = player.inventory.getItem(17).copy()
+
+                    PlotMode.Dev(buildCorner, referenceBookCopy)
+                }
+            }
+
+            OnPlot(state.node, mode, state.plot, state.status, permissions, session)
+        }
     }
 
     fun withSession(session: SupportSession?): DFState
@@ -41,7 +68,7 @@ sealed interface DFState : LocateState {
         override val node: Node,
         override val permissions: Deferred<PermissionGroup>,
         override val session: SupportSession?
-    ) : DFState, SpawnState {
+    ) : DFState {
         override fun withSession(session: SupportSession?) = copy(session = session)
 
         override fun equals(other: Any?) = super.equals(other)
@@ -50,18 +77,12 @@ sealed interface DFState : LocateState {
 
     data class OnPlot(
         override val node: Node,
-        override val mode: PlotMode,
-        override val plot: Plot,
-        override val status: String?,
+        val mode: PlotMode,
+        val plot: Plot,
+        val status: String?,
         override val permissions: Deferred<PermissionGroup>,
         override val session: SupportSession?
-    ) : DFState, PlayState {
-        constructor(
-            state: PlayState,
-            permissions: Deferred<PermissionGroup>,
-            session: SupportSession?
-        ) : this(state.node, state.mode, state.plot, state.status, permissions, session)
-
+    ) : DFState {
         override fun withSession(session: SupportSession?) = copy(session = session)
 
         override fun equals(other: Any?) = super.equals(other)
@@ -71,7 +92,7 @@ sealed interface DFState : LocateState {
 
 fun DFState?.isOnPlot(plot: Plot) = this is DFState.OnPlot && this.plot == plot
 
-fun DFState?.isInMode(mode: PlotMode) = this is DFState.OnPlot && this.mode == mode
+fun DFState?.isInMode(mode: PlotMode.ID) = this is DFState.OnPlot && this.mode.id == mode
 
 @JvmInline
 value class Node(private val id: String) {
@@ -99,31 +120,48 @@ data class Plot(
 private val playModeRegex =
     Regex("""$MAIN_ARROW_CHAR Joined game: $PLOT_NAME_PATTERN by $USERNAME_PATTERN\.""")
 
-enum class PlotMode(val descriptor: String) : Matcher<Component, Unit> {
-    Play("playing") {
+sealed interface PlotMode {
+    val id: ID
+
+    sealed interface ID : Matcher<Component, Unit> {
+        val descriptor: String
+
+        val capitalizedDescriptor get() = descriptor.replaceFirstChar(Char::titlecase)
+
+        companion object : GroupMatcher<Component, Unit, ID> by MatcherList(*ID.entries) {
+            val entries get() = arrayOf(Play, Build, Dev)
+        }
+    }
+
+    data object Play : PlotMode, ID {
+        override val id get() = this
+
+        override val descriptor = "playing"
+
         override fun match(input: Component) =
             playModeRegex.matchesUnstyled(input).unitOrNull()
-    },
-    Build("building") {
+    }
+
+    data object Build : PlotMode, ID {
+        override val id get() = this
+
+        override val descriptor = "building"
+
         override fun match(input: Component) =
             input.equalsUnstyled("$MAIN_ARROW_CHAR You are now in build mode.").unitOrNull()
-    },
-    Dev("coding") {
-        override fun match(input: Component) =
-            input.equalsUnstyled("$MAIN_ARROW_CHAR You are now in dev mode.").unitOrNull()
-    };
+    }
 
-    val id get() = name.lowercase()
+    data class Dev(val buildCorner: BlockPos, val referenceBookCopy: ItemStack) : PlotMode {
+        override val id get() = ID
 
-    val capitalizedDescriptor get() = descriptor.replaceFirstChar(Char::titlecase)
+        companion object ID : PlotMode.ID {
+            override val descriptor = "coding"
 
-    companion object : GroupMatcher<Component, Unit, PlotMode> by enumMatcher()
+            override fun match(input: Component) =
+                input.equalsUnstyled("$MAIN_ARROW_CHAR You are now in dev mode.").unitOrNull()
+        }
+    }
 }
-
-fun plotModeByDescriptor(descriptor: String) =
-    PlotMode.entries.single { it.descriptor == descriptor }
-fun plotModeByDescriptorOrNull(descriptor: String) =
-    PlotMode.entries.singleOrNull { it.descriptor == descriptor }
 
 enum class SupportSession : Matcher<Component, Unit> {
     Requested {
@@ -145,23 +183,15 @@ enum class SupportSession : Matcher<Component, Unit> {
 sealed interface LocateState {
     val node: Node
 
-    data class AtSpawn(override val node: Node) : SpawnState
+    data class AtSpawn(override val node: Node) : LocateState
 
     data class OnPlot(
         override val node: Node,
-        override val plot: Plot,
-        override val mode: PlotMode,
-        override val status: String?
-    ) : PlayState
+        val plot: Plot,
+        val mode: PlotMode.ID,
+        val status: String?
+    ) : LocateState
 }
 
 @Deprecated("Only used for legacy state", ReplaceWith("node.displayName"))
-val LocateState.nodeDisplayName @JvmName("getNodeDisplayName") get() = node.displayName
-
-sealed interface SpawnState : LocateState
-
-sealed interface PlayState : LocateState {
-    val plot: Plot
-    val mode: PlotMode
-    val status: String?
-}
+val DFState.nodeDisplayName @JvmName("getNodeDisplayName") get() = node.displayName

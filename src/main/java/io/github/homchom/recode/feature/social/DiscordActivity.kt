@@ -172,7 +172,7 @@ private class DiscordIntegrationDetail : ModuleDetail {
                     activity.details = dynamic("discordRPCPlotDetails") //+ " "
                     activity.state = dynamic("discordRPCPlotState")
                     if (Config.getBoolean("discordRPCShowPlotMode")) {
-                        assets.smallImage = "mode" + state.mode.id
+                        assets.smallImage = "mode" + state.mode.id.lowercase()
                         assets.smallText = state.mode.descriptor.capitalize()
                     }
 

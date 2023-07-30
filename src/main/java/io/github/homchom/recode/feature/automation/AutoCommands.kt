@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 // TODO: combine into one module per event after config is figured out
 
 val FAutoChatLocal = autoCommand("chat local", DFStateDetectors) { (new) ->
-    if (new is PlayState && !currentDFState.isOnPlot(new.plot)) {
+    if (new is DFState.OnPlot && !currentDFState.isOnPlot(new.plot)) {
         if (Config.getBoolean("autoChatLocal") && new.session == null) {
             launch { ChatLocalRequester.request() }
         }
@@ -28,7 +28,7 @@ val FAutoFly = autoCommand("fly", DFStateDetectors.EnterSpawn) { (new) ->
 }
 
 val FAutoLagSlayer = autoCommand("lagslayer", DFStateDetectors.ChangeMode) { (new) ->
-    if (new.mode == PlotMode.Dev && !currentDFState.isInMode(PlotMode.Dev)) {
+    if (new.mode is PlotMode.Dev && !currentDFState.isInMode(PlotMode.Dev)) {
         if (Config.getBoolean("autolagslayer")) {
             launch { LagSlayerRequesters.enable.request() }
         }
@@ -45,7 +45,7 @@ val FAutoNightVision = autoCommand("nightvis", DFStateDetectors.ChangeMode) { (n
 
 val FAutoResetCompact = autoCommand("resetcompact", DFStateDetectors.ChangeMode) { (new) ->
     if (Config.getBoolean("autoRC")) {
-        if (new.mode == PlotMode.Dev) sendCommand("resetcompact")
+        if (new.mode is PlotMode.Dev) sendCommand("resetcompact")
     }
 }
 

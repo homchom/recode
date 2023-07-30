@@ -14,6 +14,10 @@ import io.github.homchom.recode.lifecycle.RModule
 import io.github.homchom.recode.lifecycle.module
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.multiplayer.*
+import io.github.homchom.recode.multiplayer.event.LocateMessage
+import io.github.homchom.recode.multiplayer.event.ProfileMessage
+import io.github.homchom.recode.multiplayer.event.SupportTimeRequester
+import io.github.homchom.recode.multiplayer.event.UserStateRequest
 import io.github.homchom.recode.ui.matchesUnstyled
 import io.github.homchom.recode.ui.unstyle
 import io.github.homchom.recode.util.Case
@@ -55,7 +59,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>> {
             val node = scoreboardNodeRegex.matchEntire(unstyle(score.owner))!!
                 .namedGroupValues["node"]
                 .let(::nodeByName)
-            requireTrue(currentDFState !is SpawnState || node != currentDFState!!.node)
+            requireTrue(currentDFState !is DFState.AtSpawn || node != currentDFState!!.node)
 
             val extraTeleport = teleportEvent.add()
             suspending {
@@ -63,7 +67,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>> {
                 failOn(extraTeleport)
 
                 val locateState = locate()
-                requireTrue(locateState is SpawnState)
+                requireTrue(locateState is LocateState.AtSpawn)
                 Case(currentDFState!!.withState(locateState))
             }
         },
@@ -84,9 +88,9 @@ object DFStateDetectors : StateListenable<Case<DFState?>> {
         nullaryTrial(ReceiveChatMessageEvent) { (message) ->
             enforce { requireTrue(isOnDF) }
             suspending {
-                PlotMode.match(message)?.encase { match ->
+                PlotMode.ID.match(message)?.encase { match ->
                     val state = currentDFState!!.withState(locate()) as? DFState.OnPlot
-                    if (state?.mode != match.matcher) fail()
+                    if (state?.mode?.id != match.matcher) fail()
                     state
                 }
             }
