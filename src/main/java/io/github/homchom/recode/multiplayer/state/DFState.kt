@@ -128,8 +128,10 @@ sealed interface PlotMode {
 
         val capitalizedDescriptor get() = descriptor.replaceFirstChar(Char::titlecase)
 
-        companion object : GroupMatcher<Component, Unit, ID> by MatcherList(*ID.entries) {
+        companion object : GroupMatcher<Component, Unit, ID> {
             val entries get() = arrayOf(Play, Build, Dev)
+
+            override fun match(input: Component) = MatcherList(*entries).match(input)
         }
     }
 
