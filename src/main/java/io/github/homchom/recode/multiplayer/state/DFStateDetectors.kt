@@ -22,7 +22,7 @@ import io.github.homchom.recode.ui.matchesUnstyled
 import io.github.homchom.recode.ui.unstyle
 import io.github.homchom.recode.util.Case
 import io.github.homchom.recode.util.encase
-import io.github.homchom.recode.util.namedGroupValues
+import io.github.homchom.recode.util.regex.namedGroupValues
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.async
 import net.minecraft.network.protocol.game.ClientboundPlayerPositionPacket

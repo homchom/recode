@@ -7,8 +7,8 @@ import io.github.homchom.recode.mc
 import io.github.homchom.recode.multiplayer.*
 import io.github.homchom.recode.multiplayer.state.*
 import io.github.homchom.recode.ui.matchEntireUnstyled
-import io.github.homchom.recode.util.cachedRegex
-import io.github.homchom.recode.util.namedGroupValues
+import io.github.homchom.recode.util.regex.cachedRegex
+import io.github.homchom.recode.util.regex.namedGroupValues
 import org.intellij.lang.annotations.Language
 import org.intellij.lang.annotations.RegExp
 

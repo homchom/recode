@@ -8,7 +8,9 @@ import io.github.homchom.recode.multiplayer.state.DFStateDetectors
 import io.github.homchom.recode.ui.equalsUnstyled
 import io.github.homchom.recode.ui.matchesUnstyled
 import io.github.homchom.recode.ui.unstyledString
-import io.github.homchom.recode.util.cachedRegex
+import io.github.homchom.recode.util.regex.RegexUnproven
+import io.github.homchom.recode.util.regex.cachedRegex
+import io.github.homchom.recode.util.regex.regex
 
 val ChatLocalRequester = requester("/chat local", DFStateDetectors.ChangeMode, nullaryTrial(
     ReceiveChatMessageEvent,
@@ -21,7 +23,13 @@ val ChatLocalRequester = requester("/chat local", DFStateDetectors.ChangeMode, n
 ))
 
 private val timeRegex = cachedRegex<Long> { time ->
-    Regex("""$MAIN_ARROW_CHAR Set your player time to ${time ?: "[0-9+]"}\.""")
+    @OptIn(RegexUnproven::class)
+    regex {
+        // Regex("""$MAIN_ARROW_CHAR Set your player time to ${time ?: "[0-9]+"}\.""")
+        +literal("$MAIN_ARROW_CHAR Set your player time to ")
+        if (time == null) +digit.oneOrMore() else +literal(time.toString())
+        +literal(".")
+    }
 }
 
 // TODO: support time keywords through command suggestions (not enum)

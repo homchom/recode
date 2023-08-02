@@ -237,7 +237,7 @@ private class TrialRequester<T : Any, R : Any>(
 
         _activeRequests.incrementAndGet()
         try {
-            delay(25.milliseconds) // https://github.com/PaperMC/Velocity/issues/909 TODO: remove
+            delay(50.milliseconds) // https://github.com/PaperMC/Velocity/issues/909 TODO: remove
             val response = start(input) ?: withTimeout(timeoutDuration) { detectChannel.receive() }
             coroutineContext.cancelChildren()
             response
