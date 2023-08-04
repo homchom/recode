@@ -45,9 +45,9 @@ object ReceiveGamePacketEvent :
 @OptIn(RegexUnproven::class)
 private val patchRegex = regex {
     // Regex("""Current patch: (.+)\. See the patch notes with /patch!""")
-    +literal("Current patch: ")
-    val patch by +all { +any.oneOrMore() }
-    +literal(". See the patch notes with /patch!")
+    str("Current patch: ")
+    val patch by group { any().oneOrMore() }
+    str(". See the patch notes with /patch!")
 }
 
 object JoinDFDetector :

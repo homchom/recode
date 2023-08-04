@@ -26,9 +26,9 @@ private val timeRegex = cachedRegex<Long> { time ->
     @OptIn(RegexUnproven::class)
     regex {
         // Regex("""$MAIN_ARROW_CHAR Set your player time to ${time ?: "[0-9]+"}\.""")
-        +literal("$MAIN_ARROW_CHAR Set your player time to ")
-        if (time == null) +digit.oneOrMore() else +literal(time.toString())
-        +literal(".")
+        str("$MAIN_ARROW_CHAR Set your player time to ")
+        if (time == null) digit().oneOrMore() else str(time.toString())
+        str(".")
     }
 }
 

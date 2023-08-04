@@ -3,7 +3,7 @@ package io.github.homchom.recode.util.regex
 import io.github.homchom.recode.logInfo
 
 /**
- * @throws RegexConstructException
+ * @throws RegexElementException
  */
 @RegexUnproven
 inline fun regex(
@@ -22,66 +22,42 @@ inline fun regex(
 
 @RegexUnproven
 class RegexPatternBuilder {
-    private val elements = mutableListOf<RegexPattern>()
+    private val elements = mutableListOf<RegexElement>()
 
-    operator fun <T : RegexPattern> T.unaryPlus() = also { pattern ->
-        ensureGrouped(true)
-        elements += pattern
-    }
+    private operator fun <T : RegexElement> T.unaryPlus() = also { elements += it }
 
     fun build(): String = elements.joinToString("")
 
-    // literals
+    // literal strings
 
-    fun literal(character: Char) = raw(character, true)
-
-    fun literal(string: String) = raw(string, RegexPattern.Grouping.OPTIONAL, true)
+    fun str(string: String) = +raw(Regex.escape(string), true)
 
     // character classes
 
-    val wordChar get() = raw("\\w")
-    val digit get() = raw("\\d")
-    val any get() = raw(".")
+    fun wordChar() = +raw("\\w")
+    fun digit() = +raw("\\d")
+    fun any() = +raw(".")
 
-    // groups and alternation
+    // groups
 
-    fun range(characters: CharRange) = rawRange(characters.first, characters.last)
+    fun group(builder: RegexPatternBuilder.() -> Unit) = +rawGroup(builder)
 
-    fun all(builder: RegexPatternBuilder.() -> Unit) = rawGroup(builder)
-
-    fun any(vararg expressions: RegexConstruct): QuantifiableRegexPattern {
-        val isCharGroup = expressions.all { it.isCharacterGroupEligible }
-
-        val grouping: RegexPattern.Grouping
-        val separator: String
-        if (isCharGroup) {
-            grouping = RegexPattern.Grouping.CHARACTER
-            separator = ""
-        } else {
-            grouping = RegexPattern.Grouping.OPTIONAL
-            separator = "|"
-        }
-
-        return alternation(expressions, separator, grouping)
+    fun group(modifier: ModifiedRegexElement, builder: RegexPatternBuilder.() -> Unit): QuantifiableRegexElement {
+        val patternString = RegexPatternBuilder().apply(builder).build()
+        return +raw("(?$modifier:$patternString)")
     }
 
-    fun none(vararg characters: RegexCharacter): QuantifiableRegexPattern {
-        val isCharGroup = characters.all { it.isCharacterGroupEligible }
-        if (!isCharGroup) throw RegexConstructException(
-            "branches of a negated alternation group cannot themselves be grouped",
-            IllegalArgumentException()
-        )
-        return alternation(characters, "", RegexPattern.Grouping.NEGATED_CHARACTER)
-    }
+    fun any(characterGroup: String) = +raw("[$characterGroup]")
 
-    private fun alternation(
-        constructs: Array<out RegexConstruct>,
-        separator: String,
-        grouping: RegexPattern.Grouping
-    ): QuantifiableRegexPattern {
-        return raw(constructs.joinToString(separator), grouping)
-            .apply { ensureGrouped() }
-    }
+    fun none(characterGroup: String) = +raw("[^$characterGroup]")
+
+    // alternation
+
+    fun or() = +raw("|")
+
+    // modifiers
+
+    fun modify(modifier: RegexModifier) = +raw("(?$modifier)")
 }
 
 @RequiresOptIn("This regex API has not been laboriously tested for potential edge issues. If this is " +
