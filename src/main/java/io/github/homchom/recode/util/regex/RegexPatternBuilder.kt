@@ -5,7 +5,6 @@ import io.github.homchom.recode.logInfo
 /**
  * @throws RegexElementException
  */
-@RegexUnproven
 inline fun regex(
     useUnixLines: Boolean = false,
     useCanonicalEquivalence: Boolean = false,
@@ -20,7 +19,8 @@ inline fun regex(
     return Regex(pattern, options)
 }
 
-@RegexUnproven
+private const val optimizedSpecialChars = """$()*+.?[\^{|"""
+
 class RegexPatternBuilder {
     private val elements = mutableListOf<RegexElement>()
 
@@ -30,13 +30,31 @@ class RegexPatternBuilder {
 
     // literal strings
 
-    fun str(string: String) = +raw(Regex.escape(string), true)
+    fun str(str: Any): QuantifiableRegexElement { // parameter named 'str' to prevent IntelliJ label
+        val string = str.toString()
+
+        // QE metacharacters cannot be quantified so produce optimized regex in these cases
+        val optimizedEscape = if (string.length != 1) null else {
+            val char = string[0]
+            when {
+                char.isLetterOrDigit() || char == '_' || char == ' ' -> string
+                char.code >= 128 -> string // regex syntax only uses standard ASCII
+                char in optimizedSpecialChars -> "\\$string"
+                else -> null
+            }
+        }
+
+        return +raw(optimizedEscape ?: Regex.escape(string), optimizedEscape == null)
+    }
+
+    val space get() = +raw(" ")
+    val period get() = +raw("\\.")
 
     // character classes
 
-    fun wordChar() = +raw("\\w")
-    fun digit() = +raw("\\d")
-    fun any() = +raw(".")
+    val wordChar get() = +raw("\\w")
+    val digit get() = +raw("\\d")
+    val any get() = +raw(".")
 
     // groups
 
@@ -53,13 +71,18 @@ class RegexPatternBuilder {
 
     // alternation
 
-    fun or() = +raw("|")
+    val or get() = +raw("|")
+
+    fun anyStr(vararg branches: Any) {
+        group {
+            for (index in branches.indices) {
+                str(branches[index])
+                if (index != branches.lastIndex) or
+            }
+        }
+    }
 
     // modifiers
 
     fun modify(modifier: RegexModifier) = +raw("(?$modifier)")
 }
-
-@RequiresOptIn("This regex API has not been laboriously tested for potential edge issues. If this is " +
-        "used and something breaks, double check here for API bugs")
-annotation class RegexUnproven

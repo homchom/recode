@@ -1,19 +1,17 @@
 package io.github.homchom.recode.ui
 
 import io.github.homchom.recode.util.regex.RegexModifier
-import io.github.homchom.recode.util.regex.RegexUnproven
 import io.github.homchom.recode.util.regex.regex
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.network.chat.Style
 
-@OptIn(RegexUnproven::class)
 val FORMATTING_CODE_REGEX = regex {
     // Regex("""§(?:[0-9a-fk-o]|x(?:§[0-9a-f]){6})""", RegexOption.IGNORE_CASE)
     str("§")
     group(RegexModifier.IgnoreCase) {
         any("0-9a-fk-o")
-        or()
+        or
         str("x")
         group {
             str("§")

@@ -100,7 +100,7 @@ private fun usernamePattern(username: String?) =
     """(?<player>${username?.let(Regex::escape) ?: USERNAME_PATTERN})"""
 
 @RegExp
-private fun bullet(@RegExp pattern: String) = """\n$RIGHT_ARROW_CHAR $pattern"""
+private fun bullet(@RegExp pattern: String) = """\n$RIGHT_ARROW $pattern"""
 
 @RegExp
 private fun optionalBullet(@RegExp pattern: String) = """(?:${bullet(pattern)})?"""

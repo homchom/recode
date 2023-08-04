@@ -8,7 +8,6 @@ import io.github.homchom.recode.multiplayer.state.DFStateDetectors
 import io.github.homchom.recode.ui.equalsUnstyled
 import io.github.homchom.recode.ui.matchesUnstyled
 import io.github.homchom.recode.ui.unstyledString
-import io.github.homchom.recode.util.regex.RegexUnproven
 import io.github.homchom.recode.util.regex.cachedRegex
 import io.github.homchom.recode.util.regex.regex
 
@@ -16,19 +15,18 @@ val ChatLocalRequester = requester("/chat local", DFStateDetectors.ChangeMode, n
     ReceiveChatMessageEvent,
     start = { sendCommand("chat local") },
     tests = { (text), _ ->
-        val message = "$MAIN_ARROW_CHAR Chat is now set to Local. You will only see messages from players on " +
+        val message = "$MAIN_ARROW Chat is now set to Local. You will only see messages from players on " +
                 "your plot. Use /chat to change it again."
         text.equalsUnstyled(message).instantUnitOrNull()
     }
 ))
 
 private val timeRegex = cachedRegex<Long> { time ->
-    @OptIn(RegexUnproven::class)
     regex {
         // Regex("""$MAIN_ARROW_CHAR Set your player time to ${time ?: "[0-9]+"}\.""")
-        str("$MAIN_ARROW_CHAR Set your player time to ")
-        if (time == null) digit().oneOrMore() else str(time.toString())
-        str(".")
+        str("$MAIN_ARROW Set your player time to ")
+        if (time == null) digit.oneOrMore() else str(time.toString())
+        period
     }
 }
 
@@ -46,8 +44,8 @@ val FlightRequesters = toggleRequesterGroup<Unit>("/fly", DFStateDetectors, tria
     start = { sendCommand("fly") },
     tests = { input, message, isRequest ->
         val enabled = when (message().unstyledString) {
-            "$MAIN_ARROW_CHAR Flight enabled." -> true
-            "$MAIN_ARROW_CHAR Flight disabled." -> false
+            "$MAIN_ARROW Flight enabled." -> true
+            "$MAIN_ARROW Flight disabled." -> false
             else -> fail()
         }
         if (isRequest && input!!.shouldBeEnabled != enabled) message.invalidate()
@@ -55,10 +53,18 @@ val FlightRequesters = toggleRequesterGroup<Unit>("/fly", DFStateDetectors, tria
     }
 ))
 
-private val lsEnabledRegex =
-    Regex("""$LAGSLAYER_PATTERN Now monitoring plot (\d+)\. Type /lagslayer to stop monitoring\.""")
-private val lsDisabledRegex =
-    Regex("""$LAGSLAYER_PATTERN Stopped monitoring plot (\d+)\.""")
+private val lsEnabledRegex = regex {
+    // Regex("""$LAGSLAYER_PATTERN Now monitoring plot (\d+)\. Type /lagslayer to stop monitoring\.""")
+    str("$LAGSLAYER_PREFIX Now monitoring plot ")
+    val plot by group { digit.oneOrMore() }
+    str(". Type /lagslayer to stop monitoring.")
+}
+private val lsDisabledRegex = regex {
+    // Regex("""$LAGSLAYER_PATTERN Stopped monitoring plot (\d+)\.""")
+    str("$LAGSLAYER_PREFIX Stopped monitoring plot ")
+    val plot by group { digit.oneOrMore() }
+    period
+}
 
 val LagSlayerRequesters = toggleRequesterGroup<Unit>("/lagslayer", DFStateDetectors.ChangeMode, trial(
     ReceiveChatMessageEvent,
@@ -79,8 +85,8 @@ val NightVisionRequesters = toggleRequesterGroup<Unit>("/nightvis", DFStateDetec
     start = { sendCommand("nightvis") },
     tests = { input, message, isRequest: Boolean ->
         val enabled = when (message().unstyledString) {
-            "$MAIN_ARROW_CHAR Enabled night vision." -> true
-            "$MAIN_ARROW_CHAR Disabled night vision." -> false
+            "$MAIN_ARROW Enabled night vision." -> true
+            "$MAIN_ARROW Disabled night vision." -> false
             else -> fail()
         }
         if (isRequest && input!!.shouldBeEnabled != enabled) message.invalidate()
