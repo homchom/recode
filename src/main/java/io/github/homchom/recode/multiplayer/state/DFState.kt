@@ -4,20 +4,34 @@
 package io.github.homchom.recode.multiplayer.state
 
 import io.github.homchom.recode.mc
-import io.github.homchom.recode.multiplayer.*
+import io.github.homchom.recode.multiplayer.MAIN_ARROW
+import io.github.homchom.recode.multiplayer.SUPPORT_ARROW
+import io.github.homchom.recode.multiplayer.username
 import io.github.homchom.recode.ui.equalsUnstyled
 import io.github.homchom.recode.ui.matchesUnstyled
 import io.github.homchom.recode.util.*
+import io.github.homchom.recode.util.regex.regex
 import kotlinx.coroutines.Deferred
 import net.minecraft.client.multiplayer.ServerData
 import net.minecraft.core.BlockPos
-import net.minecraft.core.Direction
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
-import net.minecraft.world.level.block.Blocks
 
 val ServerData?.ipMatchesDF get(): Boolean {
-    val regex = Regex("""(?:\w+\.)?mcdiamondfire\.com(?::\d+)?""")
+    val regex = regex {
+        all {
+            wordChar.oneOrMore()
+            period
+        }.optional()
+
+        str("mcdiamondfire.com")
+
+        all {
+            str(":")
+            digit.oneOrMore()
+        }.optional()
+    }
+
     return this?.ip?.matches(regex) ?: false
 }
 
@@ -44,13 +58,11 @@ sealed interface DFState {
                 PlotMode.Build -> PlotMode.Build
 
                 PlotMode.Dev.ID -> mc.player!!.let { player ->
-                    val devPos = player.blockPosition().mutable()
-                    // search for dirt, not grass, because some plots have custom grounds
-                    do {
-                        devPos.move(Direction.DOWN)
-                    } while (mc.level!!.getBlockState(devPos).block != Blocks.DIRT)
-
-                    val buildCorner = devPos.move(-10, 1, -10).immutable()
+                    val buildCorner = player.blockPosition()
+                        .mutable()
+                        .setY(49)
+                        .move(10, 0, -10)
+                        .immutable()
 
                     val referenceBookCopy = player.inventory.getItem(17).copy()
 
@@ -117,8 +129,13 @@ data class Plot(
     @get:JvmName("getId") val id: UInt
 )
 
-private val playModeRegex =
-    Regex("""$MAIN_ARROW_CHAR Joined game: $PLOT_NAME_PATTERN by $USERNAME_PATTERN\.""")
+private val playModeRegex = regex {
+    str("$MAIN_ARROW Joined game: ")
+    any.oneOrMore() // plot name
+    str(" by ")
+    username()
+    period
+}
 
 sealed interface PlotMode {
     val id: ID
@@ -150,7 +167,7 @@ sealed interface PlotMode {
         override val descriptor = "building"
 
         override fun match(input: Component) =
-            input.equalsUnstyled("$MAIN_ARROW_CHAR You are now in build mode.").unitOrNull()
+            input.equalsUnstyled("$MAIN_ARROW You are now in build mode.").unitOrNull()
     }
 
     data class Dev(val buildCorner: BlockPos, val referenceBookCopy: ItemStack) : PlotMode {
@@ -160,7 +177,7 @@ sealed interface PlotMode {
             override val descriptor = "coding"
 
             override fun match(input: Component) =
-                input.equalsUnstyled("$MAIN_ARROW_CHAR You are now in dev mode.").unitOrNull()
+                input.equalsUnstyled("$MAIN_ARROW You are now in dev mode.").unitOrNull()
         }
     }
 }
@@ -173,8 +190,11 @@ enum class SupportSession : Matcher<Component, Unit> {
     },
     Helping {
         override fun match(input: Component): Unit? {
-            val regex = Regex("\\[SUPPORT] ${mc.player!!.username} entered a session with " +
-                    "$USERNAME_PATTERN\\. $SUPPORT_ARROW_CHAR Queue cleared!")
+            val regex = regex {
+                str("[SUPPORT] ${mc.player!!.username} entered a session with ")
+                username()
+                str(". $SUPPORT_ARROW Queue cleared!")
+            }
             return regex.matchesUnstyled(input).unitOrNull()
         }
     };

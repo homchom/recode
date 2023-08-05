@@ -9,6 +9,8 @@ import io.github.homchom.recode.multiplayer.state.DFStateDetectors
 import io.github.homchom.recode.ui.equalsUnstyled
 import io.github.homchom.recode.ui.matchEntireUnstyled
 import io.github.homchom.recode.util.Case
+import io.github.homchom.recode.util.regex.namedGroupValues
+import io.github.homchom.recode.util.regex.regex
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
@@ -25,12 +27,17 @@ object SupportTimeRequester : Requester<Boolean, Case<Duration?>> by requester(
                 return@tests instant(Case.ofNull)
             }
 
-            val regex = Regex("""Current session time: (\d?\d):(\d\d):(\d\d)""")
-            val match = regex.matchEntireUnstyled(message.value)!!
+            val regex = regex {
+                str("Current session time: ")
+                val hours by digit * (1..2)
+                val minutes by digit * 2
+                val seconds by digit * 2
+            }
+            val values = regex.matchEntireUnstyled(message.value)!!.namedGroupValues
 
-            val hours = match.groupValues[1].toIntOrNull()?.hours ?: fail()
-            val minutes = match.groupValues[2].toIntOrNull()?.minutes ?: fail()
-            val seconds = match.groupValues[3].toIntOrNull()?.seconds ?: fail()
+            val hours = values["hours"].toIntOrNull()?.hours ?: fail()
+            val minutes = values["minutes"].toIntOrNull()?.minutes ?: fail()
+            val seconds = values["seconds"].toIntOrNull()?.seconds ?: fail()
 
             if (hideMessage == true) message.invalidate()
             instant(Case(hours + minutes + seconds))

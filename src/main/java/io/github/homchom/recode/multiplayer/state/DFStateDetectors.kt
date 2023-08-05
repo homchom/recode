@@ -22,7 +22,8 @@ import io.github.homchom.recode.ui.matchesUnstyled
 import io.github.homchom.recode.ui.unstyle
 import io.github.homchom.recode.util.Case
 import io.github.homchom.recode.util.encase
-import io.github.homchom.recode.util.namedGroupValues
+import io.github.homchom.recode.util.regex.namedGroupValues
+import io.github.homchom.recode.util.regex.regex
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.async
 import net.minecraft.network.protocol.game.ClientboundPlayerPositionPacket
@@ -109,7 +110,11 @@ object DFStateDetectors : StateListenable<Case<DFState?>> {
             suspending {
                 enforce(enforceChannel) { (text) -> SupportSession.match(text) == null }
 
-                val regex = Regex("""You have entered a session with $USERNAME_PATTERN\.""")
+                val regex = regex {
+                    str("You have entered a session with ")
+                    username()
+                    period
+                }
                 // this is safe because of the previous enforce call; only one can run at a time
                 testBoolean(subsequent, unlimited, Duration.INFINITE) { (text) ->
                     regex.matchesUnstyled(text)
@@ -128,7 +133,12 @@ object DFStateDetectors : StateListenable<Case<DFState?>> {
             requireTrue(currentDFState!!.session != null)
 
             // TODO: is there a better way to do this with fewer false positives?
-            val regex = Regex("""Your session with $USERNAME_PATTERN has ended\.""")
+            val regex = regex {
+                str("Your session with ")
+                username()
+                str(" has ended.")
+            }
+
             requireTrue(regex.matchesUnstyled(message))
             instant(Case(currentDFState!!.withSession(null)))
         }
