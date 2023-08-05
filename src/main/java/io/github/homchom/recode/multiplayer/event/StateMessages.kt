@@ -1,15 +1,16 @@
 package io.github.homchom.recode.multiplayer.event
 
-import io.github.homchom.recode.event.*
+import io.github.homchom.recode.event.Requester
 import io.github.homchom.recode.event.trial.requester
 import io.github.homchom.recode.event.trial.trial
 import io.github.homchom.recode.mc
-import io.github.homchom.recode.multiplayer.*
+import io.github.homchom.recode.multiplayer.RIGHT_ARROW
+import io.github.homchom.recode.multiplayer.ReceiveChatMessageEvent
+import io.github.homchom.recode.multiplayer.sendCommand
 import io.github.homchom.recode.multiplayer.state.*
+import io.github.homchom.recode.multiplayer.username
 import io.github.homchom.recode.ui.matchEntireUnstyled
-import io.github.homchom.recode.util.regex.cachedRegex
-import io.github.homchom.recode.util.regex.namedGroupValues
-import org.intellij.lang.annotations.Language
+import io.github.homchom.recode.util.regex.*
 import org.intellij.lang.annotations.RegExp
 
 data class LocateMessage(val username: String, val state: LocateState) {
@@ -24,7 +25,7 @@ data class LocateMessage(val username: String, val state: LocateState) {
                 val values = LocateMessage.regex(request?.username)
                     .matchEntireUnstyled(message)!!
                     .namedGroupValues
-                val player = values["player"].let { if (it == "You") mc.player!!.username else it }
+                val player = values["player"].takeUnless(String::isEmpty) ?: mc.player!!.username
                 val node = nodeByName(values["node"])
                 val state = if (values["mode"].isEmpty()) {
                     LocateState.AtSpawn(node)
@@ -43,16 +44,56 @@ data class LocateMessage(val username: String, val state: LocateState) {
         )
     ) {
         private val regex = cachedRegex<String> { username ->
-            @Language("regexp") val player = """(?:You are|${usernamePattern(username)} is) currently"""
+            /*@Language("regexp") val player = """(?:You are|${usernamePattern(username)} is) currently"""
             @Language("regexp") val mode = """(?<mode>playing|building|coding) on:\n"""
             @Language("regexp") val plot =
                 bullet("""(?<plotName>$PLOT_NAME_PATTERN) \[(?<plotID>\d+)]""")
-            @Language("regexp") val status = optionalBullet("""(?<status>.+)""")
+            @Language("regexp") val status = optionalBullet("""(?<status>.++)""")
             @Language("regexp") val owner =
                 bullet("""Owner: (?<owner>$USERNAME_PATTERN) (?:\[Whitelisted])?""")
-            @Language("regexp") val server = bullet("""Server: (?<node>[A-Za-z\d ]+)""")
+            @Language("regexp") val server = bullet("""Server: (?<node>[\w ]+)""")
 
-            Regex(""" {39}\n$player (?:at spawn|$mode$plot$status$owner)$server\n {39}""")
+            Regex(""" {39}\n$player (?:at spawn|$mode$plot$status$owner)$server\n {39}""")*/
+
+            regex {
+                space * 39; newline
+                group {
+                    str("You are")
+                    or
+                    val player by group { username(username) }
+                    str(" is")
+                }
+                str(" currently ")
+                group {
+                    str("at spawn")
+                    or
+                    val mode by anyStr("playing", "building", "coding")
+                    str(" on:"); newline
+
+                    bullet()
+                    val plotName by group { any.oneOrMore() }
+                    str(" [")
+                    val plotID by group { digit.oneOrMore() }
+                    str("]")
+
+                    group {
+                        bullet()
+                        val status by group { any.oneOrMore().possessive() }
+                    }.optional().lazy()
+
+                    bullet()
+                    str("Owner: ")
+                    val owner by group { username() }
+                    space
+                    str("[Whitelisted]").optional()
+                }
+
+                bullet()
+                str("Server: ")
+                val node by group { any("\\w ").oneOrMore() }
+
+                newline; space * 39
+            }
         }
     }
 }
@@ -84,10 +125,40 @@ data class ProfileMessage(val username: String, val ranks: List<Rank>) {
         )
     ) {
         private val regex = cachedRegex<String> { username ->
-            @Language("regexp") val player = """Profile of ${usernamePattern(username)} (?:\(.+?\))?\n"""
-            @Language("regexp") val ranks = bullet("""Ranks: (?<ranks>.*?)""")
+            /*@Language("regexp") val player = """Profile of ${usernamePattern(username)} (?:\(.+\))?\n"""
+            @Language("regexp") val ranks = bullet("""Ranks: (?<ranks>.*)""")
 
-            Regex(""" {39}\n$player$ranks\n(?s).+ {39}""")
+            Regex(""" {39}\n$player$ranks\n(?s).+ {39}""")*/
+
+            regex {
+                space * 39; newline
+                str("Profile of ")
+                val player by group { username() }
+                space
+                group {
+                    str("(")
+                    any.oneOrMore()
+                    str(")")
+                }.optional()
+                newline
+
+                bullet()
+                str("Ranks: ")
+                val ranks by group { any.zeroOrMore().possessive() }
+
+                bullet()
+                str("Badges: ")
+                group {
+                    str("None")
+                    or
+                    any; group { space; any }.zeroOrMore()
+                }
+
+                newline
+                modify(RegexModifier.MatchLineBreaksInAny)
+                any.oneOrMore()
+                space * 39
+            }
         }
     }
 }
@@ -96,11 +167,6 @@ data class ProfileMessage(val username: String, val ranks: List<Rank>) {
 data class UserStateRequest(val username: String, val hideMessage: Boolean = false)
 
 @RegExp
-private fun usernamePattern(username: String?) =
-    """(?<player>${username?.let(Regex::escape) ?: USERNAME_PATTERN})"""
-
-@RegExp
-private fun bullet(@RegExp pattern: String) = """\n$RIGHT_ARROW $pattern"""
-
-@RegExp
-private fun optionalBullet(@RegExp pattern: String) = """(?:${bullet(pattern)})?"""
+private fun RegexPatternBuilder.bullet() {
+    newline; str(RIGHT_ARROW); space
+}

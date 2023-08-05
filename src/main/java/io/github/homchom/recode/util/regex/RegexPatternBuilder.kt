@@ -54,6 +54,7 @@ class RegexPatternBuilder {
 
     val wordChar get() = +raw("\\w")
     val digit get() = +raw("\\d")
+    val newline get() = +raw("\\n")
     val any get() = +raw(".")
 
     // groups
@@ -73,12 +74,10 @@ class RegexPatternBuilder {
 
     val or get() = +raw("|")
 
-    fun anyStr(vararg branches: Any) {
-        group {
-            for (index in branches.indices) {
-                str(branches[index])
-                if (index != branches.lastIndex) or
-            }
+    fun anyStr(vararg branches: Any) = group {
+        for (index in branches.indices) {
+            str(branches[index])
+            if (index != branches.lastIndex) or
         }
     }
 
