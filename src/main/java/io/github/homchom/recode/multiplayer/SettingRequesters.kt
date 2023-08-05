@@ -56,13 +56,13 @@ val FlightRequesters = toggleRequesterGroup<Unit>("/fly", DFStateDetectors, tria
 private val lsEnabledRegex = regex {
     // Regex("""$LAGSLAYER_PATTERN Now monitoring plot (\d+)\. Type /lagslayer to stop monitoring\.""")
     str("$LAGSLAYER_PREFIX Now monitoring plot ")
-    val plot by group { digit.oneOrMore() }
+    val plot by digit.oneOrMore()
     str(". Type /lagslayer to stop monitoring.")
 }
 private val lsDisabledRegex = regex {
     // Regex("""$LAGSLAYER_PATTERN Stopped monitoring plot (\d+)\.""")
     str("$LAGSLAYER_PREFIX Stopped monitoring plot ")
-    val plot by group { digit.oneOrMore() }
+    val plot by digit.oneOrMore()
     period
 }
 

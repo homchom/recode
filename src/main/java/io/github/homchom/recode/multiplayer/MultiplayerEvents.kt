@@ -44,7 +44,7 @@ object ReceiveGamePacketEvent :
 private val patchRegex = regex {
     // Regex("""Current patch: (.+)\. See the patch notes with /patch!""")
     str("Current patch: ")
-    val patch by group { any.oneOrMore() }
+    val patch by any.oneOrMore()
     str(". See the patch notes with /patch!")
 }
 

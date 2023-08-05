@@ -57,40 +57,40 @@ data class LocateMessage(val username: String, val state: LocateState) {
 
             regex {
                 space * 39; newline
-                group {
+                all {
                     str("You are")
                     or
-                    val player by group { username(username) }
+                    val player by username(username)
                     str(" is")
                 }
                 str(" currently ")
-                group {
+                all {
                     str("at spawn")
                     or
                     val mode by anyStr("playing", "building", "coding")
                     str(" on:"); newline
 
                     bullet()
-                    val plotName by group { any.oneOrMore() }
+                    val plotName by any.oneOrMore()
                     str(" [")
-                    val plotID by group { digit.oneOrMore() }
+                    val plotID by digit.oneOrMore()
                     str("]")
 
-                    group {
+                    all {
                         bullet()
-                        val status by group { any.oneOrMore().possessive() }
+                        val status by any.oneOrMore().possessive()
                     }.optional().lazy()
 
                     bullet()
                     str("Owner: ")
-                    val owner by group { username() }
+                    val owner by username()
                     space
                     str("[Whitelisted]").optional()
                 }
 
                 bullet()
                 str("Server: ")
-                val node by group { any("\\w ").oneOrMore() }
+                val node by any("\\w ").oneOrMore()
 
                 newline; space * 39
             }
@@ -126,16 +126,16 @@ data class ProfileMessage(val username: String, val ranks: List<Rank>) {
     ) {
         private val regex = cachedRegex<String> { username ->
             /*@Language("regexp") val player = """Profile of ${usernamePattern(username)} (?:\(.+\))?\n"""
-            @Language("regexp") val ranks = bullet("""Ranks: (?<ranks>.*)""")
+            @Language("regexp") val ranks = bullet("""Ranks: (?<ranks>.*+)""")
 
-            Regex(""" {39}\n$player$ranks\n(?s).+ {39}""")*/
+            Regex(""" {39}\n$player$ranks\n(?s).{22,} {39}""")*/
 
             regex {
                 space * 39; newline
                 str("Profile of ")
-                val player by group { username() }
+                val player by username()
                 space
-                group {
+                all {
                     str("(")
                     any.oneOrMore()
                     str(")")
@@ -144,19 +144,11 @@ data class ProfileMessage(val username: String, val ranks: List<Rank>) {
 
                 bullet()
                 str("Ranks: ")
-                val ranks by group { any.zeroOrMore().possessive() }
-
-                bullet()
-                str("Badges: ")
-                group {
-                    str("None")
-                    or
-                    any; group { space; any }.zeroOrMore()
-                }
+                val ranks by any.zeroOrMore().possessive()
 
                 newline
                 modify(RegexModifier.MatchLineBreaksInAny)
-                any.oneOrMore()
+                any.atLeast(22) // faster fail: remaining text will be at least 22 chars
                 space * 39
             }
         }

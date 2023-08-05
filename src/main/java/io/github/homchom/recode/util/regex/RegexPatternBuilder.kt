@@ -59,11 +59,13 @@ class RegexPatternBuilder {
 
     // groups
 
-    fun group(builder: RegexPatternBuilder.() -> Unit) = +rawGroup(builder)
-
-    fun group(modifier: ModifiedRegexElement, builder: RegexPatternBuilder.() -> Unit): QuantifiableRegexElement {
+    fun all(
+        modifier: InlineRegexOption? = null,
+        builder: RegexPatternBuilder.() -> Unit
+    ): QuantifiableRegexElement {
         val patternString = RegexPatternBuilder().apply(builder).build()
-        return +raw("(?$modifier:$patternString)")
+        val modifierString = modifier?.toString() ?: ""
+        return +raw("(?$modifierString:$patternString)")
     }
 
     fun any(characterGroup: String) = +raw("[$characterGroup]")
@@ -74,7 +76,7 @@ class RegexPatternBuilder {
 
     val or get() = +raw("|")
 
-    fun anyStr(vararg branches: Any) = group {
+    fun anyStr(vararg branches: Any) = all {
         for (index in branches.indices) {
             str(branches[index])
             if (index != branches.lastIndex) or

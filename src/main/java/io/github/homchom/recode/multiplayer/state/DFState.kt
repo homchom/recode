@@ -20,14 +20,14 @@ import net.minecraft.world.item.ItemStack
 val ServerData?.ipMatchesDF get(): Boolean {
     val regex = regex {
         // Regex("""(?:\w+\.)??mcdiamondfire\.com(?::\d+)?""")
-        group {
+        all {
             wordChar.oneOrMore()
             period
         }.optional()
 
         str("mcdiamondfire.com")
 
-        group {
+        all {
             str(":")
             digit.oneOrMore()
         }.optional()

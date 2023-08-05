@@ -9,11 +9,11 @@ import net.minecraft.network.chat.Style
 val FORMATTING_CODE_REGEX = regex {
     // Regex("""§(?:[0-9a-fk-o]|x(?:§[0-9a-f]){6})""", RegexOption.IGNORE_CASE)
     str("§")
-    group(RegexModifier.IgnoreCase) {
+    all(RegexModifier.IgnoreCase) {
         any("0-9a-fk-o")
         or
         str("x")
-        group {
+        all {
             str("§")
             any("0-9a-f")
         } * 6

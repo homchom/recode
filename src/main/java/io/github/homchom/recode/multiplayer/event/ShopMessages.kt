@@ -41,7 +41,7 @@ data class ActiveBoosterMessage(val player: String, val canTip: Boolean) {
         private val mainRegex = regex {
             // Regex("""$BOOSTER_ARROW_PATTERN ($USERNAME_PATTERN) is using a \d+x booster\.""")
             boosterArrow()
-            val player by group { username() }
+            val player by username()
             str(" is using a ")
             digit.oneOrMore()
             str("x booster.")
