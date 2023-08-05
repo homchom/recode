@@ -7,7 +7,6 @@ import net.minecraft.network.chat.MutableComponent
 import net.minecraft.network.chat.Style
 
 val FORMATTING_CODE_REGEX = regex {
-    // Regex("""§(?:[0-9a-fk-o]|x(?:§[0-9a-f]){6})""", RegexOption.IGNORE_CASE)
     str("§")
     all(RegexModifier.IgnoreCase) {
         any("0-9a-fk-o")

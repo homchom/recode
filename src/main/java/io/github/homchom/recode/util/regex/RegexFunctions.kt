@@ -12,5 +12,7 @@ class RegexNamedGroupValueCollection(private val match: MatchResult) : List<Stri
     operator fun get(name: String) = match.groups[name]?.value ?: ""
 }
 
-// TODO: replace builder with RegexPatternBuilder once it is stable
-fun <T : Any> cachedRegex(builder: (T?) -> Regex) = cachePreviousAndNull(builder)
+inline fun <T : Any> cachedRegex(crossinline builder: RegexPatternBuilder.(T?) -> Unit) =
+    cachePreviousAndNull<T, _> { input ->
+        regex { builder(input) }
+    }

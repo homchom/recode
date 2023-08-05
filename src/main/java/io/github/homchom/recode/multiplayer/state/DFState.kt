@@ -19,7 +19,6 @@ import net.minecraft.world.item.ItemStack
 
 val ServerData?.ipMatchesDF get(): Boolean {
     val regex = regex {
-        // Regex("""(?:\w+\.)??mcdiamondfire\.com(?::\d+)?""")
         all {
             wordChar.oneOrMore()
             period
@@ -131,7 +130,6 @@ data class Plot(
 )
 
 private val playModeRegex = regex {
-    // Regex("""$MAIN_ARROW Joined game: $PLOT_NAME_PATTERN by $USERNAME_PATTERN\.""")
     str("$MAIN_ARROW Joined game: ")
     any.oneOrMore() // plot name
     str(" by ")
@@ -193,8 +191,6 @@ enum class SupportSession : Matcher<Component, Unit> {
     Helping {
         override fun match(input: Component): Unit? {
             val regex = regex {
-                // Regex("\\[SUPPORT] ${mc.player!!.username} entered a session with " +
-                //         "$USERNAME_PATTERN\\. $SUPPORT_ARROW Queue cleared!")
                 str("[SUPPORT] ${mc.player!!.username} entered a session with ")
                 username()
                 str(". $SUPPORT_ARROW Queue cleared!")

@@ -22,12 +22,9 @@ val ChatLocalRequester = requester("/chat local", DFStateDetectors.ChangeMode, n
 ))
 
 private val timeRegex = cachedRegex<Long> { time ->
-    regex {
-        // Regex("""$MAIN_ARROW_CHAR Set your player time to ${time ?: "[0-9]+"}\.""")
-        str("$MAIN_ARROW Set your player time to ")
-        if (time == null) digit.oneOrMore() else str(time.toString())
-        period
-    }
+    str("$MAIN_ARROW Set your player time to ")
+    if (time == null) digit.oneOrMore() else str(time.toString())
+    period
 }
 
 // TODO: support time keywords through command suggestions (not enum)
@@ -54,13 +51,11 @@ val FlightRequesters = toggleRequesterGroup<Unit>("/fly", DFStateDetectors, tria
 ))
 
 private val lsEnabledRegex = regex {
-    // Regex("""$LAGSLAYER_PATTERN Now monitoring plot (\d+)\. Type /lagslayer to stop monitoring\.""")
     str("$LAGSLAYER_PREFIX Now monitoring plot ")
     val plot by digit.oneOrMore()
     str(". Type /lagslayer to stop monitoring.")
 }
 private val lsDisabledRegex = regex {
-    // Regex("""$LAGSLAYER_PATTERN Stopped monitoring plot (\d+)\.""")
     str("$LAGSLAYER_PREFIX Stopped monitoring plot ")
     val plot by digit.oneOrMore()
     period

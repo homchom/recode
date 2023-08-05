@@ -111,7 +111,6 @@ object DFStateDetectors : StateListenable<Case<DFState?>> {
                 enforce(enforceChannel) { (text) -> SupportSession.match(text) == null }
 
                 val regex = regex {
-                    // Regex("""You have entered a session with $USERNAME_PATTERN\.""")
                     str("You have entered a session with ")
                     username()
                     period
@@ -135,7 +134,6 @@ object DFStateDetectors : StateListenable<Case<DFState?>> {
 
             // TODO: is there a better way to do this with fewer false positives?
             val regex = regex {
-                // Regex("""Your session with $USERNAME_PATTERN has ended\.""")
                 str("Your session with ")
                 username()
                 str(" has ended.")

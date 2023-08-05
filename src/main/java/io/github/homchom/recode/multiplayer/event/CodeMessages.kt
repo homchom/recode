@@ -28,7 +28,6 @@ object SupportTimeRequester : Requester<Boolean, Case<Duration?>> by requester(
             }
 
             val regex = regex {
-                // Regex("""Current session time: (\d?\d):(\d\d):(\d\d)""")
                 str("Current session time: ")
                 val hours by digit * (1..2)
                 val minutes by digit * 2
