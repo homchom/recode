@@ -25,6 +25,7 @@ import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -54,7 +55,8 @@ public abstract class MSideChatHUD implements SideChatComponent {
 
     private boolean renderingSideChat = false;
 
-    private List<GuiMessage.Line> messagesCopy;
+    @Unique
+    private List<GuiMessage.Line> copiedMessages = new ArrayList<>();
 
     @Shadow
     protected abstract boolean isChatFocused();
@@ -74,7 +76,7 @@ public abstract class MSideChatHUD implements SideChatComponent {
     @Shadow public abstract void render(GuiGraphics guiGraphics, int i, int j, int k);
 
     @Override
-    public void renderSide(@NotNull GuiGraphics guiGraphics, int tickDelta, int mouseX, int mouseY) {
+    public void recode$renderSide(@NotNull GuiGraphics guiGraphics, int tickDelta, int mouseX, int mouseY) {
         renderingSideChat = true;
         PoseStack poseStack = guiGraphics.pose();
         poseStack.pushPose();
@@ -89,13 +91,14 @@ public abstract class MSideChatHUD implements SideChatComponent {
 
     // TODO: improve render mixin functions further
 
-    @Inject(method = "render", at = @At("HEAD"))
-    private void copyForStacking(GuiGraphics guiGraphics, int tickDelta, int mouseX, int mouseY, CallbackInfo ci) {
+    @Inject(method = "render", at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/client/gui/components/ChatComponent;isChatFocused()Z",
+            ordinal = 0
+    ))
+    private void stackMessages(CallbackInfo ci) {
         if (Config.getBoolean("stackDuplicateMsgs")) {
-            messagesCopy = new ArrayList<>();
-            messagesCopy.addAll(messagesToRender());
-            messagesToRender().clear();
-            messagesToRender().addAll(stackMsgs(messagesCopy));
+            copiedMessages.addAll(messagesToRender());
+            stackMessagesImpl(messagesToRender(), copiedMessages);
         }
     }
 
@@ -116,15 +119,16 @@ public abstract class MSideChatHUD implements SideChatComponent {
         return renderingSideChat ? 0 : instance.queueSize();
     }
 
-    @Inject(method = "render", at = @At("TAIL"))
-    private void restoreFromStacking(GuiGraphics guiGraphics, int tickDelta, int mouseX, int mouseY, CallbackInfo ci) {
+    @Inject(method = "render", at = @At("RETURN"))
+    private void unstackMessages(CallbackInfo ci) {
         if (Config.getBoolean("stackDuplicateMsgs")) {
             messagesToRender().clear();
-            messagesToRender().addAll(messagesCopy);
-            messagesCopy = null;
+            messagesToRender().addAll(copiedMessages);
+            copiedMessages.clear();
         }
     }
 
+    @Unique
     private List<GuiMessage.Line> messagesToRender() {
         return renderingSideChat ? sideVisibleMessages : trimmedMessages;
     }
@@ -276,42 +280,44 @@ public abstract class MSideChatHUD implements SideChatComponent {
         }
     }
 
-    // Message Stacker
-    public List<GuiMessage.Line> stackMsgs(List<GuiMessage.Line> msgs) {
-        GuiMessage.Line last = null;
-        int count = 1;
+    @Unique
+    private void addMessageToStacker(List<GuiMessage.Line> messages, GuiMessage.Line message, int count) {
+        if (count == 1) {
+            messages.add(message);
+            return;
+        }
+        var text = FormattedCharSequence.composite(
+                message.content(),
+                TextUtil.colorCodesToTextComponent(" §bx" + count).getVisualOrderText()
+        );
+        messages.add(new GuiMessage.Line(message.addedTime(), text, message.tag(), true));
+    }
 
-        List<GuiMessage.Line> copy = new ArrayList<>();
+    // Message Stacker TODO: improve further
+    @Unique
+    private void stackMessagesImpl(List<GuiMessage.Line> messages, List<GuiMessage.Line> copy) {
+        messages.clear();
+        if (copy.isEmpty()) return;
 
-        for (GuiMessage.Line msg : msgs) {
-            if (last == null) {
-                last = msg;
+        var count = 1;
+
+        var iterator = copy.iterator();
+        var previous = iterator.next();
+        while (iterator.hasNext()) {
+            var message = iterator.next();
+
+            var previousString = OrderedTextUtil.getString(previous.content());
+            var messageString = OrderedTextUtil.getString(message.content());
+            if (previousString.equals(messageString)) {
+                count++;
             } else {
-                if (OrderedTextUtil.getString(last.content())
-                    .equals(OrderedTextUtil.getString(msg.content()))) {
-                    count++;
-                } else {
-                    if (count == 1) {
-                        copy.add(last);
-                    } else {
-                        copy.add(new GuiMessage.Line(
-                                last.addedTime(),
-                                FormattedCharSequence.composite(
-                                    last.content(),
-                                    TextUtil.colorCodesToTextComponent(" §bx" + count).getVisualOrderText()),
-                                last.tag(),
-                                true
-                            )
-                        );
-                    }
-                    count = 1;
-                    last = msg;
-                }
+                addMessageToStacker(messages, previous, count);
+                count = 1;
             }
+
+            previous = message;
         }
-        if (last != null) {
-            copy.add(last);
-        }
-        return copy;
+
+        addMessageToStacker(messages, previous, count);
     }
 }

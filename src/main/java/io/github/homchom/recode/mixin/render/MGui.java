@@ -15,6 +15,6 @@ public abstract class MGui {
     ))
     private void renderSideChat(ChatComponent chat, GuiGraphics graphics, int tickDelta, int mouseX, int mouseY) {
         chat.render(graphics, tickDelta, mouseX, mouseY);
-        ((SideChatComponent) chat).renderSide(graphics, tickDelta, mouseX, mouseY);
+        ((SideChatComponent) chat).recode$renderSide(graphics, tickDelta, mouseX, mouseY);
     }
 }
