@@ -5,11 +5,14 @@
   "mixins": [],
   "client": [
     "MMinecraft",
+    "multiplayer.MChatListener",
     "multiplayer.MClientPacketListener",
     "multiplayer.MConnection",
     "multiplayer.MJoinMultiplayerScreen",
     "render.MAbstractContainerScreen",
     "render.MBlockEntityRenderDispatcher",
+    "render.MChatComponent",
+    "render.MChatScreen",
     "render.MGui",
     "render.MLevelRenderer",
     "render.MSodiumWorldRenderer"
