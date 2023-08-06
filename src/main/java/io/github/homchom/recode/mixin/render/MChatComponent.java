@@ -7,9 +7,8 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ChatComponent.class)
 public class MChatComponent {
@@ -27,10 +26,11 @@ public class MChatComponent {
 
     // side chat "overrides" for private members
 
-    @Inject(method = "screenToChatX", at = @At("RETURN"), cancellable = true)
-    private void overrideScreenToChatX(double screenX, CallbackInfoReturnable<Double> cir) {
+    @ModifyVariable(method = "screenToChatX", at = @At("HEAD"), ordinal = 0, argsOnly = true)
+    private double overrideScreenToChatX(double screenX) {
         var sideChat = asSideChatOrNull();
-        if (sideChat != null) cir.setReturnValue(cir.getReturnValue() - sideChat.getXOffset());
+        if (sideChat != null) screenX -= sideChat.getXOffset();
+        return screenX;
     }
 
     // side chat redirects

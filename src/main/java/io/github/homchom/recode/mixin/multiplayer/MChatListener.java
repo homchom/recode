@@ -46,14 +46,12 @@ public class MChatListener {
 
     @Unique
     private ChatRule.ChatSide matchToChatSide(Component message) {
-        ChatRule.ChatSide side = ChatRule.ChatSide.MAIN;
+        var side = ChatRule.ChatSide.MAIN;
         for (var chatRule : ChatRule.getChatRules()) {
-            System.out.println("trying chat rule " + chatRule);
             if (!chatRule.matches(message)) continue;
 
             if (chatRule.getChatSide() != ChatRule.ChatSide.EITHER) {
                 side = chatRule.getChatSide();
-                System.out.println("side set to " + side + " by rule " + chatRule);
             }
 
             if (chatRule.getChatSound() != null) {
