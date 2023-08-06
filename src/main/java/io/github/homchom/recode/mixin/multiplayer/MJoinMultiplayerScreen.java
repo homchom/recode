@@ -28,7 +28,7 @@ public abstract class MJoinMultiplayerScreen {
     @Shadow private ServerList servers;
 
     @Inject(method = "join", at = @At("HEAD"))
-    public void replaceUnofficialDFAddresses(ServerData serverData, CallbackInfo ci) {
+    private void replaceUnofficialDFAddresses(ServerData serverData, CallbackInfo ci) {
         var addressPattern = String.join("|", unofficialDFAddresses);
         @SuppressWarnings("RegExpUnnecessaryNonCapturingGroup")
         var regex = Pattern.compile("(?<prefix>\\w+\\.)?(?:" + addressPattern + ")(?<suffix>:\\d+)?");

@@ -42,7 +42,7 @@ public abstract class MLevelRenderer implements RecodeLevelRenderer {
 			target = "Lnet/minecraft/client/renderer/LevelRenderer;globalBlockEntities:Ljava/util/Set;",
 			ordinal = 1
 	))
-	public Set<BlockEntity> interceptGlobalBlockEntities(LevelRenderer instance) {
+	private Set<BlockEntity> interceptGlobalBlockEntities(LevelRenderer instance) {
 		if (globalBlockEntities.isEmpty()) return globalBlockEntities;
 
 		return Set.copyOf(recode$runBlockEntityEvents(globalBlockEntities, null));
@@ -51,7 +51,7 @@ public abstract class MLevelRenderer implements RecodeLevelRenderer {
 	@Redirect(method = "renderLevel", at = @At(value = "INVOKE",
 			target = "Lnet/minecraft/client/renderer/chunk/ChunkRenderDispatcher$CompiledChunk;getRenderableBlockEntities()Ljava/util/List;"
 	))
-	public List<BlockEntity> interceptChunkBlockEntities(ChunkRenderDispatcher.CompiledChunk chunk) {
+	private List<BlockEntity> interceptChunkBlockEntities(ChunkRenderDispatcher.CompiledChunk chunk) {
 		var blockEntities = chunk.getRenderableBlockEntities();
 		if (blockEntities.isEmpty()) return blockEntities;
 
@@ -85,7 +85,7 @@ public abstract class MLevelRenderer implements RecodeLevelRenderer {
 	}
 
 	@Inject(method = "renderLevel", at = @At("HEAD"))
-	public void startRender(CallbackInfo ci) {
+	private void startRender(CallbackInfo ci) {
 		processedOutlines = false;
 		blockEntityOutlineMap.clear();
 		OutlineBlockEntitiesEvent.INSTANCE.stabilize();
@@ -97,7 +97,7 @@ public abstract class MLevelRenderer implements RecodeLevelRenderer {
 					from = @At(value = "INVOKE_STRING", args = "ldc=blockentities", target = popPushMethod),
 					to = @At(value = "INVOKE_STRING", args = "ldc=destroyProgress", target = popPushMethod)
 			))
-	public void setProcessedOutlines(CallbackInfo ci) {
+	private void setProcessedOutlines(CallbackInfo ci) {
 		processedOutlines = true;
 	}
 }

@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 @Mixin(value = BlockEntityRenderDispatcher.class)
 public abstract class MBlockEntityRenderDispatcher {
 	@ModifyVariable(method = "render", at = @At("HEAD"), ordinal = 0, argsOnly = true)
-	public MultiBufferSource outlineBlockEntities(MultiBufferSource multiBufferSource, BlockEntity blockEntity) {
+	private MultiBufferSource outlineBlockEntities(MultiBufferSource multiBufferSource, BlockEntity blockEntity) {
 		var processor = (RecodeLevelRenderer) Minecraft.getInstance().levelRenderer;
 		var outlineColor = processor.recode$getBlockEntityOutlineColor(blockEntity);
 		if (outlineColor != null) {

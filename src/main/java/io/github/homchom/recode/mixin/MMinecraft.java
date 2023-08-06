@@ -15,12 +15,12 @@ public abstract class MMinecraft {
             target = "Lnet/minecraft/client/Minecraft;runAllTasks()V",
             shift = At.Shift.BEFORE
     ))
-    public void runRecodeTasksNormally(CallbackInfo ci) {
+    private void runRecodeTasksNormally(CallbackInfo ci) {
         RecodeDispatcher.INSTANCE.expedite(); // ensure tasks are run on runTick if not elsewhere
     }
 
     @Inject(method = "stop", at = @At("HEAD"))
-    public void runRecodeQuitEvent(CallbackInfo ci) {
+    private void runRecodeQuitEvent(CallbackInfo ci) {
         QuitGameEvent.INSTANCE.run(Unit.INSTANCE);
     }
 }

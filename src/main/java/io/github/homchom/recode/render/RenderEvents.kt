@@ -70,15 +70,18 @@ data class BlockEntityOutlineContext @JvmOverloads constructor(
 /**
  * An [net.minecraft.client.renderer.LevelRenderer] that is augmented by recode.
  */
+@Suppress("FunctionName")
 interface RecodeLevelRenderer {
     /**
      * @returns A filtered list of block entities that should still be rendered.
      */
-    fun `recode$runBlockEntityEvents`(blockEntities: Collection<BlockEntity>, chunkPos: ChunkPos3D?): List<BlockEntity>
+    fun `recode$runBlockEntityEvents`(
+        blockEntities: Collection<BlockEntity>,
+        chunkPos: ChunkPos3D?
+    ): List<BlockEntity>
 
     /**
-     * Gets and returns the [RGBAColor] of [blockEntity]'s outline (as determined by [recode]),
-     * or `null` if it will not be outlined.
+     * Gets and returns the [RGBAColor] of [blockEntity]'s outline, or `null` if it will not be outlined.
      */
     fun `recode$getBlockEntityOutlineColor`(blockEntity: BlockEntity): RGBAColor?
 
