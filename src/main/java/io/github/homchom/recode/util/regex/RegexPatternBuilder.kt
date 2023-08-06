@@ -1,7 +1,5 @@
 package io.github.homchom.recode.util.regex
 
-import io.github.homchom.recode.logInfo
-
 /**
  * @throws RegexElementException
  */
@@ -11,7 +9,6 @@ inline fun regex(
     builder: RegexPatternBuilder.() -> Unit
 ): Regex {
     val pattern = RegexPatternBuilder().apply(builder).build()
-    logInfo("built regex pattern $pattern")
     val options = buildSet {
         if (useUnixLines) add(RegexOption.UNIX_LINES)
         if (useCanonicalEquivalence) add(RegexOption.CANON_EQ)
