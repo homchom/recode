@@ -55,12 +55,14 @@ public class MHeldItemTooltip {
             var varString = bukkitValues.getString("hypercube:varitem");
             var varJson = JsonParser.parseString(varString).getAsJsonObject();
             var varData = varJson.getAsJsonObject("data");
+            var type = varJson.get("id").getAsString();
+
             var scaledWidth = Minecraft.getInstance().getWindow().getGuiScaledWidth();
             var scaledHeight = Minecraft.getInstance().getWindow().getGuiScaledHeight();
             var font = Minecraft.getInstance().font;
 
             // render scope
-            if (renderVarScope) {
+            if (type.equals("var") && renderVarScope) {
                 callbackInfo.cancel();
 
                 var name = varData.get("name").getAsString();
@@ -77,7 +79,6 @@ public class MHeldItemTooltip {
 
             // render highlighting
             if (highlightVarSyntax) {
-                var type = varJson.get("id").getAsString();
                 var unformatted = varData.get("name").getAsString();
                 var formatted = VarSyntaxHighlighter.highlight(unformatted);
 
