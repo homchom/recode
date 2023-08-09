@@ -26,10 +26,6 @@ import java.util.*;
 
 @Mixin(value = LevelRenderer.class)
 public abstract class MLevelRenderer implements RecodeLevelRenderer {
-	@Unique
-	private static final String popPushMethod =
-			"Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V";
-
 	@Shadow @Nullable private PostChain entityEffect;
 	@Shadow @Final private Set<BlockEntity> globalBlockEntities;
 
@@ -94,8 +90,8 @@ public abstract class MLevelRenderer implements RecodeLevelRenderer {
 	@Inject(method = "renderLevel", at = @At(value = "INVOKE", ordinal = 0,
 			target = "Lnet/minecraft/client/renderer/PostChain;process(F)V"),
 			slice = @Slice(
-					from = @At(value = "INVOKE_STRING", args = "ldc=blockentities", target = popPushMethod),
-					to = @At(value = "INVOKE_STRING", args = "ldc=destroyProgress", target = popPushMethod)
+					from = @At(value = "INVOKE_STRING", args = "ldc=blockentities", target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V"),
+					to = @At(value = "INVOKE_STRING", args = "ldc=destroyProgress", target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V")
 			))
 	private void setProcessedOutlines(CallbackInfo ci) {
 		processedOutlines = true;

@@ -14,14 +14,14 @@ import net.minecraft.resources.ResourceLocation
 typealias TextScope = TextBuilder.() -> Unit
 
 inline fun text(style: Style = Style.EMPTY, builder: TextScope) =
-    TextBuilder(style).apply(builder).text
+    TextBuilder(style).apply(builder).builtText
 
+fun translateText(key: String, vararg args: Any): Component = Component.translatable(key, *args)
 fun literalText(string: String): Component = Component.literal(string)
-fun translateText(key: String, vararg args: Any): Component = Component.translatable(key, args)
 
 @Suppress("unused")
 class TextBuilder(style: Style = Style.EMPTY) {
-    val text: Component get() = _text
+    val builtText: Component get() = _text
     private val _text = Component.empty().withStyle(style)
 
     inline val black get() = ChatFormatting.BLACK
@@ -62,6 +62,8 @@ class TextBuilder(style: Style = Style.EMPTY) {
     fun literal(string: String) = append(literalText(string))
     fun keybind(key: String) = append(Component.keybind(key))
 
+    fun space() = literal(" ")
+
     inline fun ChatFormatting.invoke(scope: TextScope) =
         appendBlock(Style.EMPTY.applyFormat(this), scope)
 
@@ -88,7 +90,7 @@ class TextBuilder(style: Style = Style.EMPTY) {
     inline fun onClick(action: ClickEvent.Action, value: String, scope: TextScope) =
         appendBlock(Style.EMPTY.withClickEvent(ClickEvent(action, value)), scope)
 
-    inline fun <T> onHover(action: HoverEvent.Action<T>, value: T, scope: TextScope) =
+    inline fun <T> onHover(action: HoverEvent.Action<T>, value: T & Any, scope: TextScope) =
         appendBlock(Style.EMPTY.withHoverEvent(HoverEvent(action, value)), scope)
 
     inline fun insert(string: String, scope: TextScope) =

@@ -9,6 +9,8 @@
     "recode.template_search.invalid": "Invalid Action '%s'.",
     "recode.template_search.begin_search": "Results of '%s'",
 
+    "chat.tag.recode.stacked": "(x%d)",
+
     "config.recode.title": "Recode",
 
     "config.recode.category.features": "Features",

@@ -3,6 +3,7 @@ package io.github.homchom.recode.lifecycle
 /**
  * A type-safe implementation component of an [RModule], made up of one or more (combined) [ModuleDetail] objects.
  */
+
 typealias ModuleFlavor<T> = ModuleDetail<ExposedModule, T>
 
 /**

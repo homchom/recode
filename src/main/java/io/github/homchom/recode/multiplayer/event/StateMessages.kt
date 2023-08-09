@@ -25,7 +25,7 @@ data class LocateMessage(val username: String, val state: LocateState) {
             start = { request -> sendCommand("locate ${request.username}") },
             tests = { request, context, _ ->
                 val message = context.value
-                val values = LocateMessage.regex(request?.username)
+                val values = LocateMessage.locateRegex(request?.username)
                     .matchEntireUnstyled(message)!!
                     .namedGroupValues
                 val player = values["player"].takeUnless(String::isEmpty) ?: mc.player!!.username
@@ -46,7 +46,7 @@ data class LocateMessage(val username: String, val state: LocateState) {
             }
         )
     ) {
-        private val regex = cachedRegex<String> { username ->
+        private val locateRegex = cachedRegex<String> { username ->
             space * 39; newline
             all {
                 str("You are")
@@ -97,7 +97,7 @@ data class ProfileMessage(val username: String, val ranks: List<Rank>) {
             start = { request -> sendCommand("profile ${request.username}") },
             tests = { request, context, _ ->
                 val message = context.value
-                val values = ProfileMessage.regex(request?.username)
+                val values = ProfileMessage.profileRegex(request?.username)
                     .matchEntireUnstyled(message)!!
                     .namedGroupValues
                 val player = values["player"]
@@ -114,7 +114,7 @@ data class ProfileMessage(val username: String, val ranks: List<Rank>) {
             }
         )
     ) {
-        private val regex = cachedRegex<String> { username ->
+        private val profileRegex = cachedRegex<String> { username ->
             space * 39; newline
             str("Profile of ")
             val player by username(username)

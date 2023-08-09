@@ -1,12 +1,22 @@
 package io.github.homchom.recode.mixin.render;
 
 import io.github.homchom.recode.feature.social.MCGuiWithSideChat;
+import io.github.homchom.recode.feature.social.MessageStacking;
 import io.github.homchom.recode.feature.social.SideChat;
+import io.github.homchom.recode.mod.config.Config;
+import io.github.homchom.recode.ui.ChatUI;
+import io.github.homchom.recode.ui.TextFunctions;
+import net.minecraft.client.GuiMessage;
+import net.minecraft.client.GuiMessageTag;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ChatComponent;
 import net.minecraft.client.multiplayer.chat.ChatListener;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MessageSignature;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -14,8 +24,13 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.List;
+import java.util.Objects;
+
 @Mixin(ChatComponent.class)
 public abstract class MChatComponent {
+    @Shadow @Final private List<GuiMessage.Line> trimmedMessages;
+
     // side chat "overrides" for private members
 
     @ModifyVariable(method = "screenToChatX", at = @At("HEAD"), ordinal = 0, argsOnly = true)
@@ -76,5 +91,66 @@ public abstract class MChatComponent {
     private @Nullable SideChat asSideChatOrNull() {
         var instance = (ChatComponent) (Object) this;
         return instance instanceof SideChat sideChat ? sideChat : null;
+    }
+
+    // message stacking
+
+    @Unique
+    private int trimmedMessageCount = 0;
+
+    @Inject(
+            method = "addMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/MessageSignature;ILnet/minecraft/client/GuiMessageTag;Z)V",
+            at = @At("HEAD")
+    )
+    private void countTrimmedMessagesBeforeMessageStacking(CallbackInfo ci) {
+        trimmedMessageCount = trimmedMessages.size();
+    }
+
+    @Inject(
+            method = "addMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/MessageSignature;ILnet/minecraft/client/GuiMessageTag;Z)V",
+            at = @At("TAIL")
+    )
+    private void stackMessages(
+            Component message,
+            MessageSignature signature,
+            int tickDelta,
+            GuiMessageTag tag,
+            boolean refresh,
+            CallbackInfo ci
+    ) {
+        if (!Config.getBoolean("stackDuplicateMsgs")) return;
+
+        // trimmedMessages[0] is the most recent message
+        var lineCount = trimmedMessages.size() - trimmedMessageCount;
+        if (lineCount >= trimmedMessages.size()) return;
+        if (lineCount < trimmedMessages.size() - 1) {
+            if (!trimmedMessages.get(lineCount + 1).endOfEntry()) return;
+        }
+
+        // return if messages aren't equal
+        for (var index = lineCount; index < lineCount * 2; index++) {
+            var firstLine = trimmedMessages.get(index);
+            var secondLine = trimmedMessages.get(index - lineCount);
+            if (!TextFunctions.looksLike(firstLine.content(), secondLine.content())) return;
+            if (firstLine.endOfEntry() != secondLine.endOfEntry()) return;
+        }
+
+        // remove new message and update tags
+        var oldTag = Objects.requireNonNull(trimmedMessages.get(lineCount).tag());
+        var stackAmount = MessageStacking.getStackAmount(oldTag) + 1;
+
+        trimmedMessages.subList(0, lineCount).clear();
+
+        var newTag = ChatUI.plus(tag, MessageStacking.stackedMessageTag(stackAmount));
+        for (var index = 0; index < lineCount; index++) {
+            var oldLine = trimmedMessages.get(index);
+            var newLine = new GuiMessage.Line(
+                    oldLine.addedTime(),
+                    oldLine.content(),
+                    newTag,
+                    oldLine.endOfEntry()
+            );
+            trimmedMessages.set(index, newLine);
+        }
     }
 }
