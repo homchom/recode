@@ -1,4 +1,4 @@
-package io.github.homchom.recode.mixin.render;
+package io.github.homchom.recode.mixin.optional.sodium;
 
 import io.github.homchom.recode.game.ChunkPos3D;
 import io.github.homchom.recode.render.RecodeLevelRenderer;
