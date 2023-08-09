@@ -12,6 +12,7 @@
     "render.MAbstractContainerScreen",
     "render.MBlockEntityRenderDispatcher",
     "render.MChatComponent",
+    "render.MChatScreen",
     "render.MGui",
     "render.MLevelRenderer",
     "render.MSodiumWorldRenderer",

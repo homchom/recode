@@ -3,7 +3,6 @@
 package io.github.homchom.recode.feature.social
 
 import io.github.homchom.recode.MOD_NAME
-import io.github.homchom.recode.logInfo
 import io.github.homchom.recode.ui.text
 import io.github.homchom.recode.util.regex.regex
 import net.minecraft.ChatFormatting
@@ -30,7 +29,6 @@ fun stackedMessageTag(amount: Int) = GuiMessageTag(
 
 val GuiMessageTag.stackAmount: Int
     get() {
-        logInfo("logTag: $logTag")
         val description = logTag ?: return 1
         val match = stackRegex.find(description) ?: return 1
         return match.groupValues[1].toInt()

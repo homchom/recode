@@ -19,8 +19,8 @@ public abstract class MGui implements MCGuiWithSideChat {
     @Redirect(method = "render", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/client/gui/components/ChatComponent;render(Lnet/minecraft/client/gui/GuiGraphics;III)V"
     ))
-    private void renderSideChat(ChatComponent chat, GuiGraphics graphics, int tickDelta, int x, int y) {
-        chat.render(graphics, tickDelta, x, y);
+    private void renderSideChat(ChatComponent mainChat, GuiGraphics graphics, int tickDelta, int x, int y) {
+        mainChat.render(graphics, tickDelta, x, y);
         sideChat.render(graphics, tickDelta, x, y);
     }
 

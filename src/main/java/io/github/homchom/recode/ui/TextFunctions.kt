@@ -37,17 +37,18 @@ infix fun Component.looksLike(other: Component) =
     toFlatList(Style.EMPTY) == other.toFlatList(Style.EMPTY)
 
 infix fun FormattedCharSequence.looksLike(other: FormattedCharSequence): Boolean {
-    val list = mutableListOf<Pair<Style, Int>>()
+    val list = mutableListOf<Any>() // even indices are styles; odd indices are code points
     accept { _, style, codePoint ->
-        list += style to codePoint
+        list += style
+        list += codePoint
         true
     }
     var index = 0
-    return other.accept { _, otherStyle, otherCodePoint ->
+    val result = other.accept { _, style, codePoint ->
         if (index == list.size) return@accept false
-        val (style, codePoint) = list[index++]
-        style == otherStyle && codePoint == otherCodePoint
+        style == list[index++] && codePoint == list[index++]
     }
+    return result && index == list.size
 }
 
 fun Component.equalsUnstyled(string: String) = unstyledString == string
