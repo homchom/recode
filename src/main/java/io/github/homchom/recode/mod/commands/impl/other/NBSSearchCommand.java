@@ -13,8 +13,8 @@ import net.minecraft.commands.CommandBuildContext;
 import static io.github.homchom.recode.mod.commands.arguments.ArgBuilder.argument;
 import static io.github.homchom.recode.mod.commands.arguments.ArgBuilder.literal;
 
+// disabled short-term as implementation is apparently closed source
 public class NBSSearchCommand extends Command {
-
     @Override
     public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd, CommandBuildContext context) {
         cd.register(literal("nbssearch")

@@ -61,7 +61,7 @@ public class CommandHandler {
                 new SendTemplateCommand(),
                 new PJoinCommand(),
                 new SchemCommand(),
-                new NBSSearchCommand(),
+                //new NBSSearchCommand(),
                 //new CodeVaultCommand(),
                 new ImportFileCommand()
             );
