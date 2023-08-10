@@ -3,7 +3,6 @@ package io.github.homchom.recode.multiplayer.event
 import io.github.homchom.recode.event.Requester
 import io.github.homchom.recode.event.trial.requester
 import io.github.homchom.recode.event.trial.trial
-import io.github.homchom.recode.logInfo
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.multiplayer.RIGHT_ARROW
 import io.github.homchom.recode.multiplayer.ReceiveChatMessageEvent
@@ -23,16 +22,13 @@ data class LocateMessage(val username: String, val state: LocateState) {
         DFStateDetectors.LeaveServer,
         trial(
             ReceiveChatMessageEvent,
-            start = { request -> logInfo("send locate"); sendCommand("locate ${request.username}") },
+            start = { request -> sendCommand("locate ${request.username}") },
             tests = { request, context, _ ->
-                logInfo("begin LocateMessage tests")
                 val message = context.value
                 val values = LocateMessage.locateRegex(request?.username)
                     .matchEntireUnstyled(message)!!
                     .namedGroupValues
-                logInfo("b")
                 val player = values["player"].takeUnless(String::isEmpty) ?: mc.player!!.username
-                logInfo("c")
                 val node = nodeByName(values["node"])
                 val state = if (values["mode"].isEmpty()) {
                     LocateState.AtSpawn(node)
