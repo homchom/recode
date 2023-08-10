@@ -3,9 +3,8 @@ package io.github.homchom.recode.event.trial
 import io.github.homchom.recode.event.Listenable
 import io.github.homchom.recode.event.Requester
 import io.github.homchom.recode.event.RequesterModule
-import io.github.homchom.recode.event.asListenable
-import io.github.homchom.recode.lifecycle.ExposedModule
 import io.github.homchom.recode.lifecycle.ModuleDetail
+import io.github.homchom.recode.lifecycle.ModuleFlavor
 import io.github.homchom.recode.lifecycle.module
 import io.github.homchom.recode.util.unitOrNull
 import kotlinx.coroutines.Dispatchers
@@ -17,8 +16,8 @@ import kotlinx.coroutines.launch
  * The returned toggle is *naive*, meaning it assumes the request will yield the desired state and, if not,
  * runs the request again. Prefer explicit toggle requests without false positives when possible.
  *
- * This function should usually be given a trial with a [Validated] basis that can invalidate when the state
- * is undesired (e.g. to avoid duplicate chat messages).
+ * This function should usually be given a trial with a [io.github.homchom.recode.event.Validated] basis that can
+ * invalidate when the state is undesired (e.g. to avoid duplicate chat messages).
  *
  * @param trial Should yield a true result if the state is enabled, and false if it is disabled.
  *
@@ -53,38 +52,38 @@ private class NaiveToggle<T : Any>(
     override val disable: RequesterModule<T, Unit>
 
     init {
-        fun detail(desiredState: Boolean?, requester: () -> Requester<T, Unit>) =
-            ModuleDetail<ExposedModule, RequesterModule<T, Unit>> { module ->
-                val delegate = requesterDetail(name, lifecycle, trial(
-                    trial.supplyResultsFrom(module).asListenable(),
-                    start = { input: T ->
-                        val isDesired = trial.start(input.wrap(desiredState)) == desiredState
-                        isDesired.unitOrNull()
-                    },
-                    tests = { input, supplier, isRequest ->
-                        suspending {
-                            val state = supplier
-                                .supplyIn(this, input?.wrap(desiredState), isRequest)
-                                ?.await()
-                            if (state != desiredState && isRequest) {
-                                retryModule.launch(Dispatchers.Default) {
-                                    requester().requestFrom(this@suspending, input!!)
-                                }
+        fun detail(desiredState: Boolean?, requester: () -> Requester<T, Unit>) = ModuleFlavor { module ->
+            val delegate = requesterDetail(name, lifecycle, trial(
+                trial.results,
+                start = { input: T ->
+                    val isDesired = trial.start(input.wrap(desiredState)) == desiredState
+                    isDesired.unitOrNull()
+                },
+                tests = { input, supplier, isRequest ->
+                    suspending {
+                        val state = supplier
+                            .supplyIn(this, input?.wrap(desiredState), isRequest)
+                            ?.await()
+                        if (state != desiredState && isRequest) {
+                            retryModule.launch(Dispatchers.Default) {
+                                requester().requestFrom(this@suspending, input!!)
                             }
                         }
                     }
-                ))
+                }
+            ))
 
-                delegate.applyTo(module)
-            }
+            delegate.applyTo(module)
+        }
 
         toggle = module(detail(null, ::toggle))
         enable = module(detail(true, ::enable))
         disable = module(detail(false, ::disable))
     }
 
-    private val retryModule = module(ModuleDetail.Exposed) {
-        extend(toggle, enable, disable)
+    private val retryModule = module(ModuleDetail.Exposed) { module ->
+        module.extend(toggle, enable, disable)
+        module
     }
 
     fun T.wrap(desiredState: Boolean?) = ToggleRequesterGroup.Input(this, desiredState)

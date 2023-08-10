@@ -6,6 +6,7 @@ import io.github.homchom.recode.event.Requester
 import io.github.homchom.recode.util.KeyHashable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
 
 typealias ModuleAction = ExposedModule.() -> Unit
@@ -125,12 +126,23 @@ interface ExposedModule : CoroutineModule {
  * @see kotlinx.coroutines.CoroutineScope
  */
 @DelicateCoroutinesApi
-val GlobalModule: CoroutineModule get() = GlobalExposedModule
+data object GlobalModule : CoroutineModule {
+    override val children get() = _children.toSet()
+    private val _children = mutableSetOf<RModule>()
 
-private object GlobalExposedModule : ExposedModule by module(ModuleDetail.Exposed) {
-    init { enable() }
+    override val hasBeenLoaded get() = true
+    override val isEnabled get() = true
+    override val coroutineContext get() = GlobalScope.coroutineContext
 
-    override fun toString() = "GlobalModule"
+    @ModuleUnsafe
+    override fun addChild(child: ExposedModule) {
+        if (child !in _children) {
+            _children += child
+            child.enable()
+        }
+    }
+
+    override fun extend(vararg parents: RModule) {}
 }
 
 /**

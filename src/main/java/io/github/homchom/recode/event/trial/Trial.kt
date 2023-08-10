@@ -1,9 +1,8 @@
 package io.github.homchom.recode.event.trial
 
 import io.github.homchom.recode.event.Listenable
+import io.github.homchom.recode.event.map
 import io.github.homchom.recode.lifecycle.RModule
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 
 /**
  * Creates a [DetectorTrial] with the given [basis] and [tests].
@@ -73,8 +72,7 @@ fun <B, R : Any> nullaryTrial(
  */
 sealed interface Trial<T : Any, R : Any> {
     val basis: Listenable<*>
-
-    fun supplyResultsFrom(module: RModule): Flow<ResultSupplier<T, R>>
+    val results: Listenable<ResultSupplier<T, R>>
 
     /**
      * A functor that supplies [TrialResult] objects. This is used to hide the type information of basis events
@@ -95,7 +93,7 @@ sealed interface Trial<T : Any, R : Any> {
 }
 
 /**
- * A [Trial] that supplies to [Detector] events.
+ * A [Trial] that supplies to [io.github.homchom.recode.event.Detector] events.
  */
 sealed interface DetectorTrial<T : Any, R : Any> : Trial<T, R> {
     /**
@@ -124,10 +122,10 @@ sealed interface DetectorTrial<T : Any, R : Any> : Trial<T, R> {
 }
 
 /**
- * A [Trial] that supplies to [Requester] events.
+ * A [Trial] that supplies to [io.github.homchom.recode.event.Requester] events.
  *
- * @property start The executor function that starts the request. Note that [Requester.activeRequests] is
- * incremented *before* [start] is invoked.
+ * @property start The executor function that starts the request. Note that
+ * [io.github.homchom.recode.event.Requester.activeRequests] is incremented *before* [start] is invoked.
  */
 sealed interface RequesterTrial<T : Any, R : Any> : Trial<T, R> {
     val start: suspend (input: T) -> R?
@@ -164,12 +162,11 @@ private class BasedDetectorTrial<T : Any, B, R : Any>(
     override val basis: Listenable<B>,
     private val tests: DetectorTrial.Tester<T, B, R>
 ) : DetectorTrial<T, R> {
-    override fun supplyResultsFrom(module: RModule) =
-        basis.getNotificationsFrom(module).map { baseContext ->
-            Trial.ResultSupplier<T, R> { input, _ ->
-                tests.runTestsIn(this, input, baseContext)
-            }
+    override val results = basis.map { baseContext ->
+        Trial.ResultSupplier<T, R> { input, _ ->
+            tests.runTestsIn(this, input, baseContext)
         }
+    }
 }
 
 private class BasedRequesterTrial<T : Any, B, R : Any>(
@@ -177,10 +174,9 @@ private class BasedRequesterTrial<T : Any, B, R : Any>(
     override val start: suspend (input: T) -> R?,
     private val tests: RequesterTrial.Tester<T, B, R>
 ): RequesterTrial<T, R> {
-    override fun supplyResultsFrom(module: RModule) =
-        basis.getNotificationsFrom(module).map { baseContext ->
-            Trial.ResultSupplier<T, R> { input, isRequest ->
-                tests.runTestsIn(this, input, baseContext, isRequest)
-            }
+    override val results = basis.map { baseContext ->
+        Trial.ResultSupplier<T, R> { input, isRequest ->
+            tests.runTestsIn(this, input, baseContext, isRequest)
         }
+    }
 }

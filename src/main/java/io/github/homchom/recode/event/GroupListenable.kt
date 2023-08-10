@@ -1,9 +1,7 @@
 package io.github.homchom.recode.event
 
-import io.github.homchom.recode.lifecycle.ExposedModule
-import io.github.homchom.recode.lifecycle.ModuleDetail
-import io.github.homchom.recode.lifecycle.RModule
-import io.github.homchom.recode.lifecycle.module
+import io.github.homchom.recode.lifecycle.*
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.merge
@@ -26,14 +24,22 @@ open class GroupListenable<T : Any> : ModuleDetail<ExposedModule, GroupListenabl
 
     open fun <S> flatten(flows: List<Flow<S>>) = flows.merge()
 
-    override fun applyTo(module: ExposedModule): Module<T> =
-        object : Module<T>, ExposedModule by module {
+    @OptIn(DelicateCoroutinesApi::class)
+    override fun applyTo(module: ExposedModule): Module<T> {
+        module.extend(GlobalModule)
+        return object : Module<T>, ExposedModule by module {
+            override val dependency by lazy { module() }
+
             private val notifications = flatten(events.map { it.getNotificationsFrom(module) })
             override val previous = flatten(events.map { it.previous })
                 .stateIn(module, SharingStarted.Eagerly, null)
 
-            override fun getNotificationsFrom(module: RModule) = notifications
+            override fun getNotificationsFrom(module: RModule): Flow<T> {
+                module.depend(dependency)
+                return notifications
+            }
         }
+    }
 
     interface Module<T : Any> : StateListenable<T>, ExposedModule
 }

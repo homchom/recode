@@ -9,7 +9,6 @@ import io.github.homchom.recode.event.filterIsInstance
 import io.github.homchom.recode.event.trial.TrialScope
 import io.github.homchom.recode.event.trial.detector
 import io.github.homchom.recode.event.trial.nullaryTrial
-import io.github.homchom.recode.lifecycle.GlobalModule
 import io.github.homchom.recode.lifecycle.RModule
 import io.github.homchom.recode.lifecycle.module
 import io.github.homchom.recode.mc
@@ -24,7 +23,6 @@ import io.github.homchom.recode.util.Case
 import io.github.homchom.recode.util.encase
 import io.github.homchom.recode.util.regex.namedGroupValues
 import io.github.homchom.recode.util.regex.regex
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.async
 import net.minecraft.network.protocol.game.ClientboundPlayerPositionPacket
 import kotlin.time.Duration
@@ -148,10 +146,10 @@ object DFStateDetectors : StateListenable<Case<DFState?>> {
         nullaryTrial(DisconnectFromServerEvent) { instant(Case.ofNull) }
     ))
 
-    @OptIn(DelicateCoroutinesApi::class)
-    private val module = module(group) { extend(GlobalModule) }
+    private val module = module(group)
 
-    override val previous get() = module.previous
+    override val dependency by module::dependency
+    override val previous by module::previous
 
     override fun getNotificationsFrom(module: RModule) = this.module.getNotificationsFrom(module)
 

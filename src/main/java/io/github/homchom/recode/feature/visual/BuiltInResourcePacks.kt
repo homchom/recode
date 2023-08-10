@@ -2,7 +2,7 @@ package io.github.homchom.recode.feature.visual
 
 import io.github.homchom.recode.MOD_ID
 import io.github.homchom.recode.Recode
-import io.github.homchom.recode.feature.featureModule
+import io.github.homchom.recode.feature.feature
 import io.github.homchom.recode.id
 import io.github.homchom.recode.render.IntegralColor
 import io.github.homchom.recode.render.toColor
@@ -10,10 +10,11 @@ import io.github.homchom.recode.ui.text
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType
 
-val FBuiltInResourcePacks = featureModule("Built-in Resource Packs") {
-    onLoad {
+val FBuiltInResourcePacks = feature("Built-in Resource Packs") { module ->
+    module.onLoad {
         registerBuiltInResourcePack("better_unicode", 0x6770ff.toColor())
     }
+    module
 }
 
 private fun registerBuiltInResourcePack(

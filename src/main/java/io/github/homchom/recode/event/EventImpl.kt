@@ -7,6 +7,7 @@ import io.github.homchom.recode.lifecycle.RModule
 import io.github.homchom.recode.lifecycle.module
 import io.github.homchom.recode.runOnMinecraftThread
 import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -65,7 +66,12 @@ private class FlowEvent<T, R : Any>(private val resultCapture: (T) -> R) : Custo
 
     override val previous = MutableStateFlow<R?>(null)
 
-    override fun getNotificationsFrom(module: RModule) = flow
+    override val dependency by lazy { module() }
+
+    override fun getNotificationsFrom(module: RModule): Flow<T> {
+        module.depend(dependency)
+        return flow
+    }
 
     override fun run(context: T) = runOnMinecraftThread {
         flow.checkEmit(context)
@@ -75,14 +81,18 @@ private class FlowEvent<T, R : Any>(private val resultCapture: (T) -> R) : Custo
 }
 
 private class BufferedFlowEvent<T, R : Any, I, K : Any>(
-    delegate: CustomEvent<T, R>,
+    private val delegate: CustomEvent<T, R>,
     stableInterval: Duration,
     private val keySelector: (I) -> K,
     private val contextGenerator: (I) -> T,
     cacheDuration: Duration = 1.seconds
 ) : BufferedCustomEvent<T, R, I> {
-    private val module = module(ModuleDetail.Exposed)
-    private val delegate = DependentEvent(delegate, module)
+    override val dependency by delegate::dependency
+
+    private val exposed = module(ModuleDetail.Exposed) { module ->
+        module.extend(dependency)
+        module
+    }
 
     // TODO: use Caffeine (official successor) or other alternative?
     private val buffer = CacheBuilder.newBuilder()
@@ -121,7 +131,7 @@ private class BufferedFlowEvent<T, R : Any, I, K : Any>(
             delegate.run(contextGenerator(input)).also { buffer.put(key, it) }
         } else {
             if (++stabilizer.runIndex >= stabilizer.passes) {
-                module.launch {
+                exposed.launch {
                     buffer.put(key, delegate.run(contextGenerator(input)))
                 }
                 stabilizer.runIndex = 0
@@ -143,6 +153,8 @@ private class EventWrapper<T, L>(
     transform: ((T) -> Unit) -> L
 ) : WrappedEvent<T, L> {
     private val async = createEvent<T>()
+
+    override val dependency by async::dependency
 
     override val invoker: L get() = fabricEvent.invoker()
 

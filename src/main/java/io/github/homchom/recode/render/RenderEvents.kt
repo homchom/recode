@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem
 import io.github.homchom.recode.event.*
 import io.github.homchom.recode.game.ChunkPos3D
 import io.github.homchom.recode.game.ticks
+import io.github.homchom.recode.lifecycle.module
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.util.Case
 import io.github.homchom.recode.util.MixedInt
@@ -36,29 +37,35 @@ object RenderBlockEntitiesEvent :
     SimpleValidatedListEvent<BlockEntity> by createEvent({ it.mapValid() })
 
 object OutlineBlockEntitiesEvent :
-    BufferedCustomEvent<Array<out BlockEntityOutlineContext>, Map<BlockPos, RGBAColor>,
-            BlockEntityOutlineContext.Input> by DependentBufferedEvent(
-        createBufferedEvent(
-            resultCapture = { context ->
-                context
-                    .filter { it.outlineColor != null }
-                    .associate { it.blockEntity.blockPos to it.outlineColor!! }
-            },
-            stableInterval = 3.ticks,
-            keySelector = { Case(it.chunkPos) },
-            contextGenerator = { input ->
-                input.blockEntities.mapToArray { BlockEntityOutlineContext(it) }
-            }
-        ),
-        {
-            onEnable {
+    BufferedCustomEvent<
+            Array<out BlockEntityOutlineContext>, Map<BlockPos, RGBAColor>, BlockEntityOutlineContext.Input
+    > by createBufferedEvent(
+        resultCapture = { context ->
+            context
+                .filter { it.outlineColor != null }
+                .associate { it.blockEntity.blockPos to it.outlineColor!! }
+        },
+        stableInterval = 3.ticks,
+        keySelector = { Case(it.chunkPos) },
+        contextGenerator = { input ->
+            input.blockEntities.mapToArray { BlockEntityOutlineContext(it) }
+        }
+    )
+{
+    init {
+        dependency.depend(module { module ->
+            module.extend(OutlineBlockEntitiesEvent.dependency)
+
+            module.onEnable {
                 BeforeOutlineBlockEvent.listenEach { context ->
                     val processor = context.worldRenderContext.worldRenderer() as RecodeLevelRenderer
                     processor.`recode$processOutlines`(mc.frameTime)
                 }
             }
-        }
-    )
+            module
+        })
+    }
+}
 
 data class BlockEntityOutlineContext @JvmOverloads constructor(
     val blockEntity: BlockEntity,

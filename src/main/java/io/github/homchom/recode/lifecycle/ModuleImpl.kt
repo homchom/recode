@@ -8,18 +8,17 @@ import kotlinx.coroutines.cancel
 /**
  * Builds an [RModule] of flavor [flavor].
  *
- * @see ModuleBuilder
  * @see ModuleFlavor
  */
 fun <T : RModule> module(flavor: ModuleFlavor<T>) = flavor.applyTo(WeakModule())
 
 /**
- * Builds an [RModule] of flavor [flavor] with [builder].
+ * Builds an [RModule] of flavor [flavor] with subsequent builder [builder].
  *
- * @see ModuleBuilder
  * @see ModuleFlavor
  */
-fun <T : RModule> module(flavor: ModuleFlavor<T>, builder: ModuleBuilder) = module(builder + flavor)
+fun <T : RModule, R : RModule> module(flavor: ModuleFlavor<T>, builder: ModuleDetail<T, R>) =
+    module(flavor + builder)
 
 private class WeakModule : ExposedModule {
     override var hasBeenLoaded = false
@@ -54,7 +53,7 @@ private class WeakModule : ExposedModule {
     override fun enable() {
         if (isEnabled) return
         load()
-        for (child in children) child.addUsage(this)
+        for (child in _children) child.addUsage(this)
         coroutineScope = newCoroutineScope()
         isEnabled = true
         for (action in enableActions) action()
@@ -63,7 +62,7 @@ private class WeakModule : ExposedModule {
     @OptIn(ModuleUnsafe::class)
     override fun disable() {
         if (!isEnabled) return
-        for (child in children) child.removeUsage(this)
+        for (child in _children) child.removeUsage(this)
         coroutineScope!!.cancel("Module disabled")
         coroutineScope = null
         isEnabled = false
@@ -84,7 +83,7 @@ private class WeakModule : ExposedModule {
 
     @OptIn(ModuleUnsafe::class)
     override fun addChild(child: ExposedModule) {
-        check(child !in children) { "Module already has this child" }
+        check(child !in _children) { "Module already has this child" }
         _children += child
         if (isEnabled) child.addUsage(this)
     }

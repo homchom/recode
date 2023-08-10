@@ -38,7 +38,14 @@ typealias EventInvoker<T> = (context: T) -> Unit
  */
 interface Listenable<T> {
     /**
+     * A coupled [RModule] that is enabled if (and only if) any listeners are running.
+     */
+    val dependency: RModule
+
+    /**
      * Gets the [Flow] of this object's notifications.
+     *
+     * Implementations of this **must** obey the invariant that [dependency] is proper.
      *
      * @param module The module accessing the flow.
      */

@@ -1,6 +1,6 @@
 package io.github.homchom.recode.feature.visual
 
-import io.github.homchom.recode.feature.featureModule
+import io.github.homchom.recode.feature.feature
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.mod.features.commands.CodeSearcher
 import io.github.homchom.recode.multiplayer.state.PlotMode
@@ -11,8 +11,8 @@ import io.github.homchom.recode.render.rgba
 import net.minecraft.world.level.block.entity.SignBlockEntity
 import kotlin.math.sqrt
 
-val FCodeSearch = featureModule("Code Search") {
-    onEnable {
+val FCodeSearch = feature("Code Search") { module ->
+    module.onEnable {
         OutlineBlockEntitiesEvent.listenEach { context ->
             if (currentDFState.isInMode(PlotMode.Dev)) {
                 for (element in context) {
@@ -27,4 +27,5 @@ val FCodeSearch = featureModule("Code Search") {
             }
         }
     }
+    module
 }

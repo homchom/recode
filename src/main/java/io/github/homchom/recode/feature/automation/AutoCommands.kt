@@ -1,8 +1,8 @@
 package io.github.homchom.recode.feature.automation
 
 import io.github.homchom.recode.event.Listenable
-import io.github.homchom.recode.feature.FeatureModule
-import io.github.homchom.recode.feature.featureModule
+import io.github.homchom.recode.feature.Feature
+import io.github.homchom.recode.feature.feature
 import io.github.homchom.recode.lifecycle.CoroutineModule
 import io.github.homchom.recode.mod.config.Config
 import io.github.homchom.recode.multiplayer.*
@@ -73,10 +73,11 @@ private inline fun <T> autoCommand(
     name: String,
     event: Listenable<T>,
     crossinline body: CoroutineModule.(T) -> Unit
-): FeatureModule {
-    return featureModule("Auto /$name") {
-        onEnable {
+): Feature {
+    return feature("Auto /$name") { module ->
+        module.onEnable {
             event.listenEach { body(it) }
         }
+        module
     }
 }

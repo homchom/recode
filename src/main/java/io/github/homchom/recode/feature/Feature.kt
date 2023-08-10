@@ -9,28 +9,28 @@ sealed interface Configurable : RModule {
 }
 
 /**
- * Builds a [FeatureModule] with [builder].
+ * Builds a [Feature] with [builder].
  *
- * This is provided as a convenience function; for more complex FeatureModules, use the more generic
- * [io.github.homchom.recode.lifecycle.module] function.
+ * This is provided as a convenience function; for more complex Features, use the more generic
+ * [featureDetail] function.
  */
-fun featureModule(name: String, builder: ModuleBuilder) = module(feature(name), builder)
+fun <R : RModule> feature(name: String, builder: ModuleDetail<Feature, R>) = module(featureDetail(name), builder)
 
-class FeatureModule(
+class Feature(
     override val name: String,
     moduleDelegate: ExposedModule
 ) : Configurable, ExposedModule by moduleDelegate
 
-class FeatureGroupModule(
+class FeatureGroup(
     override val name: String,
-    val features: List<FeatureModule>,
+    val features: List<Feature>,
     moduleDelegate: RModule
 ) : Configurable, RModule by moduleDelegate
 
-fun feature(name: String) = ModuleDetail<ExposedModule, FeatureModule> { FeatureModule(name, it) }
+fun featureDetail(name: String) = ModuleFlavor { Feature(name, it) }
 
-fun featureGroup(name: String, vararg features: FeatureModule) =
-    ModuleDetail<ExposedModule, FeatureGroupModule> { module ->
+fun featureGroup(name: String, vararg features: Feature) =
+    ModuleFlavor { module ->
         module.onLoad {
             for (feature in features) feature.depend(module)
         }
@@ -43,5 +43,5 @@ fun featureGroup(name: String, vararg features: FeatureModule) =
             for (feature in features) feature.disable()
         }
 
-        FeatureGroupModule(name, features.toList(), module)
+        FeatureGroup(name, features.toList(), module)
     }

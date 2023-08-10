@@ -37,12 +37,12 @@ import kotlin.random.Random
 
 private val logger = LoggerFactory.getLogger(MOD_ID).apply { isEnabledForLevel(Level.DEBUG) }
 
-private val recodeModule = module(EntrypointDetail) {
+private val recodeModule = module(EntrypointDetail) { module ->
     // TODO: move feature groups to a config module
-    depend(AutomationFeatureGroup, SocialFeatureGroup, VisualFeatureGroup)
+    module.depend(AutomationFeatureGroup, SocialFeatureGroup, VisualFeatureGroup)
 
     // on mod initialize
-    onLoad {
+    module.onLoad {
         logInfo("Initializing...")
 
         System.setProperty("java.awt.headless", "false")
@@ -53,7 +53,7 @@ private val recodeModule = module(EntrypointDetail) {
     }
 
     // on Minecraft close
-    onDisable {
+    module.onDisable {
         logInfo("Closing...")
 
         // TODO: clean up
@@ -67,6 +67,8 @@ private val recodeModule = module(EntrypointDetail) {
 
         logInfo("Closed.")
     }
+
+    module
 }
 
 object Recode : ModContainer {

@@ -96,7 +96,8 @@ private sealed class DetectorDetail<T : Any, R : Any, M : DetectorModule<T, R>> 
 
     private val entries = ConcurrentLinkedQueue<TrialEntry<T, R>>()
 
-    override val previous get() = event.previous
+    override val dependency by event::dependency
+    override val previous by event::previous
 
     override fun getNotificationsFrom(module: RModule) = event.getNotificationsFrom(module)
 
@@ -120,29 +121,29 @@ private sealed class DetectorDetail<T : Any, R : Any, M : DetectorModule<T, R>> 
 
     @OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
     override fun applyTo(module: ExposedModule): M {
+        module.extend(dependency)
+
         module.onEnable {
-            for (trialIndex in trials.indices) module.launch {
-                trials[trialIndex].supplyResultsFrom(module).collect { supplier ->
-                    val successContext = CompletableDeferred<R>(coroutineContext.job)
-                    if (entries.isEmpty()) {
-                        module.considerEntry(trialIndex, null, supplier, successContext)
-                    }
+            for (trialIndex in trials.indices) trials[trialIndex].results.listenEach { supplier ->
+                val successContext = CompletableDeferred<R>(coroutineContext.job)
+                if (entries.isEmpty()) {
+                    considerEntry(trialIndex, null, supplier, successContext)
+                }
 
-                    val iterator = entries.iterator()
-                    for (entry in iterator) {
-                        if (entry.responses.isClosedForSend) {
-                            iterator.remove()
-                            continue
-                        }
-                        module.considerEntry(trialIndex, entry, supplier, successContext)
+                val iterator = entries.iterator()
+                for (entry in iterator) {
+                    if (entry.responses.isClosedForSend) {
+                        iterator.remove()
+                        continue
                     }
+                    considerEntry(trialIndex, entry, supplier, successContext)
+                }
 
-                    successContext.invokeOnCompletion { exception ->
-                        if (exception == null) {
-                            val completed = successContext.getCompleted()
-                            logDebug("${this@DetectorDetail} succeeded; running with context $completed")
-                            event.run(completed)
-                        }
+                successContext.invokeOnCompletion { exception ->
+                    if (exception == null) {
+                        val completed = successContext.getCompleted()
+                        logDebug("${this@DetectorDetail} succeeded; running with context $completed")
+                        event.run(completed)
                     }
                 }
             }
@@ -267,16 +268,14 @@ private open class SimpleDetectorModule<T : Any, R : Any>(
     private val detail: DetectorDetail<T, R, *>,
     module: RModule
 ) : DetectorModule<T, R>, RModule by module {
-    override val timeoutDuration get() = detail.timeoutDuration
-    override val previous get() = detail.previous
+    override val dependency by detail::dependency
+    override val timeoutDuration by detail::timeoutDuration
+    override val previous by detail::previous
 
-    override fun getNotificationsFrom(module: RModule): Flow<R> {
-        module.depend(this)
-        return detail.getNotificationsFrom(module)
-    }
+    override fun getNotificationsFrom(module: RModule) = detail.getNotificationsFrom(module)
 
     override fun detectFrom(module: RModule, input: T?): Flow<R?> {
-        module.depend(this)
+        extend(module)
         return detail.detectFrom(module, input)
     }
 }
@@ -285,10 +284,10 @@ private class SimpleRequesterModule<T : Any, R : Any>(
     private val detail: TrialRequester<T, R>,
     module: RModule
 ) : SimpleDetectorModule<T, R>(detail, module), RequesterModule<T, R> {
-    override val activeRequests get() = detail.activeRequests
+    override val activeRequests by detail::activeRequests
 
     override suspend fun requestFrom(module: RModule, input: T): R {
-        module.depend(this)
+        extend(module)
         return detail.requestFrom(module, input)
     }
 }
