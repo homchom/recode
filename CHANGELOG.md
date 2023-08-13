@@ -3,6 +3,7 @@ For Minecraft 1.20.1 with Fabric API
 ### Changes
 
 - Significantly improved performance
+- Improved mod compatibility (notably with Noxesium)
 - Side chat is now symmetric with main chat
 - Message stacking now uses Minecraft's chat status system
 (indicated by a hoverable aqua line to the left of the message)
