@@ -1,5 +1,7 @@
 package io.github.homchom.recode.mixin.multiplayer;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import io.github.homchom.recode.feature.social.MCGuiWithSideChat;
 import io.github.homchom.recode.feature.social.SideChat;
 import io.github.homchom.recode.sys.sidedchat.ChatRule;
@@ -13,34 +15,34 @@ import net.minecraft.network.chat.MessageSignature;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(ChatListener.class)
 public class MChatListener {
-    @Redirect(method = "showMessageToPlayer", at = @At(value = "INVOKE",
+    @WrapOperation(method = "showMessageToPlayer", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/client/gui/components/ChatComponent;addMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/MessageSignature;Lnet/minecraft/client/GuiMessageTag;)V"
     ))
     private void partitionSignedMessages(
-            ChatComponent chat,
+            ChatComponent mainChat,
             Component message,
             MessageSignature signature,
-            GuiMessageTag tag
+            GuiMessageTag tag,
+            Operation<Void> operation
     ) {
         if (matchToChatSide(message) == ChatRule.ChatSide.SIDE) {
             getSideChat().addMessage(message, signature, tag);
         } else {
-            chat.addMessage(message, signature, tag);
+            operation.call(mainChat, message, signature, tag);
         }
     }
 
-    @Redirect(method = { "handleSystemMessage", "method_45745" }, at = @At(value = "INVOKE",
+    @WrapOperation(method = { "handleSystemMessage", "method_45745" }, at = @At(value = "INVOKE",
             target = "Lnet/minecraft/client/gui/components/ChatComponent;addMessage(Lnet/minecraft/network/chat/Component;)V"
     ))
-    private void partitionUnsignedMessages(ChatComponent chat, Component message) {
+    private void partitionUnsignedMessages(ChatComponent mainChat, Component message, Operation<Void> operation) {
         if (matchToChatSide(message) == ChatRule.ChatSide.SIDE) {
             getSideChat().addMessage(message);
         } else {
-            chat.addMessage(message);
+            operation.call(mainChat, message);
         }
     }
 

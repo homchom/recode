@@ -1,5 +1,7 @@
 package io.github.homchom.recode.mixin.render;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import io.github.homchom.recode.event.SimpleValidated;
 import io.github.homchom.recode.game.ChunkPos3D;
 import io.github.homchom.recode.render.*;
@@ -12,13 +14,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.Opcodes;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
@@ -27,28 +27,34 @@ import java.util.*;
 @Mixin(value = LevelRenderer.class)
 public abstract class MLevelRenderer implements RecodeLevelRenderer {
 	@Shadow @Nullable private PostChain entityEffect;
-	@Shadow @Final private Set<BlockEntity> globalBlockEntities;
 
 	@Unique
 	private boolean processedOutlines;
 	@Unique
 	private final Map<BlockPos, RGBAColor> blockEntityOutlineMap = new HashMap<>();
 
-	@Redirect(method = "renderLevel", at = @At(value = "FIELD", opcode = Opcodes.GETFIELD,
+	@WrapOperation(method = "renderLevel", at = @At(value = "FIELD", opcode = Opcodes.GETFIELD,
 			target = "Lnet/minecraft/client/renderer/LevelRenderer;globalBlockEntities:Ljava/util/Set;",
 			ordinal = 1
 	))
-	private Set<BlockEntity> interceptGlobalBlockEntities(LevelRenderer instance) {
-		if (globalBlockEntities.isEmpty()) return globalBlockEntities;
+	private Set<BlockEntity> interceptGlobalBlockEntities(
+			LevelRenderer instance,
+			Operation<Set<BlockEntity>> operation
+	) {
+		var blockEntities = operation.call(instance);
+		if (blockEntities.isEmpty()) return blockEntities;
 
-		return Set.copyOf(recode$runBlockEntityEvents(globalBlockEntities, null));
+		return Set.copyOf(recode$runBlockEntityEvents(blockEntities, null));
 	}
 
-	@Redirect(method = "renderLevel", at = @At(value = "INVOKE",
+	@WrapOperation(method = "renderLevel", at = @At(value = "INVOKE",
 			target = "Lnet/minecraft/client/renderer/chunk/ChunkRenderDispatcher$CompiledChunk;getRenderableBlockEntities()Ljava/util/List;"
 	))
-	private List<BlockEntity> interceptChunkBlockEntities(ChunkRenderDispatcher.CompiledChunk chunk) {
-		var blockEntities = chunk.getRenderableBlockEntities();
+	private List<BlockEntity> interceptChunkBlockEntities(
+			ChunkRenderDispatcher.CompiledChunk chunk,
+			Operation<List<BlockEntity>> operation
+	) {
+		var blockEntities = operation.call(chunk);
 		if (blockEntities.isEmpty()) return blockEntities;
 
 		var chunkPos = new ChunkPos3D(blockEntities.get(0).getBlockPos());

@@ -1,5 +1,7 @@
 package io.github.homchom.recode.mixin.render;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import io.github.homchom.recode.feature.social.MCGuiWithSideChat;
 import io.github.homchom.recode.feature.social.MessageStacking;
 import io.github.homchom.recode.feature.social.SideChat;
@@ -21,7 +23,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
@@ -43,11 +44,11 @@ public abstract class MChatComponent {
     // side chat redirects
 
     // TODO: improve handling of chat queue (partition it?)
-    @Redirect(method = "render", at = @At(value = "INVOKE",
+    @WrapOperation(method = "render", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/client/multiplayer/chat/ChatListener;queueSize()J"
     ))
-    private long redirectMessageQueueSize(ChatListener listener) {
-        return isSideChat() ? 0 : listener.queueSize();
+    private long wrapMessageQueueSize(ChatListener listener, Operation<Long> operation) {
+        return isSideChat() ? 0 : operation.call(listener);
     }
 
     // actions synced between main chat and side chat

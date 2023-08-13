@@ -48,6 +48,9 @@ repositories {
     maven {
         url = uri("https://maven.terraformersmc.com/")
     }
+    maven {
+        url = uri("https://jitpack.io")
+    }
     mavenCentral()
 }
 
@@ -65,17 +68,24 @@ dependencies {
     val loaderDevVersion: String by project
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricDevVersion")
     modImplementation("net.fabricmc:fabric-loader:$loaderDevVersion")
+    include(
+        implementation(annotationProcessor("com.github.llamalad7.mixinextras:mixinextras-fabric:0.2.0-beta.9")!!)!!
+    )
 
-    shadeApi(kotlin("stdlib", "1.9.0"))
-    shadeApi("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
+    shade(api(kotlin("stdlib", "1.9.0"))!!)
+    shade(api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")!!)
 
-    // Declare mod dependencies listed in gradle.properties
-    for (mod in requiredDependencyMods) includeModImpl("${mod.artifact}:${mod.version}")
-    for (mod in optionalDependencyMods) modCompileOnly("${mod.artifact}:${mod.version}")
+    // declare mod dependencies listed in gradle.properties
+    for (mod in requiredDependencyMods) {
+        include(modImplementation("${mod.artifact}:${mod.version}")!!)
+    }
+    for (mod in optionalDependencyMods) {
+        modCompileOnly("${mod.artifact}:${mod.version}")
+    }
 
     // Websocket TODO: clean this up
-    shadeImpl("org.java-websocket:Java-WebSocket:1.5.3")
-    includeImpl("javax.websocket:javax.websocket-api:1.1")
+    shade(implementation("org.java-websocket:Java-WebSocket:1.5.3")!!)
+    include(implementation("javax.websocket:javax.websocket-api:1.1")!!)
 }
 
 java {
@@ -186,38 +196,6 @@ modrinth {
     // TODO: use something other than readText?
     syncBodyFrom.set(file("README.md").readText())
     changelog.set(file("CHANGELOG.md").readText())
-}
-
-typealias DependencyConfig = Action<ExternalModuleDependency>
-
-fun DependencyHandlerScope.shadeImpl(notation: Any) {
-    implementation(notation)
-    shade(notation)
-}
-
-fun DependencyHandlerScope.shadeApi(notation: Any) {
-    api(notation)
-    shade(notation)
-}
-
-fun DependencyHandlerScope.includeImpl(notation: Any) {
-    implementation(notation)
-    include(notation)
-}
-
-fun DependencyHandlerScope.includeApi(notation: Any) {
-    api(notation)
-    include(notation)
-}
-
-fun DependencyHandlerScope.includeModImpl(notation: Any) {
-    modImplementation(notation)
-    include(notation)
-}
-
-fun DependencyHandlerScope.includeModApi(notation: Any) {
-    modApi(notation)
-    include(notation)
 }
 
 data class DependencyMod(
