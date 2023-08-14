@@ -9,11 +9,10 @@ plugins {
 }
 
 val modName: String by project
-
 val modVersion: String by project
 val minecraftVersion: String by project
-val modVersionWithMeta get() = "$modVersion+$minecraftVersion-LATEST"
-version = modVersionWithMeta
+val modVersionWithMeta get() = "$modVersion+$minecraftVersion"
+version = "$modVersionWithMeta-LATEST"
 
 val mavenGroup: String by project
 group = mavenGroup
@@ -105,14 +104,14 @@ tasks {
     withType<KotlinCompile> {
         kotlinOptions {
             jvmTarget = "17"
-            // Compile Kotlin interfaces with Java 8 default methods
+            // compile Kotlin interfaces with Java 8 default methods
             freeCompilerArgs = listOf("-Xjvm-default=all")
         }
     }
 
     processResources {
         val loaderVersion: String by project
-        // These properties can be used in fabric_mod_json_template.txt in Groovy template syntax
+        // these properties can be used in fabric_mod_json_template.txt in Groovy template syntax
         val exposedProperties = arrayOf(
             "modName" to modName,
             "version" to version,
@@ -124,7 +123,7 @@ tasks {
         inputs.properties(*exposedProperties)
         inputs.properties(project.properties.filterKeys { it.startsWith("required.") })
 
-        // Evaluate fabric_mod_json_template.txt as a Groovy template
+        // evaluate fabric_mod_json_template.txt as a Groovy template
         filesMatching("fabric_mod_json_template.txt") {
             val metadataRegex = Regex("""\+[\d.]+?$""")
             expand(
@@ -140,17 +139,18 @@ tasks {
     }
 
     jar {
+        // disable jar (in favor of shadowJar)
         enabled = false
     }
 
     val relocate by registering(ConfigureShadowRelocation::class) {
-        target = shadowJar.get()
         // repackage shaded dependencies
+        target = shadowJar.get()
         prefix = "$mavenGroup.recode.shaded"
     }
 
     shadowJar {
-        dependsOn(relocate)
+        dependsOn(relocate.get())
         configurations = listOf(shade)
         // output shaded jar in the correct destination to be used by remapJar
         destinationDirectory.set(file("build/devlibs"))
@@ -160,12 +160,12 @@ tasks {
     }
 
     remapJar {
-        // use the shaded jar with remapJar, since jar is disabled
+        // use the shaded jar with remapJar
         inputFile.value(shadowJar.get().archiveFile)
     }
 }
 
-tasks.modrinth.get().dependsOn(tasks.modrinthSyncBody.get())
+tasks.modrinth.get().dependsOn(tasks.modrinthSyncBody)
 
 modrinth {
     // DO NOT PUT THIS IN RECODE'S GRADLE.PROPERTIES. Your modrinth token should remain private to everyone.
@@ -185,8 +185,13 @@ modrinth {
         versionType.set(type)
     }
 
-    val renamedFile = tasks.remapJar.get().rename { it.replace("-LATEST", "") }
-    uploadFile.set(renamedFile)
+    // remove "LATEST" classifiers when uploading to modrinth
+    uploadFile.set(tasks.remapJar.map { task ->
+        val jarFile = task.archiveFile.get().asFile
+        val newPath = jarFile.path.replace("-LATEST", "")
+        jarFile.renameTo(File(newPath))
+        newPath
+    })
 
     gameVersions.addAll(minecraftVersion)
     dependencies {
