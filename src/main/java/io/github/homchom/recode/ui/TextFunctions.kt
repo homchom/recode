@@ -55,4 +55,4 @@ fun Component.equalsUnstyled(string: String) = unstyledString == string
 
 fun Regex.matchEntireUnstyled(text: Component) = matchEntire(text.unstyledString)
 
-infix fun Regex.matchesUnstyled(text: Component) = matches(text.unstyledString)
+fun Regex.matchesUnstyled(text: Component) = matches(text.unstyledString)

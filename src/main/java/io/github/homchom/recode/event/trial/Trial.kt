@@ -148,7 +148,8 @@ class TrialResult<T : Any> private constructor(private val deferred: Deferred<T?
                     val trialScope = TrialScope(
                         module,
                         this@nullable,
-                        this
+                        this,
+                        hidden
                     )
                     yield()
                     trialScope.asyncBlock().also { coroutineContext.cancelChildren() }

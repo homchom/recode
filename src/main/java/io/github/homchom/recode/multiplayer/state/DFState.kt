@@ -9,7 +9,9 @@ import io.github.homchom.recode.multiplayer.SUPPORT_ARROW
 import io.github.homchom.recode.multiplayer.username
 import io.github.homchom.recode.ui.equalsUnstyled
 import io.github.homchom.recode.ui.matchesUnstyled
-import io.github.homchom.recode.util.*
+import io.github.homchom.recode.util.MatchPredicate
+import io.github.homchom.recode.util.Matcher
+import io.github.homchom.recode.util.matcher
 import io.github.homchom.recode.util.regex.regex
 import kotlinx.coroutines.Deferred
 import net.minecraft.client.multiplayer.ServerData
@@ -140,15 +142,15 @@ private val playModeRegex = regex {
 sealed interface PlotMode {
     val id: ID
 
-    sealed interface ID : Matcher<Component, Unit> {
+    sealed interface ID : MatchPredicate<Component> {
         val descriptor: String
 
         val capitalizedDescriptor get() = descriptor.replaceFirstChar(Char::titlecase)
 
-        companion object : GroupMatcher<Component, Unit, ID> {
+        companion object : Matcher<Component, ID> {
             val entries get() = arrayOf(Play, Build, Dev)
 
-            override fun match(input: Component) = MatcherList(*entries).match(input)
+            override fun match(input: Component) = matcher(*entries).match(input)
         }
     }
 
@@ -157,8 +159,7 @@ sealed interface PlotMode {
 
         override val descriptor = "playing"
 
-        override fun match(input: Component) =
-            playModeRegex.matchesUnstyled(input).unitOrNull()
+        override fun matches(input: Component) = playModeRegex.matchesUnstyled(input)
     }
 
     data object Build : PlotMode, ID {
@@ -166,8 +167,8 @@ sealed interface PlotMode {
 
         override val descriptor = "building"
 
-        override fun match(input: Component) =
-            input.equalsUnstyled("$MAIN_ARROW You are now in build mode.").unitOrNull()
+        override fun matches(input: Component) =
+            input.equalsUnstyled("$MAIN_ARROW You are now in build mode.")
     }
 
     data class Dev(val buildCorner: BlockPos, val referenceBookCopy: ItemStack) : PlotMode {
@@ -176,30 +177,30 @@ sealed interface PlotMode {
         companion object ID : PlotMode.ID {
             override val descriptor = "coding"
 
-            override fun match(input: Component) =
-                input.equalsUnstyled("$MAIN_ARROW You are now in dev mode.").unitOrNull()
+            override fun matches(input: Component) =
+                input.equalsUnstyled("$MAIN_ARROW You are now in dev mode.")
         }
     }
 }
 
-enum class SupportSession : Matcher<Component, Unit> {
+enum class SupportSession : MatchPredicate<Component> {
     Requested {
-        override fun match(input: Component) = input.equalsUnstyled(
+        override fun matches(input: Component) = input.equalsUnstyled(
             "You have requested code support.\nIf you wish to leave the queue, use /support cancel."
-        ).unitOrNull()
+        )
     },
     Helping {
-        override fun match(input: Component): Unit? {
+        override fun matches(input: Component): Boolean {
             val regex = regex {
                 str("[SUPPORT] ${mc.player!!.username} entered a session with ")
                 username()
                 str(". $SUPPORT_ARROW Queue cleared!")
             }
-            return regex.matchesUnstyled(input).unitOrNull()
+            return regex.matchesUnstyled(input)
         }
     };
 
-    companion object : GroupMatcher<Component, Unit, SupportSession> by enumMatcher()
+    companion object : Matcher<Component, SupportSession> by matcher(entries)
 }
 
 sealed interface LocateState {

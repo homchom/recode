@@ -85,9 +85,9 @@ object DFStateDetectors : StateListenable<Case<DFState?>> {
         trial(ReceiveChatMessageEvent, Unit) { (message), _ ->
             enforce { requireTrue(isOnDF) }
             suspending {
-                PlotMode.ID.match(message)?.encase { match ->
+                PlotMode.ID.match(message)?.encase { mode ->
                     val state = currentDFState!!.withState(locate()) as? DFState.OnPlot
-                    if (state?.mode?.id != match.matcher) fail()
+                    if (state?.mode?.id != mode) fail()
                     state
                 }
             }
@@ -99,7 +99,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>> {
             enforce { requireTrue(isOnDF) }
 
             requireTrue(currentDFState!!.session == null)
-            val session = SupportSession.match(message)!!.matcher
+            val session = SupportSession.match(message)!!
 
             val subsequent = ReceiveChatMessageEvent.add()
             val enforceChannel = ReceiveChatMessageEvent.add()

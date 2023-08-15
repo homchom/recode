@@ -1,33 +1,44 @@
 package io.github.homchom.recode.util
 
-// TODO: revisit
+/**
+ * Creates and returns a [MutableMatcher] with [initialPredicates].
+ */
+fun <T, R : MatchPredicate<T>> matcher(vararg initialPredicates: R) =
+    MutableMatcher<T, R>().apply { addAll(initialPredicates) }
 
-fun interface Matcher<in T, out R : Any> {
+/**
+ * Creates and returns a [MutableMatcher] with [initialPredicates].
+ */
+fun <T, R : MatchPredicate<T>> matcher(initialPredicates: Collection<R>) =
+    MutableMatcher<T, R>().apply { addAll(initialPredicates) }
+
+/**
+ * A functor that matches inputs of type [T] against a specification, returning matches of type [R] or `null`.
+ *
+ * @see matcher
+ */
+fun interface Matcher<in T, out R : MatchPredicate<T>> : MatchPredicate<T> {
     fun match(input: T): R?
 
-    infix fun matches(input: T) = match(input) != null
+    override fun matches(input: T) = match(input) != null
 }
 
-inline fun <reified E, T, R : Any> enumMatcher(): GroupMatcher<T, R, E>
-    where E : Enum<E>, E : Matcher<T, R>
-{
-    return MatcherList(*enumValues<E>())
+/**
+ * The base interfaces for return types of [Matcher] objects, with the [matches] function for determining whether
+ * a match has been made.
+ */
+fun interface MatchPredicate<in T> {
+    infix fun matches(input: T): Boolean
 }
 
-interface GroupMatcher<T, R : Any, M : Matcher<T, R>> : Matcher<T, GroupMatcherResult<T, R, M>>
+/**
+ * A simple [List]-backed implementation of [Matcher].
+ */
+@JvmInline
+value class MutableMatcher<T, R : MatchPredicate<T>> private constructor(
+    private val predicates: MutableList<R>
+) : Matcher<T, R>, MutableList<R> by predicates {
+    constructor() : this(mutableListOf())
 
-class MatcherList<T, R : Any, M : Matcher<T, R>> private constructor(
-    private val matchers: MutableList<M>
-) : GroupMatcher<T, R, M>, List<M> by matchers {
-    constructor(vararg initialMatchers: M) : this(initialMatchers.toMutableList())
-
-    fun add(matcher: M) = matcher.also { matchers += it }
-
-    override fun match(input: T): GroupMatcherResult<T, R, M>? {
-        for (matcher in matchers) matcher.match(input)
-            ?.let { return GroupMatcherResult(matcher, it) }
-        return null
-    }
+    override fun match(input: T) = predicates.firstOrNull { it matches input }
 }
-
-data class GroupMatcherResult<T, R : Any, M : Matcher<T, R>>(val matcher: M, val value: R)
