@@ -110,10 +110,10 @@ interface WrappedEvent<T, L> : Listenable<T> {
     val invoker: L
 }
 
-// TODO: revisit Detector and Requester interfaces (should more be exposed/documented? less?)
-
 /**
- * A [Listenable] that is run algorithmically, based on another Listenable.
+ * A [Listenable] that is run algorithmically, based on another Listenable. The standard implementation of
+ * this interface is created with the [io.github.homchom.recode.event.trial.detector] function, backed by the
+ * [io.github.homchom.recode.event.trial.Trial] API.
  *
  * @param T The type passed as input to the detector.
  * @param R The detector's event context type for detected results.
@@ -125,8 +125,12 @@ interface Detector<T : Any, R : Any> : StateListenable<R> {
 
     /**
      * Listens for basis invocations from [module] and returns a [Flow] of results.
+     *
+     * @param hidden Tells the detector to invalidate certain "notification-like" intermediate event contexts
+     * (see [io.github.homchom.recode.event.trial.TrialScope.hidden]). It is up to each detector to honor this
+     * if applicable.
      */
-    fun detectFrom(module: RModule, input: T?): Flow<R?>
+    fun detectFrom(module: RModule, input: T?, hidden: Boolean = false): Flow<R?>
 }
 
 /**
@@ -146,7 +150,7 @@ interface Requester<T : Any, R : Any> : Detector<T, R> {
      *
      * @see detectFrom
      */
-    suspend fun requestFrom(module: RModule, input: T): R
+    suspend fun requestFrom(module: RModule, input: T, hidden: Boolean = false): R
 }
 
 /**

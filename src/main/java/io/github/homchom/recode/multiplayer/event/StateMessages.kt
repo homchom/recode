@@ -17,16 +17,22 @@ import io.github.homchom.recode.util.regex.namedGroupValues
 import org.intellij.lang.annotations.RegExp
 
 data class LocateMessage(val username: String, val state: LocateState) {
-    companion object : Requester<UserStateRequest, LocateMessage> by requester(
+    companion object : Requester<String, LocateMessage> by requester(
         "/locate",
         DFStateDetectors.LeaveServer,
         trial(
             ReceiveChatMessageEvent,
-            start = { request -> sendCommand("locate ${request.username}") },
-            tests = { request, context, _ ->
-                val message = context.value
-                val values = LocateMessage.locateRegex(request?.username)
-                    .matchEntireUnstyled(message)!!
+            null,
+            start = { username ->
+                if (username.isEmpty()) {
+                    sendCommand("locate")
+                } else {
+                    sendCommand("locate $username")
+                }
+            },
+            tests = { message, username, _ ->
+                val values = LocateMessage.locateRegex(username)
+                    .matchEntireUnstyled(message())!!
                     .namedGroupValues
                 val player = values["player"].takeUnless(String::isEmpty) ?: mc.player!!.username
                 val node = nodeByName(values["node"])
@@ -41,7 +47,7 @@ data class LocateMessage(val username: String, val state: LocateState) {
 
                     LocateState.OnPlot(node, Plot(plotName, owner, plotID), mode, status)
                 }
-                if (request?.hideMessage == true) context.invalidate()
+                if (hidden) message.invalidate()
                 instant(LocateMessage(player, state))
             }
         )
@@ -89,16 +95,22 @@ data class LocateMessage(val username: String, val state: LocateState) {
 }
 
 data class ProfileMessage(val username: String, val ranks: List<Rank>) {
-    companion object : Requester<UserStateRequest, ProfileMessage> by requester(
+    companion object : Requester<String, ProfileMessage> by requester(
         "/profile",
         DFStateDetectors.LeaveServer,
         trial(
             ReceiveChatMessageEvent,
-            start = { request -> sendCommand("profile ${request.username}") },
-            tests = { request, context, _ ->
-                val message = context.value
-                val values = ProfileMessage.profileRegex(request?.username)
-                    .matchEntireUnstyled(message)!!
+            "",
+            start = { username ->
+                if (username.isEmpty()) {
+                    sendCommand("profile")
+                } else {
+                    sendCommand("profile $username")
+                }
+            },
+            tests = { message, username, _ ->
+                val values = ProfileMessage.profileRegex(username)
+                    .matchEntireUnstyled(message())!!
                     .namedGroupValues
                 val player = values["player"]
 
@@ -109,7 +121,7 @@ data class ProfileMessage(val username: String, val ranks: List<Rank>) {
                     .split("][")
                     .mapNotNull { rankMap[it] }
 
-                if (request?.hideMessage == true) context.invalidate()
+                if (hidden) message.invalidate()
                 instant(ProfileMessage(player, ranks))
             }
         )
@@ -137,9 +149,6 @@ data class ProfileMessage(val username: String, val ranks: List<Rank>) {
         }
     }
 }
-
-// TODO: is there a clean way to make *any* requester invalidatable if its basis is validated? (if so, unneeded)
-data class UserStateRequest(val username: String, val hideMessage: Boolean = false)
 
 @RegExp
 private fun RegexPatternBuilder.bullet() {

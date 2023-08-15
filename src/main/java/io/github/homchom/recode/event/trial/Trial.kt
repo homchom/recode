@@ -1,24 +1,35 @@
 package io.github.homchom.recode.event.trial
 
 import io.github.homchom.recode.event.Listenable
+import io.github.homchom.recode.event.Validated
 import io.github.homchom.recode.event.map
 import io.github.homchom.recode.lifecycle.RModule
+import io.github.homchom.recode.util.nullable
+import kotlinx.coroutines.*
 
 /**
  * Creates a [DetectorTrial] with the given [basis] and [tests].
+ *
+ * @param defaultInput The input to be substituted if a `null` input is provided.
  */
-fun <T : Any, B, R : Any> trial(basis: Listenable<B>, tests: DetectorTrial.Tester<T, B, R>): DetectorTrial<T, R> =
-    BasedDetectorTrial(basis, tests)
+fun <T, B, R : Any> trial(
+    basis: Listenable<B>,
+    defaultInput: T,
+    tests: DetectorTrial.Tester<T, B, R>
+): DetectorTrial<T, R> {
+    return BasedTrial(basis, defaultInput, tests)
+}
 
 /**
  * Creates a [RequesterTrial] with the given [basis], [start], and [tests].
  */
-fun <T : Any, B, R : Any> trial(
+fun <T, B, R : Any> trial(
     basis: Listenable<B>,
-    start: suspend (input: T) -> Unit,
-    tests: RequesterTrial.Tester<T, B, R>
+    defaultInput: T,
+    start: suspend (input: T & Any) -> Unit,
+    tests: Trial.Tester<T, B, R>,
 ): RequesterTrial<T, R> {
-    return shortCircuitTrial(basis, { start(it); null }, tests)
+    return shortCircuitTrial(basis, defaultInput, { start(it); null }, tests)
 }
 
 /**
@@ -27,39 +38,13 @@ fun <T : Any, B, R : Any> trial(
  *
  * @see trial
  */
-fun <T : Any, B, R : Any> shortCircuitTrial(
+fun <T, B, R : Any> shortCircuitTrial(
     basis: Listenable<B>,
-    start: suspend (input: T) -> R?,
-    tests: RequesterTrial.Tester<T, B, R>
+    defaultInput: T,
+    start: suspend (input: T & Any) -> R?,
+    tests: Trial.Tester<T, B, R>,
 ): RequesterTrial<T, R> {
-    return BasedRequesterTrial(basis, start, tests)
-}
-
-/**
- * Creates a [DetectorTrial] with a nullary tester.
- *
- * @see trial
- * @see DetectorTrial.NullaryTester
- */
-fun <B, R : Any> nullaryTrial(
-    basis: Listenable<B>,
-    tests: DetectorTrial.NullaryTester<B, R>
-): DetectorTrial<Unit, R> {
-    return trial(basis, tests.toUnary())
-}
-
-/**
- * Creates a [RequesterTrial] with a nullary tester.
- *
- * @see trial
- * @see RequesterTrial.NullaryTester
- */
-fun <B, R : Any> nullaryTrial(
-    basis: Listenable<B>,
-    start: suspend () -> Unit,
-    tests: RequesterTrial.NullaryTester<B, R>
-): RequesterTrial<Unit, R> {
-    return trial(basis, { start() }, tests.toUnary())
+    return BasedRequesterTrial(basis, defaultInput, start, tests)
 }
 
 /**
@@ -70,9 +55,26 @@ fun <B, R : Any> nullaryTrial(
  *
  * @see trial
  */
-sealed interface Trial<T : Any, R : Any> {
+sealed interface Trial<T, R : Any> {
     val basis: Listenable<*>
-    val results: Listenable<ResultSupplier<T, R>>
+    val results: Listenable<ResultSupplier<T & Any, R>>
+
+    val defaultInput: T
+
+    /**
+     * A functor that runs [Trial] tests to yield a [TrialResult].
+     *
+     * @see runTests
+     */
+    fun interface Tester<T, B, R : Any> {
+        /**
+         * @see io.github.homchom.recode.event.Detector.detectFrom
+         */
+        fun TrialScope.runTests(baseContext: B, input: T, isRequest: Boolean): TrialResult<R>?
+
+        fun runTestsIn(scope: TrialScope, input: T, baseContext: B, isRequest: Boolean) =
+            scope.runTests(baseContext, input, isRequest)
+    }
 
     /**
      * A functor that supplies [TrialResult] objects. This is used to hide the type information of basis events
@@ -84,40 +86,36 @@ sealed interface Trial<T : Any, R : Any> {
         /**
          * @param isRequest Whether the result is being supplied to a consumer expecting a request. If
          * the trial is a [DetectorTrial], this parameter has no effect.
+         * @param hidden An optional [HideCallback].
          */
-        fun TrialScope.supply(input: T?, isRequest: Boolean): TrialResult<R>?
+        fun TrialScope.supply(input: T?, isRequest: Boolean, hidden: HideCallback<R>?): TrialResult<R>?
 
-        fun supplyIn(scope: TrialScope, input: T?, isRequest: Boolean) =
-            scope.supply(input, isRequest)
+        fun supplyIn(scope: TrialScope, input: T?, isRequest: Boolean, hidden: HideCallback<R>? = null) =
+            scope.supply(input, isRequest, hidden)
+
+        /**
+         * A boolean-returning callback to determine whether the supplied result should be [TrialScope.hidden].
+         */
+        fun interface HideCallback<R : Any> {
+            operator fun invoke(result: R, isRequest: Boolean): Boolean
+        }
     }
 }
 
 /**
  * A [Trial] that supplies to [io.github.homchom.recode.event.Detector] events.
  */
-sealed interface DetectorTrial<T : Any, R : Any> : Trial<T, R> {
+sealed interface DetectorTrial<T, R : Any> : Trial<T, R> {
     /**
-     * A functor that runs [DetectorTrial] tests to yield a [TrialResult].
+     * A specialized [Trial.Tester] for [DetectorTrial] objects.
      *
      * @see runTests
      */
-    fun interface Tester<T : Any, B, R : Any> {
-        fun TrialScope.runTests(input: T?, baseContext: B): TrialResult<R>?
+    fun interface Tester<T, B, R : Any> : Trial.Tester<T, B, R> {
+        fun TrialScope.runTests(baseContext: B, input: T): TrialResult<R>?
 
-        fun runTestsIn(scope: TrialScope, input: T?, baseContext: B) = scope.runTests(input, baseContext)
-    }
-
-    /**
-     * A [Tester] with no input.
-     */
-    fun interface NullaryTester<B, R : Any> {
-        fun TrialScope.runTests(baseContext: B): TrialResult<R>?
-
-        /**
-         * Converts this NullaryTester to a unary [Tester].
-         */
-        @Suppress("RemoveRedundantQualifierName")
-        fun toUnary() = DetectorTrial.Tester<Unit, B, R> { _, baseContext -> runTests(baseContext) }
+        override fun TrialScope.runTests(baseContext: B, input: T, isRequest: Boolean) =
+            runTests(baseContext, input)
     }
 }
 
@@ -127,56 +125,66 @@ sealed interface DetectorTrial<T : Any, R : Any> : Trial<T, R> {
  * @property start The executor function that starts the request. Note that
  * [io.github.homchom.recode.event.Requester.activeRequests] is incremented *before* [start] is invoked.
  */
-sealed interface RequesterTrial<T : Any, R : Any> : Trial<T, R> {
-    val start: suspend (input: T) -> R?
-
-    /**
-     * A functor that runs [RequesterTrial] tests to yield a [TrialResult].
-     *
-     * @see runTests
-     */
-    fun interface Tester<T : Any, B, R : Any> {
-        fun TrialScope.runTests(input: T?, baseContext: B, isRequest: Boolean): TrialResult<R>?
-
-        fun runTestsIn(scope: TrialScope, input: T?, baseContext: B, isRequest: Boolean) =
-            scope.runTests(input, baseContext, isRequest)
-    }
-
-    /**
-     * A [Tester] with no input.
-     */
-    fun interface NullaryTester<B, R : Any> {
-        fun TrialScope.runTests(baseContext: B, isRequest: Boolean): TrialResult<R>?
-
-        /**
-         * Converts this NullaryTester to a unary [Tester].
-         */
-        @Suppress("RemoveRedundantQualifierName")
-        fun toUnary() = RequesterTrial.Tester<Unit, B, R> { _, baseContext, isRequest ->
-            runTests(baseContext, isRequest)
-        }
-    }
+sealed interface RequesterTrial<T, R : Any> : Trial<T, R> {
+    val start: suspend (input: T & Any) -> R?
 }
 
-private class BasedDetectorTrial<T : Any, B, R : Any>(
-    override val basis: Listenable<B>,
-    private val tests: DetectorTrial.Tester<T, B, R>
+/**
+ * A wrapper for a [Deferred] [Trial] result.
+ */
+class TrialResult<T : Any> private constructor(private val deferred: Deferred<T?>) : Deferred<T?> by deferred {
+    constructor(instantValue: T?) : this(CompletableDeferred(instantValue))
+
+    @OptIn(DelicateCoroutinesApi::class)
+    constructor(
+        asyncBlock: suspend TrialScope.() -> T?,
+        module: RModule,
+        scope: CoroutineScope,
+        hidden: Boolean = false
+    ) : this(
+        scope.async {
+            nullable {
+                coroutineScope {
+                    val trialScope = TrialScope(
+                        module,
+                        this@nullable,
+                        this
+                    )
+                    yield()
+                    trialScope.asyncBlock().also { coroutineContext.cancelChildren() }
+                }
+            }
+        }
+    )
+}
+
+private open class BasedTrial<T, B, R : Any>(
+    final override val basis: Listenable<B>,
+    override val defaultInput: T,
+    private val tests: Trial.Tester<T, B, R>
 ) : DetectorTrial<T, R> {
+    @OptIn(ExperimentalCoroutinesApi::class)
     override val results = basis.map { baseContext ->
-        Trial.ResultSupplier<T, R> { input, _ ->
-            tests.runTestsIn(this, input, baseContext)
+        Trial.ResultSupplier<T & Any, R> { input, isRequest, hidden ->
+            val result = tests.runTestsIn(this,input ?: defaultInput, baseContext, isRequest)
+
+            // handle HideCallbacks
+            if (baseContext is Validated && hidden != null) result?.invokeOnCompletion { exception ->
+                if (exception == null) return@invokeOnCompletion
+                val completed = result.getCompleted()
+                if (completed != null && hidden.invoke(completed, isRequest)) {
+                    baseContext.invalidate()
+                }
+            }
+
+            result
         }
     }
 }
 
-private class BasedRequesterTrial<T : Any, B, R : Any>(
-    override val basis: Listenable<B>,
-    override val start: suspend (input: T) -> R?,
-    private val tests: RequesterTrial.Tester<T, B, R>
-): RequesterTrial<T, R> {
-    override val results = basis.map { baseContext ->
-        Trial.ResultSupplier<T, R> { input, isRequest ->
-            tests.runTestsIn(this, input, baseContext, isRequest)
-        }
-    }
-}
+private class BasedRequesterTrial<T, B, R : Any>(
+    basis: Listenable<B>,
+    defaultInput: T,
+    override val start: suspend (input: T & Any) -> R?,
+    tests: Trial.Tester<T, B, R>
+) : BasedTrial<T, B, R>(basis, defaultInput, tests), RequesterTrial<T, R>

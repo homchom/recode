@@ -42,16 +42,24 @@ interface RModule : KeyHashable {
         for (child in children) child.extend(this)
     }
 
-    fun <T : Any, R : Any> Detector<T, R>.detect(input: T?) = detectFrom(this@RModule, input)
-
     /**
-     * @throws kotlinx.coroutines.TimeoutCancellationException
+     * @see Detector.detectFrom
      */
-    suspend fun <T : Any, R : Any> Requester<T, R>.request(input: T) =
-        requestFrom(this@RModule, input)
+    fun <T : Any, R : Any> Detector<T, R>.detect(input: T?, hidden: Boolean = false) =
+        detectFrom(this@RModule, input, hidden)
 
     /**
      * @throws kotlinx.coroutines.TimeoutCancellationException
+     *
+     * @see Requester.requestFrom
+     */
+    suspend fun <T : Any, R : Any> Requester<T, R>.request(input: T, hidden: Boolean = false) =
+        requestFrom(this@RModule, input, hidden)
+
+    /**
+     * @throws kotlinx.coroutines.TimeoutCancellationException
+     *
+     * @see Requester.requestFrom
      */
     suspend fun <R : Any> Requester<Unit, R>.request() = request(Unit)
 }
@@ -62,9 +70,15 @@ interface RModule : KeyHashable {
 interface CoroutineModule : RModule, CoroutineScope {
     val <T> Listenable<T>.notifications get() = getNotificationsFrom(this@CoroutineModule)
 
+    /**
+     * @see Listenable.listenFrom
+     */
     fun <T> Listenable<T>.listen(block: Flow<T>.() -> Flow<T>) =
         listenFrom(this@CoroutineModule, block)
 
+    /**
+     * @see Listenable.listenEachFrom
+     */
     fun <T> Listenable<T>.listenEach(block: (T) -> Unit) =
         listenEachFrom(this@CoroutineModule, block)
 }

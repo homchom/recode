@@ -32,7 +32,7 @@ sealed interface GreedyRegexElement : RegexElement {
 }
 
 private class SubPattern(
-    val builder: StringBuilder,
+    private val builder: StringBuilder,
     private val groupIfQuantified: Boolean
 ) : QuantifiableRegexElement {
     private var quantifier: String? = null
@@ -59,7 +59,7 @@ private class SubPattern(
         }
         builder.append(quantifier)
         this.quantifier = quantifier
-        return GreedySubPattern(this)
+        return Greedy()
     }
 
     override fun provideDelegate(thisRef: Any?, property: KProperty<*>) = also {
@@ -77,21 +77,21 @@ private class SubPattern(
     }
 
     override fun getValue(thisRef: Any?, property: KProperty<*>) = RegexElement.Capture(property.name)
-}
 
-private class GreedySubPattern(private val delegate: SubPattern) : GreedyRegexElement, RegexElement by delegate {
-    private var customPolicy: String? = null
+    private inner class Greedy : GreedyRegexElement, RegexElement by this {
+        private var customPolicy: String? = null
 
-    override fun lazy() = changePolicy("lazy", '?')
-    override fun possessive() = changePolicy("possessive", '+')
+        override fun lazy() = changePolicy("lazy", '?')
+        override fun possessive() = changePolicy("possessive", '+')
 
-    private fun changePolicy(policy: String, quantifier: Char) = apply {
-        if (this.customPolicy != null) throw RegexElementException(
-            "RegexConstruct cannot be $policy as it is already ${this.customPolicy}",
-            IllegalStateException()
-        )
-        delegate.builder.append(quantifier)
-        this.customPolicy = policy
+        private fun changePolicy(policy: String, quantifier: Char) = apply {
+            if (this.customPolicy != null) throw RegexElementException(
+                "RegexConstruct cannot be $policy as it is already ${this.customPolicy}",
+                IllegalStateException()
+            )
+            builder.append(quantifier)
+            this.customPolicy = policy
+        }
     }
 }
 

@@ -2,11 +2,10 @@ package io.github.homchom.recode.multiplayer
 
 import io.github.homchom.recode.event.*
 import io.github.homchom.recode.event.trial.detector
-import io.github.homchom.recode.event.trial.nullaryTrial
+import io.github.homchom.recode.event.trial.trial
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.multiplayer.event.ActiveBoosterMessage
 import io.github.homchom.recode.multiplayer.event.LocateMessage
-import io.github.homchom.recode.multiplayer.event.UserStateRequest
 import io.github.homchom.recode.multiplayer.state.Node
 import io.github.homchom.recode.multiplayer.state.ipMatchesDF
 import io.github.homchom.recode.multiplayer.state.isOnDF
@@ -49,7 +48,7 @@ private val patchRegex = regex {
 
 object JoinDFDetector :
     Detector<Unit, JoinDFInfo> by detector("DF join",
-        nullaryTrial(JoinServerEvent) {
+        trial(JoinServerEvent, Unit) { _, _ ->
             requireFalse(isOnDF) // if already on DF, this is a node switch and should not be tested
             requireTrue(mc.currentServer.ipMatchesDF)
 
@@ -64,8 +63,7 @@ object JoinDFDetector :
                     patchRegex.matchEntireUnstyled(text)?.groupValues?.get(1)
                 }
 
-                val request = UserStateRequest(mc.player!!.username, true)
-                val node = LocateMessage.request(request).state.node
+                val node = LocateMessage.request(mc.player!!.username, true).state.node
 
                 val canTip = tipMessage.any { (message) -> message?.canTip ?: false }
                 JoinDFInfo(node, patch, canTip)

@@ -16,13 +16,14 @@ import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
-object SupportTimeRequester : Requester<Boolean, Case<Duration?>> by requester(
+object SupportTimeRequester : Requester<Unit, Case<Duration?>> by requester(
     "/support time",
     DFStateDetectors.EndSession,
     trial(
         ReceiveChatMessageEvent,
+        Unit,
         start = { sendCommand("support time") },
-        tests = tests@{ hideMessage, message, _ ->
+        tests = tests@{ message, _, _ ->
             if (message.value.equalsUnstyled("Error: You are not in a session.")) {
                 return@tests instant(Case.ofNull)
             }
@@ -33,13 +34,13 @@ object SupportTimeRequester : Requester<Boolean, Case<Duration?>> by requester(
                 val minutes by digit * 2
                 val seconds by digit * 2
             }
-            val values = regex.matchEntireUnstyled(message.value)!!.namedGroupValues
+            val values = regex.matchEntireUnstyled(message())!!.namedGroupValues
 
             val hours = values["hours"].toIntOrNull()?.hours ?: fail()
             val minutes = values["minutes"].toIntOrNull()?.minutes ?: fail()
             val seconds = values["seconds"].toIntOrNull()?.seconds ?: fail()
 
-            if (hideMessage == true) message.invalidate()
+            if (hidden) message.invalidate()
             instant(Case(hours + minutes + seconds))
         }
     )

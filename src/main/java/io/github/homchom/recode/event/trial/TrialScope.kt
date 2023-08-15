@@ -5,7 +5,6 @@ import io.github.homchom.recode.event.Listenable
 import io.github.homchom.recode.lifecycle.CoroutineModule
 import io.github.homchom.recode.lifecycle.RModule
 import io.github.homchom.recode.util.NullableScope
-import io.github.homchom.recode.util.nullable
 import io.github.homchom.recode.util.unitOrNull
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -21,42 +20,21 @@ import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.time.Duration
 
 /**
- * A wrapper for a [Deferred] [Trial] result.
- */
-class TrialResult<T : Any> private constructor(private val deferred: Deferred<T?>) : Deferred<T?> by deferred {
-    constructor(instantValue: T?) : this(CompletableDeferred(instantValue))
-
-    @OptIn(DelicateCoroutinesApi::class)
-    constructor(asyncBlock: suspend TrialScope.() -> T?, module: RModule, scope: CoroutineScope) : this(
-        scope.async {
-            nullable {
-                coroutineScope {
-                    val trialScope = TrialScope(
-                        module,
-                        this@nullable,
-                        this
-                    )
-                    yield()
-                    trialScope.asyncBlock().also { coroutineContext.cancelChildren() }
-                }
-            }
-        }
-    )
-}
-
-/**
  * A [CoroutineScope] and [NullableScope] that a [Trial] executes in.
  *
  * A trial is a test containing one or more suspension points on events; they are useful for detecting an
  * occurrence that happens in complex steps. TrialScope includes corresponding DSL functions such as [requireTrue],
  * [add], and [test].
  *
+ * @param hidden To be used by trials to invalidate "notification-like" intermediate event contexts.
+ *
  * @see trial
  */
 class TrialScope @DelicateCoroutinesApi constructor(
     private val module: RModule,
     private val nullableScope: NullableScope,
-    private val coroutineScope: CoroutineScope
+    private val coroutineScope: CoroutineScope,
+    val hidden: Boolean = false,
 ) : CoroutineModule, RModule by module {
     /**
      * A list of blocking rules that are tested after most trial suspensions, failing the trial on a failed test.
@@ -230,7 +208,8 @@ class TrialScope @DelicateCoroutinesApi constructor(
     /**
      * Returns the asynchronous [TrialResult] of [block] ran in its own [TrialScope].
      */
-    fun <R : Any> suspending(block: suspend TrialScope.() -> R?) = TrialResult(block, module, coroutineScope)
+    fun <R : Any> suspending(block: suspend TrialScope.() -> R?) =
+        TrialResult(block, module, coroutineScope, hidden)
 
     /**
      * A shorthand for `unitOrNull().let(::instant)`.

@@ -2,7 +2,7 @@ package io.github.homchom.recode.multiplayer.event
 
 import io.github.homchom.recode.event.Detector
 import io.github.homchom.recode.event.trial.detector
-import io.github.homchom.recode.event.trial.nullaryTrial
+import io.github.homchom.recode.event.trial.trial
 import io.github.homchom.recode.multiplayer.BOOSTER_ARROW
 import io.github.homchom.recode.multiplayer.ReceiveChatMessageEvent
 import io.github.homchom.recode.multiplayer.TOKEN_NOTCH_CHAR
@@ -13,9 +13,10 @@ import io.github.homchom.recode.util.regex.RegexPatternBuilder
 import io.github.homchom.recode.util.regex.regex
 
 data class ActiveBoosterMessage(val player: String, val canTip: Boolean) {
-    companion object : Detector<Unit, ActiveBoosterMessage> by detector("active booster", nullaryTrial(
+    companion object : Detector<Unit, ActiveBoosterMessage> by detector("active booster", trial(
         ReceiveChatMessageEvent,
-        tests = { (message) ->
+        Unit,
+        tests = { (message), _ ->
             val player = ActiveBoosterMessage.mainRegex.matchEntireUnstyled(message)!!.groupValues[1]
             val subsequent = ReceiveChatMessageEvent.add()
 
