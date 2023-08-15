@@ -120,12 +120,13 @@ public abstract class MChatComponent {
             CallbackInfo ci
     ) {
         if (!Config.getBoolean("stackDuplicateMsgs")) return;
+        if (trimmedMessageCount == 0) return;
 
         // trimmedMessages[0] is the most recent message
         var lineCount = trimmedMessages.size() - trimmedMessageCount;
-        if (lineCount >= trimmedMessages.size()) return;
-        if (lineCount < trimmedMessages.size() - 1) {
-            if (!trimmedMessages.get(lineCount + 1).endOfEntry()) return;
+        if (trimmedMessageCount < lineCount) return;
+        if (trimmedMessageCount > lineCount) {
+            if (!trimmedMessages.get(lineCount * 2).endOfEntry()) return;
         }
 
         // return if messages aren't equal
