@@ -1,44 +1,42 @@
 package io.github.homchom.recode.util
 
 /**
- * Creates and returns a [MutableMatcher] with [initialPredicates].
- */
-fun <T, R : MatchPredicate<T>> matcher(vararg initialPredicates: R) =
-    MutableMatcher<T, R>().apply { addAll(initialPredicates) }
-
-/**
- * Creates and returns a [MutableMatcher] with [initialPredicates].
- */
-fun <T, R : MatchPredicate<T>> matcher(initialPredicates: Collection<R>) =
-    MutableMatcher<T, R>().apply { addAll(initialPredicates) }
-
-/**
- * A functor that matches inputs of type [T] against a specification, returning matches of type [R] or `null`.
+ * A general-purpose functor that matches inputs of type [T] against a specification, returning matches
+ * of type [R] or `null`.
  *
- * @see matcher
+ * @see matcherOf
  */
-fun interface Matcher<in T, out R : MatchPredicate<T>> : MatchPredicate<T> {
+fun interface Matcher<in T, out R : Any> {
     fun match(input: T): R?
 
-    override fun matches(input: T) = match(input) != null
+    infix fun matches(input: T) = match(input) != null
 }
 
 /**
- * The base interfaces for return types of [Matcher] objects, with the [matches] function for determining whether
- * a match has been made.
+ * Creates and returns a [MatcherList] with [initialPredicates].
  */
-fun interface MatchPredicate<in T> {
-    infix fun matches(input: T): Boolean
-}
+fun <T, R : Any> matcherOf(vararg initialPredicates: Matcher<T, R>) =
+    MatcherList<T, R>().apply { addAll(initialPredicates) }
 
 /**
- * A simple [List]-backed implementation of [Matcher].
+ * Creates and returns a [MatcherList] with [initialPredicates].
+ */
+fun <T, R : Matcher<T, R>> matcherOf(initialPredicates: Collection<R>) =
+    MatcherList<T, R>().apply { addAll(initialPredicates) }
+
+/**
+ * A [List]-backed implementation of [Matcher] that yields the first successful match among its elements.
  */
 @JvmInline
-value class MutableMatcher<T, R : MatchPredicate<T>> private constructor(
-    private val predicates: MutableList<R>
-) : Matcher<T, R>, MutableList<R> by predicates {
+value class MatcherList<T, R : Any> private constructor(
+    private val elements: MutableList<Matcher<T, R>>
+) : Matcher<T, R>, MutableList<Matcher<T, R>> by elements {
     constructor() : this(mutableListOf())
 
-    override fun match(input: T) = predicates.firstOrNull { it matches input }
+    /**
+     * Adds and returns [matcher] as an element.
+     */
+    fun with(matcher: Matcher<T, R>) = matcher.also(::add)
+
+    override fun match(input: T) = firstNotNullOfOrNull { it.match(input) }
 }

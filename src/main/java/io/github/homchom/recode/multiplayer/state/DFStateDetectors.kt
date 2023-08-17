@@ -13,9 +13,8 @@ import io.github.homchom.recode.lifecycle.RModule
 import io.github.homchom.recode.lifecycle.module
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.multiplayer.*
-import io.github.homchom.recode.multiplayer.event.LocateMessage
-import io.github.homchom.recode.multiplayer.event.ProfileMessage
-import io.github.homchom.recode.multiplayer.event.SupportTimeRequester
+import io.github.homchom.recode.multiplayer.message.CodeMessages
+import io.github.homchom.recode.multiplayer.message.StateMessages
 import io.github.homchom.recode.ui.matchesUnstyled
 import io.github.homchom.recode.ui.unstyle
 import io.github.homchom.recode.util.Case
@@ -72,7 +71,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>> {
         trial(JoinDFDetector, Unit) { info, _ ->
             suspending {
                 val permissions = module.async {
-                    val message = ProfileMessage.request(mc.player!!.username, true)
+                    val message = StateMessages.Profile.requester.request(mc.player!!.username, true)
                     PermissionGroup(message.ranks)
                 }
 
@@ -116,7 +115,8 @@ object DFStateDetectors : StateListenable<Case<DFState?>> {
                     regex.matchesUnstyled(text)
                 }
 
-                requireTrue(SupportTimeRequester.request(Unit, true).content != null)
+                val supportTime = CodeMessages.SupportTime.requester.request(Unit, true).duration
+                requireTrue(supportTime != null)
                 Case(currentDFState!!.withSession(session))
             }
         }
@@ -153,7 +153,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>> {
 
     private suspend fun TrialScope.locate() =
         mc.player?.run {
-            val message = LocateMessage.request(username, true)
+            val message = StateMessages.Locate.requester.request(username, true)
             message.state
         } ?: fail()
 }

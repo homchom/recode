@@ -1,4 +1,4 @@
-package io.github.homchom.recode.multiplayer.event
+package io.github.homchom.recode.multiplayer.message
 
 import io.github.homchom.recode.event.Detector
 import io.github.homchom.recode.event.trial.detector

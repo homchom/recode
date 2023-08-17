@@ -4,8 +4,8 @@ import io.github.homchom.recode.event.*
 import io.github.homchom.recode.event.trial.detector
 import io.github.homchom.recode.event.trial.trial
 import io.github.homchom.recode.mc
-import io.github.homchom.recode.multiplayer.event.ActiveBoosterMessage
-import io.github.homchom.recode.multiplayer.event.LocateMessage
+import io.github.homchom.recode.multiplayer.message.ActiveBoosterMessage
+import io.github.homchom.recode.multiplayer.message.StateMessages
 import io.github.homchom.recode.multiplayer.state.Node
 import io.github.homchom.recode.multiplayer.state.ipMatchesDF
 import io.github.homchom.recode.multiplayer.state.isOnDF
@@ -63,10 +63,10 @@ object JoinDFDetector :
                     patchRegex.matchEntireUnstyled(text)?.groupValues?.get(1)
                 }
 
-                val node = LocateMessage.request(mc.player!!.username, true).state.node
+                val locateMessage = StateMessages.Locate.requester.request(mc.player!!.username, true)
 
                 val canTip = tipMessage.any { (message) -> message?.canTip ?: false }
-                JoinDFInfo(node, patch, canTip)
+                JoinDFInfo(locateMessage.state.node, patch, canTip)
             }
         })
 
