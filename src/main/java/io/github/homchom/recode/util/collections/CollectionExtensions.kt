@@ -1,6 +1,11 @@
 package io.github.homchom.recode.util.collections
 
 /**
+ * Adds and returns [element] to this collection.
+ */
+fun <T, S : T> MutableCollection<T>.with(element: S) = element.also(::add)
+
+/**
  * Maps this list into an [Array].
  *
  * @see map

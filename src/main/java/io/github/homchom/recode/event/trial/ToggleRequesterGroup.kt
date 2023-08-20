@@ -2,9 +2,7 @@ package io.github.homchom.recode.event.trial
 
 import io.github.homchom.recode.event.Listenable
 import io.github.homchom.recode.event.Requester
-import io.github.homchom.recode.event.RequesterModule
 import io.github.homchom.recode.lifecycle.ModuleDetail
-import io.github.homchom.recode.lifecycle.ModuleFlavor
 import io.github.homchom.recode.lifecycle.module
 import io.github.homchom.recode.util.unitOrNull
 import kotlinx.coroutines.Dispatchers
@@ -17,7 +15,7 @@ import kotlinx.coroutines.launch
  * runs the request again. Prefer explicit toggle requests without false positives when possible.
  *
  * If this function is given a trial with a [io.github.homchom.recode.event.Validated] basis, the base context
- * will be hidden when needed to avoid duplicate notifications (see [Trial.Hideable]).
+ * should be hidden when needed to avoid duplicate notifications (see [TrialScope.hidden]).
  *
  * @param trial Should yield a true result if the state is enabled, and false if it is disabled.
  *
@@ -37,9 +35,9 @@ fun <T> toggleRequesterGroup(
  * Each requester returns a [Boolean], representing the actual detected state (as opposed to the expected state).
  */
 sealed interface ToggleRequesterGroup<T : Any> {
-    val toggle: RequesterModule<T, Unit>
-    val enable: RequesterModule<T, Unit>
-    val disable: RequesterModule<T, Unit>
+    val toggle: Requester<T, Unit>
+    val enable: Requester<T, Unit>
+    val disable: Requester<T, Unit>
 }
 
 private class NaiveToggle<T>(
@@ -47,13 +45,13 @@ private class NaiveToggle<T>(
     lifecycle: Listenable<*>,
     trial: RequesterTrial<T, Boolean>
 ) : ToggleRequesterGroup<T & Any> {
-    override val toggle: RequesterModule<T & Any, Unit>
-    override val enable: RequesterModule<T & Any, Unit>
-    override val disable: RequesterModule<T & Any, Unit>
+    override val toggle: Requester<T & Any, Unit>
+    override val enable: Requester<T & Any, Unit>
+    override val disable: Requester<T & Any, Unit>
 
     init {
-        fun detail(desiredState: Boolean?, requester: () -> Requester<T & Any, Unit>) = ModuleFlavor { module ->
-            val delegate = requesterDetail(name, lifecycle, shortCircuitTrial(
+        fun impl(desiredState: Boolean?, reference: () -> Requester<T & Any, Unit>) =
+            requester(name, lifecycle, shortCircuitTrial(
                 trial.results,
                 trial.defaultInput,
                 start = { input ->
@@ -68,19 +66,16 @@ private class NaiveToggle<T>(
                         val state = supplier.supplyIn(this, input, isRequest, ::retry)?.await()
                         if (state != null && retry(state, isRequest)) {
                             retryModule.launch(Dispatchers.Default) {
-                                requester().requestFrom(this@suspending, input!!)
+                                reference().requestFrom(this@suspending, input!!, isRequest)
                             }
                         }
                     }
                 }
             ))
 
-            delegate.applyTo(module)
-        }
-
-        toggle = module(detail(null, ::toggle))
-        enable = module(detail(true, ::enable))
-        disable = module(detail(false, ::disable))
+        toggle = impl(null, ::toggle)
+        enable = impl(true, ::enable)
+        disable = impl(false, ::disable)
     }
 
     private val retryModule = module(ModuleDetail.Exposed) { module ->

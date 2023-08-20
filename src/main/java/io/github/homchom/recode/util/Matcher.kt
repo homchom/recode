@@ -33,10 +33,5 @@ value class MatcherList<T, R : Any> private constructor(
 ) : Matcher<T, R>, MutableList<Matcher<T, R>> by elements {
     constructor() : this(mutableListOf())
 
-    /**
-     * Adds and returns [matcher] as an element.
-     */
-    fun with(matcher: Matcher<T, R>) = matcher.also(::add)
-
     override fun match(input: T) = firstNotNullOfOrNull { it.match(input) }
 }

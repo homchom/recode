@@ -11,11 +11,13 @@ import kotlinx.coroutines.flow.flow
  */
 inline fun <T, R> Listenable<T>.transform(crossinline transform: suspend FlowCollector<R>.(T) -> Unit) =
     object : Listenable<R> {
-        override val dependency by this@transform::dependency
+        override val isEnabled by this@transform::isEnabled
 
-        override fun getNotificationsFrom(module: RModule) = flow {
-            this@transform.getNotificationsFrom(module).collect { transform(it) }
+        override val notifications = flow {
+            this@transform.notifications.collect { transform(it) }
         }
+
+        override fun extend(vararg parents: RModule) = this@transform.extend(*parents)
     }
 
 /**

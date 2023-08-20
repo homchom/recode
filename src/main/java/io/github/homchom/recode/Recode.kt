@@ -6,7 +6,6 @@ import io.github.homchom.recode.feature.AutomationFeatureGroup
 import io.github.homchom.recode.feature.SocialFeatureGroup
 import io.github.homchom.recode.feature.VisualFeatureGroup
 import io.github.homchom.recode.lifecycle.EntrypointDetail
-import io.github.homchom.recode.lifecycle.ModuleUnsafe
 import io.github.homchom.recode.lifecycle.module
 import io.github.homchom.recode.mod.commands.CommandHandler
 import io.github.homchom.recode.mod.config.Config
@@ -83,10 +82,9 @@ object Recode : ModContainer {
     private val container by lazy { FabricLoader.getInstance().getModContainer(MOD_ID).get() }
 
     /**
-     * Initializes recode. This should only be called once, from an entrypoint.
+     * Initializes the mod. This should only be called once, from an entrypoint.
      */
-    @ModuleUnsafe
-    fun initialize() = recodeModule.enable()
+    fun initialize() = recodeModule.assert()
 
     override fun getMetadata(): ModMetadata = container.metadata
     override fun getRootPaths(): List<Path> = container.rootPaths

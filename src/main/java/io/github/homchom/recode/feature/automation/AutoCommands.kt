@@ -3,7 +3,7 @@ package io.github.homchom.recode.feature.automation
 import io.github.homchom.recode.event.Listenable
 import io.github.homchom.recode.feature.Feature
 import io.github.homchom.recode.feature.feature
-import io.github.homchom.recode.lifecycle.CoroutineModule
+import io.github.homchom.recode.lifecycle.ExposedModule
 import io.github.homchom.recode.mod.config.Config
 import io.github.homchom.recode.multiplayer.*
 import io.github.homchom.recode.multiplayer.state.*
@@ -72,7 +72,7 @@ val FAutoWand = autoCommand("/wand", DFStateDetectors.ChangeMode) { (new) ->
 private inline fun <T> autoCommand(
     name: String,
     event: Listenable<T>,
-    crossinline body: CoroutineModule.(T) -> Unit
+    crossinline body: ExposedModule.(T) -> Unit
 ): Feature {
     return feature("Auto /$name") { module ->
         module.onEnable {

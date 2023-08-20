@@ -1,21 +1,16 @@
 package io.github.homchom.recode.event
 
-import io.github.homchom.recode.lifecycle.CoroutineModule
-import io.github.homchom.recode.lifecycle.GlobalModule
 import io.github.homchom.recode.lifecycle.RModule
+import io.github.homchom.recode.util.InConsumer
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import net.fabricmc.fabric.api.event.Event
-import java.util.function.Consumer
 import kotlin.time.Duration
-
-/**
- * @see ResultListenable
- */
-typealias StateListenable<T> = ResultListenable<T, T?>
 
 typealias EventInvoker<T> = (context: T) -> Unit
 
@@ -25,8 +20,9 @@ typealias EventInvoker<T> = (context: T) -> Unit
  * based on another Listenable.
  *
  * Listenable is based on the [Flow] API, but the standard [listenEachFrom] method does not allow for
- * suspension. When working with [getNotificationsFrom] and the underlying Flow, collectors generally should
- * not suspend because Listenable implementations should be conflated.
+ * suspension. When working with [notifications] and the underlying Flow, collectors generally should
+ * not suspend because Listenable implementations should be conflated. Listenable objects are also themselves
+ * [RModule] implementations, enabled if (and only if) `notifications` has any subscribers.
  *
  * @param T The context type of each invocation. Context includes return values and can therefore be mutated
  * (before the first suspension point). These types are **not** usually thread-safe, so be careful when mutating
@@ -36,51 +32,50 @@ typealias EventInvoker<T> = (context: T) -> Unit
  * @see WrappedEvent
  * @see Detector
  */
-interface Listenable<T> {
+interface Listenable<out T> : RModule {
     /**
-     * A coupled [RModule] that is enabled if (and only if) any listeners are running.
-     */
-    val dependency: RModule
-
-    /**
-     * Gets the [Flow] of this object's notifications.
+     * The [Flow] of this object's notifications.
      *
-     * Implementations of this **must** obey the invariant that [dependency] is proper.
-     *
-     * @param module The module accessing the flow.
+     * Implementations of this **must** obey the [RModule] invariant described in
+     * the [Listenable] documentation.
      */
-    fun getNotificationsFrom(module: RModule): Flow<T>
-
-    /**
-     * Adds a listener, running [block] on the object's notifications.
-     *
-     * @see getNotificationsFrom
-     */
-    fun listenFrom(module: CoroutineModule, block: Flow<T>.() -> Flow<T>) =
-        getNotificationsFrom(module).block().launchIn(module)
+    val notifications: Flow<T>
 
     /**
      * Adds a listener, running [action] for each notification.
      *
      * @see listenFrom
-     * @see getNotificationsFrom
+     * @see notifications
      */
-    fun listenEachFrom(module: CoroutineModule, action: (T) -> Unit) =
-        listenFrom(module) { onEach(action) }
+    fun listenEachFrom(scope: CoroutineScope, action: (T) -> Unit) =
+        listenFrom(scope) { onEach(action) }
 
     @Deprecated("Only for use in legacy Java code", ReplaceWith("TODO()"))
     @DelicateCoroutinesApi
-    fun register(action: Consumer<T>) = listenEachFrom(GlobalModule) { action.accept(it) }
+    fun register(action: InConsumer<T>) = listenEachFrom(GlobalScope) { action.accept(it) }
 }
+
+/**
+ * Adds a listener, running [block] on the object's notifications.
+ *
+ * @see Listenable.notifications
+ */
+fun <T> Listenable<T>.listenFrom(scope: CoroutineScope, block: Flow<T>.() -> Flow<T>) =
+    notifications.block().launchIn(scope)
 
 /**
  * A [Listenable] with a result of type [R].
  *
- * @property previous A [StateFlow] of the previous invocations' results.
+ * @property previous A [StateFlow] of the previous invocation's result.
  */
-interface ResultListenable<T, R> : Listenable<T> {
+interface ResultListenable<out T, out R> : Listenable<T> {
     val previous: StateFlow<R>
 }
+
+/**
+ * @see ResultListenable
+ */
+interface StateListenable<out T : Any> : ResultListenable<T, T?>
 
 /**
  * A custom (unbuffered) [ResultListenable] event that can be [run]. Event contexts are transformed into results,
@@ -152,15 +147,3 @@ interface Requester<T : Any, R : Any> : Detector<T, R> {
      */
     suspend fun requestFrom(module: RModule, input: T, hidden: Boolean = false): R
 }
-
-/**
- * @see Detector
- * @see RModule
- */
-interface DetectorModule<T : Any, R : Any> : Detector<T, R>, RModule
-
-/**
- * @see Requester
- * @see RModule
- */
-interface RequesterModule<T : Any, R : Any> : DetectorModule<T, R>, Requester<T, R>

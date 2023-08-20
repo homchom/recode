@@ -1,16 +1,16 @@
 package io.github.homchom.recode.lifecycle
 
 import io.github.homchom.recode.RecodeDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * Builds an [RModule] of flavor [flavor].
  *
  * @see ModuleFlavor
  */
-fun <T : RModule> module(flavor: ModuleFlavor<T>) = flavor.applyTo(WeakModule())
+fun <T : RModule> module(flavor: ModuleFlavor<T>) = flavor.applyTo(AssertiveModule())
 
 /**
  * Builds an [RModule] of flavor [flavor] with subsequent builder [builder].
@@ -20,52 +20,62 @@ fun <T : RModule> module(flavor: ModuleFlavor<T>) = flavor.applyTo(WeakModule())
 fun <T : RModule, R : RModule> module(flavor: ModuleFlavor<T>, builder: ModuleDetail<T, R>) =
     module(flavor + builder)
 
-private class WeakModule : ExposedModule {
-    override var hasBeenLoaded = false
-        private set
-    override var isEnabled = false
-        private set
+private class AssertiveModule : ExposedModule {
+    override val isEnabled = MutableStateFlow(false)
+    private val hasBeenLoaded = AtomicBoolean(false)
 
     private val loadActions = mutableListOf<ModuleAction>()
     private val enableActions = mutableListOf<ModuleAction>()
     private val disableActions = mutableListOf<ModuleAction>()
 
-    override val children get() = _children.toSet()
-    private val _children = mutableSetOf<ExposedModule>()
+    private val parents = mutableSetOf<RModule>()
 
-    val usages: Set<RModule> get() = _usages
-    private val _usages = mutableSetOf<RModule>()
+    private var isAsserted = false
 
-    private var coroutineScope: CoroutineScope? = null
+    private var coroutineScope = newCoroutineScope().apply {
+        cancel("ExposedModule CoroutineScopes start as cancelled")
+    }
 
-    override val coroutineContext get() = coroutineScope?.coroutineContext
-        ?: error("Module is disabled")
+    override val coroutineContext get() = coroutineScope.coroutineContext
 
     private fun newCoroutineScope() = CoroutineScope(RecodeDispatcher + SupervisorJob())
 
+    @OptIn(DelicateCoroutinesApi::class)
+    override fun extend(vararg parents: RModule) {
+        for (parent in parents) {
+            this.parents += parent
+            GlobalScope.launch {
+                parent.isEnabled.collect { current ->
+                    if (current) {
+                        enable(false)
+                    } else if (!isAsserted && parents.none { it.isEnabled.value }) {
+                        disable(false)
+                    }
+                }
+            }
+        }
+    }
+
     override fun load() {
-        if (hasBeenLoaded) return
-        hasBeenLoaded = true
+        if (!hasBeenLoaded.compareAndSet(false, true)) return
         for (action in loadActions) action()
     }
 
-    @OptIn(ModuleUnsafe::class)
-    override fun enable() {
-        if (isEnabled) return
+    override fun assert() = enable(true)
+    override fun unassert() = disable(true)
+
+    private fun enable(assertion: Boolean) = synchronized(this) {
+        if (!isEnabled.compareAndSet(expect = false, update = true)) return
         load()
-        for (child in _children) child.addUsage(this)
         coroutineScope = newCoroutineScope()
-        isEnabled = true
+        isAsserted = assertion
         for (action in enableActions) action()
     }
 
-    @OptIn(ModuleUnsafe::class)
-    override fun disable() {
-        if (!isEnabled) return
-        for (child in _children) child.removeUsage(this)
-        coroutineScope!!.cancel("Module disabled")
-        coroutineScope = null
-        isEnabled = false
+    private fun disable(assertion: Boolean) = synchronized(this) {
+        if (!isEnabled.compareAndSet(expect = true, update = false)) return
+        coroutineScope.cancel("Module disabled")
+        isAsserted = !assertion
         for (action in disableActions) action()
     }
 
@@ -79,35 +89,5 @@ private class WeakModule : ExposedModule {
 
     override fun onDisable(action: ModuleAction) {
         disableActions += action
-    }
-
-    @OptIn(ModuleUnsafe::class)
-    override fun addChild(child: ExposedModule) {
-        check(child !in _children) { "Module already has this child" }
-        _children += child
-        if (isEnabled) child.addUsage(this)
-    }
-
-    override fun equals(other: Any?) = super.equals(other)
-
-    override fun hashCode() = super.hashCode()
-
-    @OptIn(ModuleUnsafe::class)
-    override fun extend(vararg parents: RModule) {
-        for (parent in parents) {
-            if (this !in parent.children) parent.addChild(this)
-        }
-    }
-
-    @ModuleUnsafe
-    override fun addUsage(module: ExposedModule) {
-        if (!isEnabled) enable()
-        _usages += module
-    }
-
-    @ModuleUnsafe
-    override fun removeUsage(module: ExposedModule) {
-        _usages -= module
-        if (usages.isEmpty()) disable()
     }
 }

@@ -9,7 +9,7 @@ import io.github.homchom.recode.event.filterIsInstance
 import io.github.homchom.recode.event.trial.TrialScope
 import io.github.homchom.recode.event.trial.detector
 import io.github.homchom.recode.event.trial.trial
-import io.github.homchom.recode.lifecycle.RModule
+import io.github.homchom.recode.lifecycle.ModuleDetail
 import io.github.homchom.recode.lifecycle.module
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.multiplayer.*
@@ -35,15 +35,15 @@ val currentDFState get() = DFStateDetectors.previous.value?.content
 
 val isOnDF get() = currentDFState != null
 
-// TODO: enable and disable JoinDFDetector and make this a child
-object DFStateDetectors : StateListenable<Case<DFState?>> {
-    private val group = GroupListenable<Case<DFState?>>()
+private val eventGroup = GroupListenable<Case<DFState?>>()
 
+// TODO: enable and disable JoinDFDetector and make this a child
+object DFStateDetectors : StateListenable<Case<DFState?>> by eventGroup {
     private val scoreboardNodeRegex = Regex("""(?<node>.+) - .+""")
 
     private val teleportEvent = ReceiveGamePacketEvent.filterIsInstance<ClientboundPlayerPositionPacket>()
 
-    val EnterSpawn = group.add(detector("spawn",
+    val EnterSpawn = eventGroup.add(detector("spawn",
         trial(teleportEvent, Unit) { _, _ ->
             enforce { requireTrue(isOnDF) }
 
@@ -70,7 +70,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>> {
         },
         trial(JoinDFDetector, Unit) { info, _ ->
             suspending {
-                val permissions = module.async {
+                val permissions = exposed.async {
                     val message = StateMessages.Profile.requester.request(mc.player!!.username, true)
                     PermissionGroup(message.ranks)
                 }
@@ -80,7 +80,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>> {
         }
     ))
 
-    val ChangeMode = group.add(detector("mode change",
+    val ChangeMode = eventGroup.add(detector("mode change",
         trial(ReceiveChatMessageEvent, Unit) { (message), _ ->
             enforce { requireTrue(isOnDF) }
             suspending {
@@ -93,7 +93,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>> {
         }
     ))
 
-    val StartSession = group.add(detector("session start",
+    val StartSession = eventGroup.add(detector("session start",
         trial(ReceiveChatMessageEvent, Unit) { (message), _ ->
             enforce { requireTrue(isOnDF) }
 
@@ -122,7 +122,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>> {
         }
     ))
 
-    val EndSession = group.add(detector("session end",
+    val EndSession = eventGroup.add(detector("session end",
         trial(ReceiveChatMessageEvent, Unit) { (message), _ ->
             enforce { requireTrue(isOnDF) }
 
@@ -140,16 +140,14 @@ object DFStateDetectors : StateListenable<Case<DFState?>> {
         }
     ))
 
-    val LeaveServer = group.add(detector("DF leave",
+    val LeaveServer = eventGroup.add(detector("DF leave",
         trial(DisconnectFromServerEvent, Unit) { _, _ -> instant(Case.ofNull) }
     ))
 
-    private val module = module(group)
-
-    override val dependency by module::dependency
-    override val previous by module::previous
-
-    override fun getNotificationsFrom(module: RModule) = this.module.getNotificationsFrom(module)
+    private val exposed = module(ModuleDetail.Exposed) { module ->
+        module.extend(eventGroup)
+        module
+    }
 
     private suspend fun TrialScope.locate() =
         mc.player?.run {

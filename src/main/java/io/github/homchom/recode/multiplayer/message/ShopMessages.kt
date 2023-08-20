@@ -3,6 +3,7 @@ package io.github.homchom.recode.multiplayer.message
 import io.github.homchom.recode.event.Detector
 import io.github.homchom.recode.event.trial.detector
 import io.github.homchom.recode.event.trial.trial
+import io.github.homchom.recode.logInfo
 import io.github.homchom.recode.multiplayer.BOOSTER_ARROW
 import io.github.homchom.recode.multiplayer.ReceiveChatMessageEvent
 import io.github.homchom.recode.multiplayer.TOKEN_NOTCH_CHAR
@@ -17,6 +18,7 @@ data class ActiveBoosterMessage(val player: String, val canTip: Boolean) {
         ReceiveChatMessageEvent,
         Unit,
         tests = { (message), _ ->
+            logInfo("ActiveBoosterMessage tests")
             val player = ActiveBoosterMessage.mainRegex.matchEntireUnstyled(message)!!.groupValues[1]
             val subsequent = ReceiveChatMessageEvent.add()
 

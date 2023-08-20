@@ -47,7 +47,7 @@ operator fun <T : RModule, S : RModule, R : RModule> ModuleDetail<T, S>.plus(oth
  */
 val EntrypointDetail get() = ModuleDetail<ExposedModule, ExposedModule> { module ->
     module.onEnable {
-        QuitGameEvent.listenEach { module.disable() }
+        QuitGameEvent.listenEach { module.unassert() }
     }
 
     module

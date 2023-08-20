@@ -3,37 +3,25 @@ package io.github.homchom.recode.lifecycle
 import io.github.homchom.recode.event.Detector
 import io.github.homchom.recode.event.Listenable
 import io.github.homchom.recode.event.Requester
-import io.github.homchom.recode.util.KeyHashable
+import io.github.homchom.recode.event.listenFrom
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
 typealias ModuleAction = ExposedModule.() -> Unit
 
 /**
  * A group of code with dependencies ("children") and that can be loaded, enabled, and disabled.
  *
- * Modules can also [extend] and [depend] on other modules; when all of a module's "parents" are disabled,
- * it disables as well.
+ * Modules can also [depend] on and [extend] other modules; in general, when all of a module's "parents" are
+ * disabled, it disables as well. However, RModule implementations should be *assertive*, meaning that an explicit
+ * call to [ExposedModule.assert] will prevent automatic disabling until [ExposedModule.unassert] is also called
+ * explicitly.
  *
  * @see module
  */
-// TODO: revisit extend-depend scheme and safety (and replace children property with parents)
-// TODO: figure out replacement for strong modules
-interface RModule : KeyHashable {
-    val children: Set<RModule>
-
-    val hasBeenLoaded: Boolean
-    val isEnabled: Boolean
-
-    @ModuleUnsafe
-    fun addChild(child: ExposedModule)
-
-    /**
-     * Adds [parents] as parents of the module.
-     */
-    fun extend(vararg parents: RModule)
+interface RModule {
+    val isEnabled: StateFlow<Boolean>
 
     /**
      * Adds [children] as children of the module.
@@ -41,6 +29,11 @@ interface RModule : KeyHashable {
     fun depend(vararg children: RModule) {
         for (child in children) child.extend(this)
     }
+
+    /**
+     * Adds [parents] as parents of the module.
+     */
+    fun extend(vararg parents: RModule)
 
     /**
      * @see Detector.detectFrom
@@ -61,35 +54,19 @@ interface RModule : KeyHashable {
      *
      * @see Requester.requestFrom
      */
-    suspend fun <R : Any> Requester<Unit, R>.request() = request(Unit)
+    suspend fun <R : Any> Requester<Unit, R>.request(): R = request(Unit)
 }
 
 /**
- * An [RModule] with a [CoroutineScope].
- */
-interface CoroutineModule : RModule, CoroutineScope {
-    val <T> Listenable<T>.notifications get() = getNotificationsFrom(this@CoroutineModule)
-
-    /**
-     * @see Listenable.listenFrom
-     */
-    fun <T> Listenable<T>.listen(block: Flow<T>.() -> Flow<T>) =
-        listenFrom(this@CoroutineModule, block)
-
-    /**
-     * @see Listenable.listenEachFrom
-     */
-    fun <T> Listenable<T>.listenEach(block: (T) -> Unit) =
-        listenEachFrom(this@CoroutineModule, block)
-}
-
-/**
- * A [CoroutineModule] that can listen for [Listenable] notifications, with exposed functions
- * for mutating and decorating the module. This should be not be used to create top-level modules directly.
+ * A [RModule] and [CoroutineScope] with exposed functions for mutating and decorating the module.
+ * This should be not be used to create top-level modules directly.
+ *
+ * Implementations of ExposedModule should ensure that their CoroutineScopes are cancelled at initialization,
+ * to defend against erroneous coroutine launching before the first invocation of [assert].
  *
  * @see ModuleDetail
  */
-interface ExposedModule : CoroutineModule {
+interface ExposedModule : RModule, CoroutineScope {
     /**
      * Loads the module for the first time. If the module has already been loaded, this function has no effect.
      */
@@ -98,12 +75,12 @@ interface ExposedModule : CoroutineModule {
     /**
      * Enables the module if it is disabled. If the module has not been loaded, [load] is also called.
      */
-    fun enable()
+    fun assert()
 
     /**
-     * Disables the module if it is enabled.
+     * Disables the module if it is enabled and none of its parents are enabled.
      */
-    fun disable()
+    fun unassert()
 
     /**
      * Registers [action] to be invoked when the module loads.
@@ -121,47 +98,14 @@ interface ExposedModule : CoroutineModule {
     fun onDisable(action: ModuleAction)
 
     /**
-     * Tells this module that [module] is currently using it.
+     * @see Listenable.listenFrom
      */
-    @ModuleUnsafe
-    fun addUsage(module: ExposedModule)
+    fun <T> Listenable<T>.listen(block: Flow<T>.() -> Flow<T>) =
+        listenFrom(this@ExposedModule, block)
 
     /**
-     * Tells this module that [module] is not currently using it.
+     * @see Listenable.listenEachFrom
      */
-    @ModuleUnsafe
-    fun removeUsage(module: ExposedModule)
+    fun <T> Listenable<T>.listenEach(block: (T) -> Unit) =
+        listenEachFrom(this@ExposedModule, block)
 }
-
-/**
- * An [CoroutineModule] that is always enabled. Don't use inside another module, and prefer using more localized
- * modules with properly confined coroutine scopes.
- *
- * @see kotlinx.coroutines.CoroutineScope
- */
-@DelicateCoroutinesApi
-data object GlobalModule : CoroutineModule {
-    override val children get() = _children.toSet()
-    private val _children = mutableSetOf<RModule>()
-
-    override val hasBeenLoaded get() = true
-    override val isEnabled get() = true
-    override val coroutineContext get() = GlobalScope.coroutineContext
-
-    @ModuleUnsafe
-    override fun addChild(child: ExposedModule) {
-        if (child !in _children) {
-            _children += child
-            child.enable()
-        }
-    }
-
-    override fun extend(vararg parents: RModule) {}
-}
-
-/**
- * An opt-in annotation denoting that something mutates global active state of an [ExposedModule].
- */
-@RequiresOptIn("This unsafely mutates global active state of a module and should only be " +
-        "used by RModule implementations, with caution")
-annotation class ModuleUnsafe

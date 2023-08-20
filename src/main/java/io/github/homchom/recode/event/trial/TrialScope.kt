@@ -2,7 +2,6 @@ package io.github.homchom.recode.event.trial
 
 import io.github.homchom.recode.DEFAULT_TIMEOUT_DURATION
 import io.github.homchom.recode.event.Listenable
-import io.github.homchom.recode.lifecycle.CoroutineModule
 import io.github.homchom.recode.lifecycle.RModule
 import io.github.homchom.recode.util.NullableScope
 import io.github.homchom.recode.util.unitOrNull
@@ -33,9 +32,9 @@ import kotlin.time.Duration
 class TrialScope @DelicateCoroutinesApi constructor(
     private val module: RModule,
     private val nullableScope: NullableScope,
-    private val coroutineScope: CoroutineScope,
+    val coroutineScope: CoroutineScope,
     val hidden: Boolean = false,
-) : CoroutineModule, RModule by module {
+) : RModule by module {
     /**
      * A list of blocking rules that are tested after most trial suspensions, failing the trial on a failed test.
      *
@@ -44,8 +43,6 @@ class TrialScope @DelicateCoroutinesApi constructor(
     val rules: List<() -> Unit> get() = _rules
 
     private val _rules = mutableListOf<() -> Unit>()
-
-    override val coroutineContext get() = coroutineScope.coroutineContext
 
     /**
      * An alias for [UInt.MAX_VALUE], used when a test should run as long as possible (in an awaiting fashion).
@@ -75,13 +72,11 @@ class TrialScope @DelicateCoroutinesApi constructor(
     }
 
     /**
-     * @see notifications
      * @see Flow.add
      */
     fun <T> Listenable<T>.add() = notifications.add()
 
     /**
-     * @see notifications
      * @see Flow.add
      */
     fun <T : Any> Listenable<T>.addOptional() = notifications.addOptional()
@@ -142,7 +137,7 @@ class TrialScope @DelicateCoroutinesApi constructor(
         coroutineContext: CoroutineContext = EmptyCoroutineContext,
         crossinline test: (C) -> T?
     ) {
-        launch(coroutineContext, CoroutineStart.UNDISPATCHED) {
+        coroutineScope.launch(coroutineContext, CoroutineStart.UNDISPATCHED) {
             channel.consumeEach { test(it)!! }
         }
         yield() // fast-fail

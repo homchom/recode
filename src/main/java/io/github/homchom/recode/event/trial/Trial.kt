@@ -171,7 +171,7 @@ private open class BasedTrial<T, B, R : Any>(
 
             // handle HideCallbacks
             if (baseContext is Validated && hidden != null) result?.invokeOnCompletion { exception ->
-                if (exception == null) return@invokeOnCompletion
+                if (exception != null) return@invokeOnCompletion
                 val completed = result.getCompleted()
                 if (completed != null && hidden.invoke(completed, isRequest)) {
                     baseContext.invalidate()

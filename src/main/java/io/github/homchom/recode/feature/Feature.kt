@@ -36,11 +36,11 @@ fun featureGroup(name: String, vararg features: Feature) =
         }
 
         module.onEnable {
-            for (feature in features) feature.enable()
+            for (feature in features) feature.assert()
         }
 
         module.onDisable {
-            for (feature in features) feature.disable()
+            for (feature in features) feature.unassert()
         }
 
         FeatureGroup(name, features.toList(), module)
