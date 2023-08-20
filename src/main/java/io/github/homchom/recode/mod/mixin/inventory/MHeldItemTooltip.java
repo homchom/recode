@@ -62,11 +62,12 @@ public class MHeldItemTooltip {
             var font = Minecraft.getInstance().font;
 
             // render scope
-            if (type.equals("var") && renderVarScope) {
+            var scopeName = varData.get("scope").getAsString();
+            if (type.equals("var") && renderVarScope && scopes.containsKey(scopeName)) {
                 callbackInfo.cancel();
 
                 var name = varData.get("name").getAsString();
-                var scope = scopes.get(varData.get("scope").getAsString());
+                var scope = scopes.get(scopeName);
 
                 int x1 = (scaledWidth - font.width(Component.literal(name))) / 2;
                 int y1 = scaledHeight - 45;
