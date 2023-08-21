@@ -1,6 +1,7 @@
 package io.github.homchom.recode.feature.automation
 
 import io.github.homchom.recode.event.Listenable
+import io.github.homchom.recode.event.request
 import io.github.homchom.recode.feature.Feature
 import io.github.homchom.recode.feature.feature
 import io.github.homchom.recode.lifecycle.ExposedModule

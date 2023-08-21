@@ -101,8 +101,7 @@ private open class TrialDetector<T, R : Any>(
     override val notifications by event::notifications
     override val previous by event::previous
 
-    override fun detectFrom(module: RModule, input: T?, hidden: Boolean) =
-        responseFlow(input, false, hidden)
+    override fun detect(input: T?, hidden: Boolean) = responseFlow(input, false, hidden)
 
     protected fun responseFlow(input: T?, isRequest: Boolean, hidden: Boolean) = flow {
         coroutineScope {
@@ -193,33 +192,32 @@ private class TrialRequester<T, R : Any>(
 
     private val _activeRequests = AtomicInteger(0)
 
-    override suspend fun requestFrom(module: RModule, input: T & Any, hidden: Boolean) =
-        withContext(NonCancellable) {
-            lifecycle.notifications
-                .onEach { cancel("${this@TrialRequester} lifecycle ended during a request") }
-                .launchIn(this)
+    override suspend fun request(input: T & Any, hidden: Boolean) = withContext(NonCancellable) {
+        lifecycle.notifications
+            .onEach { cancel("${this@TrialRequester} lifecycle ended during a request") }
+            .launchIn(this)
 
-            val detectChannel = responseFlow(input, true, hidden)
-                .filterNotNull()
-                .produceIn(this)
+        val detectChannel = responseFlow(input, true, hidden)
+            .filterNotNull()
+            .produceIn(this)
 
-            _activeRequests.incrementAndGet()
-            try {
-                delay(50.milliseconds) // https://github.com/PaperMC/Velocity/issues/909 TODO: remove
-                val response = start(input) ?: withTimeout(timeoutDuration) { detectChannel.receive() }
-                coroutineContext.cancelChildren()
-                response
-            } catch (timeout: TimeoutCancellationException) {
-                mc.sendSystemToast(
-                    translateText("multiplayer.recode.request_timeout.toast.title"),
-                    translateText("multiplayer.recode.request_timeout.toast")
-                )
-                logError("${debugString(input, hidden)} timed out after $timeoutDuration")
-                throw timeout
-            } finally {
-                _activeRequests.decrementAndGet()
-            }
+        _activeRequests.incrementAndGet()
+        try {
+            delay(50.milliseconds) // https://github.com/PaperMC/Velocity/issues/909 TODO: remove
+            val response = start(input) ?: withTimeout(timeoutDuration) { detectChannel.receive() }
+            coroutineContext.cancelChildren()
+            response
+        } catch (timeout: TimeoutCancellationException) {
+            mc.sendSystemToast(
+                translateText("multiplayer.recode.request_timeout.toast.title"),
+                translateText("multiplayer.recode.request_timeout.toast")
+            )
+            logError("${debugString(input, hidden)} timed out after $timeoutDuration")
+            throw timeout
+        } finally {
+            _activeRequests.decrementAndGet()
         }
+    }
 
     override fun toString() = "$name requester"
 }

@@ -66,7 +66,7 @@ private class NaiveToggle<T>(
                         val state = supplier.supplyIn(this, input, isRequest, ::retry)?.await()
                         if (state != null && retry(state, isRequest)) {
                             retryModule.launch(Dispatchers.Default) {
-                                reference().requestFrom(this@suspending, input!!, isRequest)
+                                reference().request(input!!, isRequest)
                             }
                         }
                     }

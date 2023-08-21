@@ -1,8 +1,6 @@
 package io.github.homchom.recode.lifecycle
 
-import io.github.homchom.recode.event.Detector
 import io.github.homchom.recode.event.Listenable
-import io.github.homchom.recode.event.Requester
 import io.github.homchom.recode.event.listenFrom
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -34,27 +32,6 @@ interface RModule {
      * Adds [parents] as parents of the module.
      */
     fun extend(vararg parents: RModule)
-
-    /**
-     * @see Detector.detectFrom
-     */
-    fun <T : Any, R : Any> Detector<T, R>.detect(input: T?, hidden: Boolean = false) =
-        detectFrom(this@RModule, input, hidden)
-
-    /**
-     * @throws kotlinx.coroutines.TimeoutCancellationException
-     *
-     * @see Requester.requestFrom
-     */
-    suspend fun <T : Any, R : Any> Requester<T, R>.request(input: T, hidden: Boolean = false) =
-        requestFrom(this@RModule, input, hidden)
-
-    /**
-     * @throws kotlinx.coroutines.TimeoutCancellationException
-     *
-     * @see Requester.requestFrom
-     */
-    suspend fun <R : Any> Requester<Unit, R>.request(): R = request(Unit)
 }
 
 /**

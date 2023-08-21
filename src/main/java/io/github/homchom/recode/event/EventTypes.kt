@@ -119,13 +119,13 @@ interface Detector<T : Any, out R : Any> : StateListenable<R> {
     val timeoutDuration: Duration
 
     /**
-     * Listens for basis invocations from [module] and returns a [Flow] of results.
+     * Listens for basis invocations and returns a [Flow] of results.
      *
      * @param hidden Tells the detector to invalidate certain "notification-like" intermediate event contexts
      * (see [io.github.homchom.recode.event.trial.TrialScope.hidden]). It is up to each detector to honor this
      * if applicable.
      */
-    fun detectFrom(module: RModule, input: T?, hidden: Boolean = false): Flow<R?>
+    fun detect(input: T?, hidden: Boolean = false): Flow<R?>
 }
 
 /**
@@ -143,7 +143,14 @@ interface Requester<T : Any, out R : Any> : Detector<T, R> {
      * @throws kotlinx.coroutines.TimeoutCancellationException if a non-null result is not detected in time
      * (as specified by [timeoutDuration]).
      *
-     * @see detectFrom
+     * @see detect
      */
-    suspend fun requestFrom(module: RModule, input: T, hidden: Boolean = false): R
+    suspend fun request(input: T, hidden: Boolean = false): R
 }
+
+/**
+ * @throws kotlinx.coroutines.TimeoutCancellationException
+ *
+ * @see Requester.request
+ */
+suspend fun <R : Any> Requester<Unit, R>.request(): R = request(Unit)
