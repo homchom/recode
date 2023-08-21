@@ -26,6 +26,16 @@ fun <T : RModule> module(name: String?, flavor: ModuleFlavor<T>) = flavor.applyT
 fun <T : RModule, R : RModule> module(name: String?, flavor: ModuleFlavor<T>, builder: ModuleDetail<T, R>) =
     module(name, flavor + builder)
 
+/**
+ * Builds a vanilla [RModule].
+ *
+ * @param name The module's name (used for debugging purposes).
+ *
+ * @see ModuleFlavor
+ * @see ModuleDetail.Vanilla
+ */
+fun module(name: String) = module(name, ModuleDetail.Vanilla)
+
 private class AssertiveModule(private val name: String?) : ExposedModule {
     override val isEnabled = MutableStateFlow(false)
     private val hasBeenLoaded = AtomicBoolean(false)

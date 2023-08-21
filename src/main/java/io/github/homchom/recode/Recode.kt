@@ -5,7 +5,9 @@ import com.google.gson.GsonBuilder
 import io.github.homchom.recode.feature.AutomationFeatureGroup
 import io.github.homchom.recode.feature.SocialFeatureGroup
 import io.github.homchom.recode.feature.VisualFeatureGroup
-import io.github.homchom.recode.lifecycle.EntrypointDetail
+import io.github.homchom.recode.lifecycle.ExposedModule
+import io.github.homchom.recode.lifecycle.ModuleDetail
+import io.github.homchom.recode.lifecycle.QuitGameEvent
 import io.github.homchom.recode.lifecycle.module
 import io.github.homchom.recode.mod.commands.CommandHandler
 import io.github.homchom.recode.mod.config.Config
@@ -150,6 +152,19 @@ object LegacyRecode {
 
     @JvmStatic
     fun error(message: String) = logError("[$MOD_NAME] $message")
+}
+
+/**
+ * A [ModuleDetail] for modules to be enabled by [entrypoints](https://fabricmc.net/wiki/documentation:entrypoint).
+ *
+ * @see module
+ */
+val EntrypointDetail get() = ModuleDetail<ExposedModule, ExposedModule> { module ->
+    module.onEnable {
+        QuitGameEvent.listenEach { module.unassert() }
+    }
+
+    module
 }
 
 fun logInfo(message: String) = logger.info("[$MOD_NAME] $message")
