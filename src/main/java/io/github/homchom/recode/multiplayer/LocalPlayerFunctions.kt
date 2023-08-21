@@ -1,28 +1,50 @@
 package io.github.homchom.recode.multiplayer
 
+import io.github.homchom.recode.RecodeDispatcher
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.ui.literalText
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import net.minecraft.client.multiplayer.ClientPacketListener
 import net.minecraft.client.player.LocalPlayer
 import net.minecraft.network.chat.Component
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * @throws IllegalStateException if there is no current player
  */
-fun sendMessage(message: Component) = asPlayer { sendSystemMessage(message) }
+fun displayMessage(message: Component) = asPlayer { displayClientMessage(message, false) }
 
 /**
  * @throws IllegalStateException if there is no current player
  */
-fun sendLiteralMessage(message: String) = sendMessage(literalText(message))
+fun displayLiteralMessage(message: String) = displayMessage(literalText(message))
 
 /**
  * @param command The command to send, without the leading slash.
  *
  * @throws IllegalStateException if there is no current player
  */
-fun sendCommand(command: String) = asPlayer { connection.sendUnsignedCommand(command) }
+fun sendCommand(command: String) = asPlayer { DelayedCommandSender.sendUnsigned(command, connection) }
 
 private inline fun <R> asPlayer(block: LocalPlayer.() -> R) = mc.player?.block()
-    ?: error("There is no current player to send a command as")
+    ?: error("There is no current player")
 
-val LocalPlayer.isFlightEnabled get() = abilities.mayfly
+// https://github.com/PaperMC/Velocity/issues/909 TODO: remove
+private object DelayedCommandSender {
+    private val queue = ArrayDeque<String>()
+
+    @OptIn(DelicateCoroutinesApi::class)
+    fun sendUnsigned(command: String, connection: ClientPacketListener) {
+        queue += command
+        if (queue.size == 1) GlobalScope.launch(RecodeDispatcher) {
+            while (queue.isNotEmpty()) {
+                connection.sendUnsignedCommand(queue.first())
+                delay(50.milliseconds)
+                queue.removeFirst()
+            }
+        }
+    }
+}

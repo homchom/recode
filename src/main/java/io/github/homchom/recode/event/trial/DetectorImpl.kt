@@ -21,7 +21,6 @@ import java.util.concurrent.CancellationException
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Creates a [Detector] that runs via one or more [DetectorTrial] objects.
@@ -203,7 +202,6 @@ private class TrialRequester<T, R : Any>(
 
         _activeRequests.incrementAndGet()
         try {
-            delay(50.milliseconds) // https://github.com/PaperMC/Velocity/issues/909 TODO: remove
             val response = start(input) ?: withTimeout(timeoutDuration) { detectChannel.receive() }
             coroutineContext.cancelChildren()
             response
