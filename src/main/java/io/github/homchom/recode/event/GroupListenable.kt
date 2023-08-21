@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger
 open class GroupListenable<T : Any> private constructor(
     private val events: MutableList<StateListenable<T>>
 ) : StateListenable<T>, List<StateListenable<T>> by events {
-    private val module = module(ModuleDetail.Exposed)
+    private val module = module(null, ModuleDetail.Exposed)
 
     override val isEnabled by module::isEnabled
 

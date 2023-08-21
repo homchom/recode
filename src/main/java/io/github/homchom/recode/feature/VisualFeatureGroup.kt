@@ -5,7 +5,7 @@ import io.github.homchom.recode.feature.visual.FCodeSearch
 import io.github.homchom.recode.feature.visual.FSignRenderDistance
 import io.github.homchom.recode.lifecycle.module
 
-val VisualFeatureGroup = module(featureGroup("Rendering",
+val VisualFeatureGroup = module("visual feature group", featureGroup("Visual",
     FBuiltInResourcePacks,
     FSignRenderDistance,
     FCodeSearch

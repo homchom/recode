@@ -4,7 +4,7 @@ import io.github.homchom.recode.event.*
 import io.github.homchom.recode.event.trial.detector
 import io.github.homchom.recode.event.trial.trial
 import io.github.homchom.recode.mc
-import io.github.homchom.recode.multiplayer.message.ActiveBoosterMessage
+import io.github.homchom.recode.multiplayer.message.ActiveBoosterInfo
 import io.github.homchom.recode.multiplayer.message.StateMessages
 import io.github.homchom.recode.multiplayer.state.Node
 import io.github.homchom.recode.multiplayer.state.ipMatchesDF
@@ -53,7 +53,7 @@ object JoinDFDetector :
             requireTrue(mc.currentServer.ipMatchesDF)
 
             val messages = ReceiveChatMessageEvent.add()
-            val tipMessage = ActiveBoosterMessage.detect(null).map(::Case).addOptional()
+            val tipMessage = ActiveBoosterInfo.detect(null).map(::Case).addOptional()
 
             val disconnect = DisconnectFromServerEvent.add()
             suspending {
@@ -63,7 +63,7 @@ object JoinDFDetector :
                     patchRegex.matchEntireUnstyled(text)?.groupValues?.get(1)
                 }
 
-                val locateMessage = StateMessages.Locate.requester.request(mc.player!!.username, true)
+                val locateMessage = StateMessages.Locate.request(mc.player!!.username, true)
 
                 val canTip = tipMessage.any { (message) -> message?.canTip ?: false }
                 JoinDFInfo(locateMessage.state.node, patch, canTip)

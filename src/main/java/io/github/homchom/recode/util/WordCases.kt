@@ -18,4 +18,5 @@ fun String.splitByHumps() = buildList {
         add(substring(substringStart, next))
         substringStart = next
     }
+    add(substring(substringStart, length))
 }

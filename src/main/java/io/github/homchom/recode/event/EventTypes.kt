@@ -1,7 +1,6 @@
 package io.github.homchom.recode.event
 
 import io.github.homchom.recode.lifecycle.RModule
-import io.github.homchom.recode.util.InConsumer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -10,6 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import net.fabricmc.fabric.api.event.Event
+import java.util.function.Consumer
 import kotlin.time.Duration
 
 typealias EventInvoker<T> = (context: T) -> Unit
@@ -52,7 +52,7 @@ interface Listenable<out T> : RModule {
 
     @Deprecated("Only for use in legacy Java code", ReplaceWith("TODO()"))
     @DelicateCoroutinesApi
-    fun register(action: InConsumer<T>) = listenEachFrom(GlobalScope) { action.accept(it) }
+    fun register(action: Consumer<in T>) = listenEachFrom(GlobalScope) { action.accept(it) }
 }
 
 /**
@@ -115,7 +115,7 @@ interface WrappedEvent<T, L> : Listenable<T> {
  *
  * @property timeoutDuration The maximum duration used in detection functions.
  */
-interface Detector<T : Any, R : Any> : StateListenable<R> {
+interface Detector<T : Any, out R : Any> : StateListenable<R> {
     val timeoutDuration: Duration
 
     /**
@@ -131,7 +131,7 @@ interface Detector<T : Any, R : Any> : StateListenable<R> {
 /**
  * A [Detector] that can execute code to request a result before detecting it.
  */
-interface Requester<T : Any, R : Any> : Detector<T, R> {
+interface Requester<T : Any, out R : Any> : Detector<T, R> {
     /**
      * The number of active, non-failed requests awaiting a result.
      */

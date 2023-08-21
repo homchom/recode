@@ -14,11 +14,9 @@ import java.util.Map;
 
 public class ConfigManager implements IManager<ConfigGroup> {
     private final List<ConfigGroup> groups = new ArrayList<>();
-    private static ConfigManager instance;
+    private static final ConfigManager instance = new ConfigManager();
 
-    public ConfigManager() {
-        instance = this;
-    }
+    private ConfigManager() {}
 
     @Override
     public void initialize() {

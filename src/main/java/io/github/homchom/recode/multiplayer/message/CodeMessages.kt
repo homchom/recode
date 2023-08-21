@@ -1,5 +1,6 @@
 package io.github.homchom.recode.multiplayer.message
 
+import io.github.homchom.recode.event.Requester
 import io.github.homchom.recode.multiplayer.sendCommand
 import io.github.homchom.recode.multiplayer.state.DFStateDetectors
 import io.github.homchom.recode.ui.equalsUnstyled
@@ -16,14 +17,14 @@ object CodeMessages {
     val parsers get() = arrayOf(SupportTime)
 
     data class SupportTime(val duration: Duration?) : ParsedMessage {
-        companion object : MessageParser {
-            val requester = ParsedMessage.requester<Unit, SupportTime>(
+        companion object : MessageParser<Unit, SupportTime>,
+            Requester<Unit, SupportTime> by ParsedMessage.requester<Unit, SupportTime>(
                 DFStateDetectors.EndSession,
                 Unit,
                 start = { sendCommand("support time") }
             )
-
-            override fun match(input: Component): ParsedMessage? {
+        {
+            override fun match(input: Component): SupportTime? {
                 if (input.equalsUnstyled("Error: You are not in a session.")) {
                     return SupportTime(null)
                 }

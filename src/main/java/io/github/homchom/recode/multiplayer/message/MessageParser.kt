@@ -1,5 +1,6 @@
 package io.github.homchom.recode.multiplayer.message
 
+import io.github.homchom.recode.event.Detector
 import io.github.homchom.recode.event.Listenable
 import io.github.homchom.recode.event.Requester
 import io.github.homchom.recode.event.SimpleValidated
@@ -12,7 +13,7 @@ import io.github.homchom.recode.util.matcherOf
 import io.github.homchom.recode.util.splitByHumps
 import net.minecraft.network.chat.Component
 
-sealed interface MessageParser : Matcher<Component, ParsedMessage>
+sealed interface MessageParser<T : Any, out R : ParsedMessage> : Matcher<Component, R>, Detector<T, R>
 
 val ParsedMessageDetector = detector("parsed message",
     trial(ReceiveChatMessageEvent, Unit) { message, _ ->
@@ -23,13 +24,29 @@ val ParsedMessageDetector = detector("parsed message",
 )
 
 sealed interface ParsedMessage {
-    companion object : MessageParser {
-        private val enums = matcherOf<Component, ParsedMessage>().apply {
-            addAll(CodeMessages.parsers)
-            addAll(StateMessages.parsers)
+    companion object : Matcher<Component, ParsedMessage> {
+        private val enums by lazy {
+            matcherOf<Component, ParsedMessage>().apply {
+                addAll(StateMessages.parsers)
+                addAll(CodeMessages.parsers)
+                addAll(ShopMessages.parsers)
+            }
         }
 
         override fun match(input: Component) = enums.match(input)
+
+        inline fun <T, reified R : ParsedMessage> detector(defaultInput: T): Detector<T & Any, R> {
+            val messageName = R::class.simpleName!!
+                .splitByHumps()
+                .joinToString("") { it.lowercase() }
+            return detector("$messageName message",
+                trial(ParsedMessageDetector, defaultInput) { message, _ ->
+                    if (message.parsed !is R) fail()
+                    if (hidden) message.raw.invalidate()
+                    instant(message.parsed)
+                }
+            )
+        }
 
         inline fun <T, reified R : ParsedMessage> requester(
             lifecycle: Listenable<*>,

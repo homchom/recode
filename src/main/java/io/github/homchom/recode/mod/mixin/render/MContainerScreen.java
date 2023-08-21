@@ -26,7 +26,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Mixin(ContainerScreen.class)
 public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu> {
@@ -44,7 +43,7 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
         List<Action> actions = ActionDump.getActions(signT[1])
             .stream().filter(e -> Objects.equals(e.getCodeBlock().getName(), signT[0]))
             .filter(e -> Objects.equals(e.getName(), signT[1]))
-            .collect(Collectors.toList());
+            .toList();
 
         if (actions.size() == 1) {
             if (Config.getBoolean("showCodeblockDescription")) {

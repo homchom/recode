@@ -1,6 +1,8 @@
 package io.github.homchom.recode.lifecycle
 
 import io.github.homchom.recode.RecodeDispatcher
+import io.github.homchom.recode.logDebug
+import io.github.homchom.recode.util.coroutines.cancelAndLog
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.concurrent.atomic.AtomicBoolean
@@ -8,19 +10,23 @@ import java.util.concurrent.atomic.AtomicBoolean
 /**
  * Builds an [RModule] of flavor [flavor].
  *
+ * @param name The module's name (optional, used for debugging purposes).
+ *
  * @see ModuleFlavor
  */
-fun <T : RModule> module(flavor: ModuleFlavor<T>) = flavor.applyTo(AssertiveModule())
+fun <T : RModule> module(name: String?, flavor: ModuleFlavor<T>) = flavor.applyTo(AssertiveModule(name))
 
 /**
  * Builds an [RModule] of flavor [flavor] with subsequent builder [builder].
  *
+ * @param name The module's name (optional, used for debugging purposes).
+ *
  * @see ModuleFlavor
  */
-fun <T : RModule, R : RModule> module(flavor: ModuleFlavor<T>, builder: ModuleDetail<T, R>) =
-    module(flavor + builder)
+fun <T : RModule, R : RModule> module(name: String?, flavor: ModuleFlavor<T>, builder: ModuleDetail<T, R>) =
+    module(name, flavor + builder)
 
-private class AssertiveModule : ExposedModule {
+private class AssertiveModule(private val name: String?) : ExposedModule {
     override val isEnabled = MutableStateFlow(false)
     private val hasBeenLoaded = AtomicBoolean(false)
 
@@ -48,8 +54,8 @@ private class AssertiveModule : ExposedModule {
                 parent.isEnabled.collect { current ->
                     if (current) {
                         enable(false)
-                    } else if (!isAsserted && parents.none { it.isEnabled.value }) {
-                        disable(false)
+                    } else if (!isAsserted) {
+                        tryDisable(false)
                     }
                 }
             }
@@ -62,19 +68,25 @@ private class AssertiveModule : ExposedModule {
     }
 
     override fun assert() = enable(true)
-    override fun unassert() = disable(true)
+    override fun unassert() = tryDisable(true)
 
     private fun enable(assertion: Boolean) = synchronized(this) {
         if (!isEnabled.compareAndSet(expect = false, update = true)) return
+
         load()
+        if (name != null) logDebug("module '$name' enabled")
         coroutineScope = newCoroutineScope()
+
         isAsserted = assertion
         for (action in enableActions) action()
     }
 
-    private fun disable(assertion: Boolean) = synchronized(this) {
+    private fun tryDisable(assertion: Boolean) = synchronized(this) {
+        if (parents.any { it.isEnabled.value }) return
         if (!isEnabled.compareAndSet(expect = true, update = false)) return
-        coroutineScope.cancel("Module disabled")
+
+        if (name != null) coroutineScope.cancelAndLog("module '$name' disabled")
+
         isAsserted = !assertion
         for (action in disableActions) action()
     }

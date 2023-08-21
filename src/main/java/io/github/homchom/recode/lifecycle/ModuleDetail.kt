@@ -8,10 +8,12 @@ typealias ModuleFlavor<T> = ModuleDetail<ExposedModule, T>
 /**
  * Builds a vanilla [RModule].
  *
+ * @param name The module's name (used for debugging purposes).
+ *
  * @see ModuleFlavor
  * @see ModuleDetail.Vanilla
  */
-fun module() = module(ModuleDetail.Vanilla)
+fun module(name: String) = module(name, ModuleDetail.Vanilla)
 
 /**
  * A component of an [RModule] that provides preset implementation and transforms it from one of type [T] into

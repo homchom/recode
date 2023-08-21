@@ -1,5 +1,6 @@
 package io.github.homchom.recode.multiplayer.message
 
+import io.github.homchom.recode.event.Requester
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.multiplayer.RIGHT_ARROW
 import io.github.homchom.recode.multiplayer.sendCommand
@@ -14,16 +15,16 @@ import net.minecraft.network.chat.Component
 import org.intellij.lang.annotations.RegExp
 
 object StateMessages {
-    val parsers get() = arrayOf(Locate, Profile)
+    val parsers get() = arrayOf<MessageParser<*, *>>(Locate, Profile)
 
     data class Locate(val username: String, val state: LocateState) : ParsedMessage {
-        companion object : MessageParser {
-            val requester = ParsedMessage.requester<String?, Locate>(
+        companion object : MessageParser<String, Locate>,
+            Requester<String, Locate> by ParsedMessage.requester<String?, Locate>(
                 DFStateDetectors.LeaveServer,
                 null,
                 start = { sendCommand("locate $it") }
             )
-
+        {
             private val locateRegex = regex {
                 space * 39; newline
                 all {
@@ -64,7 +65,7 @@ object StateMessages {
                 newline; space * 39
             }
 
-            override fun match(input: Component): ParsedMessage? {
+            override fun match(input: Component): Locate? {
                 val values = locateRegex
                     .matchEntireUnstyled(input)
                     ?.namedGroupValues
@@ -88,13 +89,13 @@ object StateMessages {
     }
 
     data class Profile(val username: String, val ranks: List<Rank>) : ParsedMessage {
-        companion object : MessageParser {
-            val requester = ParsedMessage.requester<String?, Profile>(
+        companion object : MessageParser<String, Profile>,
+            Requester<String, Profile> by ParsedMessage.requester<String?, Profile>(
                 DFStateDetectors.LeaveServer,
                 null,
                 start = { sendCommand("profile $it") }
             )
-
+        {
             private val profileRegex = regex {
                 space * 39; newline
                 str("Profile of ")
@@ -117,7 +118,7 @@ object StateMessages {
                 space * 39
             }
 
-            override fun match(input: Component): ParsedMessage? {
+            override fun match(input: Component): Profile? {
                 val values = profileRegex
                     .matchEntireUnstyled(input)
                     ?.namedGroupValues

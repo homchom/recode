@@ -33,5 +33,12 @@ value class MatcherList<T, R : Any> private constructor(
 ) : Matcher<T, R>, MutableList<Matcher<T, R>> by elements {
     constructor() : this(mutableListOf())
 
-    override fun match(input: T) = firstNotNullOfOrNull { it.match(input) }
+    override fun match(input: T) = firstNotNullOfOrNull {
+        try {
+            it.match(input)
+        } catch (npe: NullPointerException) {
+            npe.printStackTrace()
+            throw npe
+        }
+    }
 }

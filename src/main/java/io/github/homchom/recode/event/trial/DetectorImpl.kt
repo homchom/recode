@@ -11,6 +11,7 @@ import io.github.homchom.recode.lifecycle.RModule
 import io.github.homchom.recode.lifecycle.module
 import io.github.homchom.recode.ui.sendSystemToast
 import io.github.homchom.recode.ui.translateText
+import io.github.homchom.recode.util.coroutines.cancelAndLog
 import io.github.homchom.recode.util.nullable
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -61,7 +62,7 @@ private open class TrialDetector<T, R : Any>(
     private val event = createEvent<R, R> { it }
 
     @OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
-    private val module = module(ModuleDetail.Exposed) { m ->
+    private val module = module("$name detection", ModuleDetail.Exposed) { m ->
         m.extend(event)
 
         m.onEnable {
@@ -157,8 +158,7 @@ private open class TrialDetector<T, R : Any>(
                 null -> "ended"
                 else -> "ended with exception $exception"
             }
-            logDebug("trial $trialIndex $state for ${debugString(entry?.input, entry?.hidden)}")
-            entryScope.cancel("TrialEntry consideration completed")
+            entryScope.cancelAndLog("trial $trialIndex $state for ${debugString(entry?.input, entry?.hidden)}")
         }
     }
 
@@ -196,7 +196,7 @@ private class TrialRequester<T, R : Any>(
     override suspend fun requestFrom(module: RModule, input: T & Any, hidden: Boolean) =
         withContext(NonCancellable) {
             lifecycle.notifications
-                .onEach { cancel("Requester lifecycle ended during a request") }
+                .onEach { cancel("${this@TrialRequester} lifecycle ended during a request") }
                 .launchIn(this)
 
             val detectChannel = responseFlow(input, true, hidden)

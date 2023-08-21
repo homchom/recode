@@ -61,7 +61,7 @@ fun <T, L> wrapFabricEvent(
 }
 
 private class FlowEvent<T, R : Any>(private val resultCapture: (T) -> R) : CustomEvent<T, R>, RModule {
-    val exposed = module(ModuleDetail.Exposed)
+    val exposed = module(null, ModuleDetail.Exposed)
     override val isEnabled by exposed::isEnabled
 
     override val notifications: Flow<T> get() = flow

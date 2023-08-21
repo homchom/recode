@@ -71,7 +71,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>> by eventGroup {
         trial(JoinDFDetector, Unit) { info, _ ->
             suspending {
                 val permissions = exposed.async {
-                    val message = StateMessages.Profile.requester.request(mc.player!!.username, true)
+                    val message = StateMessages.Profile.request(mc.player!!.username, true)
                     PermissionGroup(message.ranks)
                 }
 
@@ -115,7 +115,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>> by eventGroup {
                     regex.matchesUnstyled(text)
                 }
 
-                val supportTime = CodeMessages.SupportTime.requester.request(Unit, true).duration
+                val supportTime = CodeMessages.SupportTime.request(Unit, true).duration
                 requireTrue(supportTime != null)
                 Case(currentDFState!!.withSession(session))
             }
@@ -144,14 +144,14 @@ object DFStateDetectors : StateListenable<Case<DFState?>> by eventGroup {
         trial(DisconnectFromServerEvent, Unit) { _, _ -> instant(Case.ofNull) }
     ))
 
-    private val exposed = module(ModuleDetail.Exposed) { module ->
+    private val exposed = module("DF state detection module", ModuleDetail.Exposed) { module ->
         module.extend(eventGroup)
         module
     }
 
     private suspend fun TrialScope.locate() =
         mc.player?.run {
-            val message = StateMessages.Locate.requester.request(username, true)
+            val message = StateMessages.Locate.request(username, true)
             message.state
         } ?: fail()
 }

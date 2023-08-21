@@ -78,7 +78,7 @@ private class NaiveToggle<T>(
         disable = impl(false, ::disable)
     }
 
-    private val retryModule = module(ModuleDetail.Exposed) { module ->
+    private val retryModule = module(null, ModuleDetail.Exposed) { module ->
         module.extend(toggle, enable, disable)
         module
     }

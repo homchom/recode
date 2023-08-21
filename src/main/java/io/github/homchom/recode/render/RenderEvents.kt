@@ -53,7 +53,7 @@ object OutlineBlockEntitiesEvent :
     )
 {
     init {
-        depend(module { module ->
+        depend(module("custom outline processor") { module ->
             module.onEnable {
                 BeforeOutlineBlockEvent.listenEach { context ->
                     val processor = context.worldRenderContext.worldRenderer() as RecodeLevelRenderer

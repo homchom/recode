@@ -55,6 +55,11 @@ class RegexPatternBuilder {
     val newline get() = +raw("\\n")
     val any get() = +raw(".")
 
+    // anchors
+
+    val start get() = +raw("^")
+    val end get() = +raw("\$")
+
     // groups
 
     fun all(

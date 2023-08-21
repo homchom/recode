@@ -7,7 +7,6 @@ import net.minecraft.sounds.SoundEvent;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class Config {
     private static ConfigManager config = ConfigManager.getInstance();
@@ -50,7 +49,6 @@ public class Config {
     }
 
     public static Boolean getBoolean(String key) {
-        if (config == null) return true;
         ConfigSetting<?> setting = config.find(key);
         return getValue(setting, Boolean.class);
     }
@@ -74,7 +72,7 @@ public class Config {
 
     @SuppressWarnings("unchecked")
     public static <Value> Value getValue(ConfigSetting<?> setting, Class<Value> valueClass) {
-        Objects.requireNonNull(setting, "Could not find the setting");
+        if (setting == null) return null;
         Object value = setting.getValue();
         if (value.getClass().isAssignableFrom(valueClass)) {
             return (Value) setting.getValue();

@@ -14,7 +14,8 @@ sealed interface Configurable : RModule {
  * This is provided as a convenience function; for more complex Features, use the more generic
  * [featureDetail] function.
  */
-fun <R : RModule> feature(name: String, builder: ModuleDetail<Feature, R>) = module(featureDetail(name), builder)
+fun <R : RModule> feature(name: String, builder: ModuleDetail<Feature, R>) =
+    module(name, featureDetail(name), builder)
 
 class Feature(
     override val name: String,

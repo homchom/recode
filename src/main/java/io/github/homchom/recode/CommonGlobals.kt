@@ -11,4 +11,5 @@ val mc: Minecraft get() = Minecraft.getInstance()
 // TODO: should this be built into a higher level extension function instead?
 val currentDataVersion get() = SharedConstants.getCurrentVersion().dataVersion.version
 
-val debug: Boolean get() = Config.getBoolean("debugMode")
+// TODO: remove false positives during config rework
+val debug: Boolean get() = Config.getBoolean("debugMode") ?: true

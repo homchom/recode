@@ -36,7 +36,7 @@ import kotlin.random.Random
 
 private val logger = LoggerFactory.getLogger(MOD_ID).apply { isEnabledForLevel(Level.DEBUG) }
 
-private val recodeModule = module(EntrypointDetail) { module ->
+private val recodeModule = module(null, EntrypointDetail) { module ->
     // TODO: move feature groups to a config module
     module.depend(AutomationFeatureGroup, SocialFeatureGroup, VisualFeatureGroup)
 
@@ -132,7 +132,7 @@ object LegacyRecode {
         // Initialize legacy code
         val initializer = CodeInitializer()
         initializer.add(ConfigFile())
-        initializer.add(ConfigManager())
+        initializer.add(ConfigManager.getInstance())
         initializer.add(TemplateStorageHandler())
         initializer.add(ActionDump())
         initializer.add(LegacyEventHandler())
