@@ -62,13 +62,13 @@ sealed interface Trial<T, R : Any> {
     val defaultInput: T
 
     /**
-     * A functor that runs [Trial] tests to yield a [TrialResult].
+     * A function object that runs [Trial] tests to yield a [TrialResult].
      *
      * @see runTests
      */
     fun interface Tester<T, B, R : Any> {
         /**
-         * @see io.github.homchom.recode.event.Detector.detectFrom
+         * @see io.github.homchom.recode.event.Detector.detect
          */
         fun TrialScope.runTests(baseContext: B, input: T, isRequest: Boolean): TrialResult<R>?
 
@@ -77,8 +77,8 @@ sealed interface Trial<T, R : Any> {
     }
 
     /**
-     * A functor that supplies [TrialResult] objects. This is used to hide the type information of basis events
-     * and contexts; a ResultSupplier is only concerned with the input type [T] and the result type [R].
+     * A function object that supplies [TrialResult] objects. This is used to hide the type information of basis
+     * events and contexts; a ResultSupplier is only concerned with the input type [T] and the result type [R].
      *
      * @see supply
      */

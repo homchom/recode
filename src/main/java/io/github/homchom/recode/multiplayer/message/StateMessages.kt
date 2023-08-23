@@ -132,7 +132,7 @@ object StateMessages {
                 val ranks = if (rankString.isEmpty()) emptyList() else rankString
                     .substring(1, rankString.length - 1)
                     .split("][")
-                    .mapNotNull { rankMap[it] }
+                    .mapNotNull(rankMap::get)
 
                 return Profile(player, ranks)
             }

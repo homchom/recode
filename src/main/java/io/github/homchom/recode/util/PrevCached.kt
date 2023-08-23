@@ -12,7 +12,7 @@ fun <T, R : Any> cachePrevious(builder: (T) -> R): PrevCached<T, R> = PrevCached
 fun <T : Any, R : Any> cachePreviousAndNull(builder: (T?) -> R): PrevCached<T?, R> = NullCachedBuilder(builder)
 
 /**
- * A functor that returns a result of type [R] given context of type [T], caching the previous result.
+ * A function object that returns a result of type [R] given context of type [T], caching the previous result.
  */
 sealed interface PrevCached<T, R : Any> {
     operator fun invoke(context: T): R

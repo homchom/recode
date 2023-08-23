@@ -1,7 +1,7 @@
 package io.github.homchom.recode.util
 
 /**
- * A general-purpose functor that matches inputs of type [T] against a specification, returning matches
+ * A general-purpose function object that matches inputs of type [T] against a specification, returning matches
  * of type [R] or `null`.
  *
  * @see matcherOf
