@@ -1,17 +1,14 @@
 package io.github.homchom.recode.event
 
 import com.google.common.cache.CacheBuilder
+import io.github.homchom.recode.Power
+import io.github.homchom.recode.PowerSink
 import io.github.homchom.recode.RecodeDispatcher
-import io.github.homchom.recode.lifecycle.ModuleDetail
-import io.github.homchom.recode.lifecycle.RModule
-import io.github.homchom.recode.lifecycle.module
 import io.github.homchom.recode.runOnMinecraftThread
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import net.fabricmc.fabric.api.event.Event
 import kotlin.time.Duration
@@ -60,9 +57,8 @@ fun <T, L> wrapFabricEvent(
     return EventWrapper(event, transform, createEvent())
 }
 
-private class FlowEvent<T, R : Any>(private val resultCapture: (T) -> R) : CustomEvent<T, R>, RModule {
-    val exposed = module(null, ModuleDetail.Exposed)
-    override val isEnabled by exposed::isEnabled
+private class FlowEvent<T, R : Any>(private val resultCapture: (T) -> R) : CustomEvent<T, R> {
+    val power = Power()
 
     override val notifications: Flow<T> get() = flow
 
@@ -75,11 +71,8 @@ private class FlowEvent<T, R : Any>(private val resultCapture: (T) -> R) : Custo
 
     init {
         @OptIn(DelicateCoroutinesApi::class)
-        GlobalScope.launch {
-            flow.subscriptionCount.collect { count ->
-                if (count == 0) exposed.unassert() else if (!isEnabled.value) exposed.assert()
-            }
-        }
+        flow.subscriptionCount.onEach(power::setCharge)
+            .launchIn(GlobalScope)
     }
 
     override fun run(context: T) = runOnMinecraftThread {
@@ -88,7 +81,7 @@ private class FlowEvent<T, R : Any>(private val resultCapture: (T) -> R) : Custo
         resultCapture(context).also { previous.checkEmit(it) }
     }
 
-    override fun extend(vararg parents: RModule) = exposed.extend(*parents)
+    override fun use(source: Power) = power.use(source)
 }
 
 private class BufferedFlowEvent<T, R : Any, I, K : Any>(
@@ -97,7 +90,7 @@ private class BufferedFlowEvent<T, R : Any, I, K : Any>(
     private val keySelector: (I) -> K,
     private val contextGenerator: (I) -> T,
     cacheDuration: Duration = 1.seconds
-) : BufferedCustomEvent<T, R, I>, RModule by delegate {
+) : BufferedCustomEvent<T, R, I>, PowerSink by delegate {
     override val notifications by delegate::notifications
 
     // TODO: use Caffeine (official successor) or other alternative?
@@ -135,7 +128,7 @@ private class BufferedFlowEvent<T, R : Any, I, K : Any>(
             delegate.run(contextGenerator(input)).also { buffer.put(key, it) }
         } else {
             if (++stabilizer.runIndex >= stabilizer.passes) {
-                delegate.exposed.launch {
+                delegate.power.launch {
                     buffer.put(key, delegate.run(contextGenerator(input)))
                 }
                 stabilizer.runIndex = 0
@@ -156,7 +149,7 @@ private class EventWrapper<T, L>(
     private val fabricEvent: Event<L>,
     transform: ((T) -> Unit) -> L,
     private val async: CustomEvent<T, Unit>
-) : WrappedEvent<T, L>, RModule by async {
+) : WrappedEvent<T, L>, PowerSink by async {
     override val notifications by async::notifications
 
     override val invoker: L get() = fabricEvent.invoker()

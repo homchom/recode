@@ -8,9 +8,6 @@ import io.github.homchom.recode.util.regex.regex
 import net.minecraft.ChatFormatting
 import net.minecraft.client.GuiMessageTag
 
-// message stacking doesn't use a FeatureModule because it doesn't need one yet
-// TODO: reconcile this after config refactor
-
 private val stackTagPrefix get() = "$MOD_NAME stacked x"
 
 private val stackRegex = regex {

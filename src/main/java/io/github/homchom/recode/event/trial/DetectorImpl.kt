@@ -5,10 +5,6 @@ import io.github.homchom.recode.event.Detector
 import io.github.homchom.recode.event.Listenable
 import io.github.homchom.recode.event.Requester
 import io.github.homchom.recode.event.createEvent
-import io.github.homchom.recode.lifecycle.ExposedModule
-import io.github.homchom.recode.lifecycle.ModuleDetail
-import io.github.homchom.recode.lifecycle.RModule
-import io.github.homchom.recode.lifecycle.module
 import io.github.homchom.recode.ui.sendSystemToast
 import io.github.homchom.recode.ui.translateText
 import io.github.homchom.recode.util.coroutines.cancelAndLog
@@ -61,10 +57,8 @@ private open class TrialDetector<T, R : Any>(
     private val event = createEvent<R, R> { it }
 
     @OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
-    private val module = module("$name detection", ModuleDetail.Exposed) { m ->
-        m.extend(event)
-
-        m.onEnable {
+    private val power = Power(
+        onEnable = {
             for (trialIndex in trials.indices) trials[trialIndex].results.listenEach { supplier ->
                 val successContext = CompletableDeferred<R>(coroutineContext.job)
                 if (entries.isEmpty()) {
@@ -89,11 +83,11 @@ private open class TrialDetector<T, R : Any>(
                 }
             }
         }
+    )
 
-        m
+    init {
+        power.extend(event)
     }
-
-    override val isEnabled by module::isEnabled
 
     private val entries = ConcurrentLinkedQueue<DetectEntry<T, R>>()
 
@@ -104,7 +98,7 @@ private open class TrialDetector<T, R : Any>(
 
     protected fun responseFlow(input: T?, isRequest: Boolean, hidden: Boolean) = flow {
         coroutineScope {
-            module.assert()
+            power.up()
             val responses = Channel<R?>(Channel.UNLIMITED)
             try {
                 // add entry after all current detection loops
@@ -115,22 +109,21 @@ private open class TrialDetector<T, R : Any>(
                 while (isActive) emit(responses.receive())
             } finally {
                 responses.close()
-                module.unassert()
+                power.down()
             }
         }
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    fun ExposedModule.considerEntry(
+    fun considerEntry(
         trialIndex: Int,
         entry: DetectEntry<T, R>?,
         supplier: Trial.ResultSupplier<T & Any, R>,
         successContext: CompletableDeferred<R>,
     ) {
-        val entryScope = CoroutineScope(coroutineContext + Job(successContext))
+        val entryScope = CoroutineScope(power.coroutineContext + Job(successContext))
         val result = nullable {
             val trialScope = TrialScope(
-                this@considerEntry,
                 this@nullable,
                 entryScope,
                 entry?.hidden ?: false
@@ -160,7 +153,7 @@ private open class TrialDetector<T, R : Any>(
         }
     }
 
-    override fun extend(vararg parents: RModule) = module.extend(*parents)
+    override fun use(source: Power) = power.use(source)
 
     override fun toString() = "$name detector"
 

@@ -2,7 +2,7 @@
 
 package io.github.homchom.recode.event
 
-import io.github.homchom.recode.lifecycle.RModule
+import io.github.homchom.recode.Power
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
 
@@ -11,13 +11,11 @@ import kotlinx.coroutines.flow.flow
  */
 inline fun <T, R> Listenable<T>.transform(crossinline transform: suspend FlowCollector<R>.(T) -> Unit) =
     object : Listenable<R> {
-        override val isEnabled by this@transform::isEnabled
-
         override val notifications = flow {
             this@transform.notifications.collect { transform(it) }
         }
 
-        override fun extend(vararg parents: RModule) = this@transform.extend(*parents)
+        override fun use(source: Power) = this@transform.use(source)
     }
 
 /**

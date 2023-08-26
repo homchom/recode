@@ -3,7 +3,6 @@ package io.github.homchom.recode.event.trial
 import io.github.homchom.recode.event.Listenable
 import io.github.homchom.recode.event.Validated
 import io.github.homchom.recode.event.map
-import io.github.homchom.recode.lifecycle.RModule
 import io.github.homchom.recode.util.nullable
 import kotlinx.coroutines.*
 
@@ -48,7 +47,7 @@ fun <T, B, R : Any> shortCircuitTrial(
 }
 
 /**
- * An object that can run tests and supply its results from an [RModule]. For an explanation of the Trial DSL,
+ * An object that can run tests and supply its results. For an explanation of the Trial DSL,
  * see [TrialScope].
  *
  * @property basis The event that the trial is based on, and the starting point of each trial run.
@@ -138,7 +137,6 @@ class TrialResult<T : Any> private constructor(private val deferred: Deferred<T?
     @OptIn(DelicateCoroutinesApi::class)
     constructor(
         asyncBlock: suspend TrialScope.() -> T?,
-        module: RModule,
         scope: CoroutineScope,
         hidden: Boolean = false
     ) : this(
@@ -146,7 +144,6 @@ class TrialResult<T : Any> private constructor(private val deferred: Deferred<T?
             nullable {
                 coroutineScope {
                     val trialScope = TrialScope(
-                        module,
                         this@nullable,
                         this,
                         hidden

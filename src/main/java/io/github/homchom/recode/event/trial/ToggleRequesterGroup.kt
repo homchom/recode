@@ -1,9 +1,8 @@
 package io.github.homchom.recode.event.trial
 
+import io.github.homchom.recode.Power
 import io.github.homchom.recode.event.Listenable
 import io.github.homchom.recode.event.Requester
-import io.github.homchom.recode.lifecycle.ModuleDetail
-import io.github.homchom.recode.lifecycle.module
 import io.github.homchom.recode.util.unitOrNull
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -49,6 +48,8 @@ private class NaiveToggle<T>(
     override val enable: Requester<T & Any, Unit>
     override val disable: Requester<T & Any, Unit>
 
+    private val power = Power()
+
     init {
         fun impl(desiredState: Boolean?, reference: () -> Requester<T & Any, Unit>) =
             requester(name, lifecycle, shortCircuitTrial(
@@ -65,7 +66,7 @@ private class NaiveToggle<T>(
 
                         val state = supplier.supplyIn(this, input, isRequest, ::retry)?.await()
                         if (state != null && retry(state, isRequest)) {
-                            retryModule.launch(Dispatchers.Default) {
+                            power.launch(Dispatchers.Default) {
                                 reference().request(input!!, isRequest)
                             }
                         }
@@ -76,10 +77,9 @@ private class NaiveToggle<T>(
         toggle = impl(null, ::toggle)
         enable = impl(true, ::enable)
         disable = impl(false, ::disable)
-    }
 
-    private val retryModule = module(null, ModuleDetail.Exposed) { module ->
-        module.extend(toggle, enable, disable)
-        module
+        power.extend(toggle)
+        power.extend(enable)
+        power.extend(disable)
     }
 }

@@ -2,7 +2,6 @@ package io.github.homchom.recode.event.trial
 
 import io.github.homchom.recode.DEFAULT_TIMEOUT_DURATION
 import io.github.homchom.recode.event.Listenable
-import io.github.homchom.recode.lifecycle.RModule
 import io.github.homchom.recode.util.NullableScope
 import io.github.homchom.recode.util.unitOrNull
 import kotlinx.coroutines.*
@@ -30,11 +29,10 @@ import kotlin.time.Duration
  * @see trial
  */
 class TrialScope @DelicateCoroutinesApi constructor(
-    private val module: RModule,
     private val nullableScope: NullableScope,
     val coroutineScope: CoroutineScope,
     val hidden: Boolean = false,
-) : RModule by module {
+) {
     /**
      * A list of blocking rules that are tested after most trial suspensions, failing the trial on a failed test.
      *
@@ -204,7 +202,7 @@ class TrialScope @DelicateCoroutinesApi constructor(
      * Returns the asynchronous [TrialResult] of [block] ran in its own [TrialScope].
      */
     fun <R : Any> suspending(block: suspend TrialScope.() -> R?) =
-        TrialResult(block, module, coroutineScope, hidden)
+        TrialResult(block, coroutineScope, hidden)
 
     /**
      * A shorthand for `unitOrNull().let(::instant)`.

@@ -10,11 +10,8 @@ import io.github.homchom.recode.ui.text
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType
 
-val FBuiltInResourcePacks = feature("Built-in Resource Packs") { module ->
-    module.onLoad {
-        registerBuiltInResourcePack("better_unicode", 0x6770ff.toColor())
-    }
-    module
+val FBuiltInResourcePacks = feature("Built-in Resource Packs") {
+    registerBuiltInResourcePack("better_unicode", 0x6770ff.toColor())
 }
 
 private fun registerBuiltInResourcePack(

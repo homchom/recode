@@ -3,14 +3,13 @@
 
 package io.github.homchom.recode.multiplayer.state
 
+import io.github.homchom.recode.Power
 import io.github.homchom.recode.event.GroupListenable
 import io.github.homchom.recode.event.StateListenable
 import io.github.homchom.recode.event.filterIsInstance
 import io.github.homchom.recode.event.trial.TrialScope
 import io.github.homchom.recode.event.trial.detector
 import io.github.homchom.recode.event.trial.trial
-import io.github.homchom.recode.lifecycle.ModuleDetail
-import io.github.homchom.recode.lifecycle.module
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.multiplayer.*
 import io.github.homchom.recode.multiplayer.message.CodeMessages
@@ -70,7 +69,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>> by eventGroup {
         },
         trial(JoinDFDetector, Unit) { info, _ ->
             suspending {
-                val permissions = exposed.async {
+                val permissions = power.async {
                     val message = StateMessages.Profile.request(mc.player!!.username, true)
                     PermissionGroup(message.ranks)
                 }
@@ -144,9 +143,10 @@ object DFStateDetectors : StateListenable<Case<DFState?>> by eventGroup {
         trial(DisconnectFromServerEvent, Unit) { _, _ -> instant(Case.ofNull) }
     ))
 
-    private val exposed = module("DF state detection module", ModuleDetail.Exposed) { module ->
-        module.extend(eventGroup)
-        module
+    private val power = Power()
+
+    init {
+        power.extend(eventGroup)
     }
 
     private suspend fun TrialScope.locate() =

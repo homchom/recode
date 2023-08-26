@@ -6,8 +6,6 @@ import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.ChatComponent
 import kotlin.math.min
 
-// side chat doesn't use a FeatureModule because it doesn't need one yet TODO: reconcile after config refactor
-
 private const val MIN_CHAT_PADDING = 16 // TODO: config setting?
 
 class SideChat(private val mc: Minecraft) : ChatComponent(mc) {

@@ -1,48 +1,59 @@
 package io.github.homchom.recode.feature
 
-import io.github.homchom.recode.lifecycle.*
+import io.github.homchom.recode.Power
+import io.github.homchom.recode.PowerCallback
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
-// TODO: finish and document these
-
-sealed interface Configurable : RModule {
-    val name: String
+sealed interface Configurable {
+    /**
+     * The name to be displayed in config-related UI.
+     */
+    val configName: String
 }
 
 /**
  * Builds a [Feature] with [builder].
  *
- * This is provided as a convenience function; for more complex Features, use the more generic
- * [featureDetail] function.
+ * NOTE: Features have no special functionality at the moment, but should still be used as various refactors
+ * progress. See the wiki for more information.
  */
-fun <R : RModule> feature(name: String, builder: ModuleDetail<Feature, R>) =
-    module(name, featureDetail(name), builder)
+fun feature(name: String, builder: FeatureBuilder.() -> Unit) = FeatureBuilder(name).apply(builder).build()
 
-class Feature(
-    override val name: String,
-    moduleDelegate: ExposedModule
-) : Configurable, ExposedModule by moduleDelegate
+class FeatureBuilder(private val name: String) {
+    private val enableCallbacks = mutableListOf<PowerCallback>()
+    private val disableCallbacks = mutableListOf<PowerCallback>()
 
-class FeatureGroup(
-    override val name: String,
-    val features: List<Feature>,
-    moduleDelegate: RModule
-) : Configurable, RModule by moduleDelegate
-
-fun featureDetail(name: String) = ModuleFlavor { Feature(name, it) }
-
-fun featureGroup(name: String, vararg features: Feature) =
-    ModuleFlavor { module ->
-        module.onLoad {
-            for (feature in features) feature.depend(module)
-        }
-
-        module.onEnable {
-            for (feature in features) feature.assert()
-        }
-
-        module.onDisable {
-            for (feature in features) feature.unassert()
-        }
-
-        FeatureGroup(name, features.toList(), module)
+    fun onEnable(callback: PowerCallback) {
+        enableCallbacks += callback
     }
+
+    fun onDisable(callback: PowerCallback) {
+        disableCallbacks += callback
+    }
+
+    fun build(): Feature {
+        val power = Power(
+            onEnable = {
+                for (callback in enableCallbacks) callback()
+            },
+            onDisable = {
+                for (callback in disableCallbacks) callback()
+            }
+        )
+
+        return Feature(name, power)
+    }
+}
+
+/**
+ * @see feature
+ */
+class Feature(override val configName: String, power: Power) : Configurable {
+    // temporary
+    init {
+        @OptIn(DelicateCoroutinesApi::class)
+        GlobalScope.launch { power.up() }
+    }
+}

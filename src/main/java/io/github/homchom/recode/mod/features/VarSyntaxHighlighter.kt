@@ -12,7 +12,7 @@ import org.apache.commons.lang3.StringUtils
 import java.util.*
 import java.util.regex.Pattern
 
-// TODO: move to module, refactor and make better/faster, apply kotlin idioms
+// TODO: move, refactor and make better/faster, apply kotlin idioms
 object VarSyntaxHighlighter {
     @JvmStatic
     val textPreviews = listOf(

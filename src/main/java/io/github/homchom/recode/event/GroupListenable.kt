@@ -1,8 +1,6 @@
 package io.github.homchom.recode.event
 
-import io.github.homchom.recode.lifecycle.ModuleDetail
-import io.github.homchom.recode.lifecycle.RModule
-import io.github.homchom.recode.lifecycle.module
+import io.github.homchom.recode.Power
 import kotlinx.coroutines.flow.*
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -15,9 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger
 open class GroupListenable<T : Any> private constructor(
     private val events: MutableList<StateListenable<T>>
 ) : StateListenable<T>, List<StateListenable<T>> by events {
-    private val module = module(null, ModuleDetail.Exposed)
-
-    override val isEnabled by module::isEnabled
+    private val power = Power()
 
     // notifications only = 1, previous only = 2, both = 3
     private val update = AtomicInteger(3)
@@ -39,7 +35,7 @@ open class GroupListenable<T : Any> private constructor(
                 update.compareAndSet(3, 1))
             {
                 field = flatten(events.map { it.previous })
-                    .stateIn(module, SharingStarted.Eagerly, null)
+                    .stateIn(power, SharingStarted.Eagerly, null)
             }
             return field
         }
@@ -49,11 +45,11 @@ open class GroupListenable<T : Any> private constructor(
 
     fun <S : StateListenable<T>> add(event: S): S {
         events += event
-        module.extend(event)
+        power.extend(event)
         return event
     }
 
     open fun <S> flatten(flows: List<Flow<S>>) = flows.merge()
 
-    override fun extend(vararg parents: RModule) = module.extend(*parents)
+    override fun use(source: Power) = power.use(source)
 }

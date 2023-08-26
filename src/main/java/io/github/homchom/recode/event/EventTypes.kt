@@ -1,6 +1,6 @@
 package io.github.homchom.recode.event
 
-import io.github.homchom.recode.lifecycle.RModule
+import io.github.homchom.recode.PowerSink
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -21,8 +21,8 @@ typealias EventInvoker<T> = (context: T) -> Unit
  *
  * Listenable is based on the [Flow] API, but the standard [listenEachFrom] method does not allow for
  * suspension. When working with [notifications] and the underlying Flow, collectors generally should
- * not suspend because Listenable implementations should be conflated. Listenable objects are also themselves
- * [RModule] implementations, enabled if (and only if) `notifications` has any subscribers.
+ * not suspend because Listenable implementations should be conflated. Listenable objects are also [PowerSink]s,
+ * with a charge equal to the subscriber count of `notifications`.
  *
  * @param T The context type of each invocation. Context includes return values and can therefore be mutated
  * (before the first suspension point). These types are **not** usually thread-safe, so be careful when mutating
@@ -32,12 +32,9 @@ typealias EventInvoker<T> = (context: T) -> Unit
  * @see WrappedEvent
  * @see Detector
  */
-interface Listenable<out T> : RModule {
+interface Listenable<out T> : PowerSink {
     /**
      * The [Flow] of this object's notifications.
-     *
-     * Implementations of this **must** obey the [RModule] invariant described in
-     * the [Listenable] documentation.
      */
     val notifications: Flow<T>
 

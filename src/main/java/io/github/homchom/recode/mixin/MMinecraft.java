@@ -1,7 +1,7 @@
 package io.github.homchom.recode.mixin;
 
 import io.github.homchom.recode.RecodeDispatcher;
-import io.github.homchom.recode.lifecycle.QuitGameEvent;
+import io.github.homchom.recode.game.QuitGameEvent;
 import kotlin.Unit;
 import net.minecraft.client.Minecraft;
 import org.spongepowered.asm.mixin.Mixin;

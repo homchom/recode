@@ -1,10 +1,10 @@
 package io.github.homchom.recode.render
 
 import com.mojang.blaze3d.systems.RenderSystem
+import io.github.homchom.recode.Power
 import io.github.homchom.recode.event.*
 import io.github.homchom.recode.game.ChunkPos3D
 import io.github.homchom.recode.game.ticks
-import io.github.homchom.recode.lifecycle.module
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.util.Case
 import io.github.homchom.recode.util.MixedInt
@@ -53,15 +53,14 @@ object OutlineBlockEntitiesEvent :
     )
 {
     init {
-        depend(module("custom outline processor") { module ->
-            module.onEnable {
+        use(Power(
+            onEnable = {
                 BeforeOutlineBlockEvent.listenEach { context ->
                     val processor = context.worldRenderContext.worldRenderer() as RecodeLevelRenderer
                     processor.`recode$processOutlines`(mc.frameTime)
                 }
             }
-            module
-        })
+        ))
     }
 }
 

@@ -1,6 +1,7 @@
 package io.github.homchom.recode.multiplayer
 
 import io.github.homchom.recode.RecodeDispatcher
+import io.github.homchom.recode.game.ticks
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.ui.literalText
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -10,7 +11,6 @@ import kotlinx.coroutines.launch
 import net.minecraft.client.multiplayer.ClientPacketListener
 import net.minecraft.client.player.LocalPlayer
 import net.minecraft.network.chat.Component
-import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * @throws IllegalStateException if there is no current player
@@ -42,7 +42,7 @@ private object DelayedCommandSender {
         if (queue.size == 1) GlobalScope.launch(RecodeDispatcher) {
             while (queue.isNotEmpty()) {
                 connection.sendUnsignedCommand(queue.first())
-                delay(50.milliseconds)
+                delay(1.ticks)
                 queue.removeFirst()
             }
         }

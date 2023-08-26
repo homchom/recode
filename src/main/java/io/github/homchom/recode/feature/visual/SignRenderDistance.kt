@@ -6,8 +6,8 @@ import io.github.homchom.recode.mod.config.Config
 import io.github.homchom.recode.render.RenderBlockEntitiesEvent
 import net.minecraft.world.level.block.entity.SignBlockEntity
 
-val FSignRenderDistance = feature("Sign Render Distance") { module ->
-    module.onEnable {
+val FSignRenderDistance = feature("Sign Render Distance") {
+    onEnable {
         RenderBlockEntitiesEvent.listenEach { context ->
             for (element in context) {
                 val blockEntity = element.value
@@ -21,5 +21,4 @@ val FSignRenderDistance = feature("Sign Render Distance") { module ->
             }
         }
     }
-    module
 }

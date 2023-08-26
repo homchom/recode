@@ -11,8 +11,8 @@ import io.github.homchom.recode.render.rgba
 import net.minecraft.world.level.block.entity.SignBlockEntity
 import kotlin.math.sqrt
 
-val FCodeSearch = feature("Code Search") { module ->
-    module.onEnable {
+val FCodeSearch = feature("Code Search") {
+    onEnable {
         OutlineBlockEntitiesEvent.listenEach { context ->
             if (currentDFState.isInMode(PlotMode.Dev)) {
                 for (element in context) {
@@ -27,5 +27,4 @@ val FCodeSearch = feature("Code Search") { module ->
             }
         }
     }
-    module
 }
