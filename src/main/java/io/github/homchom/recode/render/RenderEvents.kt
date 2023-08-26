@@ -1,3 +1,5 @@
+@file:JvmName("RenderEvents")
+
 package io.github.homchom.recode.render
 
 import com.mojang.blaze3d.systems.RenderSystem
@@ -16,16 +18,14 @@ import net.minecraft.core.BlockPos
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.phys.HitResult
 
-object BeforeOutlineBlockEvent :
-    WrappedEvent<BlockOutlineContext, BeforeBlockOutline> by
-        wrapFabricEvent(WorldRenderEvents.BEFORE_BLOCK_OUTLINE, { listener ->
-            BeforeBlockOutline { worldRenderContext, hitResult ->
-                RenderSystem.assertOnRenderThread()
-                val context = BlockOutlineContext(worldRenderContext, hitResult)
-                listener(context)
-                context.isValid
-            }
-        })
+val BeforeOutlineBlockEvent =  wrapFabricEvent(WorldRenderEvents.BEFORE_BLOCK_OUTLINE) { listener ->
+    BeforeBlockOutline { worldRenderContext, hitResult ->
+        RenderSystem.assertOnRenderThread()
+        val context = BlockOutlineContext(worldRenderContext, hitResult)
+        listener(context)
+        context.isValid
+    }
+}
 
 data class BlockOutlineContext(
     val worldRenderContext: WorldRenderContext,
@@ -33,10 +33,9 @@ data class BlockOutlineContext(
     override var validity: MixedInt = MixedInt(1)
 ) : Validated
 
-object RenderBlockEntitiesEvent :
-    SimpleValidatedListEvent<BlockEntity> by createEvent({ it.mapValid() })
+val RenderBlockEntitiesEvent = createEvent { list: List<SimpleValidated<BlockEntity>> -> list.mapValid() }
 
-object OutlineBlockEntitiesEvent :
+object OutlineBlockEntitiesEvent2 :
     BufferedCustomEvent<
             Array<out BlockEntityOutlineContext>, Map<BlockPos, RGBAColor>, BlockEntityOutlineContext.Input
     > by createBufferedEvent(
@@ -63,6 +62,20 @@ object OutlineBlockEntitiesEvent :
         ))
     }
 }
+
+val OutlineBlockEntitiesEvent =
+    createBufferedEvent<Array<out BlockEntityOutlineContext>, _, BlockEntityOutlineContext.Input, _>(
+        resultCapture = { context ->
+            context
+                .filter { it.outlineColor != null }
+                .associate { it.blockEntity.blockPos to it.outlineColor!! }
+        },
+        stableInterval = 3.ticks,
+        keySelector = { Case(it.chunkPos) },
+        contextGenerator = { input ->
+            input.blockEntities.mapToArray { BlockEntityOutlineContext(it) }
+        }
+    )
 
 data class BlockEntityOutlineContext @JvmOverloads constructor(
     val blockEntity: BlockEntity,

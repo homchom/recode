@@ -1,7 +1,7 @@
 package io.github.homchom.recode.mixin;
 
 import io.github.homchom.recode.RecodeDispatcher;
-import io.github.homchom.recode.game.QuitGameEvent;
+import io.github.homchom.recode.game.GameEvents;
 import kotlin.Unit;
 import net.minecraft.client.Minecraft;
 import org.spongepowered.asm.mixin.Mixin;
@@ -21,6 +21,6 @@ public abstract class MMinecraft {
 
     @Inject(method = "stop", at = @At("HEAD"))
     private void runRecodeQuitEvent(CallbackInfo ci) {
-        QuitGameEvent.INSTANCE.run(Unit.INSTANCE);
+        GameEvents.getQuitGameEvent().run(Unit.INSTANCE);
     }
 }

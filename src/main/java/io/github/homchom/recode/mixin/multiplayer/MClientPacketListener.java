@@ -2,7 +2,7 @@ package io.github.homchom.recode.mixin.multiplayer;
 
 import com.llamalad7.mixinextras.injector.WrapWithCondition;
 import io.github.homchom.recode.event.SimpleValidated;
-import io.github.homchom.recode.multiplayer.SendCommandEvent;
+import io.github.homchom.recode.multiplayer.MultiplayerEvents;
 import io.github.homchom.recode.sys.hypercube.templates.TemplateStorageHandler;
 import io.github.homchom.recode.sys.hypercube.templates.TemplateUtil;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -37,7 +37,7 @@ public abstract class MClientPacketListener {
 		if (packet instanceof ServerboundChatCommandPacket commandPacket) {
 			// TODO: should this not be a validated event?
 			var context = new SimpleValidated<>(commandPacket.command());
-			return SendCommandEvent.INSTANCE.run(context);
+			return MultiplayerEvents.getSendCommandEvent().run(context);
 		}
 		return true;
 	}

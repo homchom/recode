@@ -5,7 +5,7 @@ import io.github.homchom.recode.event.SimpleValidated;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.LagslayerHUD;
 import io.github.homchom.recode.mod.features.social.chat.message.LegacyMessage;
-import io.github.homchom.recode.multiplayer.ReceiveChatMessageEvent;
+import io.github.homchom.recode.multiplayer.MultiplayerEvents;
 import io.github.homchom.recode.multiplayer.state.DF;
 import io.github.homchom.recode.sys.player.DFInfo;
 import net.minecraft.client.Minecraft;
@@ -33,7 +33,7 @@ public class MMessageListener {
         if (!Minecraft.getInstance().isSameThread()) return;
 
         var context = new SimpleValidated<>(packet.content());
-        if (!ReceiveChatMessageEvent.INSTANCE.run(context)) ci.cancel();
+        if (!MultiplayerEvents.getReceiveChatMessageEvent().run(context)) ci.cancel();
 
         if (DF.isOnDF()) {
             // temporary, to preserve non-migrated side effects (like message grabbing)

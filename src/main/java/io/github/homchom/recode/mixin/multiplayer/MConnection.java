@@ -1,6 +1,6 @@
 package io.github.homchom.recode.mixin.multiplayer;
 
-import io.github.homchom.recode.multiplayer.ReceiveGamePacketEvent;
+import io.github.homchom.recode.multiplayer.MultiplayerEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.Connection;
 import net.minecraft.network.PacketListener;
@@ -20,7 +20,7 @@ public abstract class MConnection {
             CallbackInfo ci
     ) {
         if (packetListener instanceof ClientGamePacketListener) {
-            Minecraft.getInstance().execute(() -> ReceiveGamePacketEvent.INSTANCE.run(packet));
+            Minecraft.getInstance().execute(() -> MultiplayerEvents.getReceiveGamePacketEvent().run(packet));
         }
     }
 }

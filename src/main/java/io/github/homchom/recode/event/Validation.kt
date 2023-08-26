@@ -3,11 +3,8 @@ package io.github.homchom.recode.event
 import io.github.homchom.recode.util.InvokableWrapper
 import io.github.homchom.recode.util.MixedInt
 
-typealias SimpleValidatedEvent<T> = CustomEvent<SimpleValidated<T>, Boolean>
-typealias SimpleValidatedListEvent<T> = CustomEvent<List<SimpleValidated<T>>, List<T>>
-
 /**
- * Creates a [SimpleValidatedEvent].
+ * Creates a [SimpleValidated] event.
  */
 fun <T> createValidatedEvent() = createEvent<SimpleValidated<T>, Boolean> { it.isValid }
 
@@ -35,6 +32,9 @@ interface Validated {
 }
 
 /**
+ * @property value
+ * @property validity
+ *
  * @see createValidatedEvent
  */
 data class SimpleValidated<T> @JvmOverloads constructor(

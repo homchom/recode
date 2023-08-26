@@ -89,7 +89,7 @@ private open class TrialDetector<T, R : Any>(
         power.extend(event)
     }
 
-    private val entries = ConcurrentLinkedQueue<DetectEntry<T, R>>()
+    private val entries by lazy { ConcurrentLinkedQueue<DetectEntry<T, R>>() }
 
     override val notifications by event::notifications
     override val previous by event::previous

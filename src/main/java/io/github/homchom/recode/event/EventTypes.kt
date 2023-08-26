@@ -34,7 +34,7 @@ typealias EventInvoker<T> = (context: T) -> Unit
  */
 interface Listenable<out T> : PowerSink {
     /**
-     * The [Flow] of this object's notifications.
+     * The [Flow] of this object's notifications, evaluated lazily.
      */
     val notifications: Flow<T>
 
@@ -63,7 +63,7 @@ fun <T> Listenable<T>.listenFrom(scope: CoroutineScope, block: Flow<T>.() -> Flo
 /**
  * A [Listenable] with a result of type [R].
  *
- * @property previous A [StateFlow] of the previous invocation's result.
+ * @property previous A [StateFlow] of the previous invocation's result, evaluated lazily with [notifications].
  */
 interface ResultListenable<out T, out R> : Listenable<T> {
     val previous: StateFlow<R>

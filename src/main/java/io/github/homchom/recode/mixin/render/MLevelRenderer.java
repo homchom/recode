@@ -4,7 +4,10 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import io.github.homchom.recode.event.SimpleValidated;
 import io.github.homchom.recode.game.ChunkPos3D;
-import io.github.homchom.recode.render.*;
+import io.github.homchom.recode.render.BlockEntityOutlineContext;
+import io.github.homchom.recode.render.RGBAColor;
+import io.github.homchom.recode.render.RecodeLevelRenderer;
+import io.github.homchom.recode.render.RenderEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.PostChain;
@@ -67,9 +70,9 @@ public abstract class MLevelRenderer implements RecodeLevelRenderer {
 	) {
 		List<SimpleValidated<BlockEntity>> renderList = new ArrayList<>();
 		for (var blockEntity : blockEntities) renderList.add(new SimpleValidated<>(blockEntity));
-		var filtered = RenderBlockEntitiesEvent.INSTANCE.run(renderList);
+		var filtered = RenderEvents.getRenderBlockEntitiesEvent().run(renderList);
 		var outlineInput = new BlockEntityOutlineContext.Input(blockEntities, chunkPos);
-		blockEntityOutlineMap.putAll(OutlineBlockEntitiesEvent.INSTANCE.run(outlineInput));
+		blockEntityOutlineMap.putAll(RenderEvents.getOutlineBlockEntitiesEvent().run(outlineInput));
 		return filtered;
 	}
 
@@ -90,7 +93,8 @@ public abstract class MLevelRenderer implements RecodeLevelRenderer {
 	private void startRender(CallbackInfo ci) {
 		processedOutlines = false;
 		blockEntityOutlineMap.clear();
-		OutlineBlockEntitiesEvent.INSTANCE.stabilize();
+
+		RenderEvents.getOutlineBlockEntitiesEvent().stabilize();
 	}
 
 	@Inject(method = "renderLevel", at = @At(value = "INVOKE", ordinal = 0,

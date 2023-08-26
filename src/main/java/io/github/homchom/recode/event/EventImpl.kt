@@ -8,7 +8,10 @@ import io.github.homchom.recode.runOnMinecraftThread
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import net.fabricmc.fabric.api.event.Event
 import kotlin.time.Duration
@@ -60,23 +63,37 @@ fun <T, L> wrapFabricEvent(
 private class FlowEvent<T, R : Any>(private val resultCapture: (T) -> R) : CustomEvent<T, R> {
     val power = Power()
 
-    override val notifications: Flow<T> get() = flow
+    override val notifications: MutableSharedFlow<T>
+        get() {
+            lazyInit()
+            return lazyFlow
+        }
 
-    private val flow = MutableSharedFlow<T>(
-        extraBufferCapacity = 1,
-        onBufferOverflow = BufferOverflow.DROP_OLDEST
-    )
+    override val previous: MutableStateFlow<R?>
+        get() {
+            lazyInit()
+            return lazyPrevious
+        }
 
-    override val previous = MutableStateFlow<R?>(null)
+    private lateinit var lazyFlow: MutableSharedFlow<T>
+    private lateinit var lazyPrevious: MutableStateFlow<R?>
 
-    init {
-        @OptIn(DelicateCoroutinesApi::class)
-        flow.subscriptionCount.onEach(power::setCharge)
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun lazyInit() {
+        if (::lazyFlow.isInitialized) return
+
+        lazyFlow = MutableSharedFlow(
+            extraBufferCapacity = 1,
+            onBufferOverflow = BufferOverflow.DROP_OLDEST
+        )
+        lazyPrevious = MutableStateFlow(null)
+
+        lazyFlow.subscriptionCount.onEach(power::setCharge)
             .launchIn(GlobalScope)
     }
 
     override fun run(context: T) = runOnMinecraftThread {
-        flow.checkEmit(context)
+        notifications.checkEmit(context)
         RecodeDispatcher.expedite() // allow for validation and other state mutation
         resultCapture(context).also { previous.checkEmit(it) }
     }
