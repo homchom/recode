@@ -11,10 +11,18 @@ import kotlinx.coroutines.sync.withLock
 
 typealias PowerCallback = Power.() -> Unit
 
+/**
+ * Something that uses [Power] and can be extended.
+ */
 interface PowerSink {
     fun use(source: Power)
 }
 
+/**
+ * A lifecycle object, and one of recode's core classes. Use as a private member of other classes to modularize
+ * specific code such that resources and computation only exist when needed by other use sites. Such classes can
+ * also implement [PowerSink] if their power should be able to be [extend]ed.
+ */
 class Power(
     private val onEnable: PowerCallback? = null,
     private val onDisable: PowerCallback? = null
