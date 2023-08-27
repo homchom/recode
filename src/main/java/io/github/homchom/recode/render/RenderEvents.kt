@@ -14,7 +14,6 @@ import io.github.homchom.recode.util.collections.mapToArray
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents.BeforeBlockOutline
-import net.minecraft.core.BlockPos
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.phys.HitResult
 
@@ -35,34 +34,6 @@ data class BlockOutlineContext(
 
 val RenderBlockEntitiesEvent = createEvent { list: List<SimpleValidated<BlockEntity>> -> list.mapValid() }
 
-object OutlineBlockEntitiesEvent2 :
-    BufferedCustomEvent<
-            Array<out BlockEntityOutlineContext>, Map<BlockPos, RGBAColor>, BlockEntityOutlineContext.Input
-    > by createBufferedEvent(
-        resultCapture = { context ->
-            context
-                .filter { it.outlineColor != null }
-                .associate { it.blockEntity.blockPos to it.outlineColor!! }
-        },
-        stableInterval = 3.ticks,
-        keySelector = { Case(it.chunkPos) },
-        contextGenerator = { input ->
-            input.blockEntities.mapToArray { BlockEntityOutlineContext(it) }
-        }
-    )
-{
-    init {
-        use(Power(
-            onEnable = {
-                BeforeOutlineBlockEvent.listenEach { context ->
-                    val processor = context.worldRenderContext.worldRenderer() as RecodeLevelRenderer
-                    processor.`recode$processOutlines`(mc.frameTime)
-                }
-            }
-        ))
-    }
-}
-
 val OutlineBlockEntitiesEvent =
     createBufferedEvent<Array<out BlockEntityOutlineContext>, _, BlockEntityOutlineContext.Input, _>(
         resultCapture = { context ->
@@ -75,7 +46,16 @@ val OutlineBlockEntitiesEvent =
         contextGenerator = { input ->
             input.blockEntities.mapToArray { BlockEntityOutlineContext(it) }
         }
-    )
+    ).also { event ->
+        event.use(Power(
+            onEnable = {
+                BeforeOutlineBlockEvent.listenEach { context ->
+                    val processor = context.worldRenderContext.worldRenderer() as RecodeLevelRenderer
+                    processor.`recode$processOutlines`(mc.frameTime)
+                }
+            }
+        ))
+    }
 
 data class BlockEntityOutlineContext @JvmOverloads constructor(
     val blockEntity: BlockEntity,

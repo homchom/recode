@@ -71,7 +71,6 @@ object Recode : ModContainer {
         check(!isInitialized) { "$MOD_NAME has already been initialized" }
         logInfo("initializing...")
 
-        System.setProperty("java.awt.headless", "false") // TODO: why is this here?
         LegacyRecode.onInitialize()
 
         @OptIn(DelicateCoroutinesApi::class)
