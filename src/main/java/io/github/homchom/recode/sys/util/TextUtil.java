@@ -163,8 +163,8 @@ public class TextUtil {
                 lastColor = "§" + character;
             }else if (!activeQuote) {
                 if (character.matches("\\d")) {
-                    if (lastChar.equals(".")) {
-                        output = output.substring(0, output.length() - 1) + numberColor + ".";
+                    if (lastChar.equals(".") || lastChar.equals(",")) {
+                        output = output.substring(0, output.length() - 1) + numberColor + lastChar;
                     }
                     output = output + numberColor + character + lastColor; // Color any number, marked by being outside of quotation marks
                     lastChar = character;
