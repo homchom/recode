@@ -1,11 +1,12 @@
 package io.github.homchom.recode.mod.commands.impl.text;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.*;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
 import io.github.homchom.recode.sys.player.chat.ChatType;
-import io.github.homchom.recode.sys.player.chat.*;
+import io.github.homchom.recode.sys.player.chat.ChatUtil;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandBuildContext;
@@ -70,7 +71,7 @@ public class ColorCommand extends Command {
             + "\n"
             + "Copies the specified color in DiamondFire hex color format.\n"
             + "The max number is [green]256[reset] for RGB colors, and [green]360[reset] for HSB colors.\n"
-            + "[yellow]Example[reset]: /color 255 0 0 -> &x&f&f&0&0&0&0";
+            + "[yellow]Example[reset]: /color rgb 255 0 0 -> &x&f&f&0&0&0&0";
     }
 
     @Override

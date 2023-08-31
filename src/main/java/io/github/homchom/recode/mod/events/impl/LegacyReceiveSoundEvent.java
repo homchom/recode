@@ -1,21 +1,21 @@
 package io.github.homchom.recode.mod.events.impl;
 
-import io.github.homchom.recode.game.PlaySoundEvent;
+import io.github.homchom.recode.event.SimpleValidated;
+import io.github.homchom.recode.game.GameEvents;
 import net.minecraft.network.protocol.game.ClientboundSoundPacket;
 
 public class LegacyReceiveSoundEvent {
     private static int cancelNextSounds;
 
     public LegacyReceiveSoundEvent() {
-        PlaySoundEvent.INSTANCE.register(this::run);
+        GameEvents.getPlaySoundEvent().register(this::run);
     }
 
-    private boolean run(ClientboundSoundPacket packet, boolean playSound) {
+    private void run(SimpleValidated<ClientboundSoundPacket> context) {
         if (cancelNextSounds > 0) {
             cancelNextSounds--;
-            return false;
+            context.invalidate();
         }
-        return playSound;
     }
 
     public static void cancelNextSounds(int amount) {

@@ -1,19 +1,19 @@
 package io.github.homchom.recode.mod.features;
 
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.mojang.blaze3d.platform.Window;
-import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.homchom.recode.LegacyRecode;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.network.chat.*;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 
 public class LagslayerHUD {
     private static final Font font = Minecraft.getInstance().font;
     private static final Window mainWindow = Minecraft.getInstance().getWindow();
-    public static boolean lagSlayerEnabled;
     private static Component barsComponent;
     private static Component numberComponent;
     private static long lastUpdate;
@@ -45,7 +45,7 @@ public class LagslayerHUD {
         lastUpdate = System.currentTimeMillis();
     }
 
-    public static void onRender(PoseStack stack) {
+    public static void onRender(GuiGraphics guiGraphics) {
         if (barsComponent == null || numberComponent == null) return;
         if ((System.currentTimeMillis() - lastUpdate) > 1200) {
             barsComponent = null;
@@ -54,20 +54,20 @@ public class LagslayerHUD {
         }
 
         try {
-            renderComponent(stack, Component.literal("CPU Usage:"), 3, ChatFormatting.GOLD.getColor());
-            renderComponent(stack, barsComponent, 2);
-            renderComponent(stack, numberComponent, 1);
+            renderComponent(guiGraphics, Component.literal("CPU Usage:"), 3, ChatFormatting.GOLD.getColor());
+            renderComponent(guiGraphics, barsComponent, 2);
+            renderComponent(guiGraphics, numberComponent, 1);
         } catch (Exception e) {
             LegacyRecode.error("Error while trying to render LagSlayer HUD");
             e.printStackTrace();
         }
     }
 
-    private static void renderComponent(PoseStack stack, Component text, int line) {
-        renderComponent(stack, text, line, 0xffff);
+    private static void renderComponent(GuiGraphics guiGraphics, Component text, int line) {
+        renderComponent(guiGraphics, text, line, 0xffff);
     }
 
-    private static void renderComponent(PoseStack stack, Component text, int line, int color) {
-        font.draw(stack, text, 4, mainWindow.getGuiScaledHeight() - (font.lineHeight * line + 4), color);
+    private static void renderComponent(GuiGraphics guiGraphics, Component text, int line, int color) {
+        guiGraphics.drawString(font, text, 4, mainWindow.getGuiScaledHeight() - (font.lineHeight * line + 4), color, true);
     }
 }

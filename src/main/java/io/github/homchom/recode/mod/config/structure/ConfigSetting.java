@@ -1,9 +1,10 @@
 package io.github.homchom.recode.mod.config.structure;
 
 import io.github.homchom.recode.mod.config.types.DropdownSetting;
-import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.Component;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 public class ConfigSetting<Value> implements IRawTranslation<ConfigSetting<Value>> {
 

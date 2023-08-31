@@ -19,7 +19,8 @@
 
 package io.github.homchom.recode.mod.features.commands.schem.sk89q.jnbt;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Helps create compound tags.

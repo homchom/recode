@@ -1,43 +1,45 @@
 {
-  "schemaVersion": 1,
-  "id": "recode",
-  "version": "${version}",
-  "name": "${modName}",
-  "description": "a utility mod for DiamondFire to make development more fun",
-  "contributors": ["homchom", "tk2217", "The CodeUtilities Team"],
-  "contact": {
-    "sources": "https://github.com/homchom/recode",
-    "issues": "https://discord.gg/ndGVFutEHg"
-  },
-  "environment": "client",
-  "license": "LGPL-3.0",
-  "icon": "assets/recode/icon.png",
-  "entrypoints": {
-    "main": [
-      "io.github.homchom.recode.init.Main"
+    "schemaVersion": 1,
+    "id": "recode",
+    "version": "${version}",
+    "name": "${modName}",
+    "description": "a utility mod for DiamondFire to make development more fun",
+    "contributors": ["homchom", "The CodeUtilities Team"],
+    "contact": {
+        "sources": "https://github.com/homchom/recode",
+        "issues": "https://discord.gg/ndGVFutEHg"
+    },
+    "environment": "client",
+    "license": "LGPL-3.0",
+    "icon": "assets/recode/textures/ui/recode.png",
+    "entrypoints": {
+        "client": [
+            "io.github.homchom.recode.Main",
+            "io.github.homchom.recode.mod.features.keybinds.Keybinds"
+        ],
+        "modmenu": [
+            "io.github.homchom.recode.mod.config.ModMenuIntegration"
+        ],
+        "preLaunch": [
+            "io.github.homchom.recode.Main"
+        ],
+        "main": [],
+        "server": []
+    },
+    "mixins": [
+        "recode.mixins.json",
+        "recodeLegacy.mixins.json"
     ],
-    "modmenu": [
-      "io.github.homchom.recode.mod.config.ModMenuIntegration"
-    ],
-    "client": [
-      "io.github.homchom.recode.mod.features.keybinds.Keybinds"
-    ],
-    "server": []
-  },
-  "mixins": [
-    "recode.mixins.json",
-    "recodeLegacy.mixins.json"
-  ],
-  "depends": {
-    "minecraft": "$minecraftVersion",
-    "fabricloader": "^$loaderVersion",
-    "fabric-api": "^${fabricVersion - metadataRegex}",
-    $dependencyMods
-  },
-  "breaks": {
-    "codeutilities": "*"
-  },
-  "custom": {
-    "modmenu:clientsideOnly": true
-  }
+    "depends": {
+        "minecraft": "$minecraftVersion",
+        "fabricloader": "^$loaderVersion",
+        "fabric-api": "^${fabricVersion - metadataRegex}",
+        $dependencyMods
+    },
+    "conflicts": {
+        "optifabric": "*"
+    },
+    "custom": {
+        "modmenu:clientsideOnly": true
+    }
 }

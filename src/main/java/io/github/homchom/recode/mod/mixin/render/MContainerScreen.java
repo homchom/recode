@@ -1,24 +1,31 @@
 package io.github.homchom.recode.mod.mixin.render;
 
-import com.google.gson.*;
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.Config;
-import io.github.homchom.recode.sys.hypercube.codeaction.*;
+import io.github.homchom.recode.sys.hypercube.codeaction.Action;
+import io.github.homchom.recode.sys.hypercube.codeaction.ActionDump;
+import io.github.homchom.recode.sys.hypercube.codeaction.Argument;
+import io.github.homchom.recode.sys.hypercube.codeaction.DisplayItem;
 import io.github.homchom.recode.sys.util.TextUtil;
-import net.minecraft.client.gui.screens.inventory.*;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ChestMenu;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag.Default;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Mixin(ContainerScreen.class)
 public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu> {
@@ -27,28 +34,28 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
     }
 
     @Inject(method = "render", at = @At("RETURN"))
-    private void render(PoseStack poseStack, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        String[] signt = LegacyRecode.signText;
-        if (signt.length != 4) {
+    private void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+        String[] signT = LegacyRecode.signText;
+        if (signT.length != 4) {
             return;
         }
 
-        List<Action> actions = ActionDump.getActions(signt[1])
-            .stream().filter(e -> Objects.equals(e.getCodeBlock().getName(), signt[0]))
-            .filter(e -> Objects.equals(e.getName(), signt[1]))
-            .collect(Collectors.toList());
+        List<Action> actions = ActionDump.getActions(signT[1])
+            .stream().filter(e -> Objects.equals(e.getCodeBlock().getName(), signT[0]))
+            .filter(e -> Objects.equals(e.getName(), signT[1]))
+            .toList();
 
         if (actions.size() == 1) {
             if (Config.getBoolean("showCodeblockDescription")) {
-                showDesc(actions.get(0), poseStack);
+                showDesc(actions.get(0), guiGraphics);
             }
             if (Config.getBoolean("showParameterErrors")) {
-                argCheck(actions.get(0), poseStack);
+                argCheck(actions.get(0), guiGraphics);
             }
         }
     }
 
-    private void argCheck(Action a, PoseStack matrices) {
+    private void argCheck(Action a, GuiGraphics guiGraphics) {
         List<ItemStack> items = new ArrayList<>();
         for (int i = 0; i < menu.getContainer().getContainerSize(); i++) {
             items.add(menu.getContainer().getItem(i));
@@ -255,7 +262,7 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
         int y = 0;
         for (String line : errors) {
             Component text = TextUtil.colorCodesToTextComponent(line);
-            LegacyRecode.MC.font.draw(matrices, text, LegacyRecode.MC.screen.width - font.width(text) - 10, 10 + y, 0xffffff);
+            guiGraphics.drawString(Minecraft.getInstance().font, text, Minecraft.getInstance().screen.width - font.width(text) - 10, 10 + y, 0xffffff);
             y += 10;
         }
     }
@@ -387,14 +394,14 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
         return "UNKNOWN";
     }
 
-    private void showDesc(Action a, PoseStack matrices) {
+    private void showDesc(Action a, GuiGraphics guiGraphics) {
         DisplayItem icon = a.getIcon();
 
-        List<Component> desc = icon.toItemStack().getTooltipLines(LegacyRecode.MC.player, Default.NORMAL);
+        List<Component> desc = icon.toItemStack().getTooltipLines(Minecraft.getInstance().player, Default.NORMAL);
 
         int y = 0;
         for (Component line : desc) {
-            LegacyRecode.MC.font.draw(matrices, line, 10, 10 + y, 0xffffff);
+            guiGraphics.drawString(Minecraft.getInstance().font, line, 10, 10 + y, 0xffffff);
             y += 10;
         }
     }

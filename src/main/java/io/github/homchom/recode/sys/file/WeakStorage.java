@@ -2,7 +2,9 @@ package io.github.homchom.recode.sys.file;
 
 import java.io.Closeable;
 import java.lang.ref.WeakReference;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * This class stores objects in a hash map, and discards them if they remain unused

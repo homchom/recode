@@ -1,19 +1,20 @@
 package io.github.homchom.recode.mod.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import io.github.homchom.recode.LegacyRecode;
-import io.github.homchom.recode.mod.commands.impl.image.*;
+import io.github.homchom.recode.mod.commands.impl.image.ImageHologramCommand;
+import io.github.homchom.recode.mod.commands.impl.image.ImageParticleCommand;
 import io.github.homchom.recode.mod.commands.impl.item.*;
-import io.github.homchom.recode.mod.commands.impl.item.template.*;
+import io.github.homchom.recode.mod.commands.impl.item.template.SendTemplateCommand;
+import io.github.homchom.recode.mod.commands.impl.item.template.WebviewCommand;
 import io.github.homchom.recode.mod.commands.impl.other.*;
 import io.github.homchom.recode.mod.commands.impl.text.*;
 import io.github.homchom.recode.mod.config.Config;
-import io.github.homchom.recode.sys.file.ILoader;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandBuildContext;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CommandHandler {
 
@@ -60,17 +61,15 @@ public class CommandHandler {
                 new SendTemplateCommand(),
                 new PJoinCommand(),
                 new SchemCommand(),
-                new RelativeLocCommand(),
-                new NBSSearchCommand(),
-                new PartnerBracketCommand(),
-                new CodeVaultCommand(),
+                //new NBSSearchCommand(),
+                //new CodeVaultCommand(),
                 new ImportFileCommand()
             );
         }
     }
 
     public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext context, Command cmd) {
-        cmd.register(LegacyRecode.MC, dispatcher, context);
+        cmd.register(Minecraft.getInstance(), dispatcher, context);
         cmds.add(cmd);
     }
 

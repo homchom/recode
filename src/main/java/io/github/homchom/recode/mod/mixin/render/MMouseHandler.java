@@ -1,20 +1,26 @@
 package io.github.homchom.recode.mod.mixin.render;
 
-import com.google.gson.*;
-import io.github.homchom.recode.LegacyRecode;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.sys.util.ItemUtil;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.*;
-import net.minecraft.sounds.*;
-import net.minecraft.world.inventory.*;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import org.spongepowered.asm.mixin.*;
-import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.math.BigDecimal;
@@ -32,12 +38,12 @@ public class MMouseHandler {
 
     @Inject(method = "onScroll(JDD)V", at = @At("HEAD"))
     private void onScroll(long window, double horiz, double vertical, CallbackInfo ci) {
-        Screen screen = LegacyRecode.MC.screen;
+        Screen screen = Minecraft.getInstance().screen;
         if (screen instanceof ContainerScreen && Config.getBoolean("quicknum")) {
             AbstractContainerMenu handler = ((ContainerScreen) screen).getMenu();
             List<Slot> slotList = handler.slots;
 
-            double scale = LegacyRecode.MC.getWindow().getGuiScale();
+            double scale = Minecraft.getInstance().getWindow().getGuiScale();
 
             double mouseX = xpos;
             double mouseY = ypos;
@@ -53,8 +59,8 @@ public class MMouseHandler {
                 if (sX < mouseX && mouseX < sX + (16 * scale)) {
                     if (sY < mouseY && mouseY < sY + (16 * scale)) {
                         if (System.currentTimeMillis() >= cd) {
-                            if (LegacyRecode.MC.player != null && LegacyRecode.MC.gameMode != null && ItemUtil.isVar(slot.getItem(), "num")) {
-                                if (LegacyRecode.MC.player.isCreative()) {
+                            if (Minecraft.getInstance().player != null && Minecraft.getInstance().gameMode != null && ItemUtil.isVar(slot.getItem(), "num")) {
+                                if (Minecraft.getInstance().player.isCreative()) {
                                     cd = System.currentTimeMillis() + 250;
                                     ItemStack itemStack = slot.getItem().copy();
 
@@ -77,31 +83,31 @@ public class MMouseHandler {
                                             if (vertical > 0) {
                                                 bigDecimal = bigDecimal.add(BigDecimal.valueOf(Config.getDouble("quicknumSecondaryAmount")));
                                                 if (Config.getBoolean("quicknumSound"))
-                                                    LegacyRecode.MC.player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT, SoundSource.PLAYERS, 1, 1);
+                                                    Minecraft.getInstance().player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT.value(), SoundSource.PLAYERS, 1, 1);
                                             } else {
                                                 bigDecimal = bigDecimal.subtract(BigDecimal.valueOf(Config.getDouble("quicknumSecondaryAmount")));
                                                 if (Config.getBoolean("quicknumSound"))
-                                                    LegacyRecode.MC.player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT, SoundSource.PLAYERS, 1, 0);
+                                                    Minecraft.getInstance().player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT.value(), SoundSource.PLAYERS, 1, 0);
                                             }
                                         } else if (Screen.hasShiftDown()) {
                                             if (vertical > 0) {
                                                 bigDecimal = bigDecimal.add(BigDecimal.valueOf(Config.getDouble("quicknumTertiaryAmount")));
                                                 if (Config.getBoolean("quicknumSound"))
-                                                    LegacyRecode.MC.player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT, SoundSource.PLAYERS, 1, 1);
+                                                    Minecraft.getInstance().player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT.value(), SoundSource.PLAYERS, 1, 1);
                                             } else {
                                                 bigDecimal = bigDecimal.subtract(BigDecimal.valueOf(Config.getDouble("quicknumTertiaryAmount")));
                                                 if (Config.getBoolean("quicknumSound"))
-                                                    LegacyRecode.MC.player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT, SoundSource.PLAYERS, 1, 0);
+                                                    Minecraft.getInstance().player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT.value(), SoundSource.PLAYERS, 1, 0);
                                             }
                                         } else {
                                             if (vertical > 0) {
                                                 bigDecimal = bigDecimal.add(BigDecimal.valueOf(Config.getDouble("quicknumPrimaryAmount")));
                                                 if (Config.getBoolean("quicknumSound"))
-                                                    LegacyRecode.MC.player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT, SoundSource.PLAYERS, 1, 1);
+                                                    Minecraft.getInstance().player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT.value(), SoundSource.PLAYERS, 1, 1);
                                             } else {
                                                 bigDecimal = bigDecimal.subtract(BigDecimal.valueOf(Config.getDouble("quicknumPrimaryAmount")));
                                                 if (Config.getBoolean("quicknumSound"))
-                                                    LegacyRecode.MC.player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT, SoundSource.PLAYERS, 1, 0);
+                                                    Minecraft.getInstance().player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT.value(), SoundSource.PLAYERS, 1, 0);
                                             }
                                         }
 
@@ -120,7 +126,7 @@ public class MMouseHandler {
                                         ItemUtil.setContainerItem(slot.index, itemStack);
                                     } catch (NumberFormatException e) {
                                         if (Config.getBoolean("quicknumSound"))
-                                            LegacyRecode.MC.player.playNotifySound(SoundEvents.NOTE_BLOCK_DIDGERIDOO, SoundSource.PLAYERS, 1, 0);
+                                            Minecraft.getInstance().player.playNotifySound(SoundEvents.NOTE_BLOCK_DIDGERIDOO.value(), SoundSource.PLAYERS, 1, 0);
                                     }
                                 }
                             }

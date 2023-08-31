@@ -4,11 +4,12 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
-import io.github.homchom.recode.sys.networking.LegacyState;
-import io.github.homchom.recode.sys.player.DFInfo;
+import io.github.homchom.recode.multiplayer.state.DF;
+import io.github.homchom.recode.multiplayer.state.PlotMode;
 import io.github.homchom.recode.sys.player.chat.ChatType;
-import io.github.homchom.recode.sys.player.chat.*;
-import io.github.homchom.recode.sys.player.chat.color.*;
+import io.github.homchom.recode.sys.player.chat.ChatUtil;
+import io.github.homchom.recode.sys.player.chat.color.HSLColor;
+import io.github.homchom.recode.sys.player.chat.color.MinecraftColors;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandBuildContext;
@@ -112,8 +113,8 @@ public class GradientCommand extends Command {
                                             ChatUtil.sendMessage("Copied text!", ChatType.SUCCESS);
                                             mc.player.displayClientMessage(base, false);
 
-                                            if (DFInfo.currentState.getMode() == LegacyState.Mode.DEV) {
-                                                mc.player.commandUnsigned("txt " + sb);
+                                            if (DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev.ID)) {
+                                                mc.player.connection.sendUnsignedCommand("txt " + sb);
                                             }
 
                                             return 1;

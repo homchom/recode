@@ -1,18 +1,28 @@
 package io.github.homchom.recode.mod.features.commands.schem;
 
-import com.google.gson.*;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import io.github.homchom.recode.mod.features.commands.schem.loaders.LitematicaBitArray;
-import io.github.homchom.recode.mod.features.commands.schem.utils.*;
+import io.github.homchom.recode.mod.features.commands.schem.utils.DFText;
+import io.github.homchom.recode.mod.features.commands.schem.utils.DFUtils;
 import io.github.homchom.recode.sys.hypercube.templates.TemplateUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtIo;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import org.apache.commons.io.FilenameUtils;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Date;
 
 public class Litematic {
 

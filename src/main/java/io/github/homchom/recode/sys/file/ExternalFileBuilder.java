@@ -1,12 +1,16 @@
 package io.github.homchom.recode.sys.file;
 
-import io.github.homchom.recode.Constants;
+import io.github.homchom.recode.ModConstants;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtIo;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
 import java.util.function.Consumer;
 
 public class ExternalFileBuilder {
@@ -24,7 +28,7 @@ public class ExternalFileBuilder {
     }
 
     private Path getMainDir() throws IOException {
-        Path path = FabricLoader.getInstance().getGameDir().resolve(Constants.MOD_NAME);
+        Path path = FabricLoader.getInstance().getGameDir().resolve(ModConstants.MOD_NAME);
         if (!Files.isDirectory(path)) Files.createDirectory(path);
         return path;
     }

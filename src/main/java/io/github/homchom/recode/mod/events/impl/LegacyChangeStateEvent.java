@@ -1,31 +1,25 @@
 package io.github.homchom.recode.mod.events.impl;
 
 import io.github.homchom.recode.mod.features.StateOverlayHandler;
-import io.github.homchom.recode.mod.features.discordrpc.DFDiscordRPC;
 import io.github.homchom.recode.mod.features.streamer.StreamerModeHandler;
-import io.github.homchom.recode.server.ChangeDFStateEvent;
-import io.github.homchom.recode.sys.networking.LegacyState;
+import io.github.homchom.recode.multiplayer.state.DFState;
+import io.github.homchom.recode.multiplayer.state.DFStateDetectors;
 import io.github.homchom.recode.sys.player.chat.MessageGrabber;
-import kotlin.Unit;
+import io.github.homchom.recode.util.Case;
 
 public class LegacyChangeStateEvent {
     public LegacyChangeStateEvent() {
-        ChangeDFStateEvent.INSTANCE.register((context, __) -> {
-            run(context.getNew(), context.getOld());
-            return Unit.INSTANCE;
-        });
+        DFStateDetectors.INSTANCE.register(this::run);
     }
 
-    private void run(LegacyState newState, LegacyState oldState) {
-        StreamerModeHandler.handleStateChange(oldState, newState);
+    private void run(Case<? extends DFState> stateCase) {
+        var state = stateCase.getContent();
+        StreamerModeHandler.handleStateChange(state);
 
-        if (newState.mode == LegacyState.Mode.OFFLINE) {
-            MessageGrabber.reset();
-        }
+        if (state == null) MessageGrabber.reset();
 
         try {
-            DFDiscordRPC.getInstance().update(newState);
-            StateOverlayHandler.setState(newState);
+            StateOverlayHandler.setState(state);
         } catch(Exception e) {
             e.printStackTrace();
         }

@@ -2,18 +2,17 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocatio
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.7.0"
-    id("fabric-loom") version "0.12-SNAPSHOT"
+    kotlin("jvm") version "1.9.0"
+    id("fabric-loom") version "1.3-SNAPSHOT"
     id("com.modrinth.minotaur") version "2.+"
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
 val modName: String by project
-
 val modVersion: String by project
 val minecraftVersion: String by project
-val modVersionWithMeta = "$modVersion+$minecraftVersion"
-version = modVersionWithMeta
+val modVersionWithMeta get() = "$modVersion+$minecraftVersion"
+version = "$modVersionWithMeta-LATEST"
 
 val mavenGroup: String by project
 group = mavenGroup
@@ -28,6 +27,16 @@ base {
 }
 
 repositories {
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Modrinth"
+                url = uri("https://api.modrinth.com/maven")
+            }
+        }
+        filter { includeGroup("maven.modrinth") }
+    }
+
     maven {
         name = "CottonMC"
         url = uri("https://server.bbkr.space/artifactory/libs-release")
@@ -38,13 +47,15 @@ repositories {
     maven {
         url = uri("https://maven.terraformersmc.com/")
     }
+    maven {
+        url = uri("https://jitpack.io")
+    }
     mavenCentral()
-    jcenter() // TODO: remove after Discord RPC dependency is removed
 }
 
 val shade: Configuration by configurations.creating {
     isCanBeResolved = true
-    // Exclude slf4j because it is already provided by Minecraft
+    // exclude slf4j because it is already provided by Minecraft TODO: can this workaround be removed now?
     exclude(group = "org.slf4j")
 }
 
@@ -52,23 +63,28 @@ dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
     mappings(loom.officialMojangMappings())
 
+    val fabricDevVersion: String by project
     val loaderDevVersion: String by project
+    modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricDevVersion")
     modImplementation("net.fabricmc:fabric-loader:$loaderDevVersion")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
+    include(
+        implementation(annotationProcessor("com.github.llamalad7.mixinextras:mixinextras-fabric:0.2.0-beta.9")!!)!!
+    )
 
-    shadeApi(kotlin("stdlib", "1.7.0"))
-    shadeApi("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+    shade(api(kotlin("stdlib", "1.9.0"))!!)
+    shade(api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")!!)
 
-    // Declare mod dependencies listed in gradle.properties
-    for (mod in requiredDependencyMods) includeModImpl("${mod.artifact}:${mod.version}")
-    for (mod in optionalDependencyMods) modCompileOnly("${mod.artifact}:${mod.version}")
-
-    // Discord RPC TODO: remove
-    shadeImpl("com.jagrosh:DiscordIPC:0.4")
+    // declare mod dependencies listed in gradle.properties
+    for (mod in requiredDependencyMods) {
+        include(modImplementation("${mod.artifact}:${mod.version}")!!)
+    }
+    for (mod in optionalDependencyMods) {
+        modCompileOnly("${mod.artifact}:${mod.version}")
+    }
 
     // Websocket TODO: clean this up
-    shadeImpl("org.java-websocket:Java-WebSocket:1.5.3")
-    includeImpl("javax.websocket:javax.websocket-api:1.1")
+    shade(implementation("org.java-websocket:Java-WebSocket:1.5.3")!!)
+    include(implementation("javax.websocket:javax.websocket-api:1.1")!!)
 }
 
 java {
@@ -88,28 +104,28 @@ tasks {
     withType<KotlinCompile> {
         kotlinOptions {
             jvmTarget = "17"
-            // Compile Kotlin interfaces with Java 8 default methods
+            // compile Kotlin interfaces with Java 8 default methods
             freeCompilerArgs = listOf("-Xjvm-default=all")
         }
     }
 
     processResources {
-        val loaderModVersion: String by project
-        // These properties can be used in fabric_mod_json_template.txt in Groovy template syntax
+        val loaderVersion: String by project
+        // these properties can be used in fabric_mod_json_template.txt in Groovy template syntax
         val exposedProperties = arrayOf(
             "modName" to modName,
             "version" to version,
             "minecraftVersion" to minecraftVersion,
-            "loaderVersion" to loaderModVersion,
+            "loaderVersion" to loaderVersion,
             "fabricVersion" to fabricVersion
         )
 
         inputs.properties(*exposedProperties)
         inputs.properties(project.properties.filterKeys { it.startsWith("required.") })
 
-        // Evaluate fabric_mod_json_template.txt as a Groovy template
+        // evaluate fabric_mod_json_template.txt as a Groovy template
         filesMatching("fabric_mod_json_template.txt") {
-            val metadataRegex = Regex("""\+[\d.]+$""")
+            val metadataRegex = Regex("""\+[\d.]+?$""")
             expand(
                 *exposedProperties,
                 "metadataRegex" to metadataRegex.toPattern(),
@@ -123,19 +139,20 @@ tasks {
     }
 
     jar {
+        // disable jar (in favor of shadowJar)
         enabled = false
     }
 
     val relocate by registering(ConfigureShadowRelocation::class) {
+        // repackage shaded dependencies
         target = shadowJar.get()
-        // Repackage shaded dependencies
         prefix = "$mavenGroup.recode.shaded"
     }
 
     shadowJar {
-        dependsOn(relocate)
+        dependsOn(relocate.get())
         configurations = listOf(shade)
-        // Output shaded jar in the correct destination to be used by remapJar
+        // output shaded jar in the correct destination to be used by remapJar
         destinationDirectory.set(file("build/devlibs"))
         archiveClassifier.set("dev")
 
@@ -143,12 +160,12 @@ tasks {
     }
 
     remapJar {
-        // Use the shaded jar with remapJar, since jar is disabled
+        // use the shaded jar with remapJar
         inputFile.value(shadowJar.get().archiveFile)
     }
 }
 
-tasks.modrinth.get().dependsOn(tasks.modrinthSyncBody.get())
+tasks.modrinth.get().dependsOn(tasks.modrinthSyncBody)
 
 modrinth {
     // DO NOT PUT THIS IN RECODE'S GRADLE.PROPERTIES. Your modrinth token should remain private to everyone.
@@ -168,48 +185,22 @@ modrinth {
         versionType.set(type)
     }
 
-    uploadFile.set(tasks.remapJar.get())
+    // remove "LATEST" classifiers when uploading to modrinth
+    uploadFile.set(tasks.remapJar.map { task ->
+        val jarFile = task.archiveFile.get().asFile
+        val newPath = jarFile.path.replace("-LATEST", "")
+        jarFile.renameTo(File(newPath))
+        newPath
+    })
+
     gameVersions.addAll(minecraftVersion)
     dependencies {
-        val fabricModrinthVersion: String by project
-        required.version(fabricModrinthVersion)
+        required.version("fabric-api", fabricVersion)
     }
 
     // TODO: use something other than readText?
     syncBodyFrom.set(file("README.md").readText())
     changelog.set(file("CHANGELOG.md").readText())
-}
-
-typealias DependencyConfig = Action<ExternalModuleDependency>
-
-fun DependencyHandlerScope.shadeImpl(notation: Any) {
-    implementation(notation)
-    shade(notation)
-}
-
-fun DependencyHandlerScope.shadeApi(notation: Any) {
-    api(notation)
-    shade(notation)
-}
-
-fun DependencyHandlerScope.includeImpl(notation: Any) {
-    implementation(notation)
-    include(notation)
-}
-
-fun DependencyHandlerScope.includeApi(notation: Any) {
-    api(notation)
-    include(notation)
-}
-
-fun DependencyHandlerScope.includeModImpl(notation: Any) {
-    modImplementation(notation)
-    include(notation)
-}
-
-fun DependencyHandlerScope.includeModApi(notation: Any) {
-    modApi(notation)
-    include(notation)
 }
 
 data class DependencyMod(

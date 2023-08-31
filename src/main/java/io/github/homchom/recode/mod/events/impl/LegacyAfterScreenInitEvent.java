@@ -1,15 +1,18 @@
 package io.github.homchom.recode.mod.events.impl;
 
-import io.github.homchom.recode.Constants;
+import io.github.homchom.recode.ModConstants;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.sys.renderer.BlendableTexturedButtonWidget;
-import net.fabricmc.fabric.api.client.screen.v1.*;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.screens.*;
+import net.minecraft.client.gui.screens.ConnectScreen;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.resolver.ServerAddress;
-import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.ResourceLocation;
 
@@ -31,7 +34,7 @@ public class LegacyAfterScreenInitEvent {
 	}
 
 	private void addDfButton(Minecraft mc, Screen screen, List<AbstractWidget> buttons, int spacing) {
-		final ResourceLocation icon = new ResourceLocation(Constants.MOD_ID + ":textures/ui/df.png");
+		final ResourceLocation icon = new ResourceLocation(ModConstants.MOD_ID + ":textures/ui/df.png");
 
 		int index = -1;
 		int y = screen.height / 4 + spacing;
@@ -39,7 +42,7 @@ public class LegacyAfterScreenInitEvent {
 			AbstractWidget button = buttons.get(i);
 			if (buttonHasText(button, "menu.multiplayer") && button.visible) {
 				index = i + 1;
-				y = button.y;
+				y = button.getY();
 			}
 		}
 
@@ -48,7 +51,7 @@ public class LegacyAfterScreenInitEvent {
 					(button) -> {
 						String address = "mcdiamondfire.com:25565";
 						ServerData serverInfo = new ServerData("DF", address, false);
-						ConnectScreen.startConnecting(screen, mc, ServerAddress.parseString(address), serverInfo);
+						ConnectScreen.startConnecting(screen, mc, ServerAddress.parseString(address), serverInfo, false);
 					}));
 		}
 	}

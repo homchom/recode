@@ -1,8 +1,12 @@
 package io.github.homchom.recode.mod.config.impl;
 
 import io.github.homchom.recode.mod.config.ConfigSounds;
-import io.github.homchom.recode.mod.config.structure.*;
-import io.github.homchom.recode.mod.config.types.*;
+import io.github.homchom.recode.mod.config.structure.ConfigGroup;
+import io.github.homchom.recode.mod.config.structure.ConfigSubGroup;
+import io.github.homchom.recode.mod.config.types.EnumSetting;
+import io.github.homchom.recode.mod.config.types.IntegerSetting;
+import io.github.homchom.recode.mod.config.types.SoundSetting;
+import io.github.homchom.recode.mod.config.types.StringSetting;
 import io.github.homchom.recode.sys.sidedchat.ChatRule;
 
 public class SidedChatGroup extends ConfigGroup {

@@ -1,20 +1,25 @@
 package io.github.homchom.recode.mod.features.commands.recode;
 
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.mojang.blaze3d.platform.NativeImage;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
-import io.github.cottonmc.cotton.gui.widget.*;
-import io.github.homchom.recode.LegacyRecode;
+import io.github.cottonmc.cotton.gui.widget.WLabel;
+import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
+import io.github.cottonmc.cotton.gui.widget.WScrollPanel;
 import io.github.homchom.recode.sys.networking.WebUtil;
 import io.github.homchom.recode.sys.renderer.IMenu;
 import io.github.homchom.recode.sys.renderer.widgets.CImage;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ContributorsUI extends LightweightGuiDescription implements IMenu {
     private static ContributorsUI INSTANCE;
@@ -57,7 +62,7 @@ public class ContributorsUI extends LightweightGuiDescription implements IMenu {
             if (contributor.getAvatar() == null) {
                 try {
                     URL url = new URL(contributor.getAvatarUrl());
-                    ResourceLocation identifier = LegacyRecode.MC.getTextureManager().register("contributor_" + contributor.getName().toLowerCase(), new DynamicTexture(NativeImage.read(url.openStream())));
+                    ResourceLocation identifier = Minecraft.getInstance().getTextureManager().register("contributor_" + contributor.getName().toLowerCase(), new DynamicTexture(NativeImage.read(url.openStream())));
                     contributor.setAvatar(identifier);
 
                 } catch (IOException e) {

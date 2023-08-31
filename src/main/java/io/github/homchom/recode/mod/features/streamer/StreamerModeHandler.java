@@ -1,9 +1,10 @@
 package io.github.homchom.recode.mod.features.streamer;
 
-import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.Config;
-import io.github.homchom.recode.sys.networking.LegacyState;
+import io.github.homchom.recode.multiplayer.state.DFState;
+import io.github.homchom.recode.multiplayer.state.PlotMode;
 import io.github.homchom.recode.sys.player.chat.MessageGrabber;
+import net.minecraft.client.Minecraft;
 
 public class StreamerModeHandler {
 
@@ -75,12 +76,12 @@ public class StreamerModeHandler {
 
         // Run "/adminv off" and hide the message
         if (autoAdminV()) {
-            LegacyRecode.MC.player.commandUnsigned("adminv off");
+            Minecraft.getInstance().player.connection.sendUnsignedCommand("adminv off");
         }
 
         // Run "/chat local" and hide the message
         if (autoChatLocal()) {
-            LegacyRecode.MC.player.commandUnsigned("c l");
+            Minecraft.getInstance().player.connection.sendUnsignedCommand("c l");
         }
 
         // Hide messages
@@ -91,13 +92,14 @@ public class StreamerModeHandler {
         }
     }
 
-    public static void handleStateChange(LegacyState oldState, LegacyState newState) {
+    public static void handleStateChange(DFState newState) {
         if (!enabled()) return;
 
         // If the state is changed to mode play, run "/chat local"
         // Note: May trigger simultaneously with StreamerHandler#handleServerJoin, but this is not a problem
-        if (autoChatLocal() && newState.mode.equals(LegacyState.Mode.PLAY)) {
-            LegacyRecode.MC.player.commandUnsigned("c l");
+        if (autoChatLocal() && newState instanceof DFState.OnPlot playState &&
+                playState.getMode().equals(PlotMode.Play.INSTANCE)) {
+            Minecraft.getInstance().player.connection.sendUnsignedCommand("c l");
             MessageGrabber.hide(1);
         }
     }

@@ -2,20 +2,21 @@ package io.github.homchom.recode.mod.config.structure;
 
 import io.github.homchom.recode.mod.commands.IManager;
 import io.github.homchom.recode.mod.config.impl.*;
-import io.github.homchom.recode.mod.config.internal.*;
+import io.github.homchom.recode.mod.config.internal.ConfigFile;
+import io.github.homchom.recode.mod.config.internal.ConfigInstruction;
 import io.github.homchom.recode.mod.config.types.*;
 import io.github.homchom.recode.mod.config.types.hud.PositionSetting;
 import io.github.homchom.recode.mod.config.types.list.StringListSetting;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class ConfigManager implements IManager<ConfigGroup> {
     private final List<ConfigGroup> groups = new ArrayList<>();
-    private static ConfigManager instance;
+    private static final ConfigManager instance = new ConfigManager();
 
-    public ConfigManager() {
-        instance = this;
-    }
+    private ConfigManager() {}
 
     @Override
     public void initialize() {
@@ -24,7 +25,7 @@ public class ConfigManager implements IManager<ConfigGroup> {
         this.register(new StreamerModeGroup("streamer"));
         this.register(new AutomationGroup("automation"));
         this.register(new CommandsGroup("commands"));
-        this.register(new DiscordRPCGroup("discordRPC"));
+        //this.register(new DiscordRPCGroup("discordRPC")); TODO: readd
         this.register(new HidingGroup("hiding"));
         this.register(new KeybindsGroup("keybinds"));
         this.register(new HighlightGroup("highlight"));

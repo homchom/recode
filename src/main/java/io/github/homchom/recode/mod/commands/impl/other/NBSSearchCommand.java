@@ -2,10 +2,10 @@ package io.github.homchom.recode.mod.commands.impl.other;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.features.commands.NbsSearchMenu;
-import io.github.homchom.recode.sys.player.chat.*;
+import io.github.homchom.recode.sys.player.chat.ChatType;
+import io.github.homchom.recode.sys.player.chat.ChatUtil;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandBuildContext;
@@ -13,14 +13,14 @@ import net.minecraft.commands.CommandBuildContext;
 import static io.github.homchom.recode.mod.commands.arguments.ArgBuilder.argument;
 import static io.github.homchom.recode.mod.commands.arguments.ArgBuilder.literal;
 
+// disabled short-term as implementation is apparently closed source
 public class NBSSearchCommand extends Command {
-
     @Override
     public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd, CommandBuildContext context) {
         cd.register(literal("nbssearch")
             .then(argument("query", StringArgumentType.greedyString())
                 .executes(ctx -> {
-                    if (!LegacyRecode.MC.player.isCreative()) {
+                    if (!Minecraft.getInstance().player.isCreative()) {
                         ChatUtil.sendMessage("You need to be in creative mode for this command to work!", ChatType.FAIL);
                         return -1;
                     }

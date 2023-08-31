@@ -2,7 +2,8 @@ package io.github.homchom.recode.mod.features.social.chat;
 
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.sys.file.ILoader;
-import io.github.homchom.recode.sys.player.chat.*;
+import io.github.homchom.recode.sys.player.chat.ChatType;
+import io.github.homchom.recode.sys.player.chat.ChatUtil;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
 public class ConversationTimer implements ILoader {

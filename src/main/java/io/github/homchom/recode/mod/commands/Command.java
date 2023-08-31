@@ -1,7 +1,8 @@
 package io.github.homchom.recode.mod.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import io.github.homchom.recode.sys.player.chat.*;
+import io.github.homchom.recode.sys.player.chat.ChatType;
+import io.github.homchom.recode.sys.player.chat.ChatUtil;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -32,7 +33,7 @@ public abstract class Command {
     protected void sendCommand(Minecraft mc, String message) {
         LocalPlayer player = mc.player;
         if (player != null) {
-            player.commandUnsigned(message);
+            player.connection.sendUnsignedCommand(message);
         }
     }
 

@@ -1,156 +1,100 @@
 package io.github.homchom.recode.mod.mixin.inventory;
 
 
-import com.google.gson.*;
-import com.mojang.blaze3d.vertex.PoseStack;
-import io.github.homchom.recode.LegacyRecode;
+import com.google.gson.JsonParser;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.VarSyntaxHighlighter;
-import io.github.homchom.recode.sys.util.*;
-import net.minecraft.ChatFormatting;
+import io.github.homchom.recode.sys.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.*;
-import net.minecraft.world.item.*;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.*;
+import java.util.Objects;
 
 @Mixin(Gui.class)
 public class MHeldItemTooltip {
-    private static final Map<String, MutableComponent> scopes = new HashMap<>();
+    @Shadow
+    private ItemStack lastToolHighlight;
 
-    static {
-        scopes.put("unsaved",
-                Component.literal("GAME").withStyle((style) -> style.withColor(ChatFormatting.GRAY)));
-        scopes.put("saved",
-                Component.literal("SAVE").withStyle((style) -> style.withColor(ChatFormatting.YELLOW)));
-        scopes.put("local",
-                Component.literal("LOCAL").withStyle((style) -> style.withColor(ChatFormatting.GREEN)));
-    }
-
-    private final Minecraft mc = Minecraft.getInstance();
-    private ItemStack variableStack;
-    private JsonObject varItemNbt;
-
+    // TODO: remove redundant code and improve performance (e.g. don't highlight every iteration)
     @Inject(method = "renderSelectedItemName", at = @At("HEAD"), cancellable = true)
-    public void renderSelectedItemName(PoseStack matrices, CallbackInfo callbackInfo) {
+    public void renderSelectedItemName(GuiGraphics guiGraphics, CallbackInfo callbackInfo) {
+        var renderVarScope = Config.getBoolean("variableScopeView");
+        var highlightVarSyntax = Config.getBoolean("highlightVarSyntax");
+        if (!renderVarScope && !highlightVarSyntax) return;
+
         try {
-            if (Config.getBoolean("variableScopeView")) {
-                ItemStack itemStack = mc.player.getMainHandItem();
+            if (lastToolHighlight.isEmpty()) return;
 
-                if (variableStack != itemStack) {
-                    if (ItemUtil.isVar(itemStack, "var")) {
-                        variableStack = itemStack;
+            var tag = lastToolHighlight.getTag();
+            if (tag == null) return;
 
-                        CompoundTag tag = itemStack.getTag();
-                        if (tag == null) {
-                            return;
-                        }
+            var bukkitValues = tag.getCompound("PublicBukkitValues");
+            if (!bukkitValues.contains("hypercube:varitem")) return;
 
-                        CompoundTag publicBukkitNBT = tag.getCompound("PublicBukkitValues");
-                        if (publicBukkitNBT == null) {
-                            return;
-                        }
+            var varString = bukkitValues.getString("hypercube:varitem");
+            var varJson = JsonParser.parseString(varString).getAsJsonObject();
+            var varData = varJson.getAsJsonObject("data");
+            var type = varJson.get("id").getAsString();
 
-                        varItemNbt = JsonParser.parseString(
-                                publicBukkitNBT.getString("hypercube:varitem")).getAsJsonObject()
-                            .getAsJsonObject("data");
-                    } else {
-                        variableStack = null;
-                    }
-                }
+            var scaledWidth = Minecraft.getInstance().getWindow().getGuiScaledWidth();
+            var scaledHeight = Minecraft.getInstance().getWindow().getGuiScaledHeight();
+            var font = Minecraft.getInstance().font;
 
-                if (variableStack != null) {
-                    callbackInfo.cancel();
+            // render scope
+            if (type.equals("var") && renderVarScope) {
+                callbackInfo.cancel();
 
-                    String name = varItemNbt.get("name").getAsString();
-                    MutableComponent scope = scopes.get(varItemNbt.get("scope").getAsString());
+                var name = varData.get("name").getAsString();
+                int x1 = (scaledWidth - font.width(Component.literal(name))) / 2;
+                int y1 = scaledHeight - 45;
+                guiGraphics.drawString(font, Component.literal(name), x1, y1, 0xffffff, true);
 
-                    int x1 = (mc.getWindow().getGuiScaledWidth() - mc.font.width(
-                            Component.literal(name))) / 2;
-                    int y1 = mc.getWindow().getGuiScaledHeight() - 45;
-
-                    int x2 = (mc.getWindow().getGuiScaledWidth() - mc.font.width(
-                        scope.getVisualOrderText())) / 2;
-                    int y2 = mc.getWindow().getGuiScaledHeight() - 35;
-
-                    mc.font.drawShadow(matrices, Component.literal(name), (float) x1,
-                        (float) y1, 16777215);
-                    mc.font.drawShadow(matrices, scope, (float) x2, (float) y2,
-                        16777215);
-                }
+                var lore = tag.getCompound("display").getList("Lore", Tag.TAG_STRING);
+                if (lore.isEmpty()) return;
+                var scopeJson = tag.getCompound("display")
+                        .getList("Lore", Tag.TAG_STRING)
+                        .getString(0);
+                var scope = Objects.requireNonNull(Component.Serializer.fromJson(scopeJson));
+                int x2 = (scaledWidth - font.width(scope.getVisualOrderText())) / 2;
+                int y2 = scaledHeight - 35;
+                guiGraphics.drawString(font, scope, x2, y2, 0xffffff, true);
             }
 
-            if (Config.getBoolean("highlightVarSyntax")) {
-                try {
-                    ItemStack item = LegacyRecode.MC.player.getMainHandItem();
+            // render highlighting
+            if (highlightVarSyntax) {
+                var unformatted = varData.get("name").getAsString();
+                var formatted = VarSyntaxHighlighter.highlight(unformatted);
 
-                    if (item.getItem() != Items.AIR) {
-                        CompoundTag vals = item.getOrCreateTagElement("PublicBukkitValues");
-                        if (vals.contains("hypercube:varitem")) {
+                if (formatted != null) {
+                    callbackInfo.cancel();
 
-                            String var = vals.getString("hypercube:varitem");
-                            JsonObject json = JsonParser.parseString(var)
-                                .getAsJsonObject();
-                            String type = json.get("id").getAsString();
+                    int x1 = (scaledWidth - font.width(lastToolHighlight.getHoverName())) / 2;
+                    int y1 = scaledHeight - 45;
+                    int x2 = (scaledWidth - font.width(formatted)) / 2;
+                    int y2 = scaledHeight - 55;
 
-                            if (Objects.equals(type, "num") || Objects.equals(type, "var")) {
-                                String unformatted = json.getAsJsonObject("data").get("name")
-                                    .getAsString();
-                                Component formatted = VarSyntaxHighlighter.highlight(unformatted);
+                    if (!TextUtil.textComponentToColorCodes(formatted).startsWith("§c") && type.equals("num")) {
+                        formatted = TextUtil.colorCodesToTextComponent(
+                                TextUtil.textComponentToColorCodes(formatted)
+                                        .replace("§bHighlighted:§r ", "")
+                        );
 
-                                if (formatted != null) {
-                                    callbackInfo.cancel();
-
-                                    int x1 =
-                                        (mc.getWindow().getGuiScaledWidth() - mc.font.width(
-                                            item.getHoverName())) / 2;
-                                    int y1 = mc.getWindow().getGuiScaledHeight() - 45;
-
-                                    int x2 =
-                                        (mc.getWindow().getGuiScaledWidth() - mc.font.width(
-                                            formatted)) / 2;
-                                    int y2 = mc.getWindow().getGuiScaledHeight() - 55;
-
-                                    if (!TextUtil.textComponentToColorCodes(formatted)
-                                        .startsWith("§c")
-                                        && type.equals("num")) {
-
-                                        formatted = TextUtil.colorCodesToTextComponent(
-                                            TextUtil.textComponentToColorCodes(formatted)
-                                                .replace("§bHighlighted:§r ", "")
-                                        );
-
-                                        x1 =
-                                            (mc.getWindow().getGuiScaledWidth()
-                                                - mc.font.width(
-                                                formatted)) / 2;
-
-                                        mc.font.drawShadow(matrices, formatted,
-                                            (float) x1,
-                                            (float) y1, 16777215);
-
-                                    } else {
-                                        mc.font.drawShadow(matrices, item.getHoverName(),
-                                            (float) x1,
-                                            (float) y1, 16777215);
-
-                                        if (!type.equals("var")) y2 += 20;
-
-                                        mc.font.drawShadow(matrices, formatted, x2, y2,
-                                            0xffffff);
-                                    }
-                                }
-                            }
-                        }
+                        x1 = (scaledWidth - font.width(formatted)) / 2;
+                        guiGraphics.drawString(font, formatted, x1, y1, 0xffffff);
+                    } else {
+                        guiGraphics.drawString(font, lastToolHighlight.getHoverName(), x1, y1, 0xffffff);
+                        if (!type.equals("var")) y2 += 20;
+                        guiGraphics.drawString(font, formatted, x2, y2, 0xffffff);
                     }
-
-                } catch (Exception err) {
-                    err.printStackTrace();
                 }
             }
         } catch (Exception e) {

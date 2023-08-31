@@ -1,9 +1,11 @@
 package io.github.homchom.recode.sys.renderer.widgets;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import io.github.cottonmc.cotton.gui.widget.*;
-import net.fabricmc.api.*;
+import io.github.cottonmc.cotton.gui.widget.TooltipBuilder;
+import io.github.cottonmc.cotton.gui.widget.WItem;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -29,7 +31,7 @@ public class CItem extends WItem {
     }
 
     @Override
-    public void paint(PoseStack matrices, int x, int y, int mouseX, int mouseY) {
+    public void paint(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
         Screen screen = Minecraft.getInstance().screen;
         if (screen != null) {
             if (y > screen.height ||
@@ -39,12 +41,12 @@ public class CItem extends WItem {
             }
         }
 
-        super.paint(matrices, x, y, mouseX, mouseY);
+        super.paint(guiGraphics, x, y, mouseX, mouseY);
     }
 
     @Override
-    public void renderTooltip(PoseStack matrices, int x, int y, int tX, int tY) {
-        super.renderTooltip(matrices, x, y, tX, tY);
+    public void renderTooltip(GuiGraphics guiGraphics, int x, int y, int tX, int tY) {
+        super.renderTooltip(guiGraphics, x, y, tX, tY);
 
         /* Feature temporarily disabled
         if (Config.getBoolean("previewHeadSkin")) {

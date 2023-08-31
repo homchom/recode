@@ -2,7 +2,8 @@ package io.github.homchom.recode.mod.commands.impl.image;
 
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
-import io.github.homchom.recode.mod.features.commands.image.*;
+import io.github.homchom.recode.mod.features.commands.image.ImageToParticle;
+import io.github.homchom.recode.mod.features.commands.image.ParticleImage;
 import io.github.homchom.recode.sys.hypercube.templates.Templates;
 import io.github.homchom.recode.sys.renderer.ToasterUtil;
 import io.github.homchom.recode.sys.util.TemplateConstants;

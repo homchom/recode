@@ -4,7 +4,6 @@ package io.github.homchom.recode.mod.commands.impl.other;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
 import io.github.homchom.recode.mod.features.commands.queue.QueueEntry;
@@ -28,7 +27,7 @@ public class QueueCommand extends Command {
                     try {
                         String content = WebUtil.getString("https://twitch.center/customapi/quote/list?token=18a3878c");
 
-                        String[] splitQueue = content.split("\\n");
+                        String[] splitQueue = content.replace('§', '&').split("\\n");
                         LinkedHashSet<QueueEntry> queue = new LinkedHashSet<>();
 
                         int i = 0;
@@ -42,7 +41,7 @@ public class QueueCommand extends Command {
                             }
                         }
 
-                        LegacyRecode.MC.player.playSound(SoundEvents.UI_TOAST_IN, 2F, 1F);
+                        Minecraft.getInstance().player.playSound(SoundEvents.UI_TOAST_IN, 2F, 1F);
 
                         // Temporary: Show in chat instead of menu
                         ChatUtil.sendMessage(
@@ -113,7 +112,7 @@ public class QueueCommand extends Command {
 
                                             QueueEntry.HIDDEN_ENTRIES.add(id);
 
-                                            mc.player.commandUnsigned("join " + id);
+                                            mc.player.connection.sendUnsignedCommand("join " + id);
 
                                             mc.player.displayClientMessage(Component.literal("⏩ ")
                                                     .withStyle(style -> style.withColor(TextColor.fromRgb(0x34961d))

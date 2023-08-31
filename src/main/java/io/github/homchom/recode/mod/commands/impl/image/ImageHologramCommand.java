@@ -5,7 +5,8 @@ import com.mojang.brigadier.tree.ArgumentCommandNode;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
 import io.github.homchom.recode.mod.features.commands.image.ImageToHologram;
 import io.github.homchom.recode.sys.hypercube.templates.Templates;
-import io.github.homchom.recode.sys.player.chat.*;
+import io.github.homchom.recode.sys.player.chat.ChatType;
+import io.github.homchom.recode.sys.player.chat.ChatUtil;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandBuildContext;
@@ -52,7 +53,7 @@ public class ImageHologramCommand extends AbstractImageCommand {
 
             String[] strings = useHex ? ImageToHologram.convertWithHex(f) : ImageToHologram.convertWithColorCodes(f);
 
-            Templates.giveUserTemplate(Items.GLOW_ITEM_FRAME, f.getName(), convert(strings));
+            Templates.giveUserTemplate(Items.GOLD_ORE, f.getName(), convert(strings));
             ChatUtil.sendMessage("Image loaded! Change the first Set Variable to the location!", ChatType.SUCCESS);
             return 1;
         } catch (Exception e) {

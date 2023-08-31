@@ -1,15 +1,17 @@
 package io.github.homchom.recode.sys.util;
 
 import com.google.gson.JsonArray;
-import io.github.homchom.recode.LegacyRecode;
+import io.github.homchom.recode.Recode;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 
-import java.awt.*;
-import java.awt.datatransfer.*;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Random;
 import java.util.regex.Pattern;
 
 public class StringUtil {
@@ -46,8 +48,9 @@ public class StringUtil {
     }
 
     public static String genDummyIntArray() {
-        return "[I;" + LegacyRecode.RANDOM.nextInt() + "," + LegacyRecode.RANDOM.nextInt() + ","
-                + LegacyRecode.RANDOM.nextInt() + "," + LegacyRecode.RANDOM.nextInt() + "]";
+        var random = Recode.INSTANCE.getRandom();
+        return "[I;" + random.nextInt() + "," + random.nextInt() + ","
+                + random.nextInt() + "," + random.nextInt() + "]";
     }
 
     public static String textToString(Component txt) {
@@ -100,12 +103,6 @@ public class StringUtil {
         }
 
         return out.toString();
-    }
-
-    public static void copyToClipboard(String contents){
-        StringSelection stringSelection = new StringSelection(contents);
-        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        clipboard.setContents(stringSelection, null);
     }
 
     public static String[] toStringArray(JsonArray array) {

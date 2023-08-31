@@ -1,22 +1,13 @@
 package io.github.homchom.recode.mod.features.social.chat.message;
 
 public enum MessageType {
-
-    // Prototype
-    UNKNOWN,
     OTHER,
 
     // ----------------------------------
 
     // General
-    LOCATE,
     DIRECT_MESSAGE(true),
     PLOT_AD(true),
-    JOIN_DF,
-
-    // Lagslayer
-    LAGSLAYER_START,
-    LAGSLAYER_STOP,
 
     // Support
     SUPPORT,
@@ -33,7 +24,6 @@ public enum MessageType {
 
     // Admin
     SPIES,
-    BUYCRAFTX_UPDATE,
     ADMIN,
 
     // Custom regex

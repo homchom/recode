@@ -6,11 +6,14 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
 import io.github.homchom.recode.mod.features.commands.schem.Schematic;
-import io.github.homchom.recode.mod.features.commands.schem.loaders.*;
+import io.github.homchom.recode.mod.features.commands.schem.loaders.LitematicaLoader;
+import io.github.homchom.recode.mod.features.commands.schem.loaders.MSchematicReader;
+import io.github.homchom.recode.mod.features.commands.schem.loaders.MSpongeSchematicReader;
 import io.github.homchom.recode.mod.features.commands.schem.sk89q.jnbt.NBTInputStream;
 import io.github.homchom.recode.mod.features.commands.schem.utils.DFUtils;
 import io.github.homchom.recode.sys.hypercube.templates.TemplateUtil;
-import io.github.homchom.recode.sys.player.chat.*;
+import io.github.homchom.recode.sys.player.chat.ChatType;
+import io.github.homchom.recode.sys.player.chat.ChatUtil;
 import io.github.homchom.recode.sys.renderer.ToasterUtil;
 import io.github.homchom.recode.sys.util.ItemUtil;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -18,10 +21,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.apache.commons.io.FilenameUtils;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.zip.GZIPInputStream;
 
 public class SchemCommand extends Command {

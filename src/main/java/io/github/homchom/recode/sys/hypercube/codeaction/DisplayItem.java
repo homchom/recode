@@ -1,11 +1,17 @@
 package io.github.homchom.recode.sys.hypercube.codeaction;
 
-import com.google.gson.*;
-import io.github.homchom.recode.sys.util.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import io.github.homchom.recode.sys.util.ItemUtil;
+import io.github.homchom.recode.sys.util.StringUtil;
+import io.github.homchom.recode.sys.util.TextUtil;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 
 public class DisplayItem {
     private final String material;

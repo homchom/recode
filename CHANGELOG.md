@@ -1,17 +1,24 @@
-For Minecraft 1.19.2, Fabric API 0.60.0 or newer
-
-### Additions
-- A `/ping` command that shows your current ping (from CodeUtilities 3, #24)
+For Minecraft 1.20.1 with Fabric API
 
 ### Changes
-- The mod version in DiscordRPC is now trimmed to not include metadata
-- Added inset padding to /recode /nbssearch, and /templates (#20, #16)
-- Message highlighting no longer highlights the "Joined Game" message (more likely to follow)
+
+- Significantly improved performance
+- Improved mod compatibility (notably with Noxesium)
+- Side chat is now symmetric with main chat
+- Message stacking now uses Minecraft's chat status system
+(indicated by a hoverable aqua line to the left of the message)
+- The DiamondFire button of the title screen now supports the High Contrast resource pack
 
 ### Fixes
-- Fixed chatting on Node Beta
-- Fixed `/nbssearch` (#16)
-- Variable syntax highlighting now works for more commands (#16, #19)
-- A couple more styling and formatting fixes
-- Fixed the Show Tags keybind (#16)
-- The mod can once again be run from inside IntelliJ (for contributors)
+
+- Fixed many features not working for non-ranked players
+- Viewing the profile of a non-ranked player no longer errors
+- General performance no longer slows over time (thanks Wyzzard225)
+- The mod is now compatible with Sodium 0.5 (but is __no longer compatible__ with 0.4, so players must update)
+- Fixed the 'Pick Block' vanilla key bind not working with the mod
+- Auto /chat local now works when joining a plot from another plot
+- Side chat now rescales with the game window
+- Chat status descriptions can now be viewed for messages in side chat
+
+### Removals
+- Temporarily disabled `/nbssearch`, mainly for security reasons (re-adding this is a high priority!)

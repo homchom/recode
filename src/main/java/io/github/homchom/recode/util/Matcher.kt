@@ -1,21 +1,44 @@
 package io.github.homchom.recode.util
 
-import io.github.homchom.recode.event.Trial
-import io.github.homchom.recode.event.runTrial
+/**
+ * A general-purpose function object that matches inputs of type [T] against a specification, returning matches
+ * of type [R] or `null`.
+ *
+ * @see matcherOf
+ */
+fun interface Matcher<in T, out R : Any> {
+    fun match(input: T): R?
 
-interface Matcher<T, R : Any> {
-    suspend fun match(input: T): R?
+    infix fun matches(input: T) = match(input) != null
 }
 
-class TrialMatcher<T, R : Any>(private val definition: Trial.(T) -> R) : Matcher<T, R> {
-    override suspend fun match(input: T) = runTrial { definition(input) }
-}
+/**
+ * Creates and returns a [MatcherList] with [initialPredicates].
+ */
+fun <T, R : Any> matcherOf(vararg initialPredicates: Matcher<T, R>) =
+    MatcherList<T, R>().apply { addAll(initialPredicates) }
 
-class MatcherList<T, R : Any>(private val default: (T) -> R) : Matcher<T, R> {
-    private val matchers = mutableListOf<Matcher<T, R>>()
+/**
+ * Creates and returns a [MatcherList] with [initialPredicates].
+ */
+fun <T, R : Matcher<T, R>> matcherOf(initialPredicates: Collection<R>) =
+    MatcherList<T, R>().apply { addAll(initialPredicates) }
 
-    fun add(matcher: Trial.(T) -> R) = matcher.also { matchers += TrialMatcher(it) }
+/**
+ * A [List]-backed implementation of [Matcher] that yields the first successful match among its elements.
+ */
+@JvmInline
+value class MatcherList<T, R : Any> private constructor(
+    private val elements: MutableList<Matcher<T, R>>
+) : Matcher<T, R>, MutableList<Matcher<T, R>> by elements {
+    constructor() : this(mutableListOf())
 
-    override suspend fun match(input: T) = matchers.firstNotNullOfOrNull { it.match(input) }
-        ?: default(input)
+    override fun match(input: T) = firstNotNullOfOrNull {
+        try {
+            it.match(input)
+        } catch (npe: NullPointerException) {
+            npe.printStackTrace()
+            throw npe
+        }
+    }
 }

@@ -1,19 +1,27 @@
 package io.github.homchom.recode.ui
 
+import io.github.homchom.recode.render.IntegralColor
+import io.github.homchom.recode.render.toColor
 import net.minecraft.ChatFormatting
-import net.minecraft.network.chat.*
+import net.minecraft.network.chat.ClickEvent
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.HoverEvent
 import net.minecraft.network.chat.HoverEvent.EntityTooltipInfo
 import net.minecraft.network.chat.HoverEvent.ItemStackInfo
+import net.minecraft.network.chat.Style
 import net.minecraft.resources.ResourceLocation
 
 typealias TextScope = TextBuilder.() -> Unit
 
 inline fun text(style: Style = Style.EMPTY, builder: TextScope) =
-    TextBuilder(style).apply(builder).text
+    TextBuilder(style).apply(builder).builtText
 
-@Suppress("PropertyName", "unused")
+fun translateText(key: String, vararg args: Any): Component = Component.translatable(key, *args)
+fun literalText(string: String): Component = Component.literal(string)
+
+@Suppress("unused")
 class TextBuilder(style: Style = Style.EMPTY) {
-    val text: Component get() = _text
+    val builtText: Component get() = _text
     private val _text = Component.empty().withStyle(style)
 
     inline val black get() = ChatFormatting.BLACK
@@ -50,15 +58,19 @@ class TextBuilder(style: Style = Style.EMPTY) {
 
     inline fun appendBlock(style: Style, scope: TextScope) = append(text(style, scope))
 
-    fun translate(key: String, vararg args: Any) = append(Component.translatable(key, args))
-    fun literal(string: String) = append(Component.literal(string))
+    fun translate(key: String, vararg args: Any) = append(translateText(key, *args))
+    fun literal(string: String) = append(literalText(string))
     fun keybind(key: String) = append(Component.keybind(key))
+
+    fun space() = literal(" ")
 
     inline fun ChatFormatting.invoke(scope: TextScope) =
         appendBlock(Style.EMPTY.applyFormat(this), scope)
 
     inline fun color(color: IntegralColor, scope: TextScope) =
         appendBlock(Style.EMPTY.withColor(color.toInt()), scope)
+
+    inline fun color(hex: Int, scope: TextScope) = color(hex.toColor(), scope)
 
     inline fun bold(scope: TextScope) =
         appendBlock(Style.EMPTY.withBold(true), scope)
@@ -78,7 +90,7 @@ class TextBuilder(style: Style = Style.EMPTY) {
     inline fun onClick(action: ClickEvent.Action, value: String, scope: TextScope) =
         appendBlock(Style.EMPTY.withClickEvent(ClickEvent(action, value)), scope)
 
-    inline fun <T> onHover(action: HoverEvent.Action<T>, value: T, scope: TextScope) =
+    inline fun <T> onHover(action: HoverEvent.Action<T>, value: T & Any, scope: TextScope) =
         appendBlock(Style.EMPTY.withHoverEvent(HoverEvent(action, value)), scope)
 
     inline fun insert(string: String, scope: TextScope) =

@@ -1,10 +1,10 @@
 package io.github.homchom.recode.sys.renderer.widgets;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.cottonmc.cotton.gui.widget.WButton;
 import io.github.cottonmc.cotton.gui.widget.data.InputResult;
 import io.github.homchom.recode.sys.renderer.RenderUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundEvents;
 
@@ -21,9 +21,9 @@ public class CColorPreset extends WButton {
     }
 
     @Override
-    public void paint(PoseStack matrices, int x, int y, int mouseX, int mouseY) {
-        RenderUtil.drawRect(matrices, x-1, y-1, x+11, y+11, Color.black);
-        RenderUtil.drawRect(matrices, x, y, x+10, y+10, this.color);
+    public void paint(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
+        RenderUtil.drawRect(guiGraphics, x-1, y-1, x+11, y+11, Color.black);
+        RenderUtil.drawRect(guiGraphics, x, y, x+10, y+10, this.color);
     }
 
     @Override

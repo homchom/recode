@@ -1,7 +1,9 @@
 package io.github.homchom.recode.mod.features.commands.recode;
 
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
-import io.github.cottonmc.cotton.gui.widget.*;
+import io.github.cottonmc.cotton.gui.widget.WButton;
+import io.github.cottonmc.cotton.gui.widget.WLabel;
+import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.github.homchom.recode.Recode;
 import io.github.homchom.recode.mod.config.menu.ConfigScreen;
 import io.github.homchom.recode.sys.renderer.IMenu;
@@ -13,19 +15,19 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class RecodeUI extends LightweightGuiDescription implements IMenu {
-    private static final ResourceLocation CODEUTILS_LOGO = new ResourceLocation("recode:icon.png");
+    private static final ResourceLocation RECODE_ICON = new ResourceLocation("recode:textures/ui/recode.png");
 
     @Override
     public void open(String... args) {
         WPlainPanel root = new WPlainPanel();
         root.setSize(220, 220);
 
-        CImage cImage = new CImage(CODEUTILS_LOGO);
+        CImage cImage = new CImage(RECODE_ICON);
         cImage.setSize(120, 120);
         root.add(cImage, 46, 0);
 
         root.add(new WLabel(Component.literal("recode")), (220 - Minecraft.getInstance().font.width("recode")) / 2, 110);
-        root.add(new WLabel(Component.literal("v" + Recode.getModVersion())), (220 - Minecraft.getInstance().font.width("v" + Recode.getModVersion())) / 2, 120);
+        root.add(new WLabel(Component.literal("v" + Recode.INSTANCE.getVersion())), (220 - Minecraft.getInstance().font.width("v" + Recode.INSTANCE.getVersion())) / 2, 120);
 
         addButtons(root);
         setRootPanel(root);

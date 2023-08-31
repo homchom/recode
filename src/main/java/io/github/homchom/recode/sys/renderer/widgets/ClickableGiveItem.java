@@ -3,7 +3,8 @@ package io.github.homchom.recode.sys.renderer.widgets;
 import io.github.cottonmc.cotton.gui.widget.data.InputResult;
 import io.github.homchom.recode.sys.util.ItemUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.sounds.*;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 
 public class ClickableGiveItem extends CItem {

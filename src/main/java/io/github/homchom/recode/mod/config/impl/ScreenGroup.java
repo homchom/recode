@@ -1,7 +1,9 @@
 package io.github.homchom.recode.mod.config.impl;
 
-import io.github.homchom.recode.mod.config.structure.*;
-import io.github.homchom.recode.mod.config.types.*;
+import io.github.homchom.recode.mod.config.structure.ConfigGroup;
+import io.github.homchom.recode.mod.config.structure.ConfigSubGroup;
+import io.github.homchom.recode.mod.config.types.BooleanSetting;
+import io.github.homchom.recode.mod.config.types.IntegerSetting;
 
 public class ScreenGroup extends ConfigGroup {
     public ScreenGroup(String name) {

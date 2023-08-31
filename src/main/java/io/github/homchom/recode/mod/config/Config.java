@@ -1,10 +1,12 @@
 package io.github.homchom.recode.mod.config;
 
-import io.github.homchom.recode.mod.config.structure.*;
+import io.github.homchom.recode.mod.config.structure.ConfigManager;
+import io.github.homchom.recode.mod.config.structure.ConfigSetting;
 import io.github.homchom.recode.mod.config.types.list.ListSetting;
 import net.minecraft.sounds.SoundEvent;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 public class Config {
     private static ConfigManager config = ConfigManager.getInstance();
@@ -14,7 +16,7 @@ public class Config {
         return getValue(setting, String.class);
     }
 
-    public static String getDynamicString(String key, HashMap<String, String> vars) {
+    public static String getDynamicString(String key, Map<String, String> vars) {
         ConfigSetting<?> setting = config.find(key);
         String value = getValue(setting, String.class);
 
@@ -47,7 +49,6 @@ public class Config {
     }
 
     public static Boolean getBoolean(String key) {
-        if (config == null) return true;
         ConfigSetting<?> setting = config.find(key);
         return getValue(setting, Boolean.class);
     }
@@ -71,7 +72,7 @@ public class Config {
 
     @SuppressWarnings("unchecked")
     public static <Value> Value getValue(ConfigSetting<?> setting, Class<Value> valueClass) {
-        Objects.requireNonNull(setting, "Could not find the setting");
+        if (setting == null) return null;
         Object value = setting.getValue();
         if (value.getClass().isAssignableFrom(valueClass)) {
             return (Value) setting.getValue();

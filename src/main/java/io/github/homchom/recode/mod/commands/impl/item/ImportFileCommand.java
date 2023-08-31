@@ -1,23 +1,30 @@
 package io.github.homchom.recode.mod.commands.impl.item;
 
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
-import io.github.homchom.recode.sys.hypercube.templates.*;
-import io.github.homchom.recode.sys.player.chat.*;
+import io.github.homchom.recode.sys.hypercube.templates.CompressionUtil;
+import io.github.homchom.recode.sys.hypercube.templates.TemplateUtil;
+import io.github.homchom.recode.sys.player.chat.ChatType;
+import io.github.homchom.recode.sys.player.chat.ChatUtil;
 import io.github.homchom.recode.sys.util.ItemUtil;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandBuildContext;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 import java.awt.*;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.*;
+import java.util.Scanner;
 
 public class ImportFileCommand extends Command {
 
@@ -45,7 +52,7 @@ public class ImportFileCommand extends Command {
                             for (File f : files) {
                                 if (files.length != 1)
                                     ChatUtil.sendMessage("Loading file: " + f.getName(), ChatType.INFO_BLUE);
-                                Scanner sc = new Scanner(f, "utf-8");
+                                Scanner sc = new Scanner(f, StandardCharsets.UTF_8);
 
                                 List<String> lines = new ArrayList<>();
 
@@ -74,7 +81,7 @@ public class ImportFileCommand extends Command {
                                         current = new ArrayList<>();
                                     }
                                 }
-                                if (current.size() != 0) blocks.add(block(current, first));
+                                if (!current.isEmpty()) blocks.add(block(current, first));
 
                                 String template = template(blocks);
                                 if (template.getBytes().length > 65536) {//i have no idea what the actual limit is it just seems to be close to this
@@ -143,10 +150,11 @@ public class ImportFileCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "[blue]/importfile[reset]\n"
-                + "\n"
-                + "Import a text file as a code template.\n"
-                + "[red]Notice[reset]: Does NOT support line wrapping so if the code line is too long it will get cut off";
+        return """
+                [blue]/importfile[reset]
+
+                Import a text file as a code template.
+                [red]Notice[reset]: Does NOT support line wrapping so if the code line is too long it will get cut off""";
     }
 
     @Override

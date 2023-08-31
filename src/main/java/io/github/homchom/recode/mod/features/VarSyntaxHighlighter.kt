@@ -1,18 +1,18 @@
 package io.github.homchom.recode.mod.features
 
 import com.google.gson.JsonParser
-import io.github.homchom.recode.LegacyRecode
 import io.github.homchom.recode.logError
-import io.github.homchom.recode.server.CommandAliasGroup
+import io.github.homchom.recode.mc
+import io.github.homchom.recode.multiplayer.CommandAliasGroup
 import io.github.homchom.recode.sys.util.TextUtil
-import io.github.homchom.recode.util.verticalFlatten
+import io.github.homchom.recode.util.collections.verticalFlatten
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.Items
 import org.apache.commons.lang3.StringUtils
 import java.util.*
 import java.util.regex.Pattern
 
-// TODO: move to module, refactor and make better/faster, apply kotlin idioms
+// TODO: move, refactor and make better/faster, apply kotlin idioms
 object VarSyntaxHighlighter {
     @JvmStatic
     val textPreviews = listOf(
@@ -40,10 +40,11 @@ object VarSyntaxHighlighter {
         "%math("
     )
 
+    // TODO: decouple from mc.player (will fix timing issue)
     @JvmStatic
     fun highlight(msg: String): Component? {
         var mutableMsg = msg
-        val item = LegacyRecode.MC.player!!.mainHandItem
+        val item = mc.player!!.mainHandItem
         var type = ""
         try {
             if (item.item !== Items.AIR) {

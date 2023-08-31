@@ -2,21 +2,25 @@ package io.github.homchom.recode.sys.util;
 
 import com.google.gson.JsonParser;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import io.github.homchom.recode.LegacyRecode;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.*;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.ClickType;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
-import java.nio.charset.*;
-import java.util.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
 
 public class ItemUtil {
     public static void giveCreativeItem(ItemStack item, boolean preferHand) {
-        Minecraft mc = LegacyRecode.MC;
+        Minecraft mc = Minecraft.getInstance();
         NonNullList<ItemStack> inv = mc.player.getInventory().items;
 
         if (preferHand) {
@@ -53,7 +57,7 @@ public class ItemUtil {
      * @param itemStack The item stack to replace it with
      */
     public static void setContainerItem(int slot, ItemStack itemStack) {
-        Minecraft mc = LegacyRecode.MC;
+        Minecraft mc = Minecraft.getInstance();
 
         // this method kinda doesnt work in survival mode so let's throw an exception if this happens.
         if (!mc.player.isCreative()) {
@@ -62,14 +66,14 @@ public class ItemUtil {
 
         // replace the 8th slot with the item we want to set.
         ItemStack replacedItem = mc.player.getInventory().getItem(7);
-        LegacyRecode.MC.gameMode.handleCreativeModeItemAdd(itemStack, 43);
+        Minecraft.getInstance().gameMode.handleCreativeModeItemAdd(itemStack, 43);
         mc.player.getInventory().setItem(7, itemStack);
 
         // simulates pressing the 8 key on the slot we want to change.
-        LegacyRecode.MC.gameMode.handleInventoryMouseClick(mc.player.containerMenu.containerId, slot, 7, ClickType.SWAP, LegacyRecode.MC.player);
+        Minecraft.getInstance().gameMode.handleInventoryMouseClick(mc.player.containerMenu.containerId, slot, 7, ClickType.SWAP, Minecraft.getInstance().player);
 
         // change the 8th slot back to what it was before.
-        LegacyRecode.MC.gameMode.handleCreativeModeItemAdd(replacedItem, 43);
+        Minecraft.getInstance().gameMode.handleCreativeModeItemAdd(replacedItem, 43);
         mc.player.getInventory().setItem(7, replacedItem);
     }
 
@@ -79,7 +83,7 @@ public class ItemUtil {
     }
 
     public static ItemStack fromID(String id) {
-        return new ItemStack(Registry.ITEM.get(new ResourceLocation(id.toLowerCase())));
+        return new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(id.toLowerCase())));
     }
 
     public static void setLore(ItemStack itemStack, Component[] lores){

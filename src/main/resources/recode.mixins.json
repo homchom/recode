@@ -2,15 +2,24 @@
   "required": true,
   "package": "io.github.homchom.recode.mixin",
   "compatibilityLevel": "JAVA_17",
-  "mixins": [
-    "server.MProfilePublicKey"
-  ],
+  "mixins": [],
   "client": [
+    "MMinecraft",
+    "multiplayer.MChatListener",
+    "multiplayer.MClientPacketListener",
+    "multiplayer.MConnection",
+    "multiplayer.MJoinMultiplayerScreen",
+    "optional.sodium.MSodiumWorldRenderer",
+    "render.MAbstractContainerScreen",
     "render.MBlockEntityRenderDispatcher",
+    "render.MChatComponent",
+    "render.MChatScreen",
+    "render.MGui",
     "render.MLevelRenderer",
-    "server.MClientPacketListener"
+    "render.MWindow"
   ],
   "server": [],
+  "plugin": "io.github.homchom.recode.mixin.MixinPluginRecode",
   "injectors": {
     "defaultRequire": 1
   }

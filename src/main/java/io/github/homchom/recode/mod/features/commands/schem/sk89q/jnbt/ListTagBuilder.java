@@ -19,7 +19,10 @@
 
 package io.github.homchom.recode.mod.features.commands.schem.sk89q.jnbt;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Helps create list tags.

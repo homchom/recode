@@ -1,6 +1,9 @@
 package io.github.homchom.recode.mod.features.social.chat.message.finalizers;
 
-import io.github.homchom.recode.mod.features.social.chat.message.*;
+import io.github.homchom.recode.mod.features.social.chat.message.LegacyMessage;
+import io.github.homchom.recode.mod.features.social.chat.message.MessageCheck;
+import io.github.homchom.recode.mod.features.social.chat.message.MessageFinalizer;
+import io.github.homchom.recode.mod.features.social.chat.message.MessageType;
 import io.github.homchom.recode.mod.features.social.chat.message.checks.DirectMessageCheck;
 import io.github.homchom.recode.mod.features.streamer.StreamerModeMessageCheck;
 
@@ -13,7 +16,7 @@ public class StreamerModeFinalizer extends MessageFinalizer {
     };
 
     @Override
-    protected void receive(Message message) {
+    protected void receive(LegacyMessage message) {
         MessageCheck check = message.getCheck();
 
         if (
@@ -25,7 +28,7 @@ public class StreamerModeFinalizer extends MessageFinalizer {
         }
     }
 
-    private static boolean matchesDirectMessageExemptions(Message message) {
+    private static boolean matchesDirectMessageExemptions(LegacyMessage message) {
         if (message.typeIs(MessageType.DIRECT_MESSAGE)) {
             String stripped = message.getStripped();
 

@@ -2,21 +2,23 @@ package io.github.homchom.recode.mod.features.keybinds;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
-import io.github.homchom.recode.mod.commands.impl.other.PartnerBracketCommand;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.commands.CodeSearcher;
-import io.github.homchom.recode.sys.networking.LegacyState;
-import io.github.homchom.recode.sys.player.DFInfo;
+import io.github.homchom.recode.multiplayer.state.DF;
+import io.github.homchom.recode.multiplayer.state.PlotMode;
 import io.github.homchom.recode.sys.sidedchat.ChatShortcut;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.minecraft.client.*;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.entity.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.SignBlockEntity;
 
-import java.util.*;
+import java.util.Objects;
+import java.util.Optional;
 
 public class Keybinds implements ClientModInitializer {
 
@@ -29,7 +31,6 @@ public class Keybinds implements ClientModInitializer {
         // =======================================================
         // Initialize
         // =======================================================
-
         // toggle play dev
         KeyMapping toggle_play_dev = KeyBindingHelper.registerKeyBinding(new KeyMapping(
                 "key.recode.toggle_play_dev", InputConstants.Type.KEYSYM, -1, "key.category.recode"));
@@ -86,10 +87,6 @@ public class Keybinds implements ClientModInitializer {
             "key.recode.showTags", Type.KEYSYM, -1, "key.category.recode"
         ));
 
-        KeyMapping partnerBracket = KeyBindingHelper.registerKeyBinding(new KeyMapping(
-            "key.recode.partnerBracket", Type.KEYSYM, -1, "key.category.recode"
-        ));
-
         // chat global
         KeyMapping chatGlobal = KeyBindingHelper.registerKeyBinding(new KeyMapping(
                 "key.recode.chat_global", InputConstants.Type.KEYSYM, -1, "key.category.recode"));
@@ -129,12 +126,12 @@ public class Keybinds implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             // toggle play dev
             while (toggle_play_dev.consumeClick()) {
-                sendCommand(DFInfo.currentState.getMode() == LegacyState.Mode.PLAY ? "dev" : "play");
+                sendCommand(DF.isInMode(DF.getCurrentDFState(), PlotMode.Play.INSTANCE) ? "dev" : "play");
             }
 
             // toggle play build
             while (toggle_play_build.consumeClick()) {
-                sendCommand(DFInfo.currentState.getMode() == LegacyState.Mode.PLAY ? "build" : "play");
+                sendCommand(DF.isInMode(DF.getCurrentDFState(), PlotMode.Play.INSTANCE) ? "build" : "play");
             }
 
             // spawn
@@ -198,8 +195,10 @@ public class Keybinds implements ClientModInitializer {
 
             // search
             while (searchFunction.consumeClick()) {
-                if (DFInfo.isOnDF() && DFInfo.currentState.getMode() == LegacyState.Mode.DEV && mc.player.isCreative()) {
-                    BlockEntity blockEntity = mc.level.getBlockEntity(new BlockPos(mc.hitResult.getLocation()));
+                if (DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev.ID)) {
+                    var hitLocation = mc.hitResult.getLocation().toVector3f();
+                    var blockPos = new BlockPos((int) hitLocation.x, (int) hitLocation.y, (int) hitLocation.z);
+                    BlockEntity blockEntity = mc.level.getBlockEntity(blockPos);
 
                     if (blockEntity != null) {
                         if (blockEntity instanceof SignBlockEntity signBlockEntity) {
@@ -211,10 +210,6 @@ public class Keybinds implements ClientModInitializer {
                         CodeSearcher.clearSearch();
                     }
                 }
-            }
-
-            while (partnerBracket.consumeClick()) {
-                PartnerBracketCommand.exec();
             }
 
             while (modv.consumeClick()) {
@@ -254,6 +249,6 @@ public class Keybinds implements ClientModInitializer {
     }
 
     private void sendCommand(String message) {
-        Objects.requireNonNull(mc.player).commandUnsigned(message);
+        Objects.requireNonNull(mc.player).connection.sendUnsignedCommand(message);
     }
 }

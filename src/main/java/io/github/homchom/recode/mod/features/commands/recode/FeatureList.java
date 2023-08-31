@@ -1,8 +1,12 @@
 package io.github.homchom.recode.mod.features.commands.recode;
 
-import io.github.homchom.recode.mod.commands.*;
+import io.github.homchom.recode.mod.commands.Command;
+import io.github.homchom.recode.mod.commands.CommandHandler;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 
 public class FeatureList {
 
@@ -18,9 +22,6 @@ public class FeatureList {
             "Discord RPC",
             "Displays which plot you are in on \"Currently Playing\" status of your Discord profile.\n" +
             "You can modify the appearance in the config menu."
-        ), new LegacyFeature(
-            "Tablist Stars",
-            "A star is displayed next to each CodeUtilities mod user in the tab player list."
         ), new LegacyFeature(
             "Side Chat",
             "Gives you 2 chats in which you can seperate messages to. Check out the config for more information."

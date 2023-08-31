@@ -5,9 +5,11 @@ import io.github.homchom.recode.sys.player.chat.color.MinecraftColors;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.*;
 
 import static java.awt.Image.SCALE_SMOOTH;
 

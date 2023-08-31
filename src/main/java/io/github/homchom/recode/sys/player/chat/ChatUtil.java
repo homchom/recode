@@ -1,14 +1,17 @@
 package io.github.homchom.recode.sys.player.chat;
 
-import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.mod.config.Config;
-import io.github.homchom.recode.sys.player.DFInfo;
+import io.github.homchom.recode.multiplayer.state.DF;
 import io.github.homchom.recode.sys.player.chat.color.MinecraftColors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.*;
-import net.minecraft.sounds.*;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
@@ -26,12 +29,12 @@ public class ChatUtil {
 
     public static void playSound(SoundEvent sound, float pitch, float volume) {
         if (sound != null) {
-            LegacyRecode.MC.player.playSound(sound, volume, pitch);
+            Minecraft.getInstance().player.playSound(sound, volume, pitch);
         }
     }
 
     public static void command(String message) {
-        Minecraft.getInstance().player.commandUnsigned(message);
+        Minecraft.getInstance().player.connection.sendUnsignedCommand(message);
     }
 
     public static void executeCommand(String command) {
@@ -60,7 +63,7 @@ public class ChatUtil {
     }
 
     public static void sendMessage(MutableComponent text, @Nullable ChatType chatType) {
-        LocalPlayer player = LegacyRecode.MC.player;
+        LocalPlayer player = Minecraft.getInstance().player;
         if (player == null) {
             return;
         }
@@ -77,7 +80,7 @@ public class ChatUtil {
             player.displayClientMessage(Component.literal(chatType.getString() + " ").append(text), false);
             if (chatType == ChatType.FAIL) {
                 if (Config.getBoolean("errorSound")) {
-                    player.playNotifySound(SoundEvents.NOTE_BLOCK_DIDGERIDOO, SoundSource.PLAYERS, 2, 0);
+                    player.playNotifySound(SoundEvents.NOTE_BLOCK_DIDGERIDOO.value(), SoundSource.PLAYERS, 2, 0);
                 }
             }
         }
@@ -91,7 +94,7 @@ public class ChatUtil {
      */
     public static boolean verifyMessage(Component component) {
         List<Component> siblings = component.getSiblings();
-        if (!DFInfo.isOnDF()) return false;
+        if (!DF.isOnDF()) return false;
         if (siblings.size() == 0) return false;
         String str = siblings.get(0).getStyle().toString();
 

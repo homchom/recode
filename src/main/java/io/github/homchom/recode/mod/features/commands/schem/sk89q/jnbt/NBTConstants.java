@@ -19,7 +19,8 @@
 
 package io.github.homchom.recode.mod.features.commands.schem.sk89q.jnbt;
 
-import java.nio.charset.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * A class which holds constant values.

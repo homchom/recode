@@ -1,6 +1,7 @@
 package io.github.homchom.recode.mod.features.commands.schem.utils;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.IntStream;
 
 public class StringUtils {
