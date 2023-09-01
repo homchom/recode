@@ -34,7 +34,7 @@ public class LegacyReceiveChatMessageEvent {
         // TODO: temporary, migrate all code here
         String msgToString = message.getString();
 
-        String msgWithColor = TextUtil.textComponentToColorCodes(message);
+        String msgWithColor = TextUtil.toLegacyCodes(message);
         String msgWithoutColor = msgWithColor.replaceAll("§.", "");
 
         //PJoin command

@@ -29,9 +29,9 @@ operator fun MutableComponent.plusAssign(component: Component) {
 /**
  * Removes all § formatting codes from [componentString].
  */
-fun unstyle(componentString: String) = componentString.replace(FORMATTING_CODE_REGEX, "")
+fun removeLegacyCodes(componentString: String) = componentString.replace(FORMATTING_CODE_REGEX, "")
 
-val Component.unstyledString get() = unstyle(string)
+val Component.unstyledString get() = removeLegacyCodes(string)
 
 infix fun Component.looksLike(other: Component) =
     toFlatList(Style.EMPTY) == other.toFlatList(Style.EMPTY)

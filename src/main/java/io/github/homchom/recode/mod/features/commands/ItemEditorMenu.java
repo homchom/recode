@@ -40,7 +40,7 @@ public class ItemEditorMenu extends LightweightGuiDescription implements IMenu {
         WTextField name = new WTextField(Component.literal(""));
         name.setMaxLength(Integer.MAX_VALUE);
         name.setSuggestion(Component.translatable(item[0].getItem().getDescriptionId()));
-        name.setText(TextUtil.textComponentToColorCodes(item[0].getHoverName()).replaceAll("§", "&"));
+        name.setText(TextUtil.toLegacyCodes(item[0].getHoverName()).replaceAll("§", "&"));
         name.setChangedListener(s -> {
             if (name.getText().isEmpty()) {
                 item[0].resetHoverName();

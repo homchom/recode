@@ -15,7 +15,7 @@ import io.github.homchom.recode.multiplayer.*
 import io.github.homchom.recode.multiplayer.message.CodeMessages
 import io.github.homchom.recode.multiplayer.message.StateMessages
 import io.github.homchom.recode.ui.matchesUnstyled
-import io.github.homchom.recode.ui.unstyle
+import io.github.homchom.recode.ui.removeLegacyCodes
 import io.github.homchom.recode.util.Case
 import io.github.homchom.recode.util.encase
 import io.github.homchom.recode.util.regex.namedGroupValues
@@ -52,7 +52,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>> by eventGroup {
             val scoreboard = mc.player!!.scoreboard
             val objective = scoreboard.getObjective("info")!!
             val score = scoreboard.getPlayerScores(objective).singleOrNull { it.score == 3 } ?: fail()
-            val node = scoreboardNodeRegex.matchEntire(unstyle(score.owner))!!
+            val node = scoreboardNodeRegex.matchEntire(removeLegacyCodes(score.owner))!!
                 .namedGroupValues["node"]
                 .let(::nodeByName)
             requireTrue(currentDFState !is DFState.AtSpawn || node != currentDFState!!.node)

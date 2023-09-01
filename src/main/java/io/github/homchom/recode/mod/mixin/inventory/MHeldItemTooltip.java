@@ -82,9 +82,9 @@ public class MHeldItemTooltip {
                     int x2 = (scaledWidth - font.width(formatted)) / 2;
                     int y2 = scaledHeight - 55;
 
-                    if (!TextUtil.textComponentToColorCodes(formatted).startsWith("§c") && type.equals("num")) {
+                    if (!TextUtil.toLegacyCodes(formatted).startsWith("§c") && type.equals("num")) {
                         formatted = TextUtil.colorCodesToTextComponent(
-                                TextUtil.textComponentToColorCodes(formatted)
+                                TextUtil.toLegacyCodes(formatted)
                                         .replace("§bHighlighted:§r ", "")
                         );
 
