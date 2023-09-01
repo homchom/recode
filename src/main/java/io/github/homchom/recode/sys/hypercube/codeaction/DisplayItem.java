@@ -113,7 +113,7 @@ public class DisplayItem {
     public ItemStack toItemStack(){
         try {
             ItemStack itemStack = ItemUtil.fromID(this.material);
-            itemStack.setHoverName(TextUtil.colorCodesToTextComponent(this.name));
+            itemStack.setHoverName(TextUtil.colorCodesToTextComponent("§f" + this.name));
 
             ArrayList<String> lore = new ArrayList<>();
 
@@ -161,7 +161,7 @@ public class DisplayItem {
                                 for (String[] notes : allnotes) {
                                     int i = 0;
                                     for (String note : notes) {
-                                        lore.add(TextUtil.toUncoloredString((i == 0 ? "§9⏵ " : "") + "§7" + note));
+                                        lore.add(TextUtil.toUncoloredString((i == 0 ? "§9⏵ " : "") + "§7" + TextUtil.formatValues(note)));
                                         i++;
                                     }
                                 }
@@ -203,7 +203,7 @@ public class DisplayItem {
                     for (String[] addInfo : this.additionalInfo) {
                         int i = 0;
                         for (String info : addInfo) {
-                            lore.add(TextUtil.toUncoloredString(TextUtil.formatValues((i == 0 ? "§b» " : "") + "§7" + info)));
+                            lore.add(TextUtil.toUncoloredString(TextUtil.formatValues((i == 0 ? "§b» " : "") + "§7" + TextUtil.formatValues(info))));
                             i++;
                         }
                     }
