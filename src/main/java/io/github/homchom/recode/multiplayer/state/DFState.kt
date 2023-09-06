@@ -11,6 +11,7 @@ import io.github.homchom.recode.ui.equalsUnstyled
 import io.github.homchom.recode.ui.matchesUnstyled
 import io.github.homchom.recode.util.Matcher
 import io.github.homchom.recode.util.matcherOf
+import io.github.homchom.recode.util.regex.RegexModifier
 import io.github.homchom.recode.util.regex.regex
 import kotlinx.coroutines.Deferred
 import net.minecraft.client.multiplayer.ServerData
@@ -20,6 +21,7 @@ import net.minecraft.world.item.ItemStack
 
 val ServerData?.ipMatchesDF get(): Boolean {
     val regex = regex {
+        modify(RegexModifier.IgnoreCase)
         all {
             wordChar.oneOrMore()
             period
