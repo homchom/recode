@@ -61,7 +61,7 @@ public class GiveCommand extends Command {
                                 clipboard = clipboard.substring(3);
                             }
 
-                            this.sendCommand(mc, "dfgive " + clipboard);
+                            this.sendCommand(mc, "dfgive " + clipboard.trim());
                             return 1;
                         })
                 )
