@@ -110,14 +110,8 @@
     "config.recode.option.headMenuMaxRender": "Maximum Heads in /heads",
     "config.recode.option.headMenuMaxRender.tooltip": "Amount of heads to display in the /heads menu.",
 
-    "config.recode.subcategory.commands_colors": "/colors Command",
-    "config.recode.subcategory.commands_colors.tooltip": "Settings that apply to the /colors command.",
-    "config.recode.option.colorMaxRender": "Maximum Columns",
-    "config.recode.option.colorMaxRender.tooltip": "Amount of color bars to display in one color line.",
-    "config.recode.option.colorLines": "Maximum Rows",
-    "config.recode.option.colorLines.tooltip": "Amount of rows to show in /color.",
     "config.recode.option.colorReplacePicker": "Replace Color Picker",
-    "config.recode.option.colorReplacePicker.tooltip": "Replaces the color picker with\na color menu equivalent of \"/colors 100\".",
+    "config.recode.option.colorReplacePicker.tooltip": "Replaces the color picker with\nDiamondFire's built-in command\".",
 
     "config.recode.subcategory.keybinds_flightspeed": "Flight Speed Keybind Values",
     "config.recode.subcategory.keybinds_flightspeed.tooltip": "Values used for the Flight Speed keybinds found\nin the \"Options -> Controls -> Recode\" menu.",

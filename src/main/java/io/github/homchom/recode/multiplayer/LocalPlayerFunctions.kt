@@ -1,3 +1,5 @@
+@file:JvmName("LocalPlayerFunctions")
+
 package io.github.homchom.recode.multiplayer
 
 import io.github.homchom.recode.RecodeDispatcher
