@@ -126,13 +126,8 @@ public class LegacyReceiveChatMessageEvent {
             cancel = true;
         }
 
-        // hide session spy
-        if (Config.getBoolean("hideSessionSpy") && msgToString.startsWith("*") && msgToString.contains("text='*'") && msgToString.contains("color=green")) {
-            cancel = true;
-        }
-
-        // hide muted chat
-        if (Config.getBoolean("hideMutedChat") && msgToString.startsWith("*") && msgToString.contains("text='*'") && msgToString.contains("color=red")) {
+        // hide session spy/muted chat/social spy
+        if (Config.getBoolean("streamerSpies") && msgToString.startsWith("*")) {
             cancel = true;
         }
 
