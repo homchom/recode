@@ -38,15 +38,6 @@ interface Listenable<out T> : PowerSink {
      */
     val notifications: Flow<T>
 
-    /**
-     * Adds a listener, running [action] for each notification.
-     *
-     * @see listenFrom
-     * @see notifications
-     */
-    fun listenEachFrom(scope: CoroutineScope, action: (T) -> Unit) =
-        listenFrom(scope) { onEach(action) }
-
     @Deprecated("Only for use in legacy Java code", ReplaceWith("TODO()"))
     @DelicateCoroutinesApi
     fun register(action: Consumer<in T>) = listenEachFrom(GlobalScope) { action.accept(it) }
@@ -59,6 +50,15 @@ interface Listenable<out T> : PowerSink {
  */
 fun <T> Listenable<T>.listenFrom(scope: CoroutineScope, block: Flow<T>.() -> Flow<T>) =
     notifications.block().launchIn(scope)
+
+/**
+ * Adds a listener, running [action] for each notification.
+ *
+ * @see listenFrom
+ * @see notifications
+ */
+fun <T> Listenable<T>.listenEachFrom(scope: CoroutineScope, action: (T) -> Unit) =
+    listenFrom(scope) { onEach(action) }
 
 /**
  * A [Listenable] with a result of type [R].

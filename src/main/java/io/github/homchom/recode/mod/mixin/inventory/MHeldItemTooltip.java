@@ -2,6 +2,7 @@ package io.github.homchom.recode.mod.mixin.inventory;
 
 
 import com.google.gson.JsonParser;
+import io.github.homchom.recode.RecodeKt;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.VarSyntaxHighlighter;
 import io.github.homchom.recode.sys.util.TextUtil;
@@ -31,19 +32,21 @@ public class MHeldItemTooltip {
         var highlightVarSyntax = Config.getBoolean("highlightVarSyntax");
         if (!renderVarScope && !highlightVarSyntax) return;
 
+        if (lastToolHighlight.isEmpty()) return;
+
+        var tag = lastToolHighlight.getTag();
+        if (tag == null) return;
+
+        var bukkitValues = tag.getCompound("PublicBukkitValues");
+        if (!bukkitValues.contains("hypercube:varitem")) return;
+
+        var varString = bukkitValues.getString("hypercube:varitem");
+        var varJson = JsonParser.parseString(varString).getAsJsonObject();
+
         try {
-            if (lastToolHighlight.isEmpty()) return;
-
-            var tag = lastToolHighlight.getTag();
-            if (tag == null) return;
-
-            var bukkitValues = tag.getCompound("PublicBukkitValues");
-            if (!bukkitValues.contains("hypercube:varitem")) return;
-
-            var varString = bukkitValues.getString("hypercube:varitem");
-            var varJson = JsonParser.parseString(varString).getAsJsonObject();
-            var varData = varJson.getAsJsonObject("data");
             var type = varJson.get("id").getAsString();
+            var name = varJson.getAsJsonObject("data").get("name");
+            if (name == null) return;
 
             var scaledWidth = Minecraft.getInstance().getWindow().getGuiScaledWidth();
             var scaledHeight = Minecraft.getInstance().getWindow().getGuiScaledHeight();
@@ -53,10 +56,10 @@ public class MHeldItemTooltip {
             if (type.equals("var") && renderVarScope) {
                 callbackInfo.cancel();
 
-                var name = varData.get("name").getAsString();
-                int x1 = (scaledWidth - font.width(Component.literal(name))) / 2;
-                int y1 = scaledHeight - 45;
-                guiGraphics.drawString(font, Component.literal(name), x1, y1, 0xffffff, true);
+                var nameText = Component.literal(name.getAsString());
+                var x1 = (scaledWidth - font.width(nameText)) / 2;
+                var y1 = scaledHeight - 45;
+                guiGraphics.drawString(font, nameText, x1, y1, 0xffffff, true);
 
                 var lore = tag.getCompound("display").getList("Lore", Tag.TAG_STRING);
                 if (lore.isEmpty()) return;
@@ -64,15 +67,14 @@ public class MHeldItemTooltip {
                         .getList("Lore", Tag.TAG_STRING)
                         .getString(0);
                 var scope = Objects.requireNonNull(Component.Serializer.fromJson(scopeJson));
-                int x2 = (scaledWidth - font.width(scope.getVisualOrderText())) / 2;
-                int y2 = scaledHeight - 35;
+                var x2 = (scaledWidth - font.width(scope.getVisualOrderText())) / 2;
+                var y2 = scaledHeight - 35;
                 guiGraphics.drawString(font, scope, x2, y2, 0xffffff, true);
             }
 
             // render highlighting
             if (highlightVarSyntax) {
-                var unformatted = varData.get("name").getAsString();
-                var formatted = VarSyntaxHighlighter.highlight(unformatted);
+                var formatted = VarSyntaxHighlighter.highlight(name.getAsString());
 
                 if (formatted != null) {
                     callbackInfo.cancel();
@@ -98,7 +100,8 @@ public class MHeldItemTooltip {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            RecodeKt.logError("Unrecognized DF value item data: " + varJson);
+            throw e;
         }
     }
 }

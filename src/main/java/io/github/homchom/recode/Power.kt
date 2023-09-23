@@ -1,6 +1,7 @@
 package io.github.homchom.recode
 
 import io.github.homchom.recode.event.Listenable
+import io.github.homchom.recode.event.listenEachFrom
 import io.github.homchom.recode.event.listenFrom
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
