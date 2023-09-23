@@ -83,19 +83,6 @@ interface CustomEvent<T, R : Any> : ResultListenable<T, R?> {
 }
 
 /**
- * A custom, buffered [ResultListenable] event that can be [run]. Event contexts are supplied and transformed
- * into results; the event runs asynchronously and caches the result on some interval, and the most recent result
- * is stored in [previous].
- *
- * @param I The event's input type, which is mapped to [T] only when needed.
- */
-interface BufferedCustomEvent<T, R, I> : ResultListenable<T, R?> {
-    fun run(input: I): R
-
-    fun stabilize()
-}
-
-/**
  * A Fabric [Event] wrapped into a [Listenable].
  */
 interface WrappedEvent<T, L> : Listenable<T> {

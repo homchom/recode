@@ -40,10 +40,7 @@ class Power(
     override val coroutineContext get() = coroutineScope.coroutineContext
 
     suspend fun up() = updateCharge { it + 1 }
-
     suspend fun down() = updateCharge { it - 1 }
-
-    suspend fun setCharge(charge: Int) = updateCharge { charge }
 
     private suspend inline fun updateCharge(setter: (Int) -> Int) = mutex.withLock {
         require(charge >= 0) { "power charge cannot be negative" }

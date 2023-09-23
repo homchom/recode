@@ -157,6 +157,7 @@ object LegacyRecode {
 
 fun logInfo(message: String) = logger.info("[$MOD_NAME] $message")
 
+@JvmOverloads
 fun logError(message: String, mentionBugReport: Boolean = false) {
     val bugString = if (mentionBugReport) {
         "\nIf you believe this is a bug, you can report it here: https://github.com/homchom/recode/issues)"

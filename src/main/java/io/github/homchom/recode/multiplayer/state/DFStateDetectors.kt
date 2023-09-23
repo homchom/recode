@@ -36,7 +36,6 @@ val isOnDF get() = currentDFState != null
 
 private val eventGroup = GroupListenable<Case<DFState?>>()
 
-// TODO: enable and disable JoinDFDetector and make this a child
 object DFStateDetectors : StateListenable<Case<DFState?>> by eventGroup {
     private val scoreboardNodeRegex = Regex("""(?<node>.+) - .+""")
 

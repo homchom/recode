@@ -111,7 +111,7 @@
     "config.recode.option.headMenuMaxRender.tooltip": "Amount of heads to display in the /heads menu.",
 
     "config.recode.option.colorReplacePicker": "Replace Color Picker",
-    "config.recode.option.colorReplacePicker.tooltip": "Replaces the color picker with\nDiamondFire's built-in command\".",
+    "config.recode.option.colorReplacePicker.tooltip": "Replaces the color picker with\nDiamondFire's built-in command.",
 
     "config.recode.subcategory.keybinds_flightspeed": "Flight Speed Keybind Values",
     "config.recode.subcategory.keybinds_flightspeed.tooltip": "Values used for the Flight Speed keybinds found\nin the \"Options -> Controls -> Recode\" menu.",
