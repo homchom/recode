@@ -9,6 +9,9 @@
     "recode.template_search.invalid": "Invalid Action '%s'.",
     "recode.template_search.begin_search": "Results of '%s'",
 
+    "recode.uncaught_exception.toast.title": "An uncaught exception occurred!",
+    "recode.uncaught_exception.toast": "Check the latest log for more info.",
+
     "chat.tag.recode.stacked": "(x%d)",
 
     "config.recode.title": "Recode",
