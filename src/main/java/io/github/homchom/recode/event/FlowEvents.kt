@@ -8,7 +8,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 
 /**
  * Creates a [CustomEvent], providing results by transforming context with [resultCapture].
@@ -48,18 +47,18 @@ private class LazyEventImpl<T, R : Any> : ResultListenable<T, R?> {
         )
         lazyPrevious = MutableStateFlow(null)
 
-        GlobalScope.launch {
-            var activeBySubscription = false
-            lazyFlow.subscriptionCount.collect { count ->
-                if (count == 0) {
+        var activeBySubscription = false
+        lazyFlow.subscriptionCount.onEach { count ->
+            if (count == 0) {
+                if (activeBySubscription) {
                     power.down()
                     activeBySubscription = false
-                } else if (!activeBySubscription) {
-                    power.up()
-                    activeBySubscription = true
                 }
+            } else if (!activeBySubscription) {
+                power.up()
+                activeBySubscription = true
             }
-        }
+        }.launchIn(GlobalScope)
     }
 
     override fun use(source: Power) = power.use(source)

@@ -55,7 +55,7 @@ fun <T> Listenable<T>.listenFrom(scope: CoroutineScope, block: Flow<T>.() -> Flo
  * Adds a listener, running [action] for each notification.
  *
  * @see listenFrom
- * @see notifications
+ * @see Listenable.notifications
  */
 fun <T> Listenable<T>.listenEachFrom(scope: CoroutineScope, action: (T) -> Unit) =
     listenFrom(scope) { onEach(action) }
