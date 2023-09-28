@@ -18,12 +18,10 @@ import net.minecraft.sounds.SoundEvents;
 import java.util.LinkedHashSet;
 
 public class QueueCommand extends Command {
-
     @Override
     public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd, CommandBuildContext context) {
         LiteralArgumentBuilder<FabricClientCommandSource> cmd = ArgBuilder.literal("queue")
                 .executes(ctx -> {
-
                     try {
                         String content = WebUtil.getString("https://twitch.center/customapi/quote/list?token=18a3878c");
 
@@ -164,9 +162,10 @@ public class QueueCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "[blue]/queue[reset]\n"
-                + "\n"
-                + "Checks the Plot Queue of Jeremaster's DiamondFire stream.";
+        return """
+                [blue]/queue[reset]
+
+                Checks the Plot Queue of Jeremaster's DiamondFire stream.""";
     }
 
     @Override
