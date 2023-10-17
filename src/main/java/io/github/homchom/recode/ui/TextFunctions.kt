@@ -11,11 +11,11 @@ import net.minecraft.util.FormattedCharSequence
 
 val FORMATTING_CODE_REGEX = regex {
     str("§")
-    all(RegexModifier.IgnoreCase) {
+    group(RegexModifier.IgnoreCase) {
         any("0-9a-fk-o")
         or
         str("x")
-        all {
+        group {
             str("§")
             any("0-9a-f")
         } * 6

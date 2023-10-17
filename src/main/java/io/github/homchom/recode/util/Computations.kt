@@ -4,12 +4,12 @@ import io.github.homchom.recode.util.Computation.Failure
 import io.github.homchom.recode.util.Computation.Success
 
 /**
- * Computes the nullable result of [block] with the ability to concisely short-circuit with
+ * Computes the nullable result of [block] with the ability to short-circuit across functions with
  * both [NullableScope.fail] and [NullPointerException].
  *
  * **[NullableScope] should not be leaked.** See [FailScope] for more details.
  */
-inline fun <T : Any> nullable(block: NullableScope.() -> T?): T? {
+inline fun <T : Any> computeNullable(block: NullableScope.() -> T?): T? {
     val comp = try {
         computeIn(NullableScope, block)
     } catch (npe: NullPointerException) {
@@ -19,7 +19,7 @@ inline fun <T : Any> nullable(block: NullableScope.() -> T?): T? {
 }
 
 /**
- * @see nullable
+ * @see computeNullable
  */
 sealed interface NullableScope : FailScope<Nothing?> {
     fun fail(): Nothing = fail(null)
@@ -28,7 +28,7 @@ sealed interface NullableScope : FailScope<Nothing?> {
 }
 
 /**
- * Computes the result of [block] with type [S], with the ability to concisely short-circuit with
+ * Computes the result of [block] with type [S], with the ability to short-circuit across functions with
  * [ComputeScope.fail].
  *
  * **[ComputeScope] should not be leaked.** See [FailScope] for more details.
@@ -61,9 +61,9 @@ inline fun <S, F, C : FailScope<F>> computeIn(scope: C, block: C.() -> S): Compu
  * A computed result that can either be a [Success] or [Failure], like the
  * [Either](https://docs.rs/either/latest/either/enum.Either.html) type found in many functional languages.
  */
-interface Computation<out S, out F> {
-    class Success<T>(val value: T) : Computation<T, Nothing>
-    class Failure<T>(val value: T) : Computation<Nothing, T>
+sealed interface Computation<out S, out F> {
+    class Success<T>(override val value: T) : Computation<T, Nothing>, InvokableWrapper<T>
+    class Failure<T>(override val value: T) : Computation<Nothing, T>, InvokableWrapper<T>
 }
 
 /**

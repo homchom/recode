@@ -1,7 +1,11 @@
 package io.github.homchom.recode.util.regex
 
 /**
+ * Builds and returns a [Regex] object.
+ *
  * @throws RegexElementException
+ *
+ * @see RegexPatternBuilder
  */
 inline fun regex(
     useUnixLines: Boolean = false,
@@ -28,41 +32,90 @@ class RegexPatternBuilder {
 
     // literal strings
 
-    fun str(str: Any): QuantifiableRegexElement { // parameter named 'str' to prevent IntelliJ label
-        val string = str.toString()
-
+    /**
+     * Appends a literal string to the expression.
+     */
+    fun str(str: String): QuantifiableRegexElement { // parameter named 'str' to prevent IntelliJ label
         // QE metacharacters cannot be quantified so produce optimized regex in these cases
-        val optimizedEscape = if (string.length != 1) null else {
-            val char = string[0]
+        val optimizedEscape = if (str.length != 1) null else {
+            val char = str[0]
             when {
-                char.isLetterOrDigit() || char == '_' || char == ' ' -> string
-                char.code >= 128 -> string // regex syntax only uses standard ASCII
-                char in optimizedSpecialChars -> "\\$string"
+                char.isLetterOrDigit() || char == '_' || char == ' ' -> str
+                char.code >= 128 -> str // regex syntax only uses standard ASCII
+                char in optimizedSpecialChars -> "\\$str"
                 else -> null
             }
         }
 
-        return +raw(optimizedEscape ?: Regex.escape(string), optimizedEscape == null)
+        return +raw(optimizedEscape ?: Regex.escape(str), optimizedEscape == null)
     }
 
+    /**
+     * Appends a literal character to the expression.
+     */
+    fun str(char: Char) = str(char.toString())
+
+    /**
+     * Appends a space to the expression.
+     */
     val space get() = +raw(" ")
+
+    /**
+     * Appends a literal period to the expression.
+     */
     val period get() = +raw("\\.")
 
     // character classes
 
+
+    /**
+     * Appends the word character class (`\w`) to the expression.
+     */
     val wordChar get() = +raw("\\w")
+
+    /**
+     * Appends the digit character class (`\d`) to the expression.
+     */
     val digit get() = +raw("\\d")
+
+    /**
+     * Appends the newline character class (`\n`) to the expression.
+     */
     val newline get() = +raw("\\n")
+
+    /**
+     * Appends the "dot" character class (`.`) to the expression.
+     */
     val any get() = +raw(".")
+
+    /**
+     * Appends the character class denoted by [characterClass] (e.g. `"a-z"` for `[a-z]`) to the expression.
+     */
+    fun any(characterClass: String) = +raw("[$characterClass]")
+
+    /**
+     * Appends the negated character class denoted by [characterClass] (e.g. `a-z` for `[^a-z]`) to the expression.
+     */
+    fun none(characterClass: String) = +raw("[^$characterClass]")
 
     // anchors
 
+    /**
+     * Appends the start anchor (`^`) to the expression.
+     */
     val start get() = +raw("^")
+
+    /**
+     * Appends the end anchor (`$`) to the expression.
+     */
     val end get() = +raw("\$")
 
-    // groups
+    // groups and alternation
 
-    fun all(
+    /**
+     * Applies [builder] to this expression builder, grouping the results.
+     */
+    fun group(
         modifier: InlineRegexOption? = null,
         builder: RegexPatternBuilder.() -> Unit
     ): QuantifiableRegexElement {
@@ -71,15 +124,16 @@ class RegexPatternBuilder {
         return +raw("(?$modifierString:$patternString)")
     }
 
-    fun any(characterGroup: String) = +raw("[$characterGroup]")
-
-    fun none(characterGroup: String) = +raw("[^$characterGroup]")
-
-    // alternation
-
+    /**
+     * Appends the alternation delimiter (`|`) to the expression.
+     */
     val or get() = +raw("|")
 
-    fun anyStr(vararg branches: Any) = all {
+    /**
+     * Appends a group to the expression that alternates on [branches]. For example, `anyStr("a", "b")` is
+     * shorthand for `group { str("a"); or; str("b"); }`.
+     */
+    fun anyStr(vararg branches: String) = group {
         for (index in branches.indices) {
             str(branches[index])
             if (index != branches.lastIndex) or
@@ -88,5 +142,8 @@ class RegexPatternBuilder {
 
     // modifiers
 
+    /**
+     * Applies [modifier] for the remainder of the expression.
+     */
     fun modify(modifier: RegexModifier) = +raw("(?$modifier)")
 }

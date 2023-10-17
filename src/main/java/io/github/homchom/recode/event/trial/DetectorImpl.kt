@@ -7,8 +7,8 @@ import io.github.homchom.recode.event.Requester
 import io.github.homchom.recode.event.createEvent
 import io.github.homchom.recode.ui.sendSystemToast
 import io.github.homchom.recode.ui.translateText
+import io.github.homchom.recode.util.computeNullable
 import io.github.homchom.recode.util.coroutines.cancelAndLog
-import io.github.homchom.recode.util.nullable
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.SendChannel
@@ -29,7 +29,7 @@ fun <T, R : Any> detector(
     vararg secondaryTrials: DetectorTrial<T, R>,
     timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION
 ): Detector<T & Any, R> {
-    return TrialDetector(name, listOf(primaryTrial, *secondaryTrials), timeoutDuration)
+    return TrialDetector(name, arrayOf(primaryTrial, *secondaryTrials), timeoutDuration)
 }
 
 /**
@@ -51,7 +51,7 @@ fun <T, R : Any> requester(
 
 private open class TrialDetector<T, R : Any>(
     protected val name: String,
-    private val trials: List<Trial<T, R>>,
+    private val trials: Array<out Trial<T, R>>,
     override val timeoutDuration: Duration
 ) : Detector<T & Any, R> {
     private val event = createEvent<R, R> { it }
@@ -122,9 +122,9 @@ private open class TrialDetector<T, R : Any>(
         successContext: CompletableDeferred<R>,
     ) {
         val entryScope = CoroutineScope(power.coroutineContext + Job(successContext))
-        val result = nullable {
+        val result = computeNullable {
             val trialScope = TrialScope(
-                this@nullable,
+                this@computeNullable,
                 entryScope,
                 entry?.hidden ?: false
             )
@@ -177,7 +177,7 @@ private class TrialRequester<T, R : Any>(
     primaryTrial: RequesterTrial<T, R>,
     secondaryTrials: Array<out DetectorTrial<T, R>>,
     timeoutDuration: Duration
-) : TrialDetector<T, R>(name, listOf(primaryTrial, *secondaryTrials), timeoutDuration), Requester<T & Any, R> {
+) : TrialDetector<T, R>(name, arrayOf(primaryTrial, *secondaryTrials), timeoutDuration), Requester<T & Any, R> {
     private val start = primaryTrial.start
 
     override val activeRequests get() = _activeRequests.get()

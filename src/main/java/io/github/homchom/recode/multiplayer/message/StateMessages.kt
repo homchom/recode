@@ -27,14 +27,14 @@ object StateMessages {
         {
             private val locateRegex = regex {
                 space * 39; newline
-                all {
+                group {
                     str("You are")
                     or
                     val player by username()
                     str(" is")
                 }
                 str(" currently ")
-                all {
+                group {
                     str("at spawn")
                     or
                     val mode by anyStr("playing", "building", "coding")
@@ -46,7 +46,7 @@ object StateMessages {
                     val plotID by digit.oneOrMore()
                     str("]")
 
-                    all {
+                    group {
                         bullet()
                         val status by any.oneOrMore().possessive()
                     }.optional().lazy()
@@ -101,7 +101,7 @@ object StateMessages {
                 str("Profile of ")
                 val player by username()
                 space
-                all {
+                group {
                     str("(")
                     any.oneOrMore()
                     str(")")

@@ -22,14 +22,14 @@ import net.minecraft.world.item.ItemStack
 val ServerData?.ipMatchesDF get(): Boolean {
     val regex = regex {
         modify(RegexModifier.IgnoreCase)
-        all {
+        group {
             wordChar.oneOrMore()
             period
         }.optional()
 
         str("mcdiamondfire.com")
 
-        all {
+        group {
             str(":")
             digit.oneOrMore()
         }.optional()

@@ -5,9 +5,17 @@ package io.github.homchom.recode.util.regex
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
-fun RegexPatternBuilder.raw(patternString: String, groupIfQuantified: Boolean = false): QuantifiableRegexElement =
-    SubPattern(StringBuilder(patternString), groupIfQuantified)
+internal fun RegexPatternBuilder.raw(
+    patternString: String,
+    groupIfQuantified: Boolean = false
+): QuantifiableRegexElement {
+    return SubPattern(StringBuilder(patternString), groupIfQuantified)
+}
 
+/**
+ * An abstract representation of a [Regex] token. Any RegexElement can be implicitly placed in a capture group
+ * via [provideDelegate].
+ */
 sealed interface RegexElement : ReadOnlyProperty<Any?, RegexElement.Capture> {
     override fun toString(): String
 
@@ -16,18 +24,59 @@ sealed interface RegexElement : ReadOnlyProperty<Any?, RegexElement.Capture> {
     class Capture(val groupName: String)
 }
 
+/**
+ * A quantifiable [RegexElement]. For example, QuantifiableRegexElements can be made [optional].
+ */
 sealed interface QuantifiableRegexElement : RegexElement {
+    /**
+     * Applies the optional quantifier (`?`) to this element,
+     * returning a [GreedyRegexElement].
+     */
     fun optional(): GreedyRegexElement
+
+    /**
+     * Applies the plus quantifier (`+`) to this element,
+     * returning a [GreedyRegexElement].
+     */
     fun oneOrMore(): GreedyRegexElement
+
+    /**
+     * Applies the star quantifier (`*`) to this element,
+     * returning a [GreedyRegexElement].
+     */
     fun zeroOrMore(): GreedyRegexElement
 
+    /**
+     * Applies a numeric quantifier (e.g. `{3}`) to this element,
+     * returning a [GreedyRegexElement].
+     */
     operator fun times(amount: Int): GreedyRegexElement
+
+    /**
+     * Applies a numeric range quantifier (e.g. `{3,5}`) to this element,
+     * returning a [GreedyRegexElement].
+     */
     operator fun times(range: IntRange): GreedyRegexElement
+
+    /**
+     * Applies an open-ended numeric range quantifier (e.g. `{3,}`) to this element,
+     * returning a [GreedyRegexElement].
+     */
     fun atLeast(amount: Int): GreedyRegexElement
 }
 
+/**
+ * A greedy [RegexElement] that can be made [lazy] or [possessive].
+ */
 sealed interface GreedyRegexElement : RegexElement {
+    /**
+     * Makes the preceding quantifier lazy by appending `?`.
+     */
     fun lazy(): RegexElement
+
+    /**
+     * Makes the preceding quantifier possessive by appending `+`.
+     */
     fun possessive(): RegexElement
 }
 

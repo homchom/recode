@@ -3,7 +3,7 @@ package io.github.homchom.recode.event.trial
 import io.github.homchom.recode.event.Listenable
 import io.github.homchom.recode.event.Validated
 import io.github.homchom.recode.event.map
-import io.github.homchom.recode.util.nullable
+import io.github.homchom.recode.util.computeNullable
 import kotlinx.coroutines.*
 
 /**
@@ -141,10 +141,10 @@ class TrialResult<T : Any> private constructor(private val deferred: Deferred<T?
         hidden: Boolean = false
     ) : this(
         scope.async {
-            nullable {
+            computeNullable {
                 coroutineScope {
                     val trialScope = TrialScope(
-                        this@nullable,
+                        this@computeNullable,
                         this,
                         hidden
                     )
