@@ -2,6 +2,9 @@
 
 package io.github.homchom.recode.render
 
+import net.minecraft.ChatFormatting
+import java.util.*
+
 fun rgb(red: Int, green: Int, blue: Int) = RGBColor(red, green, blue)
 fun rgba(red: Int, green: Int, blue: Int, alpha: Int = 255) = RGBAColor(red, green, blue, alpha)
 
@@ -35,6 +38,35 @@ data class RGBAColor(
     val alpha: Int
 ) : RGBIntegralColor
 
-data class HexColor(val hex: Int) : IntegralColor {
+@JvmInline
+value class HexColor(val hex: Int) : IntegralColor {
     override fun toInt() = hex
+
+    override fun toString() = String.format(Locale.US, "#%06x", hex)
+}
+
+/**
+ * A group of standard colors used by the mod, including built-in color codes.
+ */
+// TODO: add DF palette colors?
+@Suppress("unused")
+object ColorPalette {
+    val BLACK get() = builtIn(ChatFormatting.BLACK)
+    val DARK_BLUE get() = builtIn(ChatFormatting.DARK_BLUE)
+    val DARK_GREEN get() = builtIn(ChatFormatting.DARK_GREEN)
+    val DARK_AQUA get() = builtIn(ChatFormatting.DARK_AQUA)
+    val DARK_RED get() = builtIn(ChatFormatting.DARK_RED)
+    val DARK_PURPLE get() = builtIn(ChatFormatting.DARK_PURPLE)
+    val GOLD get() = builtIn(ChatFormatting.GOLD)
+    val GRAY get() = builtIn(ChatFormatting.GRAY)
+    val DARK_GRAY get() = builtIn(ChatFormatting.DARK_GRAY)
+    val BLUE get() = builtIn(ChatFormatting.BLUE)
+    val GREEN get() = builtIn(ChatFormatting.GREEN)
+    val AQUA get() = builtIn(ChatFormatting.AQUA)
+    val RED get() = builtIn(ChatFormatting.RED)
+    val LIGHT_PURPLE get() = builtIn(ChatFormatting.LIGHT_PURPLE)
+    val YELLOW get() = builtIn(ChatFormatting.YELLOW)
+    val WHITE get() = builtIn(ChatFormatting.WHITE)
+
+    private fun builtIn(code: ChatFormatting) = code.color!!.toColor()
 }

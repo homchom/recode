@@ -3,9 +3,9 @@
 package io.github.homchom.recode.feature.social
 
 import io.github.homchom.recode.MOD_NAME
+import io.github.homchom.recode.render.ColorPalette
 import io.github.homchom.recode.ui.text
 import io.github.homchom.recode.util.regex.regex
-import net.minecraft.ChatFormatting
 import net.minecraft.client.GuiMessageTag
 
 private val stackTagPrefix get() = "$MOD_NAME stacked x"
@@ -16,10 +16,10 @@ private val stackRegex = regex {
 }
 
 fun stackedMessageTag(amount: Int) = GuiMessageTag(
-    ChatFormatting.AQUA.color!!,
+    ColorPalette.AQUA.hex,
     GuiMessageTag.Icon.CHAT_MODIFIED,
     text {
-        color(ChatFormatting.AQUA.color!!) { translate("chat.tag.recode.stacked", amount) }
+        color(ColorPalette.AQUA) { translate("chat.tag.recode.stacked", amount) }
     },
     "$stackTagPrefix$amount"
 )
