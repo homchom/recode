@@ -4,7 +4,6 @@ import com.google.gson.JsonParser
 import io.github.homchom.recode.logError
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.multiplayer.CommandAliasGroup
-import io.github.homchom.recode.render.ColorPalette
 import io.github.homchom.recode.ui.ExpressionHighlighter
 import io.github.homchom.recode.ui.text
 import io.github.homchom.recode.util.Computation
@@ -88,7 +87,7 @@ object VarSyntaxHighlighter {
         return when (val comp = ExpressionHighlighter.highlightString(string, parseMiniMessage)) {
             is Computation.Success -> comp()
             is Computation.Failure -> text {
-                color(ColorPalette.RED) { literal(comp()) }
+                color(red) { literal(comp()) }
             }
         }
     }

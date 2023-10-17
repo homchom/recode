@@ -19,7 +19,7 @@ fun stackedMessageTag(amount: Int) = GuiMessageTag(
     ColorPalette.AQUA.hex,
     GuiMessageTag.Icon.CHAT_MODIFIED,
     text {
-        color(ColorPalette.AQUA) { translate("chat.tag.recode.stacked", amount) }
+        color(aqua) { translate("chat.tag.recode.stacked", amount) }
     },
     "$stackTagPrefix$amount"
 )

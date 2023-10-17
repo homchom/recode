@@ -1,7 +1,7 @@
 package io.github.homchom.recode.ui
 
+import io.github.homchom.recode.render.ColorPalette
 import io.github.homchom.recode.render.IntegralColor
-import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.ClickEvent
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.HoverEvent
@@ -23,22 +23,22 @@ class TextBuilder(style: Style = Style.EMPTY) {
     val builtText: Component get() = _text
     private val _text = Component.empty().withStyle(style)
 
-    inline val black get() = ChatFormatting.BLACK
-    inline val darkBlue get() = ChatFormatting.DARK_BLUE
-    inline val darkGreen get() = ChatFormatting.DARK_GREEN
-    inline val darkAqua get() = ChatFormatting.DARK_AQUA
-    inline val darkRed get() = ChatFormatting.DARK_RED
-    inline val darkPurple get() = ChatFormatting.DARK_PURPLE
-    inline val gold get() = ChatFormatting.GOLD
-    inline val gray get() = ChatFormatting.GRAY
-    inline val darkGray get() = ChatFormatting.DARK_GRAY
-    inline val blue get() = ChatFormatting.BLUE
-    inline val green get() = ChatFormatting.GREEN
-    inline val aqua get() = ChatFormatting.AQUA
-    inline val red get() = ChatFormatting.RED
-    inline val lightPurple get() = ChatFormatting.LIGHT_PURPLE
-    inline val yellow get() = ChatFormatting.YELLOW
-    inline val white get() = ChatFormatting.WHITE
+    inline val black get() = ColorPalette.BLACK
+    inline val darkBlue get() = ColorPalette.DARK_BLUE
+    inline val darkGreen get() = ColorPalette.DARK_GREEN
+    inline val darkAqua get() = ColorPalette.DARK_AQUA
+    inline val darkRed get() = ColorPalette.DARK_RED
+    inline val darkPurple get() = ColorPalette.DARK_PURPLE
+    inline val gold get() = ColorPalette.GOLD
+    inline val gray get() = ColorPalette.GRAY
+    inline val darkGray get() = ColorPalette.DARK_GRAY
+    inline val blue get() = ColorPalette.BLUE
+    inline val green get() = ColorPalette.GREEN
+    inline val aqua get() = ColorPalette.AQUA
+    inline val red get() = ColorPalette.RED
+    inline val lightPurple get() = ColorPalette.LIGHT_PURPLE
+    inline val yellow get() = ColorPalette.YELLOW
+    inline val white get() = ColorPalette.WHITE
 
     val openUrl get() = ClickEvent.Action.OPEN_URL
     val openFile get() = ClickEvent.Action.OPEN_FILE
@@ -62,9 +62,6 @@ class TextBuilder(style: Style = Style.EMPTY) {
     fun keybind(key: String) = append(Component.keybind(key))
 
     fun space() = literal(" ")
-
-    inline fun ChatFormatting.invoke(scope: TextScope) =
-        appendBlock(Style.EMPTY.applyFormat(this), scope)
 
     inline fun color(color: IntegralColor, scope: TextScope) =
         appendBlock(Style.EMPTY.withColor(color.toInt()), scope)

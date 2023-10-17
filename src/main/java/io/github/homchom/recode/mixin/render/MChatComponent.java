@@ -8,6 +8,7 @@ import io.github.homchom.recode.feature.social.SideChat;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.ui.ChatUI;
 import io.github.homchom.recode.ui.TextFunctions;
+import io.github.homchom.recode.util.mixin.MixinField;
 import net.minecraft.client.GuiMessage;
 import net.minecraft.client.GuiMessageTag;
 import net.minecraft.client.Minecraft;
@@ -97,14 +98,14 @@ public abstract class MChatComponent {
     // message stacking
 
     @Unique
-    private int trimmedMessageCount = 0;
+    private MixinField<Integer, ChatComponent> trimmedMessageCount = new MixinField<>(() -> 0);
 
     @Inject(
             method = "addMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/MessageSignature;ILnet/minecraft/client/GuiMessageTag;Z)V",
             at = @At("HEAD")
     )
     private void countTrimmedMessagesBeforeMessageStacking(CallbackInfo ci) {
-        trimmedMessageCount = trimmedMessages.size();
+        trimmedMessageCount.set(thisChatComponent(), trimmedMessages.size());
     }
 
     @Inject(
@@ -120,12 +121,13 @@ public abstract class MChatComponent {
             CallbackInfo ci
     ) {
         if (!Config.getBoolean("stackDuplicateMsgs")) return;
-        if (trimmedMessageCount == 0) return;
+        int trimmedCount = trimmedMessageCount.get(thisChatComponent());
+        if (trimmedCount == 0) return;
 
         // trimmedMessages[0] is the most recent message
-        var lineCount = trimmedMessages.size() - trimmedMessageCount;
-        if (trimmedMessageCount < lineCount) return;
-        if (trimmedMessageCount > lineCount) {
+        var lineCount = trimmedMessages.size() - trimmedCount;
+        if (trimmedCount < lineCount) return;
+        if (trimmedCount > lineCount) {
             if (!trimmedMessages.get(lineCount * 2).endOfEntry()) return;
         }
 
@@ -154,5 +156,10 @@ public abstract class MChatComponent {
             );
             trimmedMessages.set(index, newLine);
         }
+    }
+
+    @Unique
+    private ChatComponent thisChatComponent() {
+        return (ChatComponent) (Object) this;
     }
 }
