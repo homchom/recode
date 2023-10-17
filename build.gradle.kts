@@ -60,9 +60,11 @@ val shade: Configuration by configurations.creating {
 }
 
 dependencies {
+    // minecraft
     minecraft("com.mojang:minecraft:$minecraftVersion")
     mappings(loom.officialMojangMappings())
 
+    // fabric
     val fabricDevVersion: String by project
     val loaderDevVersion: String by project
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricDevVersion")
@@ -71,10 +73,11 @@ dependencies {
         implementation(annotationProcessor("com.github.llamalad7.mixinextras:mixinextras-fabric:0.2.0-beta.9")!!)!!
     )
 
+    // kotlin
     shade(api(kotlin("stdlib", "1.9.0"))!!)
     shade(api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")!!)
 
-    // declare mod dependencies listed in gradle.properties
+    // mod dependencies listed in gradle.properties
     for (mod in requiredDependencyMods) {
         include(modImplementation("${mod.artifact}:${mod.version}")!!)
     }
@@ -211,21 +214,19 @@ data class DependencyMod(
 ) {
     constructor(id: String, artifact: Any?, version: Any?, versionSpec: Any?) :
             this(id, artifact.toString(), version.toString(), versionSpec.toString())
-
-    val versionKey get() = ""
 }
 
 /**
  * @return The list of [DependencyMod] values matching [type] in gradle.properties.
  */
-fun dependencyModsOfType(type: String) = properties.mapNotNull { (key, value) ->
-    Regex("""$type\.([a-z][a-z0-9-_]{1,63})\.artifact""").matchEntire(key)?.let { match ->
-        val id = match.groupValues[1]
-        DependencyMod(
-            id,
-            value,
-            project.properties["$type.$id.version"],
-            project.properties.getOrDefault("$type.$id.versionSpec", "^")
-        )
+fun dependencyModsOfType(type: String): List<DependencyMod> {
+    val regex = Regex("""$type\.([a-z][a-z0-9-_]{1,63})\.artifact""")
+    return properties.mapNotNull { (key, value) ->
+        regex.matchEntire(key)?.let { match ->
+            val id = match.groupValues[1]
+            val version = project.properties["$type.$id.version"]
+            val versionSpec = project.properties.getOrDefault("$type.$id.versionSpec", "^")
+            DependencyMod(id, value, version, versionSpec)
+        }
     }
 }
