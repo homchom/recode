@@ -1,4 +1,4 @@
-package io.github.homchom.recode.multiplayer.message
+package io.github.homchom.recode.hypercube.message
 
 import io.github.homchom.recode.event.Detector
 import io.github.homchom.recode.event.Listenable

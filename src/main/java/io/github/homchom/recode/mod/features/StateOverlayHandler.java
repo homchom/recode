@@ -1,7 +1,7 @@
 package io.github.homchom.recode.mod.features;
 
-import io.github.homchom.recode.multiplayer.state.DF;
-import io.github.homchom.recode.multiplayer.state.DFState;
+import io.github.homchom.recode.hypercube.state.DF;
+import io.github.homchom.recode.hypercube.state.DFState;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;

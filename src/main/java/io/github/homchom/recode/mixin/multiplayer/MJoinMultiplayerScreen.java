@@ -1,6 +1,6 @@
 package io.github.homchom.recode.mixin.multiplayer;
 
-import io.github.homchom.recode.multiplayer.ServerConstants;
+import io.github.homchom.recode.hypercube.ServerConstants;
 import io.github.homchom.recode.ui.Toasts;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.SystemToast;

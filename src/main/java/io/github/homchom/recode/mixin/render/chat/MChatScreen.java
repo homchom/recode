@@ -1,4 +1,4 @@
-package io.github.homchom.recode.mixin.render;
+package io.github.homchom.recode.mixin.render.chat;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;

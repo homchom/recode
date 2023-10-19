@@ -1,4 +1,4 @@
-package io.github.homchom.recode.multiplayer.state
+package io.github.homchom.recode.hypercube.state
 
 class PermissionGroup(ranks: Iterable<Rank>) {
     val ranks = ranks.toSet()

@@ -5,7 +5,6 @@ package io.github.homchom.recode.multiplayer
 import io.github.homchom.recode.RecodeDispatcher
 import io.github.homchom.recode.game.ticks
 import io.github.homchom.recode.mc
-import io.github.homchom.recode.ui.literalText
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -18,11 +17,6 @@ import net.minecraft.network.chat.Component
  * @throws IllegalStateException if there is no current player
  */
 fun displayMessage(message: Component) = asPlayer { displayClientMessage(message, false) }
-
-/**
- * @throws IllegalStateException if there is no current player
- */
-fun displayLiteralMessage(message: String) = displayMessage(literalText(message))
 
 /**
  * @param command The command to send, without the leading slash.

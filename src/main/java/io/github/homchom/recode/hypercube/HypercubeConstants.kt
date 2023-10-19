@@ -1,6 +1,6 @@
 @file:JvmName("ServerConstants")
 
-package io.github.homchom.recode.multiplayer
+package io.github.homchom.recode.hypercube
 
 const val SERVER_ADDRESS = "mcdiamondfire.com"
 

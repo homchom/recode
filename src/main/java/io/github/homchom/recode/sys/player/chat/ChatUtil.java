@@ -1,7 +1,7 @@
 package io.github.homchom.recode.sys.player.chat;
 
+import io.github.homchom.recode.hypercube.state.DF;
 import io.github.homchom.recode.mod.config.Config;
-import io.github.homchom.recode.multiplayer.state.DF;
 import io.github.homchom.recode.sys.player.chat.color.MinecraftColors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;

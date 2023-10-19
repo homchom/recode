@@ -53,7 +53,7 @@ inline fun <S, F, C : FailScope<F>> computeIn(scope: C, block: C.() -> S): Compu
         Success(scope.block())
     } catch (e: FailureException) {
         @Suppress("UNCHECKED_CAST")
-        Failure(e.value as F)
+        Failure(e.value as F) // TODO: revisit this; ensure it is safe
     }
 }
 

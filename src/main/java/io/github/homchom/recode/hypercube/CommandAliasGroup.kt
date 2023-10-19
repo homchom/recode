@@ -1,4 +1,4 @@
-package io.github.homchom.recode.multiplayer
+package io.github.homchom.recode.hypercube
 
 /**
  * A group of server command aliases. Add here as needed.

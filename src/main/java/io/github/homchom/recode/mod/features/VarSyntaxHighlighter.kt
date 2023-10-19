@@ -3,7 +3,7 @@ package io.github.homchom.recode.mod.features
 import com.google.gson.JsonParser
 import io.github.homchom.recode.logError
 import io.github.homchom.recode.mc
-import io.github.homchom.recode.multiplayer.CommandAliasGroup
+import io.github.homchom.recode.hypercube.CommandAliasGroup
 import io.github.homchom.recode.ui.ExpressionHighlighter
 import io.github.homchom.recode.ui.text
 import io.github.homchom.recode.util.Computation
@@ -22,7 +22,7 @@ object VarSyntaxHighlighter {
         +CommandAliasGroup.PLOT_NAME
     ).verticalFlatten().map { "/$it " }
 
-    // TODO: decouple from mc.player (will fix timing issue)
+    // TODO: fix timing issue
     @JvmStatic
     fun highlight(msg: String): Component? {
         var mutableMsg = msg

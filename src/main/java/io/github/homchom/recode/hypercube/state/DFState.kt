@@ -1,11 +1,11 @@
 @file:JvmName("DF")
 @file:JvmMultifileClass
 
-package io.github.homchom.recode.multiplayer.state
+package io.github.homchom.recode.hypercube.state
 
 import io.github.homchom.recode.mc
-import io.github.homchom.recode.multiplayer.MAIN_ARROW
-import io.github.homchom.recode.multiplayer.SUPPORT_ARROW
+import io.github.homchom.recode.hypercube.MAIN_ARROW
+import io.github.homchom.recode.hypercube.SUPPORT_ARROW
 import io.github.homchom.recode.multiplayer.username
 import io.github.homchom.recode.ui.equalsUnstyled
 import io.github.homchom.recode.ui.matchesUnstyled
@@ -60,7 +60,7 @@ sealed interface DFState {
 
                 PlotMode.Build -> PlotMode.Build
 
-                PlotMode.Dev.ID -> mc.player!!.let { player ->
+                PlotMode.Dev -> mc.player!!.let { player ->
                     val buildCorner = player.blockPosition()
                         .mutable()
                         .setY(49)

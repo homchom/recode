@@ -1,9 +1,11 @@
-package io.github.homchom.recode.multiplayer
+package io.github.homchom.recode.hypercube
 
 import io.github.homchom.recode.event.trial.requester
 import io.github.homchom.recode.event.trial.toggleRequesterGroup
 import io.github.homchom.recode.event.trial.trial
-import io.github.homchom.recode.multiplayer.state.DFStateDetectors
+import io.github.homchom.recode.hypercube.state.DFStateDetectors
+import io.github.homchom.recode.multiplayer.ReceiveChatMessageEvent
+import io.github.homchom.recode.multiplayer.sendCommand
 import io.github.homchom.recode.ui.equalsUnstyled
 import io.github.homchom.recode.ui.matchesUnstyled
 import io.github.homchom.recode.ui.unstyledString

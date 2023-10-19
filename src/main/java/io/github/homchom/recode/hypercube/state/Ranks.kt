@@ -1,6 +1,6 @@
-package io.github.homchom.recode.multiplayer.state
+package io.github.homchom.recode.hypercube.state
 
-import io.github.homchom.recode.multiplayer.DIAMOND
+import io.github.homchom.recode.hypercube.DIAMOND
 
 sealed interface Rank {
     val displayName: String

@@ -5,9 +5,10 @@ import io.github.homchom.recode.event.Listenable
 import io.github.homchom.recode.event.request
 import io.github.homchom.recode.feature.Feature
 import io.github.homchom.recode.feature.feature
+import io.github.homchom.recode.hypercube.*
+import io.github.homchom.recode.hypercube.state.*
 import io.github.homchom.recode.mod.config.Config
 import io.github.homchom.recode.multiplayer.*
-import io.github.homchom.recode.multiplayer.state.*
 import kotlinx.coroutines.launch
 
 object AutoCommands {

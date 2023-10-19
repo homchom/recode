@@ -1,4 +1,4 @@
-package io.github.homchom.recode.mixin.render;
+package io.github.homchom.recode.mixin.render.chat;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -8,7 +8,7 @@ import io.github.homchom.recode.feature.social.SideChat;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.ui.ChatUI;
 import io.github.homchom.recode.ui.TextFunctions;
-import io.github.homchom.recode.util.mixin.MixinField;
+import io.github.homchom.recode.util.mixin.MixinCustomField;
 import net.minecraft.client.GuiMessage;
 import net.minecraft.client.GuiMessageTag;
 import net.minecraft.client.Minecraft;
@@ -98,7 +98,7 @@ public abstract class MChatComponent {
     // message stacking
 
     @Unique
-    private MixinField<Integer, ChatComponent> trimmedMessageCount = new MixinField<>(() -> 0);
+    private final MixinCustomField<Integer, ChatComponent> trimmedMessageCount = new MixinCustomField<>(() -> 0);
 
     @Inject(
             method = "addMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/MessageSignature;ILnet/minecraft/client/GuiMessageTag;Z)V",

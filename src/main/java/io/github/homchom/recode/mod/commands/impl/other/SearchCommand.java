@@ -2,12 +2,12 @@ package io.github.homchom.recode.mod.commands.impl.other;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import io.github.homchom.recode.hypercube.state.DF;
 import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
 import io.github.homchom.recode.mod.commands.arguments.types.ChoiceArgumentType;
 import io.github.homchom.recode.mod.features.commands.CodeSearcher;
-import io.github.homchom.recode.multiplayer.state.DF;
-import io.github.homchom.recode.multiplayer.state.PlotMode;
+import io.github.homchom.recode.hypercube.state.PlotMode;
 import io.github.homchom.recode.sys.hypercube.codeaction.Action;
 import io.github.homchom.recode.sys.hypercube.codeaction.ActionDump;
 import io.github.homchom.recode.sys.hypercube.codeaction.Types;

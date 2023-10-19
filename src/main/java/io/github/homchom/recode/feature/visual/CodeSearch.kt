@@ -3,9 +3,9 @@ package io.github.homchom.recode.feature.visual
 import io.github.homchom.recode.feature.feature
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.mod.features.commands.CodeSearcher
-import io.github.homchom.recode.multiplayer.state.PlotMode
-import io.github.homchom.recode.multiplayer.state.currentDFState
-import io.github.homchom.recode.multiplayer.state.isInMode
+import io.github.homchom.recode.hypercube.state.PlotMode
+import io.github.homchom.recode.hypercube.state.currentDFState
+import io.github.homchom.recode.hypercube.state.isInMode
 import io.github.homchom.recode.render.OutlineBlockEntitiesEvent
 import io.github.homchom.recode.render.rgba
 import net.minecraft.world.level.block.entity.SignBlockEntity
