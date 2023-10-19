@@ -2,8 +2,8 @@ package io.github.homchom.recode.sys.renderer.widgets;
 
 import com.google.common.collect.Lists;
 import io.github.homchom.recode.hypercube.state.DF;
-import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.hypercube.state.PlotMode;
+import io.github.homchom.recode.mod.config.Config;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;

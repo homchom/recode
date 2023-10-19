@@ -1,10 +1,10 @@
 package io.github.homchom.recode.mod.mixin.message;
 
 import io.github.homchom.recode.hypercube.state.DF;
-import io.github.homchom.recode.mod.config.Config;
-import io.github.homchom.recode.mod.features.social.chat.ConversationTimer;
 import io.github.homchom.recode.hypercube.state.DFState;
 import io.github.homchom.recode.hypercube.state.PlotMode;
+import io.github.homchom.recode.mod.config.Config;
+import io.github.homchom.recode.mod.features.social.chat.ConversationTimer;
 import io.github.homchom.recode.sys.player.chat.ChatType;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
 import net.minecraft.client.Minecraft;

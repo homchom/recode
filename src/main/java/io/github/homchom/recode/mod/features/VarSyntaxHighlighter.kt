@@ -1,9 +1,9 @@
 package io.github.homchom.recode.mod.features
 
 import com.google.gson.JsonParser
+import io.github.homchom.recode.hypercube.CommandAliasGroup
 import io.github.homchom.recode.logError
 import io.github.homchom.recode.mc
-import io.github.homchom.recode.hypercube.CommandAliasGroup
 import io.github.homchom.recode.ui.ExpressionHighlighter
 import io.github.homchom.recode.ui.text
 import io.github.homchom.recode.util.Computation

@@ -1,8 +1,8 @@
 package io.github.homchom.recode.hypercube.message
 
 import io.github.homchom.recode.event.Requester
-import io.github.homchom.recode.multiplayer.sendCommand
 import io.github.homchom.recode.hypercube.state.DFStateDetectors
+import io.github.homchom.recode.multiplayer.sendCommand
 import io.github.homchom.recode.ui.equalsUnstyled
 import io.github.homchom.recode.ui.matchEntireUnstyled
 import io.github.homchom.recode.util.regex.namedGroupValues

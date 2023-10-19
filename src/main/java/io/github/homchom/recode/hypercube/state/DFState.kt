@@ -3,9 +3,9 @@
 
 package io.github.homchom.recode.hypercube.state
 
-import io.github.homchom.recode.mc
 import io.github.homchom.recode.hypercube.MAIN_ARROW
 import io.github.homchom.recode.hypercube.SUPPORT_ARROW
+import io.github.homchom.recode.mc
 import io.github.homchom.recode.multiplayer.username
 import io.github.homchom.recode.ui.equalsUnstyled
 import io.github.homchom.recode.ui.matchesUnstyled

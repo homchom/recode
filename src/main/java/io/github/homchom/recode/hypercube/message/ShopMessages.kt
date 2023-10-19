@@ -4,8 +4,8 @@ import io.github.homchom.recode.event.Detector
 import io.github.homchom.recode.event.trial.detector
 import io.github.homchom.recode.event.trial.trial
 import io.github.homchom.recode.hypercube.BOOSTER_ARROW
-import io.github.homchom.recode.multiplayer.ReceiveChatMessageEvent
 import io.github.homchom.recode.hypercube.TOKEN_NOTCH_CHAR
+import io.github.homchom.recode.multiplayer.ReceiveChatMessageEvent
 import io.github.homchom.recode.multiplayer.username
 import io.github.homchom.recode.ui.matchEntireUnstyled
 import io.github.homchom.recode.ui.matchesUnstyled
@@ -45,11 +45,11 @@ data class ActiveBoosterInfo(val player: String, val canTip: Boolean) {
 
             suspending {
                 val (first) = subsequent.receive()
-                val canTip = Companion.commandRegex.matchesUnstyled(first)
+                val canTip = ActiveBoosterInfo.commandRegex.matchesUnstyled(first)
 
-                if (!Companion.timeRegex.matchesUnstyled(first)) {
+                if (!ActiveBoosterInfo.timeRegex.matchesUnstyled(first)) {
                     +testBoolean(subsequent) { (second) ->
-                        Companion.timeRegex.matchesUnstyled(second)
+                        ActiveBoosterInfo.timeRegex.matchesUnstyled(second)
                     }
                 }
 

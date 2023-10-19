@@ -11,10 +11,13 @@ import io.github.homchom.recode.event.trial.TrialScope
 import io.github.homchom.recode.event.trial.detector
 import io.github.homchom.recode.event.trial.trial
 import io.github.homchom.recode.hypercube.JoinDFDetector
-import io.github.homchom.recode.mc
-import io.github.homchom.recode.multiplayer.*
 import io.github.homchom.recode.hypercube.message.CodeMessages
 import io.github.homchom.recode.hypercube.message.StateMessages
+import io.github.homchom.recode.mc
+import io.github.homchom.recode.multiplayer.DisconnectFromServerEvent
+import io.github.homchom.recode.multiplayer.ReceiveChatMessageEvent
+import io.github.homchom.recode.multiplayer.ReceiveGamePacketEvent
+import io.github.homchom.recode.multiplayer.username
 import io.github.homchom.recode.ui.matchesUnstyled
 import io.github.homchom.recode.ui.removeLegacyCodes
 import io.github.homchom.recode.util.Case

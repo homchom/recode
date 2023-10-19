@@ -1,9 +1,9 @@
 package io.github.homchom.recode.mod.mixin.render.screen;
 
 import io.github.homchom.recode.hypercube.state.DF;
+import io.github.homchom.recode.hypercube.state.PlotMode;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.config.internal.DestroyItemResetType;
-import io.github.homchom.recode.hypercube.state.PlotMode;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.world.inventory.ClickType;

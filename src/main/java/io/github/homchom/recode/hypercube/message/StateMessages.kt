@@ -1,9 +1,9 @@
 package io.github.homchom.recode.hypercube.message
 
 import io.github.homchom.recode.event.Requester
+import io.github.homchom.recode.hypercube.RIGHT_ARROW
 import io.github.homchom.recode.hypercube.state.*
 import io.github.homchom.recode.mc
-import io.github.homchom.recode.hypercube.RIGHT_ARROW
 import io.github.homchom.recode.multiplayer.sendCommand
 import io.github.homchom.recode.multiplayer.username
 import io.github.homchom.recode.ui.matchEntireUnstyled

@@ -8,7 +8,7 @@ import io.github.homchom.recode.feature.feature
 import io.github.homchom.recode.hypercube.*
 import io.github.homchom.recode.hypercube.state.*
 import io.github.homchom.recode.mod.config.Config
-import io.github.homchom.recode.multiplayer.*
+import io.github.homchom.recode.multiplayer.sendCommand
 import kotlinx.coroutines.launch
 
 object AutoCommands {
