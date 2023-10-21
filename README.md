@@ -39,4 +39,4 @@ If you do *not* have a GitHub account, consider [nightly.link](https://nightly.l
 
 ## Contributing
 
-recode is open source, and the community is welcome to add their own contributions. We only ask that you follow these guidelines: https://github.com/homchom/recode/wiki/Contributing-to-recode
+recode is open source, and the community is welcome to add their own contributions. We only ask that you skim the following first: https://github.com/homchom/recode/wiki/Contributing:-Getting-Started
