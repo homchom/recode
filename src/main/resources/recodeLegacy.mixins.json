@@ -20,7 +20,6 @@
     "render.MScreen",
     "render.MStitcher",
     "render.MWindow",
-    "render.TextureMapAccessor",
     "render.screen.MCreativeInventoryScreen",
     "render.screen.MOptionsScreen"
   ],

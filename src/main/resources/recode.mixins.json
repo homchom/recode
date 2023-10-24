@@ -5,6 +5,7 @@
   "mixins": [],
   "client": [
     "MMinecraft",
+    "game.ItemStackAccessor",
     "multiplayer.MChatListener",
     "multiplayer.MClientPacketListener",
     "multiplayer.MConnection",
@@ -15,6 +16,7 @@
     "render.MGui",
     "render.MLevelRenderer",
     "render.MWindow",
+    "render.chat.CommandSuggestionsAccessor",
     "render.chat.MChatComponent",
     "render.chat.MChatScreen",
     "render.chat.MCommandSuggestions"

@@ -10,6 +10,7 @@ import com.google.common.collect.MapMaker
  * fields are desired.
  * 2. This is not necessary to use when the target class is reasonably assumed to be a singleton.
  */
+@Suppress("UNCHECKED_CAST")
 class MixinCustomField<T, V : Any>(private val default: () -> T) {
     private lateinit var valueMap: MutableMap<V, T>
 
@@ -19,10 +20,9 @@ class MixinCustomField<T, V : Any>(private val default: () -> T) {
     fun get(instance: V) = if (::valueMap.isInitialized) {
         valueMap.getOrPut(instance, default)
     } else {
-        singletonValue!!
+        singletonValue as T
     }
 
-    @Suppress("UNCHECKED_CAST")
     fun set(instance: V, value: T) {
         when {
             ::valueMap.isInitialized -> valueMap[instance] = value

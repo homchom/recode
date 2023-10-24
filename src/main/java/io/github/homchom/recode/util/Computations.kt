@@ -4,6 +4,29 @@ import io.github.homchom.recode.util.Computation.Failure
 import io.github.homchom.recode.util.Computation.Success
 
 /**
+ * A computed result that can either be a [Success] or [Failure], like the
+ * [Either](https://docs.rs/either/latest/either/enum.Either.html) type found in many functional languages.
+ */
+sealed interface Computation<out S, out F> {
+    class Success<out T>(override val value: T) : Computation<T, Nothing>, InvokableWrapper<T>
+    class Failure<out T>(override val value: T) : Computation<Nothing, T>, InvokableWrapper<T>
+}
+
+inline fun <S, F, R> Computation<S, F>.map(transform: (S) -> R): Computation<R, F> =
+    when (this) {
+        is Success<S> -> Success(transform(value))
+        is Failure<F> -> Failure(value)
+    }
+
+/**
+ * Computes the result of [block] with type [S], with the ability to short-circuit across functions with
+ * [ComputeScope.fail].
+ *
+ * **[ComputeScope] should not be leaked.** See [FailScope] for more details.
+ */
+inline fun <S, F> compute(block: ComputeScope<F>.() -> S) = computeIn(ComputeScope(), block)
+
+/**
  * Computes the nullable result of [block] with the ability to short-circuit across functions with
  * both [NullableScope.fail] and [NullPointerException].
  *
@@ -19,28 +42,20 @@ inline fun <T : Any> computeNullable(block: NullableScope.() -> T?): T? {
 }
 
 /**
+ * @see compute
+ */
+@JvmInline
+value class ComputeScope<T> private constructor(private val unit: NullableScope) : FailScope<T> {
+    constructor() : this(NullableScope)
+}
+
+/**
  * @see computeNullable
  */
 sealed interface NullableScope : FailScope<Nothing?> {
     fun fail(): Nothing = fail(null)
 
     companion object Instance : NullableScope
-}
-
-/**
- * Computes the result of [block] with type [S], with the ability to short-circuit across functions with
- * [ComputeScope.fail].
- *
- * **[ComputeScope] should not be leaked.** See [FailScope] for more details.
- */
-inline fun <S, F> compute(block: ComputeScope<F>.() -> S) = computeIn(ComputeScope(), block)
-
-/**
- * @see compute
- */
-@JvmInline
-value class ComputeScope<T> private constructor(private val unit: NullableScope) : FailScope<T> {
-    constructor() : this(NullableScope)
 }
 
 /**
@@ -55,15 +70,6 @@ inline fun <S, F, C : FailScope<F>> computeIn(scope: C, block: C.() -> S): Compu
         @Suppress("UNCHECKED_CAST")
         Failure(e.value as F) // TODO: revisit this; ensure it is safe
     }
-}
-
-/**
- * A computed result that can either be a [Success] or [Failure], like the
- * [Either](https://docs.rs/either/latest/either/enum.Either.html) type found in many functional languages.
- */
-sealed interface Computation<out S, out F> {
-    class Success<T>(override val value: T) : Computation<T, Nothing>, InvokableWrapper<T>
-    class Failure<T>(override val value: T) : Computation<Nothing, T>, InvokableWrapper<T>
 }
 
 /**

@@ -16,11 +16,8 @@ infix fun Long.mod(other: Long) = Math.floorMod(this, other)
  * Returns the greatest common factor of [a] and [b] using the
  * [Euclidean algorithm](https://en.wikipedia.org/wiki/Euclidean_algorithm).
  */
-tailrec fun greatestCommonFactor(a: Int, b: Int): Int = when {
-    a == 0 -> b
-    b == 0 -> a
-    else -> greatestCommonFactor(b, a % b)
-}
+tailrec fun greatestCommonFactor(a: Int, b: Int): Int =
+    if (b == 0) a else greatestCommonFactor(b, a % b)
 
 /**
  * A [mixed number](https://en.wikipeedia.org/wiki/Fraction#Forms_of_fractions) with [Int] components.
