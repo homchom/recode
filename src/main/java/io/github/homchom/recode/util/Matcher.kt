@@ -13,13 +13,13 @@ fun interface Matcher<in T, out R : Any> {
 }
 
 /**
- * Creates and returns a [MatcherList] with [initialPredicates].
+ * Creates a [MatcherList] with [initialPredicates].
  */
 fun <T, R : Any> matcherOf(vararg initialPredicates: Matcher<T, R>) =
     MatcherList<T, R>().apply { addAll(initialPredicates) }
 
 /**
- * Creates and returns a [MatcherList] with [initialPredicates].
+ * Creates a [MatcherList] with [initialPredicates].
  */
 fun <T, R : Matcher<T, R>> matcherOf(initialPredicates: Collection<R>) =
     MatcherList<T, R>().apply { addAll(initialPredicates) }

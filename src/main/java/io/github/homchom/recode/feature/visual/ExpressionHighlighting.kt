@@ -5,13 +5,14 @@ import io.github.homchom.recode.hypercube.DFValueMeta
 import io.github.homchom.recode.hypercube.dfValueMeta
 import io.github.homchom.recode.mixin.render.chat.CommandSuggestionsAccessor
 import io.github.homchom.recode.render.HexColor
+import io.github.homchom.recode.ui.TextBuilder
 import io.github.homchom.recode.ui.deserializeToNative
+import io.github.homchom.recode.ui.style
 import io.github.homchom.recode.util.Computation
 import io.github.homchom.recode.util.map
 import io.github.homchom.recode.util.regex.regex
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.minecraft.network.chat.Component
-import net.minecraft.network.chat.Style
 import net.minecraft.world.item.ItemStack
 
 typealias HighlightedExpression = Computation<Component, String>
@@ -139,14 +140,13 @@ object ExpressionHighlighter {
             }
         } else {
             object : HighlightBuilder {
-                private val builder = Component.empty()
+                private val builder = TextBuilder()
 
                 override fun append(text: String, depth: Int, depthIncreased: Boolean) {
-                    val style = Style.EMPTY.withColor(colors[depth % colors.size])
-                    builder.append(Component.literal(text).withStyle(style))
+                    builder.literal(text, style().color(colors[depth % colors.size]))
                 }
 
-                override fun build(): Component = builder
+                override fun build() = builder.result
             }
         }
 

@@ -6,6 +6,7 @@ import io.github.homchom.recode.feature.feature
 import io.github.homchom.recode.id
 import io.github.homchom.recode.render.IntegralColor
 import io.github.homchom.recode.render.toColor
+import io.github.homchom.recode.ui.style
 import io.github.homchom.recode.ui.text
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType
@@ -24,7 +25,7 @@ private fun registerBuiltInResourcePack(
         Recode,
         text {
             literal("[$MOD_ID] ")
-            color(displayColor) { translate("resourcePack.recode.$id") }
+            translate("resourcePack.recode.$id", style().color(displayColor))
         },
         activationType
     )
