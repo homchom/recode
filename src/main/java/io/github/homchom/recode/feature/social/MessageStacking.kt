@@ -19,7 +19,7 @@ private val stackRegex = regex {
 fun stackedMessageTag(amount: Int) = GuiMessageTag(
     ColorPalette.AQUA.hex,
     GuiMessageTag.Icon.CHAT_MODIFIED,
-    translateText("chat.tag.recode.stacked", style().red(), arrayOf(amount)),
+    translateText("chat.tag.recode.stacked", style().aqua(), arrayOf(amount)),
     "$stackTagPrefix$amount"
 )
 

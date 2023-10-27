@@ -24,7 +24,11 @@ operator fun GuiMessageTag.plus(other: GuiMessageTag): GuiMessageTag {
         if (first.ordinal > second.ordinal) first else second
     }
     val newText = combineIfNotNull(text, other.text) { first, second ->
-        first.copy().append(" ").append(second)
+        text {
+            append(first)
+            literal(" ")
+            append(second)
+        }
     }
     val newLogTag = combineIfNotNull(logTag, other.logTag) { first, second ->
         "$first, $second"

@@ -79,6 +79,13 @@ value class TextBuilder(val result: MutableComponent = Component.empty()) {
     ) {
         result.append(text(style, Component.literal(string), builder))
     }
+
+    /**
+     * Appends a pre-existing [component].
+     */
+    fun append(component: Component) {
+        result.append(component)
+    }
 }
 
 /**
