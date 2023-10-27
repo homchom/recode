@@ -13,11 +13,12 @@ import io.github.homchom.recode.util.map
 import io.github.homchom.recode.util.regex.regex
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.minecraft.network.chat.Component
+import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 
 typealias HighlightedExpression = Computation<Component, String>
 
-object ExpressionHighlighter {
+class ExpressionHighlighter {
     private val codes = setOf(
         "default",
         "selected",
@@ -86,13 +87,8 @@ object ExpressionHighlighter {
         or; end
     }
 
-    private fun leadingArgumentsRegex(highlightIndex: Int) = regex {
-        start
-        group {
-            none(" ").oneOrMore()
-            space
-        } * (highlightIndex + 1)
-    }
+    private var cachedInput = ""
+    private var cachedHighlight: HighlightedExpression = Computation.Success(Component.empty())
 
     private val countRegex = regex {
         space
@@ -107,7 +103,25 @@ object ExpressionHighlighter {
         space.optional()
     }
 
-    fun runHighlighting(chatInput: String, mainHandItem: ItemStack): HighlightedExpression? {
+    private fun leadingArgumentsRegex(highlightIndex: Int) = regex {
+        start
+        group {
+            none(" ").oneOrMore()
+            space
+        } * (highlightIndex + 1)
+    }
+
+    fun runHighlighting(chatInput: String, player: Player): HighlightedExpression? {
+        if (cachedInput == chatInput) return cachedHighlight
+        val highlight = highlight(chatInput, player.mainHandItem)
+        if (highlight != null) {
+            cachedInput = chatInput
+            cachedHighlight = highlight
+        }
+        return highlight
+    }
+
+    private fun highlight(chatInput: String, mainHandItem: ItemStack): HighlightedExpression? {
         // highlight commands
         if (chatInput.startsWith('/')) {
             val splitIndex = chatInput.indexOf(' ') + 1

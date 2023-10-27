@@ -8,6 +8,8 @@ import io.github.homchom.recode.util.Computation.Success
  * [Either](https://docs.rs/either/latest/either/enum.Either.html) type found in many functional languages.
  */
 sealed interface Computation<out S, out F> {
+    fun asSuccess() = this as? Success<S>
+
     class Success<out T>(override val value: T) : Computation<T, Nothing>, InvokableWrapper<T>
     class Failure<out T>(override val value: T) : Computation<Nothing, T>, InvokableWrapper<T>
 }
