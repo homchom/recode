@@ -1,7 +1,7 @@
 package io.github.homchom.recode
 
 import io.github.homchom.recode.ui.sendSystemToast
-import io.github.homchom.recode.ui.translateText
+import io.github.homchom.recode.ui.text.translateText
 import kotlinx.coroutines.*
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.Executor

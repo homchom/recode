@@ -4,15 +4,13 @@ import io.github.homchom.recode.hypercube.CommandAliasGroup
 import io.github.homchom.recode.hypercube.DFValueMeta
 import io.github.homchom.recode.hypercube.dfValueMeta
 import io.github.homchom.recode.mixin.render.chat.CommandSuggestionsAccessor
-import io.github.homchom.recode.render.HexColor
-import io.github.homchom.recode.ui.TextBuilder
-import io.github.homchom.recode.ui.deserializeToNative
-import io.github.homchom.recode.ui.style
+import io.github.homchom.recode.ui.text.*
 import io.github.homchom.recode.util.Computation
 import io.github.homchom.recode.util.map
 import io.github.homchom.recode.util.regex.regex
-import net.kyori.adventure.text.minimessage.MiniMessage
-import net.minecraft.network.chat.Component
+import net.kyori.adventure.text.BuildableComponent
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.TextComponent
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 
@@ -68,7 +66,6 @@ class ExpressionHighlighter {
 
     // TODO: new color scheme?
     private val colors = listOf(
-        0xffffff,
         0xffd600,
         0x33ff00,
         0x00ffe0,
@@ -141,50 +138,23 @@ class ExpressionHighlighter {
     }
 
     private fun highlightString(string: String, parseMiniMessage: Boolean = true): HighlightedExpression {
-        val result = if (parseMiniMessage) {
-            object : HighlightBuilder {
-                private val builder = StringBuilder()
-
-                override fun append(text: String, depth: Int, depthIncreased: Boolean) {
-                    val tag = if (depthIncreased) "<color:${colorAt(depth)}>" else "</color>"
-                    builder.append("$tag$text")
-                }
-
-                override fun build() = MiniMessage.miniMessage().deserializeToNative(builder.toString())
-            }
-        } else {
-            object : HighlightBuilder {
-                private val builder = TextBuilder()
-
-                override fun append(text: String, depth: Int, depthIncreased: Boolean) {
-                    builder.literal(text, style().color(colors[depth % colors.size]))
-                }
-
-                override fun build() = builder.result
-            }
-        }
-
+        val builder = TextBuilder()
         var sliceStart = 0
         var depth = 0
-        var code = ""
-        for (match in codeRegex.findAll(string)) {
-            val depthIncreased = code.endsWith('(') || sliceStart == 0
-            result.append(string.substring(sliceStart, match.range.first), depth, depthIncreased)
 
-            code = match.value
-            if (code.length > 1) {
-                val codeName = if (code.endsWith('(')) {
-                    code.substring(1, code.lastIndex)
-                } else {
-                    code.drop(1)
-                }
+        for (match in codeRegex.findAll(string)) {
+            builder.literal(string.substring(sliceStart, match.range.first), styleAt(depth))
+
+            val code = match.value
+            if (code.length > 1 && code.drop(1) !in codes) {
+                val codeName = code.drop(1)
                 if (codeName !in codes) return Computation.Failure("Invalid text code: %$codeName")
             }
 
             if (code == ")") {
                 if (depth > 0) depth--
             } else depth++
-            result.append(string.substring(match.range), depth, code != ")")
+            builder.literal(string.substring(match.range), styleAt(depth))
             if (code.endsWith('(')) depth++ else {
                 if (depth > 0) depth--
             }
@@ -192,12 +162,20 @@ class ExpressionHighlighter {
             sliceStart = match.range.last + 1
         }
 
-        return Computation.Success(result.build())
+        if (parseMiniMessage) builder.raw.mapChildren { text ->
+            if (text is TextComponent && text.style().isEmpty) {
+                MiniMessageHighlighter.highlight(text.content()) as BuildableComponent<*, *>
+            } else {
+                text
+            }
+        }
+
+        return Computation.Success(builder.build())
     }
 
     private fun highlightCommand(input: String, info: CommandInfo, splitIndex: Int): HighlightedExpression {
-        val root = Component.literal(input.substring(0, splitIndex))
-            .withStyle(CommandSuggestionsAccessor.getCommandStyle())
+        val root = Component.text(input.substring(0, splitIndex))
+            .style(CommandSuggestionsAccessor.getCommandVanillaStyle().toAdventure())
         var string = input.substring(splitIndex)
 
         if (info.highlightedArgumentIndex > 0) {
@@ -214,14 +192,17 @@ class ExpressionHighlighter {
             }
         }
 
-        return highlightString(string).map(root::append)
+        return highlightString(string).map { result ->
+            text {
+                append(root)
+                append(result)
+            }
+        }
     }
 
-    private fun colorAt(depth: Int) = HexColor(colors[depth % colors.size])
-
-    private interface HighlightBuilder {
-        fun append(text: String, depth: Int, depthIncreased: Boolean)
-
-        fun build(): Component
+    private fun styleAt(depth: Int) = if (depth == 0) {
+        style()
+    } else {
+        style().color(colors[depth - 1 % colors.size])
     }
 }

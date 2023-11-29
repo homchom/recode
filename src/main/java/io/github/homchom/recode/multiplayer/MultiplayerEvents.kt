@@ -9,9 +9,9 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.Disconnect
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.Join
 import net.fabricmc.fabric.api.networking.v1.PacketSender
+import net.kyori.adventure.text.Component
 import net.minecraft.client.Minecraft
 import net.minecraft.client.multiplayer.ClientPacketListener
-import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.Packet
 
 val JoinServerEvent = wrapFabricEvent(ClientPlayConnectionEvents.JOIN) { listener ->

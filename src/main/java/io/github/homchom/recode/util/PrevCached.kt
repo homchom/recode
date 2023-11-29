@@ -1,7 +1,7 @@
 package io.github.homchom.recode.util
 
 /**
- * Returns a [PrevCached] that returns results produced by [builder].
+ * @return a [PrevCached] that returns results produced by [builder].
  */
 fun <T, R : Any> cachePrevious(builder: (T) -> R): PrevCached<T, R> = PrevCachedBuilder(builder)
 

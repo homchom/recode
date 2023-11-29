@@ -32,7 +32,7 @@ public class MMessageListener {
         // this method is also called on an IO thread
         if (!Minecraft.getInstance().isSameThread()) return;
 
-        var context = new SimpleValidated<>(packet.content());
+        var context = new SimpleValidated<>(packet.content().asComponent());
         if (!MultiplayerEvents.getReceiveChatMessageEvent().run(context)) ci.cancel();
 
         if (DF.isOnDF()) {

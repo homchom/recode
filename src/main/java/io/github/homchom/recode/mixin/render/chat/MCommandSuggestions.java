@@ -1,6 +1,7 @@
 package io.github.homchom.recode.mixin.render.chat;
 
 import io.github.homchom.recode.feature.visual.ExpressionHighlighter;
+import io.github.homchom.recode.ui.text.TextInterop;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.CommandSuggestions;
 import net.minecraft.client.gui.components.EditBox;
@@ -36,7 +37,8 @@ public abstract class MCommandSuggestions {
         var success = highlighted.asSuccess();
         if (success == null) return;
 
-        var formatted = Language.getInstance().getVisualOrder(success.getValue());
+        var nativeText = TextInterop.toNative(success.getValue());
+        var formatted = Language.getInstance().getVisualOrder(nativeText);
         cir.setReturnValue(formatted);
     }
 }

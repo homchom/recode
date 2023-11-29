@@ -9,14 +9,14 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import net.kyori.adventure.text.Component
 import net.minecraft.client.multiplayer.ClientPacketListener
 import net.minecraft.client.player.LocalPlayer
-import net.minecraft.network.chat.Component
 
 /**
  * @throws IllegalStateException if there is no current player
  */
-fun displayMessage(message: Component) = asPlayer { displayClientMessage(message, false) }
+fun displayMessage(message: Component) = asPlayer { sendMessage(message) }
 
 /**
  * @param command The command to send, without the leading slash.

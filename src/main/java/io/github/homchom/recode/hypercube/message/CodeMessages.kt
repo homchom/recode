@@ -3,11 +3,11 @@ package io.github.homchom.recode.hypercube.message
 import io.github.homchom.recode.event.Requester
 import io.github.homchom.recode.hypercube.state.DFStateDetectors
 import io.github.homchom.recode.multiplayer.sendCommand
-import io.github.homchom.recode.ui.equalsUnstyled
-import io.github.homchom.recode.ui.matchEntireUnstyled
+import io.github.homchom.recode.ui.text.equalsPlain
+import io.github.homchom.recode.ui.text.matchEntirePlain
 import io.github.homchom.recode.util.regex.namedGroupValues
 import io.github.homchom.recode.util.regex.regex
-import net.minecraft.network.chat.Component
+import net.kyori.adventure.text.Component
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
@@ -25,7 +25,7 @@ object CodeMessages {
             )
         {
             override fun match(input: Component): SupportTime? {
-                if (input.equalsUnstyled("Error: You are not in a session.")) {
+                if (input.equalsPlain("Error: You are not in a session.")) {
                     return SupportTime(null)
                 }
 
@@ -35,7 +35,7 @@ object CodeMessages {
                     val minutes by digit * 2
                     val seconds by digit * 2
                 }
-                val values = regex.matchEntireUnstyled(input)?.namedGroupValues ?: return null
+                val values = regex.matchEntirePlain(input)?.namedGroupValues ?: return null
 
                 val hours = values["hours"].toIntOrNull()?.hours ?: return null
                 val minutes = values["minutes"].toIntOrNull()?.minutes ?: return null

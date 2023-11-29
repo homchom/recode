@@ -1,11 +1,15 @@
-package io.github.homchom.recode.ui
+package io.github.homchom.recode.ui.text
 
 import io.github.homchom.recode.render.ColorPalette
 import io.github.homchom.recode.render.IntegralColor
-import net.minecraft.network.chat.*
-import net.minecraft.network.chat.HoverEvent.EntityTooltipInfo
-import net.minecraft.network.chat.HoverEvent.ItemStackInfo
-import net.minecraft.resources.ResourceLocation
+import net.kyori.adventure.key.Key
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.ComponentBuilder
+import net.kyori.adventure.text.ComponentLike
+import net.kyori.adventure.text.event.ClickEvent
+import net.kyori.adventure.text.event.HoverEvent
+import net.kyori.adventure.text.format.Style
+import net.kyori.adventure.text.format.TextDecoration
 
 typealias TextScope = TextBuilder.() -> Unit
 
@@ -15,16 +19,22 @@ typealias TextScope = TextBuilder.() -> Unit
 fun translateText(
     key: String,
     style: StyleWrapper = style(),
-    args: Array<out Any> = emptyArray()
+    args: Array<out ComponentLike> = emptyArray()
 ): Component {
-    return Component.translatable(key, *args).withStyle(style.result)
+    return Component.translatable(key, style.build(), *args)
 }
 
 /**
- * Creates a [Component] with the literal [string] and [style].
+ * Creates a [Component] with literal [contents] and [style].
  */
-fun literalText(string: String, style: StyleWrapper = style()): Component =
-    Component.literal(string).withStyle(style.result)
+fun literalText(contents: Any, style: StyleWrapper = style()) =
+    Component.text(contents.toString(), style.build())
+
+/**
+ * Creates an empty [Component] with [style].
+ */
+fun emptyText(style: StyleWrapper = style()) =
+    Component.empty().style(style.build())
 
 /**
  * Builds a [Component] by adding [style] to [root] and applying [builder].
@@ -35,19 +45,19 @@ fun literalText(string: String, style: StyleWrapper = style()): Component =
  */
 inline fun text(
     style: StyleWrapper = style(),
-    root: MutableComponent = Component.empty(),
+    root: ComponentBuilder<*, *> = Component.text(),
     builder: TextScope
 ): Component {
-    return root.withStyle(style.result)
+    return root.style(style.build())
         .let(::TextBuilder)
         .apply(builder)
-        .result
+        .build()
 }
 
 /**
  * Creates a [StyleWrapper].
  */
-fun style(initial: Style = Style.EMPTY) = StyleWrapper(initial)
+fun style(initial: Style = Style.empty()) = StyleWrapper(initial.toBuilder())
 
 /**
  * A builder class for text [Component] objects.
@@ -56,17 +66,19 @@ fun style(initial: Style = Style.EMPTY) = StyleWrapper(initial)
  * @see literal
  */
 @JvmInline
-value class TextBuilder(val result: MutableComponent = Component.empty()) {
+value class TextBuilder(val raw: ComponentBuilder<*, *> = Component.text()) {
+    fun build(): Component = raw.build()
+
     /**
      * Appends [translateText] with [key], [args], and [style] and applies [builder] to it.
      */
     inline fun translate(
         key: String,
         style: StyleWrapper = style(),
-        args: Array<out Any> = emptyArray(),
+        args: Array<out ComponentLike> = emptyArray(),
         builder: TextScope = {}
     ) {
-        result.append(text(style, Component.translatable(key, *args), builder))
+        raw.append(text(style, Component.translatable(key, *args).toBuilder(), builder))
     }
 
     /**
@@ -77,14 +89,14 @@ value class TextBuilder(val result: MutableComponent = Component.empty()) {
         style: StyleWrapper = style(),
         builder: TextScope = {}
     ) {
-        result.append(text(style, Component.literal(string), builder))
+        raw.append(text(style, Component.text(string).toBuilder(), builder))
     }
 
     /**
      * Appends a pre-existing [component].
      */
     fun append(component: Component) {
-        result.append(component)
+        raw.append(component)
     }
 }
 
@@ -93,8 +105,8 @@ value class TextBuilder(val result: MutableComponent = Component.empty()) {
  */
 @Suppress("unused")
 @JvmInline
-value class StyleWrapper(val result: Style) {
-    private inline fun map(transform: Style.() -> Style) = StyleWrapper(result.transform())
+value class StyleWrapper(private val builder: Style.Builder) {
+    fun build() = builder.build()
 
     fun black() = color(ColorPalette.BLACK)
 
@@ -130,20 +142,33 @@ value class StyleWrapper(val result: Style) {
 
     fun color(color: IntegralColor) = color(color.toInt())
 
-    fun color(color: Int) = map { withColor(color) }
+    fun color(color: Int) = apply {
+        builder.color { color }
+    }
 
-    fun bold() = map { withBold(true) }
+    fun bold() = apply {
+        builder.decorate(TextDecoration.BOLD)
+    }
 
-    fun underlined() = map { withUnderlined(true) }
+    fun underlined() = apply {
+        builder.decorate(TextDecoration.UNDERLINED)
+    }
 
-    fun italic() = map { withItalic(true) }
+    fun italic() = apply {
+        builder.decorate(TextDecoration.ITALIC)
+    }
 
-    fun strikethrough() = map { withStrikethrough(true) }
+    fun strikethrough() = apply {
+        builder.decorate(TextDecoration.STRIKETHROUGH)
+    }
 
-    fun obfuscated() = map { withObfuscated(true) }
+    fun obfuscated() = apply {
+        builder.decorate(TextDecoration.OBFUSCATED)
+    }
 
-    fun onClick(action: ClickEvent.Action, value: String) =
-        map { withClickEvent(ClickEvent(action, value)) }
+    fun onClick(action: ClickEvent.Action, value: String) = apply {
+        builder.clickEvent(ClickEvent.clickEvent(action, value))
+    }
 
     val openUrl get() = ClickEvent.Action.OPEN_URL
 
@@ -157,16 +182,21 @@ value class StyleWrapper(val result: Style) {
 
     val copyToClipboard get() = ClickEvent.Action.COPY_TO_CLIPBOARD
 
-    fun <T : Any> onHover(action: HoverEvent.Action<T>, value: T) =
-        map { withHoverEvent(HoverEvent(action, value)) }
+    fun <T : Any> onHover(action: HoverEvent.Action<T>, value: T) = apply {
+        builder.hoverEvent(HoverEvent.hoverEvent(action, value))
+    }
 
     val showText: HoverEvent.Action<Component> get() = HoverEvent.Action.SHOW_TEXT
 
-    val showItem: HoverEvent.Action<ItemStackInfo> get() = HoverEvent.Action.SHOW_ITEM
+    val showItem: HoverEvent.Action<HoverEvent.ShowItem> get() = HoverEvent.Action.SHOW_ITEM
 
-    val showEntity: HoverEvent.Action<EntityTooltipInfo> get() = HoverEvent.Action.SHOW_ENTITY
+    val showEntity: HoverEvent.Action<HoverEvent.ShowEntity> get() = HoverEvent.Action.SHOW_ENTITY
 
-    fun insert(string: String) = map { withInsertion(string) }
+    fun insert(string: String) = apply {
+        builder.insertion(string)
+    }
 
-    fun font(id: ResourceLocation) = map { withFont(id) }
+    fun font(key: Key) = apply {
+        builder.font(key)
+    }
 }

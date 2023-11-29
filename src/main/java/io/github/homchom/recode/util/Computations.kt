@@ -3,6 +3,8 @@ package io.github.homchom.recode.util
 import io.github.homchom.recode.util.Computation.Failure
 import io.github.homchom.recode.util.Computation.Success
 
+// TODO: probably remove most of this
+
 /**
  * A computed result that can either be a [Success] or [Failure], like the
  * [Either](https://docs.rs/either/latest/either/enum.Either.html) type found in many functional languages.

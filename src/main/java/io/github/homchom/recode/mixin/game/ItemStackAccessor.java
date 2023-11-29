@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(ItemStack.class)
 public interface ItemStackAccessor {
     @Accessor("LORE_STYLE")
-    static Style getLoreStyle() {
+    static Style getLoreVanillaStyle() {
         throw new AssertionError();
     }
 }

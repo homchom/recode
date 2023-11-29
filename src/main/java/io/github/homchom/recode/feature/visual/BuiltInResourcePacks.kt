@@ -6,8 +6,9 @@ import io.github.homchom.recode.feature.feature
 import io.github.homchom.recode.id
 import io.github.homchom.recode.render.IntegralColor
 import io.github.homchom.recode.render.toColor
-import io.github.homchom.recode.ui.style
-import io.github.homchom.recode.ui.text
+import io.github.homchom.recode.ui.text.style
+import io.github.homchom.recode.ui.text.text
+import io.github.homchom.recode.ui.text.toNative
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType
 
@@ -26,7 +27,7 @@ private fun registerBuiltInResourcePack(
         text {
             literal("[$MOD_ID] ")
             translate("resourcePack.recode.$id", style().color(displayColor))
-        },
+        }.toNative(),
         activationType
     )
 }

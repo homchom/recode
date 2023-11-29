@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(CommandSuggestions.class)
 public interface CommandSuggestionsAccessor {
     @Accessor("LITERAL_STYLE")
-    static Style getCommandStyle() {
+    static Style getCommandVanillaStyle() {
         throw new AssertionError();
     }
 }

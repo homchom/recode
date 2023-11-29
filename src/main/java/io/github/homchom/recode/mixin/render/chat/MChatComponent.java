@@ -7,7 +7,7 @@ import io.github.homchom.recode.feature.social.MessageStacking;
 import io.github.homchom.recode.feature.social.SideChat;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.ui.ChatUI;
-import io.github.homchom.recode.ui.TextFunctions;
+import io.github.homchom.recode.ui.text.TextFunctions;
 import net.minecraft.client.GuiMessage;
 import net.minecraft.client.GuiMessageTag;
 import net.minecraft.client.Minecraft;

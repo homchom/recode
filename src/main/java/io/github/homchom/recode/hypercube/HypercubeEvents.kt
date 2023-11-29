@@ -12,7 +12,7 @@ import io.github.homchom.recode.multiplayer.DisconnectFromServerEvent
 import io.github.homchom.recode.multiplayer.JoinServerEvent
 import io.github.homchom.recode.multiplayer.ReceiveChatMessageEvent
 import io.github.homchom.recode.multiplayer.username
-import io.github.homchom.recode.ui.matchEntireUnstyled
+import io.github.homchom.recode.ui.text.matchEntirePlain
 import io.github.homchom.recode.util.Case
 import io.github.homchom.recode.util.regex.regex
 import kotlinx.coroutines.flow.map
@@ -36,7 +36,7 @@ val JoinDFDetector = detector("DF join",
             failOn(disconnect)
 
             val patch = +test(messages, unlimited) { (text) ->
-                patchRegex.matchEntireUnstyled(text)?.groupValues?.get(1)
+                patchRegex.matchEntirePlain(text)?.groupValues?.get(1)
             }
 
             val locateMessage = StateMessages.Locate.request(mc.player!!.username, true)

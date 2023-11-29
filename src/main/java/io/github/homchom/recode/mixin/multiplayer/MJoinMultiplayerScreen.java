@@ -2,12 +2,12 @@ package io.github.homchom.recode.mixin.multiplayer;
 
 import io.github.homchom.recode.hypercube.ServerConstants;
 import io.github.homchom.recode.ui.Toasts;
+import net.kyori.adventure.text.Component;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.ServerList;
-import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;

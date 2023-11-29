@@ -5,6 +5,7 @@ import com.google.gson.JsonParser;
 import io.github.homchom.recode.RecodeKt;
 import io.github.homchom.recode.game.ItemExtensions;
 import io.github.homchom.recode.mod.config.Config;
+import io.github.homchom.recode.ui.text.TextInterop;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
@@ -59,8 +60,8 @@ public class MHeldItemTooltip {
 
                 var lore = ItemExtensions.lore(lastToolHighlight);
                 if (!lore.isEmpty()) {
-                    var scope = lore.get(0);
-                    var x2 = (scaledWidth - font.width(scope.getVisualOrderText())) / 2;
+                    var scope = TextInterop.toNative(lore.get(0));
+                    var x2 = (scaledWidth - font.width(scope)) / 2;
                     var y2 = scaledHeight - 35;
                     guiGraphics.drawString(font, scope, x2, y2, 0xffffff, true);
                 }

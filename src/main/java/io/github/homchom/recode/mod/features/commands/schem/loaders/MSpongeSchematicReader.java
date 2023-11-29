@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 /**
  * Reads schematic files using the Sponge Schematic Specification.
@@ -110,7 +109,7 @@ public class MSpongeSchematicReader extends MNBTSchematicReader {
             List<Map<String, Tag>> tileEntityTags = tileEntities.getValue().stream()
                     .map(tag -> (CompoundTag) tag)
                     .map(CompoundTag::getValue)
-                    .collect(Collectors.toList());
+                    .toList();
 
             for (Map<String, Tag> tileEntity : tileEntityTags) {
                 int[] pos = requireTag(tileEntity, "Pos", IntArrayTag.class).getValue();

@@ -7,7 +7,7 @@ import io.github.homchom.recode.game.getCompoundOrNull
 import io.github.homchom.recode.game.getStringOrNull
 import io.github.homchom.recode.game.lore
 import io.github.homchom.recode.logError
-import net.minecraft.network.chat.Component
+import net.kyori.adventure.text.Component
 import net.minecraft.world.item.ItemStack
 
 fun ItemStack.dfValueMeta(): DFValueMeta? {
