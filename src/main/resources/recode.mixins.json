@@ -10,14 +10,12 @@
     "multiplayer.MConnection",
     "multiplayer.MJoinMultiplayerScreen",
     "optional.sodium.MSodiumWorldRenderer",
-    "render.MAbstractContainerScreen",
     "render.MBlockEntityRenderDispatcher",
     "render.MGui",
     "render.MLevelRenderer",
     "render.MWindow",
     "render.chat.MChatComponent",
-    "render.chat.MChatScreen",
-    "render.chat.MCommandSuggestions"
+    "render.chat.MChatScreen"
   ],
   "server": [],
   "plugin": "io.github.homchom.recode.mixin.MixinPluginRecode",

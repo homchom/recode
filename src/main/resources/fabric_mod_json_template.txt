@@ -11,7 +11,7 @@
     },
     "environment": "client",
     "license": "LGPL-3.0",
-    "icon": "assets/recode/textures/ui/recode.png",
+    "icon": "assets/recode/textures/gui/recode.png",
     "entrypoints": {
         "client": [
             "io.github.homchom.recode.Main",

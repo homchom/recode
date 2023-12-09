@@ -18,11 +18,6 @@ public class TexturedOtherPlayerEntity extends RemotePlayer {
     }
 
     @Override
-    public ResourceLocation getSkinTextureLocation() {
-        return texture;
-    }
-
-    @Override
     public boolean isModelPartShown(PlayerModelPart modelPart) {
         return true;
     }

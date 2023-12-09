@@ -2,16 +2,17 @@ package io.github.homchom.recode.mod.events.impl;
 
 import io.github.homchom.recode.ModConstants;
 import io.github.homchom.recode.mod.config.Config;
-import io.github.homchom.recode.sys.renderer.BlendableTexturedButtonWidget;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.SpriteIconButton;
 import net.minecraft.client.gui.screens.ConnectScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.resolver.ServerAddress;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.ResourceLocation;
@@ -34,26 +35,35 @@ public class LegacyAfterScreenInitEvent {
 	}
 
 	private void addDfButton(Minecraft mc, Screen screen, List<AbstractWidget> buttons, int spacing) {
-		final ResourceLocation icon = new ResourceLocation(ModConstants.MOD_ID + ":textures/ui/df.png");
+		final ResourceLocation icon = new ResourceLocation(ModConstants.MOD_ID, "icon/df");
 
 		int index = -1;
-		int y = screen.height / 4 + spacing;
+		int y = 0;
 		for (int i = 0; i < buttons.size(); i++) {
 			AbstractWidget button = buttons.get(i);
 			if (buttonHasText(button, "menu.multiplayer") && button.visible) {
 				index = i + 1;
 				y = button.getY();
+				break;
 			}
 		}
+		if (index == -1) return;
 
-		if (index != -1) {
-			buttons.add(index, new BlendableTexturedButtonWidget(screen.width / 2 + 104, y, 20, 20, 0, 0, 20, icon, 20, 40,
-					(button) -> {
-						String address = "mcdiamondfire.com:25565";
-						ServerData serverInfo = new ServerData("DF", address, false);
-						ConnectScreen.startConnecting(screen, mc, ServerAddress.parseString(address), serverInfo, false);
-					}));
-		}
+		var name = Component.translatable("menu.join_df");
+		var button = SpriteIconButton.builder(name, b -> joinDF(screen, mc), true)
+				.width(20)
+				.sprite(icon, 15, 15)
+				.build();
+		button.setPosition(screen.width / 2 + 104, y);
+
+		buttons.add(index, button);
+	}
+
+	private void joinDF(Screen currentScreen, Minecraft mc) {
+		String address = "mcdiamondfire.com:25565";
+		ServerData serverInfo = new ServerData("DiamondFire", address, ServerData.Type.OTHER);
+		serverInfo.setEnforcesSecureChat(false);
+		ConnectScreen.startConnecting(currentScreen, mc, ServerAddress.parseString(address), serverInfo, false);
 	}
 
 	private boolean buttonHasText(AbstractWidget button, String translationKey) {

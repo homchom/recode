@@ -1,8 +1,6 @@
-package io.github.homchom.recode.mixin.render;
+package io.github.homchom.recode.mod.mixin.render;
 
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mojang.blaze3d.platform.NativeImage;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.sys.renderer.TexturedOtherPlayerEntity;
@@ -19,8 +17,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.AbstractSkullBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.SkullBlockEntity;
-import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -29,7 +25,6 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.net.URL;
 import java.util.HashMap;
-import java.util.Map;
 
 @Mixin(AbstractContainerScreen.class)
 public abstract class MAbstractContainerScreen {
@@ -47,32 +42,41 @@ public abstract class MAbstractContainerScreen {
                         GameProfile gameProfile = null;
                         if (stack.hasTag()) {
                             CompoundTag compoundTag = stack.getTag();
-                            if (compoundTag.contains("SkullOwner", 8) && !StringUtils.isBlank(compoundTag.getString("SkullOwner"))) {
+                            /*if (compoundTag.contains("SkullOwner", 8) && !StringUtils.isBlank(compoundTag.getString("SkullOwner"))) {
                                 gameProfile = new GameProfile(null, compoundTag.getString("SkullOwner"));
                                 compoundTag.remove("SkullOwner");
                                 SkullBlockEntity.updateGameprofile(gameProfile, p ->
                                         compoundTag.put("SkullOwner", NbtUtils.writeGameProfile(new CompoundTag(), p))
                                 );
-                            }
+                            }*/
                             gameProfile = NbtUtils.readGameProfile(compoundTag.getCompound("SkullOwner"));
                         }
 
                         Minecraft mc = Minecraft.getInstance();
 
-                        Map<Type, MinecraftProfileTexture> textures = mc.getSkinManager().getInsecureSkinInformation(gameProfile);
-                        if (textures.containsKey(Type.SKIN)) {
-                            URL url = new URL(textures.get(Type.SKIN).getUrl());
-
-                            if (!cache.containsKey(url.toString())) {
-                                cache.put(url.toString(), null);
-                                DynamicTexture texture = new DynamicTexture(NativeImage.read(url.openStream()));
-                                ResourceLocation id = mc.getTextureManager().register("skinpreview", texture);
-                                cache.put(url.toString(), id);
+                        var skin = mc.getSkinManager().getInsecureSkin(gameProfile);
+                        var url = skin.textureUrl();
+                        if (url != null) {
+                            if (!cache.containsKey(url)) {
+                                cache.put(url, null);
+                                var stream = new URL(url).openStream();
+                                var texture = new DynamicTexture(NativeImage.read(stream));
+                                var id = mc.getTextureManager().register("skinpreview", texture);
+                                cache.put(url, id);
                             }
-                            if (cache.get(url.toString()) != null) {
-                                TexturedOtherPlayerEntity entity = new TexturedOtherPlayerEntity(cache.get(url.toString()));
-                                // TODO: replace with quaternion-based method?
-                                InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, mc.screen.width/5, mc.screen.height/2+20, 40, -20, -20, entity);
+                            if (cache.get(url) != null) {
+                                TexturedOtherPlayerEntity entity = new TexturedOtherPlayerEntity(cache.get(url));
+                                var x = mc.screen.width / 5;
+                                var y = mc.screen.height + 2 / 20;
+                                InventoryScreen.renderEntityInInventoryFollowsMouse(
+                                        guiGraphics,
+                                        x, x,
+                                        y, y,
+                                        40,
+                                        0.0625f, // TODO: improve magic number
+                                        -20, -20,
+                                        entity
+                                );
                             }
                         }
                     }

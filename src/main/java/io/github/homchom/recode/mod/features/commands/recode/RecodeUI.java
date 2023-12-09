@@ -15,7 +15,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class RecodeUI extends LightweightGuiDescription implements IMenu {
-    private static final ResourceLocation RECODE_ICON = new ResourceLocation("recode:textures/ui/recode.png");
+    private static final ResourceLocation RECODE_ICON =
+            new ResourceLocation("recode", "textures/gui/recode.png");
 
     @Override
     public void open(String... args) {
