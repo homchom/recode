@@ -1,89 +1,65 @@
 package io.github.homchom.recode.mod.mixin.render;
 
 import com.mojang.authlib.GameProfile;
-import com.mojang.blaze3d.platform.NativeImage;
 import io.github.homchom.recode.mod.config.Config;
-import io.github.homchom.recode.sys.renderer.TexturedOtherPlayerEntity;
+import io.github.homchom.recode.render.StaticSkinRender;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.AbstractSkullBlock;
 import net.minecraft.world.level.block.Block;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import java.net.URL;
-import java.util.HashMap;
+import java.util.Objects;
 
 @Mixin(AbstractContainerScreen.class)
 public abstract class MAbstractContainerScreen {
-    private final HashMap<String, ResourceLocation> cache = new HashMap<>();
-
-    // TODO: improve
     @Inject(method = "renderTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderTooltip(Lnet/minecraft/client/gui/Font;Ljava/util/List;Ljava/util/Optional;II)V"), locals = LocalCapture.CAPTURE_FAILHARD)
     private void renderTooltip(GuiGraphics guiGraphics, int i, int j, CallbackInfo ci, ItemStack stack) {
-        try {
-            if (Config.getBoolean("previewHeadSkins")) {
-                Item item = stack.getItem();
-                if (item instanceof BlockItem) {
-                    Block block = ((BlockItem) item).getBlock();
-                    if (block instanceof AbstractSkullBlock) {
-                        GameProfile gameProfile = null;
-                        if (stack.hasTag()) {
-                            CompoundTag compoundTag = stack.getTag();
-                            /*if (compoundTag.contains("SkullOwner", 8) && !StringUtils.isBlank(compoundTag.getString("SkullOwner"))) {
-                                gameProfile = new GameProfile(null, compoundTag.getString("SkullOwner"));
-                                compoundTag.remove("SkullOwner");
-                                SkullBlockEntity.updateGameprofile(gameProfile, p ->
-                                        compoundTag.put("SkullOwner", NbtUtils.writeGameProfile(new CompoundTag(), p))
-                                );
-                            }*/
-                            gameProfile = NbtUtils.readGameProfile(compoundTag.getCompound("SkullOwner"));
-                        }
-
-                        Minecraft mc = Minecraft.getInstance();
-
-                        var skin = mc.getSkinManager().getInsecureSkin(gameProfile);
-                        var url = skin.textureUrl();
-                        if (url != null) {
-                            if (!cache.containsKey(url)) {
-                                cache.put(url, null);
-                                var stream = new URL(url).openStream();
-                                var texture = new DynamicTexture(NativeImage.read(stream));
-                                var id = mc.getTextureManager().register("skinpreview", texture);
-                                cache.put(url, id);
-                            }
-                            if (cache.get(url) != null) {
-                                TexturedOtherPlayerEntity entity = new TexturedOtherPlayerEntity(cache.get(url));
-                                var x = mc.screen.width / 5;
-                                var y = mc.screen.height + 2 / 20;
-                                InventoryScreen.renderEntityInInventoryFollowsMouse(
-                                        guiGraphics,
-                                        x, x,
-                                        y, y,
-                                        40,
-                                        0.0625f, // TODO: improve magic number
-                                        -20, -20,
-                                        entity
-                                );
-                            }
-                        }
-                    }
+        if (Config.getBoolean("previewHeadSkins")) {
+            Item item = stack.getItem();
+            if (item instanceof BlockItem) {
+                Block block = ((BlockItem) item).getBlock();
+                if (block instanceof AbstractSkullBlock) {
+                    previewHeadSkin(guiGraphics, stack);
                 }
             }
-        } catch (Exception err) {
-            err.printStackTrace();
         }
+    }
+
+    @Unique
+    private void previewHeadSkin(GuiGraphics guiGraphics, ItemStack headStack) {
+        Minecraft mc = Minecraft.getInstance();
+
+        CompoundTag tag = headStack.getTag();
+        if (tag == null) return;
+        GameProfile profile = NbtUtils.readGameProfile(tag.getCompound("SkullOwner"));
+        if (profile == null) return;
+
+        var skin = mc.getSkinManager().getInsecureSkin(profile);
+        var entity = new StaticSkinRender(mc, skin);
+        var x = Objects.requireNonNull(mc.screen).width / 5;
+        var y = mc.screen.height / 2 + 20;
+        // TODO: reduce magic
+        InventoryScreen.renderEntityInInventoryFollowsMouse(
+                guiGraphics,
+                x - 35, y - 50,
+                x + 35, y + 50,
+                40,
+                0.0625f,
+                x - 20, y - 20,
+                entity
+        );
     }
 }
