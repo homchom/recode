@@ -58,7 +58,6 @@ public class CommandHandler {
                 new ImageParticleCommand(),
                 new SendTemplateCommand(),
                 new PJoinCommand(),
-                new SchemCommand(),
                 //new NBSSearchCommand(),
                 //new CodeVaultCommand(),
                 new ImportFileCommand()
