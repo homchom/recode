@@ -335,6 +335,8 @@
     "key.recode.mod_chat": "[Mod] Send Message to /mb",
     "key.recode.admin_chat": "[Admin] Send Message to /ab",
 
+    "menu.join_df": "Join DiamondFire",
+
     "multiplayer.recode.request_timeout.toast": "Check the latest log for more info.",
     "multiplayer.recode.request_timeout.toast.title": "Request Timed Out",
     "multiplayer.recode.unofficial_address.toast": "The server address you used to connect to DiamondFire is unofficially hosted by a third party. For security reasons, we have replaced it with the official address.",

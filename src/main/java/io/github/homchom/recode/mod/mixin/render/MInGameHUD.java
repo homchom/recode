@@ -39,7 +39,7 @@ public class MInGameHUD {
     @Inject(at = @At("HEAD"), method = "displayScoreboardSidebar", cancellable = true)
     private void displayScoreboardSidebar(CallbackInfo info) {
         if (Config.getBoolean("hideScoreboardOnF3")) {
-            if (Minecraft.getInstance().options.renderDebug) {
+            if (Minecraft.getInstance().gui.getDebugOverlay().showDebugScreen()) {
                 info.cancel();
             }
         }

@@ -18,6 +18,7 @@ val mavenGroup: String by project
 group = mavenGroup
 
 val fabricVersion: String by project
+val loaderVersion: String by project
 
 val requiredDependencyMods = dependencyModsOfType("required")
 val optionalDependencyMods = dependencyModsOfType("optional")
@@ -65,10 +66,8 @@ dependencies {
     mappings(loom.officialMojangMappings())
 
     // fabric
-    val fabricDevVersion: String by project
-    val loaderDevVersion: String by project
-    modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricDevVersion")
-    modImplementation("net.fabricmc:fabric-loader:$loaderDevVersion")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
+    modImplementation("net.fabricmc:fabric-loader:$loaderVersion")
     include(
         implementation(annotationProcessor("com.github.llamalad7.mixinextras:mixinextras-fabric:0.2.0-beta.9")!!)!!
     )
@@ -113,7 +112,6 @@ tasks {
     }
 
     processResources {
-        val loaderVersion: String by project
         // these properties can be used in fabric_mod_json_template.txt in Groovy template syntax
         val exposedProperties = arrayOf(
             "modName" to modName,

@@ -11,7 +11,7 @@ import io.github.homchom.recode.render.RenderEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.PostChain;
-import net.minecraft.client.renderer.chunk.ChunkRenderDispatcher;
+import net.minecraft.client.renderer.chunk.SectionRenderDispatcher;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
@@ -51,13 +51,13 @@ public abstract class MLevelRenderer implements RecodeLevelRenderer {
 	}
 
 	@WrapOperation(method = "renderLevel", at = @At(value = "INVOKE",
-			target = "Lnet/minecraft/client/renderer/chunk/ChunkRenderDispatcher$CompiledChunk;getRenderableBlockEntities()Ljava/util/List;"
+			target = "Lnet/minecraft/client/renderer/chunk/SectionRenderDispatcher$CompiledSection;getRenderableBlockEntities()Ljava/util/List;"
 	))
 	private List<BlockEntity> interceptChunkBlockEntities(
-			ChunkRenderDispatcher.CompiledChunk chunk,
+			SectionRenderDispatcher.CompiledSection section,
 			Operation<List<BlockEntity>> operation
 	) {
-		var blockEntities = operation.call(chunk);
+		var blockEntities = operation.call(section);
 		if (blockEntities.isEmpty()) return blockEntities;
 
 		var chunkPos = new ChunkPos3D(blockEntities.get(0).getBlockPos());
