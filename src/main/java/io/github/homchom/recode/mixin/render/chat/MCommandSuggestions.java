@@ -1,12 +1,16 @@
 package io.github.homchom.recode.mixin.render.chat;
 
 import io.github.homchom.recode.feature.visual.ExpressionHighlighter;
+import io.github.homchom.recode.ui.text.FormattedCharSequenceTransformations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.CommandSuggestions;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.util.FormattedCharSequence;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -23,6 +27,8 @@ public abstract class MCommandSuggestions {
     @Unique
     private @Nullable FormattedCharSequence preview = null;
 
+    @Shadow @Final EditBox input;
+
     @Inject(method = "formatChat", at = @At("RETURN"), cancellable = true)
     private void highlightAndPreview(
             String partialInput,
@@ -31,11 +37,23 @@ public abstract class MCommandSuggestions {
     ) {
         var formatted = cir.getReturnValue();
         var player = Objects.requireNonNull(Minecraft.getInstance().player);
-        var highlighted = highlighter.runHighlighting(partialInput, formatted, player);
+        var highlighted = highlighter.runHighlighting(input.getValue(), formatted, player);
         if (highlighted == null) return;
 
         if (highlighted.getPreview() != null) preview = highlighted.getPreview();
-        cir.setReturnValue(highlighted.getText());
+
+        FormattedCharSequence subSequence;
+        if (position == 0 && partialInput.length() == input.getValue().length()) {
+            subSequence = highlighted.getText();
+        } else {
+            subSequence = FormattedCharSequenceTransformations.subSequence(
+                    highlighted.getText(),
+                    position,
+                    position + partialInput.length()
+            );
+        }
+
+        cir.setReturnValue(subSequence);
     }
 
     @Inject(method = "render", at = @At("HEAD"))
