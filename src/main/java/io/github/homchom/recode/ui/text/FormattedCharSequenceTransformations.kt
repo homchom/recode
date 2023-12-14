@@ -2,6 +2,9 @@ package io.github.homchom.recode.ui.text
 
 import net.minecraft.util.FormattedCharSequence
 
+/**
+ * @see CharSequence.replaceRange
+ */
 fun FormattedCharSequence.replaceRange(
     range: IntRange,
     replacement: FormattedCharSequence

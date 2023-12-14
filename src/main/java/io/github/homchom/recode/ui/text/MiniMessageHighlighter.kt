@@ -61,7 +61,7 @@ object MiniMessageHighlighter {
      * `<obfuscated>` is **not** supported.
      * - All other valid tags are treated as "literals" and colored gray.
      */
-    @Suppress("UnstableApiUsage") // TODO: open issue
+    @Suppress("UnstableApiUsage") // TODO: open issue at adventure github
     fun highlight(input: String): Component {
         // handle the special case of inputs with <reset> parser directives
         // TODO: determine if there is a better way to do this

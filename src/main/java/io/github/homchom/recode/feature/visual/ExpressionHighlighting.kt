@@ -14,6 +14,11 @@ import net.minecraft.world.item.ItemStack
 
 data class HighlightedExpression(val text: FormattedCharSequence, val preview: FormattedCharSequence?)
 
+/**
+ * An object that highlights and caches DF value and MiniMessage expressions.
+ *
+ * @see runHighlighting
+ */
 class ExpressionHighlighter {
     private val codes = setOf(
         "default",
