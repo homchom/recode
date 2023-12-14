@@ -18,8 +18,8 @@ import io.github.homchom.recode.multiplayer.DisconnectFromServerEvent
 import io.github.homchom.recode.multiplayer.ReceiveChatMessageEvent
 import io.github.homchom.recode.multiplayer.ReceiveGamePacketEvent
 import io.github.homchom.recode.multiplayer.username
-import io.github.homchom.recode.ui.matchesUnstyled
-import io.github.homchom.recode.ui.removeLegacyCodes
+import io.github.homchom.recode.ui.text.matchesPlain
+import io.github.homchom.recode.ui.text.removeLegacyCodes
 import io.github.homchom.recode.util.Case
 import io.github.homchom.recode.util.encase
 import io.github.homchom.recode.util.regex.namedGroupValues
@@ -114,7 +114,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>> by eventGroup {
                 }
                 // this is safe because of the previous enforce call; only one can run at a time
                 testBoolean(subsequent, unlimited, Duration.INFINITE) { (text) ->
-                    regex.matchesUnstyled(text)
+                    regex.matchesPlain(text)
                 }
 
                 val supportTime = CodeMessages.SupportTime.request(Unit, true).duration
@@ -137,7 +137,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>> by eventGroup {
                 str(" has ended.")
             }
 
-            requireTrue(regex.matchesUnstyled(message))
+            requireTrue(regex.matchesPlain(message))
             instant(Case(currentDFState!!.withSession(null)))
         }
     ))

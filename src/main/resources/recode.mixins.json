@@ -5,6 +5,7 @@
   "mixins": [],
   "client": [
     "MMinecraft",
+    "game.ItemStackAccessor",
     "multiplayer.MChatListener",
     "multiplayer.MClientPacketListener",
     "multiplayer.MConnection",
@@ -15,7 +16,8 @@
     "render.MLevelRenderer",
     "render.MWindow",
     "render.chat.MChatComponent",
-    "render.chat.MChatScreen"
+    "render.chat.MChatScreen",
+    "render.chat.MCommandSuggestions"
   ],
   "server": [],
   "plugin": "io.github.homchom.recode.mixin.MixinPluginRecode",

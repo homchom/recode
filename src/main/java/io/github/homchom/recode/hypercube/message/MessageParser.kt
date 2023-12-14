@@ -11,7 +11,7 @@ import io.github.homchom.recode.multiplayer.ReceiveChatMessageEvent
 import io.github.homchom.recode.util.Matcher
 import io.github.homchom.recode.util.matcherOf
 import io.github.homchom.recode.util.splitByHumps
-import net.minecraft.network.chat.Component
+import net.kyori.adventure.text.Component
 
 sealed interface MessageParser<T : Any, out R : ParsedMessage> : Matcher<Component, R>, Detector<T, R>
 

@@ -7,16 +7,16 @@ import io.github.homchom.recode.hypercube.MAIN_ARROW
 import io.github.homchom.recode.hypercube.SUPPORT_ARROW
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.multiplayer.username
-import io.github.homchom.recode.ui.equalsUnstyled
-import io.github.homchom.recode.ui.matchesUnstyled
+import io.github.homchom.recode.ui.text.equalsPlain
+import io.github.homchom.recode.ui.text.matchesPlain
 import io.github.homchom.recode.util.Matcher
 import io.github.homchom.recode.util.matcherOf
 import io.github.homchom.recode.util.regex.RegexModifier
 import io.github.homchom.recode.util.regex.regex
 import kotlinx.coroutines.Deferred
+import net.kyori.adventure.text.Component
 import net.minecraft.client.multiplayer.ServerData
 import net.minecraft.core.BlockPos
-import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 
 val ServerData?.ipMatchesDF get(): Boolean {
@@ -50,7 +50,7 @@ sealed interface DFState {
     suspend fun permissions() = permissions.await()
 
     /**
-     * Returns a new [DFState] derived from this one and [state], including calculated [PlotMode] state.
+     * @return a new [DFState] derived from this one and [state], including calculated [PlotMode] state.
      */
     fun withState(state: LocateState) = when (state) {
         is LocateState.AtSpawn -> AtSpawn(state.node, permissions, session)
@@ -160,7 +160,7 @@ sealed interface PlotMode {
 
         override val descriptor = "playing"
 
-        override fun match(input: Component) = takeIf { playModeRegex.matchesUnstyled(input) }
+        override fun match(input: Component) = takeIf { playModeRegex.matchesPlain(input) }
     }
 
     data object Build : PlotMode, ID {
@@ -169,7 +169,7 @@ sealed interface PlotMode {
         override val descriptor = "building"
 
         override fun match(input: Component) =
-            takeIf { input.equalsUnstyled("$MAIN_ARROW You are now in build mode.") }
+            takeIf { input.equalsPlain("$MAIN_ARROW You are now in build mode.") }
     }
 
     data class Dev(val buildCorner: BlockPos, val referenceBookCopy: ItemStack) : PlotMode {
@@ -179,14 +179,14 @@ sealed interface PlotMode {
             override val descriptor = "coding"
 
             override fun match(input: Component) =
-                takeIf { input.equalsUnstyled("$MAIN_ARROW You are now in dev mode.") }
+                takeIf { input.equalsPlain("$MAIN_ARROW You are now in dev mode.") }
         }
     }
 }
 
 enum class SupportSession : Matcher<Component, SupportSession> {
     Requested {
-        override fun match(input: Component) = takeIf { input.equalsUnstyled(
+        override fun match(input: Component) = takeIf { input.equalsPlain(
             "You have requested code support.\nIf you wish to leave the queue, use /support cancel."
         ) }
     },
@@ -197,7 +197,7 @@ enum class SupportSession : Matcher<Component, SupportSession> {
                 username()
                 str(". $SUPPORT_ARROW Queue cleared!")
             }
-            return takeIf { regex.matchesUnstyled(input) }
+            return takeIf { regex.matchesPlain(input) }
         }
     };
 

@@ -2,6 +2,7 @@
 
 package io.github.homchom.recode.ui
 
+import io.github.homchom.recode.ui.text.VanillaComponent
 import net.minecraft.client.GuiMessageTag
 
 /**
@@ -24,7 +25,9 @@ operator fun GuiMessageTag.plus(other: GuiMessageTag): GuiMessageTag {
         if (first.ordinal > second.ordinal) first else second
     }
     val newText = combineIfNotNull(text, other.text) { first, second ->
-        text { append(first); space(); append(second) }
+        first.copy()
+            .append(VanillaComponent.literal(" "))
+            .append(second)
     }
     val newLogTag = combineIfNotNull(logTag, other.logTag) { first, second ->
         "$first, $second"

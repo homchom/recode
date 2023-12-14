@@ -182,7 +182,7 @@ class TrialScope @DelicateCoroutinesApi constructor(
     }
 
     /**
-     * Returns a non-null [TestResult.value] or fails the trial.
+     * @return a non-null [TestResult.value] or fails the trial.
      */
     operator fun <T : Any> TestResult<T>.unaryPlus() = value ?: fail()
 
@@ -194,12 +194,12 @@ class TrialScope @DelicateCoroutinesApi constructor(
     fun fail(): Nothing = nullableScope.fail()
 
     /**
-     * Returns an instant [TrialResult] with [value]. Use this when a trial does not end asynchronously.
+     * @return an instant [TrialResult] with [value]. Use this when a trial does not end asynchronously.
      */
     fun <R : Any> instant(value: R?) = TrialResult(value)
 
     /**
-     * Returns the asynchronous [TrialResult] of [block] ran in its own [TrialScope].
+     * @return the asynchronous [TrialResult] of [block] ran in its own [TrialScope].
      */
     fun <R : Any> suspending(block: suspend TrialScope.() -> R?) =
         TrialResult(block, coroutineScope, hidden)

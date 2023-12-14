@@ -6,12 +6,12 @@ import io.github.homchom.recode.hypercube.state.*
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.multiplayer.sendCommand
 import io.github.homchom.recode.multiplayer.username
-import io.github.homchom.recode.ui.matchEntireUnstyled
+import io.github.homchom.recode.ui.text.matchEntirePlain
 import io.github.homchom.recode.util.regex.RegexModifier
 import io.github.homchom.recode.util.regex.RegexPatternBuilder
 import io.github.homchom.recode.util.regex.namedGroupValues
 import io.github.homchom.recode.util.regex.regex
-import net.minecraft.network.chat.Component
+import net.kyori.adventure.text.Component
 import org.intellij.lang.annotations.RegExp
 
 object StateMessages {
@@ -67,7 +67,7 @@ object StateMessages {
 
             override fun match(input: Component): Locate? {
                 val values = locateRegex
-                    .matchEntireUnstyled(input)
+                    .matchEntirePlain(input)
                     ?.namedGroupValues
                     ?: return null
                 val player = values["player"].takeUnless(String::isEmpty) ?: mc.player?.username ?: return null
@@ -120,7 +120,7 @@ object StateMessages {
 
             override fun match(input: Component): Profile? {
                 val values = profileRegex
-                    .matchEntireUnstyled(input)
+                    .matchEntirePlain(input)
                     ?.namedGroupValues
                     ?: return null
 

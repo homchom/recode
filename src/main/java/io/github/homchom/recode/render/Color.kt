@@ -17,26 +17,22 @@ sealed interface IntegralColor {
     fun toInt(): Int
 }
 
-private sealed interface RGBIntegralColor : IntegralColor {
-    val red: Int
-    val green: Int
+data class RGBColor(
+    val red: Int,
+    val green: Int,
     val blue: Int
-
+) : IntegralColor {
     override fun toInt() = (red shl 16) + (green shl 8) + blue
 }
 
-data class RGBColor(
-    override val red: Int,
-    override val green: Int,
-    override val blue: Int
-) : RGBIntegralColor
-
 data class RGBAColor(
-    override val red: Int,
-    override val green: Int,
-    override val blue: Int,
+    val red: Int,
+    val green: Int,
+    val blue: Int,
     val alpha: Int
-) : RGBIntegralColor
+) : IntegralColor {
+    override fun toInt() = (alpha shl 24) + (red shl 16) + (green shl 8) + blue
+}
 
 @JvmInline
 value class HexColor(val hex: Int) : IntegralColor {

@@ -3,14 +3,19 @@ package io.github.homchom.recode.hypercube
 /**
  * A group of server command aliases. Add here as needed.
  */
-// TODO: does this suck? remove if so
-enum class CommandAliasGroup(vararg aliases: String) {
-    RENAME("rename", "i name", "item name"),
-    ITEM_LORE_ADD("addlore", "ila", "lore add", "i lore add", "item lore add"),
-    ITEM_LORE_SET("ils", "sll", "lore set", "i lore set", "item lore set", "setloreline"),
-    PLOT_NAME("p name", "plot name");
+enum class CommandAliasGroup(vararg aliases: String) : Set<String> by aliases.toSet() {
+    // value items
+    NUMBER("number", "num"),
+    STRING("string", "str"),
+    TEXT("text", "txt", "styledtext", "stxt"),
+    VARIABLE("variable", "var"),
 
-    val aliases = aliases.toList()
+    // renaming
+    ITEM_NAME("item name", "i name", "rename"),
+    ITEM_LORE_ADD("item lore add", "i lore add", "i l add", "ila", "lore add", "addlore"),
+    ITEM_LORE_SET("item lore set", "i lore set", "i l set", "ils", "lore set", "setlore"),
+    PLOT_NAME("plot name", "p name"),
 
-    operator fun unaryPlus() = aliases
+    // legacy
+    RELORE("relore");
 }

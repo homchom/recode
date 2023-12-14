@@ -2,7 +2,7 @@ package io.github.homchom.recode.mixin.multiplayer;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import io.github.homchom.recode.feature.social.MCGuiWithSideChat;
+import io.github.homchom.recode.feature.social.DGuiWithSideChat;
 import io.github.homchom.recode.feature.social.SideChat;
 import io.github.homchom.recode.sys.sidedchat.ChatRule;
 import io.github.homchom.recode.sys.util.SoundUtil;
@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(ChatListener.class)
-public class MChatListener {
+public abstract class MChatListener {
     @WrapOperation(method = "showMessageToPlayer", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/client/gui/components/ChatComponent;addMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/MessageSignature;Lnet/minecraft/client/GuiMessageTag;)V"
     ))
@@ -65,7 +65,7 @@ public class MChatListener {
 
     @Unique
     private SideChat getSideChat() {
-        var gui = (MCGuiWithSideChat) Minecraft.getInstance().gui;
+        var gui = (DGuiWithSideChat) Minecraft.getInstance().gui;
         return gui.recode$getSideChat();
     }
 }
