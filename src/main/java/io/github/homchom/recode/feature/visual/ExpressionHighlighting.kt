@@ -32,29 +32,31 @@ class ExpressionHighlighter {
         "entry"
     )
 
-    private val highlightedCommands = buildMap {
-        fun putGroup(
+    private val highlightedCommands = buildList {
+        fun addGroup(
             group: CommandAliasGroup,
             highlightedArgumentIndex: Int = 0,
             hasCount: Boolean = false,
             parseMiniMessage: Boolean = true
         ) {
-            val info = CommandInfo(highlightedArgumentIndex, hasCount, parseMiniMessage)
-            putAll(group.map { it to info })
+            addAll(group.map { prefix ->
+                CommandInfo(prefix, highlightedArgumentIndex, hasCount, parseMiniMessage)
+            })
         }
 
-        putGroup(CommandAliasGroup.NUMBER, hasCount = true, parseMiniMessage = false)
-        putGroup(CommandAliasGroup.STRING, hasCount = true, parseMiniMessage = false)
-        putGroup(CommandAliasGroup.TEXT, hasCount = true)
-        putGroup(CommandAliasGroup.VARIABLE, hasCount = true, parseMiniMessage = false)
-        putGroup(CommandAliasGroup.ITEM_NAME)
-        putGroup(CommandAliasGroup.ITEM_LORE_ADD)
-        putGroup(CommandAliasGroup.ITEM_LORE_SET, highlightedArgumentIndex = 1)
-        putGroup(CommandAliasGroup.PLOT_NAME)
-        putGroup(CommandAliasGroup.RELORE)
+        addGroup(CommandAliasGroup.NUMBER, hasCount = true, parseMiniMessage = false)
+        addGroup(CommandAliasGroup.STRING, hasCount = true, parseMiniMessage = false)
+        addGroup(CommandAliasGroup.TEXT, hasCount = true)
+        addGroup(CommandAliasGroup.VARIABLE, hasCount = true, parseMiniMessage = false)
+        addGroup(CommandAliasGroup.ITEM_NAME)
+        addGroup(CommandAliasGroup.ITEM_LORE_ADD)
+        addGroup(CommandAliasGroup.ITEM_LORE_SET, highlightedArgumentIndex = 1)
+        addGroup(CommandAliasGroup.PLOT_NAME)
+        addGroup(CommandAliasGroup.RELORE)
     }
 
     private data class CommandInfo(
+        val prefix: String,
         val highlightedArgumentIndex: Int,
         val hasCount: Boolean,
         val parseMiniMessage: Boolean
@@ -90,11 +92,12 @@ class ExpressionHighlighter {
     }
 
     private fun leadingArgumentsRegex(highlightIndex: Int) = regex {
-        start
         group {
             none(" ").oneOrMore()
             space
-        } * (highlightIndex + 1)
+        } * (highlightIndex - 1)
+        none(" ").oneOrMore()
+        space.optional()
     }
 
     fun runHighlighting(
@@ -119,14 +122,10 @@ class ExpressionHighlighter {
     ): HighlightedExpression? {
         // highlight commands
         if (chatInput.startsWith('/')) {
-            val splitIndex = chatInput.indexOf(' ') + 1
-            if (splitIndex != 0) {
-                val command = highlightedCommands[chatInput.substring(1, splitIndex - 1)]
-                if (command != null) {
-                    return highlightCommand(chatInput, formatted, command, splitIndex)
-                }
-            }
-            return null
+            val command = highlightedCommands.firstNotNullOfOrNull { info ->
+                info.takeIf { chatInput.startsWith(info.prefix, 1) }
+            } ?: return null
+            return highlightCommand(chatInput, formatted, command)
         }
 
         // highlight values
@@ -183,16 +182,20 @@ class ExpressionHighlighter {
     private fun highlightCommand(
         input: String,
         formatted: FormattedCharSequence,
-        info: CommandInfo,
-        splitIndex: Int
-    ): HighlightedExpression {
-        var startIndex = splitIndex
+        info: CommandInfo
+    ): HighlightedExpression? {
+        var startIndex = info.prefix.length + 2
         var endIndex = input.length
+        if (startIndex > input.lastIndex) return null
 
         if (info.highlightedArgumentIndex > 0) {
             val regex = leadingArgumentsRegex(info.highlightedArgumentIndex)
             val match = regex.find(input, startIndex)
-            if (match != null) startIndex = match.range.last + 1
+            if (match != null) {
+                startIndex = match.range.last + 1
+                if (startIndex > input.lastIndex) return null
+            }
+
         }
         if (info.hasCount) {
             val match = countRegex.find(input, startIndex)
