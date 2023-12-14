@@ -2,7 +2,7 @@
 
 package io.github.homchom.recode.ui
 
-import io.github.homchom.recode.ui.text.toNative
+import io.github.homchom.recode.ui.text.toVanilla
 import net.kyori.adventure.text.Component
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.components.toasts.SystemToast
@@ -17,5 +17,5 @@ fun Minecraft.sendSystemToast(
     body: Component,
     type: SystemToastIds = SystemToastIds.PERIODIC_NOTIFICATION
 ) {
-    toasts.addToast(SystemToast.multiline(this, type, title.toNative(), body.toNative()))
+    toasts.addToast(SystemToast.multiline(this, type, title.toVanilla(), body.toVanilla()))
 }

@@ -1,6 +1,6 @@
 package io.github.homchom.recode.mixin.multiplayer;
 
-import io.github.homchom.recode.hypercube.ServerConstants;
+import io.github.homchom.recode.hypercube.HypercubeConstants;
 import io.github.homchom.recode.ui.Toasts;
 import net.kyori.adventure.text.Component;
 import net.minecraft.client.Minecraft;
@@ -47,7 +47,7 @@ public abstract class MJoinMultiplayerScreen {
         if (prefix == null) prefix = "";
         var suffix = matcher.group("suffix");
         if (suffix == null) suffix = "";
-        serverData.ip = prefix + ServerConstants.SERVER_ADDRESS + suffix;
+        serverData.ip = prefix + HypercubeConstants.SERVER_ADDRESS + suffix;
 
         servers.save();
     }

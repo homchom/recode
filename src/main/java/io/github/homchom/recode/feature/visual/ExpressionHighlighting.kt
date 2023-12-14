@@ -2,19 +2,17 @@ package io.github.homchom.recode.feature.visual
 
 import io.github.homchom.recode.hypercube.CommandAliasGroup
 import io.github.homchom.recode.hypercube.DFValueMeta
+import io.github.homchom.recode.hypercube.dfMiniMessage
 import io.github.homchom.recode.hypercube.dfValueMeta
-import io.github.homchom.recode.mixin.render.chat.CommandSuggestionsAccessor
 import io.github.homchom.recode.ui.text.*
-import io.github.homchom.recode.util.Computation
-import io.github.homchom.recode.util.map
 import io.github.homchom.recode.util.regex.regex
 import net.kyori.adventure.text.BuildableComponent
-import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextComponent
+import net.minecraft.util.FormattedCharSequence
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 
-typealias HighlightedExpression = Computation<Component, String>
+data class HighlightedExpression(val text: FormattedCharSequence, val preview: FormattedCharSequence?)
 
 class ExpressionHighlighter {
     private val codes = setOf(
@@ -39,17 +37,16 @@ class ExpressionHighlighter {
             group: CommandAliasGroup,
             highlightedArgumentIndex: Int = 0,
             hasCount: Boolean = false,
-            hasTags: Boolean = false,
             parseMiniMessage: Boolean = true
         ) {
-            val info = CommandInfo(highlightedArgumentIndex, hasCount, hasTags, parseMiniMessage)
+            val info = CommandInfo(highlightedArgumentIndex, hasCount, parseMiniMessage)
             putAll(group.map { it to info })
         }
 
         putGroup(CommandAliasGroup.NUMBER, hasCount = true, parseMiniMessage = false)
         putGroup(CommandAliasGroup.STRING, hasCount = true, parseMiniMessage = false)
         putGroup(CommandAliasGroup.TEXT, hasCount = true)
-        putGroup(CommandAliasGroup.VARIABLE, hasCount = true, hasTags = true, parseMiniMessage = false)
+        putGroup(CommandAliasGroup.VARIABLE, hasCount = true, parseMiniMessage = false)
         putGroup(CommandAliasGroup.ITEM_NAME)
         putGroup(CommandAliasGroup.ITEM_LORE_ADD)
         putGroup(CommandAliasGroup.ITEM_LORE_SET, highlightedArgumentIndex = 1)
@@ -60,7 +57,6 @@ class ExpressionHighlighter {
     private data class CommandInfo(
         val highlightedArgumentIndex: Int,
         val hasCount: Boolean,
-        val hasTags: Boolean,
         val parseMiniMessage: Boolean
     )
 
@@ -85,19 +81,12 @@ class ExpressionHighlighter {
     }
 
     private var cachedInput = ""
-    private var cachedHighlight: HighlightedExpression = Computation.Success(Component.empty())
+    private var cachedHighlight = HighlightedExpression(FormattedCharSequence.EMPTY, null)
 
     private val countRegex = regex {
         space
         digit.oneOrMore()
         end
-    }
-
-    private val flagRegex = regex {
-        space.optional()
-        str("-")
-        wordChar
-        space.optional()
     }
 
     private fun leadingArgumentsRegex(highlightIndex: Int) = regex {
@@ -108,9 +97,14 @@ class ExpressionHighlighter {
         } * (highlightIndex + 1)
     }
 
-    fun runHighlighting(chatInput: String, player: Player): HighlightedExpression? {
+    fun runHighlighting(
+        chatInput: String,
+        formatted: FormattedCharSequence,
+        player: Player
+    ): HighlightedExpression? {
         if (cachedInput == chatInput) return cachedHighlight
-        val highlight = highlight(chatInput, player.mainHandItem)
+
+        val highlight = highlight(chatInput, formatted, player.mainHandItem)
         if (highlight != null) {
             cachedInput = chatInput
             cachedHighlight = highlight
@@ -118,14 +112,21 @@ class ExpressionHighlighter {
         return highlight
     }
 
-    private fun highlight(chatInput: String, mainHandItem: ItemStack): HighlightedExpression? {
+    private fun highlight(
+        chatInput: String,
+        formatted: FormattedCharSequence,
+        mainHandItem: ItemStack
+    ): HighlightedExpression? {
         // highlight commands
         if (chatInput.startsWith('/')) {
             val splitIndex = chatInput.indexOf(' ') + 1
             if (splitIndex != 0) {
                 val command = highlightedCommands[chatInput.substring(1, splitIndex - 1)]
-                if (command != null) return highlightCommand(chatInput, command, splitIndex)
+                if (command != null) {
+                    return highlightCommand(chatInput, formatted, command, splitIndex)
+                }
             }
+            return null
         }
 
         // highlight values
@@ -146,15 +147,17 @@ class ExpressionHighlighter {
             builder.literal(string.substring(sliceStart, match.range.first), styleAt(depth))
 
             val code = match.value
-            if (code.length > 1 && code.drop(1) !in codes) {
-                val codeName = code.drop(1)
-                if (codeName !in codes) return Computation.Failure("Invalid text code: %$codeName")
-            }
-
             if (code == ")") {
                 if (depth > 0) depth--
             } else depth++
-            builder.literal(string.substring(match.range), styleAt(depth))
+
+            val style = if (code.length > 1 && code.drop(1).removeSuffix("(") !in codes) {
+                style().red()
+            } else {
+                styleAt(depth)
+            }
+            builder.literal(string.substring(match.range), style)
+
             if (code.endsWith('(')) depth++ else {
                 if (depth > 0) depth--
             }
@@ -170,34 +173,35 @@ class ExpressionHighlighter {
             }
         }
 
-        return Computation.Success(builder.build())
+        val text = builder.build().toFormattedCharSequence(false)
+        val preview = if (parseMiniMessage) {
+            dfMiniMessage.deserialize(string).toFormattedCharSequence()
+        } else null
+        return HighlightedExpression(text, preview)
     }
 
-    private fun highlightCommand(input: String, info: CommandInfo, splitIndex: Int): HighlightedExpression {
-        val root = Component.text(input.substring(0, splitIndex))
-            .style(CommandSuggestionsAccessor.getCommandVanillaStyle().toAdventure())
-        var string = input.substring(splitIndex)
+    private fun highlightCommand(
+        input: String,
+        formatted: FormattedCharSequence,
+        info: CommandInfo,
+        splitIndex: Int
+    ): HighlightedExpression {
+        var startIndex = splitIndex
+        var endIndex = input.length
 
         if (info.highlightedArgumentIndex > 0) {
             val regex = leadingArgumentsRegex(info.highlightedArgumentIndex)
-            string = string.replace(regex, "")
+            val match = regex.find(input, startIndex)
+            if (match != null) startIndex = match.range.last + 1
         }
         if (info.hasCount) {
-            string = string.replace(countRegex, "")
-        }
-        if (info.hasTags) {
-            // DF's flag algorithm is nasty, so we require one flag
-            flagRegex.findAll(string).singleOrNull()?.let { match ->
-                string = string.removeRange(match.range)
-            }
+            val match = countRegex.find(input, startIndex)
+            if (match != null) endIndex = match.range.first
         }
 
-        return highlightString(string).map { result ->
-            text {
-                append(root)
-                append(result)
-            }
-        }
+        val highlighted = highlightString(input.substring(startIndex, endIndex), info.parseMiniMessage)
+        val combined = formatted.replaceRange(startIndex..<endIndex, highlighted.text)
+        return HighlightedExpression(combined, highlighted.preview)
     }
 
     private fun styleAt(depth: Int) = if (depth == 0) {

@@ -60,7 +60,7 @@ public class MHeldItemTooltip {
 
                 var lore = ItemExtensions.lore(lastToolHighlight);
                 if (!lore.isEmpty()) {
-                    var scope = TextInterop.toNative(lore.get(0));
+                    var scope = TextInterop.toVanilla(lore.get(0));
                     var x2 = (scaledWidth - font.width(scope)) / 2;
                     var y2 = scaledHeight - 35;
                     guiGraphics.drawString(font, scope, x2, y2, 0xffffff, true);

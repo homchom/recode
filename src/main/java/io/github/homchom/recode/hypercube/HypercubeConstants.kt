@@ -1,6 +1,8 @@
-@file:JvmName("ServerConstants")
+@file:JvmName("HypercubeConstants")
 
 package io.github.homchom.recode.hypercube
+
+import net.kyori.adventure.text.minimessage.MiniMessage
 
 const val SERVER_ADDRESS = "mcdiamondfire.com"
 
@@ -13,3 +15,8 @@ const val BOOSTER_ARROW = '⏵'
 const val TOKEN_NOTCH_CHAR = '□'
 
 const val LAGSLAYER_PREFIX = """[LagSlayer]"""
+
+/**
+ * A [MiniMessage] instance to match DiamondFire's MiniMessage behavior.
+ */
+val dfMiniMessage = MiniMessage.miniMessage()

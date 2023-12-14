@@ -1,7 +1,7 @@
 package io.github.homchom.recode
 
 import io.github.homchom.recode.ui.sendSystemToast
-import io.github.homchom.recode.ui.text.translateText
+import io.github.homchom.recode.ui.text.translatedText
 import kotlinx.coroutines.*
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.Executor
@@ -42,8 +42,8 @@ object RecodeDispatcher : CoroutineContext {
 
     private val delegate = dispatcher + CoroutineExceptionHandler { _, exception ->
         mc.sendSystemToast(
-            translateText("recode.uncaught_exception.toast.title"),
-            translateText("recode.uncaught_exception.toast")
+            translatedText("recode.uncaught_exception.toast.title"),
+            translatedText("recode.uncaught_exception.toast")
         )
         runOnMinecraftThread {
             val thread = Thread.currentThread()

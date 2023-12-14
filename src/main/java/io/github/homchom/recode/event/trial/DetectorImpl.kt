@@ -6,7 +6,7 @@ import io.github.homchom.recode.event.Listenable
 import io.github.homchom.recode.event.Requester
 import io.github.homchom.recode.event.createEvent
 import io.github.homchom.recode.ui.sendSystemToast
-import io.github.homchom.recode.ui.text.translateText
+import io.github.homchom.recode.ui.text.translatedText
 import io.github.homchom.recode.util.computeNullable
 import io.github.homchom.recode.util.coroutines.cancelAndLog
 import kotlinx.coroutines.*
@@ -200,8 +200,8 @@ private class TrialRequester<T, R : Any>(
             response
         } catch (timeout: TimeoutCancellationException) {
             mc.sendSystemToast(
-                translateText("multiplayer.recode.request_timeout.toast.title"),
-                translateText("multiplayer.recode.request_timeout.toast")
+                translatedText("multiplayer.recode.request_timeout.toast.title"),
+                translatedText("multiplayer.recode.request_timeout.toast")
             )
             logError("${debugString(input, hidden)} timed out after $timeoutDuration")
             throw timeout
