@@ -6,8 +6,6 @@ import io.github.homchom.recode.sys.player.chat.ChatUtil;
 import java.io.*;
 import java.math.BigDecimal;
 
-import static io.github.homchom.recode.RecodeKt.logDebug;
-
 // Credit to https://github.com/koca2000/NoteBlockAPI/blob/master/src/main/java/com/xxmicloxx/NoteBlockAPI/NBSDecoder.java
 public class NBSDecoder {
 
@@ -180,7 +178,6 @@ public class NBSDecoder {
                 instrumentPitch = dataInputStream.readByte(); //Sound pitch
 
                 customPitchList[i] = instrumentPitch;
-
 
                 dataInputStream.readByte();    //Press key
             }
