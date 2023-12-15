@@ -195,16 +195,15 @@ class ExpressionHighlighter {
 
         if (info.highlightedArgumentIndex > 0) {
             val regex = leadingArgumentsRegex(info.highlightedArgumentIndex)
-            val match = regex.find(input, startIndex)
-            if (match != null) {
+            regex.find(input, startIndex)?.let { match ->
                 startIndex = match.range.last + 1
                 if (startIndex > input.lastIndex) return null
             }
-
         }
         if (info.hasCount) {
-            val match = countRegex.find(input, startIndex)
-            if (match != null) endIndex = match.range.first
+            countRegex.find(input, startIndex)?.let { match ->
+                endIndex = match.range.first
+            }
         }
 
         val highlighted = highlightString(input.substring(startIndex, endIndex), info.parseMiniMessage)

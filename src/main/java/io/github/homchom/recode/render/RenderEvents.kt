@@ -5,7 +5,6 @@ package io.github.homchom.recode.render
 import com.mojang.blaze3d.systems.RenderSystem
 import io.github.homchom.recode.Power
 import io.github.homchom.recode.event.*
-import io.github.homchom.recode.game.ChunkPos3D
 import io.github.homchom.recode.game.ticks
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.util.Case
@@ -14,6 +13,7 @@ import io.github.homchom.recode.util.collections.mapToArray
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents.BeforeBlockOutline
+import net.minecraft.core.SectionPos
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.phys.HitResult
 
@@ -42,7 +42,7 @@ val OutlineBlockEntitiesEvent =
                 .associate { it.blockEntity.blockPos to it.outlineColor!! }
         },
         stableInterval = 3.ticks,
-        keySelector = { Case(it.chunkPos) },
+        keySelector = { Case(it.sectionPos) },
         contextGenerator = { input ->
             input.blockEntities.mapToArray { BlockEntityOutlineContext(it) }
         }
@@ -61,7 +61,7 @@ data class BlockEntityOutlineContext @JvmOverloads constructor(
     val blockEntity: BlockEntity,
     var outlineColor: RGBAColor? = null
 ) {
-    data class Input(val blockEntities: Collection<BlockEntity>, val chunkPos: ChunkPos3D?)
+    data class Input(val blockEntities: Collection<BlockEntity>, val sectionPos: SectionPos?)
 }
 
 /**
@@ -74,7 +74,7 @@ interface RecodeLevelRenderer {
      */
     fun `recode$runBlockEntityEvents`(
         blockEntities: Collection<BlockEntity>,
-        chunkPos: ChunkPos3D?
+        sectionPos: SectionPos?
     ): List<BlockEntity>
 
     /**

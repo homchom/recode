@@ -3,24 +3,25 @@ package io.github.homchom.recode.mixin
 import org.objectweb.asm.tree.ClassNode
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo
+import org.spongepowered.asm.service.MixinService
 
 // recode's mixin configuration plugin, referenced in resources/recode.mixins.json
 class MixinPluginRecode : IMixinConfigPlugin {
     override fun shouldApplyMixin(targetClassName: String, mixinClassName: String): Boolean {
         // handle optional mixins
-        if (mixinClassName.startsWith("${this::class.java.packageName}.optional.")) {
-            try {
-                // check if target class exists
-                Class.forName(targetClassName, false, null)
-            } catch (e: ClassNotFoundException) {
-                return false
-            }
-        }
+        val annotations = MixinService.getService()
+            .bytecodeProvider
+            .getClassNode(mixinClassName)
+            .visibleAnnotations
+            ?: return true
+        annotations.filterIsInstance<MixinConditional>()
+            .singleOrNull()
+            ?.run { return passes }
 
         return true
     }
 
-    override fun onLoad(mixinPackage: String?) {}
+    override fun onLoad(mixinPackage: String) {}
     override fun getRefMapperConfig() = null
     override fun acceptTargets(myTargets: MutableSet<String>, otherTargets: MutableSet<String>) {}
     override fun getMixins() = null

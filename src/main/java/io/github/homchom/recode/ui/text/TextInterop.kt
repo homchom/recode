@@ -15,19 +15,33 @@ import java.util.*
 typealias VanillaComponent = net.minecraft.network.chat.Component
 typealias VanillaStyle = net.minecraft.network.chat.Style
 
+/**
+ * Converts this [Component] to a [VanillaComponent].
+ */
 fun Component.toVanilla() = FabricClientAudiences.of().toNative(this)
 
+/**
+ * Converts this [VanillaStyle] to a [Style].
+ */
 fun VanillaStyle.toAdventure() = VanillaComponent.empty()
     .withStyle(this)
     .asComponent()
     .style()
 
+/**
+ * Converts this [Style] to a [VanillaStyle].
+ */
 fun Style.toVanilla(): VanillaStyle = Component.text()
     .style(this)
     .build()
     .toVanilla()
     .style
 
+/**
+ * Converts this [Component] to a [FormattedCharSequence].
+ *
+ * @param inLanguageOrder Whether to order the text according to the client's [net.minecraft.locale.Language].
+ */
 fun Component.toFormattedCharSequence(inLanguageOrder: Boolean = true): FormattedCharSequence {
     if (inLanguageOrder) return toVanilla().visualOrderText
 
