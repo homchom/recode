@@ -1,11 +1,6 @@
 package io.github.homchom.recode.mod.features.commands.nbs;
 
-import io.github.homchom.recode.*;
-import org.slf4j.*;
-
 import java.math.BigDecimal;
-
-import static io.github.homchom.recode.RecodeKt.logDebug;
 
 public class NBSToTemplate {
 
