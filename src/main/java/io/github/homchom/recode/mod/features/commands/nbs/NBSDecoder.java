@@ -6,6 +6,8 @@ import io.github.homchom.recode.sys.player.chat.ChatUtil;
 import java.io.*;
 import java.math.BigDecimal;
 
+import static io.github.homchom.recode.RecodeKt.logDebug;
+
 // Credit to https://github.com/koca2000/NoteBlockAPI/blob/master/src/main/java/com/xxmicloxx/NoteBlockAPI/NBSDecoder.java
 public class NBSDecoder {
 
@@ -165,18 +167,20 @@ public class NBSDecoder {
         customInstruments = dataInputStream.readByte();
 
         int[] customPitchList = new int[customInstruments];
+        String[] customNameList = new String[customInstruments];
 
         if (customInstruments >= 1) {
             for (int i = 0; i < customInstruments; i++) {
                 int instrumentOffset = vanillaInstruments + customInstruments;
                 int instrumentPitch = 0;
 
-                readString(dataInputStream); //Instrument name
+                customNameList[i] = readString(dataInputStream); //Instrument name
                 readString(dataInputStream); //Sound file
 
                 instrumentPitch = dataInputStream.readByte(); //Sound pitch
 
                 customPitchList[i] = instrumentPitch;
+
 
                 dataInputStream.readByte();    //Press key
             }
@@ -223,7 +227,7 @@ public class NBSDecoder {
         }
 
 
-        return new SongData(title, author, speed, (int) Math.ceil((length + 1.0) / (4 * timeSignature)) * (4 * timeSignature), stringBuilder.toString(), file, layerStringBuilder.toString(), (loopTick + 1), loopCount, customInstruments);
+        return new SongData(title, author, speed, (int) Math.ceil((length + 1.0) / (4 * timeSignature)) * (4 * timeSignature), stringBuilder.toString(), file, layerStringBuilder.toString(), (loopTick + 1), loopCount, customInstruments, customNameList);
     }
 
     private static short readShort(DataInputStream dataInputStream) throws IOException {

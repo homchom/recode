@@ -27,14 +27,20 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import java.io.File;
 import java.io.IOException;
 
+import static io.github.homchom.recode.RecodeKt.logDebug;
+
 public class NBSCommand extends Command {
 
     public static void loadNbs(File file, String fileName) {
         LegacyRecode.executor.submit(() -> {
             try {
+
                 SongData d = NBSDecoder.parse(file);
+
                 String code = new NBSToTemplate(d).convert();
+
                 ItemStack stack = new ItemStack(Items.NOTE_BLOCK);
+
                 TemplateUtil.compressTemplateNBT(stack, d.getName(), d.getAuthor(), code);
 
                 if (d.getName().length() == 0) {
