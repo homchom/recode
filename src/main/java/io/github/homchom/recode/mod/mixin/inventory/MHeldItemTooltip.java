@@ -22,7 +22,7 @@ public class MHeldItemTooltip {
     @Shadow
     private ItemStack lastToolHighlight;
 
-    // TODO: remove redundant code and improve performance (e.g. don't highlight every iteration)
+    // TODO: remove redundant code and improve performance
     @Inject(method = "renderSelectedItemName", at = @At("HEAD"), cancellable = true)
     public void renderSelectedItemName(GuiGraphics guiGraphics, CallbackInfo callbackInfo) {
         var renderVarScope = Config.getBoolean("variableScopeView");
@@ -68,6 +68,7 @@ public class MHeldItemTooltip {
             }
 
             // render highlighting
+            // TODO: re-evaluate
             /*if (highlightVarSyntax) {
                 var formatted = VarSyntaxHighlighter.highlight(name.getAsString());
 
