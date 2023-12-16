@@ -4,10 +4,10 @@ import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WButton;
 import io.github.cottonmc.cotton.gui.widget.WLabel;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
+import io.github.cottonmc.cotton.gui.widget.WSprite;
 import io.github.homchom.recode.Recode;
 import io.github.homchom.recode.mod.config.menu.ConfigScreen;
 import io.github.homchom.recode.sys.renderer.IMenu;
-import io.github.homchom.recode.sys.renderer.widgets.CImage;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
@@ -23,9 +23,9 @@ public class RecodeUI extends LightweightGuiDescription implements IMenu {
         WPlainPanel root = new WPlainPanel();
         root.setSize(220, 220);
 
-        CImage cImage = new CImage(RECODE_ICON);
-        cImage.setSize(120, 120);
-        root.add(cImage, 46, 0);
+        WSprite sprite = new WSprite(RECODE_ICON);
+        sprite.setSize(120, 120);
+        root.add(sprite, 8, 8);
 
         root.add(new WLabel(Component.literal("recode")), (220 - Minecraft.getInstance().font.width("recode")) / 2, 110);
         root.add(new WLabel(Component.literal("v" + Recode.INSTANCE.getVersion())), (220 - Minecraft.getInstance().font.width("v" + Recode.INSTANCE.getVersion())) / 2, 120);
