@@ -18,5 +18,5 @@ For Minecraft 1.20.2, Fabric API 0.90.7 or newer
 - More obscure fixes to location overlay and state-related features (thanks ShadowEmpress_)
 
 ### Removals
-- Removed `/schem`
+- Removed `/schem` (#65)
 - Removed `/gradient` in favor of `<gradient>`
