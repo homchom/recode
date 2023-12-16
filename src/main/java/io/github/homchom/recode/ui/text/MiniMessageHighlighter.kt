@@ -1,6 +1,5 @@
 package io.github.homchom.recode.ui.text
 
-import io.github.homchom.recode.ui.text.MiniMessageHighlighter.highlight
 import io.github.homchom.recode.util.interpolate
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
@@ -20,7 +19,7 @@ import net.kyori.adventure.text.minimessage.tree.Node
  *
  * @see highlight
  */
-object MiniMessageHighlighter {
+class MiniMessageHighlighter(private val standardTags: TagResolver) {
     // a resolver for tags that determine their own style
     private val nonLiteralTags = TagResolver.resolver(
         StandardTags.color(),
@@ -32,8 +31,6 @@ object MiniMessageHighlighter {
         StandardTags.gradient(),
         StandardTags.rainbow()
     )
-
-    private val standardTags = TagResolver.standard()
 
     private val instance = MiniMessage.builder().run {
         tags(object : TagResolver {

@@ -1,9 +1,6 @@
 package io.github.homchom.recode.feature.visual
 
-import io.github.homchom.recode.hypercube.CommandAliasGroup
-import io.github.homchom.recode.hypercube.DFValueMeta
-import io.github.homchom.recode.hypercube.dfMiniMessage
-import io.github.homchom.recode.hypercube.dfValueMeta
+import io.github.homchom.recode.hypercube.*
 import io.github.homchom.recode.ui.text.*
 import io.github.homchom.recode.util.regex.regex
 import net.kyori.adventure.text.BuildableComponent
@@ -76,6 +73,9 @@ class ExpressionHighlighter {
         0xca64fa,
         0xff4242
     )
+
+    private val miniMessage = dfMiniMessage
+    private val miniMessageHighlighter = MiniMessageHighlighter(DFMiniMessageTags.all)
 
     private val codeRegex = regex {
         group {
@@ -171,7 +171,7 @@ class ExpressionHighlighter {
 
         if (parseMiniMessage) builder.raw.mapChildren { text ->
             if (text is TextComponent && text.style().isEmpty) {
-                MiniMessageHighlighter.highlight(text.content()) as BuildableComponent<*, *>
+                miniMessageHighlighter.highlight(text.content()) as BuildableComponent<*, *>
             } else {
                 text
             }
@@ -179,7 +179,7 @@ class ExpressionHighlighter {
 
         val text = builder.build().toFormattedCharSequence(false)
         val preview = if (parseMiniMessage) {
-            dfMiniMessage.deserialize(string).toFormattedCharSequence()
+            miniMessage.deserialize(string).toFormattedCharSequence()
         } else null
         return HighlightedExpression(text, preview)
     }
