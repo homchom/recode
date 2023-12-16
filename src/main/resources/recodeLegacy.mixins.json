@@ -24,6 +24,7 @@
     "render.screen.MOptionsScreen"
   ],
   "client": [
+    "inventory.MKeyboardHandler",
     "render.MAbstractContainerScreen"
   ],
   "server": [],
