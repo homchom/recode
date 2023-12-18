@@ -113,7 +113,11 @@ class ExpressionHighlighter {
 
         val text = builder.build().toFormattedCharSequence(false)
         val preview = if (parseMiniMessage) {
-            miniMessage.deserialize(string).toFormattedCharSequence()
+            try {
+                miniMessage.deserialize(string).toFormattedCharSequence()
+            } catch (e: Exception) {
+                null
+            }
         } else null
         return HighlightedExpression(text, preview)
     }

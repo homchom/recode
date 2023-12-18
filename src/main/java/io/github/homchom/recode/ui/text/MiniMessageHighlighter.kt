@@ -112,7 +112,14 @@ class MiniMessageHighlighter(private val standardTags: TagResolver) {
             }
         }
 
-        buildNewInput(instance.deserializeToTree(input))
+        val root = try {
+            instance.deserializeToTree(input)
+        } catch (e: Exception) {
+            // highlight red for exceptional parses, such as unclosed double quotes
+            // TODO: something better after ui update?
+            return literalText(input, style().red())
+        }
+        buildNewInput(root)
         return instance.deserialize(newInput.toString())
     }
 
