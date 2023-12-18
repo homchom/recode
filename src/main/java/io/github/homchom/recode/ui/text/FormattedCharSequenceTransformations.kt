@@ -20,4 +20,4 @@ fun FormattedCharSequence.subSequence(startIndex: Int, endIndex: Int) = Formatte
 /**
  * @see CharSequence.subSequence
  */
-fun FormattedCharSequence.subSequence(range: IntRange) = subSequence(range.first, range.last)
+fun FormattedCharSequence.subSequence(range: IntRange) = subSequence(range.first, range.last + 1)
