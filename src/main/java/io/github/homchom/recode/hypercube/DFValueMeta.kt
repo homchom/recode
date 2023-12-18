@@ -1,3 +1,5 @@
+@file:JvmName("DFValues")
+
 package io.github.homchom.recode.hypercube
 
 import com.google.gson.JsonObject

@@ -1,6 +1,6 @@
 package io.github.homchom.recode.mod.features.commands.recode;
 
-import com.google.gson.JsonArray;
+/*import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.platform.NativeImage;
@@ -31,7 +31,7 @@ public class ContributorsUI extends LightweightGuiDescription implements IMenu {
     @Override
     public void open(String... args) {
 
-        /*INSTANCE = this;
+        INSTANCE = this;
 
         WPlainPanel root = new WPlainPanel();
         root.setHost(this);
@@ -85,6 +85,5 @@ public class ContributorsUI extends LightweightGuiDescription implements IMenu {
 
         panel.setHost(this);
         setRootPanel(root);
-        */
     }
-}
+}*/

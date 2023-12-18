@@ -40,22 +40,29 @@ value class FormattedCharSequenceBuilder private constructor(private val list: M
     /**
      * Appends [string] in forward order with [style].
      */
-    fun forward(string: String, style: StyleWrapper) {
+    fun forward(string: String, style: StyleWrapper = style()) {
         list += FormattedCharSequence.forward(string, style.build().toVanilla())
     }
 
     /**
      * Appends [string] in backward order with [style].
      */
-    fun backward(string: String, style: StyleWrapper) {
+    fun backward(string: String, style: StyleWrapper = style()) {
         list += FormattedCharSequence.backward(string, style.build().toVanilla())
     }
 
     /**
      * Appends the character with code point [code], with [style].
      */
-    fun codepoint(code: Int, style: StyleWrapper) {
+    fun codepoint(code: Int, style: StyleWrapper = style()) {
         list += FormattedCharSequence.codepoint(code, style.build().toVanilla())
+    }
+
+    /**
+     * Appends a pre-existing [formattedCharSequence].
+     */
+    fun append(formattedCharSequence: FormattedCharSequence) {
+        list += formattedCharSequence
     }
 }
 

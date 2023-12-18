@@ -1,7 +1,9 @@
 package io.github.homchom.recode.mixin.render.chat;
 
-import io.github.homchom.recode.feature.visual.ExpressionHighlighter;
-import io.github.homchom.recode.ui.text.FormattedCharSequenceTransformations;
+import io.github.homchom.recode.feature.visual.EditBoxExpressionFormatter;
+import io.github.homchom.recode.hypercube.DFValueMeta;
+import io.github.homchom.recode.hypercube.DFValues;
+import kotlin.ranges.IntRange;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.CommandSuggestions;
@@ -22,38 +24,37 @@ import java.util.Objects;
 @Mixin(CommandSuggestions.class)
 public abstract class MCommandSuggestions {
     @Unique
-    private final ExpressionHighlighter highlighter = new ExpressionHighlighter();
+    private final EditBoxExpressionFormatter highlighter =
+            new EditBoxExpressionFormatter(true, () -> {
+                var player = Objects.requireNonNull(Minecraft.getInstance().player);
+                var meta = DFValues.dfValueMeta(player.getMainHandItem());
+                if (meta instanceof DFValueMeta.Primitive || meta instanceof DFValueMeta.Variable) {
+                    return meta.getType().equals("comp");
+                }
+                return null;
+            });
 
     @Unique
     private @Nullable FormattedCharSequence preview = null;
 
     @Shadow @Final EditBox input;
 
+    // expression highlighting and preview
     @Inject(method = "formatChat", at = @At("RETURN"), cancellable = true)
     private void highlightAndPreview(
             String partialInput,
             int position,
             CallbackInfoReturnable<FormattedCharSequence> cir
     ) {
-        var formatted = cir.getReturnValue();
-        var player = Objects.requireNonNull(Minecraft.getInstance().player);
-        var highlighted = highlighter.runHighlighting(input.getValue(), formatted, player);
-        if (highlighted == null) return;
-
-        if (highlighted.getPreview() != null) preview = highlighted.getPreview();
-
-        FormattedCharSequence subSequence;
-        if (position == 0 && partialInput.length() == input.getValue().length()) {
-            subSequence = highlighted.getText();
-        } else {
-            subSequence = FormattedCharSequenceTransformations.subSequence(
-                    highlighted.getText(),
-                    position,
-                    position + partialInput.length()
-            );
+        var formatted = highlighter.format(
+                input.getValue(),
+                cir.getReturnValue(),
+                new IntRange(position, position + partialInput.length() - 1)
+        );
+        if (formatted != null) {
+            cir.setReturnValue(formatted.getText());
+            preview = formatted.getPreview();
         }
-
-        cir.setReturnValue(subSequence);
     }
 
     @Inject(method = "render", at = @At("HEAD"))
