@@ -2,10 +2,14 @@
 
 package io.github.homchom.recode.util
 
+// booleans
+
 /**
  * @return [Unit] if this boolean is true, or `null` otherwise.
  */
 fun Boolean.unitOrNull() = if (this) Unit else null
+
+// strings
 
 /**
  * Appends multiple [substrings] to this [StringBuilder].
