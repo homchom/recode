@@ -45,7 +45,7 @@ class SideChat(private val mc: Minecraft) : ChatComponent(mc) {
 /**
  * A duck interface applied to [net.minecraft.client.gui.Gui].
  */
-@Suppress("FunctionName")
+@Suppress("PropertyName")
 interface DGuiWithSideChat {
-    fun `recode$getSideChat`(): SideChat
+    val `recode$sideChat`: SideChat
 }

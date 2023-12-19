@@ -3,7 +3,7 @@ package io.github.homchom.recode.mixin.optional.sodium;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import io.github.homchom.recode.mixin.MixinConditional;
-import io.github.homchom.recode.render.RecodeLevelRenderer;
+import io.github.homchom.recode.render.DRecodeLevelRenderer;
 import me.jellysquid.mods.sodium.client.render.SodiumWorldRenderer;
 import me.jellysquid.mods.sodium.client.render.chunk.RenderSection;
 import net.minecraft.client.Minecraft;
@@ -34,7 +34,7 @@ public abstract class MSodiumWorldRenderer {
 
         var blockEntityList = List.of(blockEntities);
         var chunkPos = SectionPos.of(blockEntityList.get(0).getBlockPos());
-        var levelRenderer = (RecodeLevelRenderer) Minecraft.getInstance().levelRenderer;
+        var levelRenderer = (DRecodeLevelRenderer) Minecraft.getInstance().levelRenderer;
         return levelRenderer.recode$runBlockEntityEvents(blockEntityList, chunkPos)
                 .toArray(new BlockEntity[0]);
     }
@@ -49,7 +49,7 @@ public abstract class MSodiumWorldRenderer {
         var blockEntities = operation.call(section);
         if (blockEntities == null || blockEntities.length == 0) return blockEntities;
 
-        var levelRenderer = (RecodeLevelRenderer) Minecraft.getInstance().levelRenderer;
+        var levelRenderer = (DRecodeLevelRenderer) Minecraft.getInstance().levelRenderer;
         return levelRenderer.recode$runBlockEntityEvents(List.of(blockEntities), null)
                 .toArray(new BlockEntity[0]);
     }

@@ -73,7 +73,7 @@ public abstract class MChatComponent {
     @Unique
     private SideChat getSideChat() {
         var gui = (DGuiWithSideChat) Minecraft.getInstance().gui;
-        return gui.recode$getSideChat();
+        return gui.getRecode$sideChat();
     }
 
     @Unique

@@ -27,7 +27,6 @@ class MiniMessageHighlighter(private val standardTags: TagResolver) {
             StandardTags.decorations(TextDecoration.OBFUSCATED)
         ),
         StandardTags.reset(),
-        StandardTags.font(),
         StandardTags.gradient(),
         StandardTags.rainbow()
     )

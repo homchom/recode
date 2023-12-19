@@ -32,10 +32,9 @@ public abstract class MGui implements DGuiWithSideChat {
         sideChat.render(graphics, tickDelta, x, y);
     }
 
-    @Unique
     @NotNull
     @Override
-    public SideChat recode$getSideChat() {
+    public SideChat getRecode$sideChat() {
         return sideChat;
     }
 }

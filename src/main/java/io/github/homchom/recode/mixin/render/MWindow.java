@@ -13,6 +13,6 @@ public abstract class MWindow {
     @Inject(method = "setGuiScale", at = @At("TAIL"))
     private void rescaleSideChat(CallbackInfo ci) {
         var gui = (DGuiWithSideChat) Minecraft.getInstance().gui;
-        gui.recode$getSideChat().rescaleChat();
+        gui.getRecode$sideChat().rescaleChat();
     }
 }
