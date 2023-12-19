@@ -5,7 +5,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import io.github.homchom.recode.event.SimpleValidated;
 import io.github.homchom.recode.render.BlockEntityOutlineContext;
 import io.github.homchom.recode.render.RGBAColor;
-import io.github.homchom.recode.render.RecodeLevelRenderer;
+import io.github.homchom.recode.render.DRecodeLevelRenderer;
 import io.github.homchom.recode.render.RenderEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -28,7 +28,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.*;
 
 @Mixin(value = LevelRenderer.class)
-public abstract class MLevelRenderer implements RecodeLevelRenderer {
+public abstract class MLevelRenderer implements DRecodeLevelRenderer {
 	@Shadow @Nullable private PostChain entityEffect;
 
 	@Unique

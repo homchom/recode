@@ -66,6 +66,6 @@ public abstract class MChatListener {
     @Unique
     private SideChat getSideChat() {
         var gui = (DGuiWithSideChat) Minecraft.getInstance().gui;
-        return gui.recode$getSideChat();
+        return gui.getRecode$sideChat();
     }
 }

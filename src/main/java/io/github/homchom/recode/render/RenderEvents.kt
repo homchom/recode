@@ -50,7 +50,7 @@ val OutlineBlockEntitiesEvent =
         event.use(Power(
             onEnable = {
                 BeforeOutlineBlockEvent.listenEach { context ->
-                    val processor = context.worldRenderContext.worldRenderer() as RecodeLevelRenderer
+                    val processor = context.worldRenderContext.worldRenderer() as DRecodeLevelRenderer
                     processor.`recode$processOutlines`(mc.frameTime)
                 }
             }
@@ -68,7 +68,7 @@ data class BlockEntityOutlineContext @JvmOverloads constructor(
  * An [net.minecraft.client.renderer.LevelRenderer] that is augmented by recode.
  */
 @Suppress("FunctionName")
-interface RecodeLevelRenderer {
+interface DRecodeLevelRenderer {
     /**
      * @returns A filtered list of block entities that should still be rendered.
      */

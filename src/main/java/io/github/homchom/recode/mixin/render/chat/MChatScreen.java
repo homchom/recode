@@ -6,12 +6,16 @@ import io.github.homchom.recode.feature.social.DGuiWithSideChat;
 import net.minecraft.client.GuiMessageTag;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ChatComponent;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.ChatScreen;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(ChatScreen.class)
 public abstract class MChatScreen {
+    @Shadow protected EditBox input;
+
     @WrapOperation(method = "render", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/client/gui/components/ChatComponent;getMessageTagAt(DD)Lnet/minecraft/client/GuiMessageTag;"
     ))
@@ -24,6 +28,6 @@ public abstract class MChatScreen {
         var mainTag = operation.call(mainChat, screenX, screenY);
         if (mainTag != null) return mainTag;
         var gui = (DGuiWithSideChat) Minecraft.getInstance().gui;
-        return gui.recode$getSideChat().getMessageTagAt(screenX, screenY);
+        return gui.getRecode$sideChat().getMessageTagAt(screenX, screenY);
     }
 }
