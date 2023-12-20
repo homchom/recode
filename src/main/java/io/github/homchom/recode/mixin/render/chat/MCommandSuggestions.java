@@ -3,6 +3,8 @@ package io.github.homchom.recode.mixin.render.chat;
 import io.github.homchom.recode.feature.visual.EditBoxExpressionFormatter;
 import io.github.homchom.recode.hypercube.DFValueMeta;
 import io.github.homchom.recode.hypercube.DFValues;
+import io.github.homchom.recode.hypercube.state.DF;
+import io.github.homchom.recode.hypercube.state.PlotMode;
 import io.github.homchom.recode.mod.config.Config;
 import kotlin.ranges.IntRange;
 import net.minecraft.client.Minecraft;
@@ -48,6 +50,7 @@ public abstract class MCommandSuggestions {
             CallbackInfoReturnable<FormattedCharSequence> cir
     ) {
         if (!Config.getBoolean("highlightVarSyntax")) return;
+        if (!DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev.ID)) return;
         var formatted = highlighter.format(
                 input.getValue(),
                 cir.getReturnValue(),
