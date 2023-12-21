@@ -125,6 +125,6 @@ class ExpressionHighlighter {
     private fun styleAt(depth: Int) = if (depth == 0) {
         style()
     } else {
-        style().color(colors[depth - 1 % colors.size])
+        style().color(colors[(depth - 1) % colors.size])
     }
 }
