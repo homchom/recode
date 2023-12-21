@@ -32,9 +32,9 @@ fun emptyText(style: StyleWrapper = style()) =
 /**
  * Builds a [Component] by adding [style] to [root] and applying [builder].
  *
- * Use [translatedText] and [literalText] when applicable, as their output is more optimized.
- * Use [formattedCharSequence] if all text is literal and a [Component] representation is not necessary, as it
- * is the most optimized.
+ * Use [translatedText] and [literalText] when applicable, as their output is more optimized. Also note
+ * that some functions take a [net.minecraft.util.FormattedCharSequence]; in those cases you should build
+ * a [formattedCharSequence] directly.
  *
  * @see TextBuilder
  */

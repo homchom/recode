@@ -2,10 +2,12 @@
 
 package io.github.homchom.recode.ui.text
 
+import io.github.homchom.recode.util.fromCodePoint
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.Style
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import net.minecraft.util.FormattedCharSequence
+import net.minecraft.util.FormattedCharSink
 
 /**
  * @return A new [Component] created by merging this Component's style with [style], using [strategy] and [merges].
@@ -79,3 +81,18 @@ fun Regex.matchEntirePlain(text: Component) = matchEntire(text.plainText)
  * @return Whether [text]'s entire [plainText] matches this [Regex] pattern.
  */
 fun Regex.matchesPlain(text: Component) = matches(text.plainText)
+
+/**
+ * [FormattedCharSequence.accept]s this [FormattedCharSequence], adjusting the `index` parameter
+ * passed to [sink] to be absolute instead of relative. Surrogate pairs are handled but not validated.
+ */
+fun FormattedCharSequence.acceptWithAbsoluteIndex(sink: FormattedCharSink): Boolean {
+    var absoluteIndex = 0
+    return accept { _, style, codePoint ->
+        val shouldContinue = sink.accept(absoluteIndex++, style, codePoint)
+        if (String.fromCodePoint(codePoint)[0].isHighSurrogate()) {
+            absoluteIndex++
+        }
+        shouldContinue
+    }
+}

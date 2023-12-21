@@ -8,11 +8,9 @@ import net.minecraft.util.FormattedCharSequence
  * @see CharSequence.subSequence
  */
 fun FormattedCharSequence.subSequence(startIndex: Int, endIndex: Int) = FormattedCharSequence { sink ->
-    var index = 0
-    var adjustedIndex = 0
-    accept { _, style, codePoint ->
-        if (index++ in startIndex..<endIndex) {
-            sink.accept(adjustedIndex++, style, codePoint)
+    acceptWithAbsoluteIndex { index, style, codePoint ->
+        if (index in startIndex..<endIndex) {
+            sink.accept(index - startIndex, style, codePoint)
         } else true
     }
 }
