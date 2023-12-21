@@ -8,7 +8,6 @@ import io.github.cottonmc.cotton.gui.widget.WText;
 import io.github.cottonmc.cotton.gui.widget.WTextField;
 import io.github.homchom.recode.sys.player.chat.color.ColorUtil;
 import io.github.homchom.recode.sys.player.chat.color.HSBColor;
-import io.github.homchom.recode.sys.player.chat.color.MinecraftColors;
 import io.github.homchom.recode.sys.renderer.IMenu;
 import io.github.homchom.recode.sys.renderer.widgets.CColorPicker;
 import io.github.homchom.recode.sys.renderer.widgets.CColorPreset;
@@ -48,9 +47,8 @@ public class ColorsMenu extends LightweightGuiDescription implements IMenu {
 
             copyButton = new WButton(Component.literal("Copy")).setOnClick(() -> {
                 Color color = colorPicker.getColor();
-                var formatted = String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue());
-                var copy = MinecraftColors.hexToMc(formatted).replaceAll("§", "&");
-                Minecraft.getInstance().keyboardHandler.setClipboard(copy);
+                var formatted = String.format("<#%02x%02x%02x>", color.getRed(), color.getGreen(), color.getBlue());
+                Minecraft.getInstance().keyboardHandler.setClipboard(formatted);
 
                 ColorUtil.recentColors.remove(color);
                 ColorUtil.recentColors.add(0, color);
