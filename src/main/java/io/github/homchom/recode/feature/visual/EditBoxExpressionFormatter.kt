@@ -119,7 +119,7 @@ class EditBoxExpressionFormatter(
                 min(startIndex, partialEnd) - partialStart
             ))
 
-            if (partialRange.first in startIndex..<endIndex || partialRange.last in startIndex..<endIndex) {
+            if (startIndex in partialRange || endIndex - 1 in partialRange) {
                 append(highlighted.text.subSequence(
                     max(startIndex, partialStart) - startIndex,
                     min(endIndex, partialEnd) - startIndex

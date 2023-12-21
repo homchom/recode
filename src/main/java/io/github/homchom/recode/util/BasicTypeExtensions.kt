@@ -12,6 +12,11 @@ fun Boolean.unitOrNull() = if (this) Unit else null
 // strings
 
 /**
+ * @see Character.toString
+ */
+fun String.Companion.fromCodePoint(codePoint: Int): String = Character.toString(codePoint)
+
+/**
  * Appends multiple [substrings] to this [StringBuilder].
  */
 fun StringBuilder.interpolate(vararg substrings: String) = apply {
