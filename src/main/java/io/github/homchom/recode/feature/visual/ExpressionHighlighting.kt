@@ -116,6 +116,7 @@ class ExpressionHighlighter {
             try {
                 miniMessage.deserialize(string).toFormattedCharSequence()
             } catch (e: Exception) {
+                // https://github.com/KyoriPowered/adventure/issues/1011
                 null
             }
         } else null
