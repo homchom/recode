@@ -6,11 +6,10 @@ import io.github.homchom.recode.feature.feature
 import io.github.homchom.recode.id
 import io.github.homchom.recode.render.IntegralColor
 import io.github.homchom.recode.render.toColor
-import io.github.homchom.recode.ui.text.style
-import io.github.homchom.recode.ui.text.text
-import io.github.homchom.recode.ui.text.toVanilla
+import io.github.homchom.recode.ui.text.VanillaComponent
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType
+import net.minecraft.network.chat.Style
 
 val FBuiltInResourcePacks = feature("Built-in Resource Packs") {
     registerBuiltInResourcePack("better_unicode", 0x6770ff.toColor())
@@ -21,13 +20,16 @@ private fun registerBuiltInResourcePack(
     displayColor: IntegralColor,
     activationType: ResourcePackActivationType = ResourcePackActivationType.DEFAULT_ENABLED
 ) {
+    // https://github.com/KyoriPowered/adventure-platform-fabric/issues/122
+    val packDescription = VanillaComponent.literal("[$MOD_ID] ")
+        .append(VanillaComponent.translatable("resourcePack.recode.$id")
+            .withStyle(Style.EMPTY.withColor(displayColor.toInt()))
+        )
+
     ResourceManagerHelper.registerBuiltinResourcePack(
         id(id),
         Recode,
-        text {
-            literal("[$MOD_ID] ")
-            translate("resourcePack.recode.$id", style().color(displayColor))
-        }.toVanilla(),
+        packDescription,
         activationType
     )
 }
