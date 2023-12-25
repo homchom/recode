@@ -1,9 +1,10 @@
 package io.github.homchom.recode.mixin.render.chat;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.sugar.Share;
+import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
 import io.github.homchom.recode.feature.social.DGuiWithSideChat;
-import io.github.homchom.recode.feature.social.MessageStacking;
+import io.github.homchom.recode.feature.social.MessageStacks;
 import io.github.homchom.recode.feature.social.SideChat;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.ui.ChatUI;
@@ -12,9 +13,9 @@ import net.minecraft.client.GuiMessage;
 import net.minecraft.client.GuiMessageTag;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ChatComponent;
-import net.minecraft.client.multiplayer.chat.ChatListener;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MessageSignature;
+import net.minecraft.util.FormattedCharSequence;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,8 +26,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 @Mixin(ChatComponent.class)
 public abstract class MChatComponent {
@@ -44,11 +45,11 @@ public abstract class MChatComponent {
     // side chat redirects
 
     // TODO: improve handling of chat queue (partition it?)
-    @WrapOperation(method = "render", at = @At(value = "INVOKE",
+    @ModifyExpressionValue(method = "render", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/client/multiplayer/chat/ChatListener;queueSize()J"
     ))
-    private long wrapMessageQueueSize(ChatListener listener, Operation<Long> operation) {
-        return isSideChat() ? 0 : operation.call(listener);
+    private long wrapMessageQueueSize(long size) {
+        return isSideChat() ? 0 : size;
     }
 
     // actions synced between main chat and side chat
@@ -97,53 +98,46 @@ public abstract class MChatComponent {
     // message stacking
 
     @Unique
-    private int trimmedMessageCount = 0;
+    private int messageStackAmount = 1;
 
-    @Inject(
+    @ModifyExpressionValue(
             method = "addMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/MessageSignature;ILnet/minecraft/client/GuiMessageTag;Z)V",
-            at = @At("HEAD")
+            at = @At(value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/components/ComponentRenderUtils;wrapComponents(Lnet/minecraft/network/chat/FormattedText;ILnet/minecraft/client/gui/Font;)Ljava/util/List;"
+            )
     )
-    private void countTrimmedMessagesBeforeMessageStacking(CallbackInfo ci) {
-        trimmedMessageCount = trimmedMessages.size();
-    }
-
-    @Inject(
-            method = "addMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/MessageSignature;ILnet/minecraft/client/GuiMessageTag;Z)V",
-            at = @At("TAIL")
-    )
-    private void stackMessages(
-            Component message,
+    private List<FormattedCharSequence> stackMessages(
+            List<FormattedCharSequence> lineMessages,
+            Component fullMessage,
             MessageSignature signature,
             int tickDelta,
             GuiMessageTag tag,
             boolean refresh,
-            CallbackInfo ci
+            @Share("cancel") LocalBooleanRef cancel
     ) {
-        if (!Config.getBoolean("stackDuplicateMsgs")) return;
-        if (trimmedMessageCount == 0) return;
+        cancel.set(false);
+        if (!Config.getBoolean("stackDuplicateMsgs")) return lineMessages;
 
         // trimmedMessages[0] is the most recent message
-        var lineCount = trimmedMessages.size() - trimmedMessageCount;
-        if (trimmedMessageCount < lineCount) return;
-        if (trimmedMessageCount > lineCount) {
-            if (!trimmedMessages.get(lineCount * 2).endOfEntry()) return;
+        var lineCount = lineMessages.size();
+        if (trimmedMessages.size() < lineCount) return lineMessages;
+        if (trimmedMessages.size() > lineCount) {
+            if (!trimmedMessages.get(lineCount).endOfEntry()) return lineMessages;
         }
 
-        // return if messages aren't equal
-        for (var index = lineCount; index < lineCount * 2; index++) {
-            var firstLine = trimmedMessages.get(index);
-            var secondLine = trimmedMessages.get(index - lineCount);
-            if (!TextFunctions.looksLike(firstLine.content(), secondLine.content())) return;
-            if (firstLine.endOfEntry() != secondLine.endOfEntry()) return;
+        // reset and return if messages aren't equal
+        for (var index = 0; index < lineCount; index++) {
+            var line1 = trimmedMessages.get(index);
+            var line2 = lineMessages.get(lineCount - 1 - index);
+            var endsEarly = index != 0 && line1.endOfEntry();
+            if (!TextFunctions.looksLike(line1.content(), line2) || endsEarly) {
+                messageStackAmount = 1;
+                return lineMessages;
+            }
         }
 
-        // remove new message and update tags
-        var oldTag = Objects.requireNonNull(trimmedMessages.get(lineCount).tag());
-        var stackAmount = MessageStacking.getStackAmount(oldTag) + 1;
-
-        trimmedMessages.subList(0, lineCount).clear();
-
-        var newTag = ChatUI.plus(tag, MessageStacking.stackedMessageTag(stackAmount));
+        // replace old message, with updated tags
+        var newTag = ChatUI.plus(tag, MessageStacks.INSTANCE.tag(++messageStackAmount));
         for (var index = 0; index < lineCount; index++) {
             var oldLine = trimmedMessages.get(index);
             var newLine = new GuiMessage.Line(
@@ -154,5 +148,20 @@ public abstract class MChatComponent {
             );
             trimmedMessages.set(index, newLine);
         }
+
+        // cancel in the next handler and return a dummy value
+        cancel.set(true);
+        return Collections.emptyList();
+    }
+
+    @Inject(method = "addMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/MessageSignature;ILnet/minecraft/client/GuiMessageTag;Z)V",
+            at = @At(value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/components/ComponentRenderUtils;wrapComponents(Lnet/minecraft/network/chat/FormattedText;ILnet/minecraft/client/gui/Font;)Ljava/util/List;",
+                    shift = At.Shift.AFTER
+            ),
+            cancellable = true
+    )
+    private void cancelAfterMessageStacking(CallbackInfo ci, @Share("cancel") LocalBooleanRef cancel) {
+        if (cancel.get()) ci.cancel();
     }
 }

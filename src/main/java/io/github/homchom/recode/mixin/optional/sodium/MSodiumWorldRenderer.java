@@ -7,7 +7,6 @@ import io.github.homchom.recode.render.DRecodeLevelRenderer;
 import me.jellysquid.mods.sodium.client.render.SodiumWorldRenderer;
 import me.jellysquid.mods.sodium.client.render.chunk.RenderSection;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.SectionPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -33,9 +32,8 @@ public abstract class MSodiumWorldRenderer {
         if (blockEntities == null || blockEntities.length == 0) return blockEntities;
 
         var blockEntityList = List.of(blockEntities);
-        var chunkPos = SectionPos.of(blockEntityList.get(0).getBlockPos());
         var levelRenderer = (DRecodeLevelRenderer) Minecraft.getInstance().levelRenderer;
-        return levelRenderer.recode$runBlockEntityEvents(blockEntityList, chunkPos)
+        return levelRenderer.recode$runBlockEntityEvents(blockEntityList, section.getPosition())
                 .toArray(new BlockEntity[0]);
     }
 
