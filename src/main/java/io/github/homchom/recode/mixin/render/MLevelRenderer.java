@@ -1,16 +1,16 @@
 package io.github.homchom.recode.mixin.render;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import io.github.homchom.recode.event.SimpleValidated;
 import io.github.homchom.recode.render.BlockEntityOutlineContext;
-import io.github.homchom.recode.render.RGBAColor;
 import io.github.homchom.recode.render.DRecodeLevelRenderer;
+import io.github.homchom.recode.render.RGBAColor;
 import io.github.homchom.recode.render.RenderEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.PostChain;
-import net.minecraft.client.renderer.chunk.SectionRenderDispatcher;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -50,14 +50,10 @@ public abstract class MLevelRenderer implements DRecodeLevelRenderer {
 		return Set.copyOf(recode$runBlockEntityEvents(blockEntities, null));
 	}
 
-	@WrapOperation(method = "renderLevel", at = @At(value = "INVOKE",
+	@ModifyExpressionValue(method = "renderLevel", at = @At(value = "INVOKE",
 			target = "Lnet/minecraft/client/renderer/chunk/SectionRenderDispatcher$CompiledSection;getRenderableBlockEntities()Ljava/util/List;"
 	))
-	private List<BlockEntity> interceptSectionBlockEntities(
-			SectionRenderDispatcher.CompiledSection section,
-			Operation<List<BlockEntity>> operation
-	) {
-		var blockEntities = operation.call(section);
+	private List<BlockEntity> interceptSectionBlockEntities(List<BlockEntity> blockEntities) {
 		if (blockEntities.isEmpty()) return blockEntities;
 
 		var chunkPos = SectionPos.of(blockEntities.get(0).getBlockPos());

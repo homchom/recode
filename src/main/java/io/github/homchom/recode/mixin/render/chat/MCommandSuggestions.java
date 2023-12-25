@@ -1,5 +1,6 @@
 package io.github.homchom.recode.mixin.render.chat;
 
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import io.github.homchom.recode.feature.visual.EditBoxExpressionFormatter;
 import io.github.homchom.recode.hypercube.DFValueMeta;
 import io.github.homchom.recode.hypercube.DFValues;
@@ -20,7 +21,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Objects;
 
@@ -43,23 +43,24 @@ public abstract class MCommandSuggestions {
     @Shadow @Final EditBox input;
 
     // expression highlighting and preview
-    @Inject(method = "formatChat", at = @At("RETURN"), cancellable = true)
-    private void highlightAndPreview(
+    @ModifyReturnValue(method = "formatChat", at = @At("RETURN"))
+    private FormattedCharSequence highlightAndPreview(
+            FormattedCharSequence returnValue,
             String partialInput,
-            int position,
-            CallbackInfoReturnable<FormattedCharSequence> cir
+            int position
     ) {
-        if (!Config.getBoolean("highlightVarSyntax")) return;
-        if (!DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev.ID)) return;
+        if (!Config.getBoolean("highlightVarSyntax")) return returnValue;
+        if (!DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev.ID)) return returnValue;
         var formatted = highlighter.format(
                 input.getValue(),
-                cir.getReturnValue(),
+                returnValue,
                 new IntRange(position, position + partialInput.length() - 1)
         );
         if (formatted != null) {
-            cir.setReturnValue(formatted.getText());
             preview = formatted.getPreview();
+            return formatted.getText();
         }
+        return returnValue;
     }
 
     @Inject(method = "render", at = @At("HEAD"))
