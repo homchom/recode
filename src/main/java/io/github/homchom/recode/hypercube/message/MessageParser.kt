@@ -61,8 +61,8 @@ sealed interface ParsedMessage {
                 .splitByHumps()
                 .joinToString("") { it.lowercase() }
             return requester("$messageName message", lifecycle,
-                trial(ParsedMessageDetector, defaultInput, start) { message, _, _ ->
-                    if (message.parsed !is R) return@trial null
+                trial(ParsedMessageDetector, defaultInput, start) t@{ message, _, _ ->
+                    if (message.parsed !is R) return@t null
                     if (hidden) message.raw.invalidate()
                     instant(message.parsed)
                 }

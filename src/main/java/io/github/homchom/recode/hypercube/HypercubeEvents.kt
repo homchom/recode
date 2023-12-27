@@ -32,12 +32,12 @@ val JoinDFDetector = detector("DF join",
         val tipMessage = ActiveBoosterInfo.detect(null).map(::Case).addOptional()
 
         val disconnect = DisconnectFromServerEvent.add()
-        suspending {
+        suspending s@{
             failOn(disconnect)
 
-            val patch = +test(messages, unlimited) { (text) ->
+            val patch = test(messages, unlimited) { (text) ->
                 patchRegex.matchEntirePlain(text)?.groupValues?.get(1)
-            }
+            } ?: return@s null
 
             val locateMessage = StateMessages.Locate.request(mc.player!!.username, true)
 
