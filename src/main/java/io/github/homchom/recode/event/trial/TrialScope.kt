@@ -92,19 +92,18 @@ class TrialScope @DelicateCoroutinesApi constructor(
      * if [channel] closes while still attempting.
      *
      * @see add
-     * @see TestResult
      */
     suspend inline fun <C, T : Any> test(
         channel: ReceiveChannel<C>,
         attempts: UInt = 1u,
         timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION,
         crossinline test: suspend (C) -> T?
-    ): TestResult<T> {
+    ): T? {
         val result = withTimeoutOrNull(timeoutDuration) {
             (1u..attempts).firstNotNullOfOrNull { test(channel.receive()) }
         }
         for (rule in rules) rule()
-        return TestResult(result)
+        return result
     }
 
     /**
@@ -145,7 +144,7 @@ class TrialScope @DelicateCoroutinesApi constructor(
         attempts: UInt = 1u,
         timeoutDuration: Duration = DEFAULT_TIMEOUT_DURATION,
         crossinline test: (C) -> Boolean
-    ): TestResult<Unit> {
+    ): Unit? {
         return test(channel, attempts, timeoutDuration) { test(it).unitOrNull() }
     }
 
@@ -155,18 +154,6 @@ class TrialScope @DelicateCoroutinesApi constructor(
     suspend inline fun <C> enforceBoolean(channel: ReceiveChannel<C>, crossinline test: (C) -> Boolean) {
         enforce(channel) { test(it).unitOrNull() }
     }
-
-    /**
-     * A result from a suspending test. To require a passing (non-null) result or fail the trial,
-     * prepend it with [unaryPlus].
-     */
-    @JvmInline
-    value class TestResult<T : Any>(val value: T?)
-
-    /**
-     * @return a non-null [TestResult.value] or fails the trial.
-     */
-    operator fun <T : Any> TestResult<T>.unaryPlus() = value ?: throw TrialScopeException()
 
     /**
      * @return an instant [TrialResult] with [value]. Use this when a trial does not end asynchronously.
@@ -188,4 +175,8 @@ class TrialScope @DelicateCoroutinesApi constructor(
     fun Boolean.instantUnitOrNull() = instant(unitOrNull())
 }
 
+/**
+ * An exceptional return in a [TrialScope], such as when [TrialScope.enforce] fails. This can be safely thrown
+ * from inside the tests of a [trial], but is expensive; a `return` is almost always preferable.
+ */
 class TrialScopeException : RuntimeException()

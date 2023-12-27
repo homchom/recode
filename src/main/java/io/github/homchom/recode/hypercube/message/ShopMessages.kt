@@ -43,14 +43,14 @@ data class ActiveBoosterInfo(val player: String, val canTip: Boolean) {
         tests = { (player), _ ->
             val subsequent = ReceiveChatMessageEvent.add()
 
-            suspending {
+            suspending s@{
                 val (first) = subsequent.receive()
                 val canTip = ActiveBoosterInfo.commandRegex.matchesPlain(first)
 
                 if (!ActiveBoosterInfo.timeRegex.matchesPlain(first)) {
-                    +testBoolean(subsequent) { (second) ->
+                    testBoolean(subsequent) { (second) ->
                         ActiveBoosterInfo.timeRegex.matchesPlain(second)
-                    }
+                    } ?: return@s null
                 }
 
                 ActiveBoosterInfo(player, canTip)
