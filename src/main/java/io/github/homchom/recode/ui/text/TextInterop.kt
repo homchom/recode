@@ -2,15 +2,19 @@
 
 package io.github.homchom.recode.ui.text
 
+import com.google.common.cache.CacheBuilder
+import io.github.homchom.recode.ui.text.LegacyCodeRemover.plainText
 import io.github.homchom.recode.util.regex.RegexModifier
 import io.github.homchom.recode.util.regex.regex
 import net.kyori.adventure.platform.fabric.FabricClientAudiences
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.Style
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import net.minecraft.network.chat.FormattedText.StyledContentConsumer
 import net.minecraft.util.FormattedCharSequence
 import net.minecraft.util.StringDecomposer
 import java.util.*
+import java.time.Duration as JDuration
 
 typealias VanillaComponent = net.minecraft.network.chat.Component
 typealias VanillaStyle = net.minecraft.network.chat.Style
@@ -58,20 +62,42 @@ fun Component.toFormattedCharSequence(inLanguageOrder: Boolean = true): Formatte
     }
 }
 
-private val legacyCodeRegex = regex {
-    str("§")
-    group(RegexModifier.IgnoreCase) {
-        any("0-9a-fk-o")
-        or
-        str("x")
-        group {
-            str("§")
-            any("0-9a-f")
-        } * 6
+/**
+ * An object with a cache that removes § formatting codes from [Component] literals.
+ *
+ * @see remove
+ * @see plainText
+ */
+object LegacyCodeRemover {
+    private val legacyCodeRegex = regex {
+        str("§")
+        group(RegexModifier.IgnoreCase) {
+            any("0-9a-fk-o")
+            or
+            str("x")
+            group {
+                str("§")
+                any("0-9a-f")
+            } * 6
+        }
+    }
+
+    private val stringCache = CacheBuilder.newBuilder()
+        .expireAfterAccess(JDuration.ofSeconds(1))
+        .build<String, String>()
+
+    private val textCache = CacheBuilder.newBuilder()
+        .expireAfterAccess(JDuration.ofSeconds(1))
+        .build<Component, String>()
+
+    /**
+     * Removes all § formatting codes from [componentString].
+     */
+    fun removeCodes(componentString: String): String = stringCache.get(componentString) {
+        componentString.replace(legacyCodeRegex, "")
+    }
+
+    fun plainText(text: Component): String = textCache.get(text) {
+        removeCodes(PlainTextComponentSerializer.plainText().serialize(text))
     }
 }
-
-/**
- * Removes all § formatting codes from [componentString].
- */
-fun removeLegacyCodes(componentString: String) = componentString.replace(legacyCodeRegex, "")

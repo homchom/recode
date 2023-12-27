@@ -12,6 +12,7 @@ import io.github.homchom.recode.ui.text.matchesPlain
 import io.github.homchom.recode.util.Matcher
 import io.github.homchom.recode.util.matcherOf
 import io.github.homchom.recode.util.regex.RegexModifier
+import io.github.homchom.recode.util.regex.dynamicRegex
 import io.github.homchom.recode.util.regex.regex
 import kotlinx.coroutines.Deferred
 import net.kyori.adventure.text.Component
@@ -191,13 +192,15 @@ enum class SupportSession : Matcher<Component, SupportSession> {
         ) }
     },
     Helping {
+        private val regex = dynamicRegex { username: String ->
+            str("[SUPPORT] $username entered a session with ")
+            username()
+            str(". $SUPPORT_ARROW Queue cleared!")
+        }
+
         override fun match(input: Component): SupportSession? {
-            val regex = regex {
-                str("[SUPPORT] ${mc.player!!.username} entered a session with ")
-                username()
-                str(". $SUPPORT_ARROW Queue cleared!")
-            }
-            return takeIf { regex.matchesPlain(input) }
+            val username = mc.player?.username ?: return null
+            return takeIf { regex(username).matchesPlain(input) }
         }
     };
 

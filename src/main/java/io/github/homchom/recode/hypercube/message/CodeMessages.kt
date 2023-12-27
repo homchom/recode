@@ -24,17 +24,18 @@ object CodeMessages {
                 start = { sendCommand("support time") }
             )
         {
+            private val regex = regex {
+                str("Current session time: ")
+                val hours by digit * (1..2)
+                val minutes by digit * 2
+                val seconds by digit * 2
+            }
+
             override fun match(input: Component): SupportTime? {
                 if (input.equalsPlain("Error: You are not in a session.")) {
                     return SupportTime(null)
                 }
 
-                val regex = regex {
-                    str("Current session time: ")
-                    val hours by digit * (1..2)
-                    val minutes by digit * 2
-                    val seconds by digit * 2
-                }
                 val values = regex.matchEntirePlain(input)?.namedGroupValues ?: return null
 
                 val hours = values["hours"].toIntOrNull()?.hours ?: return null

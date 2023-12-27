@@ -9,7 +9,7 @@ import io.github.homchom.recode.multiplayer.sendCommand
 import io.github.homchom.recode.ui.text.equalsPlain
 import io.github.homchom.recode.ui.text.matchesPlain
 import io.github.homchom.recode.ui.text.plainText
-import io.github.homchom.recode.util.regex.cachedRegex
+import io.github.homchom.recode.util.regex.dynamicRegex
 import io.github.homchom.recode.util.regex.regex
 
 val ChatLocalRequester = requester("/chat local", DFStateDetectors.ChangeMode, trial(
@@ -23,7 +23,7 @@ val ChatLocalRequester = requester("/chat local", DFStateDetectors.ChangeMode, t
     }
 ))
 
-private val timeRegex = cachedRegex<Long> { time ->
+private val timeRegex = dynamicRegex { time: Long? ->
     str("$MAIN_ARROW Set your player time to ")
     if (time == null) digit.oneOrMore() else str(time.toString())
     period
@@ -43,11 +43,11 @@ val FlightRequesters = toggleRequesterGroup("/fly", DFStateDetectors, trial(
     ReceiveChatMessageEvent,
     Unit,
     start = { sendCommand("fly") },
-    tests = { message, _, _ ->
+    tests = t@{ message, _, _ ->
         val enabled = when (message().plainText) {
             "$MAIN_ARROW Flight enabled." -> true
             "$MAIN_ARROW Flight disabled." -> false
-            else -> fail()
+            else -> return@t null
         }
         instant(enabled)
     }
@@ -68,11 +68,11 @@ val LagSlayerRequesters = toggleRequesterGroup("/lagslayer", DFStateDetectors.Ch
     ReceiveChatMessageEvent,
     Unit,
     start = { sendCommand("lagslayer") },
-    tests = { (message), _, _ ->
+    tests = t@{ (message), _, _ ->
         val enabled = when {
             lsEnabledRegex.matchesPlain(message) -> true
             lsDisabledRegex.matchesPlain(message) -> false
-            else -> fail()
+            else -> return@t null
         }
         instant(enabled)
     }
@@ -82,11 +82,11 @@ val NightVisionRequesters = toggleRequesterGroup("/nightvis", DFStateDetectors.C
     ReceiveChatMessageEvent,
     Unit,
     start = { sendCommand("nightvis") },
-    tests = { (message), _, _ ->
+    tests = t@{ (message), _, _ ->
         val enabled = when (message.plainText) {
             "$MAIN_ARROW Enabled night vision." -> true
             "$MAIN_ARROW Disabled night vision." -> false
-            else -> fail()
+            else -> return@t null
         }
         instant(enabled)
     }

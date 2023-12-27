@@ -24,9 +24,9 @@ private val patchRegex = regex {
 }
 
 val JoinDFDetector = detector("DF join",
-    trial(JoinServerEvent, Unit) { _, _ ->
-        requireFalse(isOnDF) // if already on DF, this is a node switch and should not be tested
-        requireTrue(mc.currentServer.ipMatchesDF)
+    trial(JoinServerEvent, Unit) t@{ _, _ ->
+        if (isOnDF) return@t null // if already on DF, this is a node switch and should not be tested
+        if (!mc.currentServer.ipMatchesDF) return@t null
 
         val messages = ReceiveChatMessageEvent.add()
         val tipMessage = ActiveBoosterInfo.detect(null).map(::Case).addOptional()

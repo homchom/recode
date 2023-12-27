@@ -43,5 +43,3 @@ data class SimpleValidated<T> @JvmOverloads constructor(
 ) : Validated, InvokableWrapper<T>
 
 fun <T> Iterable<SimpleValidated<T>>.mapValid() = mapNotNull { if (it.isValid) it.value else null }
-
-fun <T> Array<out SimpleValidated<T>>.mapValid() = mapNotNull { if (it.isValid) it.value else null }

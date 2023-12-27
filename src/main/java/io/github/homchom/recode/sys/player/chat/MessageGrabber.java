@@ -1,7 +1,7 @@
 package io.github.homchom.recode.sys.player.chat;
 
 import io.github.homchom.recode.mod.features.social.chat.message.LegacyMessage;
-import io.github.homchom.recode.mod.features.social.chat.message.MessageType;
+import io.github.homchom.recode.mod.features.social.chat.message.LegacyMessageType;
 import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
@@ -19,11 +19,11 @@ public class MessageGrabber {
     private static Consumer<List<Component>> messageConsumer;
     private static int messagesToGrab = 0;
     private static boolean silent = false;
-    private static MessageType filter = null;
+    private static LegacyMessageType filter = null;
     private static Date timeout = null;
     private static final List<MessageGrabberTask> tasks = new ArrayList<>();
 
-    public static void grabSilently(int messages, int time, Consumer<List<Component>> consumer, MessageType filter) {
+    public static void grabSilently(int messages, int time, Consumer<List<Component>> consumer, LegacyMessageType filter) {
         if (isActive()) {
             tasks.add(new MessageGrabberTask(messages,consumer,true, filter));
             return;

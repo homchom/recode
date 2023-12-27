@@ -1,16 +1,16 @@
 package io.github.homchom.recode.mod.features.social.chat.message.checks;
 
 import io.github.homchom.recode.mod.features.social.chat.message.LegacyMessage;
+import io.github.homchom.recode.mod.features.social.chat.message.LegacyMessageType;
 import io.github.homchom.recode.mod.features.social.chat.message.MessageCheck;
-import io.github.homchom.recode.mod.features.social.chat.message.MessageType;
 import io.github.homchom.recode.mod.features.streamer.StreamerModeHandler;
 import io.github.homchom.recode.mod.features.streamer.StreamerModeMessageCheck;
 
 public class SpiesCheck extends MessageCheck implements StreamerModeMessageCheck {
 
     @Override
-    public MessageType getType() {
-        return MessageType.SPIES;
+    public LegacyMessageType getType() {
+        return LegacyMessageType.SPIES;
     }
 
     @Override

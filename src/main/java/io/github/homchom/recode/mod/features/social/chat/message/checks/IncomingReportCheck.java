@@ -2,8 +2,8 @@ package io.github.homchom.recode.mod.features.social.chat.message.checks;
 
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.social.chat.message.LegacyMessage;
+import io.github.homchom.recode.mod.features.social.chat.message.LegacyMessageType;
 import io.github.homchom.recode.mod.features.social.chat.message.MessageCheck;
-import io.github.homchom.recode.mod.features.social.chat.message.MessageType;
 import io.github.homchom.recode.mod.features.streamer.StreamerModeHandler;
 import io.github.homchom.recode.mod.features.streamer.StreamerModeMessageCheck;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
@@ -11,8 +11,8 @@ import io.github.homchom.recode.sys.player.chat.ChatUtil;
 public class IncomingReportCheck extends MessageCheck implements StreamerModeMessageCheck {
 
     @Override
-    public MessageType getType() {
-        return MessageType.INCOMING_REPORT;
+    public LegacyMessageType getType() {
+        return LegacyMessageType.INCOMING_REPORT;
     }
 
     @Override

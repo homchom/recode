@@ -2,7 +2,7 @@ package io.github.homchom.recode.mod.mixin.inventory;
 
 
 import com.google.gson.JsonParser;
-import io.github.homchom.recode.RecodeKt;
+import io.github.homchom.recode.Logging;
 import io.github.homchom.recode.game.ItemExtensions;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.ui.text.TextInterop;
@@ -96,7 +96,7 @@ public class MHeldItemTooltip {
                 }
             }*/
         } catch (Exception e) {
-            RecodeKt.logError("Unrecognized DF value item data: " + varJson);
+            Logging.logError("Unrecognized DF value item data: " + varJson);
             throw e;
         }
     }

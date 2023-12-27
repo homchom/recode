@@ -4,7 +4,7 @@ import io.github.homchom.recode.event.SimpleValidated;
 import io.github.homchom.recode.hypercube.state.DF;
 import io.github.homchom.recode.hypercube.state.PlotMode;
 import io.github.homchom.recode.mod.config.Config;
-import io.github.homchom.recode.multiplayer.MultiplayerEvents;
+import io.github.homchom.recode.multiplayer.ReceiveChatMessageEvent;
 import io.github.homchom.recode.sys.player.chat.ChatType;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
 import io.github.homchom.recode.sys.util.TextUtil;
@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 
 public class LegacyReceiveChatMessageEvent {
     public LegacyReceiveChatMessageEvent() {
-        MultiplayerEvents.getReceiveChatMessageEvent().register(this::run);
+        ReceiveChatMessageEvent.INSTANCE.register(this::run);
     }
 
     public static boolean pjoin = false;
