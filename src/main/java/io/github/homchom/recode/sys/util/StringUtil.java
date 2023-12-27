@@ -1,7 +1,6 @@
 package io.github.homchom.recode.sys.util;
 
 import com.google.gson.JsonArray;
-import io.github.homchom.recode.Recode;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -48,7 +47,7 @@ public class StringUtil {
     }
 
     public static String genDummyIntArray() {
-        var random = Recode.INSTANCE.getRandom();
+        var random = kotlin.random.Random.Default;
         return "[I;" + random.nextInt() + "," + random.nextInt() + ","
                 + random.nextInt() + "," + random.nextInt() + "]";
     }

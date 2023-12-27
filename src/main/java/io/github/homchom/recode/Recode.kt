@@ -29,24 +29,13 @@ import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.ModContainer
 import net.fabricmc.loader.api.metadata.ModMetadata
 import net.fabricmc.loader.api.metadata.ModOrigin
-import org.slf4j.LoggerFactory
-import org.slf4j.event.Level
 import java.nio.file.Path
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import kotlin.random.Random
-
-private val logger = LoggerFactory.getLogger(MOD_ID).apply { isEnabledForLevel(Level.DEBUG) }
 
 object Recode : ModContainer {
     val version: String get() = metadata.version.friendlyString
-
-    @Deprecated(
-        "Use kotlin.random.Random instead",
-        ReplaceWith("Random", "kotlin.random.Random")
-    )
-    val random get() = Random
 
     private val container by lazy { FabricLoader.getInstance().getModContainer(MOD_ID).get() }
 
@@ -148,24 +137,4 @@ object LegacyRecode {
             CommandHandler.load(dispatcher, registryAccess)
         }
     }
-
-    @JvmStatic
-    fun info(message: String) = logInfo("[$MOD_NAME] $message")
-
-    @JvmStatic
-    fun error(message: String) = logError("[$MOD_NAME] $message")
-}
-
-fun logInfo(message: String) = logger.info("[$MOD_NAME] $message")
-
-@JvmOverloads
-fun logError(message: String, mentionBugReport: Boolean = false) {
-    val bugString = if (mentionBugReport) {
-        "\nIf you believe this is a bug, you can report it here: https://github.com/homchom/recode/issues)"
-    } else ""
-    logger.error("[$MOD_NAME] $message$bugString")
-}
-
-fun logDebug(message: String) {
-    if (debug) logger.info("[$MOD_NAME debug] $message")
 }

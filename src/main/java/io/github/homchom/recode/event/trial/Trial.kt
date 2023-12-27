@@ -3,7 +3,6 @@ package io.github.homchom.recode.event.trial
 import io.github.homchom.recode.event.Listenable
 import io.github.homchom.recode.event.Validated
 import io.github.homchom.recode.event.map
-import io.github.homchom.recode.util.computeNullable
 import kotlinx.coroutines.*
 
 /**
@@ -141,16 +140,14 @@ class TrialResult<T : Any> private constructor(private val deferred: Deferred<T?
         hidden: Boolean = false
     ) : this(
         scope.async {
-            computeNullable {
+            try {
                 coroutineScope {
-                    val trialScope = TrialScope(
-                        this@computeNullable,
-                        this,
-                        hidden
-                    )
+                    val trialScope = TrialScope(this, hidden)
                     yield()
                     trialScope.asyncBlock().also { coroutineContext.cancelChildren() }
                 }
+            } catch (e: TrialScopeException) {
+                null
             }
         }
     )
@@ -164,7 +161,7 @@ private open class BasedTrial<T, B, R : Any>(
     @OptIn(ExperimentalCoroutinesApi::class)
     override val results = basis.map { baseContext ->
         Trial.ResultSupplier<T & Any, R> { input, isRequest, hidden ->
-            val result = tests.runTestsIn(this,input ?: defaultInput, baseContext, isRequest)
+            val result = tests.runTestsIn(this, input ?: defaultInput, baseContext, isRequest)
 
             // handle HideCallbacks
             if (baseContext is Validated && hidden != null) result?.invokeOnCompletion { exception ->

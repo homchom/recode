@@ -8,6 +8,7 @@ import io.github.homchom.recode.event.GroupListenable
 import io.github.homchom.recode.event.StateListenable
 import io.github.homchom.recode.event.filterIsInstance
 import io.github.homchom.recode.event.trial.TrialScope
+import io.github.homchom.recode.event.trial.TrialScopeException
 import io.github.homchom.recode.event.trial.detector
 import io.github.homchom.recode.event.trial.trial
 import io.github.homchom.recode.hypercube.JoinDFDetector
@@ -18,10 +19,9 @@ import io.github.homchom.recode.multiplayer.DisconnectFromServerEvent
 import io.github.homchom.recode.multiplayer.ReceiveChatMessageEvent
 import io.github.homchom.recode.multiplayer.ReceiveGamePacketEvent
 import io.github.homchom.recode.multiplayer.username
+import io.github.homchom.recode.ui.text.LegacyCodeRemover
 import io.github.homchom.recode.ui.text.matchesPlain
-import io.github.homchom.recode.ui.text.removeLegacyCodes
 import io.github.homchom.recode.util.Case
-import io.github.homchom.recode.util.encase
 import io.github.homchom.recode.util.regex.namedGroupValues
 import io.github.homchom.recode.util.regex.regex
 import kotlinx.coroutines.async
@@ -46,28 +46,35 @@ object DFStateDetectors : StateListenable<Case<DFState?>> by eventGroup {
     private val teleportEvent = ReceiveGamePacketEvent.filterIsInstance<ClientboundPlayerPositionPacket>()
 
     val EnterSpawn = eventGroup.add(detector("spawn",
-        trial(teleportEvent, Unit) { _, _ ->
-            enforce { requireTrue(isOnDF) }
+        trial(teleportEvent, Unit) t@{ _, _ ->
+            enforceOnDF()
 
             val gameMenuStack = mc.player!!.inventory.getItem(4) // middle hotbar slot
-            requireTrue("◇ Game Menu ◇" in gameMenuStack.hoverName.string)
+            if ("◇ Game Menu ◇" !in gameMenuStack.hoverName.string) return@t null
 
-            val scoreboard = mc.player!!.scoreboard
-            val objective = scoreboard.getObjective("info")!!
-            val score = scoreboard.getPlayerScores(objective).singleOrNull { it.score == 3 } ?: fail()
-            val node = scoreboardNodeRegex.matchEntire(removeLegacyCodes(score.owner))!!
+            val scoreboardText = run {
+                val scoreboard = mc.player!!.scoreboard
+                val objective = scoreboard.getObjective("info")!!
+                val score = scoreboard.getPlayerScores(objective).singleOrNull { it.score == 3 }
+                    ?: return@t null
+                LegacyCodeRemover.removeCodes(score.owner)
+            }
+            val node = scoreboardNodeRegex.matchEntire(scoreboardText)!!
                 .namedGroupValues["node"]
                 .let(::nodeByName)
-            requireTrue(currentDFState !is DFState.AtSpawn || node != currentDFState!!.node)
+            if (currentDFState is DFState.AtSpawn && node == currentDFState?.node) {
+                return@t null
+            }
 
             val extraTeleport = teleportEvent.add()
-            suspending {
+            suspending s@{
                 // the player is teleported multiple times, so only detect the last one
                 failOn(extraTeleport)
 
-                val locateState = locate()
-                requireTrue(locateState is LocateState.AtSpawn)
-                Case(currentDFState!!.withState(locateState))
+                val locateState = locate() ?: return@s null
+                val state = currentDFState!!.withState(locateState) as? DFState.OnPlot
+                    ?: return@s null
+                Case(state)
             }
         },
         trial(JoinDFDetector, Unit) { info, _ ->
@@ -83,28 +90,28 @@ object DFStateDetectors : StateListenable<Case<DFState?>> by eventGroup {
     ))
 
     val ChangeMode = eventGroup.add(detector("mode change",
-        trial(ReceiveChatMessageEvent, Unit) { (message), _ ->
-            enforce { requireTrue(isOnDF) }
-            suspending {
-                PlotMode.ID.match(message)?.encase { mode ->
-                    val state = currentDFState!!.withState(locate()) as? DFState.OnPlot
-                    if (state?.mode?.id != mode) fail()
-                    state
-                }
+        trial(ReceiveChatMessageEvent, Unit) t@{ (message), _ ->
+            enforceOnDF()
+            val mode = PlotMode.ID.match(message) ?: return@t null
+            suspending s@{
+                val locateState = locate() ?: return@s null
+                val state = currentDFState!!.withState(locateState) as? DFState.OnPlot
+                if (state?.mode?.id != mode) return@s null
+                Case(state)
             }
         }
     ))
 
     val StartSession = eventGroup.add(detector("session start",
-        trial(ReceiveChatMessageEvent, Unit) { (message), _ ->
-            enforce { requireTrue(isOnDF) }
+        trial(ReceiveChatMessageEvent, Unit) t@{ (message), _ ->
+            enforceOnDF()
 
-            requireTrue(currentDFState!!.session == null)
-            val session = SupportSession.match(message)!!
+            if (currentDFState!!.session != null) return@t null
+            val session = SupportSession.match(message) ?: return@t null
 
             val subsequent = ReceiveChatMessageEvent.add()
             val enforceChannel = ReceiveChatMessageEvent.add()
-            suspending {
+            suspending s@{
                 enforce(enforceChannel) { (text) -> SupportSession.match(text) == null }
 
                 val regex = regex {
@@ -117,18 +124,17 @@ object DFStateDetectors : StateListenable<Case<DFState?>> by eventGroup {
                     regex.matchesPlain(text)
                 }
 
-                val supportTime = CodeMessages.SupportTime.request(Unit, true).duration
-                requireTrue(supportTime != null)
+                CodeMessages.SupportTime.request(Unit, true).duration ?: return@s null
                 Case(currentDFState!!.withSession(session))
             }
         }
     ))
 
     val EndSession = eventGroup.add(detector("session end",
-        trial(ReceiveChatMessageEvent, Unit) { (message), _ ->
-            enforce { requireTrue(isOnDF) }
+        trial(ReceiveChatMessageEvent, Unit) t@{ (message), _ ->
+            enforceOnDF()
 
-            requireTrue(currentDFState!!.session != null)
+            if (currentDFState!!.session == null) return@t null
 
             // TODO: is there a better way to do this with fewer false positives?
             val regex = regex {
@@ -137,7 +143,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>> by eventGroup {
                 str(" has ended.")
             }
 
-            requireTrue(regex.matchesPlain(message))
+            if (!regex.matchesPlain(message)) return@t null
             instant(Case(currentDFState!!.withSession(null)))
         }
     ))
@@ -152,9 +158,10 @@ object DFStateDetectors : StateListenable<Case<DFState?>> by eventGroup {
         power.extend(eventGroup)
     }
 
-    private suspend fun TrialScope.locate() =
-        mc.player?.run {
-            val message = StateMessages.Locate.request(username, true)
-            message.state
-        } ?: fail()
+    // TODO: leverage Power to remove all occurrences of this
+    private fun TrialScope.enforceOnDF() = enforce { if (!isOnDF) throw TrialScopeException() }
+
+    private suspend fun locate() = mc.player?.let { player ->
+        StateMessages.Locate.request(player.username, true).state
+    }
 }

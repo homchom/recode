@@ -1,7 +1,7 @@
 package io.github.homchom.recode.util.regex
 
 /**
- * Builds and returns a [Regex] object.
+ * Builds and returns a [Regex] pattern.
  *
  * @throws RegexElementException
  *

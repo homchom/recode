@@ -2,10 +2,9 @@
 
 package io.github.homchom.recode.ui.text
 
-import io.github.homchom.recode.util.fromCodePoint
+import io.github.homchom.recode.util.lib.fromCodePoint
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.Style
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import net.minecraft.util.FormattedCharSequence
 import net.minecraft.util.FormattedCharSink
 
@@ -57,10 +56,9 @@ infix fun FormattedCharSequence.looksLike(other: FormattedCharSequence): Boolean
 /**
  * @return A plain text representation of this [Component].
  *
- * @see PlainTextComponentSerializer
+ * @see LegacyCodeRemover.plainText
  */
-val Component.plainText get() =
-    removeLegacyCodes(PlainTextComponentSerializer.plainText().serialize(this))
+val Component.plainText get() = LegacyCodeRemover.plainText(this)
 
 /**
  * @return Whether this [Component]'s [plainText] equals [string].

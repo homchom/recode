@@ -34,7 +34,7 @@ public abstract class MessageCheck {
             new StreamerModeRegexCheck()
     };
 
-    public abstract MessageType getType();
+    public abstract LegacyMessageType getType();
 
     public abstract boolean check(LegacyMessage message, String stripped);
 
@@ -43,7 +43,7 @@ public abstract class MessageCheck {
     */
     public abstract void onReceive(LegacyMessage message);
 
-    public static MessageType run(LegacyMessage message) {
+    public static LegacyMessageType run(LegacyMessage message) {
         for (MessageCheck check : checks) {
             if (check.check(message, message.getStripped())) {
                 check.onReceive(message);
@@ -51,6 +51,6 @@ public abstract class MessageCheck {
                 return check.getType();
             }
         }
-        return MessageType.OTHER;
+        return LegacyMessageType.OTHER;
     }
 }

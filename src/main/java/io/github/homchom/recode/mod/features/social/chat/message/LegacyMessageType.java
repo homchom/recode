@@ -1,6 +1,6 @@
 package io.github.homchom.recode.mod.features.social.chat.message;
 
-public enum MessageType {
+public enum LegacyMessageType {
     OTHER,
 
     // ----------------------------------
@@ -34,19 +34,19 @@ public enum MessageType {
     private final int messageAmount;
     private final boolean hasSound;
 
-    MessageType() {
+    LegacyMessageType() {
         this(1);
     }
 
-    MessageType(int messageAmount) {
+    LegacyMessageType(int messageAmount) {
         this(messageAmount, false);
     }
 
-    MessageType(boolean hasSound) {
+    LegacyMessageType(boolean hasSound) {
         this(1, hasSound);
     }
 
-    MessageType(int messageAmount, boolean hasSound) {
+    LegacyMessageType(int messageAmount, boolean hasSound) {
         this.messageAmount = messageAmount;
         this.hasSound = hasSound;
     }
@@ -59,7 +59,7 @@ public enum MessageType {
         return hasSound;
     }
 
-    public boolean is(MessageType compareTo) {
+    public boolean is(LegacyMessageType compareTo) {
         return this == compareTo;
     }
 }

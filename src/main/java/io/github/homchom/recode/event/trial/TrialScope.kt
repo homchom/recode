@@ -2,8 +2,7 @@ package io.github.homchom.recode.event.trial
 
 import io.github.homchom.recode.DEFAULT_TIMEOUT_DURATION
 import io.github.homchom.recode.event.Listenable
-import io.github.homchom.recode.util.NullableScope
-import io.github.homchom.recode.util.unitOrNull
+import io.github.homchom.recode.util.lib.unitOrNull
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
@@ -18,18 +17,17 @@ import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.time.Duration
 
 /**
- * A [CoroutineScope] and [NullableScope] that a [Trial] executes in.
+ * A [CoroutineScope] that a [Trial] executes in.
  *
- * A trial is a test containing one or more suspension points on events; they are useful for detecting an
- * occurrence that happens in complex steps. TrialScope includes corresponding DSL functions such as [requireTrue],
- * [add], and [test].
+ * A trial is a test containing one or more suspension points on events; they are useful for detecting
+ * an occurrence that happens in complex steps. TrialScope includes corresponding DSL functions such as
+ * [add] and [test].
  *
  * @param hidden To be used by trials to invalidate "notification-like" intermediate event contexts.
  *
  * @see trial
  */
 class TrialScope @DelicateCoroutinesApi constructor(
-    private val nullableScope: NullableScope,
     val coroutineScope: CoroutineScope,
     val hidden: Boolean = false,
 ) {
@@ -88,20 +86,6 @@ class TrialScope @DelicateCoroutinesApi constructor(
     }
 
     /**
-     * Fails the trial if [predicate] is false.
-     */
-    fun requireTrue(predicate: Boolean) {
-        if (!predicate) fail()
-    }
-
-    /**
-     * Fails the trial if [predicate] is true.
-     */
-    fun requireFalse(predicate: Boolean) {
-        if (predicate) fail()
-    }
-
-    /**
      * Tests [test] on the first [attempts] values of [channel] until a non-null result is returned.
      *
      * @throws kotlinx.coroutines.channels.ClosedReceiveChannelException
@@ -136,7 +120,7 @@ class TrialScope @DelicateCoroutinesApi constructor(
         crossinline test: (C) -> T?
     ) {
         coroutineScope.launch(coroutineContext, CoroutineStart.UNDISPATCHED) {
-            channel.consumeEach { test(it)!! }
+            channel.consumeEach { test(it) ?: throw TrialScopeException() }
         }
         yield() // fast-fail
     }
@@ -177,21 +161,12 @@ class TrialScope @DelicateCoroutinesApi constructor(
      * prepend it with [unaryPlus].
      */
     @JvmInline
-    value class TestResult<T : Any>(val value: T?) {
-        val passed get() = value != null
-    }
+    value class TestResult<T : Any>(val value: T?)
 
     /**
      * @return a non-null [TestResult.value] or fails the trial.
      */
-    operator fun <T : Any> TestResult<T>.unaryPlus() = value ?: fail()
-
-    /**
-     * Fails this trial.
-     *
-     * @see NullableScope.fail
-     */
-    fun fail(): Nothing = nullableScope.fail()
+    operator fun <T : Any> TestResult<T>.unaryPlus() = value ?: throw TrialScopeException()
 
     /**
      * @return an instant [TrialResult] with [value]. Use this when a trial does not end asynchronously.
@@ -212,3 +187,5 @@ class TrialScope @DelicateCoroutinesApi constructor(
      */
     fun Boolean.instantUnitOrNull() = instant(unitOrNull())
 }
+
+class TrialScopeException : RuntimeException()

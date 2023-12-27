@@ -1,4 +1,4 @@
-package io.github.homchom.recode.util.collections
+package io.github.homchom.recode.util.lib
 
 /**
  * Maps this list into an [Array].

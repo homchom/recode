@@ -23,5 +23,3 @@ data class MutableCase<T>(var content: T) {
      */
     operator fun invoke() = content
 }
-
-inline fun <T, R> T.encase(block: (T) -> R) = Case(block(this))
