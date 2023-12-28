@@ -72,7 +72,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>> by eventGroup {
                 failOn(extraTeleport)
 
                 val locateState = locate() ?: return@s null
-                val state = currentDFState!!.withState(locateState) as? DFState.OnPlot
+                val state = currentDFState!!.withState(locateState) as? DFState.AtSpawn
                     ?: return@s null
                 Case(state)
             }
