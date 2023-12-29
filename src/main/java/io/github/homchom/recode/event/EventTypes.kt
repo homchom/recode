@@ -117,11 +117,6 @@ interface Detector<T : Any, out R : Any> : StateListenable<R> {
  */
 interface Requester<T : Any, out R : Any> : Detector<T, R> {
     /**
-     * The number of active, non-failed requests awaiting a result.
-     */
-    val activeRequests: Int
-
-    /**
      * Makes a request and detects the first non-null result.
      *
      * @throws kotlinx.coroutines.TimeoutCancellationException if a non-null result is not detected in time

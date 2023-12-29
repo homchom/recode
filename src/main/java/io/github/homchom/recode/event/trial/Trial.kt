@@ -102,6 +102,10 @@ sealed interface Trial<T, R : Any> {
 
 /**
  * A [Trial] that supplies to [io.github.homchom.recode.event.Detector] events.
+ *
+ * **Detector trials should not have visible side effects.** When a detector has multiple entries that
+ * would pass a trial, the first entry to complete is sent the result; other trials may continue to run
+ * but **are not guaranteed to**.
  */
 sealed interface DetectorTrial<T, R : Any> : Trial<T, R> {
     /**
@@ -120,8 +124,7 @@ sealed interface DetectorTrial<T, R : Any> : Trial<T, R> {
 /**
  * A [Trial] that supplies to [io.github.homchom.recode.event.Requester] events.
  *
- * @property start The executor function that starts the request. Note that
- * [io.github.homchom.recode.event.Requester.activeRequests] is incremented *before* [start] is invoked.
+ * @property start The executor function that starts the request.
  */
 sealed interface RequesterTrial<T, R : Any> : Trial<T, R> {
     val start: suspend (input: T & Any) -> R?

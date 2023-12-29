@@ -14,7 +14,7 @@ import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.flow.*
 import java.util.concurrent.CancellationException
 import java.util.concurrent.ConcurrentLinkedQueue
-import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.time.Duration
 
 /**
@@ -95,8 +95,9 @@ private open class TrialDetector<T, R : Any>(
     @OptIn(DelicateCoroutinesApi::class)
     private fun Power.listenToTrials() {
         for (trialIndex in trials.indices) trials[trialIndex].results.listenEach { supplier ->
+            val successful = AtomicBoolean()
             if (entries.isEmpty()) {
-                considerEntry(trialIndex, null, supplier)
+                considerEntry(trialIndex, null, supplier, successful)
             }
 
             val iterator = entries.iterator()
@@ -105,16 +106,18 @@ private open class TrialDetector<T, R : Any>(
                     iterator.remove()
                     continue
                 }
-                considerEntry(trialIndex, entry, supplier)
+                if (successful.get()) return@listenEach // fast path
+                considerEntry(trialIndex, entry, supplier, successful)
             }
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
+    @OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
     private fun considerEntry(
         trialIndex: Int,
         entry: DetectEntry<T, R>?,
-        supplier: Trial.ResultSupplier<T & Any, R>
+        supplier: Trial.ResultSupplier<T & Any, R>,
+        successful: AtomicBoolean
     ) {
         val entryScope = CoroutineScope(power.coroutineContext + lazyJob())
 
@@ -126,23 +129,28 @@ private open class TrialDetector<T, R : Any>(
             null
         }
 
+        fun finish(state: String) = entryScope.cancelAndLog(
+            "trial $trialIndex $state for ${debugString(entry?.input, entry?.hidden)}"
+        )
+
         if (result == null) {
+            finish("ended")
             entry?.responses?.trySend(null)
-        } else result.invokeOnCompletion { exception ->
+        } else result.invokeOnCompletion handler@{ exception ->
             val state = when (exception) {
                 is CancellationException -> "cancelled"
-                null -> "ended".also { succeed(result, entry) }
+                null -> "ended"
                 else -> "ended with exception $exception"
             }
-            entryScope.cancelAndLog("trial $trialIndex $state for ${debugString(entry?.input, entry?.hidden)}")
-        }
-    }
+            finish(state)
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private fun succeed(result: TrialResult<R>, entry: DetectEntry<T, R>?) {
-        val awaited = result.getCompleted()
-        entry?.responses?.trySend(awaited)
-        if (awaited != null) {
+            if (exception != null) return@handler
+            val awaited = result.getCompleted()
+            entry?.responses?.trySend(awaited)
+
+            if (awaited == null || successful.compareAndExchange(false, true)) {
+                return@handler
+            }
             logDebug("$this succeeded; running with context $awaited")
             event.run(awaited)
         }
@@ -175,11 +183,8 @@ private class TrialRequester<T, R : Any>(
 ) : TrialDetector<T, R>(name, arrayOf(primaryTrial, *secondaryTrials), timeoutDuration), Requester<T & Any, R> {
     private val start = primaryTrial.start
 
-    override val activeRequests get() = _activeRequests.get()
-
-    private val _activeRequests = AtomicInteger(0)
-
     override suspend fun request(input: T & Any, hidden: Boolean) = withContext(NonCancellable) {
+        logInfo("begin ${this@TrialRequester} NonCancellable")
         lifecycle.notifications
             .onEach { cancel("${this@TrialRequester} lifecycle ended during a request") }
             .launchIn(this)
@@ -188,11 +193,10 @@ private class TrialRequester<T, R : Any>(
             .filterNotNull()
             .produceIn(this)
 
-        _activeRequests.incrementAndGet()
         try {
             val response = start(input) ?: withTimeout(timeoutDuration) { detectChannel.receive() }
             coroutineContext.cancelChildren()
-            response
+            response.also { logInfo("end ${this@TrialRequester} NonCancellable") }
         } catch (timeout: TimeoutCancellationException) {
             mc.sendSystemToast(
                 translatedText("multiplayer.recode.request_timeout.toast.title"),
@@ -200,8 +204,6 @@ private class TrialRequester<T, R : Any>(
             )
             logError("${debugString(input, hidden)} timed out after $timeoutDuration")
             throw timeout
-        } finally {
-            _activeRequests.decrementAndGet()
         }
     }
 

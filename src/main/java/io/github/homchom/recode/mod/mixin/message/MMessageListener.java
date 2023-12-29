@@ -26,11 +26,11 @@ public class MMessageListener {
 
     private final Pattern lsRegex = Pattern.compile("^CPU Usage: \\[▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮] \\(.*%\\)$");
 
-    @Inject(method = "handleSystemChat", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "handleSystemChat", cancellable = true, at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/network/protocol/PacketUtils;ensureRunningOnSameThread(Lnet/minecraft/network/protocol/Packet;Lnet/minecraft/network/PacketListener;Lnet/minecraft/util/thread/BlockableEventLoop;)V",
+            shift = At.Shift.AFTER
+    ))
     private void handleChat(ClientboundSystemChatPacket packet, CallbackInfo ci) {
-        // this method is also called on an IO thread
-        if (!Minecraft.getInstance().isSameThread()) return;
-
         if (!ReceiveChatMessageEvent.INSTANCE.cacheAndRun(packet.content())) {
             ci.cancel();
         }
