@@ -13,7 +13,6 @@ import net.kyori.adventure.text.Component
 import net.minecraft.client.Minecraft
 import net.minecraft.client.multiplayer.ClientPacketListener
 import net.minecraft.network.protocol.Packet
-
 import java.time.Duration as JDuration
 
 val JoinServerEvent = wrapFabricEvent(ClientPlayConnectionEvents.JOIN) { listener ->

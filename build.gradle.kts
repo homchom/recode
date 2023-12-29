@@ -1,4 +1,5 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -104,10 +105,11 @@ tasks {
     }
 
     withType<KotlinCompile> {
-        kotlinOptions {
-            jvmTarget = "17"
-            // compile Kotlin interfaces with Java 8 default methods
-            freeCompilerArgs = listOf("-Xjvm-default=all")
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+            freeCompilerArgs.set(listOf(
+                "-Xjvm-default=all",
+            ))
         }
     }
 

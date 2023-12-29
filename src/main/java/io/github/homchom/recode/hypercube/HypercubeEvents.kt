@@ -44,6 +44,7 @@ val JoinDFDetector = detector("DF join",
             val canTip = tipMessage.any { (message) -> message?.canTip ?: false }
             JoinDFInfo(locateMessage.state.node, patch, canTip)
         }
-    })
+    }
+)
 
 data class JoinDFInfo(val node: Node, val patch: String, val canTip: Boolean)
