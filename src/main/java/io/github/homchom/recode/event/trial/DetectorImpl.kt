@@ -184,7 +184,6 @@ private class TrialRequester<T, R : Any>(
     private val start = primaryTrial.start
 
     override suspend fun request(input: T & Any, hidden: Boolean) = withContext(NonCancellable) {
-        logInfo("begin ${this@TrialRequester} NonCancellable")
         lifecycle.notifications
             .onEach { cancel("${this@TrialRequester} lifecycle ended during a request") }
             .launchIn(this)
@@ -196,7 +195,7 @@ private class TrialRequester<T, R : Any>(
         try {
             val response = start(input) ?: withTimeout(timeoutDuration) { detectChannel.receive() }
             coroutineContext.cancelChildren()
-            response.also { logInfo("end ${this@TrialRequester} NonCancellable") }
+            response
         } catch (timeout: TimeoutCancellationException) {
             mc.sendSystemToast(
                 translatedText("multiplayer.recode.request_timeout.toast.title"),

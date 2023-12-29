@@ -119,6 +119,10 @@ value class Node(private val id: String) {
     }
 
     override fun toString() = displayName
+
+    companion object {
+        val EVENT = Node("event")
+    }
 }
 
 fun nodeByName(name: String): Node {
@@ -137,7 +141,7 @@ private val playModeRegex = regex {
     str("$MAIN_ARROW Joined game: ")
     any.oneOrMore() // plot name
     str(" by ")
-    username()
+    any.oneOrMore() // not necessarily a username (i.e. Node.EVENT)
     period
 }
 

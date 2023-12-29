@@ -102,6 +102,18 @@ object DFStateDetectors : StateListenable<Case<DFState?>> by eventGroup {
         }
     ))
 
+    val JoinEventNode = eventGroup.add(detector("event node",
+        trial(ReceiveChatMessageEvent, Unit) t@{ (message), _ ->
+            enforceOnDF()
+            PlotMode.Play.match(message) ?: return@t null
+            suspending s@{
+                val state = currentDFState!!.withState(locate() ?: return@s null)
+                if (state.node != Node.EVENT) return@s null
+                Case(state)
+            }
+        }
+    ))
+
     val StartSession = eventGroup.add(detector("session start",
         trial(ReceiveChatMessageEvent, Unit) t@{ (message), _ ->
             enforceOnDF()
