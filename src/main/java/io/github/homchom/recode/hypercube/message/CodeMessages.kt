@@ -5,7 +5,7 @@ import io.github.homchom.recode.hypercube.state.DFStateDetectors
 import io.github.homchom.recode.multiplayer.sendCommand
 import io.github.homchom.recode.ui.text.equalsPlain
 import io.github.homchom.recode.ui.text.matchEntirePlain
-import io.github.homchom.recode.util.regex.namedGroupValues
+import io.github.homchom.recode.util.regex.groupValue
 import io.github.homchom.recode.util.regex.regex
 import net.kyori.adventure.text.Component
 import kotlin.time.Duration
@@ -36,11 +36,11 @@ object CodeMessages {
                     return SupportTime(null)
                 }
 
-                val values = regex.matchEntirePlain(input)?.namedGroupValues ?: return null
+                val match = regex.matchEntirePlain(input) ?: return null
 
-                val hours = values["hours"].toIntOrNull()?.hours ?: return null
-                val minutes = values["minutes"].toIntOrNull()?.minutes ?: return null
-                val seconds = values["seconds"].toIntOrNull()?.seconds ?: return null
+                val hours = match.groupValue("hours").toIntOrNull()?.hours ?: return null
+                val minutes = match.groupValue("minutes").toIntOrNull()?.minutes ?: return null
+                val seconds = match.groupValue("seconds").toIntOrNull()?.seconds ?: return null
 
                 return SupportTime(hours + minutes + seconds)
             }

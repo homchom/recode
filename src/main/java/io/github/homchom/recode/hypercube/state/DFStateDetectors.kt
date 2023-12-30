@@ -22,7 +22,7 @@ import io.github.homchom.recode.multiplayer.username
 import io.github.homchom.recode.ui.text.LegacyCodeRemover
 import io.github.homchom.recode.ui.text.matchesPlain
 import io.github.homchom.recode.util.Case
-import io.github.homchom.recode.util.regex.namedGroupValues
+import io.github.homchom.recode.util.regex.groupValue
 import io.github.homchom.recode.util.regex.regex
 import kotlinx.coroutines.async
 import net.minecraft.network.protocol.game.ClientboundPlayerPositionPacket
@@ -60,7 +60,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>> by eventGroup {
                 LegacyCodeRemover.removeCodes(score.owner)
             }
             val node = scoreboardNodeRegex.matchEntire(scoreboardText)!!
-                .namedGroupValues["node"]
+                .groupValue("node")
                 .let(::nodeByName)
             if (currentDFState is DFState.AtSpawn && node == currentDFState?.node) {
                 return@t null
@@ -92,11 +92,17 @@ object DFStateDetectors : StateListenable<Case<DFState?>> by eventGroup {
     val ChangeMode = eventGroup.add(detector("mode change",
         trial(ReceiveChatMessageEvent, Unit) t@{ (message), _ ->
             enforceOnDF()
-            val mode = PlotMode.ID.match(message) ?: return@t null
+            val (mode, plotName, plotOwner) = PlotMode.ID.match(message) ?: return@t null
             suspending s@{
                 val locateState = locate() ?: return@s null
                 val state = currentDFState!!.withState(locateState) as? DFState.OnPlot
-                if (state?.mode?.id != mode) return@s null
+                    ?: return@s null
+
+                // checks to prevent plots from falsifying state
+                if (state.mode.id != mode) return@s null
+                if (plotName != null && state.plot.name != plotName) return@s null
+                if (plotOwner != null && state.plot.owner != plotOwner) return@s null
+
                 Case(state)
             }
         }
