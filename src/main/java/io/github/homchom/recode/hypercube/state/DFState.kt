@@ -8,6 +8,7 @@ import io.github.homchom.recode.hypercube.SUPPORT_ARROW
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.multiplayer.username
 import io.github.homchom.recode.ui.text.equalsPlain
+import io.github.homchom.recode.ui.text.matchEntirePlain
 import io.github.homchom.recode.ui.text.matchesPlain
 import io.github.homchom.recode.util.Matcher
 import io.github.homchom.recode.util.matcherOf
@@ -139,25 +140,29 @@ data class Plot(
 
 private val playModeRegex = regex {
     str("$MAIN_ARROW Joined game: ")
-    any.oneOrMore() // plot name
+    val plotName by any.oneOrMore() // plot name
     str(" by ")
-    any.oneOrMore() // not necessarily a username (i.e. Node.EVENT)
+    val plotOwner by any.oneOrMore() // not necessarily a username (i.e. Node.EVENT)
     period
 }
 
 sealed interface PlotMode {
     val id: ID
 
-    sealed interface ID : Matcher<Component, ID> {
+    sealed interface ID : Matcher<Component, MatchResult> {
         val descriptor: String
 
         val capitalizedDescriptor get() = descriptor.replaceFirstChar(Char::titlecase)
 
-        companion object : Matcher<Component, ID> {
+        companion object : Matcher<Component, MatchResult> {
             val entries get() = arrayOf(Play, Build, Dev)
 
             override fun match(input: Component) = matcherOf(*entries).match(input)
         }
+    }
+
+    data class MatchResult(val id: ID, val plotName: String?, val plotOwner: String?) {
+        constructor(id: ID) : this(id, null, null)
     }
 
     data object Play : PlotMode, ID {
@@ -165,7 +170,12 @@ sealed interface PlotMode {
 
         override val descriptor = "playing"
 
-        override fun match(input: Component) = takeIf { playModeRegex.matchesPlain(input) }
+        override fun match(input: Component): MatchResult? {
+            val regexMatch = playModeRegex.matchEntirePlain(input) ?: return null
+            val plotName = regexMatch.groups["plotName"]?.value
+            val plotOwner = regexMatch.groups["plotOwner"]?.value
+            return MatchResult(this, plotName, plotOwner)
+        }
     }
 
     data object Build : PlotMode, ID {
@@ -173,8 +183,10 @@ sealed interface PlotMode {
 
         override val descriptor = "building"
 
-        override fun match(input: Component) =
-            takeIf { input.equalsPlain("$MAIN_ARROW You are now in build mode.") }
+        override fun match(input: Component): MatchResult? {
+            val id = takeIf { input.equalsPlain("$MAIN_ARROW You are now in build mode.") }
+            return id?.let(::MatchResult)
+        }
     }
 
     data class Dev(val buildCorner: BlockPos, val referenceBookCopy: ItemStack) : PlotMode {
@@ -183,8 +195,10 @@ sealed interface PlotMode {
         companion object ID : PlotMode.ID {
             override val descriptor = "coding"
 
-            override fun match(input: Component) =
-                takeIf { input.equalsPlain("$MAIN_ARROW You are now in dev mode.") }
+            override fun match(input: Component): MatchResult? {
+                val id = takeIf { input.equalsPlain("$MAIN_ARROW You are now in dev mode.") }
+                return id?.let(::MatchResult)
+            }
         }
     }
 }

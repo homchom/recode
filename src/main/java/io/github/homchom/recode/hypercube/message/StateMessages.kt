@@ -9,7 +9,7 @@ import io.github.homchom.recode.multiplayer.username
 import io.github.homchom.recode.ui.text.matchEntirePlain
 import io.github.homchom.recode.util.regex.RegexModifier
 import io.github.homchom.recode.util.regex.RegexPatternBuilder
-import io.github.homchom.recode.util.regex.namedGroupValues
+import io.github.homchom.recode.util.regex.groupValue
 import io.github.homchom.recode.util.regex.regex
 import net.kyori.adventure.text.Component
 import org.intellij.lang.annotations.RegExp
@@ -66,20 +66,21 @@ object StateMessages {
             }
 
             override fun match(input: Component): Locate? {
-                val values = locateRegex
-                    .matchEntirePlain(input)
-                    ?.namedGroupValues
+                val match = locateRegex.matchEntirePlain(input) ?: return null
+                val player = match.groups["player"]?.value
+                    ?: mc.player?.username
                     ?: return null
-                val player = values["player"].takeUnless(String::isEmpty) ?: mc.player?.username ?: return null
-                val node = nodeByName(values["node"])
-                val state = if (values["mode"].isEmpty()) {
+                val node = nodeByName(match.groupValue("node"))
+                val modeString = match.groups["mode"]?.value
+                val state = if (modeString == null) {
                     LocateState.AtSpawn(node)
                 } else {
-                    val mode = PlotMode.ID.entries.singleOrNull { it.descriptor == values["mode"] } ?: return null
-                    val plotName = values["plotName"]
-                    val plotID = values["plotID"].toUIntOrNull() ?: return null
-                    val owner = values["owner"]
-                    val status = values["status"].takeUnless(String::isEmpty)
+                    val mode = PlotMode.ID.entries.singleOrNull { it.descriptor == modeString }
+                        ?: return null
+                    val plotName = match.groupValue("plotName")
+                    val plotID = match.groupValue("plotID").toUIntOrNull() ?: return null
+                    val owner = match.groupValue("owner")
+                    val status = match.groups["status"]?.value
 
                     LocateState.OnPlot(node, Plot(plotName, owner, plotID), mode, status)
                 }
@@ -119,20 +120,15 @@ object StateMessages {
             }
 
             override fun match(input: Component): Profile? {
-                val values = profileRegex
-                    .matchEntirePlain(input)
-                    ?.namedGroupValues
-                    ?: return null
+                val match = profileRegex.matchEntirePlain(input) ?: return null
 
-                val player = values["player"]
-                if (player.isEmpty()) return null
-
+                val player = match.groups["player"]?.value ?: return null
                 val rankMap = DonorRank.entries.associateBy { it.displayName }
-                val rankString = values["ranks"]
-                val ranks = if (rankString.isEmpty()) emptyList() else rankString
-                    .substring(1, rankString.length - 1)
-                    .split("][")
-                    .mapNotNull(rankMap::get)
+                val rankString = match.groups["ranks"]?.value
+                val ranks = rankString?.substring(1, rankString.length - 1)
+                    ?.split("][")
+                    ?.mapNotNull(rankMap::get)
+                    ?: emptyList()
 
                 return Profile(player, ranks)
             }
