@@ -1,9 +1,12 @@
 package io.github.homchom.recode.hypercube.message
 
 import io.github.homchom.recode.event.Requester
+import io.github.homchom.recode.event.merge
 import io.github.homchom.recode.hypercube.RIGHT_ARROW
 import io.github.homchom.recode.hypercube.state.*
 import io.github.homchom.recode.mc
+import io.github.homchom.recode.multiplayer.DisconnectFromServerEvent
+import io.github.homchom.recode.multiplayer.JoinServerEvent
 import io.github.homchom.recode.multiplayer.sendCommand
 import io.github.homchom.recode.multiplayer.username
 import io.github.homchom.recode.ui.text.matchEntirePlain
@@ -17,10 +20,12 @@ import org.intellij.lang.annotations.RegExp
 object StateMessages {
     val parsers get() = arrayOf<MessageParser<*, *>>(Locate, Profile)
 
+    private val lifecycle = merge(JoinServerEvent, DisconnectFromServerEvent)
+
     data class Locate(val username: String, val state: LocateState) : ParsedMessage {
         companion object : MessageParser<String, Locate>,
             Requester<String, Locate> by ParsedMessage.requester<String?, Locate>(
-                DFStateDetectors.LeaveServer,
+                lifecycle,
                 null,
                 start = { sendCommand("locate $it") }
             )
@@ -92,7 +97,7 @@ object StateMessages {
     data class Profile(val username: String, val ranks: List<Rank>) : ParsedMessage {
         companion object : MessageParser<String, Profile>,
             Requester<String, Profile> by ParsedMessage.requester<String?, Profile>(
-                DFStateDetectors.LeaveServer,
+                lifecycle,
                 null,
                 start = { sendCommand("profile $it") }
             )

@@ -73,7 +73,7 @@ private class FlowEvent<T, R : Any>(private val resultCapture: (T) -> R) : Custo
     override fun run(context: T) = runOnMinecraftThread {
         notifications.checkEmit(context)
         RecodeDispatcher.expedite() // allow for validation and other state mutation
-        resultCapture(context).also { previous.checkEmit(it) }
+        resultCapture(context).also(previous::checkEmit)
     }
 
     override fun use(source: Power) = lazyImpl.use(source)
@@ -109,8 +109,9 @@ class GroupListenable<T : Any> private constructor(
     override fun use(source: Power) = power.use(source)
 
     private fun mergeIn(event: StateListenable<T>) {
-        event.listenEachFrom(power) { groupFlows.notifications.checkEmit(it) }
-        event.previous.onEach { groupFlows.previous.checkEmit(it) }.launchIn(power)
+        event.listenEachFrom(power, groupFlows.notifications::checkEmit)
+        event.previous.onEach(groupFlows.previous::checkEmit)
+            .launchIn(power)
     }
 }
 
