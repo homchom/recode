@@ -44,7 +44,7 @@ val OutlineBlockEntitiesEvent =
         stableInterval = 3.ticks,
         keySelector = { Case(it.sectionPos) },
         contextGenerator = { input ->
-            input.blockEntities.mapToArray { BlockEntityOutlineContext(it) }
+            input.blockEntities.mapToArray(::BlockEntityOutlineContext)
         }
     ).also { event ->
         event.use(Power(

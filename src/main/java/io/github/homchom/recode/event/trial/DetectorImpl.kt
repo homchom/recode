@@ -13,7 +13,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.flow.*
 import java.util.concurrent.CancellationException
-import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.concurrent.ConcurrentLinkedDeque
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.time.Duration
 
@@ -65,7 +65,7 @@ private open class TrialDetector<T, R : Any>(
         power.extend(event)
     }
 
-    private val entries by lazy { ConcurrentLinkedQueue<DetectEntry<T, R>>() }
+    private val entries by lazy { ConcurrentLinkedDeque<DetectEntry<T, R>>() }
 
     override val notifications by event::notifications
     override val previous by event::previous

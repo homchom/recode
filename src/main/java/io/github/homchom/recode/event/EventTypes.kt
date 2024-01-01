@@ -40,7 +40,7 @@ interface Listenable<out T> : PowerSink {
 
     @Deprecated("Only for use in legacy Java code", ReplaceWith("TODO()"))
     @DelicateCoroutinesApi
-    fun register(action: Consumer<in T>) = listenEachFrom(GlobalScope) { action.accept(it) }
+    fun register(action: Consumer<in T>) = listenEachFrom(GlobalScope, action::accept)
 }
 
 /**

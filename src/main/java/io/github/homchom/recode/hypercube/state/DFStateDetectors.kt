@@ -15,10 +15,7 @@ import io.github.homchom.recode.hypercube.JoinDFDetector
 import io.github.homchom.recode.hypercube.message.CodeMessages
 import io.github.homchom.recode.hypercube.message.StateMessages
 import io.github.homchom.recode.mc
-import io.github.homchom.recode.multiplayer.DisconnectFromServerEvent
-import io.github.homchom.recode.multiplayer.ReceiveChatMessageEvent
-import io.github.homchom.recode.multiplayer.ReceiveGamePacketEvent
-import io.github.homchom.recode.multiplayer.username
+import io.github.homchom.recode.multiplayer.*
 import io.github.homchom.recode.ui.text.LegacyCodeRemover
 import io.github.homchom.recode.ui.text.matchesPlain
 import io.github.homchom.recode.util.Case
@@ -26,6 +23,7 @@ import io.github.homchom.recode.util.regex.groupValue
 import io.github.homchom.recode.util.regex.regex
 import kotlinx.coroutines.async
 import net.minecraft.network.protocol.game.ClientboundPlayerPositionPacket
+import net.minecraft.world.item.Items
 import kotlin.time.Duration
 
 /**
@@ -50,6 +48,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>> by eventGroup {
             enforceOnDF()
 
             val gameMenuStack = mc.player!!.inventory.getItem(4) // middle hotbar slot
+            if (gameMenuStack.item != Items.EMERALD) return@t null // faster fail
             if ("◇ Game Menu ◇" !in gameMenuStack.hoverName.string) return@t null
 
             val scoreboardText = run {
@@ -108,14 +107,15 @@ object DFStateDetectors : StateListenable<Case<DFState?>> by eventGroup {
         }
     ))
 
+    // a special case, because players are always "At Spawn" on Node.EVENT
     val JoinEventNode = eventGroup.add(detector("event node",
-        trial(ReceiveChatMessageEvent, Unit) t@{ (message), _ ->
+        trial(JoinServerEvent, Unit) t@{ _, _ ->
             enforceOnDF()
-            PlotMode.Play.match(message) ?: return@t null
+            if (!mc.currentServer.ipMatchesDF) return@t null // just in case
             suspending s@{
-                val state = currentDFState!!.withState(locate() ?: return@s null)
-                if (state.node != Node.EVENT) return@s null
-                Case(state)
+                val locateState = locate().takeIf { it?.node == Node.EVENT }
+                    ?: return@s null
+                Case(currentDFState!!.withState(locateState))
             }
         }
     ))
