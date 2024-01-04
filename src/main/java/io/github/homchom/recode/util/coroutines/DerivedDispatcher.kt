@@ -6,8 +6,8 @@ import kotlin.coroutines.CoroutineContext
 
 inline fun DerivedDispatcher(executor: Executor, crossinline immediatePredicate: () -> Boolean) =
     DerivedDispatcher(
-        { command ->
-            if (!immediatePredicate()) executor.execute(command)
+        { block ->
+            if (immediatePredicate()) block.run() else executor.execute(block)
         },
         executor
     )
