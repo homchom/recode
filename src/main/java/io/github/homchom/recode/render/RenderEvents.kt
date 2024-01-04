@@ -8,7 +8,7 @@ import io.github.homchom.recode.event.*
 import io.github.homchom.recode.game.ticks
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.util.Case
-import io.github.homchom.recode.util.MixedInt
+import io.github.homchom.recode.util.math.MixedInt
 import io.github.homchom.recode.util.lib.mapToArray
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents

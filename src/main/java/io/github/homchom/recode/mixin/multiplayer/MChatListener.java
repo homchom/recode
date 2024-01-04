@@ -35,7 +35,7 @@ public abstract class MChatListener {
         }
     }
 
-    @WrapOperation(method = { "handleSystemMessage", "method_45745" }, at = @At(value = "INVOKE",
+    @WrapOperation(method = {"handleSystemMessage", "method_45745"}, at = @At(value = "INVOKE",
             target = "Lnet/minecraft/client/gui/components/ChatComponent;addMessage(Lnet/minecraft/network/chat/Component;)V"
     ))
     private void partitionUnsignedMessages(ChatComponent mainChat, Component message, Operation<Void> operation) {

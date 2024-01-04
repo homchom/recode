@@ -1,7 +1,7 @@
 package io.github.homchom.recode.event
 
 import io.github.homchom.recode.util.InvokableWrapper
-import io.github.homchom.recode.util.MixedInt
+import io.github.homchom.recode.util.math.MixedInt
 
 /**
  * Creates a [SimpleValidated] event.
