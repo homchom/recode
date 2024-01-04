@@ -1,18 +1,15 @@
 package io.github.homchom.recode.mixin.multiplayer;
 
-import com.llamalad7.mixinextras.injector.WrapWithCondition;
-import io.github.homchom.recode.event.SimpleValidated;
-import io.github.homchom.recode.multiplayer.MultiplayerEvents;
+import io.github.homchom.recode.multiplayer.DelayedCommandSender;
 import io.github.homchom.recode.sys.hypercube.templates.TemplateStorageHandler;
 import io.github.homchom.recode.sys.hypercube.templates.TemplateUtil;
 import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
-import net.minecraft.network.protocol.game.ServerboundChatCommandPacket;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ClientPacketListener.class)
 public abstract class MClientPacketListener {
@@ -30,30 +27,15 @@ public abstract class MClientPacketListener {
 		}
 	}
 
-	@WrapWithCondition(method = "sendCommand", at = @At(value = "INVOKE",
-			target = "Lnet/minecraft/client/multiplayer/ClientPacketListener;send(Lnet/minecraft/network/protocol/Packet;)V"
-	))
-	private boolean interceptCommandPackets(ClientPacketListener instance, Packet<?> packet) {
-		if (packet instanceof ServerboundChatCommandPacket commandPacket) {
-			// TODO: should this not be a validated event?
-			var context = new SimpleValidated<>(commandPacket.command());
-			return MultiplayerEvents.getSendCommandEvent().run(context);
-		}
-		return true;
+	// command rate limiting
+
+	@Inject(method = {"sendChat", "sendCommand"}, at = @At("HEAD"))
+	private void recordMessagesForRateLimiting(String string, CallbackInfo ci) {
+		DelayedCommandSender.INSTANCE.record();
 	}
 
-	@WrapWithCondition(method = "sendUnsignedCommand", at = @At(value = "INVOKE",
-			target = "Lnet/minecraft/client/multiplayer/ClientPacketListener;send(Lnet/minecraft/network/protocol/Packet;)V"
-	))
-	private boolean interceptUnsignedCommandPackets(ClientPacketListener instance, Packet<?> packet) {
-		return interceptCommandPackets(instance, packet);
+	@Inject(method = "sendUnsignedCommand", at = @At("HEAD"))
+	private void recordUnsignedCommandsForRateLimiting(String command, CallbackInfoReturnable<Boolean> cir) {
+		DelayedCommandSender.INSTANCE.record();
 	}
-
-	/*@Redirect(method = "handleServerData", at = @At(value = "INVOKE", target =
-		"Lnet/minecraft/client/gui/components/toasts/ToastComponent;addToast(Lnet/minecraft/client/gui/components/toasts/Toast;)V"))
-	private void hideSecureChatToastIfTrusted(ToastComponent instance, Toast toast) {
-		if (!ServerStatus.isTrusted(Minecraft.getInstance().getCurrentServer())) {
-			instance.addToast(toast);
-		}
-	}*/
 }

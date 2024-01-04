@@ -4,9 +4,7 @@
 package io.github.homchom.recode.hypercube.state
 
 import io.github.homchom.recode.Power
-import io.github.homchom.recode.event.GroupListenable
-import io.github.homchom.recode.event.StateListenable
-import io.github.homchom.recode.event.filterIsInstance
+import io.github.homchom.recode.event.*
 import io.github.homchom.recode.event.trial.TrialScope
 import io.github.homchom.recode.event.trial.TrialScopeException
 import io.github.homchom.recode.event.trial.detector
@@ -170,10 +168,27 @@ object DFStateDetectors : StateListenable<Case<DFState?>> by eventGroup {
         trial(DisconnectFromServerEvent, Unit) { _, _ -> instant(Case.ofNull) }
     ))
 
+    private object Manual :
+        CustomEvent<Case<DFState?>, Case<DFState?>> by createEvent({ it }),
+        StateListenable<Case<DFState?>>
+
     private val power = Power()
 
     init {
+        eventGroup.add(Manual)
         power.extend(eventGroup)
+    }
+
+    /**
+     * Instructs the detectors that, for whatever reason, [currentDFState] can not be reliably determined.
+     * (This is usually because a plot is maliciously sending too many messages). This is advanced and generally
+     * should not be called.
+     */
+    fun panic() {
+        val oldState = currentDFState as? DFState.OnPlot ?: return
+        val newState = DFState.AtSpawn(oldState.node, oldState.permissions, oldState.session)
+        Manual.run(Case(newState))
+        DelayedCommandSender.sendCommandUnsafe("spawn")
     }
 
     // TODO: leverage Power to remove all occurrences of this

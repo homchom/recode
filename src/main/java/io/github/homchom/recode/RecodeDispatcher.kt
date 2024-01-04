@@ -19,7 +19,7 @@ inline fun <R> runOnMinecraftThread(crossinline block: () -> R) =
  * thread. Use this instead of Minecraft's default [Executor] because this, runs first and supports the
  * [kotlinx.coroutines.yield] function.
  */
-object RecodeDispatcher : CoroutineContext {
+object RecodeDispatcher : CoroutineContext { // TODO: use DerivedDispatcher
     private val dispatcher = object : CoroutineDispatcher() {
         val pending = ConcurrentLinkedQueue<Runnable>()
 
