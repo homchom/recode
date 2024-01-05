@@ -5,6 +5,8 @@
     "recode.command.require_creative_mode": "You must be in creative mode to use this command!",
     "recode.command.require_dev_mode": "You must be in dev mode to use this command!",
 
+    "recode.state.panicked": "Possible malicious plot detected. You have been sent to spawn.",
+
     "recode.template_search.cleared": "Search Cleared!",
     "recode.template_search.invalid": "Invalid Action '%s'.",
     "recode.template_search.begin_search": "Results of '%s'",
@@ -12,6 +14,9 @@
     "recode.uncaught_exception.toast.title": "An uncaught exception occurred!",
     "recode.uncaught_exception.toast": "Check the latest log for more info.",
 
+    "chat.tag.recode.alert": "[recode alert]",
+    "chat.tag.recode.error": "[recode error]",
+    "chat.tag.recode.info": "[recode info]",
     "chat.tag.recode.stacked": "(x%d)",
 
     "config.recode.title": "Recode",

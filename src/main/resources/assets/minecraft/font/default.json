@@ -1,0 +1,13 @@
+{
+    "providers": [
+        {
+            "type": "bitmap",
+            "file": "recode:font/puaa_8x8.png",
+            "height": 8,
+            "ascent": 7,
+            "chars": [
+                "\udb9c\ude65"
+            ]
+        }
+    ]
+}

@@ -4,10 +4,10 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
 import io.github.homchom.recode.feature.social.DGuiWithSideChat;
-import io.github.homchom.recode.feature.social.MessageStacks;
 import io.github.homchom.recode.feature.social.SideChat;
 import io.github.homchom.recode.mod.config.Config;
-import io.github.homchom.recode.ui.ChatUI;
+import io.github.homchom.recode.ui.MessageTags;
+import io.github.homchom.recode.ui.RecodeMessageTags;
 import io.github.homchom.recode.ui.text.TextFunctions;
 import net.minecraft.client.GuiMessage;
 import net.minecraft.client.GuiMessageTag;
@@ -137,7 +137,7 @@ public abstract class MChatComponent {
         }
 
         // replace old message, with updated tags
-        var newTag = ChatUI.plus(tag, MessageStacks.INSTANCE.tag(++messageStackAmount));
+        var newTag = MessageTags.plus(tag, RecodeMessageTags.INSTANCE.stacked(++messageStackAmount));
         for (var index = 0; index < lineCount; index++) {
             var oldLine = trimmedMessages.get(index);
             var newLine = new GuiMessage.Line(
