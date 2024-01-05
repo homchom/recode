@@ -1,6 +1,6 @@
 {
-  "pack": {
-    "pack_format": 15,
-    "description": "vanilla-style unicode symbols.\n§8BetterUnicode by Electrosolt"
-  }
+    "pack": {
+        "pack_format": 18,
+        "description": "vanilla-style unicode symbols.\n§8BetterUnicode by Electrosolt"
+    }
 }
