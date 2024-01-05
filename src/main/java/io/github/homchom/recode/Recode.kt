@@ -2,12 +2,12 @@ package io.github.homchom.recode
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import io.github.homchom.recode.event.listenEachFrom
 import io.github.homchom.recode.feature.automation.AutoCommands
 import io.github.homchom.recode.feature.visual.FBuiltInResourcePacks
 import io.github.homchom.recode.feature.visual.FCodeSearch
 import io.github.homchom.recode.feature.visual.FSignRenderDistance
 import io.github.homchom.recode.game.QuitGameEvent
+import io.github.homchom.recode.hypercube.JoinDFDetector
 import io.github.homchom.recode.mod.commands.CommandHandler
 import io.github.homchom.recode.mod.config.Config
 import io.github.homchom.recode.mod.config.internal.ConfigFile
@@ -22,8 +22,13 @@ import io.github.homchom.recode.mod.events.LegacyEventHandler
 import io.github.homchom.recode.sys.hypercube.codeaction.ActionDump
 import io.github.homchom.recode.sys.hypercube.templates.TemplateStorageHandler
 import io.github.homchom.recode.sys.networking.websocket.SocketHandler
+import io.github.homchom.recode.ui.showRecodeMessage
+import io.github.homchom.recode.ui.text.literalText
+import io.github.homchom.recode.util.regex.groupValue
+import io.github.homchom.recode.util.regex.regex
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.ModContainer
@@ -35,11 +40,28 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 object Recode : ModContainer {
-    val version: String get() = metadata.version.friendlyString
+    /**
+     * A prettified version of the mod's version. For example, "0.1.2-beta.3" is prettified to "0.1.2 beta 3".
+     */
+    // TODO: i assume there isn't a way to share this code with the buildscript?
+    val version: String by lazy {
+        val raw = metadata.version.friendlyString
+        val preReleaseMatch = regex {
+            str('-')
+            val phase by group { str("alpha"); or; str("beta") }
+            str('.')
+        }.find(raw)
+        if (preReleaseMatch == null) raw else {
+            val phase = preReleaseMatch.groupValue("phase")
+            raw.replaceRange(preReleaseMatch.range, " $phase ")
+        }
+    }
 
     private val container by lazy { FabricLoader.getInstance().getModContainer(MOD_ID).get() }
 
     private var isInitialized = false
+
+    private val power = Power(onEnable = { registerTopLevelListeners() })
 
     // initialize features TODO: replace with FeatureGroups during config refactor
     init {
@@ -64,10 +86,21 @@ object Recode : ModContainer {
         LegacyRecode.onInitialize()
 
         @OptIn(DelicateCoroutinesApi::class)
-        QuitGameEvent.listenEachFrom(GlobalScope) { close() }
+        GlobalScope.launch { power.up() }
 
         isInitialized = true
         logInfo("initialized successfully")
+    }
+
+    // register globally active listeners that aren't feature-related
+    private fun Power.registerTopLevelListeners() {
+        // handle close
+        QuitGameEvent.listenEach { close() }
+
+        // show mod usage messages
+        JoinDFDetector.listenEach {
+            showRecodeMessage(literalText("You are using recode, version $version"))
+        }
     }
 
     private fun close() {

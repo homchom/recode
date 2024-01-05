@@ -114,7 +114,7 @@ tasks {
         // these properties can be used in fabric_mod_json_template.txt in Groovy template syntax
         val exposedProperties = arrayOf(
             "modName" to modName,
-            "version" to version,
+            "version" to modVersion,
             "minecraftVersion" to minecraftVersion,
             "loaderVersion" to loaderVersion,
             "fabricVersion" to fabricVersion
@@ -125,7 +125,7 @@ tasks {
 
         // evaluate fabric_mod_json_template.txt as a Groovy template
         filesMatching("fabric_mod_json_template.txt") {
-            val metadataRegex = Regex("""\+[\d.]+?$""")
+            val metadataRegex = Regex("""\+.+$""")
             expand(
                 *exposedProperties,
                 "metadataRegex" to metadataRegex.toPattern(),
@@ -174,14 +174,13 @@ modrinth {
     projectId.set("recode")
     versionNumber.set(modVersionWithMeta)
 
-    val match = Regex("""-(beta|alpha)(\.)?""").find(modVersion)
+    val match = Regex("""-(beta|alpha)\.""").find(modVersion)
     if (match == null) {
         versionName.set(modVersion)
         versionType.set("release")
     } else {
         val type = match.groupValues[1]
-        val replacement = if (match.groups.size == 3) " $type " else " $type"
-        versionName.set(modVersion.replaceRange(match.range, replacement))
+        versionName.set(modVersion.replaceRange(match.range, " $type "))
         versionType.set(type)
     }
 
