@@ -2,10 +2,12 @@
 
 package io.github.homchom.recode.game
 
-import io.github.homchom.recode.event.createEvent
 import io.github.homchom.recode.event.createValidatedEvent
+import io.github.homchom.recode.event.wrapFabricEvent
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents.ClientStopping
 import net.minecraft.network.protocol.game.ClientboundSoundPacket
 
 val PlaySoundEvent = createValidatedEvent<ClientboundSoundPacket>()
 
-val QuitGameEvent = createEvent<Unit>()
+val QuitGameEvent = wrapFabricEvent(ClientLifecycleEvents.CLIENT_STOPPING) { ClientStopping(it) }

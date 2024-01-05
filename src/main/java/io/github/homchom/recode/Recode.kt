@@ -24,11 +24,10 @@ import io.github.homchom.recode.sys.hypercube.templates.TemplateStorageHandler
 import io.github.homchom.recode.sys.networking.websocket.SocketHandler
 import io.github.homchom.recode.ui.showRecodeMessage
 import io.github.homchom.recode.ui.text.literalText
+import io.github.homchom.recode.ui.text.translatedText
 import io.github.homchom.recode.util.regex.groupValue
 import io.github.homchom.recode.util.regex.regex
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.ModContainer
@@ -85,8 +84,7 @@ object Recode : ModContainer {
 
         LegacyRecode.onInitialize()
 
-        @OptIn(DelicateCoroutinesApi::class)
-        GlobalScope.launch { power.up() }
+        runBlocking { power.up() }
 
         isInitialized = true
         logInfo("initialized successfully")
@@ -99,7 +97,10 @@ object Recode : ModContainer {
 
         // show mod usage messages
         JoinDFDetector.listenEach {
-            showRecodeMessage(literalText("You are using recode, version $version"))
+            showRecodeMessage(translatedText(
+                "recode.using",
+                args = arrayOf(literalText(version))
+            ))
         }
     }
 
