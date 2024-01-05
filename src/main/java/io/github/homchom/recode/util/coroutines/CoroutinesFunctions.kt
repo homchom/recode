@@ -1,4 +1,4 @@
-package io.github.homchom.recode.util.lib
+package io.github.homchom.recode.util.coroutines
 
 import kotlinx.coroutines.*
 import kotlin.coroutines.EmptyCoroutineContext

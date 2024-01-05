@@ -174,14 +174,14 @@ modrinth {
     projectId.set("recode")
     versionNumber.set(modVersionWithMeta)
 
-    val match = Regex("""-(beta|alpha)\.""").find(modVersion)
+    val match = Regex("""-(?<phase>beta|alpha)\.""").find(modVersion)
     if (match == null) {
         versionName.set(modVersion)
         versionType.set("release")
     } else {
-        val type = match.groupValues[1]
-        versionName.set(modVersion.replaceRange(match.range, " $type "))
-        versionType.set(type)
+        val phase = match.groups["phase"]!!.value
+        versionName.set(modVersion.replaceRange(match.range, " $phase "))
+        versionType.set(phase)
     }
 
     // remove "LATEST" classifiers when uploading to modrinth
@@ -216,7 +216,7 @@ data class DependencyMod(
  * @return The list of [DependencyMod] values matching [type] in gradle.properties.
  */
 fun dependencyModsOfType(type: String): List<DependencyMod> {
-    val regex = Regex("""$type\.([a-z][a-z0-9-_]{1,63})\.artifact""")
+    val regex = Regex("""$type\.([^\.]+)\.artifact""")
     return properties.mapNotNull { (key, value) ->
         regex.matchEntire(key)?.let { match ->
             val id = match.groupValues[1]

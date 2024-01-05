@@ -1,6 +1,6 @@
 package io.github.homchom.recode.ui.text
 
-import io.github.homchom.recode.util.lib.interpolate
+import io.github.homchom.recode.util.std.interpolate
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.minimessage.Context

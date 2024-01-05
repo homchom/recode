@@ -9,7 +9,7 @@ import io.github.homchom.recode.game.ticks
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.util.Case
 import io.github.homchom.recode.util.math.MixedInt
-import io.github.homchom.recode.util.lib.mapToArray
+import io.github.homchom.recode.util.std.mapToArray
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents.BeforeBlockOutline

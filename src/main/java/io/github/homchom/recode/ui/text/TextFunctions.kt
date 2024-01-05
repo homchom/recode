@@ -2,7 +2,7 @@
 
 package io.github.homchom.recode.ui.text
 
-import io.github.homchom.recode.util.lib.fromCodePoint
+import io.github.homchom.recode.util.std.fromCodePoint
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.Style
 import net.minecraft.util.FormattedCharSequence

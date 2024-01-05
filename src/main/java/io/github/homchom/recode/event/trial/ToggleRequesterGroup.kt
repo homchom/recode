@@ -3,7 +3,7 @@ package io.github.homchom.recode.event.trial
 import io.github.homchom.recode.Power
 import io.github.homchom.recode.event.Listenable
 import io.github.homchom.recode.event.Requester
-import io.github.homchom.recode.util.lib.unitOrNull
+import io.github.homchom.recode.util.std.unitOrNull
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

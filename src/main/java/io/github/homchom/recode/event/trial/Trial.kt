@@ -142,17 +142,7 @@ class TrialResult<T : Any> private constructor(private val deferred: Deferred<T?
         scope: CoroutineScope,
         hidden: Boolean = false
     ) : this(
-        scope.async {
-            try {
-                coroutineScope {
-                    val trialScope = TrialScope(this, hidden)
-                    yield()
-                    trialScope.asyncBlock().also { coroutineContext.cancelChildren() }
-                }
-            } catch (e: TrialScopeException) {
-                null
-            }
-        }
+        scope.async { suspendingTrialScope(hidden, asyncBlock) }
     )
 }
 
