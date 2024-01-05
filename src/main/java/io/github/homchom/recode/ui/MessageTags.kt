@@ -1,9 +1,46 @@
-@file:JvmName("ChatUI")
+@file:JvmName("MessageTags")
 
 package io.github.homchom.recode.ui
 
-import io.github.homchom.recode.ui.text.VanillaComponent
+import io.github.homchom.recode.MOD_NAME
+import io.github.homchom.recode.render.ColorPalette
+import io.github.homchom.recode.render.IntegralColor
+import io.github.homchom.recode.ui.text.*
+import net.kyori.adventure.text.ComponentLike
 import net.minecraft.client.GuiMessageTag
+
+object RecodeMessageTags {
+    val info = tag(ColorPalette.GREEN, "info")
+
+    val alert = tag(ColorPalette.LIGHT_PURPLE, "alert")
+
+    val error = tag(ColorPalette.GOLD, "error")
+
+    fun stacked(amount: Int) = tag(
+        ColorPalette.AQUA,
+        "stacked x$amount",
+        "stacked",
+        arrayOf(literalText(amount))
+    )
+
+    private fun tag(
+        color: IntegralColor,
+        string: String,
+        translationKey: String = string,
+        translationArgs: Array<out ComponentLike> = emptyArray()
+    ): GuiMessageTag {
+        return GuiMessageTag(
+            color.toInt(),
+            GuiMessageTag.Icon.CHAT_MODIFIED,
+            translatedText(
+                "chat.tag.recode.$translationKey",
+                style().color(color),
+                translationArgs
+            ).toVanilla(),
+            "$MOD_NAME $string"
+        )
+    }
+}
 
 /**
  * Combines this [GuiMessageTag] with [other].

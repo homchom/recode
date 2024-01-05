@@ -14,8 +14,11 @@ import io.github.homchom.recode.hypercube.message.CodeMessages
 import io.github.homchom.recode.hypercube.message.StateMessages
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.multiplayer.*
+import io.github.homchom.recode.ui.RecodeMessageTags
+import io.github.homchom.recode.ui.showRecodeMessage
 import io.github.homchom.recode.ui.text.LegacyCodeRemover
 import io.github.homchom.recode.ui.text.matchesPlain
+import io.github.homchom.recode.ui.text.translatedText
 import io.github.homchom.recode.util.Case
 import io.github.homchom.recode.util.regex.groupValue
 import io.github.homchom.recode.util.regex.regex
@@ -189,6 +192,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>> by eventGroup {
         val newState = DFState.AtSpawn(oldState.node, oldState.permissions, oldState.session)
         Manual.run(Case(newState))
         DelayedCommandSender.sendCommandUnsafe("spawn")
+        showRecodeMessage(translatedText("recode.state.panicked"), RecodeMessageTags.alert)
     }
 
     // TODO: leverage Power to remove all occurrences of this

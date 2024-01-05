@@ -20,6 +20,12 @@ fun Component.mergeStyle(
 }
 
 /**
+ * A shortcut for [Component.mergeStyle] with strategy [Style.Merge.Strategy.IF_ABSENT_ON_TARGET].
+ */
+fun Component.mergeStyleIfAbsent(style: Style, merges: Set<Style.Merge> = Style.Merge.all()) =
+    mergeStyle(style, Style.Merge.Strategy.IF_ABSENT_ON_TARGET, merges)
+
+/**
  * Returns a flattened [Sequence] of this [Component]'s nodes, where parent and child styles are recursively merged.
  */
 fun Component.asFlatSequence(): Sequence<Component> = sequence {

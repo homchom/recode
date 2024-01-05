@@ -3,10 +3,9 @@
 package io.github.homchom.recode.game
 
 import io.github.homchom.recode.mixin.game.ItemStackAccessor
-import io.github.homchom.recode.ui.text.mergeStyle
+import io.github.homchom.recode.ui.text.mergeStyleIfAbsent
 import io.github.homchom.recode.ui.text.toAdventure
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.Style
 import net.kyori.adventure.text.serializer.json.JSONComponentSerializer
 import net.minecraft.nbt.Tag
 import net.minecraft.world.item.ItemStack
@@ -24,7 +23,7 @@ fun ItemStack.lore(): List<Component> {
         for (index in 0..<loreTag.size) {
             val text = JSONComponentSerializer.json().deserializeOrNull(loreTag.getString(index)) ?: continue
             val style = ItemStackAccessor.getLoreVanillaStyle().toAdventure()
-            add(text.mergeStyle(style, strategy = Style.Merge.Strategy.IF_ABSENT_ON_TARGET))
+            add(text.mergeStyleIfAbsent(style))
         }
     }
 }

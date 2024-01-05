@@ -1,7 +1,7 @@
 package io.github.homchom.recode.mixin.multiplayer;
 
 import io.github.homchom.recode.hypercube.HypercubeConstants;
-import io.github.homchom.recode.ui.Toasts;
+import io.github.homchom.recode.ui.Messaging;
 import net.kyori.adventure.text.Component;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.SystemToast;
@@ -36,7 +36,7 @@ public abstract class MJoinMultiplayerScreen {
 
         if (!matcher.matches()) return;
 
-        Toasts.sendSystemToast(
+        Messaging.sendSystemToast(
                 Minecraft.getInstance(),
                 Component.translatable("multiplayer.recode.unofficial_address.toast.title"),
                 Component.translatable("multiplayer.recode.unofficial_address.toast"),
