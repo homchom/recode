@@ -14,6 +14,8 @@
     "recode.uncaught_exception.toast.title": "An uncaught exception occurred!",
     "recode.uncaught_exception.toast": "Check the latest log for more info.",
 
+    "recode.using": "You are using recode, version %s",
+
     "chat.tag.recode.alert": "[recode alert]",
     "chat.tag.recode.error": "[recode error]",
     "chat.tag.recode.info": "[recode info]",
