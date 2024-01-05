@@ -7,7 +7,7 @@ import io.github.homchom.recode.event.Requester
 import io.github.homchom.recode.event.createEvent
 import io.github.homchom.recode.ui.sendSystemToast
 import io.github.homchom.recode.ui.text.translatedText
-import io.github.homchom.recode.util.lib.lazyJob
+import io.github.homchom.recode.util.coroutines.lazyJob
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.SendChannel
@@ -120,13 +120,13 @@ private open class TrialDetector<T, R : Any>(
         successful: AtomicBoolean
     ) {
         val entryScope = CoroutineScope(power.coroutineContext + lazyJob())
-
-        val result = try {
-            val trialScope = TrialScope(entryScope, entry?.hidden ?: false)
+        val result = entryScope.nonSuspendingTrialScope(entry?.hidden ?: false) {
             logDebug { "trial $trialIndex started for ${debugString(entry?.input, entry?.hidden)}" }
-            supplier.supplyIn(trialScope, entry?.input, entry?.isRequest ?: false)
-        } catch (e: TrialScopeException) {
-            null
+            supplier.supplyIn(
+                this,
+                entry?.input,
+                entry?.isRequest ?: false
+            )
         }
 
         fun finish(state: String) = entryScope.cancelAndLog(

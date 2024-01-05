@@ -2,7 +2,7 @@ package io.github.homchom.recode
 
 import io.github.homchom.recode.ui.sendSystemToast
 import io.github.homchom.recode.ui.text.translatedText
-import io.github.homchom.recode.util.coroutines.DerivedDispatcher
+import io.github.homchom.recode.util.coroutines.YieldingExecutorDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Runnable
@@ -25,7 +25,7 @@ inline fun <R> runOnMinecraftThread(crossinline block: () -> R) =
  */
 object RecodeDispatcher : CoroutineContext {
     private val pending = ConcurrentLinkedQueue<Runnable>()
-    private val dispatcher = DerivedDispatcher(pending::add, mc::isSameThread)
+    private val dispatcher = YieldingExecutorDispatcher(pending::add, mc::isSameThread)
 
     private val delegate = dispatcher + CoroutineExceptionHandler { _, exception ->
         mc.sendSystemToast(

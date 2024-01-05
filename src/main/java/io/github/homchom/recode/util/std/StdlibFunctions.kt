@@ -1,6 +1,6 @@
 @file:JvmName("BasicTypeExtensions")
 
-package io.github.homchom.recode.util.lib
+package io.github.homchom.recode.util.std
 
 // booleans
 
