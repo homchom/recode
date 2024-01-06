@@ -1,27 +1,27 @@
 {
-  "required": true,
-  "package": "io.github.homchom.recode.mixin",
-  "compatibilityLevel": "JAVA_17",
-  "mixins": [],
-  "client": [
-    "MMinecraft",
-    "game.ItemStackAccessor",
-    "multiplayer.MChatListener",
-    "multiplayer.MClientPacketListener",
-    "multiplayer.MConnection",
-    "multiplayer.MJoinMultiplayerScreen",
-    "optional.sodium.MSodiumWorldRenderer",
-    "render.MBlockEntityRenderDispatcher",
-    "render.MGui",
-    "render.MLevelRenderer",
-    "render.MWindow",
-    "render.chat.MChatComponent",
-    "render.chat.MChatScreen",
-    "render.chat.MCommandSuggestions"
-  ],
-  "server": [],
-  "plugin": "io.github.homchom.recode.mixin.MixinPluginRecode",
-  "injectors": {
-    "defaultRequire": 1
-  }
+    "required": true,
+    "package": "io.github.homchom.recode.mixin",
+    "compatibilityLevel": "JAVA_17",
+    "mixins": [],
+    "client": [
+        "MMinecraft",
+        "game.ItemStackAccessor",
+        "multiplayer.MChatListener",
+        "multiplayer.MClientPacketListener",
+        "multiplayer.MConnection",
+        "multiplayer.MJoinMultiplayerScreen",
+        "optional.sodium.MSodiumWorldRenderer",
+        "render.MBlockEntityRenderDispatcher",
+        "render.MGui",
+        "render.MLevelRenderer",
+        "render.MWindow",
+        "render.chat.MChatComponent",
+        "render.chat.MChatScreen",
+        "render.chat.MCommandSuggestions"
+    ],
+    "server": [],
+    "plugin": "io.github.homchom.recode.mixin.MixinPluginRecode",
+    "injectors": {
+        "defaultRequire": 1
+    }
 }
