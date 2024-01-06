@@ -78,7 +78,6 @@ object DFStateDetectors : StateListenable<Case<DFState?>> by eventGroup {
             }
         },
         trial(JoinDFDetector, Unit) { info, _ ->
-            enforceOnDF()
             suspending {
                 val permissions = power.async {
                     val message = StateMessages.Profile.request(mc.player!!.username, true)
