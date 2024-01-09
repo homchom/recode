@@ -18,6 +18,7 @@ import io.github.homchom.recode.util.regex.regex
 import kotlinx.coroutines.Deferred
 import net.kyori.adventure.text.Component
 import net.minecraft.client.multiplayer.ServerData
+import net.minecraft.client.player.LocalPlayer
 import net.minecraft.core.BlockPos
 import net.minecraft.world.item.ItemStack
 
@@ -59,20 +60,8 @@ sealed interface DFState {
         is LocateState.OnPlot -> {
             val mode = when (state.mode) {
                 PlotMode.Play -> PlotMode.Play
-
                 PlotMode.Build -> PlotMode.Build
-
-                PlotMode.Dev -> mc.player!!.let { player ->
-                    val buildCorner = player.blockPosition()
-                        .mutable()
-                        .setY(49)
-                        .move(10, 0, -10)
-                        .immutable()
-
-                    val referenceBookCopy = player.inventory.getItem(17).copy()
-
-                    PlotMode.Dev(buildCorner, referenceBookCopy)
-                }
+                PlotMode.Dev -> PlotMode.Dev(mc.player!!)
             }
 
             OnPlot(state.node, mode, state.plot, state.status, permissions, session)
@@ -191,6 +180,15 @@ sealed interface PlotMode {
 
     data class Dev(val buildCorner: BlockPos, val referenceBookCopy: ItemStack) : PlotMode {
         override val id get() = ID
+
+        constructor(player: LocalPlayer) : this(
+            player.blockPosition()
+                .mutable()
+                .setY(49)
+                .move(10, 0, -10)
+                .immutable(),
+            player.inventory.getItem(17).copy()
+        )
 
         companion object ID : PlotMode.ID {
             override val descriptor = "coding"
