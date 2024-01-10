@@ -1,10 +1,7 @@
 package io.github.homchom.recode.event.trial
 
 import io.github.homchom.recode.*
-import io.github.homchom.recode.event.Detector
-import io.github.homchom.recode.event.Listenable
-import io.github.homchom.recode.event.Requester
-import io.github.homchom.recode.event.createEvent
+import io.github.homchom.recode.event.*
 import io.github.homchom.recode.ui.sendSystemToast
 import io.github.homchom.recode.ui.text.translatedText
 import io.github.homchom.recode.util.coroutines.lazyJob
@@ -94,7 +91,7 @@ private open class TrialDetector<T, R : Any>(
     // TODO: add more comments
     @OptIn(DelicateCoroutinesApi::class)
     private fun Power.listenToTrials() {
-        for (trialIndex in trials.indices) trials[trialIndex].results.listenEach { supplier ->
+        for (trialIndex in trials.indices) listenEach(trials[trialIndex].results) { supplier ->
             val successful = AtomicBoolean()
             if (entries.isEmpty()) {
                 considerEntry(trialIndex, null, supplier, successful)

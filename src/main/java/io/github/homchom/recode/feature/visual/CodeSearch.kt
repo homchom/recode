@@ -1,6 +1,7 @@
 package io.github.homchom.recode.feature.visual
 
 import io.github.homchom.recode.Power
+import io.github.homchom.recode.event.listenEach
 import io.github.homchom.recode.feature.registerFeature
 import io.github.homchom.recode.hypercube.state.PlotMode
 import io.github.homchom.recode.hypercube.state.currentDFState
@@ -20,7 +21,7 @@ object FCodeSearch {
     }
 
     private fun Power.outlineBlockEntities() {
-        OutlineBlockEntitiesEvent.listenEach { context ->
+        listenEach(OutlineBlockEntitiesEvent) { context ->
             if (!currentDFState.isInMode(PlotMode.Dev)) return@listenEach
             for (element in context) {
                 val blockEntity = element.blockEntity

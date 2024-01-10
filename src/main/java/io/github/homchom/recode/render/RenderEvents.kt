@@ -49,7 +49,7 @@ val OutlineBlockEntitiesEvent =
     ).also { event ->
         event.use(Power(
             onEnable = {
-                BeforeOutlineBlockEvent.listenEach { context ->
+                listenEach(BeforeOutlineBlockEvent) { context ->
                     val processor = context.worldRenderContext.worldRenderer() as DRecodeLevelRenderer
                     processor.`recode$processOutlines`(mc.frameTime)
                 }

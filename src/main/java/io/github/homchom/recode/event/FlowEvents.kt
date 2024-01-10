@@ -109,7 +109,7 @@ class GroupListenable<T : Any> private constructor(
     override fun use(source: Power) = power.use(source)
 
     private fun mergeIn(event: StateListenable<T>) {
-        event.listenEachFrom(power, groupFlows.notifications::checkEmit)
+        power.listenEach(event, groupFlows.notifications::checkEmit)
         event.previous.onEach(groupFlows.previous::checkEmit)
             .launchIn(power)
     }
