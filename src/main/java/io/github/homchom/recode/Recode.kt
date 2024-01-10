@@ -2,6 +2,7 @@ package io.github.homchom.recode
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import io.github.homchom.recode.event.listenEach
 import io.github.homchom.recode.feature.automation.AutoCommands
 import io.github.homchom.recode.feature.visual.FBuiltInResourcePacks
 import io.github.homchom.recode.feature.visual.FCodeSearch
@@ -93,10 +94,10 @@ object Recode : ModContainer {
     // register globally active listeners that aren't feature-related
     private fun Power.registerTopLevelListeners() {
         // handle close
-        QuitGameEvent.listenEach { close() }
+        listenEach(QuitGameEvent) { close() }
 
         // show mod usage messages
-        JoinDFDetector.listenEach {
+        listenEach(JoinDFDetector) {
             showRecodeMessage(translatedText(
                 "recode.using",
                 args = arrayOf(literalText(version))

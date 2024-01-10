@@ -1,12 +1,8 @@
 package io.github.homchom.recode
 
-import io.github.homchom.recode.event.Listenable
-import io.github.homchom.recode.event.listenEachFrom
-import io.github.homchom.recode.event.listenFrom
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -70,14 +66,4 @@ class Power(
         for (power in sources) power.down()
         onDisable?.invoke(this)
     }
-
-    /**
-     * @see Listenable.listenFrom
-     */
-    fun <T> Listenable<T>.listen(block: Flow<T>.() -> Flow<T>) = listenFrom(this@Power, block)
-
-    /**
-     * @see Listenable.listenEachFrom
-     */
-    fun <T> Listenable<T>.listenEach(block: (T) -> Unit) = listenEachFrom(this@Power, block)
 }

@@ -1,6 +1,7 @@
 package io.github.homchom.recode.feature.visual
 
 import io.github.homchom.recode.Power
+import io.github.homchom.recode.event.listenEach
 import io.github.homchom.recode.feature.registerFeature
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.mod.config.Config
@@ -15,7 +16,7 @@ object FSignRenderDistance {
     }
 
     private fun Power.renderSigns() {
-        RenderBlockEntitiesEvent.listenEach { context ->
+        listenEach(RenderBlockEntitiesEvent) { context ->
             for (element in context) {
                 val blockEntity = element.value
                 if (blockEntity is SignBlockEntity) {

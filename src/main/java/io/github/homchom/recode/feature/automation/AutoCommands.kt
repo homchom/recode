@@ -2,6 +2,7 @@ package io.github.homchom.recode.feature.automation
 
 import io.github.homchom.recode.Power
 import io.github.homchom.recode.event.Listenable
+import io.github.homchom.recode.event.listenEach
 import io.github.homchom.recode.event.request
 import io.github.homchom.recode.feature.registerFeature
 import io.github.homchom.recode.hypercube.*
@@ -79,7 +80,7 @@ private inline fun <T> registerAutoCommand(
 ) {
     registerFeature(name) {
         onEnable {
-            event.listenEach { body(it) }
+            listenEach(event) { body(it) }
         }
     }
 }
