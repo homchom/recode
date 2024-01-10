@@ -59,9 +59,10 @@ object DFStateDetectors : StateListenable<Case<DFState?>> by eventGroup {
                     ?: return@t null
                 LegacyCodeRemover.removeCodes(score.owner)
             }
-            val node = scoreboardNodeRegex.matchEntire(scoreboardText)!!
-                .groupValue("node")
-                .let(::nodeByName)
+            val node = scoreboardNodeRegex.matchEntire(scoreboardText)
+                ?.groupValue("node")
+                ?.let(::nodeByName)
+                ?: return@t null
             if (currentDFState is DFState.AtSpawn && node == currentDFState?.node) {
                 return@t null
             }
