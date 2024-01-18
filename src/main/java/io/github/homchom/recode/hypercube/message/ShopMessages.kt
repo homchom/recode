@@ -7,11 +7,11 @@ import io.github.homchom.recode.hypercube.BOOSTER_ARROW
 import io.github.homchom.recode.hypercube.TOKEN_NOTCH_CHAR
 import io.github.homchom.recode.multiplayer.ReceiveChatMessageEvent
 import io.github.homchom.recode.multiplayer.username
-import io.github.homchom.recode.ui.matchEntireUnstyled
-import io.github.homchom.recode.ui.matchesUnstyled
+import io.github.homchom.recode.ui.text.matchEntirePlain
+import io.github.homchom.recode.ui.text.matchesPlain
 import io.github.homchom.recode.util.regex.RegexPatternBuilder
 import io.github.homchom.recode.util.regex.regex
-import net.minecraft.network.chat.Component
+import net.kyori.adventure.text.Component
 
 object ShopMessages {
     val parsers get() = arrayOf(BoosterActive)
@@ -29,7 +29,7 @@ object ShopMessages {
             }
 
             override fun match(input: Component): BoosterActive? {
-                val match = regex.matchEntireUnstyled(input) ?: return null
+                val match = regex.matchEntirePlain(input) ?: return null
                 return BoosterActive(match.groupValues[1])
             }
         }
@@ -43,14 +43,14 @@ data class ActiveBoosterInfo(val player: String, val canTip: Boolean) {
         tests = { (player), _ ->
             val subsequent = ReceiveChatMessageEvent.add()
 
-            suspending {
+            suspending s@{
                 val (first) = subsequent.receive()
-                val canTip = ActiveBoosterInfo.commandRegex.matchesUnstyled(first)
+                val canTip = ActiveBoosterInfo.commandRegex.matchesPlain(first)
 
-                if (!ActiveBoosterInfo.timeRegex.matchesUnstyled(first)) {
-                    +testBoolean(subsequent) { (second) ->
-                        ActiveBoosterInfo.timeRegex.matchesUnstyled(second)
-                    }
+                if (!ActiveBoosterInfo.timeRegex.matchesPlain(first)) {
+                    testBoolean(subsequent) { (second) ->
+                        ActiveBoosterInfo.timeRegex.matchesPlain(second)
+                    } ?: return@s null
                 }
 
                 ActiveBoosterInfo(player, canTip)

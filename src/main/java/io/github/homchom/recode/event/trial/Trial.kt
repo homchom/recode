@@ -3,7 +3,6 @@ package io.github.homchom.recode.event.trial
 import io.github.homchom.recode.event.Listenable
 import io.github.homchom.recode.event.Validated
 import io.github.homchom.recode.event.map
-import io.github.homchom.recode.util.computeNullable
 import kotlinx.coroutines.*
 
 /**
@@ -103,6 +102,10 @@ sealed interface Trial<T, R : Any> {
 
 /**
  * A [Trial] that supplies to [io.github.homchom.recode.event.Detector] events.
+ *
+ * **Detector trials should not have visible side effects.** When a detector has multiple entries that
+ * would pass a trial, the first entry to complete is sent the result; other trials may continue to run
+ * but **are not guaranteed to**.
  */
 sealed interface DetectorTrial<T, R : Any> : Trial<T, R> {
     /**
@@ -121,8 +124,7 @@ sealed interface DetectorTrial<T, R : Any> : Trial<T, R> {
 /**
  * A [Trial] that supplies to [io.github.homchom.recode.event.Requester] events.
  *
- * @property start The executor function that starts the request. Note that
- * [io.github.homchom.recode.event.Requester.activeRequests] is incremented *before* [start] is invoked.
+ * @property start The executor function that starts the request.
  */
 sealed interface RequesterTrial<T, R : Any> : Trial<T, R> {
     val start: suspend (input: T & Any) -> R?
@@ -140,19 +142,7 @@ class TrialResult<T : Any> private constructor(private val deferred: Deferred<T?
         scope: CoroutineScope,
         hidden: Boolean = false
     ) : this(
-        scope.async {
-            computeNullable {
-                coroutineScope {
-                    val trialScope = TrialScope(
-                        this@computeNullable,
-                        this,
-                        hidden
-                    )
-                    yield()
-                    trialScope.asyncBlock().also { coroutineContext.cancelChildren() }
-                }
-            }
-        }
+        scope.async { suspendingTrialScope(hidden, asyncBlock) }
     )
 }
 
@@ -164,7 +154,7 @@ private open class BasedTrial<T, B, R : Any>(
     @OptIn(ExperimentalCoroutinesApi::class)
     override val results = basis.map { baseContext ->
         Trial.ResultSupplier<T & Any, R> { input, isRequest, hidden ->
-            val result = tests.runTestsIn(this,input ?: defaultInput, baseContext, isRequest)
+            val result = tests.runTestsIn(this, input ?: defaultInput, baseContext, isRequest)
 
             // handle HideCallbacks
             if (baseContext is Validated && hidden != null) result?.invokeOnCompletion { exception ->

@@ -2,12 +2,12 @@ package io.github.homchom.recode
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import io.github.homchom.recode.event.listenEachFrom
 import io.github.homchom.recode.feature.automation.AutoCommands
 import io.github.homchom.recode.feature.visual.FBuiltInResourcePacks
 import io.github.homchom.recode.feature.visual.FCodeSearch
 import io.github.homchom.recode.feature.visual.FSignRenderDistance
 import io.github.homchom.recode.game.QuitGameEvent
+import io.github.homchom.recode.hypercube.JoinDFDetector
 import io.github.homchom.recode.mod.commands.CommandHandler
 import io.github.homchom.recode.mod.config.Config
 import io.github.homchom.recode.mod.config.internal.ConfigFile
@@ -22,35 +22,45 @@ import io.github.homchom.recode.mod.events.LegacyEventHandler
 import io.github.homchom.recode.sys.hypercube.codeaction.ActionDump
 import io.github.homchom.recode.sys.hypercube.templates.TemplateStorageHandler
 import io.github.homchom.recode.sys.networking.websocket.SocketHandler
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
+import io.github.homchom.recode.ui.showRecodeMessage
+import io.github.homchom.recode.ui.text.literalText
+import io.github.homchom.recode.ui.text.translatedText
+import io.github.homchom.recode.util.regex.groupValue
+import io.github.homchom.recode.util.regex.regex
+import kotlinx.coroutines.runBlocking
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.ModContainer
 import net.fabricmc.loader.api.metadata.ModMetadata
 import net.fabricmc.loader.api.metadata.ModOrigin
-import org.slf4j.LoggerFactory
-import org.slf4j.event.Level
 import java.nio.file.Path
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import kotlin.random.Random
-
-private val logger = LoggerFactory.getLogger(MOD_ID).apply { isEnabledForLevel(Level.DEBUG) }
 
 object Recode : ModContainer {
-    val version: String get() = metadata.version.friendlyString
-
-    @Deprecated(
-        "Use kotlin.random.Random instead",
-        ReplaceWith("Random", "kotlin.random.Random")
-    )
-    val random get() = Random
+    /**
+     * A prettified version of the mod's version. For example, "0.1.2-beta.3" is prettified to "0.1.2 beta 3".
+     */
+    // TODO: i assume there isn't a way to share this code with the buildscript?
+    val version: String by lazy {
+        val raw = metadata.version.friendlyString
+        val preReleaseMatch = regex {
+            str('-')
+            val phase by group { str("alpha"); or; str("beta") }
+            str('.')
+        }.find(raw)
+        if (preReleaseMatch == null) raw else {
+            val phase = preReleaseMatch.groupValue("phase")
+            raw.replaceRange(preReleaseMatch.range, " $phase ")
+        }
+    }
 
     private val container by lazy { FabricLoader.getInstance().getModContainer(MOD_ID).get() }
 
     private var isInitialized = false
+
+    private val power = Power(onEnable = { registerTopLevelListeners() })
 
     // initialize features TODO: replace with FeatureGroups during config refactor
     init {
@@ -74,11 +84,24 @@ object Recode : ModContainer {
 
         LegacyRecode.onInitialize()
 
-        @OptIn(DelicateCoroutinesApi::class)
-        QuitGameEvent.listenEachFrom(GlobalScope) { close() }
+        runBlocking { power.up() }
 
         isInitialized = true
         logInfo("initialized successfully")
+    }
+
+    // register globally active listeners that aren't feature-related
+    private fun Power.registerTopLevelListeners() {
+        // handle close
+        QuitGameEvent.listenEach { close() }
+
+        // show mod usage messages
+        JoinDFDetector.listenEach {
+            showRecodeMessage(translatedText(
+                "recode.using",
+                args = arrayOf(literalText(version))
+            ))
+        }
     }
 
     private fun close() {
@@ -148,24 +171,4 @@ object LegacyRecode {
             CommandHandler.load(dispatcher, registryAccess)
         }
     }
-
-    @JvmStatic
-    fun info(message: String) = logInfo("[$MOD_NAME] $message")
-
-    @JvmStatic
-    fun error(message: String) = logError("[$MOD_NAME] $message")
-}
-
-fun logInfo(message: String) = logger.info("[$MOD_NAME] $message")
-
-@JvmOverloads
-fun logError(message: String, mentionBugReport: Boolean = false) {
-    val bugString = if (mentionBugReport) {
-        "\nIf you believe this is a bug, you can report it here: https://github.com/homchom/recode/issues)"
-    } else ""
-    logger.error("[$MOD_NAME] $message$bugString")
-}
-
-fun logDebug(message: String) {
-    if (debug) logger.info("[$MOD_NAME debug] $message")
 }

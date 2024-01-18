@@ -1,12 +1,11 @@
 package io.github.homchom.recode.mod.mixin.message;
 
-import io.github.homchom.recode.LegacyRecode;
-import io.github.homchom.recode.event.SimpleValidated;
+import io.github.homchom.recode.Logging;
 import io.github.homchom.recode.hypercube.state.DF;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.features.LagslayerHUD;
 import io.github.homchom.recode.mod.features.social.chat.message.LegacyMessage;
-import io.github.homchom.recode.multiplayer.MultiplayerEvents;
+import io.github.homchom.recode.multiplayer.ReceiveChatMessageEvent;
 import io.github.homchom.recode.sys.player.DFInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -27,13 +26,14 @@ public class MMessageListener {
 
     private final Pattern lsRegex = Pattern.compile("^CPU Usage: \\[▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮] \\(.*%\\)$");
 
-    @Inject(method = "handleSystemChat", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "handleSystemChat", cancellable = true, at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/network/protocol/PacketUtils;ensureRunningOnSameThread(Lnet/minecraft/network/protocol/Packet;Lnet/minecraft/network/PacketListener;Lnet/minecraft/util/thread/BlockableEventLoop;)V",
+            shift = At.Shift.AFTER
+    ))
     private void handleChat(ClientboundSystemChatPacket packet, CallbackInfo ci) {
-        // this method is also called on an IO thread
-        if (!Minecraft.getInstance().isSameThread()) return;
-
-        var context = new SimpleValidated<>(packet.content());
-        if (!MultiplayerEvents.getReceiveChatMessageEvent().run(context)) ci.cancel();
+        if (!ReceiveChatMessageEvent.INSTANCE.cacheAndRun(packet.content())) {
+            ci.cancel();
+        }
 
         if (DF.isOnDF()) {
             // temporary, to preserve non-migrated side effects (like message grabbing)
@@ -44,7 +44,7 @@ public class MMessageListener {
                 this.updateVersion(packet.content());
             } catch (Exception e) {
                 e.printStackTrace();
-                LegacyRecode.error("Error while trying to parse the chat text!");
+                Logging.logError("Error while trying to parse the chat text!");
             }
         }
     }
@@ -109,61 +109,14 @@ public class MMessageListener {
 
                     DFInfo.isPatchNewer(patchText, "0"); //very lazy validation lol
                     DFInfo.patchId = patchText;
-                    LegacyRecode.info("DiamondFire Patch " + DFInfo.patchId + " detected!");
+                    Logging.logInfo("DiamondFire Patch " + DFInfo.patchId + " detected!");
 
                     lastPatchCheck = time;
                 }
             } catch (Exception e) {
-                LegacyRecode.info("Error on parsing patch number!");
+                Logging.logError("Error on parsing patch number!");
                 e.printStackTrace();
             }
         }
     }
-
-    // TODO: reimplement in DFStateDetectors (supportee vs support?)
-    /*
-    private void updateState(Component component) {
-        Player player = Minecraft.getInstance().player;
-        if (player == null) return;
-
-        String text = component.getString();
-
-        // Enter Session
-        if (text.matches("^\\[SUPPORT] " + player.getName().getString() + " entered a session with \\w+\\. ▶ \\S+ \\S+!?$")) {
-            if (!DFInfo.currentState.isInSession()) {
-                new Thread(() -> {
-                    try {
-                        Thread.sleep(1300);
-                        if (DFInfo.currentState.getMode() != LegacyState.Mode.DEV) {
-                            DFInfo.currentState.sendLocate();
-                        }
-                        Thread.sleep(200);
-                        if (DFInfo.currentState.getMode() == LegacyState.Mode.DEV) {
-                            DFInfo.currentState.setInSession(true);
-                        }
-                    } catch(Exception e){
-                        LegacyRecode.error("Error while executing the task!");
-                        e.printStackTrace();
-                    }
-                }).start();
-            }
-        }
-
-        // End Session
-        if (text.matches("^\\[SUPPORT] " + player.getName().getString() + " finished a session with \\w+\\. ▶ \\d+:\\d+:\\d+$") || text.matches("^\\[SUPPORT] " + player.getName().getString() + " terminated a session with \\w+\\. ▶ \\d+:\\d+:\\d+$") || text.matches("\\[SUPPORT\\] \\w+ left a session with " + player.getName().getString() + ".$")) {
-            if (DFInfo.currentState.isInSession()) {
-                DFInfo.currentState.setInSession(false);
-                new Thread(() -> {
-                    try {
-                        Thread.sleep(1500);
-                        DFInfo.currentState.sendLocate();
-                    } catch(Exception e){
-                        LegacyRecode.error("Error while executing the task!");
-                        e.printStackTrace();
-                    }
-                }).start();
-            }
-        }
-    }
-    */
 }

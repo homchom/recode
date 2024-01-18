@@ -1,9 +1,10 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.9.0"
-    id("fabric-loom") version "1.3-SNAPSHOT"
+    id("fabric-loom") version "1.4-SNAPSHOT"
     id("com.modrinth.minotaur") version "2.+"
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
@@ -68,9 +69,6 @@ dependencies {
     // fabric
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
     modImplementation("net.fabricmc:fabric-loader:$loaderVersion")
-    include(
-        implementation(annotationProcessor("com.github.llamalad7.mixinextras:mixinextras-fabric:0.2.0-beta.9")!!)!!
-    )
 
     // kotlin
     shade(api(kotlin("stdlib", "1.9.0"))!!)
@@ -104,10 +102,11 @@ tasks {
     }
 
     withType<KotlinCompile> {
-        kotlinOptions {
-            jvmTarget = "17"
-            // compile Kotlin interfaces with Java 8 default methods
-            freeCompilerArgs = listOf("-Xjvm-default=all")
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+            freeCompilerArgs.set(listOf(
+                "-Xjvm-default=all",
+            ))
         }
     }
 
@@ -115,7 +114,7 @@ tasks {
         // these properties can be used in fabric_mod_json_template.txt in Groovy template syntax
         val exposedProperties = arrayOf(
             "modName" to modName,
-            "version" to version,
+            "version" to modVersion,
             "minecraftVersion" to minecraftVersion,
             "loaderVersion" to loaderVersion,
             "fabricVersion" to fabricVersion
@@ -126,7 +125,7 @@ tasks {
 
         // evaluate fabric_mod_json_template.txt as a Groovy template
         filesMatching("fabric_mod_json_template.txt") {
-            val metadataRegex = Regex("""\+[\d.]+?$""")
+            val metadataRegex = Regex("""\+.+$""")
             expand(
                 *exposedProperties,
                 "metadataRegex" to metadataRegex.toPattern(),
@@ -175,15 +174,14 @@ modrinth {
     projectId.set("recode")
     versionNumber.set(modVersionWithMeta)
 
-    val match = Regex("""-(beta|alpha)(\.)?""").find(modVersion)
+    val match = Regex("""-(?<phase>beta|alpha)\.""").find(modVersion)
     if (match == null) {
         versionName.set(modVersion)
         versionType.set("release")
     } else {
-        val type = match.groupValues[1]
-        val replacement = if (match.groups.size == 3) " $type " else " $type"
-        versionName.set(modVersion.replaceRange(match.range, replacement))
-        versionType.set(type)
+        val phase = match.groups["phase"]!!.value
+        versionName.set(modVersion.replaceRange(match.range, " $phase "))
+        versionType.set(phase)
     }
 
     // remove "LATEST" classifiers when uploading to modrinth
@@ -218,7 +216,7 @@ data class DependencyMod(
  * @return The list of [DependencyMod] values matching [type] in gradle.properties.
  */
 fun dependencyModsOfType(type: String): List<DependencyMod> {
-    val regex = Regex("""$type\.([a-z][a-z0-9-_]{1,63})\.artifact""")
+    val regex = Regex("""$type\.([^\.]+)\.artifact""")
     return properties.mapNotNull { (key, value) ->
         regex.matchEntire(key)?.let { match ->
             val id = match.groupValues[1]

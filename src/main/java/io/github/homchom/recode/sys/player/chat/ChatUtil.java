@@ -1,6 +1,5 @@
 package io.github.homchom.recode.sys.player.chat;
 
-import io.github.homchom.recode.hypercube.state.DF;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.sys.player.chat.color.MinecraftColors;
 import net.minecraft.client.Minecraft;
@@ -15,10 +14,8 @@ import net.minecraft.sounds.SoundSource;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
-import java.util.List;
 
 public class ChatUtil {
-
     public static void playSound(SoundEvent sound) {
         playSound(sound, 1F);
     }
@@ -35,19 +32,6 @@ public class ChatUtil {
 
     public static void command(String message) {
         Minecraft.getInstance().player.connection.sendUnsignedCommand(message);
-    }
-
-    public static void executeCommand(String command) {
-        command(command.replaceFirst("^/", ""));
-    }
-
-    public static void executeCommandSilently(String command, int messageAmount) {
-        executeCommand(command);
-        MessageGrabber.hide(messageAmount);
-    }
-
-    public static void executeCommandSilently(String command) {
-        executeCommandSilently(command, 1);
     }
 
     public static void sendMessage(String text) {
@@ -84,25 +68,6 @@ public class ChatUtil {
                 }
             }
         }
-    }
-
-    /**
-     *     A hacky way of verifying that a message is sent by Hypercube.
-     *     im too lazy to reflect or use a mixin. don't ask
-     *
-     *     * Doesn't work
-     */
-    public static boolean verifyMessage(Component component) {
-        List<Component> siblings = component.getSiblings();
-        if (!DF.isOnDF()) return false;
-        if (siblings.size() == 0) return false;
-        String str = siblings.get(0).getStyle().toString();
-
-        return !(str.contains("bold=null") ||
-                str.contains("italic=null") ||
-                str.contains("underlined=null") ||
-                str.contains("strikethrough=null") ||
-                str.contains("obfuscated=null"));
     }
 
     public static MutableComponent setColor(MutableComponent component, Color color) {

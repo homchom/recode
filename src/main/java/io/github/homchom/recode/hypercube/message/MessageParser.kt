@@ -11,13 +11,17 @@ import io.github.homchom.recode.multiplayer.ReceiveChatMessageEvent
 import io.github.homchom.recode.util.Matcher
 import io.github.homchom.recode.util.matcherOf
 import io.github.homchom.recode.util.splitByHumps
-import net.minecraft.network.chat.Component
+import net.kyori.adventure.text.Component
 
+/**
+ * A [Matcher] and [Detector] optimized for incoming chat messages. **These matchers are computational bottlenecks**,
+ * so expensive computations (such as [io.github.homchom.recode.util.regex.regex] creation) must be extracted.
+ */
 sealed interface MessageParser<T : Any, out R : ParsedMessage> : Matcher<Component, R>, Detector<T, R>
 
 val ParsedMessageDetector = detector("parsed message",
-    trial(ReceiveChatMessageEvent, Unit) { message, _ ->
-        val parsed = ParsedMessage.match(message.value)!!
+    trial(ReceiveChatMessageEvent, Unit) t@{ message, _ ->
+        val parsed = ParsedMessage.match(message.value) ?: return@t null
         if (hidden) message.invalidate()
         instant(ParsedMessageContext(parsed, message))
     }
@@ -40,8 +44,8 @@ sealed interface ParsedMessage {
                 .splitByHumps()
                 .joinToString("") { it.lowercase() }
             return detector("$messageName message",
-                trial(ParsedMessageDetector, defaultInput) { message, _ ->
-                    if (message.parsed !is R) fail()
+                trial(ParsedMessageDetector, defaultInput) t@{ message, _ ->
+                    if (message.parsed !is R) return@t null
                     if (hidden) message.raw.invalidate()
                     instant(message.parsed)
                 }
@@ -57,8 +61,8 @@ sealed interface ParsedMessage {
                 .splitByHumps()
                 .joinToString("") { it.lowercase() }
             return requester("$messageName message", lifecycle,
-                trial(ParsedMessageDetector, defaultInput, start) { message, _, _ ->
-                    if (message.parsed !is R) fail()
+                trial(ParsedMessageDetector, defaultInput, start) t@{ message, _, _ ->
+                    if (message.parsed !is R) return@t null
                     if (hidden) message.raw.invalidate()
                     instant(message.parsed)
                 }

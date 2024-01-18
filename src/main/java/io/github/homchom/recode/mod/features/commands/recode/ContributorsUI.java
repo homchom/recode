@@ -1,6 +1,6 @@
 package io.github.homchom.recode.mod.features.commands.recode;
 
-import com.google.gson.JsonArray;
+/*import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.platform.NativeImage;
@@ -10,7 +10,6 @@ import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.github.cottonmc.cotton.gui.widget.WScrollPanel;
 import io.github.homchom.recode.sys.networking.WebUtil;
 import io.github.homchom.recode.sys.renderer.IMenu;
-import io.github.homchom.recode.sys.renderer.widgets.CImage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.network.chat.Component;
@@ -86,6 +85,5 @@ public class ContributorsUI extends LightweightGuiDescription implements IMenu {
 
         panel.setHost(this);
         setRootPanel(root);
-
     }
-}
+}*/

@@ -3,7 +3,7 @@ package io.github.homchom.recode.mod.features;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.platform.Window;
-import io.github.homchom.recode.LegacyRecode;
+import io.github.homchom.recode.Logging;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -58,7 +58,7 @@ public class LagslayerHUD {
             renderComponent(guiGraphics, barsComponent, 2);
             renderComponent(guiGraphics, numberComponent, 1);
         } catch (Exception e) {
-            LegacyRecode.error("Error while trying to render LagSlayer HUD");
+            Logging.logError("Error while trying to render LagSlayer HUD");
             e.printStackTrace();
         }
     }

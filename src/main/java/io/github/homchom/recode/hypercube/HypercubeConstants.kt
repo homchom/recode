@@ -1,4 +1,4 @@
-@file:JvmName("ServerConstants")
+@file:JvmName("HypercubeConstants")
 
 package io.github.homchom.recode.hypercube
 

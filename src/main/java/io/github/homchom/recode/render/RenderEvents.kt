@@ -5,15 +5,15 @@ package io.github.homchom.recode.render
 import com.mojang.blaze3d.systems.RenderSystem
 import io.github.homchom.recode.Power
 import io.github.homchom.recode.event.*
-import io.github.homchom.recode.game.ChunkPos3D
 import io.github.homchom.recode.game.ticks
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.util.Case
-import io.github.homchom.recode.util.MixedInt
-import io.github.homchom.recode.util.collections.mapToArray
+import io.github.homchom.recode.util.math.MixedInt
+import io.github.homchom.recode.util.std.mapToArray
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents.BeforeBlockOutline
+import net.minecraft.core.SectionPos
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.phys.HitResult
 
@@ -42,15 +42,15 @@ val OutlineBlockEntitiesEvent =
                 .associate { it.blockEntity.blockPos to it.outlineColor!! }
         },
         stableInterval = 3.ticks,
-        keySelector = { Case(it.chunkPos) },
+        keySelector = { Case(it.sectionPos) },
         contextGenerator = { input ->
-            input.blockEntities.mapToArray { BlockEntityOutlineContext(it) }
+            input.blockEntities.mapToArray(::BlockEntityOutlineContext)
         }
     ).also { event ->
         event.use(Power(
             onEnable = {
                 BeforeOutlineBlockEvent.listenEach { context ->
-                    val processor = context.worldRenderContext.worldRenderer() as RecodeLevelRenderer
+                    val processor = context.worldRenderContext.worldRenderer() as DRecodeLevelRenderer
                     processor.`recode$processOutlines`(mc.frameTime)
                 }
             }
@@ -61,20 +61,20 @@ data class BlockEntityOutlineContext @JvmOverloads constructor(
     val blockEntity: BlockEntity,
     var outlineColor: RGBAColor? = null
 ) {
-    data class Input(val blockEntities: Collection<BlockEntity>, val chunkPos: ChunkPos3D?)
+    data class Input(val blockEntities: Collection<BlockEntity>, val sectionPos: SectionPos?)
 }
 
 /**
  * An [net.minecraft.client.renderer.LevelRenderer] that is augmented by recode.
  */
 @Suppress("FunctionName")
-interface RecodeLevelRenderer {
+interface DRecodeLevelRenderer {
     /**
      * @returns A filtered list of block entities that should still be rendered.
      */
     fun `recode$runBlockEntityEvents`(
         blockEntities: Collection<BlockEntity>,
-        chunkPos: ChunkPos3D?
+        sectionPos: SectionPos?
     ): List<BlockEntity>
 
     /**

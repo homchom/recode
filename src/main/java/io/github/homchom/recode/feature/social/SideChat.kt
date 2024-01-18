@@ -42,7 +42,10 @@ class SideChat(private val mc: Minecraft) : ChatComponent(mc) {
     private fun tailWidth(scale: Double) = (12 * scale).toInt()
 }
 
-@Suppress("FunctionName")
-interface MCGuiWithSideChat {
-    fun `recode$getSideChat`(): SideChat
+/**
+ * A duck interface applied to [net.minecraft.client.gui.Gui].
+ */
+@Suppress("PropertyName")
+interface DGuiWithSideChat {
+    val `recode$sideChat`: SideChat
 }

@@ -2,17 +2,18 @@
 
 package io.github.homchom.recode.multiplayer
 
-import io.github.homchom.recode.event.createEvent
-import io.github.homchom.recode.event.createValidatedEvent
-import io.github.homchom.recode.event.wrapFabricEvent
+import com.google.common.cache.CacheBuilder
+import io.github.homchom.recode.event.*
+import io.github.homchom.recode.ui.text.VanillaComponent
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.Disconnect
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.Join
 import net.fabricmc.fabric.api.networking.v1.PacketSender
+import net.kyori.adventure.text.Component
 import net.minecraft.client.Minecraft
 import net.minecraft.client.multiplayer.ClientPacketListener
-import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.Packet
+import java.time.Duration as JDuration
 
 val JoinServerEvent = wrapFabricEvent(ClientPlayConnectionEvents.JOIN) { listener ->
     Join { handler, sender, client -> listener(ServerJoinContext(handler, sender, client)) }
@@ -27,6 +28,16 @@ data class ServerDisconnectContext(val handler: ClientPacketListener, val client
 
 val ReceiveGamePacketEvent = createEvent<Packet<*>>()
 
-val ReceiveChatMessageEvent = createValidatedEvent<Component>()
+object ReceiveChatMessageEvent : CustomEvent<SimpleValidated<Component>, Boolean> by createValidatedEvent() {
+    private val cache = CacheBuilder.newBuilder()
+        .expireAfterAccess(JDuration.ofSeconds(1))
+        .build<VanillaComponent, Component>()
 
-val SendCommandEvent = createValidatedEvent<String>()
+    /**
+     * First converts [vanillaText] to a [Component], caching the result. Then [run]s the event.
+     */
+    fun cacheAndRun(vanillaText: VanillaComponent): Boolean {
+        val text = cache.get(vanillaText) { vanillaText.asComponent() }
+        return run(SimpleValidated(text))
+    }
+}

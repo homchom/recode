@@ -6,16 +6,15 @@ import io.github.homchom.recode.event.Listenable
 import io.github.homchom.recode.event.Requester
 import io.github.homchom.recode.event.createEvent
 import io.github.homchom.recode.ui.sendSystemToast
-import io.github.homchom.recode.ui.translateText
-import io.github.homchom.recode.util.computeNullable
-import io.github.homchom.recode.util.coroutines.cancelAndLog
+import io.github.homchom.recode.ui.text.translatedText
+import io.github.homchom.recode.util.coroutines.lazyJob
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.flow.*
 import java.util.concurrent.CancellationException
-import java.util.concurrent.ConcurrentLinkedQueue
-import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.ConcurrentLinkedDeque
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.time.Duration
 
 /**
@@ -56,32 +55,9 @@ private open class TrialDetector<T, R : Any>(
 ) : Detector<T & Any, R> {
     private val event = createEvent<R, R> { it }
 
-    @OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
     private val power = Power(
         onEnable = {
-            for (trialIndex in trials.indices) trials[trialIndex].results.listenEach { supplier ->
-                val successContext = CompletableDeferred<R>(coroutineContext.job)
-                if (entries.isEmpty()) {
-                    considerEntry(trialIndex, null, supplier, successContext)
-                }
-
-                val iterator = entries.iterator()
-                for (entry in iterator) {
-                    if (entry.responses.isClosedForSend) {
-                        iterator.remove()
-                        continue
-                    }
-                    considerEntry(trialIndex, entry, supplier, successContext)
-                }
-
-                successContext.invokeOnCompletion { exception ->
-                    if (exception == null) {
-                        val completed = successContext.getCompleted()
-                        logDebug("${this@TrialDetector} succeeded; running with context $completed")
-                        event.run(completed)
-                    }
-                }
-            }
+            listenToTrials()
         }
     )
 
@@ -89,7 +65,7 @@ private open class TrialDetector<T, R : Any>(
         power.extend(event)
     }
 
-    private val entries by lazy { ConcurrentLinkedQueue<DetectEntry<T, R>>() }
+    private val entries by lazy { ConcurrentLinkedDeque<DetectEntry<T, R>>() }
 
     override val notifications by event::notifications
     override val previous by event::previous
@@ -114,42 +90,69 @@ private open class TrialDetector<T, R : Any>(
         }
     }
 
+    // TODO: this is arguably ioc hell. someone with more experience in concurrency should review this
+    // TODO: add more comments
     @OptIn(DelicateCoroutinesApi::class)
-    fun considerEntry(
+    private fun Power.listenToTrials() {
+        for (trialIndex in trials.indices) trials[trialIndex].results.listenEach { supplier ->
+            val successful = AtomicBoolean()
+            if (entries.isEmpty()) {
+                considerEntry(trialIndex, null, supplier, successful)
+            }
+
+            val iterator = entries.iterator()
+            for (entry in iterator) {
+                if (entry.responses.isClosedForSend) {
+                    iterator.remove()
+                    continue
+                }
+                if (successful.get()) return@listenEach // fast path
+                considerEntry(trialIndex, entry, supplier, successful)
+            }
+        }
+    }
+
+    @OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
+    private fun considerEntry(
         trialIndex: Int,
         entry: DetectEntry<T, R>?,
         supplier: Trial.ResultSupplier<T & Any, R>,
-        successContext: CompletableDeferred<R>,
+        successful: AtomicBoolean
     ) {
-        val entryScope = CoroutineScope(power.coroutineContext + Job(successContext))
-        val result = computeNullable {
-            val trialScope = TrialScope(
-                this@computeNullable,
-                entryScope,
-                entry?.hidden ?: false
+        val entryScope = CoroutineScope(power.coroutineContext + lazyJob())
+        val result = entryScope.nonSuspendingTrialScope(entry?.hidden ?: false) {
+            logDebug { "trial $trialIndex started for ${debugString(entry?.input, entry?.hidden)}" }
+            supplier.supplyIn(
+                this,
+                entry?.input,
+                entry?.isRequest ?: false
             )
-            logDebug("trial $trialIndex started for ${debugString(entry?.input, entry?.hidden)}")
-            supplier.supplyIn(trialScope, entry?.input, entry?.isRequest ?: false)
         }
 
-        val entryJob = entryScope.launch {
-            if (result == null) {
-                entry?.responses?.trySend(null)
-                return@launch
-            }
+        fun finish(state: String) = entryScope.cancelAndLog(
+            "trial $trialIndex $state for ${debugString(entry?.input, entry?.hidden)}"
+        )
 
-            val awaited = result.await()
-            entry?.responses?.trySend(awaited)
-            awaited?.let(successContext::complete)
-        }
-
-        entryJob.invokeOnCompletion { exception ->
+        if (result == null) {
+            finish("ended")
+            entry?.responses?.trySend(null)
+        } else result.invokeOnCompletion handler@{ exception ->
             val state = when (exception) {
                 is CancellationException -> "cancelled"
                 null -> "ended"
                 else -> "ended with exception $exception"
             }
-            entryScope.cancelAndLog("trial $trialIndex $state for ${debugString(entry?.input, entry?.hidden)}")
+            finish(state)
+
+            if (exception != null) return@handler
+            val awaited = result.getCompleted()
+            entry?.responses?.trySend(awaited)
+
+            if (awaited == null || successful.compareAndExchange(false, true)) {
+                return@handler
+            }
+            logDebug("$this succeeded; running with context $awaited")
+            event.run(awaited)
         }
     }
 
@@ -180,10 +183,6 @@ private class TrialRequester<T, R : Any>(
 ) : TrialDetector<T, R>(name, arrayOf(primaryTrial, *secondaryTrials), timeoutDuration), Requester<T & Any, R> {
     private val start = primaryTrial.start
 
-    override val activeRequests get() = _activeRequests.get()
-
-    private val _activeRequests = AtomicInteger(0)
-
     override suspend fun request(input: T & Any, hidden: Boolean) = withContext(NonCancellable) {
         lifecycle.notifications
             .onEach { cancel("${this@TrialRequester} lifecycle ended during a request") }
@@ -193,20 +192,17 @@ private class TrialRequester<T, R : Any>(
             .filterNotNull()
             .produceIn(this)
 
-        _activeRequests.incrementAndGet()
         try {
             val response = start(input) ?: withTimeout(timeoutDuration) { detectChannel.receive() }
             coroutineContext.cancelChildren()
             response
         } catch (timeout: TimeoutCancellationException) {
             mc.sendSystemToast(
-                translateText("multiplayer.recode.request_timeout.toast.title"),
-                translateText("multiplayer.recode.request_timeout.toast")
+                translatedText("multiplayer.recode.request_timeout.toast.title"),
+                translatedText("multiplayer.recode.request_timeout.toast")
             )
             logError("${debugString(input, hidden)} timed out after $timeoutDuration")
             throw timeout
-        } finally {
-            _activeRequests.decrementAndGet()
         }
     }
 

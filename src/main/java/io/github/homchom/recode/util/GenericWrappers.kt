@@ -7,11 +7,19 @@ data class Case<out T>(val content: T) {
     companion object {
         val ofNull = Case(null)
     }
+
+    /**
+     * Unwraps and returns [content].
+     */
+    operator fun invoke() = content
 }
 
 /**
  * @see Case
  */
-data class MutableCase<T>(var content: T)
-
-inline fun <T, R> T.encase(block: (T) -> R) = Case(block(this))
+data class MutableCase<T>(var content: T) {
+    /**
+     * Unwraps and returns [content].
+     */
+    operator fun invoke() = content
+}

@@ -17,12 +17,8 @@
             "io.github.homchom.recode.Main",
             "io.github.homchom.recode.mod.features.keybinds.Keybinds"
         ],
-        "modmenu": [
-            "io.github.homchom.recode.mod.config.ModMenuIntegration"
-        ],
-        "preLaunch": [
-            "io.github.homchom.recode.Main"
-        ],
+        "modmenu": ["io.github.homchom.recode.mod.config.ModMenuIntegration"],
+        "preLaunch": [],
         "main": [],
         "server": []
     },

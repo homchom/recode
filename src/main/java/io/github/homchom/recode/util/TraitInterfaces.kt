@@ -11,7 +11,7 @@ interface KeyHashable {
 /**
  * A wrapper for a [value] of type [T] that can be unboxed with [invoke].
  */
-interface InvokableWrapper<T> {
+interface InvokableWrapper<out T> {
     val value: T
 
     /**

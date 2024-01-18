@@ -2,14 +2,13 @@ package io.github.homchom.recode.mod.mixin.inventory;
 
 
 import com.google.gson.JsonParser;
-import io.github.homchom.recode.RecodeKt;
+import io.github.homchom.recode.Logging;
+import io.github.homchom.recode.game.ItemExtensions;
 import io.github.homchom.recode.mod.config.Config;
-import io.github.homchom.recode.mod.features.VarSyntaxHighlighter;
-import io.github.homchom.recode.sys.util.TextUtil;
+import io.github.homchom.recode.ui.text.TextInterop;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,14 +17,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.Objects;
-
 @Mixin(Gui.class)
 public class MHeldItemTooltip {
     @Shadow
     private ItemStack lastToolHighlight;
 
-    // TODO: remove redundant code and improve performance (e.g. don't highlight every iteration)
+    // TODO: remove redundant code and improve performance
     @Inject(method = "renderSelectedItemName", at = @At("HEAD"), cancellable = true)
     public void renderSelectedItemName(GuiGraphics guiGraphics, CallbackInfo callbackInfo) {
         var renderVarScope = Config.getBoolean("variableScopeView");
@@ -61,19 +58,18 @@ public class MHeldItemTooltip {
                 var y1 = scaledHeight - 45;
                 guiGraphics.drawString(font, nameText, x1, y1, 0xffffff, true);
 
-                var lore = tag.getCompound("display").getList("Lore", Tag.TAG_STRING);
-                if (lore.isEmpty()) return;
-                var scopeJson = tag.getCompound("display")
-                        .getList("Lore", Tag.TAG_STRING)
-                        .getString(0);
-                var scope = Objects.requireNonNull(Component.Serializer.fromJson(scopeJson));
-                var x2 = (scaledWidth - font.width(scope.getVisualOrderText())) / 2;
-                var y2 = scaledHeight - 35;
-                guiGraphics.drawString(font, scope, x2, y2, 0xffffff, true);
+                var lore = ItemExtensions.lore(lastToolHighlight);
+                if (lore.size() == 1) {
+                    var scope = TextInterop.toVanilla(lore.get(0));
+                    var x2 = (scaledWidth - font.width(scope)) / 2;
+                    var y2 = scaledHeight - 35;
+                    guiGraphics.drawString(font, scope, x2, y2, 0xffffff, true);
+                }
             }
 
             // render highlighting
-            if (highlightVarSyntax) {
+            // TODO: re-evaluate
+            /*if (highlightVarSyntax) {
                 var formatted = VarSyntaxHighlighter.highlight(name.getAsString());
 
                 if (formatted != null) {
@@ -98,9 +94,9 @@ public class MHeldItemTooltip {
                         guiGraphics.drawString(font, formatted, x2, y2, 0xffffff);
                     }
                 }
-            }
+            }*/
         } catch (Exception e) {
-            RecodeKt.logError("Unrecognized DF value item data: " + varJson);
+            Logging.logError("Unrecognized DF value item data: " + varJson);
             throw e;
         }
     }

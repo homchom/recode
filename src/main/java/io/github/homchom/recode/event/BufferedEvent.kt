@@ -90,7 +90,7 @@ private class BufferedFlowEvent<T, R : Any, I, K : Any>(
             }
             bufferResult
         }
-        check(previous.tryEmit(result))
+        previous.value = result
         return result
     }
 

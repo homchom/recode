@@ -1,18 +1,18 @@
 package io.github.homchom.recode.mixin.render;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import io.github.homchom.recode.event.SimpleValidated;
-import io.github.homchom.recode.game.ChunkPos3D;
 import io.github.homchom.recode.render.BlockEntityOutlineContext;
+import io.github.homchom.recode.render.DRecodeLevelRenderer;
 import io.github.homchom.recode.render.RGBAColor;
-import io.github.homchom.recode.render.RecodeLevelRenderer;
 import io.github.homchom.recode.render.RenderEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.PostChain;
-import net.minecraft.client.renderer.chunk.SectionRenderDispatcher;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,7 +28,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.*;
 
 @Mixin(value = LevelRenderer.class)
-public abstract class MLevelRenderer implements RecodeLevelRenderer {
+public abstract class MLevelRenderer implements DRecodeLevelRenderer {
 	@Shadow @Nullable private PostChain entityEffect;
 
 	@Unique
@@ -50,28 +50,24 @@ public abstract class MLevelRenderer implements RecodeLevelRenderer {
 		return Set.copyOf(recode$runBlockEntityEvents(blockEntities, null));
 	}
 
-	@WrapOperation(method = "renderLevel", at = @At(value = "INVOKE",
+	@ModifyExpressionValue(method = "renderLevel", at = @At(value = "INVOKE",
 			target = "Lnet/minecraft/client/renderer/chunk/SectionRenderDispatcher$CompiledSection;getRenderableBlockEntities()Ljava/util/List;"
 	))
-	private List<BlockEntity> interceptChunkBlockEntities(
-			SectionRenderDispatcher.CompiledSection section,
-			Operation<List<BlockEntity>> operation
-	) {
-		var blockEntities = operation.call(section);
+	private List<BlockEntity> interceptSectionBlockEntities(List<BlockEntity> blockEntities) {
 		if (blockEntities.isEmpty()) return blockEntities;
 
-		var chunkPos = new ChunkPos3D(blockEntities.get(0).getBlockPos());
+		var chunkPos = SectionPos.of(blockEntities.get(0).getBlockPos());
 		return recode$runBlockEntityEvents(blockEntities, chunkPos);
 	}
 
 	@Override
 	public @NotNull List<BlockEntity> recode$runBlockEntityEvents(
-			Collection<? extends BlockEntity> blockEntities, ChunkPos3D chunkPos
+			Collection<? extends BlockEntity> blockEntities, SectionPos sectionPos
 	) {
 		List<SimpleValidated<BlockEntity>> renderList = new ArrayList<>();
 		for (var blockEntity : blockEntities) renderList.add(new SimpleValidated<>(blockEntity));
 		var filtered = RenderEvents.getRenderBlockEntitiesEvent().run(renderList);
-		var outlineInput = new BlockEntityOutlineContext.Input(blockEntities, chunkPos);
+		var outlineInput = new BlockEntityOutlineContext.Input(blockEntities, sectionPos);
 		blockEntityOutlineMap.putAll(RenderEvents.getOutlineBlockEntitiesEvent().run(outlineInput));
 		return filtered;
 	}

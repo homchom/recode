@@ -1,6 +1,6 @@
 package io.github.homchom.recode.mod.features.social.chat.message;
 
-import io.github.homchom.recode.LegacyRecode;
+import io.github.homchom.recode.Logging;
 import io.github.homchom.recode.mod.config.Config;
 import io.github.homchom.recode.mod.events.impl.LegacyReceiveSoundEvent;
 import io.github.homchom.recode.sys.player.chat.MessageGrabber;
@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class LegacyMessage {
     private final Component text;
     private final CallbackInfo callback;
-    private final MessageType type;
+    private final LegacyMessageType type;
 
     private MessageCheck check;
 
@@ -38,7 +38,7 @@ public class LegacyMessage {
         this.check = check;
     }
 
-    public boolean typeIs(MessageType toCompare) {
+    public boolean typeIs(LegacyMessageType toCompare) {
         return type == toCompare;
     }
 
@@ -54,7 +54,7 @@ public class LegacyMessage {
         MessageGrabber.hide(type.getMessageAmount() - 1);
 
         if (Config.getBoolean("debugMode")) {
-            LegacyRecode.info("[CANCELLED] " + text.toString());
+            Logging.logInfo("[CANCELLED] " + text.toString());
         }
     }
 }

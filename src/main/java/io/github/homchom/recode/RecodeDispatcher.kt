@@ -1,8 +1,12 @@
 package io.github.homchom.recode
 
 import io.github.homchom.recode.ui.sendSystemToast
-import io.github.homchom.recode.ui.translateText
-import kotlinx.coroutines.*
+import io.github.homchom.recode.ui.text.translatedText
+import io.github.homchom.recode.util.coroutines.YieldingExecutorDispatcher
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Runnable
+import kotlinx.coroutines.runBlocking
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.Executor
 import kotlin.coroutines.CoroutineContext
@@ -20,30 +24,13 @@ inline fun <R> runOnMinecraftThread(crossinline block: () -> R) =
  * [kotlinx.coroutines.yield] function.
  */
 object RecodeDispatcher : CoroutineContext {
-    private val dispatcher = object : CoroutineDispatcher() {
-        val pending = ConcurrentLinkedQueue<Runnable>()
-
-        private val executor = Executor(pending::add)
-
-        private val immediateExecutor = Executor { block ->
-            if (mc.isSameThread) block.run() else executor.execute(block)
-        }
-
-        private val delegate = executor.asCoroutineDispatcher()
-        private val immediateDelegate = immediateExecutor.asCoroutineDispatcher()
-
-        override fun dispatch(context: CoroutineContext, block: Runnable) =
-            immediateDelegate.dispatch(context, block)
-
-        @InternalCoroutinesApi
-        override fun dispatchYield(context: CoroutineContext, block: Runnable) =
-            delegate.dispatchYield(context, block)
-    }
+    private val pending = ConcurrentLinkedQueue<Runnable>()
+    private val dispatcher = YieldingExecutorDispatcher(pending::add, mc::isSameThread)
 
     private val delegate = dispatcher + CoroutineExceptionHandler { _, exception ->
         mc.sendSystemToast(
-            translateText("recode.uncaught_exception.toast.title"),
-            translateText("recode.uncaught_exception.toast")
+            translatedText("recode.uncaught_exception.toast.title"),
+            translatedText("recode.uncaught_exception.toast")
         )
         runOnMinecraftThread {
             val thread = Thread.currentThread()
@@ -60,8 +47,8 @@ object RecodeDispatcher : CoroutineContext {
      * Tells the dispatcher to expedite previously dispatched blocks. If this is called from Minecraft's main
      * thread, it is guaranteed that all blocks will complete before the function returns.
      */
-    fun expedite() = with(dispatcher.pending) {
+    fun expedite() = with(pending) {
         if (!mc.isSameThread) return
-        while (!isEmpty()) remove().run()
+        while (isNotEmpty()) remove().run()
     }
 }

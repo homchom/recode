@@ -4,21 +4,23 @@ import io.github.homchom.recode.event.SimpleValidated;
 import io.github.homchom.recode.hypercube.state.DF;
 import io.github.homchom.recode.hypercube.state.PlotMode;
 import io.github.homchom.recode.mod.config.Config;
-import io.github.homchom.recode.multiplayer.MultiplayerEvents;
+import io.github.homchom.recode.multiplayer.ReceiveChatMessageEvent;
 import io.github.homchom.recode.sys.player.chat.ChatType;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
 import io.github.homchom.recode.sys.util.TextUtil;
+import io.github.homchom.recode.ui.text.TextInterop;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
-import net.minecraft.network.chat.ClickEvent.Action;
-import net.minecraft.network.chat.Component;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LegacyReceiveChatMessageEvent {
     public LegacyReceiveChatMessageEvent() {
-        MultiplayerEvents.getReceiveChatMessageEvent().register(this::run);
+        ReceiveChatMessageEvent.INSTANCE.register(this::run);
     }
 
     public static boolean pjoin = false;
@@ -32,9 +34,9 @@ public class LegacyReceiveChatMessageEvent {
         boolean cancel = false;
 
         // TODO: temporary, migrate all code here
-        String msgToString = message.getString();
+        String msgToString = PlainTextComponentSerializer.plainText().serialize(message);
 
-        String msgWithColor = TextUtil.toLegacyCodes(message);
+        String msgWithColor = TextUtil.toLegacyCodes(TextInterop.toVanilla(message));
         String msgWithoutColor = msgWithColor.replaceAll("§.", "");
 
         //PJoin command
@@ -143,8 +145,8 @@ public class LegacyReceiveChatMessageEvent {
             }
 
             if (Config.getBoolean("autoClickEditMsgs") && msgToString.startsWith("⏵ Click to edit variable: ")) {
-                if (message.getStyle().getClickEvent().getAction() == Action.SUGGEST_COMMAND) {
-                    String toOpen = message.getStyle().getClickEvent().getValue();
+                if (message.style().clickEvent().action() == ClickEvent.Action.SUGGEST_COMMAND) {
+                    String toOpen = message.style().clickEvent().value();
                     Minecraft.getInstance().tell(() -> Minecraft.getInstance().setScreen(new ChatScreen(toOpen)));
                 }
             }

@@ -1,8 +1,6 @@
 package io.github.homchom.recode.mixin;
 
 import io.github.homchom.recode.RecodeDispatcher;
-import io.github.homchom.recode.game.GameEvents;
-import kotlin.Unit;
 import net.minecraft.client.Minecraft;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -17,10 +15,5 @@ public abstract class MMinecraft {
     ))
     private void runRecodeTasksNormally(CallbackInfo ci) {
         RecodeDispatcher.INSTANCE.expedite(); // ensure tasks are run on runTick if not elsewhere
-    }
-
-    @Inject(method = "stop", at = @At("HEAD"))
-    private void runRecodeQuitEvent(CallbackInfo ci) {
-        GameEvents.getQuitGameEvent().run(Unit.INSTANCE);
     }
 }

@@ -2,7 +2,7 @@ package io.github.homchom.recode.mixin.render;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import io.github.homchom.recode.feature.social.MCGuiWithSideChat;
+import io.github.homchom.recode.feature.social.DGuiWithSideChat;
 import io.github.homchom.recode.feature.social.SideChat;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(Gui.class)
-public abstract class MGui implements MCGuiWithSideChat {
+public abstract class MGui implements DGuiWithSideChat {
     @Unique
     private final SideChat sideChat = new SideChat();
 
@@ -32,9 +32,9 @@ public abstract class MGui implements MCGuiWithSideChat {
         sideChat.render(graphics, tickDelta, x, y);
     }
 
-    @Unique
     @NotNull
-    public SideChat recode$getSideChat() {
+    @Override
+    public SideChat getRecode$sideChat() {
         return sideChat;
     }
 }
