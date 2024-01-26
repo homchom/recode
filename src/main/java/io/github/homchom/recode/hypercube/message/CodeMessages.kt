@@ -2,7 +2,7 @@ package io.github.homchom.recode.hypercube.message
 
 import io.github.homchom.recode.event.Requester
 import io.github.homchom.recode.hypercube.state.DFStateDetectors
-import io.github.homchom.recode.multiplayer.sendCommand
+import io.github.homchom.recode.multiplayer.Sender
 import io.github.homchom.recode.ui.text.equalsPlain
 import io.github.homchom.recode.ui.text.matchEntirePlain
 import io.github.homchom.recode.util.regex.groupValue
@@ -21,7 +21,7 @@ object CodeMessages {
             Requester<Unit, SupportTime> by ParsedMessage.requester<Unit, SupportTime>(
                 DFStateDetectors.EndSession,
                 Unit,
-                start = { sendCommand("support time") }
+                start = { Sender.sendCommand("support time") }
             )
         {
             private val regex = regex {

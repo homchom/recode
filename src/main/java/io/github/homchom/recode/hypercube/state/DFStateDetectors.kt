@@ -192,7 +192,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>> by eventGroup {
         val oldState = currentDFState as? DFState.OnPlot ?: return
         val newState = DFState.AtSpawn(oldState.node, oldState.permissions, oldState.session)
         Manual.run(Case(newState))
-        DelayedCommandSender.sendCommandUnsafe("spawn")
+        unsafelySendCommand("spawn")
         showRecodeMessage(translatedText("recode.state.panicked"), RecodeMessageTags.alert)
     }
 

@@ -1,6 +1,7 @@
 package io.github.homchom.recode.event
 
 import io.github.homchom.recode.PowerSink
+import io.github.homchom.recode.multiplayer.Sender
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -115,7 +116,7 @@ interface Detector<T : Any, out R : Any> : StateListenable<R> {
 /**
  * A [Detector] that can execute code to request a result before detecting it.
  */
-interface Requester<T : Any, out R : Any> : Detector<T, R> {
+interface Requester<T : Any, out R : Any> : Sender<T, R?>, Detector<T, R> {
     /**
      * Makes a request and detects the first non-null result.
      *

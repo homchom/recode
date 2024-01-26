@@ -2,6 +2,7 @@ package io.github.homchom.recode.event.trial
 
 import io.github.homchom.recode.*
 import io.github.homchom.recode.event.*
+import io.github.homchom.recode.multiplayer.Sender
 import io.github.homchom.recode.ui.sendSystemToast
 import io.github.homchom.recode.ui.text.translatedText
 import io.github.homchom.recode.util.coroutines.lazyJob
@@ -70,20 +71,14 @@ private open class TrialDetector<T, R : Any>(
     override fun detect(input: T?, hidden: Boolean) = responseFlow(input, false, hidden)
 
     protected fun responseFlow(input: T?, isRequest: Boolean, hidden: Boolean) = flow {
-        coroutineScope {
-            power.up()
-            val responses = Channel<R?>(Channel.UNLIMITED)
-            try {
-                // add entry after all current detection loops
-                launch(RecodeDispatcher) {
-                    yield()
-                    entries += DetectEntry(isRequest, input, responses, hidden)
-                }
-                while (isActive) emit(responses.receive())
-            } finally {
-                responses.close()
-                power.down()
-            }
+        power.up()
+        val responses = Channel<R?>(Channel.UNLIMITED)
+        try {
+            entries += DetectEntry(isRequest, input, responses, hidden)
+            while (currentCoroutineContext().isActive) emit(responses.receive())
+        } finally {
+            responses.close()
+            power.down()
         }
     }
 
@@ -177,14 +172,19 @@ private class TrialRequester<T, R : Any>(
     primaryTrial: RequesterTrial<T, R>,
     secondaryTrials: Array<out DetectorTrial<T, R>>,
     timeoutDuration: Duration
-) : TrialDetector<T, R>(name, arrayOf(primaryTrial, *secondaryTrials), timeoutDuration), Requester<T & Any, R> {
+) : TrialDetector<T, R>(name, arrayOf(primaryTrial, *secondaryTrials), timeoutDuration),
+    Requester<T & Any, R>,
+    Sender<T & Any, R?> by Sender(lifecycle, primaryTrial.start)
+{
     private val start = primaryTrial.start
 
     override suspend fun request(input: T & Any, hidden: Boolean) = withContext(NonCancellable) {
+        // we don't create a second Sender for performance
         lifecycle.notifications
             .onEach { cancel("${this@TrialRequester} lifecycle ended during a request") }
             .launchIn(this)
 
+        // detect first to prevent race conditions
         val detectChannel = responseFlow(input, true, hidden)
             .filterNotNull()
             .produceIn(this)
