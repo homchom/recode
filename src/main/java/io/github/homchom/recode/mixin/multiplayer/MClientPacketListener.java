@@ -1,6 +1,6 @@
 package io.github.homchom.recode.mixin.multiplayer;
 
-import io.github.homchom.recode.multiplayer.DelayedCommandSender;
+import io.github.homchom.recode.multiplayer.Sender;
 import io.github.homchom.recode.sys.hypercube.templates.TemplateStorageHandler;
 import io.github.homchom.recode.sys.hypercube.templates.TemplateUtil;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -31,11 +31,11 @@ public abstract class MClientPacketListener {
 
 	@Inject(method = {"sendChat", "sendCommand"}, at = @At("HEAD"))
 	private void recordMessagesForRateLimiting(String string, CallbackInfo ci) {
-		DelayedCommandSender.INSTANCE.record();
+		Sender.Companion.recordCommand();
 	}
 
 	@Inject(method = "sendUnsignedCommand", at = @At("HEAD"))
 	private void recordUnsignedCommandsForRateLimiting(String command, CallbackInfoReturnable<Boolean> cir) {
-		DelayedCommandSender.INSTANCE.record();
+		Sender.Companion.recordCommand();
 	}
 }

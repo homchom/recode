@@ -26,6 +26,20 @@ fun Component.mergeStyleIfAbsent(style: Style, merges: Set<Style.Merge> = Style.
     mergeStyle(style, Style.Merge.Strategy.IF_ABSENT_ON_TARGET, merges)
 
 /**
+ * Returns a flattened [List] of this [Component]'s nodes, where parent and child styles are recursively merged.
+ *
+ * @see asFlatSequence
+ */
+fun Component.toFlatList() = buildList {
+    val queue = ArrayDeque<Component>(1)
+    queue += this@toFlatList
+    do {
+        add(queue.removeFirst())
+        for (child in children()) add(mergeStyle(child))
+    } while (queue.isNotEmpty())
+}
+
+/**
  * Returns a flattened [Sequence] of this [Component]'s nodes, where parent and child styles are recursively merged.
  */
 fun Component.asFlatSequence(): Sequence<Component> = sequence {
@@ -39,7 +53,7 @@ fun Component.asFlatSequence(): Sequence<Component> = sequence {
 /**
  * @return Whether this [Component] equals [other] when flattened.
  */
-infix fun Component.looksLike(other: Component) = asFlatSequence() == other.asFlatSequence()
+infix fun Component.looksLike(other: Component) = toFlatList() == other.toFlatList()
 
 /**
  * @return Whether this [FormattedCharSequence] and [other] yield the same styles and code points.

@@ -7,7 +7,7 @@ import io.github.homchom.recode.hypercube.state.*
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.multiplayer.DisconnectFromServerEvent
 import io.github.homchom.recode.multiplayer.JoinServerEvent
-import io.github.homchom.recode.multiplayer.sendCommand
+import io.github.homchom.recode.multiplayer.Sender
 import io.github.homchom.recode.multiplayer.username
 import io.github.homchom.recode.ui.text.matchEntirePlain
 import io.github.homchom.recode.util.regex.RegexModifier
@@ -27,7 +27,7 @@ object StateMessages {
             Requester<String, Locate> by ParsedMessage.requester<String?, Locate>(
                 lifecycle,
                 null,
-                start = { sendCommand("locate $it") }
+                start = { Sender.sendCommand("locate $it") }
             )
         {
             private val locateRegex = regex {
@@ -99,7 +99,7 @@ object StateMessages {
             Requester<String, Profile> by ParsedMessage.requester<String?, Profile>(
                 lifecycle,
                 null,
-                start = { sendCommand("profile $it") }
+                start = { Sender.sendCommand("profile $it") }
             )
         {
             private val profileRegex = regex {
