@@ -8,6 +8,7 @@ import io.github.homchom.recode.mod.commands.arguments.types.PathArgumentType;
 import io.github.homchom.recode.mod.features.commands.nbs.NBSDecoder;
 import io.github.homchom.recode.mod.features.commands.nbs.NBSToTemplate;
 import io.github.homchom.recode.mod.features.commands.nbs.SongData;
+import io.github.homchom.recode.mod.features.commands.nbs.alt.*;
 import io.github.homchom.recode.mod.features.commands.nbs.exceptions.OutdatedNBSException;
 import io.github.homchom.recode.sys.file.ExternalFile;
 import io.github.homchom.recode.sys.hypercube.templates.TemplateUtil;
@@ -59,6 +60,36 @@ public class NBSCommand extends Command {
         });
     }
 
+    public static void loadNbsU(File file, String fileName) {
+        LegacyRecode.executor.submit(() -> {
+            try {
+                SongData d = NBSDecoderU.parse(file);
+                String code = new NBSToTemplate(d).convert();
+                ItemStack stack = new ItemStack(Items.NOTE_BLOCK);
+                TemplateUtil.compressTemplateNBT(stack, d.getName(), d.getAuthor(), code);
+
+                if (d.getName().length() == 0) {
+                    String name;
+                    if (d.getFileName().indexOf(".") > 0) {
+                        name = d.getFileName().substring(0, d.getFileName().lastIndexOf("."));
+                    } else {
+                        name = d.getFileName();
+                    }
+                    stack.setHoverName(Component.literal("§5SONG§7 -§f " + name));
+                } else {
+                    stack.setHoverName(Component.literal("§5SONG§7 -§f " + d.getName()));
+                }
+
+                ToasterUtil.sendToaster("NBS Loaded!", fileName, SystemToast.SystemToastIds.NARRATOR_TOGGLE);
+                ItemUtil.giveCreativeItem(stack, true);
+            } catch (OutdatedNBSException e) {
+                ToasterUtil.sendToaster("§cLoading Error!", "Unsupported file version", SystemToast.SystemToastIds.NARRATOR_TOGGLE);
+            } catch (IOException e) {
+                ToasterUtil.sendToaster("§cLoading Error!", "Invalid file", SystemToast.SystemToastIds.NARRATOR_TOGGLE);
+            }
+        });
+    }
+
     @Override
     public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd, CommandBuildContext context) {
         cd.register(ArgBuilder.literal("nbs")
@@ -69,6 +100,17 @@ public class NBSCommand extends Command {
                                         File file = PathArgumentType.getPath(ctx, "filename").toFile();
 
                                         loadNbs(file, file.getName());
+                                    }
+                                    return 1;
+                                })
+                        )
+                ).then(ArgBuilder.literal("load2")
+                        .then(ArgBuilder.argument("filename", PathArgumentType.folder(ExternalFile.NBS_FILES.getPath(), true))
+                                .executes(ctx -> {
+                                    if (this.isCreative(mc)) {
+                                        File file = PathArgumentType.getPath(ctx, "filename").toFile();
+
+                                        loadNbsU(file, file.getName());
                                     }
                                     return 1;
                                 })
