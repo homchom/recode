@@ -256,15 +256,15 @@ public class NBSDecoder {
 
     private static int getMinecraftPitch(double key, double offset) {
 
-        //if (key < 33) key -= 9;
-        //else if (key > 57) key -= 57;
-        //else key -= 33;
+        if (key < 33) key -= 9;
+        else if (key > 57) key -= 57;
+        else key -= 33;
 
         key += offset;
 
         double finalValue = (0.5 * (Math.pow(2, (key / 12)))) * 1000;
 
-        return (int) key * 1000;
+        return (int) finalValue;
     }
 
     public SongData parse(InputStream inputStream) throws IOException, OutdatedNBSException {
