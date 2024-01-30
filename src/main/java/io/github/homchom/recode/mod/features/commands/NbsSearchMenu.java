@@ -126,7 +126,7 @@ public class NbsSearchMenu extends LightweightGuiDescription implements IMenu {
                                     int length = Integer
                                         .parseInt(notearr[notearr.length - 1].split(":")[0]);
                                     SongData d = new SongData("Song " + id, "Recode", 20f,
-                                        length, notes, "", "", 1, 0, 0);
+                                        length, notes, "", "", 1, 0, 0, new String[1]);
 
                                     String code = new NBSToTemplate(d).convert();
 
