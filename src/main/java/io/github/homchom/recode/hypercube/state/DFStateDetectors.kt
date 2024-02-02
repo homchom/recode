@@ -176,11 +176,10 @@ object DFStateDetectors : StateListenable<Case<DFState?>> by eventGroup {
         CustomEvent<Case<DFState?>, Case<DFState?>> by createEvent({ it }),
         StateListenable<Case<DFState?>>
 
-    private val power = Power()
+    private val power = Power(eventGroup)
 
     init {
         eventGroup.add(Manual)
-        power.extend(eventGroup)
     }
 
     /**
