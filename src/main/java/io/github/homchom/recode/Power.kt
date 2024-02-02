@@ -9,7 +9,7 @@ import kotlinx.coroutines.sync.withLock
 typealias PowerCallback = Power.() -> Unit
 
 /**
- * Something that uses [Power] and can be extended.
+ * Something that uses [Power].
  */
 interface PowerSink {
     fun use(source: Power)
@@ -18,9 +18,12 @@ interface PowerSink {
 /**
  * A lifecycle object, and one of recode's core classes. Use as a private member of other classes to modularize
  * specific code such that resources and computation only exist when needed by other use sites. Such classes can
- * also implement [PowerSink] if their power should be able to be [extend]ed.
+ * also implement [PowerSink] if their power usage varies externally.
+ *
+ * @param extent The primary [PowerSink] for which the power is used.
  */
 class Power(
+    extent: PowerSink? = null,
     private val onEnable: PowerCallback? = null,
     private val onDisable: PowerCallback? = null
 ) : PowerSink, CoroutineScope {
@@ -36,6 +39,10 @@ class Power(
 
     override val coroutineContext get() = coroutineScope.coroutineContext
 
+    init {
+        extent?.use(this)
+    }
+
     suspend fun up() = updateCharge { it + 1 }
     suspend fun down() = updateCharge { it - 1 }
 
@@ -46,8 +53,6 @@ class Power(
         if (previous == 0 && charge != 0) enable()
         if (previous != 0 && charge == 0) disable()
     }
-
-    fun extend(sink: PowerSink) = sink.use(this)
 
     override fun use(source: Power) {
         sources += source

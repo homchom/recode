@@ -82,26 +82,23 @@ private class FlowEvent<T, R : Any>(private val resultCapture: (T) -> R) : Custo
 class GroupListenable<T : Any> private constructor(
     private val events: MutableList<StateListenable<T>>
 ) : StateListenable<T>, List<StateListenable<T>> by events {
+    private val groupFlows = LazyEventImpl<T, T>()
+
     private val power = Power(
+        extent = groupFlows,
         onEnable = {
             for (event in events) mergeIn(event)
         }
     )
 
-    private val groupFlows = LazyEventImpl<T, T>()
-
     override val notifications: Flow<T> by groupFlows::notifications
     override val previous: StateFlow<T?> by groupFlows::previous
-
-    init {
-        power.extend(groupFlows)
-    }
 
     constructor() : this(mutableListOf())
 
     fun <S : StateListenable<T>> add(event: S): S {
         events += event
-        power.extend(event)
+        event.use(power)
         if (power.isActive) mergeIn(event)
         return event
     }

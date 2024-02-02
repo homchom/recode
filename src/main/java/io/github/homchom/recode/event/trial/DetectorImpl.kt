@@ -54,14 +54,11 @@ private open class TrialDetector<T, R : Any>(
     private val event = createEvent<R, R> { it }
 
     private val power = Power(
+        extent = event,
         onEnable = {
             listenToTrials()
         }
     )
-
-    init {
-        power.extend(event)
-    }
 
     private val entries by lazy { ConcurrentLinkedDeque<DetectEntry<T, R>>() }
 

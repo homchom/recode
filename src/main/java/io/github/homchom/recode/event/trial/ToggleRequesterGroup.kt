@@ -78,8 +78,8 @@ private class NaiveToggle<T>(
         enable = impl(true, ::enable)
         disable = impl(false, ::disable)
 
-        power.extend(toggle)
-        power.extend(enable)
-        power.extend(disable)
+        toggle.use(power)
+        enable.use(power)
+        disable.use(power)
     }
 }
