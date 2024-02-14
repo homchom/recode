@@ -40,7 +40,7 @@ public abstract class MJoinMultiplayerScreen {
                 Minecraft.getInstance(),
                 Component.translatable("multiplayer.recode.unofficial_address.toast.title"),
                 Component.translatable("multiplayer.recode.unofficial_address.toast"),
-                SystemToast.SystemToastIds.UNSECURE_SERVER_WARNING
+                SystemToast.SystemToastId.UNSECURE_SERVER_WARNING
         );
 
         var prefix = matcher.group("prefix");

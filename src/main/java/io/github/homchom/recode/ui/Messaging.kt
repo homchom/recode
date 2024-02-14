@@ -44,7 +44,7 @@ fun showRecodeMessage(message: Component, tag: GuiMessageTag = RecodeMessageTags
 fun Minecraft.sendSystemToast(
     title: Component,
     body: Component,
-    type: SystemToast.SystemToastIds = SystemToast.SystemToastIds.PERIODIC_NOTIFICATION
+    type: SystemToast.SystemToastId = SystemToast.SystemToastId.PERIODIC_NOTIFICATION
 ) {
     toasts.addToast(SystemToast.multiline(this, type, title.toVanilla(), body.toVanilla()))
 }

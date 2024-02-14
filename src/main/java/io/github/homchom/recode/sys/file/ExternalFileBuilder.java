@@ -78,7 +78,7 @@ public class ExternalFileBuilder {
                 .setName(name)
                 .build(path -> {
                     try {
-                        NbtIo.write(new CompoundTag(), path.toFile());
+                        NbtIo.write(new CompoundTag(), path);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

@@ -75,8 +75,9 @@ public class TextUtil {
                 if (col.length() == 2) {
                     s = s.applyLegacyFormat(ChatFormatting.getByCode(col.charAt(1)));
                 } else {
-                    s = Style.EMPTY.withColor(
-                        TextColor.parseColor("#" + col.replaceAll("§", "").substring(1)));
+                    var color = TextColor.parseColor("#" + col.replaceAll("§", "")
+                            .substring(1));
+                    s = Style.EMPTY.withColor(color.getOrThrow(false, (string) -> {}));
                 }
                 lastIndex = matcher.end();
             }
