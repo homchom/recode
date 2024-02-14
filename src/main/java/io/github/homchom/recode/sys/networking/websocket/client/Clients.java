@@ -42,7 +42,7 @@ public class Clients {
                 final ItemStack itemStack = item.getItem(itemData);
                 Minecraft.getInstance().submit(() -> {
                     ItemUtil.giveCreativeItem(itemStack, true);
-                    ToasterUtil.sendToaster("Received Item!", source, SystemToast.SystemToastIds.NARRATOR_TOGGLE);
+                    ToasterUtil.sendToaster("Received Item!", source, SystemToast.SystemToastId.NARRATOR_TOGGLE);
                     player.playSound(SoundEvents.ITEM_PICKUP, 200, 1);
                 });
                 result.addProperty("status", "success");

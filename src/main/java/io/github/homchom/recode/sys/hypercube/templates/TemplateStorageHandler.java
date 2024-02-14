@@ -11,15 +11,15 @@ import net.minecraft.nbt.NbtIo;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.item.ItemStack;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class TemplateStorageHandler implements IManager<TemplateItem>, ISave {
 
-    private static final File FILE = ExternalFile.TEMPLATE_DB.getPath().toFile();
+    private static final Path PATH = ExternalFile.TEMPLATE_DB.getPath();
     private static final int MAX_SIZE = 55;
     private static TemplateStorageHandler instance;
     private final List<TemplateItem> registeredTemplates = new ArrayList<>(MAX_SIZE);
@@ -57,7 +57,7 @@ public class TemplateStorageHandler implements IManager<TemplateItem>, ISave {
     @Override
     public void initialize() {
         try {
-            CompoundTag compoundTag = NbtIo.read(FILE);
+            CompoundTag compoundTag = NbtIo.read(PATH);
             if (compoundTag == null) {
                 return;
             }
@@ -98,7 +98,7 @@ public class TemplateStorageHandler implements IManager<TemplateItem>, ISave {
             compoundTag.put("items", ItemUtil.toListTag(registeredTemplates.stream()
                     .map((templateItem -> templateItem.stack)).collect(Collectors.toList())));
 
-            NbtIo.write(compoundTag, FILE);
+            NbtIo.write(compoundTag, PATH);
         } catch (IOException e) {
             e.printStackTrace();
         }

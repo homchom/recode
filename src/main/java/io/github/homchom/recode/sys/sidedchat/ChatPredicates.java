@@ -18,7 +18,7 @@ public class ChatPredicates {
         return iTextComponent -> {
             List<String> customWords = getCustomWords();
 
-            if (customWords.size() == 0 || getCustomWordsString().trim().length()==0) return false; // do no checks if the input is empty
+            if (customWords.isEmpty() || getCustomWordsString().trim().isEmpty()) return false; // do no checks if the input is empty
 
             for (String customWord : customWords) {
                 if (iTextComponent.getString().contains(customWord)) return true;
@@ -42,32 +42,35 @@ public class ChatPredicates {
     //MESSAGE
     private static final ChatPattern oldMessageChatPattern = new ChatPattern(
             new ChatPattern.ChatComponent("[", TextColor.fromLegacyFormat(ChatFormatting.DARK_RED),0),
-            new ChatPattern.ChatComponent(null,TextColor.fromLegacyFormat(ChatFormatting.AQUA)),
-            new ChatPattern.ChatComponent(" -> ",TextColor.fromLegacyFormat(ChatFormatting.GOLD)),
-            new ChatPattern.ChatComponent(null,TextColor.fromLegacyFormat(ChatFormatting.AQUA)),
-            new ChatPattern.ChatComponent("] ",TextColor.fromLegacyFormat(ChatFormatting.DARK_RED))
+            new ChatPattern.ChatComponent(null, TextColor.fromLegacyFormat(ChatFormatting.AQUA)),
+            new ChatPattern.ChatComponent(" -> ", TextColor.fromLegacyFormat(ChatFormatting.GOLD)),
+            new ChatPattern.ChatComponent(null, TextColor.fromLegacyFormat(ChatFormatting.AQUA)),
+            new ChatPattern.ChatComponent("] ", TextColor.fromLegacyFormat(ChatFormatting.DARK_RED))
     );
     private static final ChatPattern oldCrossNodeMessagePattern = new ChatPattern(
-            new ChatPattern.ChatComponent("[",TextColor.fromLegacyFormat(ChatFormatting.GOLD),0),
-            new ChatPattern.ChatComponent(null,TextColor.fromLegacyFormat(ChatFormatting.AQUA)),
-            new ChatPattern.ChatComponent(" -> ",TextColor.fromLegacyFormat(ChatFormatting.DARK_RED)),
-            new ChatPattern.ChatComponent(null,TextColor.fromLegacyFormat(ChatFormatting.AQUA)),
-            new ChatPattern.ChatComponent("] ",TextColor.fromLegacyFormat(ChatFormatting.GOLD))
+            new ChatPattern.ChatComponent("[", TextColor.fromLegacyFormat(ChatFormatting.GOLD),0),
+            new ChatPattern.ChatComponent(null, TextColor.fromLegacyFormat(ChatFormatting.AQUA)),
+            new ChatPattern.ChatComponent(" -> ", TextColor.fromLegacyFormat(ChatFormatting.DARK_RED)),
+            new ChatPattern.ChatComponent(null, TextColor.fromLegacyFormat(ChatFormatting.AQUA)),
+            new ChatPattern.ChatComponent("] ", TextColor.fromLegacyFormat(ChatFormatting.GOLD))
     );
+
+    // TODO: are both of these needed anymore? aren't messages consistently formatted?
     private static final ChatPattern messageChatPattern = new ChatPattern(
-            new ChatPattern.ChatComponent("[", TextColor.parseColor("#FF7F55"),0),
-            new ChatPattern.ChatComponent(null,TextColor.fromLegacyFormat(ChatFormatting.AQUA)),
-            new ChatPattern.ChatComponent(" → ",TextColor.parseColor("#FF7F55")),
-            new ChatPattern.ChatComponent(null,TextColor.parseColor("#FFD47F")),
-            new ChatPattern.ChatComponent("] ",TextColor.parseColor("#FF7F55"))
+            new ChatPattern.ChatComponent("[", TextColor.fromRgb(0xff7f55),0),
+            new ChatPattern.ChatComponent(null, TextColor.fromLegacyFormat(ChatFormatting.AQUA)),
+            new ChatPattern.ChatComponent(" → ", TextColor.fromRgb(0xff7f55)),
+            new ChatPattern.ChatComponent(null, TextColor.fromRgb(0xffd47f)),
+            new ChatPattern.ChatComponent("] ", TextColor.fromRgb(0xff7f55))
     );
     private static final ChatPattern messageChatPattern2 = new ChatPattern(
-            new ChatPattern.ChatComponent("[", TextColor.parseColor("#FF7F55"),0),
-            new ChatPattern.ChatComponent(null,TextColor.parseColor("#FFD47F")),
-            new ChatPattern.ChatComponent(" → ",TextColor.parseColor("#FF7F55")),
-            new ChatPattern.ChatComponent(null,TextColor.fromLegacyFormat(ChatFormatting.AQUA)),
-            new ChatPattern.ChatComponent("] ",TextColor.parseColor("#FF7F55"))
+            new ChatPattern.ChatComponent("[", TextColor.fromRgb(0xff7f55),0),
+            new ChatPattern.ChatComponent(null, TextColor.fromRgb(0xffd47f)),
+            new ChatPattern.ChatComponent(" → ", TextColor.fromRgb(0xff7f55)),
+            new ChatPattern.ChatComponent(null, TextColor.fromLegacyFormat(ChatFormatting.AQUA)),
+            new ChatPattern.ChatComponent("] ", TextColor.fromRgb(0xff7f55))
     );
+
     public static Predicate<Component> getMessagePredicate() {
         return iTextComponent -> {
             ChatPattern chatPattern = new ChatPattern(iTextComponent);

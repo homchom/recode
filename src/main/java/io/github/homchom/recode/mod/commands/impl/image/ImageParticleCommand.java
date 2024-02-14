@@ -51,7 +51,7 @@ public class ImageParticleCommand extends AbstractImageCommand {
                 convertToTemplate(image, fileName)
         );
 
-        ToasterUtil.sendToaster("Image Loaded!", fileName, SystemToast.SystemToastIds.NARRATOR_TOGGLE);
+        ToasterUtil.sendToaster("Image Loaded!", fileName, SystemToast.SystemToastId.NARRATOR_TOGGLE);
 
         return 0;
     }

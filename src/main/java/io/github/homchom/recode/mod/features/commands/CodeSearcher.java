@@ -24,7 +24,7 @@ public class CodeSearcher {
     public static void beginSearch(SearchType searchType, String searchValue) {
         CodeSearcher.searchType = searchType;
         CodeSearcher.searchValue = searchValue;
-        ToasterUtil.sendToaster("Searching for", searchValue, SystemToast.SystemToastIds.NARRATOR_TOGGLE);
+        ToasterUtil.sendToaster("Searching for", searchValue, SystemToast.SystemToastId.NARRATOR_TOGGLE);
     }
 
     public static void beginSearch(SignBlockEntity signBlockEntity) {
@@ -44,7 +44,7 @@ public class CodeSearcher {
 
     public static void clearSearch() {
         if (searchType != null || searchValue != null)
-            ToasterUtil.sendToaster("Code Search", "Search Cleared!", SystemToast.SystemToastIds.NARRATOR_TOGGLE);
+            ToasterUtil.sendToaster("Code Search", "Search Cleared!", SystemToast.SystemToastId.NARRATOR_TOGGLE);
         CodeSearcher.searchType = null;
         CodeSearcher.searchValue = null;
     }
