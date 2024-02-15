@@ -13,28 +13,36 @@ fun translatedText(
     key: String,
     style: StyleWrapper = style(),
     args: Array<out ComponentLike> = emptyArray()
-): Component {
+): ComponentLike {
     return Component.translatable(key, style.build(), *args)
 }
 
 /**
- * Creates a [Component] with literal [contents] and [style].
+ * Creates a literal [ComponentLike].
+ *
+ * @see StyledString
  */
-fun literalText(contents: Any, style: StyleWrapper = style()) =
-    Component.text(contents.toString(), style.build())
+fun literalText(content: String, style: StyleWrapper = style()) = StyledString(content to style)
+
+/**
+ * Creates a literal [ComponentLike].
+ *
+ * @see StyledString
+ */
+fun literalText(vararg contents: Pair<String, StyleWrapper>) = StyledString(*contents)
 
 /**
  * Creates an empty [Component] with [style].
  */
-fun emptyText(style: StyleWrapper = style()) =
+fun emptyText(style: StyleWrapper = style()): ComponentLike =
     Component.empty().style(style.build())
 
 /**
  * Builds a [Component] by adding [style] to [root] and applying [builder].
  *
  * Use [translatedText] and [literalText] when applicable, as their output is more optimized. Also note
- * that some functions take a [net.minecraft.util.FormattedCharSequence]; in those cases you should build
- * a [formattedCharSequence] directly.
+ * that some functions take a [net.minecraft.util.FormattedCharSequence]; in those cases you should create
+ * one directly.
  *
  * @see TextBuilder
  */
@@ -42,7 +50,7 @@ inline fun text(
     style: StyleWrapper = style(),
     root: ComponentBuilder<*, *> = Component.text(),
     builder: TextScope
-): Component {
+): ComponentLike {
     return root.style(style.build())
         .let(::TextBuilder)
         .apply(builder)
@@ -85,7 +93,7 @@ value class TextBuilder(val raw: ComponentBuilder<*, *> = Component.text()) {
     /**
      * Appends a pre-existing [component].
      */
-    fun append(component: Component) {
+    fun append(component: ComponentLike) {
         raw.append(component)
     }
 }

@@ -55,6 +55,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>> by eventGroup {
             val scoreboardText = run {
                 val scoreboard = mc.player!!.scoreboard
                 val objective = scoreboard.getObjective("info") ?: return@t null
+                // TODO: better way to do this post 1.20.4?
                 val score = scoreboard.listPlayerScores(objective).singleOrNull { it.value == 3 }
                     ?: return@t null
                 LegacyCodeRemover.removeCodes(score.owner)
