@@ -1,6 +1,6 @@
 @file:JvmName("FormattedCharSequenceTransformations")
 
-package io.github.homchom.recode.ui.text
+package io.github.homchom.recode.render.text
 
 import net.minecraft.util.FormattedCharSequence
 

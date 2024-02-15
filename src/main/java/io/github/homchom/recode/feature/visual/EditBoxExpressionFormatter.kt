@@ -1,8 +1,8 @@
 package io.github.homchom.recode.feature.visual
 
 import io.github.homchom.recode.hypercube.CommandAliasGroup
-import io.github.homchom.recode.ui.text.formattedCharSequence
-import io.github.homchom.recode.ui.text.subSequence
+import io.github.homchom.recode.render.text.formattedCharSequence
+import io.github.homchom.recode.render.text.subSequence
 import io.github.homchom.recode.util.regex.regex
 import net.minecraft.util.FormattedCharSequence
 import kotlin.math.max

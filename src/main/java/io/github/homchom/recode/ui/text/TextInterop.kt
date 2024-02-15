@@ -8,6 +8,7 @@ import io.github.homchom.recode.util.regex.RegexModifier
 import io.github.homchom.recode.util.regex.regex
 import net.kyori.adventure.platform.fabric.FabricClientAudiences
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.ComponentLike
 import net.kyori.adventure.text.format.Style
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import net.minecraft.network.chat.FormattedText.StyledContentConsumer
@@ -25,21 +26,17 @@ typealias VanillaStyle = net.minecraft.network.chat.Style
 fun Component.toVanilla() = FabricClientAudiences.of().toNative(this)
 
 /**
+ * Converts this [ComponentLike] to a [VanillaComponent].
+ */
+fun ComponentLike.toVanillaComponent() = asComponent().toVanilla()
+
+/**
  * Converts this [VanillaStyle] to a [Style].
  */
 fun VanillaStyle.toAdventure() = VanillaComponent.empty()
     .withStyle(this)
     .asComponent()
     .style()
-
-/**
- * Converts this [Style] to a [VanillaStyle].
- */
-fun Style.toVanilla(): VanillaStyle = Component.text()
-    .style(this)
-    .build()
-    .toVanilla()
-    .style
 
 /**
  * Converts this [Component] to a [FormattedCharSequence].

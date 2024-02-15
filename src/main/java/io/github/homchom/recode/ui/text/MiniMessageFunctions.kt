@@ -1,5 +1,6 @@
 package io.github.homchom.recode.ui.text
 
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.Context
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.minimessage.tag.Tag
@@ -12,7 +13,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
  *
  * @return The escaped string.
  */
-fun MiniMessage.escapeAll(input: String) = serialize(literalText(input))
+fun MiniMessage.escapeAll(input: String) = serialize(Component.text(input))
 
 /**
  * @return A new [TagResolver] that resolves like this TagResolver but excludes [disabledTags].

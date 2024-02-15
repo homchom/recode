@@ -20,7 +20,7 @@ object RecodeMessageTags {
         ColorPalette.AQUA,
         "stacked x$amount",
         "stacked",
-        arrayOf(literalText(amount))
+        arrayOf(literalText(amount.toString()))
     )
 
     private fun tag(
@@ -36,7 +36,7 @@ object RecodeMessageTags {
                 "chat.tag.recode.$translationKey",
                 style().color(color),
                 translationArgs
-            ).toVanilla(),
+            ).toVanillaComponent(),
             "$MOD_NAME $string"
         )
     }
