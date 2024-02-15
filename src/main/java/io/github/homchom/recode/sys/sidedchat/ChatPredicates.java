@@ -6,6 +6,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextColor;
 
+import java.awt.*;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -83,7 +84,7 @@ public class ChatPredicates {
 
     //SUPPORT
     private static final ChatPattern supportChatPattern = new ChatPattern(
-            new ChatPattern.ChatComponent("[SUPPORT] ", TextColor.fromLegacyFormat(ChatFormatting.BLUE),0)
+            new ChatPattern.ChatComponent("[SUPPORT] ", TextColor.fromRgb(new Color(85,127,212).getRGB()),0)
     );
     public static Predicate<Component> getSupportPredicate() {
         return text -> (new ChatPattern(text)).contains(supportChatPattern);
