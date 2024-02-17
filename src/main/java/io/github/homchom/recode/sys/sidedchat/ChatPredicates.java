@@ -2,11 +2,13 @@ package io.github.homchom.recode.sys.sidedchat;
 
 import com.google.common.collect.Lists;
 import io.github.homchom.recode.mod.config.Config;
+import io.github.homchom.recode.render.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextColor;
+import org.w3c.dom.css.RGBColor;
 
-import java.awt.*;
+
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -84,7 +86,7 @@ public class ChatPredicates {
 
     //SUPPORT
     private static final ChatPattern supportChatPattern = new ChatPattern(
-            new ChatPattern.ChatComponent("[SUPPORT] ", TextColor.fromRgb(new Color(85,127,212).getRGB()),0)
+            new ChatPattern.ChatComponent("[SUPPORT] ", TextColor.fromRgb(0x557fd4),0)
     );
     public static Predicate<Component> getSupportPredicate() {
         return text -> (new ChatPattern(text)).contains(supportChatPattern);
