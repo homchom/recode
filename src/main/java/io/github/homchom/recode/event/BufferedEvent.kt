@@ -8,6 +8,9 @@ import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
 import kotlin.time.toJavaDuration
 
+// TODO: replace stableInterval with a tick utility
+// TODO: reconcile ticks with 1.20 tick rate
+
 /**
  * Creates a [BufferedCustomEvent] that runs asynchronously and caches the result. [BufferedCustomEvent.stabilize]
  * should be called once during each critical section of this event's execution; if this is done, the result will

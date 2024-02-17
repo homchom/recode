@@ -57,9 +57,9 @@ val OutlineBlockEntitiesEvent =
         ))
     }
 
-data class BlockEntityOutlineContext @JvmOverloads constructor(
+data class BlockEntityOutlineContext(
     val blockEntity: BlockEntity,
-    var outlineColor: RGBAColor? = null
+    var outlineColor: RGBA? = null
 ) {
     data class Input(val blockEntities: Collection<BlockEntity>, val sectionPos: SectionPos?)
 }
@@ -78,9 +78,9 @@ interface DRecodeLevelRenderer {
     ): List<BlockEntity>
 
     /**
-     * Gets and returns the [RGBAColor] of [blockEntity]'s outline, or `null` if it will not be outlined.
+     * Gets and returns the RGBA hex of [blockEntity]'s outline, or `null` if it will not be outlined.
      */
-    fun `recode$getBlockEntityOutlineColor`(blockEntity: BlockEntity): RGBAColor?
+    fun `recode$getBlockEntityOutlineColor`(blockEntity: BlockEntity): Int?
 
     /**
      * Processes all unprocessed entity and block entity outlines.

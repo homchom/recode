@@ -2,43 +2,64 @@
 
 package io.github.homchom.recode.render
 
+import net.kyori.adventure.util.RGBLike
 import net.minecraft.ChatFormatting
-import java.util.*
 
-fun rgb(red: Int, green: Int, blue: Int) = RGBColor(red, green, blue)
-fun rgba(red: Int, green: Int, blue: Int, alpha: Int = 255) = RGBAColor(red, green, blue, alpha)
+private interface RGBColor {
+    val hex: Int
+
+    fun red() = hex shr 16 and 255
+    fun green() = hex shr 8 and 255
+    fun blue() = hex and 255
+}
 
 /**
- * Converts this [Int] into a [HexColor].
+ * An RGB [hex] color.
+ *
+ * @property red
+ * @property green
+ * @property blue
  */
-fun Int.toColor() = HexColor(this)
-
-sealed interface IntegralColor {
-    fun toInt(): Int
-}
-
-data class RGBColor(
-    val red: Int,
-    val green: Int,
-    val blue: Int
-) : IntegralColor {
-    override fun toInt() = (red shl 16) + (green shl 8) + blue
-}
-
-data class RGBAColor(
-    val red: Int,
-    val green: Int,
-    val blue: Int,
-    val alpha: Int
-) : IntegralColor {
-    override fun toInt() = (alpha shl 24) + (red shl 16) + (green shl 8) + blue
-}
-
 @JvmInline
-value class HexColor(val hex: Int) : IntegralColor {
-    override fun toInt() = hex
+value class RGB(override val hex: Int) : RGBColor, RGBLike {
+    constructor(red: Int, green: Int, blue: Int) : this((red shr 16) + (green shr 8) + blue) {
+        fun requireInRange(value: Int) =
+            require(value in 0..255) { "RGB color channel values must be between 0 and 255" }
+        requireInRange(red)
+        requireInRange(green)
+        requireInRange(blue)
+    }
 
-    override fun toString() = String.format(Locale.US, "#%06x", hex)
+    override fun red() = super.red()
+    override fun green() = super.green()
+    override fun blue() = super.blue()
+}
+
+/**
+ * An RGBA [hex] color, for renders that support transparency.
+ *
+ * @property red
+ * @property green
+ * @property blue
+ * @property alpha
+ */
+@JvmInline
+value class RGBA(override val hex: Int) : RGBColor {
+    fun alpha() = hex shr 24 and 0xff
+
+    constructor(
+        red: Int,
+        green: Int,
+        blue: Int,
+        alpha: Int = 255
+    ) : this((alpha shr 24) + (red shr 16) + (green shr 8) + blue) {
+        fun requireInRange(value: Int) =
+            require(value in 0..255) { "RGB color channel values must be between 0 and 255" }
+        requireInRange(red)
+        requireInRange(green)
+        requireInRange(blue)
+        requireInRange(alpha)
+    }
 }
 
 /**
@@ -64,5 +85,5 @@ object ColorPalette {
     val YELLOW get() = builtIn(ChatFormatting.YELLOW)
     val WHITE get() = builtIn(ChatFormatting.WHITE)
 
-    private fun builtIn(code: ChatFormatting) = code.color!!.toColor()
+    private fun builtIn(code: ChatFormatting) = RGB(code.color!!)
 }

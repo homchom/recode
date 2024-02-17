@@ -6,9 +6,9 @@ import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
 import io.github.homchom.recode.feature.social.DGuiWithSideChat;
 import io.github.homchom.recode.feature.social.SideChat;
 import io.github.homchom.recode.mod.config.Config;
+import io.github.homchom.recode.render.text.FormattedCharSequenceExtensions;
 import io.github.homchom.recode.ui.MessageTags;
 import io.github.homchom.recode.ui.RecodeMessageTags;
-import io.github.homchom.recode.ui.text.TextFunctions;
 import net.minecraft.client.GuiMessage;
 import net.minecraft.client.GuiMessageTag;
 import net.minecraft.client.Minecraft;
@@ -130,7 +130,7 @@ public abstract class MChatComponent {
             var line1 = trimmedMessages.get(index);
             var line2 = lineMessages.get(lineCount - 1 - index);
             var endsEarly = index != 0 && line1.endOfEntry();
-            if (!TextFunctions.looksLike(line1.content(), line2) || endsEarly) {
+            if (!FormattedCharSequenceExtensions.looksLike(line1.content(), line2) || endsEarly) {
                 messageStackAmount = 1;
                 return lineMessages;
             }

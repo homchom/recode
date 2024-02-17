@@ -6,7 +6,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import io.github.homchom.recode.event.SimpleValidated;
 import io.github.homchom.recode.render.BlockEntityOutlineContext;
 import io.github.homchom.recode.render.DRecodeLevelRenderer;
-import io.github.homchom.recode.render.RGBAColor;
+import io.github.homchom.recode.render.RGBA;
 import io.github.homchom.recode.render.RenderEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -34,7 +34,7 @@ public abstract class MLevelRenderer implements DRecodeLevelRenderer {
 	@Unique
 	private boolean processedOutlines;
 	@Unique
-	private final Map<BlockPos, RGBAColor> blockEntityOutlineMap = new HashMap<>();
+	private final Map<BlockPos, RGBA> blockEntityOutlineMap = new HashMap<>();
 
 	@WrapOperation(method = "renderLevel", at = @At(value = "FIELD", opcode = Opcodes.GETFIELD,
 			target = "Lnet/minecraft/client/renderer/LevelRenderer;globalBlockEntities:Ljava/util/Set;",
@@ -81,8 +81,10 @@ public abstract class MLevelRenderer implements DRecodeLevelRenderer {
 	}
 
 	@Override
-	public @Nullable RGBAColor recode$getBlockEntityOutlineColor(@NotNull BlockEntity blockEntity) {
-		return blockEntityOutlineMap.get(blockEntity.getBlockPos());
+	public @Nullable Integer recode$getBlockEntityOutlineColor(@NotNull BlockEntity blockEntity) {
+		var color = blockEntityOutlineMap.get(blockEntity.getBlockPos());
+		if (color == null) return null;
+		return color.getHex();
 	}
 
 	@Inject(method = "renderLevel", at = @At("HEAD"))
