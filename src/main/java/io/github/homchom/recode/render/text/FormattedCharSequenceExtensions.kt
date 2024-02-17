@@ -1,3 +1,5 @@
+@file:JvmName("FormattedCharSequenceExtensions")
+
 package io.github.homchom.recode.render.text
 
 import io.github.homchom.recode.util.std.fromCodePoint

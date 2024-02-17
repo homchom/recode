@@ -2,6 +2,7 @@ package io.github.homchom.recode.feature.visual
 
 import io.github.homchom.recode.hypercube.DFMiniMessageTags
 import io.github.homchom.recode.hypercube.dfMiniMessage
+import io.github.homchom.recode.render.RGB
 import io.github.homchom.recode.ui.text.MiniMessageHighlighter
 import io.github.homchom.recode.ui.text.TextBuilder
 import io.github.homchom.recode.ui.text.style
@@ -126,6 +127,6 @@ class ExpressionHighlighter {
     private fun styleAt(depth: Int) = if (depth == 0) {
         style()
     } else {
-        style().color(colors[(depth - 1) % colors.size])
+        style().color(RGB(colors[(depth - 1) % colors.size]))
     }
 }

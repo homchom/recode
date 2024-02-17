@@ -5,6 +5,7 @@ package io.github.homchom.recode.ui
 import io.github.homchom.recode.MOD_LOGO_CHAR
 import io.github.homchom.recode.hypercube.MAIN_ARROW
 import io.github.homchom.recode.mc
+import io.github.homchom.recode.render.RGB
 import io.github.homchom.recode.ui.text.style
 import io.github.homchom.recode.ui.text.text
 import io.github.homchom.recode.ui.text.toVanillaComponent
@@ -30,7 +31,7 @@ fun showMessage(message: ComponentLike, tag: GuiMessageTag = GuiMessageTag.syste
 fun showRecodeMessage(message: ComponentLike, tag: GuiMessageTag = RecodeMessageTags.info) {
     val prefixed = text {
         literal("$MOD_LOGO_CHAR ")
-        literal("$MAIN_ARROW ", style().color(tag.indicatorColor).bold())
+        literal("$MAIN_ARROW ", style().color(RGB(tag.indicatorColor)).bold())
         append(message)
     }
     showMessage(prefixed, tag)

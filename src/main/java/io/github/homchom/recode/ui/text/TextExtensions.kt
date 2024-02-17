@@ -1,4 +1,4 @@
-@file:JvmName("TextFunctions")
+@file:JvmName("TextExtensions")
 
 package io.github.homchom.recode.ui.text
 

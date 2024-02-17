@@ -1,7 +1,7 @@
 package io.github.homchom.recode.ui.text
 
 import io.github.homchom.recode.render.ColorPalette
-import io.github.homchom.recode.render.IntegralColor
+import io.github.homchom.recode.render.RGB
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
@@ -54,10 +54,8 @@ value class StyleWrapper(private val builder: Style.Builder) {
 
     fun white() = color(ColorPalette.WHITE)
 
-    fun color(color: IntegralColor) = color(color.toInt())
-
-    fun color(color: Int) = apply {
-        builder.color { color }
+    fun color(color: RGB) = apply {
+        builder.color { color.hex }
     }
 
     fun bold() = apply {
