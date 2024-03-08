@@ -3,11 +3,10 @@
 package io.github.homchom.recode.multiplayer
 
 import io.github.homchom.recode.RecodeDispatcher
-import io.github.homchom.recode.game.ticks
+import io.github.homchom.recode.game.waitTicks
 import io.github.homchom.recode.mc
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 // https://github.com/PaperMC/Velocity/issues/909
@@ -22,7 +21,7 @@ fun unsafelySendCommand(command: String) {
             do {
                 val next = queue.removeFirst()
                 mc.player?.connection?.sendUnsignedCommand(next) ?: break
-                delay(1.ticks)
+                waitTicks(1)
             } while (queue.isNotEmpty())
         } finally {
             queue.clear()
