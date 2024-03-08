@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.9.0"
+    kotlin("jvm") version "1.9.23"
     id("fabric-loom") version "1.5-SNAPSHOT"
     id("com.modrinth.minotaur") version "2.+"
     id("com.github.johnrengelman.shadow") version "7.1.2"
@@ -20,6 +20,7 @@ group = mavenGroup
 
 val fabricVersion: String by project
 val loaderVersion: String by project
+val flkVersion: String by project
 
 val requiredDependencyMods = dependencyModsOfType("required")
 val optionalDependencyMods = dependencyModsOfType("optional")
@@ -71,8 +72,7 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:$loaderVersion")
 
     // kotlin
-    shade(api(kotlin("stdlib", "1.9.0"))!!)
-    shade(api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")!!)
+    modImplementation("net.fabricmc:fabric-language-kotlin:$flkVersion")
 
     // mod dependencies listed in gradle.properties
     for (mod in requiredDependencyMods) {
@@ -117,7 +117,8 @@ tasks {
             "version" to modVersion,
             "minecraftVersion" to minecraftVersion,
             "loaderVersion" to loaderVersion,
-            "fabricVersion" to fabricVersion
+            "fabricVersion" to fabricVersion,
+            "flkVersion" to flkVersion
         )
 
         inputs.properties(*exposedProperties)

@@ -29,6 +29,7 @@ import io.github.homchom.recode.ui.text.translatedText
 import io.github.homchom.recode.util.regex.groupValue
 import io.github.homchom.recode.util.regex.regex
 import kotlinx.coroutines.runBlocking
+import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.ModContainer
@@ -39,7 +40,7 @@ import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-object Recode : ModContainer {
+object Recode : ClientModInitializer, ModContainer {
     /**
      * A prettified version of the mod's version. For example, "0.1.2-beta.3" is prettified to "0.1.2 beta 3".
      */
@@ -77,9 +78,9 @@ object Recode : ModContainer {
     }
 
     /**
-     * Initializes the mod. This should only be called once, from an entrypoint.
+     * Initializes the mod. This should never be called directly.
      */
-    fun initialize() {
+    override fun onInitializeClient() {
         check(!isInitialized) { "$MOD_NAME has already been initialized" }
         logInfo("initializing...")
 

@@ -14,7 +14,10 @@
     "icon": "assets/recode/textures/gui/recode.png",
     "entrypoints": {
         "client": [
-            "io.github.homchom.recode.Main",
+            {
+                "adapter": "kotlin",
+                "value": "io.github.homchom.recode.Recode"
+            },
             "io.github.homchom.recode.mod.features.keybinds.Keybinds"
         ],
         "modmenu": ["io.github.homchom.recode.mod.config.ModMenuIntegration"],
@@ -29,7 +32,8 @@
     "depends": {
         "minecraft": "$minecraftVersion",
         "fabricloader": "^$loaderVersion",
-        "fabric-api": "^${fabricVersion - metadataRegex}",
+        "fabric-api": "^$fabricVersion",
+        "fabric-language-kotlin": "^$flkVersion",
         $dependencyMods
     },
     "conflicts": {
