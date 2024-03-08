@@ -3,6 +3,7 @@ package io.github.homchom.recode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -25,7 +26,8 @@ interface PowerSink {
 class Power(
     extent: PowerSink? = null,
     private val onEnable: PowerCallback? = null,
-    private val onDisable: PowerCallback? = null
+    private val onDisable: PowerCallback? = null,
+    startEnabled: Boolean = false
 ) : PowerSink, CoroutineScope {
     private var charge = 0
 
@@ -41,6 +43,7 @@ class Power(
 
     init {
         extent?.use(this)
+        if (startEnabled) runBlocking { up() }
     }
 
     suspend fun up() = updateCharge { it + 1 }

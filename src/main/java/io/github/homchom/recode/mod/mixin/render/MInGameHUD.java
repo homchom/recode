@@ -3,7 +3,6 @@ package io.github.homchom.recode.mod.mixin.render;
 import io.github.homchom.recode.hypercube.state.DF;
 import io.github.homchom.recode.hypercube.state.PlotMode;
 import io.github.homchom.recode.mod.config.Config;
-import io.github.homchom.recode.mod.features.LagslayerHUD;
 import io.github.homchom.recode.mod.features.StateOverlayHandler;
 import io.github.homchom.recode.mod.features.commands.CodeSearcher;
 import net.minecraft.client.Minecraft;
@@ -20,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MInGameHUD {
     @Inject(method = "renderEffects", at = @At("RETURN"))
     private void renderEffects(GuiGraphics guiGraphics, CallbackInfo ci) {
-        LagslayerHUD.onRender(guiGraphics);
+        //LagslayerHUD.onRender(guiGraphics);
 
         Minecraft mc = Minecraft.getInstance();
         Font tr = mc.font;

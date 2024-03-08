@@ -3,6 +3,7 @@
 package io.github.homchom.recode.ui.text
 
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.ComponentIteratorType
 import net.kyori.adventure.text.format.Style
 
 /**
@@ -38,14 +39,21 @@ fun Component.toFlatList() = buildList {
 
 /**
  * Returns a flattened [Sequence] of this [Component]'s nodes, where parent and child styles are recursively merged.
+ *
+ * @see toFlatList
  */
 fun Component.asFlatSequence(): Sequence<Component> = sequence {
     yield(this@asFlatSequence)
     for (child in children()) {
-        val merged = mergeStyle(child)
+        val merged = child.mergeStyle(this@asFlatSequence)
         yieldAll(merged.asFlatSequence())
     }
 }
+
+/**
+ * @see Component.iterator
+ */
+operator fun Component.iterator(): Iterator<Component> = iterator(ComponentIteratorType.DEPTH_FIRST)
 
 /**
  * @return Whether this [Component] equals [other] when flattened.

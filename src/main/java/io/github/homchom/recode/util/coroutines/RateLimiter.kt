@@ -34,7 +34,7 @@ class RateLimiter @OptIn(DelicateCoroutinesApi::class) constructor(
     /**
      * Records the occurrence of an event that should be rate-limited.
      *
-     * @return `false` if the rate
+     * @return `false` if the rate limit was exceeded.
      */
     fun record(): Boolean {
         val currentCount = _count.updateAndGet { it + 1 }

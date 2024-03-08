@@ -2,10 +2,10 @@ package io.github.homchom.recode.event
 
 import com.google.common.cache.CacheBuilder
 import io.github.homchom.recode.PowerSink
+import io.github.homchom.recode.game.currentTick
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
-import kotlin.time.DurationUnit
 import kotlin.time.toJavaDuration
 
 // TODO: replace stableInterval with a tick utility
@@ -14,7 +14,7 @@ import kotlin.time.toJavaDuration
 /**
  * Creates a [BufferedCustomEvent] that runs asynchronously and caches the result. [BufferedCustomEvent.stabilize]
  * should be called once during each critical section of this event's execution; if this is done, the result will
- * be cached roughly on [stableInterval].
+ * be cached roughly on [stableTickInterval] (in ticks).
  *
  * @param keySelector A function that transforms [I] into a hashable key type [K] for the buffer.
  * @param contextGenerator A function that transforms [I] into the context type [T] when needed.
@@ -22,13 +22,13 @@ import kotlin.time.toJavaDuration
  */
 fun <T, R : Any, I, K : Any> createBufferedEvent(
     resultCapture: (T) -> R,
-    stableInterval: Duration,
+    stableTickInterval: Int,
     keySelector: (I) -> K,
     contextGenerator: (I) -> T,
     cacheDuration: Duration = 1.seconds
 ): BufferedCustomEvent<T, R, I> {
     val delegate = createEvent(resultCapture)
-    return BufferedFlowEvent(delegate, stableInterval, keySelector, contextGenerator, cacheDuration)
+    return BufferedFlowEvent(delegate, stableTickInterval, keySelector, contextGenerator, cacheDuration)
 }
 
 /**
@@ -46,7 +46,7 @@ interface BufferedCustomEvent<T, R, I> : ResultListenable<T, R?> {
 
 private class BufferedFlowEvent<T, R : Any, I, K : Any>(
     private val delegate: CustomEvent<T, R>,
-    stableInterval: Duration,
+    stableTickInterval: Int,
     private val keySelector: (I) -> K,
     private val contextGenerator: (I) -> T,
     cacheDuration: Duration = 1.seconds
@@ -65,17 +65,17 @@ private class BufferedFlowEvent<T, R : Any, I, K : Any>(
         var passIndex = -1
         var runIndex = 0
 
-        private var prevStamp = 0L
+        private var prevTick = 0L
 
         fun stamp() {
-            val now = System.currentTimeMillis()
+            val now = currentTick
             if (++passIndex == passes) {
-                val elapsed = (now - prevStamp).toInt().coerceAtLeast(1)
-                passes = stableInterval.toInt(DurationUnit.MILLISECONDS) / elapsed
+                val elapsed = (now - prevTick).toInt().coerceAtLeast(1)
+                passes = stableTickInterval / elapsed
                 passIndex = 0
             }
             runIndex = passIndex
-            prevStamp = now
+            prevTick = now
         }
     }
 
