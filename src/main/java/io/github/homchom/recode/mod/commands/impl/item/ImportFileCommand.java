@@ -58,8 +58,8 @@ public class ImportFileCommand extends Command {
 
                                 while (sc.hasNextLine()) {
                                     String line = sc.nextLine();
-                                    if (line.length() > 2000) {
-                                        ChatUtil.sendMessage("Line " + (lines.size() + 1) + " is too long! (" + line.length() + " > 2000)", ChatType.FAIL);
+                                    if (line.length() > 10_000) {
+                                        ChatUtil.sendMessage("Line " + (lines.size() + 1) + " is too long! (" + line.length() + " > 10,000)", ChatType.FAIL);
                                         continue files;
                                     }
                                     lines.add(line);

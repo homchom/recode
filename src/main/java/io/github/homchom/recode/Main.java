@@ -6,6 +6,8 @@ import net.fabricmc.api.ClientModInitializer;
 public final class Main implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
+		System.setProperty("java.awt.headless", "false"); // Enable AWT features
+
 		Recode.INSTANCE.initialize();
 	}
 }
