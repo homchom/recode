@@ -44,7 +44,8 @@ public class CommandHandler {
             new TitleCommand(),
             new SubTitleCommand(),
             new ActionbarCommand(),
-            new CalcCommand()
+            new CalcCommand(),
+            new CopyValueCommand()
         );
 
         if (Config.getBoolean("dfCommands")) {

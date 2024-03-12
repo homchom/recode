@@ -5,6 +5,7 @@ import io.github.homchom.recode.mod.config.structure.ConfigSubGroup;
 import io.github.homchom.recode.mod.config.types.BooleanSetting;
 import io.github.homchom.recode.mod.config.types.IntegerSetting;
 import io.github.homchom.recode.mod.config.types.LongSetting;
+import io.github.homchom.recode.mod.config.types.StringSetting;
 
 public class CommandsGroup extends ConfigGroup {
     public CommandsGroup(String name) {
@@ -30,5 +31,10 @@ public class CommandsGroup extends ConfigGroup {
         heads.register(new BooleanSetting("headsEnabled", false));
         heads.register(new IntegerSetting("headMenuMaxRender", 1000));
         this.register(heads);
+
+        // copyval
+        ConfigSubGroup copyVal = new ConfigSubGroup("copyval");
+        copyVal.register(new StringSetting("itemTextFormatLocation", "[%f, %f, %f, %f, %f]"));
+        this.register(copyVal);
     }
 }
