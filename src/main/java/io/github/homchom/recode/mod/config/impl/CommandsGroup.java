@@ -34,7 +34,19 @@ public class CommandsGroup extends ConfigGroup {
 
         // copyval
         ConfigSubGroup copyVal = new ConfigSubGroup("copyval");
+        copyVal.register(new StringSetting("itemTextFormatNumber", "%s"));
+        copyVal.register(new StringSetting("itemTextFormatNumberLiteral", "%s"));
+
         copyVal.register(new StringSetting("itemTextFormatLocation", "[%f, %f, %f, %f, %f]"));
+        copyVal.register(new StringSetting("itemTextFormatVector", "<%f, %f, %f>"));
+
+        copyVal.register(new StringSetting("itemTextFormatString", "\"%s\""));
+        copyVal.register(new StringSetting("itemTextFormatStringEscape", "\\"));
+        copyVal.register(new StringSetting("itemTextFormatStringDelimiter", "\""));
+
+        copyVal.register(new StringSetting("itemTextFormatText", "T\"%s\""));
+        copyVal.register(new StringSetting("itemTextFormatTextEscape", "\\"));
+        copyVal.register(new StringSetting("itemTextFormatTextDelimiter", "\""));
         this.register(copyVal);
     }
 }

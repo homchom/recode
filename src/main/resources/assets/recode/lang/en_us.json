@@ -91,6 +91,35 @@
     "config.recode.option.autotimeval": "Auto /time value",
     "config.recode.option.autotimeval.tooltip": "Value to use in auto /time",
 
+
+    "config.recode.subcategory.commands_copyval": "Copied Value Text Form",
+    "config.recode.subcategory.commands_copyval.tooltip": "Changes how /copyval generates\ntext versions of values.\nUses Java's formatting rules.",
+
+    "config.recode.option.itemTextFormatNumber": "Number",
+    "config.recode.option.itemTextFormatNumber.tooltip": "Args:\n1. Value (String)",
+    "config.recode.option.itemTextFormatNumberLiteral": "Number Literal",
+    "config.recode.option.itemTextFormatNumberLiteral.tooltip": "Args:\n1. Value (String)\n\nUsed when a number value is just a single\nnumber with no % expressions.",
+
+    "config.recode.option.itemTextFormatLocation": "Location",
+    "config.recode.option.itemTextFormatLocation.tooltip": "Args:\n1. X (double)\n2. Y (double)\n3. Z (double)\n4. Pitch (double)\n5. Yaw (double)",
+    "config.recode.option.itemTextFormatVector": "Vector",
+    "config.recode.option.itemTextFormatVector.tooltip": "Args:\n1. X (double)\n2. Y (double)\n3. Z (double)",
+
+    "config.recode.option.itemTextFormatString": "String",
+    "config.recode.option.itemTextFormatString.tooltip": "Args:\n1. Value (String)",
+    "config.recode.option.itemTextFormatStringDelimiter": "String - Delimiter",
+    "config.recode.option.itemTextFormatStringDelimiter.tooltip": "If both this and delimiter are set,\nevery instance of this delimiter in\nthe source text will be preceded\nby the escape code.",
+    "config.recode.option.itemTextFormatStringEscape": "String - Escape",
+    "config.recode.option.itemTextFormatStringEscape.tooltip": "If both this and delimiter are set,\nevery instance of this escape will\nbe preceded by another escape code.",
+
+    "config.recode.option.itemTextFormatText": "Styled Text",
+    "config.recode.option.itemTextFormatText.tooltip": "Args:\n1. Value (String)",
+    "config.recode.option.itemTextFormatTextDelimiter": "Styled Text - Delimiter",
+    "config.recode.option.itemTextFormatTextDelimiter.tooltip": "If both this and delimiter are set,\nevery instance of this delimiter in\nthe source text will be preceded\nby the escape code.",
+    "config.recode.option.itemTextFormatTextEscape": "Styled Text - Escape",
+    "config.recode.option.itemTextFormatTextEscape.tooltip": "If both this and delimiter are set,\nevery instance of this escape will\nbe preceded by another escape code.",
+
+
     "config.recode.option.autowand": "Auto //wand",
     "config.recode.option.autowand.tooltip": "Automatically runs //wand upon\nentering build mode",
     "config.recode.option.autoRC": "Auto /rc",

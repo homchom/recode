@@ -2,6 +2,8 @@ package io.github.homchom.recode.util.item
 
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import com.google.gson.JsonParser
+import net.minecraft.nbt.CompoundTag
 import net.minecraft.world.item.ItemStack
 
 /**
@@ -18,8 +20,8 @@ import net.minecraft.world.item.ItemStack
  * @return This item's DF ValueItem JsonObject, if one exists.
  */
 fun ItemStack.getDFValueItemData() : JsonObject? {
-    // TODO May need to change once Item Components release
-    val nbt = this.tag?.getCompound("tag")
+    // TODO May need to change once Item Components release?
+    val nbt = this.tag
         ?.getCompound("PublicBukkitValues")
         ?.getString("hypercube:varitem")
 
@@ -27,6 +29,5 @@ fun ItemStack.getDFValueItemData() : JsonObject? {
         return null
     }
 
-    val gson = Gson()
-    return gson.toJsonTree(nbt) as? JsonObject
+    return JsonParser.parseString(nbt) as? JsonObject
 }
