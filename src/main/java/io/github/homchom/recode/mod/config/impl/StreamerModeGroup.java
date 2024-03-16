@@ -24,6 +24,7 @@ public class StreamerModeGroup extends ConfigGroup {
         modules.register(new BooleanSetting("streamerSpies", true));
         modules.register(new BooleanSetting("streamerHideDMs", false));
         modules.register(new BooleanSetting("streamerHidePlotAds", false));
+        modules.register(new BooleanSetting("streamerHidePlotBoosts", false));
         modules.register(new BooleanSetting("streamerHideBuycraftUpdate", true));
         modules.register(new BooleanSetting("streamerHideSupport", true));
         modules.register(new BooleanSetting("streamerHideModeration", true));

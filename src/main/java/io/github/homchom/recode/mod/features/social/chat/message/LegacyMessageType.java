@@ -8,6 +8,7 @@ public enum LegacyMessageType {
     // General
     DIRECT_MESSAGE(true),
     PLOT_AD(true),
+    PLOT_BOOST(true),
 
     // Support
     SUPPORT,
