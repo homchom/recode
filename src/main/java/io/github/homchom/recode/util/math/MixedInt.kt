@@ -55,15 +55,20 @@ data class MixedInt(val whole: Int, val numerator: Int = 0, val denominator: Int
 
     companion object {
         /**
-         * Constructs a [MixedInt] with improper components by converting them before construction.
+         * Constructs a simplified [MixedInt].
          */
-        fun improper(whole: Int, numerator: Int, denominator: Int): MixedInt {
-            val gcf = greatestCommonFactor(whole, denominator)
-            return MixedInt(
-                whole + numerator / denominator,
-                (numerator % denominator) / gcf,
-                denominator / gcf
-            )
+        fun simplified(whole: Int, numerator: Int, denominator: Int): MixedInt {
+            val gcd = greatestCommonDivisor(numerator, denominator)
+            return MixedInt(whole, numerator / gcd, denominator / gcd)
         }
+
+        /**
+         * Constructs a [simplified] [MixedInt] with improper components by converting them before construction.
+         */
+        fun improper(whole: Int, numerator: Int, denominator: Int) = simplified(
+            whole + numerator / denominator,
+            numerator % denominator,
+            denominator
+        )
     }
 }
