@@ -217,6 +217,8 @@
     "config.recode.option.streamerHideDMs.tooltip": "Hides all incoming private messages",
     "config.recode.option.streamerHidePlotAds": "Hide Plot Ads",
     "config.recode.option.streamerHidePlotAds.tooltip": "Hides plot ads and blocks it's sound",
+    "config.recode.option.streamerHidePlotBoosts": "Hide Plot Boosts",
+    "config.recode.option.streamerHidePlotBoosts.tooltip": "Hides plot boosts and blocks it's sound",
     "config.recode.option.streamerHideBuycraftUpdate": "Hide BuycraftX Update",
     "config.recode.option.streamerHideBuycraftUpdate.tooltip": "Hides the BuycraftX plugin update message",
     "config.recode.option.streamerHideSupport": "Hide Support",

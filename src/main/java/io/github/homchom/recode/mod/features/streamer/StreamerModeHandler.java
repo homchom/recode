@@ -56,6 +56,10 @@ public class StreamerModeHandler {
         return getOption("streamerHidePlotAds");
     }
 
+    public static boolean hidePlotBoosts() {
+        return getOption("streamerHidePlotBoosts");
+    }
+
     public static boolean hideBuycraftUpdate() {
         return getOption("streamerHideBuycraftUpdate");
     }

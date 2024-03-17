@@ -11,6 +11,7 @@ public abstract class MessageCheck {
             // General
             new DirectMessageCheck(),
             new PlotAdCheck(),
+            new PlotBoostCheck(),
 
             // Support
             new SupportCheck(),
