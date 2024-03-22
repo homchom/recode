@@ -2,6 +2,7 @@ package io.github.homchom.recode.feature.visual
 
 import io.github.homchom.recode.Power
 import io.github.homchom.recode.event.listenEach
+import io.github.homchom.recode.feature.AddsFeature
 import io.github.homchom.recode.feature.registerFeature
 import io.github.homchom.recode.hypercube.state.PlotMode
 import io.github.homchom.recode.hypercube.state.currentDFState
@@ -13,6 +14,7 @@ import io.github.homchom.recode.render.RGBA
 import net.minecraft.world.level.block.entity.SignBlockEntity
 import kotlin.math.sqrt
 
+@OptIn(AddsFeature::class)
 object FCodeSearch {
     init {
         registerFeature("Code Search") {

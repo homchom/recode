@@ -2,12 +2,14 @@ package io.github.homchom.recode.feature.visual
 
 import io.github.homchom.recode.Power
 import io.github.homchom.recode.event.listenEach
+import io.github.homchom.recode.feature.AddsFeature
 import io.github.homchom.recode.feature.registerFeature
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.mod.config.Config
 import io.github.homchom.recode.render.RenderBlockEntitiesEvent
 import net.minecraft.world.level.block.entity.SignBlockEntity
 
+@OptIn(AddsFeature::class)
 object FSignRenderDistance {
     init {
         registerFeature("Sign Render Distance") {

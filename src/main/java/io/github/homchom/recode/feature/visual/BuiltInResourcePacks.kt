@@ -2,6 +2,7 @@ package io.github.homchom.recode.feature.visual
 
 import io.github.homchom.recode.MOD_ID
 import io.github.homchom.recode.Recode
+import io.github.homchom.recode.feature.AddsFeature
 import io.github.homchom.recode.feature.registerFeature
 import io.github.homchom.recode.id
 import io.github.homchom.recode.render.RGB
@@ -10,6 +11,7 @@ import io.github.homchom.recode.ui.text.VanillaStyle
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType
 
+@OptIn(AddsFeature::class)
 object FBuiltInResourcePacks {
     init {
         registerFeature("Built-in Resource Packs") {

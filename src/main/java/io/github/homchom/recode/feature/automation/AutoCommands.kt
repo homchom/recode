@@ -3,6 +3,7 @@ package io.github.homchom.recode.feature.automation
 import io.github.homchom.recode.Power
 import io.github.homchom.recode.event.Listenable
 import io.github.homchom.recode.event.listenEach
+import io.github.homchom.recode.feature.AddsFeature
 import io.github.homchom.recode.feature.registerFeature
 import io.github.homchom.recode.hypercube.CommandSenders
 import io.github.homchom.recode.hypercube.JoinDFDetector
@@ -11,6 +12,7 @@ import io.github.homchom.recode.mod.config.Config
 import io.github.homchom.recode.multiplayer.send
 import kotlinx.coroutines.launch
 
+@OptIn(AddsFeature::class)
 object AutoCommands {
     init {
         register("chat local", "autoChatLocal", DFStateDetectors) { (new) ->
