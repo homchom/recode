@@ -17,7 +17,8 @@
         "render.MWindow",
         "render.chat.MChatComponent",
         "render.chat.MChatScreen",
-        "render.chat.MCommandSuggestions"
+        "render.chat.MCommandSuggestions",
+        "ui.FontInvoker"
     ],
     "server": [],
     "plugin": "io.github.homchom.recode.mixin.MixinPluginRecode",

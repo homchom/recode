@@ -22,14 +22,16 @@ fun translatedText(
  *
  * @see StyledString
  */
-fun literalText(content: String, style: StyleWrapper = style()) = StyledString(content to style)
+fun literalText(content: String, style: StyleWrapper = style()) =
+    StyledString.fromContents(content to style)
 
 /**
  * Creates a literal [ComponentLike].
  *
  * @see StyledString
  */
-fun literalText(vararg contents: Pair<String, StyleWrapper>) = StyledString(*contents)
+fun literalText(vararg contents: Pair<String, StyleWrapper>) =
+    StyledString.fromContents(*contents)
 
 /**
  * Creates an empty [Component] with [style].

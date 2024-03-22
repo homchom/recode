@@ -11,6 +11,16 @@ fun Int.squared() = this * this
 fun Long.squared() = this * this
 
 /**
+ * Returns the square of this Float.
+ */
+fun Float.squared() = this * this
+
+/**
+ * Returns the square of this Double.
+ */
+fun Double.squared() = this * this
+
+/**
  * @return the [floor modulo](https://en.wikipedia.org/wiki/Modulo#Variants_of_the_definition)
  * of this Int and [other].
  */

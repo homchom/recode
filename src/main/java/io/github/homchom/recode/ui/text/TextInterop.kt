@@ -4,14 +4,15 @@ package io.github.homchom.recode.ui.text
 
 import com.google.common.cache.CacheBuilder
 import io.github.homchom.recode.ui.text.LegacyCodeRemover.plainText
-import io.github.homchom.recode.util.regex.RegexModifier
 import io.github.homchom.recode.util.regex.regex
+import net.kyori.adventure.key.Key
 import net.kyori.adventure.platform.fabric.FabricClientAudiences
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.ComponentLike
 import net.kyori.adventure.text.format.Style
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import net.minecraft.network.chat.FormattedText.StyledContentConsumer
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.util.FormattedCharSequence
 import net.minecraft.util.StringDecomposer
 import java.util.*
@@ -29,6 +30,11 @@ fun Component.toVanilla() = FabricClientAudiences.of().toNative(this)
  * Converts this [ComponentLike] to a [VanillaComponent].
  */
 fun ComponentLike.toVanillaComponent() = asComponent().toVanilla()
+
+/**
+ * Converts this [Key] to a [ResourceLocation].
+ */
+fun Key.toResourceLocation() = ResourceLocation(namespace(), value())
 
 /**
  * Converts this [VanillaStyle] to a [Style].
@@ -68,7 +74,7 @@ fun Component.toFormattedCharSequence(inLanguageOrder: Boolean = true): Formatte
 object LegacyCodeRemover {
     private val legacyCodeRegex = regex {
         str("§")
-        group(RegexModifier.IgnoreCase) {
+        group {
             any("0-9a-fk-o")
             or
             str("x")
