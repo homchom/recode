@@ -1,6 +1,7 @@
 package io.github.homchom.recode.ui.text
 
 import io.github.homchom.recode.util.std.interpolate
+import net.kyori.adventure.text.BuildableComponent
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.ComponentLike
 import net.kyori.adventure.text.format.TextDecoration
@@ -116,7 +117,7 @@ class MiniMessageHighlighter(private val standardTags: TagResolver) {
             instance.deserializeToTree(input)
         } catch (e: Exception) {
             // https://github.com/KyoriPowered/adventure/issues/1011
-            return literalText(input, style().red())
+            return literalText(input, style().red()).asComponent()
         }
         buildNewInput(root)
         return instance.deserialize(newInput.toString())
