@@ -2,7 +2,6 @@ package io.github.homchom.recode.ui.text
 
 import io.github.homchom.recode.util.std.interpolate
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.ComponentLike
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.minimessage.Context
 import net.kyori.adventure.text.minimessage.MiniMessage
@@ -59,7 +58,7 @@ class MiniMessageHighlighter(private val standardTags: TagResolver) {
      * - All other valid tags are treated as "literals" and colored gray.
      */
     @Suppress("UnstableApiUsage") // TODO: open issue at adventure github
-    fun highlight(input: String): ComponentLike {
+    fun highlight(input: String): Component {
         // handle the special case of inputs with <reset> parser directives
         // TODO: determine if there is a better way to do this
         val splitByResets = input.split("<reset>")
@@ -69,7 +68,7 @@ class MiniMessageHighlighter(private val standardTags: TagResolver) {
                 literal("<reset>")
             }
             append(highlight(splitByResets.last()))
-        }
+        }.asComponent()
 
         fun TagNode.input() = with(token()) { input.substring(startIndex(), endIndex()) }
         fun ValueNode.input() = with(token()) { input.substring(startIndex(), endIndex()) }
