@@ -10,7 +10,7 @@ import io.github.homchom.recode.hypercube.state.isOnDF
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.multiplayer.DisconnectFromServerEvent
 import io.github.homchom.recode.multiplayer.JoinServerEvent
-import io.github.homchom.recode.multiplayer.ReceiveChatMessageEvent
+import io.github.homchom.recode.multiplayer.ReceiveMessageEvent
 import io.github.homchom.recode.multiplayer.username
 import io.github.homchom.recode.ui.text.matchEntirePlain
 import io.github.homchom.recode.util.Case
@@ -28,7 +28,7 @@ val JoinDFDetector = detector("DF join",
         if (isOnDF) return@t null // if already on DF, this is a node switch and should not be tested
         if (!mc.currentServer.ipMatchesDF) return@t null
 
-        val messages = ReceiveChatMessageEvent.add()
+        val messages = ReceiveMessageEvent.Chat.add()
         val tipMessage = ActiveBoosterInfo.detect(null).map(::Case).addOptional()
 
         val disconnect = DisconnectFromServerEvent.add()

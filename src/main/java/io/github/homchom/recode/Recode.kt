@@ -5,10 +5,7 @@ import com.google.gson.GsonBuilder
 import io.github.homchom.recode.event.listenEach
 import io.github.homchom.recode.feature.automation.AutoCommands
 import io.github.homchom.recode.feature.meta.FDebugMode
-import io.github.homchom.recode.feature.visual.FBuiltInResourcePacks
-import io.github.homchom.recode.feature.visual.FCodeSearch
-import io.github.homchom.recode.feature.visual.FMessageStacking
-import io.github.homchom.recode.feature.visual.FSignRenderDistance
+import io.github.homchom.recode.feature.visual.*
 import io.github.homchom.recode.game.QuitGameEvent
 import io.github.homchom.recode.hypercube.JoinDFDetector
 import io.github.homchom.recode.mod.commands.CommandHandler
@@ -76,6 +73,7 @@ object Recode : ClientModInitializer, ModContainer {
         // Visual
         FBuiltInResourcePacks
         FCodeSearch
+        FLagSlayerHUD
         FMessageStacking
         FSignRenderDistance
 

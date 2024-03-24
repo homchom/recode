@@ -4,7 +4,7 @@ import io.github.homchom.recode.event.trial.requester
 import io.github.homchom.recode.event.trial.toggleRequesterGroup
 import io.github.homchom.recode.event.trial.trial
 import io.github.homchom.recode.hypercube.state.DFStateDetectors
-import io.github.homchom.recode.multiplayer.ReceiveChatMessageEvent
+import io.github.homchom.recode.multiplayer.ReceiveMessageEvent
 import io.github.homchom.recode.multiplayer.Sender
 import io.github.homchom.recode.ui.text.equalsPlain
 import io.github.homchom.recode.ui.text.matchesPlain
@@ -15,7 +15,7 @@ import io.github.homchom.recode.util.regex.regex
 // TODO: replace more requesters with senders and update documentation
 object CommandSenders {
     val ChatLocal = requester("/chat local", DFStateDetectors, trial(
-        ReceiveChatMessageEvent,
+        ReceiveMessageEvent.Chat,
         Unit,
         start = { Sender.sendCommand("chat local") },
         tests = { (text), _, _ ->
@@ -33,7 +33,7 @@ object CommandSenders {
 
     // TODO: support time keywords through command suggestions (not enum)
     val ClientTime = requester("/time", DFStateDetectors, trial(
-        ReceiveChatMessageEvent,
+        ReceiveMessageEvent.Chat,
         null as Long?,
         start = { time -> Sender.sendCommand("time $time") },
         tests = { context, time, _: Boolean ->
@@ -42,7 +42,7 @@ object CommandSenders {
     ))
 
     val Flight = toggleRequesterGroup("/fly", DFStateDetectors, trial(
-        ReceiveChatMessageEvent,
+        ReceiveMessageEvent.Chat,
         Unit,
         start = { Sender.sendCommand("fly") },
         tests = t@{ message, _, _ ->
@@ -67,7 +67,7 @@ object CommandSenders {
     }
 
     val LagSlayer = toggleRequesterGroup("/lagslayer", DFStateDetectors, trial(
-        ReceiveChatMessageEvent,
+        ReceiveMessageEvent.Chat,
         Unit,
         start = { Sender.sendCommand("lagslayer") },
         tests = t@{ (message), _, _ ->
@@ -81,7 +81,7 @@ object CommandSenders {
     ))
 
     val NightVision = toggleRequesterGroup("/nightvis", DFStateDetectors, trial(
-        ReceiveChatMessageEvent,
+        ReceiveMessageEvent.Chat,
         Unit,
         start = { Sender.sendCommand("nightvis") },
         tests = t@{ (message), _, _ ->

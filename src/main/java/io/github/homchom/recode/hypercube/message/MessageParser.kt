@@ -7,7 +7,7 @@ import io.github.homchom.recode.event.SimpleValidated
 import io.github.homchom.recode.event.trial.detector
 import io.github.homchom.recode.event.trial.requester
 import io.github.homchom.recode.event.trial.trial
-import io.github.homchom.recode.multiplayer.ReceiveChatMessageEvent
+import io.github.homchom.recode.multiplayer.ReceiveMessageEvent
 import io.github.homchom.recode.util.Matcher
 import io.github.homchom.recode.util.matcherOf
 import io.github.homchom.recode.util.splitByHumps
@@ -20,7 +20,7 @@ import net.kyori.adventure.text.Component
 sealed interface MessageParser<T : Any, out R : ParsedMessage> : Matcher<Component, R>, Detector<T, R>
 
 val ParsedMessageDetector = detector("parsed message",
-    trial(ReceiveChatMessageEvent, Unit) t@{ message, _ ->
+    trial(ReceiveMessageEvent.Chat, Unit) t@{ message, _ ->
         val parsed = ParsedMessage.match(message.value) ?: return@t null
         if (hidden) message.invalidate()
         instant(ParsedMessageContext(parsed, message))

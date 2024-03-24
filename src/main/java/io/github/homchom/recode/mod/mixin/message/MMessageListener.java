@@ -2,39 +2,27 @@ package io.github.homchom.recode.mod.mixin.message;
 
 import io.github.homchom.recode.Logging;
 import io.github.homchom.recode.hypercube.state.DF;
-import io.github.homchom.recode.mod.config.LegacyConfig;
-import io.github.homchom.recode.mod.features.LagslayerHUD;
 import io.github.homchom.recode.mod.features.social.chat.message.LegacyMessage;
-import io.github.homchom.recode.multiplayer.ReceiveChatMessageEvent;
 import io.github.homchom.recode.sys.player.DFInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.regex.Pattern;
-
 @Mixin(ClientPacketListener.class)
 public class MMessageListener {
     private static long lastPatchCheck = 0;
     //private boolean motdShown = false;
-
-    private final Pattern lsRegex = Pattern.compile("^CPU Usage: \\[▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮] \\(.*%\\)$");
 
     @Inject(method = "handleSystemChat", cancellable = true, at = @At(value = "INVOKE",
             target = "Lnet/minecraft/network/protocol/PacketUtils;ensureRunningOnSameThread(Lnet/minecraft/network/protocol/Packet;Lnet/minecraft/network/PacketListener;Lnet/minecraft/util/thread/BlockableEventLoop;)V",
             shift = At.Shift.AFTER
     ))
     private void handleChat(ClientboundSystemChatPacket packet, CallbackInfo ci) {
-        if (!ReceiveChatMessageEvent.INSTANCE.cacheAndRun(packet.content())) {
-            ci.cancel();
-        }
-
         if (DF.isOnDF()) {
             // temporary, to preserve non-migrated side effects (like message grabbing)
             // TODO: remove after new message listener is 100% complete
@@ -45,17 +33,6 @@ public class MMessageListener {
             } catch (Exception e) {
                 e.printStackTrace();
                 Logging.logError("Error while trying to parse the chat text!");
-            }
-        }
-    }
-
-    @Inject(method = "setActionBarText", at = @At("HEAD"), cancellable = true)
-    private void setActionBarText(ClientboundSetActionBarTextPacket packet, CallbackInfo ci) {
-        if (Minecraft.getInstance().player == null) return;
-        if (lsRegex.matcher(packet.getText().getString()).matches()) {
-            if (LegacyConfig.getBoolean("cpuOnScreen")) {
-                //LagslayerHUD.updateCPU(packet);
-                ci.cancel();
             }
         }
     }

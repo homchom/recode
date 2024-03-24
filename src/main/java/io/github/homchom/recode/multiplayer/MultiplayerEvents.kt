@@ -28,7 +28,10 @@ data class ServerDisconnectContext(val handler: ClientPacketListener, val client
 
 val ReceiveGamePacketEvent = createEvent<Packet<*>>()
 
-object ReceiveChatMessageEvent : CustomEvent<SimpleValidated<Component>, Boolean> by createValidatedEvent() {
+sealed class ReceiveMessageEvent : CustomEvent<SimpleValidated<Component>, Boolean> by createValidatedEvent() {
+    data object Chat : ReceiveMessageEvent()
+    data object ActionBar : ReceiveMessageEvent()
+
     private val cache = CacheBuilder.newBuilder()
         .expireAfterAccess(JDuration.ofSeconds(1))
         .build<VanillaComponent, Component>()

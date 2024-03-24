@@ -92,7 +92,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>> by eventGroup {
     ))
 
     val ChangeMode = eventGroup.add(detector("mode change",
-        trial(ReceiveChatMessageEvent, Unit) t@{ (message), _ ->
+        trial(ReceiveMessageEvent.Chat, Unit) t@{ (message), _ ->
             enforceOnDF()
             val (mode, plotName, plotOwner) = PlotMode.ID.match(message) ?: return@t null
             suspending s@{
@@ -124,14 +124,14 @@ object DFStateDetectors : StateListenable<Case<DFState?>> by eventGroup {
     ))
 
     val StartSession = eventGroup.add(detector("session start",
-        trial(ReceiveChatMessageEvent, Unit) t@{ (message), _ ->
+        trial(ReceiveMessageEvent.Chat, Unit) t@{ (message), _ ->
             enforceOnDF()
 
             if (currentDFState!!.session != null) return@t null
             val session = SupportSession.match(message) ?: return@t null
 
-            val subsequent = ReceiveChatMessageEvent.add()
-            val enforceChannel = ReceiveChatMessageEvent.add()
+            val subsequent = ReceiveMessageEvent.Chat.add()
+            val enforceChannel = ReceiveMessageEvent.Chat.add()
             suspending s@{
                 enforce(enforceChannel) { (text) -> SupportSession.match(text) == null }
 
@@ -152,7 +152,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>> by eventGroup {
     ))
 
     val EndSession = eventGroup.add(detector("session end",
-        trial(ReceiveChatMessageEvent, Unit) t@{ (message), _ ->
+        trial(ReceiveMessageEvent.Chat, Unit) t@{ (message), _ ->
             enforceOnDF()
 
             if (currentDFState!!.session == null) return@t null

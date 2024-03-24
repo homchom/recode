@@ -5,7 +5,7 @@ import io.github.homchom.recode.event.trial.detector
 import io.github.homchom.recode.event.trial.trial
 import io.github.homchom.recode.hypercube.BOOSTER_ARROW
 import io.github.homchom.recode.hypercube.TOKEN_NOTCH_CHAR
-import io.github.homchom.recode.multiplayer.ReceiveChatMessageEvent
+import io.github.homchom.recode.multiplayer.ReceiveMessageEvent
 import io.github.homchom.recode.multiplayer.username
 import io.github.homchom.recode.ui.text.matchEntirePlain
 import io.github.homchom.recode.ui.text.matchesPlain
@@ -41,7 +41,7 @@ data class ActiveBoosterInfo(val player: String, val canTip: Boolean) {
         ShopMessages.BoosterActive,
         Unit,
         tests = { (player), _ ->
-            val subsequent = ReceiveChatMessageEvent.add()
+            val subsequent = ReceiveMessageEvent.Chat.add()
 
             suspending s@{
                 val (first) = subsequent.receive()
