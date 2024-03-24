@@ -1,6 +1,6 @@
 package io.github.homchom.recode.feature.social
 
-import io.github.homchom.recode.mod.config.Config
+import io.github.homchom.recode.mod.config.LegacyConfig
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.ChatComponent
@@ -26,7 +26,7 @@ class SideChat(private val mc: Minecraft) : ChatComponent(mc) {
     }
 
     override fun getWidth(): Int {
-        val configWidth = Config.getInteger("sidechat_width")
+        val configWidth = LegacyConfig.getInteger("sidechat_width")
         if (configWidth > 0) return configWidth
 
         // auto-fit if configWidth <= 0

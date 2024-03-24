@@ -1,5 +1,6 @@
 package io.github.homchom.recode.mod.config.menu;
 
+import io.github.homchom.recode.config.Config;
 import io.github.homchom.recode.mod.config.internal.ITranslatable;
 import io.github.homchom.recode.mod.config.structure.ConfigGroup;
 import io.github.homchom.recode.mod.config.structure.ConfigManager;
@@ -49,7 +50,8 @@ public class ConfigScreen implements ITranslatable {
         // Builder
         ConfigBuilder builder = ConfigBuilder.create()
                 .setParentScreen(parent)
-                .setTitle(ITranslatable.get(PREFIX + "title"));
+                .setTitle(ITranslatable.get(PREFIX + "title"))
+                .setSavingRunnable(Config.INSTANCE::save);
 
         // Entry builder
         ConfigEntryBuilder entryBuilder = builder.entryBuilder();

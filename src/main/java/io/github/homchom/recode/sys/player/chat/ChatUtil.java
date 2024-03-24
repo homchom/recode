@@ -1,6 +1,6 @@
 package io.github.homchom.recode.sys.player.chat;
 
-import io.github.homchom.recode.mod.config.Config;
+import io.github.homchom.recode.mod.config.LegacyConfig;
 import io.github.homchom.recode.sys.player.chat.color.MinecraftColors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -63,7 +63,7 @@ public class ChatUtil {
             ChatUtil.setColor(text, minecraftColors.getColor());
             player.displayClientMessage(Component.literal(chatType.getString() + " ").append(text), false);
             if (chatType == ChatType.FAIL) {
-                if (Config.getBoolean("errorSound")) {
+                if (LegacyConfig.getBoolean("errorSound")) {
                     player.playNotifySound(SoundEvents.NOTE_BLOCK_DIDGERIDOO.value(), SoundSource.PLAYERS, 2, 0);
                 }
             }

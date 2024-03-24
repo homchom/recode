@@ -55,6 +55,15 @@ class StyledString private constructor(
         .iterator()
 
     companion object {
+        /**
+         * @see fromContents
+         */
+        fun fromContent(string: String, style: StyleWrapper) =
+            StyledString(Component.text(string, style.build()))
+
+        /**
+         * @see fromContent
+         */
         fun fromContents(vararg contents: Pair<String, StyleWrapper>) = StyledString(
             text {
                 for ((string, style) in contents) literal(string, style)

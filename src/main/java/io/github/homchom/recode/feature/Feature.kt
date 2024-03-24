@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 annotation class AddsFeature
 
 /**
- * Registers a feature with [builder]. This function should only be
+ * Registers a feature with [builder].
  *
  * NOTE: Features have little special functionality at the moment, but should still be used as various refactors
  * progress. See the wiki for more information.

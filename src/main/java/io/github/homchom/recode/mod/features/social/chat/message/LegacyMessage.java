@@ -1,7 +1,7 @@
 package io.github.homchom.recode.mod.features.social.chat.message;
 
 import io.github.homchom.recode.Logging;
-import io.github.homchom.recode.mod.config.Config;
+import io.github.homchom.recode.mod.config.LegacyConfig;
 import io.github.homchom.recode.mod.events.impl.LegacyReceiveSoundEvent;
 import io.github.homchom.recode.sys.player.chat.MessageGrabber;
 import net.minecraft.network.chat.Component;
@@ -53,7 +53,7 @@ public class LegacyMessage {
         }
         MessageGrabber.hide(type.getMessageAmount() - 1);
 
-        if (Config.getBoolean("debugMode")) {
+        if (LegacyConfig.getBoolean("debugMode")) {
             Logging.logInfo("[CANCELLED] " + text.toString());
         }
     }

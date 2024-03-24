@@ -2,7 +2,7 @@ package io.github.homchom.recode.mod.mixin.message;
 
 import io.github.homchom.recode.Logging;
 import io.github.homchom.recode.hypercube.state.DF;
-import io.github.homchom.recode.mod.config.Config;
+import io.github.homchom.recode.mod.config.LegacyConfig;
 import io.github.homchom.recode.mod.features.LagslayerHUD;
 import io.github.homchom.recode.mod.features.social.chat.message.LegacyMessage;
 import io.github.homchom.recode.multiplayer.ReceiveChatMessageEvent;
@@ -53,8 +53,8 @@ public class MMessageListener {
     private void setActionBarText(ClientboundSetActionBarTextPacket packet, CallbackInfo ci) {
         if (Minecraft.getInstance().player == null) return;
         if (lsRegex.matcher(packet.getText().getString()).matches()) {
-            if (Config.getBoolean("cpuOnScreen")) {
-                LagslayerHUD.updateCPU(packet);
+            if (LegacyConfig.getBoolean("cpuOnScreen")) {
+                //LagslayerHUD.updateCPU(packet);
                 ci.cancel();
             }
         }

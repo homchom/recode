@@ -2,7 +2,7 @@ package io.github.homchom.recode.mod.mixin.render;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import io.github.homchom.recode.mod.config.Config;
+import io.github.homchom.recode.mod.config.LegacyConfig;
 import io.github.homchom.recode.sys.util.ItemUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -39,7 +39,7 @@ public class MMouseHandler {
     @Inject(method = "onScroll(JDD)V", at = @At("HEAD"))
     private void onScroll(long window, double horiz, double vertical, CallbackInfo ci) {
         Screen screen = Minecraft.getInstance().screen;
-        if (screen instanceof ContainerScreen && Config.getBoolean("quicknum")) {
+        if (screen instanceof ContainerScreen && LegacyConfig.getBoolean("quicknum")) {
             AbstractContainerMenu handler = ((ContainerScreen) screen).getMenu();
             List<Slot> slotList = handler.slots;
 
@@ -81,32 +81,32 @@ public class MMouseHandler {
 
                                         if (Screen.hasControlDown()) {
                                             if (vertical > 0) {
-                                                bigDecimal = bigDecimal.add(BigDecimal.valueOf(Config.getDouble("quicknumSecondaryAmount")));
-                                                if (Config.getBoolean("quicknumSound"))
+                                                bigDecimal = bigDecimal.add(BigDecimal.valueOf(LegacyConfig.getDouble("quicknumSecondaryAmount")));
+                                                if (LegacyConfig.getBoolean("quicknumSound"))
                                                     Minecraft.getInstance().player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT.value(), SoundSource.PLAYERS, 1, 1);
                                             } else {
-                                                bigDecimal = bigDecimal.subtract(BigDecimal.valueOf(Config.getDouble("quicknumSecondaryAmount")));
-                                                if (Config.getBoolean("quicknumSound"))
+                                                bigDecimal = bigDecimal.subtract(BigDecimal.valueOf(LegacyConfig.getDouble("quicknumSecondaryAmount")));
+                                                if (LegacyConfig.getBoolean("quicknumSound"))
                                                     Minecraft.getInstance().player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT.value(), SoundSource.PLAYERS, 1, 0);
                                             }
                                         } else if (Screen.hasShiftDown()) {
                                             if (vertical > 0) {
-                                                bigDecimal = bigDecimal.add(BigDecimal.valueOf(Config.getDouble("quicknumTertiaryAmount")));
-                                                if (Config.getBoolean("quicknumSound"))
+                                                bigDecimal = bigDecimal.add(BigDecimal.valueOf(LegacyConfig.getDouble("quicknumTertiaryAmount")));
+                                                if (LegacyConfig.getBoolean("quicknumSound"))
                                                     Minecraft.getInstance().player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT.value(), SoundSource.PLAYERS, 1, 1);
                                             } else {
-                                                bigDecimal = bigDecimal.subtract(BigDecimal.valueOf(Config.getDouble("quicknumTertiaryAmount")));
-                                                if (Config.getBoolean("quicknumSound"))
+                                                bigDecimal = bigDecimal.subtract(BigDecimal.valueOf(LegacyConfig.getDouble("quicknumTertiaryAmount")));
+                                                if (LegacyConfig.getBoolean("quicknumSound"))
                                                     Minecraft.getInstance().player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT.value(), SoundSource.PLAYERS, 1, 0);
                                             }
                                         } else {
                                             if (vertical > 0) {
-                                                bigDecimal = bigDecimal.add(BigDecimal.valueOf(Config.getDouble("quicknumPrimaryAmount")));
-                                                if (Config.getBoolean("quicknumSound"))
+                                                bigDecimal = bigDecimal.add(BigDecimal.valueOf(LegacyConfig.getDouble("quicknumPrimaryAmount")));
+                                                if (LegacyConfig.getBoolean("quicknumSound"))
                                                     Minecraft.getInstance().player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT.value(), SoundSource.PLAYERS, 1, 1);
                                             } else {
-                                                bigDecimal = bigDecimal.subtract(BigDecimal.valueOf(Config.getDouble("quicknumPrimaryAmount")));
-                                                if (Config.getBoolean("quicknumSound"))
+                                                bigDecimal = bigDecimal.subtract(BigDecimal.valueOf(LegacyConfig.getDouble("quicknumPrimaryAmount")));
+                                                if (LegacyConfig.getBoolean("quicknumSound"))
                                                     Minecraft.getInstance().player.playNotifySound(SoundEvents.NOTE_BLOCK_HAT.value(), SoundSource.PLAYERS, 1, 0);
                                             }
                                         }
@@ -125,7 +125,7 @@ public class MMouseHandler {
 
                                         ItemUtil.setContainerItem(slot.index, itemStack);
                                     } catch (NumberFormatException e) {
-                                        if (Config.getBoolean("quicknumSound"))
+                                        if (LegacyConfig.getBoolean("quicknumSound"))
                                             Minecraft.getInstance().player.playNotifySound(SoundEvents.NOTE_BLOCK_DIDGERIDOO.value(), SoundSource.PLAYERS, 1, 0);
                                     }
                                 }

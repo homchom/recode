@@ -3,7 +3,7 @@ package io.github.homchom.recode.mod.mixin.render;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.github.homchom.recode.LegacyRecode;
-import io.github.homchom.recode.mod.config.Config;
+import io.github.homchom.recode.mod.config.LegacyConfig;
 import io.github.homchom.recode.sys.hypercube.codeaction.Action;
 import io.github.homchom.recode.sys.hypercube.codeaction.ActionDump;
 import io.github.homchom.recode.sys.hypercube.codeaction.Argument;
@@ -46,10 +46,10 @@ public abstract class MContainerScreen extends AbstractContainerScreen<ChestMenu
             .toList();
 
         if (actions.size() == 1) {
-            if (Config.getBoolean("showCodeblockDescription")) {
+            if (LegacyConfig.getBoolean("showCodeblockDescription")) {
                 showDesc(actions.get(0), guiGraphics);
             }
-            if (Config.getBoolean("showParameterErrors")) {
+            if (LegacyConfig.getBoolean("showParameterErrors")) {
                 argCheck(actions.get(0), guiGraphics);
             }
         }

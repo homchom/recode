@@ -1,7 +1,7 @@
 package io.github.homchom.recode.mod.mixin.render;
 
 import com.mojang.authlib.GameProfile;
-import io.github.homchom.recode.mod.config.Config;
+import io.github.homchom.recode.mod.config.LegacyConfig;
 import io.github.homchom.recode.render.StaticSkinRender;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -27,7 +27,7 @@ import java.util.Objects;
 public abstract class MAbstractContainerScreen {
     @Inject(method = "renderTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderTooltip(Lnet/minecraft/client/gui/Font;Ljava/util/List;Ljava/util/Optional;II)V"), locals = LocalCapture.CAPTURE_FAILHARD)
     private void renderTooltip(GuiGraphics guiGraphics, int i, int j, CallbackInfo ci, ItemStack stack) {
-        if (Config.getBoolean("previewHeadSkins")) {
+        if (LegacyConfig.getBoolean("previewHeadSkins")) {
             Item item = stack.getItem();
             if (item instanceof BlockItem) {
                 Block block = ((BlockItem) item).getBlock();

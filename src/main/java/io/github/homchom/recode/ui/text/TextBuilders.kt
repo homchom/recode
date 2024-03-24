@@ -23,7 +23,7 @@ fun translatedText(
  * @see StyledString
  */
 fun literalText(content: String, style: StyleWrapper = style()) =
-    StyledString.fromContents(content to style)
+    StyledString.fromContent(content, style)
 
 /**
  * Creates a literal [ComponentLike].

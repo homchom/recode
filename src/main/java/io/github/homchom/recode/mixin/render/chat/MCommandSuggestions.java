@@ -6,7 +6,7 @@ import io.github.homchom.recode.hypercube.DFValueMeta;
 import io.github.homchom.recode.hypercube.DFValues;
 import io.github.homchom.recode.hypercube.state.DF;
 import io.github.homchom.recode.hypercube.state.PlotMode;
-import io.github.homchom.recode.mod.config.Config;
+import io.github.homchom.recode.mod.config.LegacyConfig;
 import kotlin.ranges.IntRange;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -49,7 +49,7 @@ public abstract class MCommandSuggestions {
             String partialInput,
             int position
     ) {
-        if (!Config.getBoolean("highlightVarSyntax")) return returnValue;
+        if (!LegacyConfig.getBoolean("highlightVarSyntax")) return returnValue;
         if (!DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev.ID)) return returnValue;
         var formatted = highlighter.format(
                 input.getValue(),

@@ -4,13 +4,15 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import io.github.homchom.recode.event.listenEach
 import io.github.homchom.recode.feature.automation.AutoCommands
+import io.github.homchom.recode.feature.meta.FDebugMode
 import io.github.homchom.recode.feature.visual.FBuiltInResourcePacks
 import io.github.homchom.recode.feature.visual.FCodeSearch
+import io.github.homchom.recode.feature.visual.FMessageStacking
 import io.github.homchom.recode.feature.visual.FSignRenderDistance
 import io.github.homchom.recode.game.QuitGameEvent
 import io.github.homchom.recode.hypercube.JoinDFDetector
 import io.github.homchom.recode.mod.commands.CommandHandler
-import io.github.homchom.recode.mod.config.Config
+import io.github.homchom.recode.mod.config.LegacyConfig
 import io.github.homchom.recode.mod.config.internal.ConfigFile
 import io.github.homchom.recode.mod.config.internal.ConfigInstruction
 import io.github.homchom.recode.mod.config.internal.gson.ConfigSerializer
@@ -74,7 +76,11 @@ object Recode : ClientModInitializer, ModContainer {
         // Visual
         FBuiltInResourcePacks
         FCodeSearch
+        FMessageStacking
         FSignRenderDistance
+
+        // Meta
+        FDebugMode
     }
 
     /**
@@ -167,7 +173,7 @@ object LegacyRecode {
         initializer.add(LegacyEventHandler())
 
         // Initializes only if the given condition is met. (this case: config value)
-        initializer.addIf(SocketHandler(), Config.getBoolean("itemApi"))
+        initializer.addIf(SocketHandler(), LegacyConfig.getBoolean("itemApi"))
 
         ClientCommandRegistrationCallback.EVENT.register { dispatcher, registryAccess ->
             CommandHandler.load(dispatcher, registryAccess)

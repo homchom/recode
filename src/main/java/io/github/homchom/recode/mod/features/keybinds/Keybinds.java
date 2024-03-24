@@ -4,7 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import io.github.homchom.recode.hypercube.state.DF;
 import io.github.homchom.recode.hypercube.state.PlotMode;
-import io.github.homchom.recode.mod.config.Config;
+import io.github.homchom.recode.mod.config.LegacyConfig;
 import io.github.homchom.recode.mod.features.commands.CodeSearcher;
 import io.github.homchom.recode.sys.sidedchat.ChatShortcut;
 import net.fabricmc.api.ClientModInitializer;
@@ -141,11 +141,11 @@ public class Keybinds implements ClientModInitializer {
 
             // toggle fs
             while (toggleFsMedium.consumeClick()) {
-                fsToggle.toggleFlightSpeed(Config.getInteger("fsMed"));
+                fsToggle.toggleFlightSpeed(LegacyConfig.getInteger("fsMed"));
             }
 
             while (toggleFsFast.consumeClick()) {
-                fsToggle.toggleFlightSpeed(Config.getInteger("fsFast"));
+                fsToggle.toggleFlightSpeed(LegacyConfig.getInteger("fsFast"));
             }
 
             // lagslayer

@@ -1,7 +1,7 @@
 package io.github.homchom.recode.sys.sidedchat;
 
 import com.google.common.collect.Lists;
-import io.github.homchom.recode.mod.config.Config;
+import io.github.homchom.recode.mod.config.LegacyConfig;
 import io.github.homchom.recode.mod.config.types.IConfigEnum;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
@@ -27,11 +27,11 @@ public class ChatRule {
     }
 
     public ChatSide getChatSide() {
-        return Config.getEnum(getChatRuleConfigSideName(this),ChatSide.class);
+        return LegacyConfig.getEnum(getChatRuleConfigSideName(this),ChatSide.class);
     }
 
     public SoundEvent getChatSound() {
-        return Config.getSound(getChatRuleConfigSoundName(this));
+        return LegacyConfig.getSound(getChatRuleConfigSoundName(this));
     }
 
     public String getName() {

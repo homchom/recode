@@ -22,7 +22,7 @@ inline fun YieldingExecutorDispatcher(executor: Executor, crossinline immediateP
 fun YieldingExecutorDispatcher(executor: Executor) = YieldingExecutorDispatcher(executor) { false }
 
 /**
- * A [CoroutineDispatcher] derived from two [Executor]s to support [yield]ing.
+ * A [CoroutineDispatcher] derived from two [Executor]s to ensure support for [yield]ing.
  *
  * @param defaultExecutor The executor used by [dispatch].
  * @param yieldingExecutor The executor used by [dispatchYield].

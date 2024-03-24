@@ -8,7 +8,7 @@ import io.github.homchom.recode.feature.registerFeature
 import io.github.homchom.recode.hypercube.CommandSenders
 import io.github.homchom.recode.hypercube.JoinDFDetector
 import io.github.homchom.recode.hypercube.state.*
-import io.github.homchom.recode.mod.config.Config
+import io.github.homchom.recode.mod.config.LegacyConfig
 import io.github.homchom.recode.multiplayer.send
 import kotlinx.coroutines.launch
 
@@ -47,7 +47,7 @@ object AutoCommands {
 
         register("time", "autotime", DFStateDetectors.ChangeMode) { (new) ->
             if (new.session != SupportSession.Helping && new.mode != PlotMode.Play) {
-                launch { CommandSenders.ClientTime.send(Config.getLong("autotimeval")) }
+                launch { CommandSenders.ClientTime.send(LegacyConfig.getLong("autotimeval")) }
             }
         }
 
@@ -73,7 +73,7 @@ object AutoCommands {
         registerFeature(name) {
             onEnable {
                 listenEach(event) {
-                    if (Config.getBoolean(configKey)) body(it)
+                    if (LegacyConfig.getBoolean(configKey)) body(it)
                 }
             }
         }

@@ -1,6 +1,6 @@
 package io.github.homchom.recode.mod.features.social.chat.message.checks;
 
-import io.github.homchom.recode.mod.config.Config;
+import io.github.homchom.recode.mod.config.LegacyConfig;
 import io.github.homchom.recode.mod.features.social.chat.message.LegacyMessage;
 import io.github.homchom.recode.mod.features.social.chat.message.LegacyMessageType;
 import io.github.homchom.recode.mod.features.social.chat.message.MessageCheck;
@@ -22,7 +22,7 @@ public class IncomingReportCheck extends MessageCheck implements StreamerModeMes
 
     @Override
     public void onReceive(LegacyMessage message) {
-        ChatUtil.playSound(Config.getSound("incomingReportSound"));
+        ChatUtil.playSound(LegacyConfig.getSound("incomingReportSound"));
     }
 
     @Override

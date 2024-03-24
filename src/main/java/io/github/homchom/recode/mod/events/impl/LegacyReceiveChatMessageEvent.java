@@ -3,7 +3,7 @@ package io.github.homchom.recode.mod.events.impl;
 import io.github.homchom.recode.event.SimpleValidated;
 import io.github.homchom.recode.hypercube.state.DF;
 import io.github.homchom.recode.hypercube.state.PlotMode;
-import io.github.homchom.recode.mod.config.Config;
+import io.github.homchom.recode.mod.config.LegacyConfig;
 import io.github.homchom.recode.multiplayer.ReceiveChatMessageEvent;
 import io.github.homchom.recode.sys.player.chat.ChatType;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
@@ -69,11 +69,11 @@ public class LegacyReceiveChatMessageEvent {
         }
 
         // highlight name
-        if (Config.getBoolean("highlight")) {
-            String highlightMatcher = Config.getString("highlightMatcher").replaceAll("\\{name}", mc.player.getName().getString());
+        if (LegacyConfig.getBoolean("highlight")) {
+            String highlightMatcher = LegacyConfig.getString("highlightMatcher").replaceAll("\\{name}", mc.player.getName().getString());
             if (DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev.ID) && (msgWithoutColor.matches("^[^0-z]+.*[a-zA-Z]+: .*")
                     || msgWithoutColor.matches("^.*[a-zA-Z]+: .*"))) {
-                if ((!msgWithoutColor.matches("^.*" + highlightMatcher + ": .*")) || Config.getBoolean("highlightIgnoreSender")) {
+                if ((!msgWithoutColor.matches("^.*" + highlightMatcher + ": .*")) || LegacyConfig.getBoolean("highlightIgnoreSender")) {
                     if (msgWithoutColor.contains(highlightMatcher)) {
                         if (!msgWithoutColor.contains("» Joined game: ") && !msgWithoutColor.contains(" by " + highlightMatcher + ".")) {
                             String[] chars = msgWithColor.split("");
@@ -88,18 +88,18 @@ public class LegacyReceiveChatMessageEvent {
                                 i++;
                                 if (currentChar.equals("§")) getColorCodes.append(currentChar).append(chars[i]);
                                 if (textLeft.matches("^" + highlightMatcher + "[^a-zA-Z0-9].*")) {
-                                    newMsg = newMsg.substring(0, newMsgIter) + Config.getString("highlightPrefix").replaceAll("&", "§")
+                                    newMsg = newMsg.substring(0, newMsgIter) + LegacyConfig.getString("highlightPrefix").replaceAll("&", "§")
                                             + highlightMatcher + getColorCodes + newMsg.substring(newMsgIter).replaceFirst("^" + highlightMatcher, "");
 
-                                    newMsgIter = newMsgIter + Config.getString("highlightPrefix").length() + getColorCodes.toString().length();
+                                    newMsgIter = newMsgIter + LegacyConfig.getString("highlightPrefix").length() + getColorCodes.toString().length();
                                 }
                                 newMsgIter++;
                             }
                             mc.player.displayClientMessage(TextUtil.colorCodesToTextComponent(newMsg), false);
-                            if (Config.getBoolean("highlightOwnSenderSound") ||
+                            if (LegacyConfig.getBoolean("highlightOwnSenderSound") ||
                                     (!msgWithoutColor.matches("^.*" + highlightMatcher + ": .+"))) {
                                 ChatUtil.playSound(
-                                        Config.getSound("highlightSound"), 1, Config.getFloat("highlightSoundVolume"));
+                                        LegacyConfig.getSound("highlightSound"), 1, LegacyConfig.getFloat("highlightSoundVolume"));
                             }
                             cancel = true;
                         }
@@ -109,7 +109,7 @@ public class LegacyReceiveChatMessageEvent {
         }
 
         // hide join/leave messages
-        if (Config.getBoolean("hideJoinLeaveMessages")
+        if (LegacyConfig.getBoolean("hideJoinLeaveMessages")
                 && msgToString.contains("', siblings=[], style=Style{ color=gray, bold=")
 
                 // check TextComponent
@@ -129,22 +129,22 @@ public class LegacyReceiveChatMessageEvent {
         }
 
         // hide session spy
-        if (Config.getBoolean("hideSessionSpy") && msgToString.startsWith("*") && msgToString.contains("text='*'") && msgToString.contains("color=green")) {
+        if (LegacyConfig.getBoolean("hideSessionSpy") && msgToString.startsWith("*") && msgToString.contains("text='*'") && msgToString.contains("color=green")) {
             cancel = true;
         }
 
         // hide muted chat
-        if (Config.getBoolean("hideMutedChat") && msgToString.startsWith("*") && msgToString.contains("text='*'") && msgToString.contains("color=red")) {
+        if (LegacyConfig.getBoolean("hideMutedChat") && msgToString.startsWith("*") && msgToString.contains("text='*'") && msgToString.contains("color=red")) {
             cancel = true;
         }
 
         if (DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev.ID)) {
             // hide var scope messages
-            if (Config.getBoolean("hideVarScopeMessages") && msgToString.startsWith("Scope set to ")) {
+            if (LegacyConfig.getBoolean("hideVarScopeMessages") && msgToString.startsWith("Scope set to ")) {
                 cancel = true;
             }
 
-            if (Config.getBoolean("autoClickEditMsgs") && msgToString.startsWith("⏵ Click to edit variable: ")) {
+            if (LegacyConfig.getBoolean("autoClickEditMsgs") && msgToString.startsWith("⏵ Click to edit variable: ")) {
                 if (message.style().clickEvent().action() == ClickEvent.Action.SUGGEST_COMMAND) {
                     String toOpen = message.style().clickEvent().value();
                     Minecraft.getInstance().tell(() -> Minecraft.getInstance().setScreen(new ChatScreen(toOpen)));
@@ -153,7 +153,7 @@ public class LegacyReceiveChatMessageEvent {
         }
 
         // hide msg matching regex
-        if (Config.getBoolean("hideMsgMatchingRegex") && msgToString.replaceAll("§.", "").matches(Config.getString("hideMsgRegex"))) {
+        if (LegacyConfig.getBoolean("hideMsgMatchingRegex") && msgToString.replaceAll("§.", "").matches(LegacyConfig.getString("hideMsgRegex"))) {
             cancel = true;
         }
 

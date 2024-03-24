@@ -2,18 +2,18 @@ package io.github.homchom.recode.mod.features.streamer;
 
 import io.github.homchom.recode.hypercube.state.DFState;
 import io.github.homchom.recode.hypercube.state.PlotMode;
-import io.github.homchom.recode.mod.config.Config;
+import io.github.homchom.recode.mod.config.LegacyConfig;
 import io.github.homchom.recode.sys.player.chat.MessageGrabber;
 import net.minecraft.client.Minecraft;
 
 public class StreamerModeHandler {
 
     public static boolean get(String key) {
-        return Config.getBoolean(key);
+        return LegacyConfig.getBoolean(key);
     }
 
     public static String getString(String key) {
-        return Config.getString(key);
+        return LegacyConfig.getString(key);
     }
 
     public static boolean enabled() {

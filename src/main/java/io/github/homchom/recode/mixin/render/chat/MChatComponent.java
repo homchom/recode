@@ -3,9 +3,10 @@ package io.github.homchom.recode.mixin.render.chat;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
+import io.github.homchom.recode.config.Config;
 import io.github.homchom.recode.feature.social.DGuiWithSideChat;
 import io.github.homchom.recode.feature.social.SideChat;
-import io.github.homchom.recode.mod.config.Config;
+import io.github.homchom.recode.feature.visual.FMessageStacking;
 import io.github.homchom.recode.render.text.FormattedCharSequenceExtensions;
 import io.github.homchom.recode.ui.MessageTags;
 import io.github.homchom.recode.ui.RecodeMessageTags;
@@ -116,7 +117,9 @@ public abstract class MChatComponent {
             @Share("cancel") LocalBooleanRef cancel
     ) {
         cancel.set(false);
-        if (!Config.getBoolean("stackDuplicateMsgs")) return lineMessages;
+        if (Boolean.FALSE.equals(Config.get(FMessageStacking.INSTANCE))) {
+            return lineMessages;
+        }
 
         // trimmedMessages[0] is the most recent message
         var lineCount = lineMessages.size();

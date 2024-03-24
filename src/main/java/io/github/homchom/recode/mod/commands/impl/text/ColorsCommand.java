@@ -4,7 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
-import io.github.homchom.recode.mod.config.Config;
+import io.github.homchom.recode.mod.config.LegacyConfig;
 import io.github.homchom.recode.mod.features.commands.ColorsMenu;
 import io.github.homchom.recode.multiplayer.CommandQueue;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -15,7 +15,7 @@ public class ColorsCommand extends Command {
     @Override
     public void register(Minecraft mc, CommandDispatcher<FabricClientCommandSource> cd, CommandBuildContext context) {
         cd.register(ArgBuilder.literal("colors").executes((ctx) -> {
-            if (Config.getBoolean("colorReplacePicker")) {
+            if (LegacyConfig.getBoolean("colorReplacePicker")) {
                 CommandQueue.unsafelySendCommand("hypercube:colors");
             } else {
                 ColorsMenu colorsGui = new ColorsMenu();

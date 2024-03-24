@@ -3,7 +3,7 @@ package io.github.homchom.recode.mod.mixin.message;
 import io.github.homchom.recode.hypercube.state.DF;
 import io.github.homchom.recode.hypercube.state.DFState;
 import io.github.homchom.recode.hypercube.state.PlotMode;
-import io.github.homchom.recode.mod.config.Config;
+import io.github.homchom.recode.mod.config.LegacyConfig;
 import io.github.homchom.recode.mod.features.social.chat.ConversationTimer;
 import io.github.homchom.recode.sys.player.chat.ChatType;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
@@ -37,12 +37,12 @@ public class MPlayerSendMessage {
             }
         }
         //start conversation
-        if (Config.getBoolean("automsg") && (string.startsWith("/msg ") || string.startsWith("/w "))) {
+        if (LegacyConfig.getBoolean("automsg") && (string.startsWith("/msg ") || string.startsWith("/w "))) {
             if (args.length == 2) {
                 ci.cancel();
                 ConversationTimer.currentConversation = args[1];
                 ConversationTimer.conversationUpdateTime = String.valueOf(System.currentTimeMillis());
-                if (Config.getBoolean("automsg_timeout")) ConversationTimer.isTimerOn = true;
+                if (LegacyConfig.getBoolean("automsg_timeout")) ConversationTimer.isTimerOn = true;
                 ChatUtil.sendMessage("Started a conversation with " + ConversationTimer.currentConversation + "!", ChatType.SUCCESS);
 
             }
@@ -56,7 +56,7 @@ public class MPlayerSendMessage {
     }
 
     private void conversationMessage(String message, CallbackInfo ci) {
-        if (Config.getBoolean("automsg") && ConversationTimer.currentConversation != null && (!DF.isInMode(DF.getCurrentDFState(), PlotMode.Play.INSTANCE) || !message.startsWith("@"))) {
+        if (LegacyConfig.getBoolean("automsg") && ConversationTimer.currentConversation != null && (!DF.isInMode(DF.getCurrentDFState(), PlotMode.Play.INSTANCE) || !message.startsWith("@"))) {
             ci.cancel();
             ConversationTimer.conversationUpdateTime = String.valueOf(System.currentTimeMillis());
             minecraftClient.player.connection.sendUnsignedCommand("msg " + ConversationTimer.currentConversation + " " + message);

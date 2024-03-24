@@ -1,7 +1,7 @@
 package io.github.homchom.recode.mod.events.impl;
 
 import io.github.homchom.recode.ModConstants;
-import io.github.homchom.recode.mod.config.Config;
+import io.github.homchom.recode.mod.config.LegacyConfig;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.Minecraft;
@@ -31,7 +31,7 @@ public class LegacyAfterScreenInitEvent {
 	private void afterTitleScreenInit(Minecraft mc, Screen screen) {
 		final List<AbstractWidget> buttons = Screens.getButtons(screen);
 		final int spacing = 24;
-		if (Config.getBoolean("dfButton")) addDfButton(mc, screen, buttons, spacing);
+		if (LegacyConfig.getBoolean("dfButton")) addDfButton(mc, screen, buttons, spacing);
 	}
 
 	private void addDfButton(Minecraft mc, Screen screen, List<AbstractWidget> buttons, int spacing) {

@@ -4,7 +4,7 @@ package io.github.homchom.recode.mod.mixin.inventory;
 import com.google.gson.JsonParser;
 import io.github.homchom.recode.Logging;
 import io.github.homchom.recode.game.ItemExtensions;
-import io.github.homchom.recode.mod.config.Config;
+import io.github.homchom.recode.mod.config.LegacyConfig;
 import io.github.homchom.recode.ui.text.TextInterop;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -25,8 +25,8 @@ public class MHeldItemTooltip {
     // TODO: remove redundant code and improve performance
     @Inject(method = "renderSelectedItemName", at = @At("HEAD"), cancellable = true)
     public void renderSelectedItemName(GuiGraphics guiGraphics, CallbackInfo callbackInfo) {
-        var renderVarScope = Config.getBoolean("variableScopeView");
-        var highlightVarSyntax = Config.getBoolean("highlightVarSyntax");
+        var renderVarScope = LegacyConfig.getBoolean("variableScopeView");
+        var highlightVarSyntax = LegacyConfig.getBoolean("highlightVarSyntax");
         if (!renderVarScope && !highlightVarSyntax) return;
 
         if (lastToolHighlight.isEmpty()) return;

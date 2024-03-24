@@ -3,7 +3,7 @@ package io.github.homchom.recode.sys.renderer.widgets;
 import com.google.common.collect.Lists;
 import io.github.homchom.recode.hypercube.state.DF;
 import io.github.homchom.recode.hypercube.state.PlotMode;
-import io.github.homchom.recode.mod.config.Config;
+import io.github.homchom.recode.mod.config.LegacyConfig;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -33,8 +33,8 @@ public class ChestHud {
 
 
     private static void afterContainerRender(Screen screen, GuiGraphics guiGraphics, int mouseX, int mouseY, float tickDelta) {
-        if (DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev.ID) && Config.getBoolean("chestToolTip")) {
-            if (Config.getBoolean("chestToolTipType")) {
+        if (DF.isInMode(DF.getCurrentDFState(), PlotMode.Dev.ID) && LegacyConfig.getBoolean("chestToolTip")) {
+            if (LegacyConfig.getBoolean("chestToolTipType")) {
                 ItemStack item = Minecraft.getInstance().player.getInventory().getItem(17);
 
                 int i = ((screen.width) / 2) + 85;

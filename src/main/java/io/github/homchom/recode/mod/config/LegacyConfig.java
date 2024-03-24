@@ -8,7 +8,7 @@ import net.minecraft.sounds.SoundEvent;
 import java.util.List;
 import java.util.Map;
 
-public class Config {
+public class LegacyConfig {
     private static ConfigManager config = ConfigManager.getInstance();
 
     public static String getString(String key) {
@@ -74,7 +74,7 @@ public class Config {
     public static <Value> Value getValue(ConfigSetting<?> setting, Class<Value> valueClass) {
         if (setting == null) return null;
         Object value = setting.getValue();
-        if (value.getClass().isAssignableFrom(valueClass)) {
+        if (valueClass.isAssignableFrom(value.getClass())) {
             return (Value) setting.getValue();
         }
         return null;

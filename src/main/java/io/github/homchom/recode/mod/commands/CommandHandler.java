@@ -8,7 +8,7 @@ import io.github.homchom.recode.mod.commands.impl.item.template.SendTemplateComm
 import io.github.homchom.recode.mod.commands.impl.item.template.WebviewCommand;
 import io.github.homchom.recode.mod.commands.impl.other.*;
 import io.github.homchom.recode.mod.commands.impl.text.*;
-import io.github.homchom.recode.mod.config.Config;
+import io.github.homchom.recode.mod.config.LegacyConfig;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandBuildContext;
@@ -47,7 +47,7 @@ public class CommandHandler {
             new CalcCommand()
         );
 
-        if (Config.getBoolean("dfCommands")) {
+        if (LegacyConfig.getBoolean("dfCommands")) {
             register(dispatcher, context,
                 new GiveCommand(),
                 new NodeCommand(),
