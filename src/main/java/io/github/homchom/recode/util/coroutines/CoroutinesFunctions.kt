@@ -1,15 +1,20 @@
 package io.github.homchom.recode.util.coroutines
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.job
+import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
 /**
- * Returns a [Job] with parent [parent] that is made active lazily.
+ * Constructs a [CoroutineScope] with context and a new [Job] derived from [parent].
  *
- * @see CoroutineStart.LAZY
+ * @param context Any additional context to combine.
  */
-@DelicateCoroutinesApi
-fun lazyJob(parent: Job? = null): Job {
-    val context = parent ?: EmptyCoroutineContext
-    return GlobalScope.launch(context, CoroutineStart.LAZY) { awaitCancellation() }
-}
+fun derivedCoroutineScope(parent: CoroutineScope, context: CoroutineContext = EmptyCoroutineContext) =
+    CoroutineScope(parent.coroutineContext + Job(parent.coroutineContext.job) + context)
+
+/**
+ * Whether this [Job] has any children [Job]s.
+ */
+val Job.hasChildren get() = children.firstOrNull() != null
