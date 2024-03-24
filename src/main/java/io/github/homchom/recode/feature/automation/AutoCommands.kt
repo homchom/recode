@@ -21,12 +21,6 @@ object AutoCommands {
             }
         }
 
-        register("fly", "autofly", DFStateDetectors.EnterSpawn) { (new) ->
-            launch {
-                if (DonorRank.NOBLE in new.permissions()) CommandSenders.Flight.enable.send()
-            }
-        }
-
         register("lagslayer", "autolagslayer", DFStateDetectors.ChangeMode) { (new) ->
             if (new.mode is PlotMode.Dev && !currentDFState.isInMode(PlotMode.Dev)) {
                 launch { CommandSenders.LagSlayer.enable.send() }

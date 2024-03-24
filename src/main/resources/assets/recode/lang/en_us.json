@@ -97,8 +97,6 @@
     "config.recode.option.autoRC.tooltip": "Automatically runs /rc upon\nentering dev mode",
     "config.recode.option.autonightvis": "Auto /nightvis",
     "config.recode.option.autonightvis.tooltip": "Automatically enables Night Vision\nupon entering dev or build mode",
-    "config.recode.option.autofly": "Auto /fly",
-    "config.recode.option.autofly.tooltip": "Automatically runs /fly at spawn",
     "config.recode.option.autolagslayer": "Auto /lagslayer",
     "config.recode.option.autolagslayer.tooltip": "Automatically display CPU usage upon\njoining one of your plots",
     "config.recode.option.autoChatLocal": "Auto /chat local",
