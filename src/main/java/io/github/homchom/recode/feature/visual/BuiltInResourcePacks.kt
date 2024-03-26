@@ -26,7 +26,7 @@ object FBuiltInResourcePacks {
         activationType: ResourcePackActivationType = ResourcePackActivationType.DEFAULT_ENABLED
     ) {
 
-        val packDescription: Component = Component.text("[$MOD_ID] ")
+        val packDescription = Component.text("[$MOD_ID] ")
             .append(Component.translatable("resourcePack.recode.$id")
                 .color(TextColor.color(displayColor.hex))
             )
