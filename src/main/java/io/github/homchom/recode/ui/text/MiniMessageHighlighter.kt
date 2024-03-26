@@ -111,12 +111,7 @@ class MiniMessageHighlighter(private val standardTags: TagResolver) {
             }
         }
 
-        val root = try {
-            instance.deserializeToTree(input)
-        } catch (e: Exception) {
-            // https://github.com/KyoriPowered/adventure/issues/1011
-            return literalText(input, style().red()).asComponent()
-        }
+        val root = instance.deserializeToTree(input)
         buildNewInput(root)
         return instance.deserialize(newInput.toString())
     }
