@@ -1,7 +1,6 @@
 package io.github.homchom.recode.render
 
 import com.mojang.authlib.GameProfile
-import net.kyori.adventure.identity.Identity
 import net.minecraft.Util
 import net.minecraft.client.Minecraft
 import net.minecraft.client.player.RemotePlayer
@@ -17,7 +16,4 @@ class StaticSkinRender(client: Minecraft, private val skin: PlayerSkin) : Remote
 ) {
     override fun getSkin() = skin
     override fun isModelPartShown(part: PlayerModelPart) = true
-
-    // https://github.com/KyoriPowered/adventure-platform-fabric/issues/120
-    override fun identity() = gameProfile as Identity
 }
