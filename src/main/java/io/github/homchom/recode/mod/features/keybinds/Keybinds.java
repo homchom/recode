@@ -99,6 +99,10 @@ public class Keybinds implements ClientModInitializer {
         KeyMapping chatNone = KeyBindingHelper.registerKeyBinding(new KeyMapping(
                 "key.recode.chat_none", InputConstants.Type.KEYSYM, -1, "key.category.recode"));
 
+        // chat dnd
+        KeyMapping chatDnd = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+                "key.recode.chat_dnd", InputConstants.Type.KEYSYM, -1, "key.category.recode"));
+
         // =======
 
         // Staff Keybinds
@@ -191,6 +195,11 @@ public class Keybinds implements ClientModInitializer {
             // chat none
             while (chatNone.consumeClick()) {
                 sendCommand("chat none");
+            }
+
+            // chat dnd
+            while (chatDnd.consumeClick()) {
+                sendCommand("chat dnd");
             }
 
             // search
