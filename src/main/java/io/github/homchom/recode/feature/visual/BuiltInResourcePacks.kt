@@ -6,11 +6,11 @@ import io.github.homchom.recode.feature.AddsFeature
 import io.github.homchom.recode.feature.registerFeature
 import io.github.homchom.recode.id
 import io.github.homchom.recode.render.RGB
-import io.github.homchom.recode.ui.text.toVanilla
+import io.github.homchom.recode.ui.text.style
+import io.github.homchom.recode.ui.text.text
+import io.github.homchom.recode.ui.text.toVanillaComponent
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.TextColor
 
 @OptIn(AddsFeature::class)
 object FBuiltInResourcePacks {
@@ -26,15 +26,15 @@ object FBuiltInResourcePacks {
         activationType: ResourcePackActivationType = ResourcePackActivationType.DEFAULT_ENABLED
     ) {
 
-        val packDescription = Component.text("[$MOD_ID] ")
-            .append(Component.translatable("resourcePack.recode.$id")
-                .color(TextColor.color(displayColor.hex))
-            )
+        val packDescription = text {
+            literal("[$MOD_ID] ")
+            translate("resourcePack.recode.$id", style().color(displayColor))
+        }
 
         ResourceManagerHelper.registerBuiltinResourcePack(
             id(id),
             Recode,
-            packDescription.toVanilla(),
+            packDescription.toVanillaComponent(),
             activationType
         )
     }
