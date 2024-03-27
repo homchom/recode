@@ -6,8 +6,9 @@ import io.github.homchom.recode.feature.AddsFeature
 import io.github.homchom.recode.feature.registerFeature
 import io.github.homchom.recode.id
 import io.github.homchom.recode.render.RGB
-import io.github.homchom.recode.ui.text.VanillaComponent
-import io.github.homchom.recode.ui.text.VanillaStyle
+import io.github.homchom.recode.ui.text.style
+import io.github.homchom.recode.ui.text.text
+import io.github.homchom.recode.ui.text.toVanillaComponent
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType
 
@@ -24,16 +25,16 @@ object FBuiltInResourcePacks {
         displayColor: RGB,
         activationType: ResourcePackActivationType = ResourcePackActivationType.DEFAULT_ENABLED
     ) {
-        // https://github.com/KyoriPowered/adventure-platform-fabric/issues/122
-        val packDescription = VanillaComponent.literal("[$MOD_ID] ")
-            .append(VanillaComponent.translatable("resourcePack.recode.$id")
-                .withStyle(VanillaStyle.EMPTY.withColor(displayColor.hex))
-            )
+
+        val packDescription = text {
+            literal("[$MOD_ID] ")
+            translate("resourcePack.recode.$id", style().color(displayColor))
+        }
 
         ResourceManagerHelper.registerBuiltinResourcePack(
             id(id),
             Recode,
-            packDescription,
+            packDescription.toVanillaComponent(),
             activationType
         )
     }
