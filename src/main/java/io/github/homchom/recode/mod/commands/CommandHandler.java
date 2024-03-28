@@ -5,6 +5,7 @@ import io.github.homchom.recode.mod.commands.impl.image.ImageHologramCommand;
 import io.github.homchom.recode.mod.commands.impl.image.ImageParticleCommand;
 import io.github.homchom.recode.mod.commands.impl.item.*;
 import io.github.homchom.recode.mod.commands.impl.item.template.SendTemplateCommand;
+import io.github.homchom.recode.mod.commands.impl.item.template.TemplateDataCommand;
 import io.github.homchom.recode.mod.commands.impl.item.template.WebviewCommand;
 import io.github.homchom.recode.mod.commands.impl.other.*;
 import io.github.homchom.recode.mod.commands.impl.text.*;
@@ -57,6 +58,7 @@ public class CommandHandler {
                 new ImageHologramCommand(),
                 new ImageParticleCommand(),
                 new SendTemplateCommand(),
+                new TemplateDataCommand(),
                 new PJoinCommand(),
                 //new NBSSearchCommand(),
                 //new CodeVaultCommand(),

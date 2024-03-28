@@ -36,16 +36,34 @@ public class TemplateUtil {
         stack.setHoverName(name);
     }
 
-
-    public static void compressTemplateNBT(ItemStack stack, String name, String author, String template) {
+    /**
+     * Takes raw JSON code data and turns it into raw compressed (gzip+base64) code data.
+     */
+    public static String jsonToData(String json) {
         try {
-            byte[] b64 = CompressionUtil.toBase64(CompressionUtil.toGZIP(template.getBytes(StandardCharsets.UTF_8)));
-            String exported = new String(b64);
-            applyRawTemplateNBT(stack, name, author, exported);
+            byte[] b64 = CompressionUtil.toBase64(CompressionUtil.toGZIP(json.getBytes(StandardCharsets.UTF_8)));
+            return new String(b64);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return null;
+    }
 
+    /**
+     * Takes raw compressed (gzip+base64) code data and turns it into raw JSON code data.
+     */
+    public static JsonObject dataToJson(String code) {
+        try {
+            byte[] bytes = CompressionUtil.fromGZIP(CompressionUtil.fromBase64(code.getBytes()));
+            return JsonParser.parseString(new String(bytes)).getAsJsonObject();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static void compressTemplateNBT(ItemStack stack, String name, String author, String template) {
+        applyRawTemplateNBT(stack, name, author, jsonToData(template));
     }
 
     public static JsonObject read(ItemStack stack) {
