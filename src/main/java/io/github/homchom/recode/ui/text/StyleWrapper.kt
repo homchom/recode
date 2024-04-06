@@ -7,6 +7,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.format.Style
+import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.format.TextDecoration
 
 /**
@@ -55,7 +56,7 @@ value class StyleWrapper(private val builder: Style.Builder) {
     fun white() = color(ColorPalette.WHITE)
 
     fun color(color: RGB) = apply {
-        builder.color { color.hex }
+        builder.color(TextColor.color(color))
     }
 
     fun bold() = apply {

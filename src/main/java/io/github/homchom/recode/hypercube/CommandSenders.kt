@@ -1,16 +1,19 @@
 package io.github.homchom.recode.hypercube
 
+import io.github.homchom.recode.Power
+import io.github.homchom.recode.event.Requester
+import io.github.homchom.recode.event.listenEach
 import io.github.homchom.recode.event.trial.requester
-import io.github.homchom.recode.event.trial.toggleRequesterGroup
 import io.github.homchom.recode.event.trial.trial
 import io.github.homchom.recode.hypercube.state.DFStateDetectors
 import io.github.homchom.recode.multiplayer.ReceiveMessageEvent
+import io.github.homchom.recode.multiplayer.SendPacketEvent
 import io.github.homchom.recode.multiplayer.Sender
 import io.github.homchom.recode.ui.text.equalsPlain
 import io.github.homchom.recode.ui.text.matchesPlain
 import io.github.homchom.recode.ui.text.plainText
-import io.github.homchom.recode.util.regex.dynamicRegex
 import io.github.homchom.recode.util.regex.regex
+import net.minecraft.network.protocol.game.ServerboundChatCommandPacket
 
 // TODO: replace more requesters with senders and update documentation
 object CommandSenders {
@@ -25,62 +28,53 @@ object CommandSenders {
         }
     ))
 
-    private val timeRegex = dynamicRegex { time: Long? ->
-        str("$MAIN_ARROW Set your player time to ")
-        if (time == null) digit.oneOrMore() else str(time.toString())
-        period
-    }
-
     // TODO: support time keywords through command suggestions (not enum)
-    val ClientTime = requester("/time", DFStateDetectors, trial(
-        ReceiveMessageEvent.Chat,
-        null as Long?,
-        start = { time -> Sender.sendCommand("time $time") },
-        tests = { context, time, _: Boolean ->
-            timeRegex(time).matchesPlain(context.value).instantUnitOrNull()
-        }
-    ))
-
-    val Flight = toggleRequesterGroup("/fly", DFStateDetectors, trial(
-        ReceiveMessageEvent.Chat,
-        Unit,
-        start = { Sender.sendCommand("fly") },
-        tests = t@{ message, _, _ ->
-            val enabled = when (message().plainText) {
-                "$MAIN_ARROW Flight enabled." -> true
-                "$MAIN_ARROW Flight disabled." -> false
-                else -> return@t null
-            }
-            instant(enabled)
-        }
-    ))
-
-    private val lsEnabledRegex = regex {
-        str("$LAGSLAYER_PREFIX Now monitoring plot ")
-        val plot by digit.oneOrMore()
-        str(". Type /lagslayer to stop monitoring.")
-    }
-    private val lsDisabledRegex = regex {
-        str("$LAGSLAYER_PREFIX Stopped monitoring plot ")
-        val plot by digit.oneOrMore()
-        period
+    val ClientTime = Sender(DFStateDetectors) { time: Long ->
+        Sender.sendCommand("time $time")
     }
 
-    val LagSlayer = toggleRequesterGroup("/lagslayer", DFStateDetectors, trial(
+    private val lsRegex = regex {
+        str(LAGSLAYER_PREFIX); space
+        group {
+            str("Now monitoring plot ")
+            digit.oneOrMore()
+            str(". Type /lagslayer to stop monitoring.")
+
+            or
+
+            str("Stopped monitoring plot ")
+            digit.oneOrMore()
+            period
+        }
+    }
+
+    private val lsDelegate = requester("/lagslayer", DFStateDetectors, trial(
         ReceiveMessageEvent.Chat,
         Unit,
         start = { Sender.sendCommand("lagslayer") },
         tests = t@{ (message), _, _ ->
-            val enabled = when {
-                lsEnabledRegex.matchesPlain(message) -> true
-                lsDisabledRegex.matchesPlain(message) -> false
-                else -> return@t null
-            }
-            instant(enabled)
+            lsRegex.matchesPlain(message).instantUnitOrNull()
         }
     ))
 
-    val NightVision = toggleRequesterGroup("/nightvis", DFStateDetectors, trial(
+    object LagSlayer : Requester<Unit, Unit> by lsDelegate {
+        var isLagSlayerEnabled = false
+            private set
+
+        // this does not extend delegate because isLagSlayerEnabled should not desync
+        private val power = Power(startEnabled = true)
+
+        init {
+            power.listenEach(SendPacketEvent) { packet ->
+                if (packet !is ServerboundChatCommandPacket) return@listenEach
+                if (!packet.command.equals("lagslayer", true)) return@listenEach
+
+                isLagSlayerEnabled = !isLagSlayerEnabled
+            }
+        }
+    }
+
+    val NightVision = requester("/nightvis", DFStateDetectors, trial(
         ReceiveMessageEvent.Chat,
         Unit,
         start = { Sender.sendCommand("nightvis") },

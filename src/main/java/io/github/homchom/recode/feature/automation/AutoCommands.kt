@@ -23,13 +23,15 @@ object AutoCommands {
 
         register("lagslayer", "autolagslayer", DFStateDetectors.ChangeMode) { (new) ->
             if (new.mode is PlotMode.Dev && !currentDFState.isInMode(PlotMode.Dev)) {
-                launch { CommandSenders.LagSlayer.enable.send() }
+                launch {
+                    if (!CommandSenders.LagSlayer.isLagSlayerEnabled) CommandSenders.LagSlayer.send()
+                }
             }
         }
 
         register("nightvis", "autonightvis", DFStateDetectors.ChangeMode) { (new) ->
             if (new.session != SupportSession.Helping && new.mode != PlotMode.Play) {
-                launch { CommandSenders.NightVision.enable.send() }
+                launch { CommandSenders.NightVision.send() }
             }
         }
 

@@ -17,5 +17,5 @@ enum class CommandAliasGroup(vararg aliases: String) : Set<String> by aliases.to
     PLOT_NAME("plot name", "p name"),
 
     // legacy
-    RELORE("relore");
+    RELORE("relore")
 }

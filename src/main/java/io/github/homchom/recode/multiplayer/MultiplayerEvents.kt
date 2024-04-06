@@ -26,7 +26,9 @@ val DisconnectFromServerEvent = wrapFabricEvent(ClientPlayConnectionEvents.DISCO
 data class ServerJoinContext(val handler: ClientPacketListener, val sender: PacketSender, val client: Minecraft)
 data class ServerDisconnectContext(val handler: ClientPacketListener, val client: Minecraft)
 
-val ReceiveGamePacketEvent = createEvent<Packet<*>>()
+val ReceivePacketEvent = createEvent<Packet<*>>()
+
+val SendPacketEvent = createEvent<Packet<*>>()
 
 sealed class ReceiveMessageEvent : CustomEvent<SimpleValidated<Component>, Boolean> by createValidatedEvent() {
     data object Chat : ReceiveMessageEvent()
