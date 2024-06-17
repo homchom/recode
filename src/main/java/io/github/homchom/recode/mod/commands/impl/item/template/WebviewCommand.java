@@ -3,6 +3,7 @@ package io.github.homchom.recode.mod.commands.impl.item.template;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.github.homchom.recode.LegacyRecode;
+import io.github.homchom.recode.ModConstants;
 import io.github.homchom.recode.sys.hypercube.templates.TemplateUtil;
 import io.github.homchom.recode.sys.player.chat.ChatType;
 import io.github.homchom.recode.sys.player.chat.ChatUtil;
@@ -11,7 +12,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -21,9 +21,10 @@ public class WebviewCommand extends AbstractTemplateCommand {
 
     @Override
     public String getDescription() {
-        return "[blue]/webview[reset]\n"
-                + "\n"
-                + "Sends you a link for previewing the code template in the website.";
+        return """
+                [blue]/webview[reset]
+
+                Sends you a link for previewing the code template in the website.""";
     }
 
     @Override
@@ -43,8 +44,7 @@ public class WebviewCommand extends AbstractTemplateCommand {
         LegacyRecode.executor.submit(() -> {
             JsonObject template = TemplateUtil.read(stack);
             String data = template.get("code").getAsString();
-            try {
-                HttpClient httpClient = HttpClientBuilder.create().build();
+            try (var httpClient = HttpClientBuilder.create().build()) {
                 HttpPost post = new HttpPost("https://twv.vercel.app/v2/create");
 
                 JsonObject json = new JsonObject();
@@ -54,7 +54,7 @@ public class WebviewCommand extends AbstractTemplateCommand {
                 StringEntity postingString = new StringEntity(json.toString());
                 post.setEntity(postingString);
                 post.setHeader("content-type", "application/json");
-                post.setHeader("user-agent", "CodeUtilities");
+                post.setHeader("user-agent", ModConstants.MOD_ID);
                 HttpResponse res = httpClient.execute(post);
 
                 String response = EntityUtils.toString(res.getEntity());

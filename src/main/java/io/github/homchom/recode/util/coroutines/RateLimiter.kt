@@ -45,7 +45,7 @@ class RateLimiter @OptIn(DelicateCoroutinesApi::class) constructor(
                     delay(rate.interval)
                 } while (_count.updateAndGet { it - rate.occurrences } > 0)
             }
-        } catch (e: Throwable) { // just in case
+        } catch (e: Exception) { // just in case
             _count.value = 0
             throw e
         }
