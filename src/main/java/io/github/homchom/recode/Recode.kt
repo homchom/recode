@@ -48,7 +48,7 @@ object Recode : ClientModInitializer, ModContainer {
         val raw = metadata.version.friendlyString
         val preReleaseMatch = regex {
             str('-')
-            val phase by group { str("alpha"); or; str("beta") }
+            val phase by anyStr("alpha", "beta")
             str('.')
         }.find(raw)
         if (preReleaseMatch == null) raw else {
