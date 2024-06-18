@@ -3,17 +3,11 @@
 package io.github.homchom.recode.game
 
 import io.github.homchom.recode.Power
-import io.github.homchom.recode.RecodeDispatcher
 import io.github.homchom.recode.event.listen
 import io.github.homchom.recode.event.listenEach
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.takeWhile
-import kotlinx.coroutines.future.asCompletableFuture
-import kotlinx.coroutines.launch
-import java.util.concurrent.CompletionStage
 
 /**
  * The current client tick.
@@ -28,18 +22,6 @@ val currentTick get() = TickRecorder.currentTick
  * event-based and respects tick rates.
  */
 suspend fun waitTicks(ticks: Int) = AfterClientTickEvent.notifications.take(ticks).collect()
-
-/**
- * @return A [CompletionStage] of a future that completes after the given number of [ticks].
- *
- * @see waitTicks
- */
-@Deprecated("Only for use in Java code",
-    ReplaceWith("launch { waitTicks(ticks) }", "kotlinx.coroutines.launch")
-)
-@DelicateCoroutinesApi
-fun waitTicksAsync(ticks: Int): CompletionStage<Unit> =
-    GlobalScope.launch(RecodeDispatcher) { waitTicks(ticks) }.asCompletableFuture()
 
 private object TickRecorder {
     var currentTick = 0L

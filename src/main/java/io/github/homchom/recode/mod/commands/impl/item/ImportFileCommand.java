@@ -4,8 +4,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.brigadier.CommandDispatcher;
+import io.github.homchom.recode.LegacyRecode;
 import io.github.homchom.recode.ModConstants;
-import io.github.homchom.recode.game.GameTime;
 import io.github.homchom.recode.io.NativeIO;
 import io.github.homchom.recode.mod.commands.Command;
 import io.github.homchom.recode.mod.commands.arguments.ArgBuilder;
@@ -24,6 +24,7 @@ import net.minecraft.world.item.Items;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -37,94 +38,98 @@ public class ImportFileCommand extends Command {
         cd.register(ArgBuilder.literal("importfile")
                 .executes(ctx -> {
                     if (!isCreative(mc)) return -1;
-
                     ChatUtil.sendMessage("Opening File Picker", ChatType.INFO_BLUE);
-                    Minecraft.getInstance().tell(this::openFilePicker);
-
+                    Minecraft.getInstance().tell(this::openFilePickerScreen);
                     return 1;
                 })
         );
     }
 
-    private void openFilePicker() {
+    private void openFilePickerScreen() {
         var screen = new DummyScreen(Component.text(TITLE), true);
         Minecraft.getInstance().setScreen(screen);
 
-        GameTime.waitTicksAsync(1).thenRun(() -> {
+        LegacyRecode.executor.execute(() -> {
             var paths = NativeIO.pickMultipleFiles(TITLE);
-            Minecraft.getInstance().setScreen(null);
-            if (paths == null || paths.isEmpty()) {
-                ChatUtil.sendMessage("You didnt choose a file!", ChatType.FAIL);
-                return;
-            }
-
-            int valid = 0;
-            files: for (var path : paths) {
-                if (paths.size() != 1) {
-                    ChatUtil.sendMessage("Loading file: " + path.getFileName(), ChatType.INFO_BLUE);
-                }
-                Scanner sc;
-                try {
-                    sc = new Scanner(path, StandardCharsets.UTF_8);
-                } catch (IOException e) {
-                    ChatUtil.sendMessage("Failed to load file: " + path.getFileName(), ChatType.FAIL);
-                    continue;
-                }
-
-                List<String> lines = new ArrayList<>();
-
-                while (sc.hasNextLine()) {
-                    String line = sc.nextLine();
-                    if (line.length() > 10000) {
-                        ChatUtil.sendMessage("Line " + (lines.size() + 1) + " is too long! (" + line.length() + " > 10000)", ChatType.FAIL);
-                        continue files;
-                    }
-                    lines.add(line);
-                    if (lines.size() > 10000) {
-                        ChatUtil.sendMessage("File contains contains too many lines! (Max: 10,000)", ChatType.FAIL);
-                        continue files;
-                    }
-                }
-
-                List<JsonObject> blocks = new ArrayList<>();
-                List<String> current = new ArrayList<>();
-
-                boolean first = true;
-                for (String line : lines) {
-                    current.add(line);
-                    if (current.size() >= 26) {
-                        blocks.add(block(current, first));
-                        first = false;
-                        current = new ArrayList<>();
-                    }
-                }
-                if (!current.isEmpty()) blocks.add(block(current, first));
-
-                String template;
-                try {
-                    template = template(blocks);
-                } catch (IOException e) {
-                    ChatUtil.sendMessage("Failed to generate template for file: " + path.getFileName(), ChatType.FAIL);
-                    continue;
-                }
-                if (template.getBytes().length > 65536) { // i have no idea what the actual limit is it just seems to be close to this TODO: nice
-                    ChatUtil.sendMessage("Your file is too large!", ChatType.FAIL);
-                } else {
-                    ItemStack item = new ItemStack(Items.ENDER_CHEST);
-                    TemplateUtil.applyRawTemplateNBT(item, path.getFileName().toString(), ModConstants.MOD_NAME, template);
-                    ItemUtil.giveCreativeItem(item, paths.size() == 1);
-                    if (paths.size() != 1) try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        // temporary TODO: what
-                        throw new RuntimeException(e);
-                    }
-                    valid++;
-                }
-            }
-            if (paths.size() != 1 && valid > 0)
-                ChatUtil.sendMessage("Loaded " + valid + " files!", ChatType.SUCCESS);
+            Minecraft.getInstance().execute(() -> {
+                Minecraft.getInstance().setScreen(null);
+                importFiles(paths);
+            });
         });
+    }
+
+    private void importFiles(List<Path> paths) {
+        if (paths == null || paths.isEmpty()) {
+            ChatUtil.sendMessage("You didnt choose a file!", ChatType.FAIL);
+            return;
+        }
+
+        int valid = 0;
+        files: for (var path : paths) {
+            if (paths.size() != 1) {
+                ChatUtil.sendMessage("Loading file: " + path.getFileName(), ChatType.INFO_BLUE);
+            }
+            Scanner sc;
+            try {
+                sc = new Scanner(path, StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                ChatUtil.sendMessage("Failed to load file: " + path.getFileName(), ChatType.FAIL);
+                continue;
+            }
+
+            List<String> lines = new ArrayList<>();
+
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine();
+                if (line.length() > 10000) {
+                    ChatUtil.sendMessage("Line " + (lines.size() + 1) + " is too long! (" + line.length() + " > 10000)", ChatType.FAIL);
+                    continue files;
+                }
+                lines.add(line);
+                if (lines.size() > 10000) {
+                    ChatUtil.sendMessage("File contains contains too many lines! (Max: 10,000)", ChatType.FAIL);
+                    continue files;
+                }
+            }
+
+            List<JsonObject> blocks = new ArrayList<>();
+            List<String> current = new ArrayList<>();
+
+            boolean first = true;
+            for (String line : lines) {
+                current.add(line);
+                if (current.size() >= 26) {
+                    blocks.add(block(current, first));
+                    first = false;
+                    current = new ArrayList<>();
+                }
+            }
+            if (!current.isEmpty()) blocks.add(block(current, first));
+
+            String template;
+            try {
+                template = template(blocks);
+            } catch (IOException e) {
+                ChatUtil.sendMessage("Failed to generate template for file: " + path.getFileName(), ChatType.FAIL);
+                continue;
+            }
+            if (template.getBytes().length > 65536) { // i have no idea what the actual limit is it just seems to be close to this TODO: nice
+                ChatUtil.sendMessage("Your file is too large!", ChatType.FAIL);
+            } else {
+                ItemStack item = new ItemStack(Items.ENDER_CHEST);
+                TemplateUtil.applyRawTemplateNBT(item, path.getFileName().toString(), ModConstants.MOD_NAME, template);
+                ItemUtil.giveCreativeItem(item, paths.size() == 1);
+                if (paths.size() != 1) try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    // temporary TODO: what
+                    throw new RuntimeException(e);
+                }
+                valid++;
+            }
+        }
+        if (paths.size() != 1 && valid > 0)
+            ChatUtil.sendMessage("Loaded " + valid + " files!", ChatType.SUCCESS);
     }
 
     private String template(List<JsonObject> iblocks) throws IOException {
