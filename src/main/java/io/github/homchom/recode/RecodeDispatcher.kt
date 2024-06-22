@@ -53,7 +53,7 @@ object RecodeDispatcher : CoroutineContext {
  * The [CoroutineExceptionHandler] used by [RecodeDispatcher].
  */
 val RecodeExceptionHandler = CoroutineExceptionHandler { _, exception ->
-    if (!mc.isSameThread) mc.sendSystemToast(
+    mc.sendSystemToast(
         translatedText("recode.uncaught_exception.toast.title"),
         translatedText("recode.uncaught_exception.toast")
     )
