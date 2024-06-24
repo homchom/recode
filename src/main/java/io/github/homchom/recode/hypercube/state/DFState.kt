@@ -5,6 +5,10 @@ package io.github.homchom.recode.hypercube.state
 
 import io.github.homchom.recode.hypercube.MAIN_ARROW
 import io.github.homchom.recode.hypercube.SUPPORT_ARROW
+import io.github.homchom.recode.hypercube.state.DFState.AtSpawn
+import io.github.homchom.recode.hypercube.state.DFState.OnPlot
+import io.github.homchom.recode.hypercube.state.SupportSession.Helping
+import io.github.homchom.recode.hypercube.state.SupportSession.Requested
 import io.github.homchom.recode.mc
 import io.github.homchom.recode.multiplayer.username
 import io.github.homchom.recode.ui.text.equalsPlain
@@ -22,6 +26,9 @@ import net.minecraft.client.player.LocalPlayer
 import net.minecraft.core.BlockPos
 import net.minecraft.world.item.ItemStack
 
+/**
+ * Whether this [ServerData]'s IP address matches `mcdiamondfire.com`.
+ */
 val ServerData?.ipMatchesDF get(): Boolean {
     val regex = regex {
         modify(RegexModifier.IgnoreCase)
@@ -41,6 +48,10 @@ val ServerData?.ipMatchesDF get(): Boolean {
     return this?.ip?.matches(regex) ?: false
 }
 
+/**
+ * DiamondFire-related state, including the player's [node] and [permissions], among other things. Additional
+ * state can be obtained by smart-casting to the subclasses of `DFState`, i.e. [AtSpawn] and [OnPlot].
+ */
 sealed interface DFState {
     val permissions: Deferred<PermissionGroup>
 
@@ -68,8 +79,14 @@ sealed interface DFState {
         }
     }
 
+    /**
+     * @return a new [DFState] derived from this one and [session].
+     */
     fun withSession(session: SupportSession?): DFState
 
+    /**
+     * [DFState] for when a player is at spawn.
+     */
     data class AtSpawn(
         override val node: Node,
         override val permissions: Deferred<PermissionGroup>,
@@ -81,6 +98,9 @@ sealed interface DFState {
         override fun hashCode() = super.hashCode()
     }
 
+    /**
+     * [DFState] for when a player is on a plot.
+     */
     data class OnPlot(
         override val node: Node,
         val mode: PlotMode,
@@ -96,10 +116,19 @@ sealed interface DFState {
     }
 }
 
-fun DFState?.isOnPlot(plot: Plot) = this is DFState.OnPlot && this.plot == plot
+/**
+ * @return Whether this [DFState] is non-null and refers to being on [plot].
+ */
+fun DFState?.isOnPlot(plot: Plot) = this is OnPlot && this.plot == plot
 
-fun DFState?.isInMode(mode: PlotMode.ID) = this is DFState.OnPlot && this.mode.id == mode
+/**
+ * @return Whether this [DFState] is non-null and refers to being on a plot in [mode].
+ */
+fun DFState?.isInMode(mode: PlotMode.ID) = this is OnPlot && this.mode.id == mode
 
+/**
+ * A DiamondFire node.
+ */
 @JvmInline
 value class Node(private val id: String) {
     val displayName get() = when {
@@ -115,12 +144,19 @@ value class Node(private val id: String) {
     }
 }
 
+/**
+ * @return The [Node] with the given name, as shown in `/locate`.
+ */
 fun nodeByName(name: String): Node {
     val node = name.removePrefix("Node ")
-    val id = node.toIntOrNull()?.run { "node$node" } ?: node.replaceFirstChar(Char::lowercase)
+    val id = node.toIntOrNull()?.run { "node$node" }
+        ?: node.replaceFirstChar(Char::lowercase)
     return Node(id)
 }
 
+/**
+ * A DiamondFire plot.
+ */
 data class Plot(
     val name: String,
     val owner: String,
@@ -135,9 +171,23 @@ private val playModeRegex = regex {
     period
 }
 
+/**
+ * State associated with any of the modes that a player can be in on a [Plot].
+ *
+ * @property id A [PlotMode.ID] to the mode itself.
+ *
+ * @see PlotMode.Play
+ * @see PlotMode.Build
+ * @see PlotMode.Dev
+ */
 sealed interface PlotMode {
     val id: ID
 
+    /**
+     * An identifier for a [PlotMode]. Unlike `PlotMode`, the subtypes of `ID` are singletons and do not
+     * require associated state. This type and its `companion object` also both implement `Matcher` to match
+     * any mode switch [Component] to a [PlotMode.MatchResult].
+     */
     sealed interface ID : Matcher<Component, MatchResult> {
         val descriptor: String
 
@@ -150,10 +200,16 @@ sealed interface PlotMode {
         }
     }
 
+    /**
+     * @see PlotMode.ID
+     */
     data class MatchResult(val id: ID, val plotName: String?, val plotOwner: String?) {
         constructor(id: ID) : this(id, null, null)
     }
 
+    /**
+     * A combined [PlotMode] and [PlotMode.ID] representing `/mode play`.
+     */
     data object Play : PlotMode, ID {
         override val id get() = this
 
@@ -167,6 +223,9 @@ sealed interface PlotMode {
         }
     }
 
+    /**
+     * A combined [PlotMode] and [PlotMode.ID] representing `/mode build`.
+     */
     data object Build : PlotMode, ID {
         override val id get() = this
 
@@ -178,7 +237,10 @@ sealed interface PlotMode {
         }
     }
 
-    data class Dev(val buildCorner: BlockPos, val referenceBookCopy: ItemStack) : PlotMode {
+    /**
+     * A [PlotMode] representing `/mode dev`.
+     */
+    data class Dev(val buildCorner: BlockPos, private val referenceBookCopy: ItemStack) : PlotMode {
         override val id get() = ID
 
         constructor(player: LocalPlayer) : this(
@@ -187,11 +249,24 @@ sealed interface PlotMode {
                 .setY(49)
                 .move(10, 0, -10)
                 .immutable(),
-            player.inventory.getItem(17).copy()
+            player.inventory.items[REFERENCE_BOOK_SLOT].copy()
         )
 
+        /**
+         * @return A fresh copy of the Reference Book.
+         */
+        fun referenceBookCopy(): ItemStack = referenceBookCopy.copy()
+
+        /**
+         * A [PlotMode.ID] representing `/mode dev`.
+         */
         companion object ID : PlotMode.ID {
             override val descriptor = "coding"
+
+            /**
+             * The default slot of the Reference Book in a non-compact inventory.
+             */
+            const val REFERENCE_BOOK_SLOT = 17
 
             override fun match(input: Component): MatchResult? {
                 val id = takeIf { input.equalsPlain("$MAIN_ARROW You are now in dev mode.") }
@@ -201,12 +276,27 @@ sealed interface PlotMode {
     }
 }
 
+/**
+ * An `enum` representing the two types of support session a DiamondFire player can be in. This type
+ * and its `companion object` also both implement `Matcher` to match any support session commencement
+ * [Component] to a `SupportSession`.
+ *
+ * @see Requested
+ * @see Helping
+ */
 enum class SupportSession : Matcher<Component, SupportSession> {
+    /**
+     * A [SupportSession] in which the player requested support.
+     */
     Requested {
         override fun match(input: Component) = takeIf { input.equalsPlain(
             "You have requested code support.\nIf you wish to leave the queue, use /support cancel."
         ) }
     },
+
+    /**
+     * A [SupportSession] in which the player is helping another player.
+     */
     Helping {
         private val regex = dynamicRegex { username: String ->
             str("[SUPPORT] $username entered a session with ")
@@ -223,6 +313,11 @@ enum class SupportSession : Matcher<Component, SupportSession> {
     companion object : Matcher<Component, SupportSession> by matcherOf(entries)
 }
 
+/**
+ * DiamondFire state contained in a `/locate` message.
+ *
+ * @see DFState
+ */
 sealed interface LocateState {
     val node: Node
 

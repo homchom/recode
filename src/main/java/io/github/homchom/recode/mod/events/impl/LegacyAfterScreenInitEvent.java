@@ -2,7 +2,8 @@ package io.github.homchom.recode.mod.events.impl;
 
 import io.github.homchom.recode.ModConstants;
 import io.github.homchom.recode.mod.config.LegacyConfig;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import io.github.homchom.recode.render.ScreenEvents;
+import io.github.homchom.recode.render.ScreenInitContext;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -21,11 +22,13 @@ import java.util.List;
 
 public class LegacyAfterScreenInitEvent {
 	public LegacyAfterScreenInitEvent() {
-		ScreenEvents.AFTER_INIT.register(this::afterScreenInit);
+		ScreenEvents.getAfterInitScreenEvent().register(this::afterScreenInit);
 	}
 
-	private void afterScreenInit(Minecraft mc, Screen screen, int scaledWidth, int scaledHeight) {
-		if (screen instanceof TitleScreen) afterTitleScreenInit(mc, screen);
+	private void afterScreenInit(ScreenInitContext context) {
+		if (context.getScreen() instanceof TitleScreen) {
+			afterTitleScreenInit(context.getClient(), context.getScreen());
+		}
 	}
 
 	private void afterTitleScreenInit(Minecraft mc, Screen screen) {
