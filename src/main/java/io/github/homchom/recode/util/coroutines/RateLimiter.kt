@@ -4,6 +4,7 @@ import io.github.homchom.recode.util.math.Frequency
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.updateAndGet
 
 /**
@@ -24,12 +25,12 @@ class RateLimiter @OptIn(DelicateCoroutinesApi::class) constructor(
     val limit: Int = Int.MAX_VALUE,
     private val coroutineScope: CoroutineScope = GlobalScope
 ) {
+    private val _count = MutableStateFlow(0)
+
     /**
      * A [StateFlow] of the current counter, as determined by [record].
      */
-    val count: StateFlow<Int> get() = _count
-
-    private val _count = MutableStateFlow(0)
+    val count = _count.asStateFlow()
 
     /**
      * Records the occurrence of an event that should be rate-limited.
