@@ -1,17 +1,11 @@
 package io.github.homchom.recode.mod.mixin.inventory;
 
-import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.platform.InputConstants.Key;
 import io.github.homchom.recode.mod.features.keybinds.Keybinds;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.KeyMapping;
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import org.apache.commons.lang3.reflect.FieldUtils;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -35,13 +29,8 @@ public abstract class MItemStack {
         if (player == null) return;
 
         try {
-            String cname = FabricLoader.getInstance().isDevelopmentEnvironment() ? "key" : "field_1655";
 
-            int keycode = ((Key) FieldUtils.getField(KeyMapping.class,cname,true).get(Keybinds.showTags)).getValue();
-
-            if (keycode == -1) return;
-
-            if (InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(),keycode)) {
+            if (Keybinds.showingTags) {
                 List<Component> t = cir.getReturnValue();
 
                 CompoundTag tags = getTagElement("PublicBukkitValues");

@@ -24,6 +24,7 @@ public class Keybinds implements ClientModInitializer {
 
     final Minecraft mc = Minecraft.getInstance();
 
+    public static boolean showingTags = false;
     public static KeyMapping showTags;
 
     @Override
