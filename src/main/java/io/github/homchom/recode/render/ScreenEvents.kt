@@ -41,4 +41,4 @@ data class ScreenRenderContext(
     val tickDelta: Float
 )
 
-fun Screen.onRemove() = wrapFabricEvent(remove(this), ::Remove)
+fun Screen.onRemove() = wrapFabricEvent(remove(this)) { Remove(it) }
