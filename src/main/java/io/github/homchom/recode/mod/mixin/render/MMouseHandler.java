@@ -121,7 +121,7 @@ public class MMouseHandler {
 
                                         itemStack.setTag(tag);
                                         itemStack.setHoverName(Component.literal(name)
-                                                .withStyle(style -> style.withColor(TextColor.fromLegacyFormat(ChatFormatting.RED)).withItalic(false)));
+                                                .withStyle(style -> style.withColor(TextColor.fromRgb(ChatFormatting.RED.getColor())).withItalic(false)));
 
                                         ItemUtil.setContainerItem(slot.index, itemStack);
                                     } catch (NumberFormatException e) {
