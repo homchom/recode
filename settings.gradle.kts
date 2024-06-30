@@ -1,3 +1,9 @@
+val modName: String by settings
+
+rootProject.name = modName
+
+include("mod")
+
 pluginManagement {
     repositories {
         mavenCentral()
