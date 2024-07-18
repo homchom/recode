@@ -16,6 +16,7 @@ public class NBSToTemplate {
     final int loopTick;
     final int loopCount;
     final int customInstrumentCount;
+    final String[] customInstrumentNames;
     String name;
     String author;
 
@@ -33,6 +34,7 @@ public class NBSToTemplate {
         this.loopTick = song.getLoopTick();
         this.loopCount = song.getLoopCount();
         this.customInstrumentCount = song.getCustomInstrumentCount();
+        this.customInstrumentNames = song.getCustomInstrumentNames();
     }
 
     public String convert() {
@@ -43,7 +45,6 @@ public class NBSToTemplate {
         StringBuilder instList = new StringBuilder();
 
         String songTempo = new BigDecimal(this.speed).stripTrailingZeros().toPlainString();
-
         if (name.length() == 0) {
             if (filename.indexOf(".") > 0) {
                 name = filename.substring(0, filename.lastIndexOf("."));
@@ -60,7 +61,6 @@ public class NBSToTemplate {
         boolean chestInited = false;
         int noteCount = 0;
         boolean finalNote = false;
-
         for (int i = 0; i < songData.length; i++) {
             boolean closeChest = false;
             if (slot == 1) {
@@ -73,7 +73,6 @@ public class NBSToTemplate {
             if (slot >= 27) {
                 closeChest = true;
             }
-
             if (!closeChest) {
                 String currentNote = songData[i];
                 String revertString = currentNotes.toString();
@@ -84,7 +83,6 @@ public class NBSToTemplate {
                     currentNotes.append("=").append(currentNote);
                 }
                 noteCount++;
-
                 if (currentNotes.length() > 1930) {
                     currentNotes = new StringBuilder(revertString);
                     currentBlock.append(String.format(",{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"%s\"}},\"slot\":%d}", currentNotes, slot));
@@ -111,7 +109,6 @@ public class NBSToTemplate {
                 } else {
                     varActionType = "AppendValue";
                 }
-
                 currentBlock.append(String.format("]},\"action\":\"%s\"},", varActionType));
                 code.append(currentBlock);
                 currentBlock.setLength(0);
@@ -124,7 +121,6 @@ public class NBSToTemplate {
                 slot = 1;
             }
         }
-
         //CreateList: instrumentNames
         if (customInstrumentCount == 0) {
             code.append("{\"id\":\"block\",\"block\":\"set_var\",\"args\":{\"items\":[{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"instrumentNames\",\"scope\":\"local\"}},\"slot\":0},{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"Harp\"}},\"slot\":1},{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"Bass\"}},\"slot\":2},{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"Bass Drum\"}},\"slot\":3},{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"Snare Drum\"}},\"slot\":4},{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"Click\"}},\"slot\":5},{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"Guitar\"}},\"slot\":6},{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"Flute\"}},\"slot\":7},{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"Bell\"}},\"slot\":8},{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"Chime\"}},\"slot\":9},{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"Xylophone\"}},\"slot\":10},{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"Iron Xylophone\"}},\"slot\":11},{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"Cow Bell\"}},\"slot\":12},{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"Didgeridoo\"}},\"slot\":13},{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"Bit\"}},\"slot\":14},{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"Banjo\"}},\"slot\":15},{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"Pling\"}},\"slot\":16}]},\"action\":\"CreateList\"},");
@@ -134,12 +130,22 @@ public class NBSToTemplate {
             int currentSlot;
 
             currentSlot = 17;
+            int currentFails = 0;
+
             for (int currentInstID = 1; currentInstID <= customInstrumentCount; currentInstID++) {
-                if (currentInstID == customInstrumentCount) {
-                    instList.append(String.format("{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"<Custom Instrument #%d>\"}},\"slot\":%d}", currentInstID, currentSlot));
-                } else {
-                    instList.append(String.format("{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"<Custom Instrument #%d>\"}},\"slot\":%d},", currentInstID, currentSlot));
+                String currentName = "Custom Instrument";
+                currentName = customInstrumentNames[currentInstID - 1];
+                if(currentName == null || currentName.matches("^(\\s+)$") || currentName == ""){
+                    currentFails++;
+                    currentName = "<Custom Instrument " + currentFails + ">";
                 }
+                String formatted;
+                if (currentInstID == customInstrumentCount) {
+                    formatted = "{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"" + currentName + "\"}},\"slot\":" + currentSlot + "}";
+                } else {
+                    formatted = "{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"" + currentName + "\"}},\"slot\":" + currentSlot + "},";
+                }
+                instList.append(formatted);
                 currentSlot++;
             }
             instList.append("]},\"action\":\"CreateList\"},");
