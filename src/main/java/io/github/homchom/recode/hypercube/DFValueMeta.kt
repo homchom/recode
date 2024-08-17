@@ -5,7 +5,6 @@ package io.github.homchom.recode.hypercube
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.google.gson.JsonSyntaxException
-import io.github.homchom.recode.game.getCompoundOrNull
 import io.github.homchom.recode.game.getStringOrNull
 import io.github.homchom.recode.game.lore
 import io.github.homchom.recode.logError
@@ -13,8 +12,7 @@ import net.kyori.adventure.text.Component
 import net.minecraft.world.item.ItemStack
 
 fun ItemStack.dfValueMeta(): DFValueMeta? {
-        val raw = tag
-            ?.getCompoundOrNull("PublicBukkitValues")
+        val raw = tag?.publicBukkitValues
             ?.getStringOrNull("hypercube:varitem")
             ?: return null
 

@@ -11,14 +11,8 @@ import net.fabricmc.loader.api.FabricLoader
  */
 internal annotation class MixinConditional(val modID: String, val disjointWith: Array<String> = [])
 
-/**
- * Whether a mixin with this annotation should be applied.
- *
- * @see MixinConditional
- */
-internal val MixinConditional.passes: Boolean
-    get() {
-        if (!FabricLoader.getInstance().isModLoaded(modID)) return false
-        if (disjointWith.any(FabricLoader.getInstance()::isModLoaded)) return false
-        return true
-    }
+internal val MixinConditional.shouldApplyMixin get() = when {
+    !FabricLoader.getInstance().isModLoaded(modID) -> false
+    disjointWith.any(FabricLoader.getInstance()::isModLoaded) -> false
+    else -> true
+}

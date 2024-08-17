@@ -37,8 +37,8 @@ abstract class HeteroMap<K : HeteroMap.Key<*>>(
     val size by delegate::size
 
     /**
-     * Gets the value associated with [key]. Note that this function is raw, in that [key] can be any
-     * subtype of [Key], and therefore protected. Subclasses should expose this in a type-safe manner.
+     * Gets the value associated with [key]. Note that this function is raw, in that [key] can be any subtype
+     * of [Key], and is therefore `protected`. Subclasses should expose this in a type-safe manner.
      */
     @Suppress("UNCHECKED_CAST")
     protected fun <V : Any> getRaw(key: Key<V>) = delegate[key]?.let { it as V }

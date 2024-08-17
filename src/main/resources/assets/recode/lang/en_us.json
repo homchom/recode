@@ -11,7 +11,7 @@
     "recode.template_search.invalid": "Invalid Action '%s'.",
     "recode.template_search.begin_search": "Results of '%s'",
 
-    "recode.uncaught_exception.toast.title": "An uncaught exception occurred!",
+    "recode.uncaught_exception.toast.title": "Error: Uncaught exception",
     "recode.uncaught_exception.toast": "Check the latest log for more info.",
 
     "recode.using": "You are using recode, version %s",
@@ -66,8 +66,6 @@
     "config.recode.option.highlightVarSyntax.tooltip": "Highlights and previews expression syntax,\nlike percent codes and MiniMessage",
     "config.recode.option.showCodeblockDescription": "Show Code Block Description",
     "config.recode.option.showCodeblockDescription.tooltip": "Shows a description of the currently opened code block",
-    "config.recode.option.showParameterErrors": "Show Parameter Errors",
-    "config.recode.option.showParameterErrors.tooltip": "Shows an alert on your screen when the parameters in the current code block are invalid",
     "config.recode.option.previewHeadSkins": "Preview Head Skins",
     "config.recode.option.previewHeadSkins.tooltip": "Shows a preview of the skin from a player head when hovering over one",
     "config.recode.option.templatePeeking": "Template Peeking",

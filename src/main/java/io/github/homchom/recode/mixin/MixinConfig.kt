@@ -16,7 +16,7 @@ class MixinPluginRecode : IMixinConfigPlugin {
             ?: return true
         annotations.filterIsInstance<MixinConditional>()
             .singleOrNull()
-            ?.run { return passes }
+            ?.run { return shouldApplyMixin }
 
         return true
     }

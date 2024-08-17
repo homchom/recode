@@ -1,6 +1,6 @@
 package io.github.homchom.recode.feature.visual
 
-import io.github.homchom.recode.hypercube.CommandAliasGroup
+import io.github.homchom.recode.hypercube.HypercubeCommandAliases
 import io.github.homchom.recode.render.text.formattedCharSequence
 import io.github.homchom.recode.render.text.subSequence
 import io.github.homchom.recode.util.regex.regex
@@ -8,28 +8,18 @@ import net.minecraft.util.FormattedCharSequence
 import kotlin.math.max
 import kotlin.math.min
 
-private val highlightedCommands = buildList {
-    fun addGroup(
-        group: CommandAliasGroup,
-        highlightedArgumentIndex: Int = 0,
-        hasCount: Boolean = false,
-        parseMiniMessage: Boolean = true
-    ) {
-        addAll(group.map { prefix ->
-            CommandInfo(prefix, highlightedArgumentIndex, hasCount, parseMiniMessage)
-        })
-    }
-
-    addGroup(CommandAliasGroup.NUMBER, hasCount = true, parseMiniMessage = false)
-    addGroup(CommandAliasGroup.STRING, hasCount = true, parseMiniMessage = false)
-    addGroup(CommandAliasGroup.TEXT, hasCount = true)
-    addGroup(CommandAliasGroup.VARIABLE, hasCount = true, parseMiniMessage = false)
-    addGroup(CommandAliasGroup.ITEM_NAME)
-    addGroup(CommandAliasGroup.ITEM_LORE_ADD)
-    addGroup(CommandAliasGroup.ITEM_LORE_SET, highlightedArgumentIndex = 1)
-    addGroup(CommandAliasGroup.PLOT_NAME)
-    addGroup(CommandAliasGroup.RELORE)
-}
+private val highlightedCommands = listOf(
+    CommandInfo(HypercubeCommandAliases.NUMBER, hasCount = true, parseMiniMessage = false),
+    CommandInfo(HypercubeCommandAliases.STRING, hasCount = true, parseMiniMessage = false),
+    CommandInfo(HypercubeCommandAliases.TEXT, hasCount = true),
+    CommandInfo(HypercubeCommandAliases.VARIABLE, hasCount = true, parseMiniMessage = false),
+    CommandInfo(HypercubeCommandAliases.ITEM_NAME),
+    CommandInfo(HypercubeCommandAliases.ITEM_LORE_ADD),
+    CommandInfo(HypercubeCommandAliases.ITEM_LORE_SET, highlightedArgumentIndex = 1),
+    CommandInfo(HypercubeCommandAliases.ITEM_LORE_INSERT, highlightedArgumentIndex = 1),
+    CommandInfo(HypercubeCommandAliases.PLOT_NAME),
+    CommandInfo(HypercubeCommandAliases.RELORE)
+)
 
 /**
  * An object that retrofits [net.minecraft.client.gui.components.EditBox] for expression highlighting.
@@ -62,10 +52,11 @@ class EditBoxExpressionFormatter(
     ): HighlightedExpression? {
         // highlight commands
         if (formatCommands && chatInput.startsWith('/')) {
-            val command = highlightedCommands.firstNotNullOfOrNull { info ->
-                info.takeIf { chatInput.startsWith(info.prefix, 1) }
+            val (command, startIndex) = highlightedCommands.firstNotNullOfOrNull { info ->
+                val match = info.prefix.matchAt(chatInput, 1)
+                match?.let { info to it.value.length + 1 }
             } ?: return null
-            return formatCommand(chatInput, partialParentFormat, partialRange, command)
+            return formatCommand(chatInput, startIndex, partialParentFormat, partialRange, command)
         }
 
         // highlight values
@@ -83,11 +74,12 @@ class EditBoxExpressionFormatter(
 
     private fun formatCommand(
         chatInput: String,
+        index: Int,
         partialParentFormat: FormattedCharSequence,
         partialRange: IntRange,
         info: CommandInfo
     ): HighlightedExpression? {
-        var startIndex = info.prefix.length + 2
+        var startIndex = index
         var endIndex = chatInput.length
         if (startIndex > chatInput.lastIndex) return null
 
@@ -137,10 +129,10 @@ class EditBoxExpressionFormatter(
 }
 
 private data class CommandInfo(
-    val prefix: String,
-    val highlightedArgumentIndex: Int,
-    val hasCount: Boolean,
-    val parseMiniMessage: Boolean
+    val prefix: Regex,
+    val highlightedArgumentIndex: Int = 0,
+    val hasCount: Boolean = false,
+    val parseMiniMessage: Boolean = true
 )
 
 private val countRegex = regex {

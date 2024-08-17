@@ -1,12 +1,11 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.9.23"
+    kotlin("jvm") version "2.0.0"
     id("fabric-loom") version "1.5-SNAPSHOT"
     id("com.modrinth.minotaur") version "2.+"
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 val modName: String by project
@@ -144,20 +143,17 @@ tasks {
         enabled = false
     }
 
-    val relocate by registering(ConfigureShadowRelocation::class) {
-        // repackage shaded dependencies
-        target = shadowJar.get()
-        prefix = "$mavenGroup.recode.shaded"
-    }
-
     shadowJar {
-        dependsOn(relocate.get())
         configurations = listOf(shade)
+        from("LICENSE")
+
         // output shaded jar in the correct destination to be used by remapJar
         destinationDirectory.set(file("build/devlibs"))
         archiveClassifier.set("dev")
 
-        from("LICENSE")
+        // relocate
+        isEnableRelocation = true
+        relocationPrefix = "$mavenGroup.$modName.shaded"
     }
 
     remapJar {

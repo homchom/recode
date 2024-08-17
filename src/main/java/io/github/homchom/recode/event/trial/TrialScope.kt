@@ -212,7 +212,7 @@ private class TrialCoroutineScope(
         coroutineScope.launch(coroutineContext, CoroutineStart.UNDISPATCHED) {
             channel.consumeEach { test(it) ?: throw TrialScopeException() }
         }
-        yield() // fast-fail
+        yield() // fast fail
     }
 
     override fun <R : Any> instant(value: R?) = TrialResult(value)

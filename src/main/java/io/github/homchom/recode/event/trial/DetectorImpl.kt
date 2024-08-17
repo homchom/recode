@@ -11,7 +11,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.flow.*
-import java.util.concurrent.ConcurrentLinkedDeque
+import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.time.Duration
 
@@ -60,7 +60,7 @@ private open class TrialDetector<T, R : Any>(
         }
     )
 
-    private val entries by lazy { ConcurrentLinkedDeque<DetectEntry<T, R>>() }
+    private val entries by lazy { ConcurrentLinkedQueue<DetectEntry<T, R>>() }
 
     override val notifications by event::notifications
     override val previous by event::previous

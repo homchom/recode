@@ -48,7 +48,7 @@ object DFStateDetectors : StateListenable<Case<DFState?>> by eventGroup {
         trial(teleportEvent, Unit) t@{ _, _ ->
             enforceOnDF()
 
-            val gameMenuStack = mc.player!!.inventory.getItem(4) // middle hotbar slot
+            val gameMenuStack = mc.player!!.inventory.items[4] // middle hotbar slot
             if (gameMenuStack.item != Items.EMERALD) return@t null // faster fail
             if ("◇ Game Menu ◇" !in gameMenuStack.hoverName.string) return@t null
 

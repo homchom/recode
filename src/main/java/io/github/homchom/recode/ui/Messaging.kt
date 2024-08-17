@@ -19,6 +19,7 @@ import net.minecraft.client.gui.components.toasts.SystemToast
  *
  * @see showRecodeMessage
  */
+@JvmOverloads
 fun showMessage(message: ComponentLike, tag: GuiMessageTag = GuiMessageTag.system()) =
     mc.gui.chat.addMessage(message.toVanillaComponent(), null, tag)
 
@@ -28,6 +29,7 @@ fun showMessage(message: ComponentLike, tag: GuiMessageTag = GuiMessageTag.syste
  *
  * @see RecodeMessageTags
  */
+@JvmOverloads
 fun showRecodeMessage(message: ComponentLike, tag: GuiMessageTag = RecodeMessageTags.info) {
     val prefixed = text {
         literal("$MOD_LOGO_CHAR ")

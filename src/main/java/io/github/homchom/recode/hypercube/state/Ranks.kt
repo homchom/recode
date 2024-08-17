@@ -10,5 +10,5 @@ enum class DonorRank(override val displayName: String) : Rank {
     NOBLE("Noble"),
     EMPEROR("Emperor"),
     MYTHIC("Mythic"),
-    OVERLORD("${DIAMOND}Overlord$DIAMOND")
+    OVERLORD("${DIAMOND}Overlord${DIAMOND}")
 }

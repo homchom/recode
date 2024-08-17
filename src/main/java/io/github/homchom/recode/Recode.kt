@@ -6,7 +6,7 @@ import io.github.homchom.recode.event.listenEach
 import io.github.homchom.recode.feature.automation.AutoCommands
 import io.github.homchom.recode.feature.meta.FDebugMode
 import io.github.homchom.recode.feature.visual.*
-import io.github.homchom.recode.game.QuitGameEvent
+import io.github.homchom.recode.game.GameStopEvent
 import io.github.homchom.recode.hypercube.JoinDFDetector
 import io.github.homchom.recode.mod.commands.CommandHandler
 import io.github.homchom.recode.mod.config.LegacyConfig
@@ -48,7 +48,7 @@ object Recode : ClientModInitializer, ModContainer {
         val raw = metadata.version.friendlyString
         val preReleaseMatch = regex {
             str('-')
-            val phase by group { str("alpha"); or; str("beta") }
+            val phase by anyStr("alpha", "beta")
             str('.')
         }.find(raw)
         if (preReleaseMatch == null) raw else {
@@ -99,7 +99,7 @@ object Recode : ClientModInitializer, ModContainer {
     // register globally active listeners that aren't feature-related
     private fun Power.registerTopLevelListeners() {
         // handle close
-        listenEach(QuitGameEvent) { close() }
+        listenEach(GameStopEvent) { close() }
 
         // show mod usage messages
         listenEach(JoinDFDetector) {

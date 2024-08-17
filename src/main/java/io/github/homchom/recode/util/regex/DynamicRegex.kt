@@ -21,7 +21,9 @@ sealed interface RegexFactory<T> {
 /**
  * @see dynamicRegex
  */
-class NullCachedRegexFactory<T>(private val builder: RegexPatternBuilder.(input: T) -> Unit) : RegexFactory<T> {
+private class NullCachedRegexFactory<T>(
+    private val builder: RegexPatternBuilder.(input: T) -> Unit
+) : RegexFactory<T> {
     private var prevInput: MutableCase<T>? = null
     private lateinit var prevResult: Regex
     private lateinit var nullDefault: Regex
