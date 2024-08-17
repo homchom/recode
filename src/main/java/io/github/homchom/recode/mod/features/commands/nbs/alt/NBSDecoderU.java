@@ -1,13 +1,14 @@
-package io.github.homchom.recode.mod.features.commands.nbs;
+package io.github.homchom.recode.mod.features.commands.nbs.alt;
 
-import io.github.homchom.recode.mod.features.commands.nbs.exceptions.OutdatedNBSException;
-import io.github.homchom.recode.sys.player.chat.ChatUtil;
+import io.github.homchom.recode.mod.features.commands.nbs.*;
+import io.github.homchom.recode.mod.features.commands.nbs.exceptions.*;
+import io.github.homchom.recode.sys.player.chat.*;
 
 import java.io.*;
-import java.math.BigDecimal;
+import java.math.*;
 
 // Credit to https://github.com/koca2000/NoteBlockAPI/blob/master/src/main/java/com/xxmicloxx/NoteBlockAPI/NBSDecoder.java
-public class NBSDecoder {
+public class NBSDecoderU {
 
     public static SongData parse(File songFile) throws IOException, OutdatedNBSException {
         try {
@@ -256,15 +257,15 @@ public class NBSDecoder {
 
     private static int getMinecraftPitch(double key, double offset) {
 
-        if (key < 33) key -= 9;
-        else if (key > 57) key -= 57;
-        else key -= 33;
+        //if (key < 33) key -= 9;
+        //else if (key > 57) key -= 57;
+        //else key -= 33;
 
         key += offset;
 
         double finalValue = (0.5 * (Math.pow(2, (key / 12)))) * 1000;
 
-        return (int) finalValue;
+        return (int) key * 1000;
     }
 
     public SongData parse(InputStream inputStream) throws IOException, OutdatedNBSException {
