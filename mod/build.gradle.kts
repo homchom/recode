@@ -1,12 +1,5 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
-    // unresolved issue: gson resolves incorrectly if this is uncommented and the line after is commented
-    //id("recode.kotlin-conventions")
-    kotlin("jvm") version "2.0.0"
-
-    alias(libs.plugins.fabric.loom)
+    id("recode.fabric-conventions")
 
     id("com.modrinth.minotaur") version "2.+"
     id("com.github.johnrengelman.shadow") version "8.1.1"
@@ -28,9 +21,9 @@ val flkVersion: String by project
 val requiredDependencyMods = dependencyModsOfType("required")
 val optionalDependencyMods = dependencyModsOfType("optional")
 
-/*base {
-    archivesName.set(modName)
-}*/
+base {
+    archivesName = modName
+}
 
 repositories {
     exclusiveContent {
@@ -66,123 +59,103 @@ val shade: Configuration by configurations.creating {
 }
 
 dependencies {
+    fun includeModImplementation(mod: Provider<MinimalExternalModuleDependency>) {
+        modImplementation(mod)
+        include(mod)
+    }
+
     // minecraft
-    minecraft("com.mojang:minecraft:$minecraftVersion")
+    minecraft(libs.minecraft)
     mappings(loom.officialMojangMappings())
 
     // fabric
-    modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
-    modImplementation("net.fabricmc:fabric-loader:$loaderVersion")
+    modImplementation(libs.fabric.api)
+    modImplementation(libs.fabric.loader)
+    modImplementation(libs.fabric.language.kotlin)
 
-    // kotlin
-    modImplementation("net.fabricmc:fabric-language-kotlin:$flkVersion")
+    // other required mods
+    includeModImplementation(libs.adventure.platform.fabric)
+    includeModImplementation(libs.libgui)
+    includeModImplementation(libs.clothConfig)
 
-    // mod dependencies listed in gradle.properties
-    for (mod in requiredDependencyMods) {
-        include(modImplementation("${mod.artifact}:${mod.version}")!!)
-    }
-    for (mod in optionalDependencyMods) {
-        modCompileOnly("${mod.artifact}:${mod.version}")
-    }
+    // optional mods
+    modCompileOnly(libs.modmenu)
+    modCompileOnly(libs.sodium)
 
     // Websocket TODO: clean this up
     shade(implementation("org.java-websocket:Java-WebSocket:1.5.3")!!)
     include(implementation("javax.websocket:javax.websocket-api:1.1")!!)
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+tasks.processResources {
+    // these properties can be used in fabric_mod_json_template.txt in Groovy template syntax
+    val exposedProperties = arrayOf(
+        "modName" to modName,
+        "version" to modVersion,
+        "minecraftVersion" to minecraftVersion,
+        "loaderVersion" to loaderVersion,
+        "fabricVersion" to fabricVersion,
+        "flkVersion" to flkVersion
+    )
 
-    // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-    // if it is present. If you remove this line, sources will not be generated.
-    withSourcesJar()
+    inputs.properties(*exposedProperties)
+    inputs.properties(project.properties.filterKeys { it.startsWith("required.") })
+
+    // evaluate fabric_mod_json_template.txt as a Groovy template
+    filesMatching("fabric_mod_json_template.txt") {
+        val metadataRegex = Regex("""\+.+$""")
+        expand(
+            *exposedProperties,
+            "metadataRegex" to metadataRegex.toPattern(),
+            "dependencyMods" to requiredDependencyMods.joinToString(", ") { mod ->
+                val version = mod.version.replace(metadataRegex, "")
+                "\"${mod.id}\": \"${mod.versionSpec}$version\""
+            }
+        )
+    }
+    rename("fabric_mod_json_template.txt", "fabric.mod.json")
 }
 
-tasks {
-    withType<JavaCompile> {
-        options.encoding = "UTF-8"
-    }
+tasks.jar {
+    // disable jar (in favor of shadowJar)
+    enabled = false
+}
 
-    withType<KotlinCompile> {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_17)
-            freeCompilerArgs.set(listOf(
-                "-Xjvm-default=all",
-            ))
-        }
-    }
+tasks.shadowJar {
+    configurations = listOf(shade)
+    from("LICENSE")
 
-    processResources {
-        // these properties can be used in fabric_mod_json_template.txt in Groovy template syntax
-        val exposedProperties = arrayOf(
-            "modName" to modName,
-            "version" to modVersion,
-            "minecraftVersion" to minecraftVersion,
-            "loaderVersion" to loaderVersion,
-            "fabricVersion" to fabricVersion,
-            "flkVersion" to flkVersion
-        )
+    // output shaded jar in the correct destination to be used by remapJar
+    destinationDirectory = file("build/devlibs")
+    archiveClassifier = "dev"
 
-        inputs.properties(*exposedProperties)
-        inputs.properties(project.properties.filterKeys { it.startsWith("required.") })
+    // relocate
+    isEnableRelocation = true
+    relocationPrefix = "$mavenGroup.$modName.shaded"
+}
 
-        // evaluate fabric_mod_json_template.txt as a Groovy template
-        filesMatching("fabric_mod_json_template.txt") {
-            val metadataRegex = Regex("""\+.+$""")
-            expand(
-                *exposedProperties,
-                "metadataRegex" to metadataRegex.toPattern(),
-                "dependencyMods" to requiredDependencyMods.joinToString(", ") { mod ->
-                    val version = mod.version.replace(metadataRegex, "")
-                    "\"${mod.id}\": \"${mod.versionSpec}$version\""
-                }
-            )
-        }
-        rename("fabric_mod_json_template.txt", "fabric.mod.json")
-    }
-
-    jar {
-        // disable jar (in favor of shadowJar)
-        enabled = false
-    }
-
-    shadowJar {
-        configurations = listOf(shade)
-        from("LICENSE")
-
-        // output shaded jar in the correct destination to be used by remapJar
-        destinationDirectory.set(file("build/devlibs"))
-        archiveClassifier.set("dev")
-
-        // relocate
-        isEnableRelocation = true
-        relocationPrefix = "$mavenGroup.$modName.shaded"
-    }
-
-    remapJar {
-        // use the shaded jar with remapJar
-        inputFile.value(shadowJar.get().archiveFile)
-    }
+tasks.remapJar {
+    // use the shaded jar with remapJar
+    inputFile.value(tasks.shadowJar.get().archiveFile)
 }
 
 tasks.modrinth.get().dependsOn(tasks.modrinthSyncBody)
 
 modrinth {
     // DO NOT PUT THIS IN RECODE'S GRADLE.PROPERTIES. Your modrinth token should remain private to everyone.
-    token.set(findProperty("privateModrinthToken")?.toString() ?: "")
+    token = findProperty("privateModrinthToken")?.toString() ?: ""
 
-    projectId.set("recode")
-    versionNumber.set(modVersionWithMeta)
+    projectId = "recode"
+    versionNumber = modVersionWithMeta
 
     val match = Regex("""-(?<phase>beta|alpha)\.""").find(modVersion)
     if (match == null) {
-        versionName.set(modVersion)
-        versionType.set("release")
+        versionName = modVersion
+        versionType = "release"
     } else {
         val phase = match.groups["phase"]!!.value
-        versionName.set(modVersion.replaceRange(match.range, " $phase "))
-        versionType.set(phase)
+        versionName = modVersion.replaceRange(match.range, " $phase ")
+        versionType = phase
     }
 
     // remove "LATEST" classifiers when uploading to modrinth
@@ -199,8 +172,8 @@ modrinth {
     }
 
     // TODO: use something other than readText?
-    //syncBodyFrom.set(file("README.md").readText())
-    //changelog.set(file("CHANGELOG.md").readText())
+    syncBodyFrom = file("../README.md").readText()
+    changelog = file("../CHANGELOG.md").readText()
 }
 
 data class DependencyMod(

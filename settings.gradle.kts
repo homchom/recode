@@ -7,10 +7,17 @@ include("mod")
 pluginManagement {
     repositories {
         mavenCentral()
-        maven {
-            name = "Fabric"
-            url = uri("https://maven.fabricmc.net/")
-        }
         gradlePluginPortal()
+    }
+}
+
+// https://github.com/FabricMC/fabric-loom/issues/1122 and https://github.com/gradle/gradle/issues/1370
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath("com.google.code.gson:gson:2.10.1")
     }
 }
